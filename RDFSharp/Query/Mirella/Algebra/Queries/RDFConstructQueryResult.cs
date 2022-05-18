@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Model;
-using RDFSharp.Store;
 using System.Collections;
 using System.Data;
 using System.Threading.Tasks;
@@ -82,50 +81,6 @@ namespace RDFSharp.Query
             => Task.Run(() => ToRDFGraph());
 
         /// <summary>
-        /// Gets a memory store corresponding to the query result
-        /// </summary>
-        public RDFMemoryStore ToRDFStore()
-        {
-            RDFMemoryStore result = new RDFMemoryStore();
-            RDFContext defaultCtx = new RDFContext();
-            RDFContext ctx = new RDFContext();
-            RDFPatternMember subj = null;
-            RDFPatternMember pred = null;
-            RDFPatternMember obj = null;
-
-            //Iterate the datatable rows and generate the corresponding quadruples to be added to the result store
-            bool hasCtx = this.ConstructResults.Columns.Contains("?CONTEXT");
-            IEnumerator resultRows = this.ConstructResults.Rows.GetEnumerator();
-            while (resultRows.MoveNext())
-            {
-                //Context is parsed only if construct table has the "?CONTEXT" column
-                //and is accepted only if it represents a non-blank resource, otherwise
-                //default context is safely adopted for the candidate quadruple
-                if (hasCtx)
-                {
-                    RDFPatternMember rowCtx = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?CONTEXT"].ToString());
-                    ctx = rowCtx is RDFResource rowCtxRes && !rowCtxRes.IsBlank ? new RDFContext(rowCtxRes.URI) : defaultCtx;
-                }
-
-                subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?SUBJECT"].ToString());
-                pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?PREDICATE"].ToString());
-                obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?OBJECT"].ToString());
-                if (obj is RDFResource)
-                    result.AddQuadruple(new RDFQuadruple(ctx, (RDFResource)subj, (RDFResource)pred, (RDFResource)obj));
-                else
-                    result.AddQuadruple(new RDFQuadruple(ctx, (RDFResource)subj, (RDFResource)pred, (RDFLiteral)obj));
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Asynchronously gets a memory store corresponding to the query result
-        /// </summary>
-        public Task<RDFMemoryStore> ToRDFStoreAsync()
-            => Task.Run(() => ToRDFStore());
-
-        /// <summary>
         /// Gets a query result corresponding to the given graph
         /// </summary>
         public static RDFConstructQueryResult FromRDFGraph(RDFGraph graph)
@@ -144,26 +99,6 @@ namespace RDFSharp.Query
         /// </summary>
         public static Task<RDFConstructQueryResult> FromRDFGraphAsync(RDFGraph graph)
             => Task.Run(() => FromRDFGraph(graph));
-
-        /// <summary>
-        /// Gets a query result corresponding to the given memory store
-        /// </summary>
-        public static RDFConstructQueryResult FromRDFStore(RDFMemoryStore store)
-        {
-            RDFConstructQueryResult result = new RDFConstructQueryResult();
-            if (store != null)
-            {
-                //Transform the store into a datatable and assign it to the query result
-                result.ConstructResults = store.ToDataTable();
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// Asynchronously gets a query result corresponding to the given memory store
-        /// </summary>
-        public static Task<RDFConstructQueryResult> FromRDFStoreAsync(RDFMemoryStore store)
-            => Task.Run(() => FromRDFStore(store));
         #endregion
     }
 }

@@ -208,8 +208,8 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
             Assert.IsTrue(result.ConstructResultsCount == 1);
-            Assert.IsTrue(result.ConstructResults.Rows.Count == 1);
             Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -229,8 +229,8 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
             Assert.IsTrue(result.ConstructResultsCount == 1);
-            Assert.IsTrue(result.ConstructResults.Rows.Count == 1);
             Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -250,8 +250,8 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
             Assert.IsTrue(result.ConstructResultsCount == 1);
-            Assert.IsTrue(result.ConstructResults.Rows.Count == 1);
             Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -271,8 +271,8 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
             Assert.IsTrue(result.ConstructResultsCount == 1);
-            Assert.IsTrue(result.ConstructResults.Rows.Count == 1);
             Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -292,8 +292,8 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
             Assert.IsTrue(result.ConstructResultsCount == 1);
-            Assert.IsTrue(result.ConstructResults.Rows.Count == 1);
             Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDFS.SUB_CLASS_OF}"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{new RDFResource("ex:plant")}"));
@@ -517,31 +517,8 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
             Assert.IsTrue(result.ConstructResultsCount == 1);
-            Assert.IsTrue(result.ConstructResults.Rows.Count == 1);
-            Assert.IsTrue(result.ConstructResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
-            Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
-            Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
-            Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
-        }
-
-        [TestMethod]
-        public void ShouldApplyConstructQueryToStoreAndHaveResultsWithTemplateHavingFixedContext()
-        {
-            RDFMemoryStore store = new RDFMemoryStore();
-            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
-            RDFConstructQuery query = new RDFConstructQuery()
-                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                .AddTemplate(new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
-            RDFConstructQueryResult result = query.ApplyToStore(store);
-
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.ConstructResults);
-            Assert.IsTrue(result.ConstructResultsCount == 1);
-            Assert.IsTrue(result.ConstructResults.Rows.Count == 1);
-            Assert.IsTrue(result.ConstructResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -561,9 +538,8 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
             Assert.IsTrue(result.ConstructResultsCount == 1);
-            Assert.IsTrue(result.ConstructResults.Rows.Count == 1);
-            Assert.IsTrue(result.ConstructResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -583,9 +559,8 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
             Assert.IsTrue(result.ConstructResultsCount == 1);
-            Assert.IsTrue(result.ConstructResults.Rows.Count == 1);
-            Assert.IsTrue(result.ConstructResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -605,9 +580,8 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
             Assert.IsTrue(result.ConstructResultsCount == 1);
-            Assert.IsTrue(result.ConstructResults.Rows.Count == 1);
-            Assert.IsTrue(result.ConstructResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -627,9 +601,8 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
             Assert.IsTrue(result.ConstructResultsCount == 1);
-            Assert.IsTrue(result.ConstructResults.Rows.Count == 1);
-            Assert.IsTrue(result.ConstructResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDFS.SUB_CLASS_OF}"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{new RDFResource("ex:plant")}"));
@@ -669,23 +642,6 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldApplyConstructQueryToStoreAndNotHaveResultsBecauseUnknownContextVariable()
-        {
-            RDFMemoryStore store = new RDFMemoryStore();
-            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
-            RDFConstructQuery query = new RDFConstructQuery()
-                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                .AddTemplate(new RDFPattern(new RDFVariable("?Q"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.DATATYPE)));
-            RDFConstructQueryResult result = query.ApplyToStore(store);
-
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.ConstructResults);
-            Assert.IsTrue(result.ConstructResultsCount == 0);
-        }
-
-        [TestMethod]
         public void ShouldApplyConstructQueryToStoreAndNotHaveResultsBecauseUnknownSubjectVariable()
         {
             RDFMemoryStore store = new RDFMemoryStore();
@@ -703,23 +659,6 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldApplyConstructQueryToStoreAndNotHaveResultsBecauseContextVariableContainsLiteral()
-        {
-            RDFMemoryStore store = new RDFMemoryStore();
-            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("flower")));
-            RDFConstructQuery query = new RDFConstructQuery()
-                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                .AddTemplate(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("ex:flower"), new RDFVariable("?P"), new RDFVariable("?C"))));
-            RDFConstructQueryResult result = query.ApplyToStore(store);
-
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.ConstructResults);
-            Assert.IsTrue(result.ConstructResultsCount == 0);
-        }
-
-        [TestMethod]
         public void ShouldApplyConstructQueryToStoreAndNotHaveResultsBecauseSubjectVariableContainsLiteral()
         {
             RDFMemoryStore store = new RDFMemoryStore();
@@ -729,24 +668,6 @@ namespace RDFSharp.Test.Query
                 .AddTemplate(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("ex:flower"), new RDFVariable("?P"), new RDFVariable("?S"))));
-            RDFConstructQueryResult result = query.ApplyToStore(store);
-
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.ConstructResults);
-            Assert.IsTrue(result.ConstructResultsCount == 0);
-        }
-
-        [TestMethod]
-        public void ShouldApplyConstructQueryToStoreAndNotHaveResultsBecauseContextVariableContainsNullValue()
-        {
-            RDFMemoryStore store = new RDFMemoryStore();
-            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
-            RDFConstructQuery query = new RDFConstructQuery()
-                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                .AddTemplate(new RDFPattern(new RDFVariable("?L"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.LABEL))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
-                    .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?L")).Optional()));
             RDFConstructQueryResult result = query.ApplyToStore(store);
 
             Assert.IsNotNull(result);
@@ -885,6 +806,347 @@ namespace RDFSharp.Test.Query
                 .AddPatternGroup(new RDFPatternGroup("PG1")
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
             RDFConstructQueryResult result = query.ApplyToStore(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToFederationAndHaveResults()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFFederation federation = new RDFFederation();
+            federation.AddGraph(graph);
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFConstructQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
+            Assert.IsTrue(result.ConstructResultsCount == 1);
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToFederationAndHaveResultsWithTemplateHavingFixedSubject()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFFederation federation = new RDFFederation();
+            federation.AddGraph(graph);
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFResource("ex:flower"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFConstructQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
+            Assert.IsTrue(result.ConstructResultsCount == 1);
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToFederationAndHaveResultsWithTemplateHavingFixedPredicate()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFFederation federation = new RDFFederation();
+            federation.AddGraph(graph);
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFConstructQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
+            Assert.IsTrue(result.ConstructResultsCount == 1);
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToFederationAndHaveResultsWithTemplateHavingFixedObject()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFFederation federation = new RDFFederation();
+            federation.AddGraph(graph);
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFConstructQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
+            Assert.IsTrue(result.ConstructResultsCount == 1);
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToFederationAndHaveResultsWithGroundTemplate()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFFederation federation = new RDFFederation();
+            federation.AddGraph(graph);
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFResource("ex:flower"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:plant")))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFConstructQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
+            Assert.IsTrue(result.ConstructResultsCount == 1);
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDFS.SUB_CLASS_OF}"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{new RDFResource("ex:plant")}"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToFederationAndNotHaveResults()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFFederation federation = new RDFFederation();
+            federation.AddGraph(graph);
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.DATATYPE)));
+            RDFConstructQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToFederationAndNotHaveResultsBecauseNoTemplates()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFFederation federation = new RDFFederation();
+            federation.AddGraph(graph);
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFConstructQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToFederationAndNotHaveResultsBecauseUnknownSubjectVariable()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFFederation federation = new RDFFederation();
+            federation.AddGraph(graph);
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?Q"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.DATATYPE)));
+            RDFConstructQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToFederationAndNotHaveResultsBecauseSubjectVariableContainsLiteral()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("flower")));
+            RDFFederation federation = new RDFFederation();
+            federation.AddGraph(graph);
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("ex:flower"), new RDFVariable("?P"), new RDFVariable("?S"))));
+            RDFConstructQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToFederationAndNotHaveResultsBecauseSubjectVariableContainsNullValue()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFFederation federation = new RDFFederation();
+            federation.AddGraph(graph);
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?L"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.LABEL))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?L")).Optional()));
+            RDFConstructQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToFederationAndNotHaveResultsBecauseUnknownPredicateVariable()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFFederation federation = new RDFFederation();
+            federation.AddGraph(graph);
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?Q"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.DATATYPE)));
+            RDFConstructQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToFederationAndNotHaveResultsBecausePredicateVariableContainsLiteral()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("flower")));
+            RDFFederation federation = new RDFFederation();
+            federation.AddGraph(graph);
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("ex:flower"), new RDFVariable("?S"), new RDFVariable("?P"))));
+            RDFConstructQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToFederationAndNotHaveResultsBecausePredicateVariableContainsBlankNode()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, new RDFResource("bnode:12345")));
+            RDFFederation federation = new RDFFederation();
+            federation.AddGraph(graph);
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("ex:flower"), new RDFVariable("?S"), new RDFVariable("?P"))));
+            RDFConstructQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToFederationAndNotHaveResultsBecausePredicateVariableContainsNullValue()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFFederation federation = new RDFFederation();
+            federation.AddGraph(graph);
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(RDFVocabulary.RDF.TYPE, new RDFVariable("?L"), RDFVocabulary.RDFS.LABEL))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?L")).Optional()));
+            RDFConstructQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToFederationAndNotHaveResultsBecauseUnknownObjectVariable()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFFederation federation = new RDFFederation();
+            federation.AddGraph(graph);
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFVariable("?Q")))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.DATATYPE)));
+            RDFConstructQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToFederationAndNotHaveResultsBecauseObjectVariableContainsNullValue()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFFederation federation = new RDFFederation();
+            federation.AddGraph(graph);
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.LABEL, new RDFVariable("?L")))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?L")).Optional()));
+            RDFConstructQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToNullFederationAndNotHaveResults()
+        {
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFConstructQueryResult result = query.ApplyToFederation(null);
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.ConstructResults);
