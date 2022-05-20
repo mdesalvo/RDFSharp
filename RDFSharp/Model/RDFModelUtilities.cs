@@ -57,15 +57,15 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to catch 8-byte unicodes
         /// </summary>
-        internal static readonly Regex regexU8 = new Regex(@"\\U([0-9A-Fa-f]{8})", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> regexU8 = new Lazy<Regex>(() => new Regex(@"\\U([0-9A-Fa-f]{8})", RegexOptions.Compiled));
         /// <summary>
         /// Regex to catch 4-byte unicodes
         /// </summary>
-        internal static readonly Regex regexU4 = new Regex(@"\\u([0-9A-Fa-f]{4})", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> regexU4 = new Lazy<Regex>(() => new Regex(@"\\u([0-9A-Fa-f]{4})", RegexOptions.Compiled));
         /// <summary>
         /// Regex to catch xsd:hexBinary typed literals
         /// </summary>
-        internal static readonly Regex hexBinary = new Regex(@"^([0-9a-fA-F]{2})*$", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> hexBinary = new Lazy<Regex>(() => new Regex(@"^([0-9a-fA-F]{2})*$", RegexOptions.Compiled));
 
         /// <summary>
         /// Alternative representations of boolean True
@@ -116,11 +116,11 @@ namespace RDFSharp.Model
 
             //UNICODE (UTF-16)
             StringBuilder sbRegexU8 = new StringBuilder();
-            sbRegexU8.Append(regexU8.Replace(asciiString, match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber))));
+            sbRegexU8.Append(regexU8.Value.Replace(asciiString, match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber))));
 
             //UNICODE (UTF-8)
             StringBuilder sbRegexU4 = new StringBuilder();
-            sbRegexU4.Append(regexU4.Replace(sbRegexU8.ToString(), match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber))));
+            sbRegexU4.Append(regexU4.Value.Replace(sbRegexU8.ToString(), match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber))));
 
             return sbRegexU4.ToString();
         }
@@ -728,7 +728,7 @@ namespace RDFSharp.Model
                     return typedLiteral.Value.IndexOfAny(new char[] { '\n', '\r', '\t' }) == -1;
 
                 case RDFModelEnums.RDFDatatypes.XSD_LANGUAGE:
-                    return RDFPlainLiteral.LangTag.Match(typedLiteral.Value).Success;
+                    return RDFPlainLiteral.LangTag.Value.Match(typedLiteral.Value).Success;
 
                 case RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY:
                     try
@@ -739,7 +739,7 @@ namespace RDFSharp.Model
                     catch { return false; }
 
                 case RDFModelEnums.RDFDatatypes.XSD_HEXBINARY:
-                    return hexBinary.Match(typedLiteral.Value).Success;
+                    return hexBinary.Value.Match(typedLiteral.Value).Success;
                 #endregion
 
                 #region BOOLEAN CATEGORY

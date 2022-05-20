@@ -34,7 +34,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to catch literals which must be escaped as long literals in Turtle
         /// </summary>
-        internal static readonly Regex regexTTL = new Regex("[\n\r\t\"]", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> regexTTL = new Lazy<Regex>(() => new Regex("[\n\r\t\"]", RegexOptions.Compiled));
         #endregion
 
         #region Methods
@@ -152,7 +152,7 @@ namespace RDFSharp.Model
                             {
                                 //Detect presence of long-literals in order to write proper delimiter
                                 string litValDelim = "\"";
-                                if (regexTTL.Match(triple.Object.ToString()).Success)
+                                if (regexTTL.Value.Match(triple.Object.ToString()).Success)
                                     litValDelim = "\"\"\"";
 
                                 //Write the literal's Turtle token

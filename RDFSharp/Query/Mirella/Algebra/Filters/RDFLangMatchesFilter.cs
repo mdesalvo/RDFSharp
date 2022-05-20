@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Model;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
@@ -40,12 +41,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Regex to intercept values having any language tag
         /// </summary>
-        internal static readonly Regex AnyLanguageRegex = new Regex("@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        internal static readonly Lazy<Regex> AnyLanguageRegex = new Lazy<Regex>(() => new Regex("@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase));
 
         /// <summary>
         /// Regex to intercept values having specific language tag
         /// </summary>
-        internal Regex ExactLanguageRegex { get; set; }
+        internal Lazy<Regex> ExactLanguageRegex { get; set; }
         #endregion
 
         #region Ctors
@@ -58,12 +59,12 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"variable\" parameter is null.");
 
             bool acceptsNoneOrAnyLanguageTag = (string.IsNullOrEmpty(language) || language == "*");
-            if (acceptsNoneOrAnyLanguageTag || RDFPlainLiteral.LangTag.Match(language).Success)
+            if (acceptsNoneOrAnyLanguageTag || RDFPlainLiteral.LangTag.Value.Match(language).Success)
             {
                 this.VariableName = variable.ToString();
                 this.Language = language?.ToUpperInvariant() ?? string.Empty;
                 if (!acceptsNoneOrAnyLanguageTag)
-                    this.ExactLanguageRegex = new Regex($"@{this.Language}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    this.ExactLanguageRegex = new Lazy<Regex>(() => new Regex($"@{this.Language}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase));
             }
             else
                 throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"language\" parameter (" + language + ") does not represent an acceptable language.");
@@ -97,17 +98,17 @@ namespace RDFSharp.Query
                 {
                     //NO language is acceptable in the variable
                     case "":
-                        keepRow = !AnyLanguageRegex.IsMatch(variableValue);
+                        keepRow = !AnyLanguageRegex.Value.IsMatch(variableValue);
                         break;
                     
                     //ANY language is acceptable in the variable
                     case "*":
-                        keepRow = AnyLanguageRegex.IsMatch(variableValue);
+                        keepRow = AnyLanguageRegex.Value.IsMatch(variableValue);
                         break;
 
                     //GIVEN language is acceptable in the variable
                     default:
-                        keepRow = this.ExactLanguageRegex.IsMatch(variableValue);
+                        keepRow = this.ExactLanguageRegex.Value.IsMatch(variableValue);
                         break;
                 }
 

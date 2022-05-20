@@ -35,67 +35,67 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to detect S->P->B form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex SPB = new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*_:[^<>\s]+\s*\.$", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> SPB = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*_:[^<>\s]+\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect S->P->O form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex SPO = new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*<[^<>\s]+>\s*\.$", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> SPO = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect S->P->L(PLAIN) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex SPL_PLAIN = new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""\s*\.$", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> SPL_PLAIN = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect S->P->L(PLAIN LANGUAGE) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex SPL_PLANG = new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*\.$", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> SPL_PLANG = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect S->P->L(TYPED) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex SPL_TLIT = new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""\^\^<[^<>\s]+>\s*\.$", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> SPL_TLIT = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""\^\^<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect B->P->B form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex BPB = new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*_:[^<>\s]+\s*\.$", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> BPB = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*_:[^<>\s]+\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect B->P->O form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex BPO = new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*<[^<>\s]+>\s*\.$", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> BPO = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect B->P->L(PLAIN) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex BPL_PLAIN = new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""\s*\.$", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> BPL_PLAIN = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect B->P->L(PLAIN LANGUAGE) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex BPL_PLANG = new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*\.$", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> BPL_PLANG = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect B->P->L(TYPED) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex BPL_TLIT = new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""\^\^<[^<>\s]+>\s*\.$", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> BPL_TLIT = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""\^\^<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect presence of a plain literal with language tag within a given N-Triple
         /// </summary>
-        internal static readonly Regex regexLPL = new Regex(@"@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> regexLPL = new Lazy<Regex>(() => new Regex(@"@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect presence of starting " in the value of a given N-Triple literal
         /// </summary>
-        internal static readonly Regex regexSqt = new Regex(@"^""", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> regexSqt = new Lazy<Regex>(() => new Regex(@"^""", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect presence of ending " in the value of a given N-Triple literal
         /// </summary>
-        internal static readonly Regex regexEqt = new Regex(@"""$", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> regexEqt = new Lazy<Regex>(() => new Regex(@"""$", RegexOptions.Compiled));
         #endregion
 
         #region Methods
@@ -256,8 +256,8 @@ namespace RDFSharp.Model
                         {
 
                             #region sanitize
-                            tokens[2] = regexSqt.Replace(tokens[2], string.Empty);
-                            tokens[2] = regexEqt.Replace(tokens[2], string.Empty);
+                            tokens[2] = regexSqt.Value.Replace(tokens[2], string.Empty);
+                            tokens[2] = regexEqt.Value.Replace(tokens[2], string.Empty);
                             tokens[2] = tokens[2].Replace("\\\\", "\\")
                                                  .Replace("\\\"", "\"")
                                                  .Replace("\\n", "\n")
@@ -271,7 +271,7 @@ namespace RDFSharp.Model
                                     || tokens[2].EndsWith("^^")
                                         || tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2, 1) != "<")
                             {
-                                if (regexLPL.Match(tokens[2]).Success)
+                                if (regexLPL.Value.Match(tokens[2]).Success)
                                 {
                                     tokens[2] = tokens[2].Replace("\"@", "@");
                                     int lastIndexOfLanguage = tokens[2].LastIndexOf("@", StringComparison.OrdinalIgnoreCase);
@@ -338,7 +338,7 @@ namespace RDFSharp.Model
             if (ntriple.StartsWith("<"))
             {
                 //S->P->O
-                if (SPO.Match(ntriple).Success)
+                if (SPO.Value.Match(ntriple).Success)
                 {
                     ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
 
@@ -359,7 +359,7 @@ namespace RDFSharp.Model
                 }
 
                 //S->P->L(PLAIN)
-                if (SPL_PLAIN.Match(ntriple).Success)
+                if (SPL_PLAIN.Value.Match(ntriple).Success)
                 {
                     ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
 
@@ -380,7 +380,7 @@ namespace RDFSharp.Model
                 }
 
                 //S->P->L(PLANG)
-                if (SPL_PLANG.Match(ntriple).Success)
+                if (SPL_PLANG.Value.Match(ntriple).Success)
                 {
                     ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
 
@@ -401,7 +401,7 @@ namespace RDFSharp.Model
                 }
 
                 //S->P->L(TLIT)
-                if (SPL_TLIT.Match(ntriple).Success)
+                if (SPL_TLIT.Value.Match(ntriple).Success)
                 {
                     ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
 
@@ -422,7 +422,7 @@ namespace RDFSharp.Model
                 }
 
                 //S->P->B
-                if (SPB.Match(ntriple).Success)
+                if (SPB.Value.Match(ntriple).Success)
                 {
                     ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
 
@@ -448,7 +448,7 @@ namespace RDFSharp.Model
             else
             {
                 //B->P->O
-                if (BPO.Match(ntriple).Success)
+                if (BPO.Value.Match(ntriple).Success)
                 {
                     ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
 
@@ -469,7 +469,7 @@ namespace RDFSharp.Model
                 }
 
                 //B->P->L(PLAIN)
-                if (BPL_PLAIN.Match(ntriple).Success)
+                if (BPL_PLAIN.Value.Match(ntriple).Success)
                 {
                     ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
 
@@ -490,7 +490,7 @@ namespace RDFSharp.Model
                 }
 
                 //B->P->L(PLANG)
-                if (BPL_PLANG.Match(ntriple).Success)
+                if (BPL_PLANG.Value.Match(ntriple).Success)
                 {
                     ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
 
@@ -511,7 +511,7 @@ namespace RDFSharp.Model
                 }
 
                 //B->P->L(TLIT)
-                if (BPL_TLIT.Match(ntriple).Success)
+                if (BPL_TLIT.Value.Match(ntriple).Success)
                 {
                     ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
 
@@ -532,7 +532,7 @@ namespace RDFSharp.Model
                 }
 
                 //B->P->B
-                if (BPB.Match(ntriple).Success)
+                if (BPB.Value.Match(ntriple).Success)
                 {
                     ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
 

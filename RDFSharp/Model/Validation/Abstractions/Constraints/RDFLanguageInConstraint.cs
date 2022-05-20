@@ -45,7 +45,7 @@ namespace RDFSharp.Model
             languageTags?.ForEach(lt =>
             {
                 string languageTag = lt?.Trim() ?? string.Empty;
-                if (languageTag == string.Empty || languageTag == "*" || RDFPlainLiteral.LangTag.Match(languageTag).Success)
+                if (languageTag == string.Empty || languageTag == "*" || RDFPlainLiteral.LangTag.Value.Match(languageTag).Success)
                     this.LanguageTags.Add(languageTag.ToUpperInvariant());
             });
         }
