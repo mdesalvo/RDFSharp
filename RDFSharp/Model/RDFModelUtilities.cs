@@ -26,7 +26,6 @@ using System.Xml.Linq;
 
 namespace RDFSharp.Model
 {
-
     /// <summary>
     /// RDFModelUtilities is a collector of reusable utility methods for RDF model management
     /// </summary>
@@ -53,7 +52,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// UTF8 encoding which does not emit BOM (for better OS interoperability)
         /// </summary>
-        internal static UTF8Encoding UTF8_NoBOM = new UTF8Encoding(false);
+        internal static readonly UTF8Encoding UTF8_NoBOM = new UTF8Encoding(false);
 
         /// <summary>
         /// Regex to catch 8-byte unicodes
@@ -71,11 +70,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Alternative representations of boolean True
         /// </summary>
-        internal static string[] AlternativesBoolTrue = new string[] { "1", "one", "yes", "y", "on", "ok" };
+        internal static readonly string[] AlternativesBoolTrue = new string[] { "1", "one", "yes", "y", "on", "ok" };
         /// <summary>
         /// Alternative representations of boolean False
         /// </summary>
-        internal static string[] AlternativesBoolFalse = new string[] { "0", "zero", "no", "n", "off", "ko" };
+        internal static readonly string[] AlternativesBoolFalse = new string[] { "0", "zero", "no", "n", "off", "ko" };
 
         /// <summary>
         /// Gets the Uri corresponding to the given string
@@ -1029,5 +1028,4 @@ namespace RDFSharp.Model
         }
         #endregion
     }
-
 }
