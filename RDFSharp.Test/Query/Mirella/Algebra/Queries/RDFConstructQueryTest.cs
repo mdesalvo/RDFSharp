@@ -1184,6 +1184,162 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals("ex:plant"));
         }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToSPARQLEndpointAndNotHaveResults()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFConstructQueryTest/ShouldApplyConstructQueryToSPARQLEndpointAndNotHaveResults/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody("", encoding: Encoding.UTF8)
+                            .WithHeader("Content-Type", "application/turtle")
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:plant")))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFConstructQueryTest/ShouldApplyConstructQueryToSPARQLEndpointAndNotHaveResults/sparql"));
+            RDFConstructQueryResult result = query.ApplyToSPARQLEndpoint(endpoint);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToNullSPARQLEndpointAndNotHaveResults()
+        {
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:plant")))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFConstructQueryResult result = query.ApplyToSPARQLEndpoint(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionWhenApplyingConstructQueryToSPARQLEndpointAccordingToTimingAndBehavior()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFConstructQueryTest/ShouldThrowExceptionWhenApplyingConstructQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.@base <{RDFNamespaceRegister.DefaultNamespace}>.<ex:flower> a <ex:plant>.", encoding: Encoding.UTF8)
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(1000));
+
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:plant")))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFConstructQueryTest/ShouldThrowExceptionWhenApplyingConstructQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql"));
+
+            Assert.ThrowsException<RDFQueryException>(() => query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(250, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)));
+        }
+
+        [TestMethod]
+        public void ShouldGiveEmptyResultWhenApplyingConstructQueryToSPARQLEndpointAccordingToTimingAndBehavior()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFConstructQueryTest/ShouldGiveEmptyResultWhenApplyingConstructQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody("", encoding: Encoding.UTF8)
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(1000));
+
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:plant")))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFConstructQueryTest/ShouldGiveEmptyResultWhenApplyingConstructQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql"));
+            RDFConstructQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(250, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult));
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionWhenApplyingConstructQueryToSPARQLEndpointAccordingToBehavior()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFConstructQueryTest/ShouldThrowExceptionWhenApplyingConstructQueryToSPARQLEndpointAccordingToBehavior/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody("Internal Server Error")
+                            .WithStatusCode(HttpStatusCode.InternalServerError)
+                            .WithFault(FaultType.NONE));
+
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:plant")))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFConstructQueryTest/ShouldThrowExceptionWhenApplyingConstructQueryToSPARQLEndpointAccordingToBehavior/sparql"));
+
+            Assert.ThrowsException<RDFQueryException>(() => query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(1000, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)));
+        }
+
+        [TestMethod]
+        public void ShouldGiveEmptyResultWhenApplyingConstructQueryToSPARQLEndpointAccordingToBehavior()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFConstructQueryTest/ShouldGiveEmptyResultWhenApplyingConstructQueryToSPARQLEndpointAccordingToBehavior/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody("Internal Server Error")
+                            .WithStatusCode(HttpStatusCode.InternalServerError)
+                            .WithFault(FaultType.NONE));
+
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:plant")))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFConstructQueryTest/ShouldGiveEmptyResultWhenApplyingConstructQueryToSPARQLEndpointAccordingToBehavior/sparql"));
+            RDFConstructQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(1000, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult));
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 0);
+        }
+
+        //ASYNC
+
         #endregion
     }
 }
