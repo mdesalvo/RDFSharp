@@ -124,6 +124,89 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(constructGraph.ContainsTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit"))));
             Assert.IsTrue(constructGraph.ContainsTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFTypedLiteral("lit", RDFModelEnums.RDFDatatypes.XSD_STRING))));
         }
+
+        [TestMethod]
+        public void ShouldSerializeEmptyConstructQueryResultToGraph()
+        {
+            RDFConstructQueryResult constructResult = new RDFConstructQueryResult();
+            RDFGraph constructGraph = constructResult.ToRDFGraph();
+            
+            Assert.IsNotNull(constructGraph);
+            Assert.IsTrue(constructGraph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeConstructQueryResultFromGraph()
+        {
+            RDFGraph constructGraph = new RDFGraph();
+            constructGraph.AddTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit","en-US")));
+            constructGraph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:obj")));
+            constructGraph.AddTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit")));
+            constructGraph.AddTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFTypedLiteral("lit", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+            RDFConstructQueryResult constructResult = RDFConstructQueryResult.FromRDFGraph(constructGraph);
+
+            Assert.IsNotNull(constructResult);
+            Assert.IsNotNull(constructResult.ConstructResults);
+            Assert.IsTrue(constructResult.ConstructResults.Columns.Count == 3);
+            Assert.IsTrue(constructResult.ConstructResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(constructResult.ConstructResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(constructResult.ConstructResults.Columns.Contains("?OBJECT"));
+            Assert.IsTrue(constructResult.ConstructResultsCount == 4);
+            Assert.IsTrue(constructResult.ConstructResults.Rows[0]["?SUBJECT"].ToString().Equals("ex:subj"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[0]["?PREDICATE"].ToString().Equals("ex:pred"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[1]["?SUBJECT"].ToString().Equals("bnode:12345"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[1]["?PREDICATE"].ToString().Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[1]["?OBJECT"].ToString().Equals($"ex:obj"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[2]["?SUBJECT"].ToString().Equals("ex:subj"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[2]["?PREDICATE"].ToString().Equals("ex:pred"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[2]["?OBJECT"].ToString().Equals("lit"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[3]["?SUBJECT"].ToString().Equals("ex:subj"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[3]["?PREDICATE"].ToString().Equals("ex:pred"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[3]["?OBJECT"].ToString().Equals($"lit^^{RDFVocabulary.XSD.STRING}"));
+        }
+
+        [TestMethod]
+        public async Task ShouldDeserializeConstructQueryResultFromGraphAsync()
+        {
+            RDFGraph constructGraph = new RDFGraph();
+            constructGraph.AddTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit","en-US")));
+            constructGraph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:obj")));
+            constructGraph.AddTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit")));
+            constructGraph.AddTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFTypedLiteral("lit", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+            RDFConstructQueryResult constructResult = await RDFConstructQueryResult.FromRDFGraphAsync(constructGraph);
+
+            Assert.IsNotNull(constructResult);
+            Assert.IsNotNull(constructResult.ConstructResults);
+            Assert.IsTrue(constructResult.ConstructResults.Columns.Count == 3);
+            Assert.IsTrue(constructResult.ConstructResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(constructResult.ConstructResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(constructResult.ConstructResults.Columns.Contains("?OBJECT"));
+            Assert.IsTrue(constructResult.ConstructResultsCount == 4);
+            Assert.IsTrue(constructResult.ConstructResults.Rows[0]["?SUBJECT"].ToString().Equals("ex:subj"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[0]["?PREDICATE"].ToString().Equals("ex:pred"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[1]["?SUBJECT"].ToString().Equals("bnode:12345"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[1]["?PREDICATE"].ToString().Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[1]["?OBJECT"].ToString().Equals($"ex:obj"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[2]["?SUBJECT"].ToString().Equals("ex:subj"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[2]["?PREDICATE"].ToString().Equals("ex:pred"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[2]["?OBJECT"].ToString().Equals("lit"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[3]["?SUBJECT"].ToString().Equals("ex:subj"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[3]["?PREDICATE"].ToString().Equals("ex:pred"));
+            Assert.IsTrue(constructResult.ConstructResults.Rows[3]["?OBJECT"].ToString().Equals($"lit^^{RDFVocabulary.XSD.STRING}"));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeConstructQueryResultFromNullGraph()
+        {
+            RDFConstructQueryResult constructResult = RDFConstructQueryResult.FromRDFGraph(null);
+
+            Assert.IsNotNull(constructResult);
+            Assert.IsNotNull(constructResult.ConstructResults);
+            Assert.IsTrue(constructResult.ConstructResults.Columns.Count == 0);
+            Assert.IsTrue(constructResult.ConstructResultsCount == 0);
+        }
         #endregion
     }
 }
