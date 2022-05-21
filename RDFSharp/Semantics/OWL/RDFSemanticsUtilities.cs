@@ -17,6 +17,7 @@
 using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Semantics.SKOS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -29,7 +30,7 @@ namespace RDFSharp.Semantics.OWL
     /// </summary>
     internal static class RDFSemanticsUtilities
     {
-        internal static readonly Regex NumberRegex = new Regex(@"^[0-9]+$", RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> NumberRegex = new Lazy<Regex>(() => new Regex(@"^[0-9]+$", RegexOptions.Compiled));
         internal static readonly HashSet<long> StandardAnnotationProperties = new HashSet<long>()
         {
             { RDFVocabulary.OWL.VERSION_INFO.PatternMemberID },
@@ -823,14 +824,14 @@ namespace RDFSharp.Semantics.OWL
                 {
                     if (crEx.Object is RDFPlainLiteral)
                     {
-                        if (NumberRegex.IsMatch(crEx.Object.ToString()))
+                        if (NumberRegex.Value.IsMatch(crEx.Object.ToString()))
                             exC = int.Parse(crEx.Object.ToString());
                     }
                     else
                     {
                         if (((RDFTypedLiteral)crEx.Object).HasDecimalDatatype())
                         {
-                            if (NumberRegex.IsMatch(((RDFTypedLiteral)crEx.Object).Value))
+                            if (NumberRegex.Value.IsMatch(((RDFTypedLiteral)crEx.Object).Value))
                                 exC = int.Parse(((RDFTypedLiteral)crEx.Object).Value);
                         }
                     }
@@ -851,14 +852,14 @@ namespace RDFSharp.Semantics.OWL
                 {
                     if (crMin.Object is RDFPlainLiteral)
                     {
-                        if (NumberRegex.IsMatch(crMin.Object.ToString()))
+                        if (NumberRegex.Value.IsMatch(crMin.Object.ToString()))
                             minC = int.Parse(crMin.Object.ToString());
                     }
                     else
                     {
                         if (((RDFTypedLiteral)crMin.Object).HasDecimalDatatype())
                         {
-                            if (NumberRegex.IsMatch(((RDFTypedLiteral)crMin.Object).Value))
+                            if (NumberRegex.Value.IsMatch(((RDFTypedLiteral)crMin.Object).Value))
                                 minC = int.Parse(((RDFTypedLiteral)crMin.Object).Value);
                         }
                     }
@@ -870,14 +871,14 @@ namespace RDFSharp.Semantics.OWL
                 {
                     if (crMax.Object is RDFPlainLiteral)
                     {
-                        if (NumberRegex.IsMatch(crMax.Object.ToString()))
+                        if (NumberRegex.Value.IsMatch(crMax.Object.ToString()))
                             maxC = int.Parse(crMax.Object.ToString());
                     }
                     else
                     {
                         if (((RDFTypedLiteral)crMax.Object).HasDecimalDatatype())
                         {
-                            if (NumberRegex.IsMatch(((RDFTypedLiteral)crMax.Object).Value))
+                            if (NumberRegex.Value.IsMatch(((RDFTypedLiteral)crMax.Object).Value))
                                 maxC = int.Parse(((RDFTypedLiteral)crMax.Object).Value);
                         }
                     }
@@ -898,14 +899,14 @@ namespace RDFSharp.Semantics.OWL
                 {
                     if (crExQC.Object is RDFPlainLiteral)
                     {
-                        if (NumberRegex.IsMatch(crExQC.Object.ToString()))
+                        if (NumberRegex.Value.IsMatch(crExQC.Object.ToString()))
                             exQC = int.Parse(crExQC.Object.ToString());
                     }
                     else
                     {
                         if (((RDFTypedLiteral)crExQC.Object).HasDecimalDatatype())
                         {
-                            if (NumberRegex.IsMatch(((RDFTypedLiteral)crExQC.Object).Value))
+                            if (NumberRegex.Value.IsMatch(((RDFTypedLiteral)crExQC.Object).Value))
                                 exQC = int.Parse(((RDFTypedLiteral)crExQC.Object).Value);
                         }
                     }
@@ -960,14 +961,14 @@ namespace RDFSharp.Semantics.OWL
                 {
                     if (crMinQC.Object is RDFPlainLiteral)
                     {
-                        if (NumberRegex.IsMatch(crMinQC.Object.ToString()))
+                        if (NumberRegex.Value.IsMatch(crMinQC.Object.ToString()))
                             minQC = int.Parse(crMinQC.Object.ToString());
                     }
                     else
                     {
                         if (((RDFTypedLiteral)crMinQC.Object).HasDecimalDatatype())
                         {
-                            if (NumberRegex.IsMatch(((RDFTypedLiteral)crMinQC.Object).Value))
+                            if (NumberRegex.Value.IsMatch(((RDFTypedLiteral)crMinQC.Object).Value))
                                 minQC = int.Parse(((RDFTypedLiteral)crMinQC.Object).Value);
                         }
                     }
@@ -979,14 +980,14 @@ namespace RDFSharp.Semantics.OWL
                 {
                     if (crMaxQC.Object is RDFPlainLiteral)
                     {
-                        if (NumberRegex.IsMatch(crMaxQC.Object.ToString()))
+                        if (NumberRegex.Value.IsMatch(crMaxQC.Object.ToString()))
                             maxQC = int.Parse(crMaxQC.Object.ToString());
                     }
                     else
                     {
                         if (((RDFTypedLiteral)crMaxQC.Object).HasDecimalDatatype())
                         {
-                            if (NumberRegex.IsMatch(((RDFTypedLiteral)crMaxQC.Object).Value))
+                            if (NumberRegex.Value.IsMatch(((RDFTypedLiteral)crMaxQC.Object).Value))
                                 maxQC = int.Parse(((RDFTypedLiteral)crMaxQC.Object).Value);
                         }
                     }

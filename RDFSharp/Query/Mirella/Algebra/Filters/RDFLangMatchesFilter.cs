@@ -46,7 +46,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Regex to intercept values having specific language tag
         /// </summary>
-        internal Lazy<Regex> ExactLanguageRegex { get; set; }
+        internal Regex ExactLanguageRegex { get; set; }
         #endregion
 
         #region Ctors
@@ -64,7 +64,7 @@ namespace RDFSharp.Query
                 this.VariableName = variable.ToString();
                 this.Language = language?.ToUpperInvariant() ?? string.Empty;
                 if (!acceptsNoneOrAnyLanguageTag)
-                    this.ExactLanguageRegex = new Lazy<Regex>(() => new Regex($"@{this.Language}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase));
+                    this.ExactLanguageRegex = new Regex($"@{this.Language}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             }
             else
                 throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"language\" parameter (" + language + ") does not represent an acceptable language.");
@@ -108,7 +108,7 @@ namespace RDFSharp.Query
 
                     //GIVEN language is acceptable in the variable
                     default:
-                        keepRow = this.ExactLanguageRegex.Value.IsMatch(variableValue);
+                        keepRow = this.ExactLanguageRegex.IsMatch(variableValue);
                         break;
                 }
 
