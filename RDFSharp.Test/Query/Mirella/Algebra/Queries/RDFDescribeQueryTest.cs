@@ -185,6 +185,68 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.GetModifiers().Count() == 3);
             Assert.IsTrue(query.GetPrefixes().Count() == 2);
         }
+
+        [TestMethod]
+        public void ShouldApplyDescribeQueryToGraphAndHaveResultsWithSingleVariableTerm()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFDescribeQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 2);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 3);
+            Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?PREDICATE"].Equals($"ex:color"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?OBJECT"].Equals($"white@EN"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyDescribeQueryToGraphAndHaveResultsWithMultipleVariableTerms()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddDescribeTerm(new RDFVariable("?P"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddModifier(new RDFDistinctModifier());
+            RDFDescribeQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 3);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 3);
+            Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?PREDICATE"].Equals($"ex:color"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?OBJECT"].Equals($"white@EN"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?SUBJECT"].Equals("ex:tree"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
+        }
         #endregion
     }
 }

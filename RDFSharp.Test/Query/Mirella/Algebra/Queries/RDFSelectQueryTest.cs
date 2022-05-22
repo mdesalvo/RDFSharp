@@ -204,7 +204,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResultsCount == 1);
             Assert.IsTrue(result.SelectResults.Columns.Count == 1);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 1);
             Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
@@ -225,7 +224,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResultsCount == 0);
             Assert.IsTrue(result.SelectResults.Columns.Count == 1);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
 
         [TestMethod]
@@ -263,7 +261,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResults.Columns.Count == 2);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?C"));
             Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 1);
             Assert.IsTrue(result.SelectResults.Rows[0]["?C"].Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
             Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
@@ -285,7 +282,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResultsCount == 0);
             Assert.IsTrue(result.SelectResults.Columns.Count == 1);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
 
         [TestMethod]
@@ -322,7 +318,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResultsCount == 1);
             Assert.IsTrue(result.SelectResults.Columns.Count == 1);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 1);
             Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
@@ -344,7 +339,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResultsCount == 0);
             Assert.IsTrue(result.SelectResults.Columns.Count == 1);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
 
         [TestMethod]
@@ -403,7 +397,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResultsCount == 1);
             Assert.IsTrue(result.SelectResults.Columns.Count == 1);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 1);
             Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
@@ -447,7 +440,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResultsCount == 1);
             Assert.IsTrue(result.SelectResults.Columns.Count == 1);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 1);
             Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
@@ -485,7 +477,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResultsCount == 0);
             Assert.IsTrue(result.SelectResults.Columns.Count == 1);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
 
         [TestMethod]
@@ -529,7 +520,7 @@ namespace RDFSharp.Test.Query
   </results>
 </sparql>", encoding: Encoding.UTF8)
                             .WithStatusCode(HttpStatusCode.OK)
-                            .WithDelay(1000));
+                            .WithDelay(750));
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -566,7 +557,7 @@ namespace RDFSharp.Test.Query
   </results>
 </sparql>", encoding: Encoding.UTF8)
                             .WithStatusCode(HttpStatusCode.OK)
-                            .WithDelay(1000));
+                            .WithDelay(750));
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -580,7 +571,6 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(result.SelectResults);
             Assert.IsTrue(result.SelectResultsCount == 0);
             Assert.IsTrue(result.SelectResults.Columns.Count == 0);
-            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
 
         [TestMethod]
@@ -604,7 +594,7 @@ namespace RDFSharp.Test.Query
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldThrowExceptionWhenApplyingSelectQueryToSPARQLEndpointAccordingToBehavior/sparql"));
 
-            Assert.ThrowsException<RDFQueryException>(() => query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(1000, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)));
+            Assert.ThrowsException<RDFQueryException>(() => query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(750, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)));
         }
 
         [TestMethod]
@@ -634,7 +624,6 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(result.SelectResults);
             Assert.IsTrue(result.SelectResultsCount == 0);
             Assert.IsTrue(result.SelectResults.Columns.Count == 0);
-            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
 
         [DataTestMethod]
@@ -662,7 +651,6 @@ namespace RDFSharp.Test.Query
                     Assert.IsTrue(result.SelectResultsCount == 1);
                     Assert.IsTrue(result.SelectResults.Columns.Count == 1);
                     Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-                    Assert.IsTrue(result.SelectResults.Rows.Count == 1);
                     Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
                     break;
                 }
@@ -684,7 +672,6 @@ namespace RDFSharp.Test.Query
                     Assert.IsTrue(result.SelectResults.Columns.Count == 2);
                     Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?C"));
                     Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?S"));
-                    Assert.IsTrue(result.SelectResults.Rows.Count == 1);
                     Assert.IsTrue(result.SelectResults.Rows[0]["?C"].Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
                     Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
                     break;
@@ -706,7 +693,6 @@ namespace RDFSharp.Test.Query
                     Assert.IsTrue(result.SelectResultsCount == 1);
                     Assert.IsTrue(result.SelectResults.Columns.Count == 1);
                     Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-                    Assert.IsTrue(result.SelectResults.Rows.Count == 1);
                     Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
                     break;
                 }
@@ -749,7 +735,6 @@ namespace RDFSharp.Test.Query
                     Assert.IsTrue(result.SelectResultsCount == 1);
                     Assert.IsTrue(result.SelectResults.Columns.Count == 1);
                     Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-                    Assert.IsTrue(result.SelectResults.Rows.Count == 1);
                     Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
                     break;
                 }
@@ -790,7 +775,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResultsCount == 1);
             Assert.IsTrue(result.SelectResults.Columns.Count == 1);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 1);
             Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
@@ -811,7 +795,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResultsCount == 0);
             Assert.IsTrue(result.SelectResults.Columns.Count == 1);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
 
         [TestMethod]
@@ -849,7 +832,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResults.Columns.Count == 2);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?C"));
             Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 1);
             Assert.IsTrue(result.SelectResults.Rows[0]["?C"].Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
             Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
@@ -871,7 +853,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResultsCount == 0);
             Assert.IsTrue(result.SelectResults.Columns.Count == 1);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
 
         [TestMethod]
@@ -908,7 +889,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResultsCount == 1);
             Assert.IsTrue(result.SelectResults.Columns.Count == 1);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 1);
             Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
@@ -930,7 +910,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResultsCount == 0);
             Assert.IsTrue(result.SelectResults.Columns.Count == 1);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
 
         [TestMethod]
@@ -989,7 +968,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResultsCount == 1);
             Assert.IsTrue(result.SelectResults.Columns.Count == 1);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 1);
             Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
@@ -1027,7 +1005,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResultsCount == 0);
             Assert.IsTrue(result.SelectResults.Columns.Count == 1);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
 
         [TestMethod]
@@ -1070,7 +1047,6 @@ namespace RDFSharp.Test.Query
                     Assert.IsTrue(result.SelectResultsCount == 1);
                     Assert.IsTrue(result.SelectResults.Columns.Count == 1);
                     Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-                    Assert.IsTrue(result.SelectResults.Rows.Count == 1);
                     Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
                     break;
                 }
@@ -1092,7 +1068,6 @@ namespace RDFSharp.Test.Query
                     Assert.IsTrue(result.SelectResults.Columns.Count == 2);
                     Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?C"));
                     Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?S"));
-                    Assert.IsTrue(result.SelectResults.Rows.Count == 1);
                     Assert.IsTrue(result.SelectResults.Rows[0]["?C"].Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
                     Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
                     break;
@@ -1114,7 +1089,6 @@ namespace RDFSharp.Test.Query
                     Assert.IsTrue(result.SelectResultsCount == 1);
                     Assert.IsTrue(result.SelectResults.Columns.Count == 1);
                     Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-                    Assert.IsTrue(result.SelectResults.Rows.Count == 1);
                     Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
                     break;
                 }
@@ -1157,7 +1131,6 @@ namespace RDFSharp.Test.Query
                     Assert.IsTrue(result.SelectResultsCount == 1);
                     Assert.IsTrue(result.SelectResults.Columns.Count == 1);
                     Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-                    Assert.IsTrue(result.SelectResults.Rows.Count == 1);
                     Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
                     break;
                 }

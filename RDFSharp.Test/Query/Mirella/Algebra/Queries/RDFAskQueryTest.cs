@@ -318,7 +318,7 @@ namespace RDFSharp.Test.Query
     <boolean>false</boolean>
 </sparql>", encoding: Encoding.UTF8)
                             .WithStatusCode(HttpStatusCode.OK)
-                            .WithDelay(1000));
+                            .WithDelay(750));
 
             RDFAskQuery query = new RDFAskQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -347,7 +347,7 @@ namespace RDFSharp.Test.Query
     <boolean>false</boolean>
 </sparql>", encoding: Encoding.UTF8)
                             .WithStatusCode(HttpStatusCode.OK)
-                            .WithDelay(1000));
+                            .WithDelay(750));
 
             RDFAskQuery query = new RDFAskQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -382,7 +382,7 @@ namespace RDFSharp.Test.Query
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldThrowExceptionWhenApplyingAskQueryToSPARQLEndpointAccordingToBehavior/sparql"));
 
-            Assert.ThrowsException<RDFQueryException>(() => query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(1000, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)));
+            Assert.ThrowsException<RDFQueryException>(() => query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(750, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)));
         }
 
         [TestMethod]
