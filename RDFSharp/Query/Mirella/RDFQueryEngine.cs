@@ -605,7 +605,7 @@ namespace RDFSharp.Query
             IEnumerable<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers();
             if (!evaluableQueryMembers.Any())
             {
-                //Iterate the describe terms of the query which are resources (variables are omitted, since useless)
+                //Iterate the describe terms of the query which are resources
                 foreach (RDFResource describeResource in describeQuery.DescribeTerms.OfType<RDFResource>())
                 {
                     //Search on GRAPH
