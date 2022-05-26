@@ -106,9 +106,7 @@ namespace RDFSharp.Query
                     }
                 }
                 else
-                {
                     resultTable = DescribeTerms(describeQuery, datasource, qResultTable);
-                }
 
                 return resultTable;
             }
