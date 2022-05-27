@@ -1111,6 +1111,513 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.DescribeResultsCount == 0);
             Assert.IsTrue(result.DescribeResults.Columns.Count == 0);
         }
+
+        [TestMethod]
+        public void ShouldApplyDescribeQueryToSPARQLEndpointAndHaveResults()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFDescribeQueryTest/ShouldApplyDescribeQueryToSPARQLEndpointAndHaveResults/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.@base <{RDFNamespaceRegister.DefaultNamespace}>.<ex:flower> a <ex:plant>.", encoding: Encoding.UTF8)
+                            .WithHeader("Content-Type", "application/turtle")
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldApplyDescribeQueryToSPARQLEndpointAndHaveResults/sparql"));
+            RDFDescribeQueryResult result = query.ApplyToSPARQLEndpoint(endpoint);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 1);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 3);
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals("ex:plant"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyDescribeQueryToSPARQLEndpointAndNotHaveResults()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFDescribeQueryTest/ShouldApplyDescribeQueryToSPARQLEndpointAndNotHaveResults/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody("", encoding: Encoding.UTF8)
+                            .WithHeader("Content-Type", "application/turtle")
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldApplyDescribeQueryToSPARQLEndpointAndNotHaveResults/sparql"));
+            RDFDescribeQueryResult result = query.ApplyToSPARQLEndpoint(endpoint);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 0);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 3);
+        }
+
+        [TestMethod]
+        public void ShouldApplyDescribeQueryToNullSPARQLEndpointAndNotHaveResults()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFDescribeQueryResult result = query.ApplyToSPARQLEndpoint(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 0);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionWhenApplyingDescribeQueryToSPARQLEndpointAccordingToTimingAndBehavior()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFDescribeQueryTest/ShouldThrowExceptionWhenApplyingDescribeQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.@base <{RDFNamespaceRegister.DefaultNamespace}>.<ex:flower> a <ex:plant>.", encoding: Encoding.UTF8)
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(750));
+
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldThrowExceptionWhenApplyingDescribeQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql"));
+
+            Assert.ThrowsException<RDFQueryException>(() => query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(250, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)));
+        }
+
+        [TestMethod]
+        public void ShouldGiveEmptyResultWhenApplyingDescribeQueryToSPARQLEndpointAccordingToTimingAndBehavior()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFDescribeQueryTest/ShouldGiveEmptyResultWhenApplyingDescribeQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody("", encoding: Encoding.UTF8)
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(750));
+
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldGiveEmptyResultWhenApplyingDescribeQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql"));
+            RDFDescribeQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(250, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult));
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 0);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionWhenApplyingDescribeQueryToSPARQLEndpointAccordingToBehavior()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFDescribeQueryTest/ShouldThrowExceptionWhenApplyingDescribeQueryToSPARQLEndpointAccordingToBehavior/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody("Internal Server Error")
+                            .WithStatusCode(HttpStatusCode.InternalServerError)
+                            .WithFault(FaultType.NONE));
+
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldThrowExceptionWhenApplyingDescribeQueryToSPARQLEndpointAccordingToBehavior/sparql"));
+
+            Assert.ThrowsException<RDFQueryException>(() => query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(750, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)));
+        }
+
+        [TestMethod]
+        public void ShouldGiveEmptyResultWhenApplyingDescribeQueryToSPARQLEndpointAccordingToBehavior()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFDescribeQueryTest/ShouldGiveEmptyResultWhenApplyingDescribeQueryToSPARQLEndpointAccordingToBehavior/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody("Internal Server Error")
+                            .WithStatusCode(HttpStatusCode.InternalServerError)
+                            .WithFault(FaultType.NONE));
+
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldGiveEmptyResultWhenApplyingDescribeQueryToSPARQLEndpointAccordingToBehavior/sparql"));
+            RDFDescribeQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(750, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult));
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 0);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 0);
+        }
+
+        //ASYNC
+
+        [TestMethod]
+        public async Task ShouldApplyDescribeQueryToGraphAsyncAndHaveResults()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddModifier(new RDFDistinctModifier());
+            RDFDescribeQueryResult result = await query.ApplyToGraphAsync(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 3);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 3);
+            Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?PREDICATE"].Equals($"ex:color"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?OBJECT"].Equals($"white@EN"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?SUBJECT"].Equals("ex:tree"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyDescribeQueryToGraphAsyncAndNotHaveResults()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddDescribeTerm(new RDFVariable("?P"))
+                .AddDescribeTerm(new RDFVariable("?Q")) //This variable will not be evaluated, since it is not part of results table
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFDescribeQueryResult result = await query.ApplyToGraphAsync(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 0);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 3);
+            Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyDescribeQueryToNullGraphAsyncAndNotHaveResults()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddModifier(new RDFDistinctModifier());
+            RDFDescribeQueryResult result = await query.ApplyToGraphAsync(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 0);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyDescribeQueryToStoreAsyncAndHaveResults()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddModifier(new RDFDistinctModifier());
+            RDFDescribeQueryResult result = await query.ApplyToStoreAsync(store);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 3);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 4);
+            Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
+            Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?CONTEXT"].Equals("ex:ctx"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?PREDICATE"].Equals($"ex:color"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?OBJECT"].Equals($"white@EN"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?CONTEXT"].Equals("ex:ctx"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?SUBJECT"].Equals("ex:tree"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyDescribeQueryToStoreAsyncAndNotHaveResults()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddDescribeTerm(new RDFVariable("?P"))
+                .AddDescribeTerm(new RDFVariable("?Q")) //This variable will not be evaluated, since it is not part of results table
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFDescribeQueryResult result = await query.ApplyToStoreAsync(store);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 0);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 4);
+            Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
+            Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyDescribeQueryToNullStoreAsyncAndNotHaveResults()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddModifier(new RDFDistinctModifier());
+            RDFDescribeQueryResult result = await query.ApplyToStoreAsync(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 0);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyDescribeQueryToFederationAsyncAndHaveResults()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:grass"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFFederation federation = new RDFFederation();
+            federation.AddStore(store);
+            federation.AddGraph(graph);
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddModifier(new RDFDistinctModifier());
+            RDFDescribeQueryResult result = await query.ApplyToFederationAsync(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 4);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 4);
+            Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
+            Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?CONTEXT"].Equals("ex:ctx"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?PREDICATE"].Equals($"ex:color"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?OBJECT"].Equals($"white@EN"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?CONTEXT"].Equals("ex:ctx"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?SUBJECT"].Equals("ex:tree"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
+            Assert.IsTrue(result.DescribeResults.Rows[3]["?CONTEXT"].Equals(DBNull.Value));
+            Assert.IsTrue(result.DescribeResults.Rows[3]["?SUBJECT"].Equals("ex:grass"));
+            Assert.IsTrue(result.DescribeResults.Rows[3]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.DescribeResults.Rows[3]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyDescribeQueryToFederationAsyncAndNotHaveResults()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
+            RDFFederation federation = new RDFFederation();
+            federation.AddStore(store);
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddDescribeTerm(new RDFVariable("?P"))
+                .AddDescribeTerm(new RDFVariable("?Q")) //This variable will not be evaluated, since it is not part of results table
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFDescribeQueryResult result = await query.ApplyToFederationAsync(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 0);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 4);
+            Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
+            Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyDescribeQueryToNullFederationAsyncAndNotHaveResults()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddModifier(new RDFDistinctModifier());
+            RDFDescribeQueryResult result = await query.ApplyToFederationAsync(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 0);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyDescribeQueryToSPARQLEndpointAsyncAndHaveResults()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFDescribeQueryTest/ShouldApplyDescribeQueryToSPARQLEndpointAsyncAndHaveResults/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.@base <{RDFNamespaceRegister.DefaultNamespace}>.<ex:flower> a <ex:plant>.", encoding: Encoding.UTF8)
+                            .WithHeader("Content-Type", "application/turtle")
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldApplyDescribeQueryToSPARQLEndpointAsyncAndHaveResults/sparql"));
+            RDFDescribeQueryResult result = await query.ApplyToSPARQLEndpointAsync(endpoint);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 1);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 3);
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals("ex:plant"));
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyDescribeQueryToSPARQLEndpointAsyncAndNotHaveResults()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFDescribeQueryTest/ShouldApplyDescribeQueryToSPARQLEndpointAsyncAndNotHaveResults/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody("", encoding: Encoding.UTF8)
+                            .WithHeader("Content-Type", "application/turtle")
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldApplyDescribeQueryToSPARQLEndpointAsyncAndNotHaveResults/sparql"));
+            RDFDescribeQueryResult result = await query.ApplyToSPARQLEndpointAsync(endpoint);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 0);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 3);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyDescribeQueryToNullSPARQLEndpointAsyncAndNotHaveResults()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFDescribeQueryResult result = await query.ApplyToSPARQLEndpointAsync(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 0);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 0);
+        }
         #endregion
     }
 }
