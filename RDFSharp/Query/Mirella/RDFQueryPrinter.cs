@@ -40,9 +40,12 @@ namespace RDFSharp.Query
                 return sb.ToString();
 
             #region INDENT
-            int subqueryHeaderSpacesFunc(double indLevel) => subqueryBodySpacesFunc(indentLevel) - 2 < 0 ? 0 : subqueryBodySpacesFunc(indentLevel) - 2;
-            int subqueryBodySpacesFunc(double indLevel) => Convert.ToInt32(4.0d * indentLevel);
-            int subqueryUnionSpacesFunc(bool union) => union ? 2 : 0;
+            int subqueryHeaderSpacesFunc(double indLevel)
+                => subqueryBodySpacesFunc(indentLevel) - 2 < 0 ? 0 : subqueryBodySpacesFunc(indentLevel) - 2;
+            int subqueryBodySpacesFunc(double indLevel)
+                => Convert.ToInt32(4.0d * indentLevel);
+            int subqueryUnionSpacesFunc(bool union)
+                => union ? 2 : 0;
 
             string subquerySpaces = new string(' ', subqueryHeaderSpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
             string subqueryBodySpaces = new string(' ', subqueryBodySpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
@@ -73,7 +76,7 @@ namespace RDFSharp.Query
 
             #region DISTINCT
             selectQuery.GetModifiers()
-                       .Where(mod => mod is RDFDistinctModifier)
+                       .OfType<RDFDistinctModifier>()
                        .ToList()
                        .ForEach(dm => sb.Append(string.Concat(" ", dm)));
             #endregion
@@ -83,25 +86,23 @@ namespace RDFSharp.Query
             //Query has groupby modifier
             if (modifiers.Any(m => m is RDFGroupByModifier))
             {
-                modifiers.Where(mod => mod is RDFGroupByModifier)
+                modifiers.OfType<RDFGroupByModifier>()
                          .ToList()
                          .ForEach(gm =>
                          {
                              sb.Append(" ");
-                             sb.Append(string.Join(" ", ((RDFGroupByModifier)gm).PartitionVariables));
+                             sb.Append(string.Join(" ", gm.PartitionVariables));
                              sb.Append(" ");
-                             sb.Append(string.Join(" ", ((RDFGroupByModifier)gm).Aggregators.Where(ag => !(ag is RDFPartitionAggregator))));
+                             sb.Append(string.Join(" ", gm.Aggregators.Where(ag => !(ag is RDFPartitionAggregator))));
                          });
             }
             //Query hasn't groupby modifier
             else
             {
                 if (selectQuery.ProjectionVars.Any())
-                {
                     selectQuery.ProjectionVars.OrderBy(x => x.Value)
                                               .ToList()
                                               .ForEach(v => sb.Append(string.Concat(" ", v.Key)));
-                }
                 else
                     sb.Append(" *");
             }
@@ -180,7 +181,7 @@ namespace RDFSharp.Query
                     {
                         //Current subquery IS NOT the last of the query
                         //(so UNION keyword must be appended at last)
-                        if (!queryMember.Equals(lastQueryMbr))
+                        if (!sqQueryMember.Equals(lastQueryMbr))
                         {
                             //Begin a new Union block
                             if (!printingUnion)
@@ -223,7 +224,6 @@ namespace RDFSharp.Query
                     }
                 }
                 #endregion
-
             }
             
             sb.Append(string.Concat(subqueryBodySpaces, "}"));
@@ -300,10 +300,7 @@ namespace RDFSharp.Query
             #region DESCRIBE
             sb.Append("DESCRIBE");
             if (describeQuery.DescribeTerms.Any())
-            {
-                describeQuery.DescribeTerms.ForEach(dt =>
-                    sb.Append(string.Concat(" ", PrintPatternMember(dt, describeQuery.Prefixes))));
-            }
+                describeQuery.DescribeTerms.ForEach(dt => sb.Append(string.Concat(" ", PrintPatternMember(dt, describeQuery.Prefixes))));
             else
                 sb.Append(" *");
             sb.AppendLine();
@@ -325,7 +322,7 @@ namespace RDFSharp.Query
                     {
                         //Current pattern group IS NOT the last of the query
                         //(so UNION keyword must be appended at last)
-                        if (!queryMember.Equals(lastQueryMbr))
+                        if (!pgQueryMember.Equals(lastQueryMbr))
                         {
                             //Begin a new Union block
                             if (!printingUnion)
@@ -366,7 +363,6 @@ namespace RDFSharp.Query
                         else
                             sb.Append(PrintPatternGroup(pgQueryMember, 0, false, prefixes));
                     }
-
                 }
                 #endregion
 
@@ -382,7 +378,7 @@ namespace RDFSharp.Query
                     {
                         //Current subquery IS NOT the last of the query
                         //(so UNION keyword must be appended at last)
-                        if (!queryMember.Equals(lastQueryMbr))
+                        if (!sqQueryMember.Equals(lastQueryMbr))
                         {
                             //Begin a new Union block
                             if (!printingUnion)
@@ -493,7 +489,7 @@ namespace RDFSharp.Query
             RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
             foreach (RDFQueryMember queryMember in evaluableQueryMembers)
             {
-                #region PATTERNGROUPS
+                #region PATTERNGROUP
                 if (queryMember is RDFPatternGroup pgQueryMember)
                 {
                     //Current pattern group is set as UNION with the next one
@@ -501,7 +497,7 @@ namespace RDFSharp.Query
                     {
                         //Current pattern group IS NOT the last of the query
                         //(so UNION keyword must be appended at last)
-                        if (!queryMember.Equals(lastQueryMbr))
+                        if (!pgQueryMember.Equals(lastQueryMbr))
                         {
                             //Begin a new Union block
                             if (!printingUnion)
@@ -542,7 +538,6 @@ namespace RDFSharp.Query
                         else
                             sb.Append(PrintPatternGroup(pgQueryMember, 0, false, prefixes));
                     }
-
                 }
                 #endregion
 
@@ -558,7 +553,7 @@ namespace RDFSharp.Query
                     {
                         //Current subquery IS NOT the last of the query
                         //(so UNION keyword must be appended at last)
-                        if (!queryMember.Equals(lastQueryMbr))
+                        if (!sqQueryMember.Equals(lastQueryMbr))
                         {
                             //Begin a new Union block
                             if (!printingUnion)
@@ -658,7 +653,7 @@ namespace RDFSharp.Query
                     {
                         //Current pattern group IS NOT the last of the query
                         //(so UNION keyword must be appended at last)
-                        if (!queryMember.Equals(lastQueryMbr))
+                        if (!pgQueryMember.Equals(lastQueryMbr))
                         {
                             //Begin a new Union block
                             if (!printingUnion)
@@ -713,7 +708,7 @@ namespace RDFSharp.Query
                     {
                         //Current subquery IS NOT the last of the query
                         //(so UNION keyword must be appended at last)
-                        if (!queryMember.Equals(lastQueryMbr))
+                        if (!sqQueryMember.Equals(lastQueryMbr))
                         {
                             //Begin a new Union block
                             if (!printingUnion)
