@@ -23,13 +23,11 @@ using System.Threading.Tasks;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFDescribeQueryResult is a container for SPARQL "DESCRIBE" query results.
     /// </summary>
     public class RDFDescribeQueryResult
     {
-
         #region Properties
         /// <summary>
         /// Tabular response of the query
@@ -95,13 +93,19 @@ namespace RDFSharp.Query
             RDFPatternMember pred = null;
             RDFPatternMember obj = null;
 
+            //Prepare context data
+            bool hasCtx = this.DescribeResults.Columns.Contains("?CONTEXT");
+            RDFContext defCtx = new RDFContext();
+
             //Iterate the datatable rows and generate the corresponding triples to be added to the result memory store
             IEnumerator resultRows = this.DescribeResults.Rows.GetEnumerator();
             while (resultRows.MoveNext())
             {
-                ctx = this.DescribeResults.Columns.Contains("?CONTEXT")
-                        ? new RDFContext(RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?CONTEXT"].ToString()).ToString())
-                        : new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri);
+                //In case the context column is unbound, we can safely apply default context
+                if (!hasCtx || string.IsNullOrEmpty(((DataRow)resultRows.Current)["?CONTEXT"].ToString()))
+                    ctx = defCtx;
+                else
+                    ctx = new RDFContext(RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?CONTEXT"].ToString()).ToString());
                 subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?SUBJECT"].ToString());
                 pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?PREDICATE"].ToString());
                 obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?OBJECT"].ToString());
@@ -128,10 +132,8 @@ namespace RDFSharp.Query
             RDFDescribeQueryResult result = new RDFDescribeQueryResult();
             if (graph != null)
             {
-
                 //Transform the graph into a datatable and assign it to the query result
                 result.DescribeResults = graph.ToDataTable();
-
             }
             return result;
         }
@@ -150,10 +152,8 @@ namespace RDFSharp.Query
             RDFDescribeQueryResult result = new RDFDescribeQueryResult();
             if (store != null)
             {
-
                 //Transform the memory store into a datatable and assign it to the query result
                 result.DescribeResults = store.ToDataTable();
-
             }
             return result;
         }
@@ -164,7 +164,5 @@ namespace RDFSharp.Query
         public static Task<RDFDescribeQueryResult> FromRDFMemoryStoreAsync(RDFMemoryStore store)
             => Task.Run(() => FromRDFMemoryStore(store));
         #endregion
-
     }
-
 }
