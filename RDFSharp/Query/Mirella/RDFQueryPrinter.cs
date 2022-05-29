@@ -52,15 +52,7 @@ namespace RDFSharp.Query
             #endregion
 
             #region PREFIX
-            List<RDFNamespace> prefixes = selectQuery.GetPrefixes();
-            if (!selectQuery.IsSubQuery)
-            {
-                if (prefixes.Any())
-                {
-                    prefixes.ForEach(pf => sb.AppendLine(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">")));
-                    sb.AppendLine();
-                }
-            }
+            List<RDFNamespace> prefixes = PrintPrefixes(selectQuery, sb, !selectQuery.IsSubQuery);
             #endregion
 
             #region SELECT
@@ -173,12 +165,7 @@ namespace RDFSharp.Query
                 return sb.ToString();
 
             #region PREFIXES
-            List<RDFNamespace> prefixes = describeQuery.GetPrefixes();
-            if (prefixes.Any())
-            {
-                prefixes.ForEach(pf => sb.AppendLine(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">")));
-                sb.AppendLine();
-            }
+            List<RDFNamespace> prefixes = PrintPrefixes(describeQuery, sb, true);
             #endregion
 
             #region DESCRIBE
@@ -196,7 +183,6 @@ namespace RDFSharp.Query
 
             #region MODIFIERS
             List<RDFModifier> modifiers = describeQuery.GetModifiers().ToList();
-
             // LIMIT/OFFSET
             if (modifiers.Any(mod => mod is RDFLimitModifier || mod is RDFOffsetModifier))
             {
@@ -222,12 +208,7 @@ namespace RDFSharp.Query
                 return sb.ToString();
 
             #region PREFIXES
-            List<RDFNamespace> prefixes = constructQuery.GetPrefixes();
-            if (prefixes.Any())
-            {
-                prefixes.ForEach(pf => sb.AppendLine(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">")));
-                sb.AppendLine();
-            }
+            List<RDFNamespace> prefixes = PrintPrefixes(constructQuery, sb, true);
             #endregion
 
             #region CONSTRUCT
@@ -256,7 +237,6 @@ namespace RDFSharp.Query
 
             #region MODIFIERS
             List<RDFModifier> modifiers = constructQuery.GetModifiers().ToList();
-
             // LIMIT/OFFSET
             if (modifiers.Any(mod => mod is RDFLimitModifier || mod is RDFOffsetModifier))
             {
@@ -282,12 +262,7 @@ namespace RDFSharp.Query
                 return sb.ToString();
 
             #region PREFIXES
-            List<RDFNamespace> prefixes = askQuery.GetPrefixes();
-            if (prefixes.Any())
-            {
-                prefixes.ForEach(pf => sb.AppendLine(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">")));
-                sb.AppendLine();
-            }
+            List<RDFNamespace> prefixes = PrintPrefixes(askQuery, sb, true);
             #endregion
 
             #region ASK
@@ -299,6 +274,20 @@ namespace RDFSharp.Query
             #endregion
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Prints the string representation of a SPARQL query's WHERE clause
+        /// </summary>
+        internal static List<RDFNamespace> PrintPrefixes(RDFQuery query, StringBuilder sb, bool enablePrinting)
+        {
+            List<RDFNamespace> prefixes = query.GetPrefixes();
+            if (enablePrinting && prefixes.Any())
+            {
+                prefixes.ForEach(pf => sb.AppendLine(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">")));
+                sb.AppendLine();
+            }
+            return prefixes;
         }
 
         /// <summary>
