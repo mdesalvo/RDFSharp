@@ -110,123 +110,7 @@ namespace RDFSharp.Query
             #endregion
 
             #region WHERE
-            sb.AppendLine(string.Concat(subqueryBodySpaces, "WHERE {"));
-
-            bool printingUnion = false;
-            List<RDFQueryMember> evaluableQueryMembers = selectQuery.GetEvaluableQueryMembers().ToList();
-            RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
-            foreach (RDFQueryMember queryMember in evaluableQueryMembers)
-            {
-                #region PATTERNGROUP
-                if (queryMember is RDFPatternGroup pgQueryMember)
-                {
-                    //Current pattern group is set as UNION with the next one
-                    if (pgQueryMember.JoinAsUnion)
-                    {
-                        //Current pattern group IS NOT the last of the query
-                        //(so UNION keyword must be appended at last)
-                        if (!pgQueryMember.Equals(lastQueryMbr))
-                        {
-                            //Begin a new Union block
-                            if (!printingUnion)
-                            {
-                                printingUnion = true;
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
-                            }
-                            sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
-                            sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
-                        }
-
-                        //Current pattern group IS the last of the query
-                        //(so UNION keyword must not be appended at last)
-                        else
-                        {
-                            //End the Union block
-                            if (printingUnion)
-                            {
-                                printingUnion = false;
-                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
-                            }
-                            else
-                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length, false, prefixes));
-                        }
-                    }
-
-                    //Current pattern group is set as INTERSECT with the next one
-                    else
-                    {
-                        //End the Union block
-                        if (printingUnion)
-                        {
-                            printingUnion = false;
-                            sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
-                            sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
-                        }
-                        else
-                            sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length, false, prefixes));
-                    }
-                }
-                #endregion
-
-                #region SUBQUERY
-                else if (queryMember is RDFSelectQuery sqQueryMember)
-                {
-                    //Merge main query prefixes
-                    selectQuery.GetPrefixes()
-                               .ForEach(pf1 => sqQueryMember.AddPrefix(pf1));
-
-                    //Current subquery is set as UNION with the next one
-                    if (sqQueryMember.JoinAsUnion)
-                    {
-                        //Current subquery IS NOT the last of the query
-                        //(so UNION keyword must be appended at last)
-                        if (!sqQueryMember.Equals(lastQueryMbr))
-                        {
-                            //Begin a new Union block
-                            if (!printingUnion)
-                            {
-                                printingUnion = true;
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
-                            }
-                            sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
-                            sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
-                        }
-
-                        //Current query IS the last of the query
-                        //(so UNION keyword must not be appended at last)
-                        else
-                        {
-                            //End the Union block
-                            if (printingUnion)
-                            {
-                                printingUnion = false;
-                                sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
-                            }
-                            else
-                                sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), false));
-                        }
-                    }
-
-                    //Current query is set as INTERSECT with the next one
-                    else
-                    {
-                        //End the Union block
-                        if (printingUnion)
-                        {
-                            printingUnion = false;
-                            sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
-                            sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
-                        }
-                        else
-                            sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), false));
-                    }
-                }
-                #endregion
-            }
-            
-            sb.Append(string.Concat(subqueryBodySpaces, "}"));
+            PrintWhereClause(selectQuery, sb, prefixes, subqueryBodySpaces, indentLevel, fromUnion);
             #endregion
 
             #region MODIFIERS
@@ -307,122 +191,7 @@ namespace RDFSharp.Query
             #endregion
 
             #region WHERE
-            sb.AppendLine("WHERE {");
-
-            bool printingUnion = false;
-            List<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers().ToList();
-            RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
-            foreach (RDFQueryMember queryMember in evaluableQueryMembers)
-            {
-                #region PATTERNGROUP
-                if (queryMember is RDFPatternGroup pgQueryMember)
-                {
-                    //Current pattern group is set as UNION with the next one
-                    if (pgQueryMember.JoinAsUnion)
-                    {
-                        //Current pattern group IS NOT the last of the query
-                        //(so UNION keyword must be appended at last)
-                        if (!pgQueryMember.Equals(lastQueryMbr))
-                        {
-                            //Begin a new Union block
-                            if (!printingUnion)
-                            {
-                                printingUnion = true;
-                                sb.AppendLine("  {");
-                            }
-                            sb.Append(PrintPatternGroup(pgQueryMember, 2, true, prefixes));
-                            sb.AppendLine("    UNION");
-                        }
-
-                        //Current pattern group IS the last of the query
-                        //(so UNION keyword must not be appended at last)
-                        else
-                        {
-                            //End the Union block
-                            if (printingUnion)
-                            {
-                                printingUnion = false;
-                                sb.Append(PrintPatternGroup(pgQueryMember, 2, true, prefixes));
-                                sb.AppendLine("  }");
-                            }
-                            else
-                                sb.Append(PrintPatternGroup(pgQueryMember, 0, false, prefixes));
-                        }
-                    }
-
-                    //Current pattern group is set as INTERSECT with the next one
-                    else
-                    {
-                        //End the Union block
-                        if (printingUnion)
-                        {
-                            printingUnion = false;
-                            sb.Append(PrintPatternGroup(pgQueryMember, 2, true, prefixes));
-                            sb.AppendLine("  }");
-                        }
-                        else
-                            sb.Append(PrintPatternGroup(pgQueryMember, 0, false, prefixes));
-                    }
-                }
-                #endregion
-
-                #region SUBQUERY
-                else if (queryMember is RDFSelectQuery sqQueryMember)
-                {
-                    //Merge main query prefixes
-                    describeQuery.GetPrefixes()
-                                 .ForEach(pf1 => sqQueryMember.AddPrefix(pf1));
-
-                    //Current subquery is set as UNION with the next one
-                    if (sqQueryMember.JoinAsUnion)
-                    {
-                        //Current subquery IS NOT the last of the query
-                        //(so UNION keyword must be appended at last)
-                        if (!sqQueryMember.Equals(lastQueryMbr))
-                        {
-                            //Begin a new Union block
-                            if (!printingUnion)
-                            {
-                                printingUnion = true;
-                                sb.AppendLine("  {");
-                            }
-                            sb.Append(PrintSelectQuery(sqQueryMember, 1, true));
-                            sb.AppendLine("    UNION");
-                        }
-
-                        //Current query IS the last of the query
-                        //(so UNION keyword must not be appended at last)
-                        else
-                        {
-                            //End the Union block
-                            if (printingUnion)
-                            {
-                                printingUnion = false;
-                                sb.Append(PrintSelectQuery(sqQueryMember, 1, true));
-                                sb.AppendLine("  }");
-                            }
-                            else
-                                sb.Append(PrintSelectQuery(sqQueryMember, 1, false));
-                        }
-                    }
-
-                    //Current query is set as INTERSECT with the next one
-                    else
-                    {
-                        //End the Union block
-                        if (printingUnion)
-                        {
-                            printingUnion = false;
-                            sb.Append(PrintSelectQuery(sqQueryMember, 1, true));
-                            sb.AppendLine("  }");
-                        }
-                        else
-                            sb.Append(PrintSelectQuery(sqQueryMember, 1, false));
-                    }
-                }
-                #endregion
-            }
-            sb.Append("}");
+            PrintWhereClause(describeQuery, sb, prefixes, string.Empty, 0, false);
             #endregion
 
             #region MODIFIERS
@@ -482,122 +251,7 @@ namespace RDFSharp.Query
             #endregion
 
             #region WHERE
-            sb.AppendLine("WHERE {");
-
-            bool printingUnion = false;
-            List<RDFQueryMember> evaluableQueryMembers = constructQuery.GetEvaluableQueryMembers().ToList();
-            RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
-            foreach (RDFQueryMember queryMember in evaluableQueryMembers)
-            {
-                #region PATTERNGROUP
-                if (queryMember is RDFPatternGroup pgQueryMember)
-                {
-                    //Current pattern group is set as UNION with the next one
-                    if (pgQueryMember.JoinAsUnion)
-                    {
-                        //Current pattern group IS NOT the last of the query
-                        //(so UNION keyword must be appended at last)
-                        if (!pgQueryMember.Equals(lastQueryMbr))
-                        {
-                            //Begin a new Union block
-                            if (!printingUnion)
-                            {
-                                printingUnion = true;
-                                sb.AppendLine("  {");
-                            }
-                            sb.Append(PrintPatternGroup(pgQueryMember, 2, true, prefixes));
-                            sb.AppendLine("    UNION");
-                        }
-
-                        //Current pattern group IS the last of the query
-                        //(so UNION keyword must not be appended at last)
-                        else
-                        {
-                            //End the Union block
-                            if (printingUnion)
-                            {
-                                printingUnion = false;
-                                sb.Append(PrintPatternGroup(pgQueryMember, 2, true, prefixes));
-                                sb.AppendLine("  }");
-                            }
-                            else
-                                sb.Append(PrintPatternGroup(pgQueryMember, 0, false, prefixes));
-                        }
-                    }
-
-                    //Current pattern group is set as INTERSECT with the next one
-                    else
-                    {
-                        //End the Union block
-                        if (printingUnion)
-                        {
-                            printingUnion = false;
-                            sb.Append(PrintPatternGroup(pgQueryMember, 2, true, prefixes));
-                            sb.AppendLine("  }");
-                        }
-                        else
-                            sb.Append(PrintPatternGroup(pgQueryMember, 0, false, prefixes));
-                    }
-                }
-                #endregion
-
-                #region SUBQUERY
-                else if (queryMember is RDFSelectQuery sqQueryMember)
-                {
-                    //Merge main query prefixes
-                    constructQuery.GetPrefixes()
-                                  .ForEach(pf1 => sqQueryMember.AddPrefix(pf1));
-
-                    //Current subquery is set as UNION with the next one
-                    if (sqQueryMember.JoinAsUnion)
-                    {
-                        //Current subquery IS NOT the last of the query
-                        //(so UNION keyword must be appended at last)
-                        if (!sqQueryMember.Equals(lastQueryMbr))
-                        {
-                            //Begin a new Union block
-                            if (!printingUnion)
-                            {
-                                printingUnion = true;
-                                sb.AppendLine("  {");
-                            }
-                            sb.Append(PrintSelectQuery(sqQueryMember, 1, true));
-                            sb.AppendLine("    UNION");
-                        }
-
-                        //Current query IS the last of the query
-                        //(so UNION keyword must not be appended at last)
-                        else
-                        {
-                            //End the Union block
-                            if (printingUnion)
-                            {
-                                printingUnion = false;
-                                sb.Append(PrintSelectQuery(sqQueryMember, 1, true));
-                                sb.AppendLine("  }");
-                            }
-                            else
-                                sb.Append(PrintSelectQuery(sqQueryMember, 1, false));
-                        }
-                    }
-
-                    //Current query is set as INTERSECT with the next one
-                    else
-                    {
-                        //End the Union block
-                        if (printingUnion)
-                        {
-                            printingUnion = false;
-                            sb.Append(PrintSelectQuery(sqQueryMember, 1, true));
-                            sb.AppendLine("  }");
-                        }
-                        else
-                            sb.Append(PrintSelectQuery(sqQueryMember, 1, false));
-                    }
-                }
-                #endregion
-            }
-            sb.Append("}");
+            PrintWhereClause(constructQuery, sb, prefixes, string.Empty, 0, false);
             #endregion
 
             #region MODIFIERS
@@ -638,14 +292,29 @@ namespace RDFSharp.Query
 
             #region ASK
             sb.AppendLine("ASK");
-            sb.AppendLine("WHERE {");
+            #endregion
+
+            #region WHERE
+            PrintWhereClause(askQuery, sb, prefixes, string.Empty, 0, false);
+            #endregion
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Prints the string representation of a SPARQL query's WHERE clause
+        /// </summary>
+        internal static void PrintWhereClause(RDFQuery query, StringBuilder sb, List<RDFNamespace> prefixes, 
+            string subqueryBodySpaces, double indentLevel, bool fromUnion)
+        {
+            sb.AppendLine(string.Concat(subqueryBodySpaces, "WHERE {"));
 
             bool printingUnion = false;
-            List<RDFQueryMember> evaluableQueryMembers = askQuery.GetEvaluableQueryMembers().ToList();
+            List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
             RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
             foreach (RDFQueryMember queryMember in evaluableQueryMembers)
             {
-                #region PATTERNGROUPS
+                #region PATTERNGROUP
                 if (queryMember is RDFPatternGroup pgQueryMember)
                 {
                     //Current pattern group is set as UNION with the next one
@@ -659,10 +328,10 @@ namespace RDFSharp.Query
                             if (!printingUnion)
                             {
                                 printingUnion = true;
-                                sb.AppendLine("  {");
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                             }
-                            sb.Append(PrintPatternGroup(pgQueryMember, 2, true, prefixes));
-                            sb.AppendLine("    UNION");
+                            sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
+                            sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
                         }
 
                         //Current pattern group IS the last of the query
@@ -673,13 +342,14 @@ namespace RDFSharp.Query
                             if (printingUnion)
                             {
                                 printingUnion = false;
-                                sb.Append(PrintPatternGroup(pgQueryMember, 2, true, prefixes));
-                                sb.AppendLine("  }");
+                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                             }
                             else
-                                sb.Append(PrintPatternGroup(pgQueryMember, 0, false, prefixes));
+                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length, false, prefixes));
                         }
                     }
+
                     //Current pattern group is set as INTERSECT with the next one
                     else
                     {
@@ -687,11 +357,11 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
-                            sb.Append(PrintPatternGroup(pgQueryMember, 2, true, prefixes));
-                            sb.AppendLine("  }");
+                            sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
+                            sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                         }
                         else
-                            sb.Append(PrintPatternGroup(pgQueryMember, 0, false, prefixes));
+                            sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length, false, prefixes));
                     }
                 }
                 #endregion
@@ -700,8 +370,8 @@ namespace RDFSharp.Query
                 else if (queryMember is RDFSelectQuery sqQueryMember)
                 {
                     //Merge main query prefixes
-                    askQuery.GetPrefixes()
-                            .ForEach(pf1 => sqQueryMember.AddPrefix(pf1));
+                    query.GetPrefixes()
+                         .ForEach(pf1 => sqQueryMember.AddPrefix(pf1));
 
                     //Current subquery is set as UNION with the next one
                     if (sqQueryMember.JoinAsUnion)
@@ -714,11 +384,12 @@ namespace RDFSharp.Query
                             if (!printingUnion)
                             {
                                 printingUnion = true;
-                                sb.AppendLine("  {");
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                             }
-                            sb.Append(PrintSelectQuery(sqQueryMember, 1, true));
-                            sb.AppendLine("    UNION");
+                            sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
+                            sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
                         }
+
                         //Current query IS the last of the query
                         //(so UNION keyword must not be appended at last)
                         else
@@ -727,11 +398,11 @@ namespace RDFSharp.Query
                             if (printingUnion)
                             {
                                 printingUnion = false;
-                                sb.Append(PrintSelectQuery(sqQueryMember, 1, true));
-                                sb.AppendLine("  }");
+                                sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                             }
                             else
-                                sb.Append(PrintSelectQuery(sqQueryMember, 1, false));
+                                sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), false));
                         }
                     }
 
@@ -742,19 +413,16 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
-                            sb.Append(PrintSelectQuery(sqQueryMember, 1, true));
-                            sb.AppendLine("  }");
+                            sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
+                            sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                         }
                         else
-                            sb.Append(PrintSelectQuery(sqQueryMember, 1, false));
+                            sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), false));
                     }
                 }
                 #endregion
-            }
-            sb.Append("}");
-            #endregion
-
-            return sb.ToString();
+            }            
+            sb.Append(string.Concat(subqueryBodySpaces, "}"));
         }
 
         /// <summary>
@@ -857,7 +525,7 @@ namespace RDFSharp.Query
                                      .ForEach(f => result.AppendLine(string.Concat(spaces, "    ", f.ToString(prefixes), " ")));
             #endregion
 
-            #region PATTERNGROUP CLOSURE
+            #region CLOSURE
             result.AppendLine(string.Concat(spaces, "  }"));
             if (patternGroup.IsOptional && !skipOptional)
                 result.AppendLine(string.Concat(spaces, "}"));
