@@ -376,13 +376,11 @@ namespace RDFSharp.Model
                 RDFGraph result = new RDFGraph().SetContext(graphContext);
                 using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
-                    using (XmlTextReader xmlReader = new XmlTextReader(streamReader))
+                    using (XmlTextReader xmlReader = new XmlTextReader(streamReader) 
+                            { DtdProcessing = DtdProcessing.Parse, XmlResolver = null, Normalization = false })
                     {
-                        xmlReader.DtdProcessing = DtdProcessing.Parse;
-                        xmlReader.Normalization = false;
-
                         #region document
-                        XmlDocument xmlDoc = new XmlDocument();
+                        XmlDocument xmlDoc = new XmlDocument() { XmlResolver = null };
                         xmlDoc.Load(xmlReader);
                         #endregion
 
@@ -639,7 +637,9 @@ namespace RDFSharp.Model
 
                         #region plain literal
                         //Check if predicate has a unique textual child
-                        if (predNode.HasChildNodes && predNode.ChildNodes.Count == 1 && predNode.ChildNodes[0].NodeType == XmlNodeType.Text)
+                        bool hasOneChildNode = predNode.HasChildNodes && predNode.ChildNodes.Count == 1;
+                        if (hasOneChildNode && 
+                                (predNode.ChildNodes[0].NodeType == XmlNodeType.Text || predNode.ChildNodes[0].NodeType == XmlNodeType.EntityReference))
                         {
                             RDFPlainLiteral pLit = new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerText)), xmlLangPred?.Value);
                             result.AddTriple(new RDFTriple(subj, pred, pLit));
@@ -943,7 +943,9 @@ namespace RDFSharp.Model
             }
 
             //Try to resolve SPL triple (SPLL by "xml:lang")
-            if (predNode.HasChildNodes && predNode.ChildNodes.Count == 1 && predNode.ChildNodes[0].NodeType == XmlNodeType.Text)
+            bool hasOneChildNode = predNode.HasChildNodes && predNode.ChildNodes.Count == 1;
+            if (hasOneChildNode && 
+                    (predNode.ChildNodes[0].NodeType == XmlNodeType.Text || predNode.ChildNodes[0].NodeType == XmlNodeType.EntityReference))
             {
                 RDFPlainLiteral pLit = new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerText)), xmlLangPred?.Value);
                 return new RDFTriple(subject, predicate, pLit);

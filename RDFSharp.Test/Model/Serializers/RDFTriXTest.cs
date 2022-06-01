@@ -366,6 +366,20 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeNamedGraphWithSPOTripleHavingDTDEntityAsObject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><!DOCTYPE foo [ <!ENTITY ent \"http://obj/\"> ]><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>https://example.org/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><uri>&ent;</uri></triple></graph></TriX>");
+            RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeGraphWithSPOTripleEvenOnMissingXmlDeclaration()
         {
             MemoryStream stream = new MemoryStream();
