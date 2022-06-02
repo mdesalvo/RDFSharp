@@ -1,4 +1,4 @@
-name: "code-quality"
+name: "codeql"
 
 on:
   push:
