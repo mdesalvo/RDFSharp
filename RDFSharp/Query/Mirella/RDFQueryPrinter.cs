@@ -212,15 +212,17 @@ namespace RDFSharp.Query
             #endregion
 
             #region CONSTRUCT
-            sb.AppendLine("CONSTRUCT");
-            sb.AppendLine("{");
+            sb.AppendLine("CONSTRUCT {");
             constructQuery.Templates.ForEach(tp =>
             {
                 string tpString = PrintPattern(tp, constructQuery.Prefixes);
 
                 //Remove Context from the template print (since it is not supported by CONSTRUCT query)
                 if (tp.Context != null)
-                    tpString = tpString.Replace(string.Concat("GRAPH ", tp.Context, " { "), string.Empty).TrimEnd(new char[] { ' ', '}' });
+                {
+                    string tpContext = PrintPatternMember(tp.Context, constructQuery.Prefixes);
+                    tpString = tpString.Replace(string.Concat("GRAPH ", tpContext, " { "), string.Empty).TrimEnd(new char[] { ' ', '}' });
+                }
 
                 //Remove Optional indicator from the template print (since it is not supported by CONSTRUCT query)
                 if (tp.IsOptional)
