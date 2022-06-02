@@ -188,6 +188,58 @@ WHERE {
         }
 
         [TestMethod]
+        public void ShouldPrintSelectQueryStarWithSingleUnionPatternFollowedByPropertyPath()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
+                    .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E")).AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL)))
+                );
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT *
+WHERE {
+  {
+    { ?S rdfs:label ""label""@EN }
+    UNION
+    { ?S rdfs:label ?E }
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintSelectQueryStarWithSingleUnionPatternFollowedByValues()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
+                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { RDFVocabulary.RDFS.LABEL }))
+                );
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT *
+WHERE {
+  {
+    { ?S rdfs:label ""label""@EN }
+    UNION
+    { VALUES ?S { rdfs:label } }
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
         public void ShouldPrintSelectQueryStarWithSingleUnionPatternGroup()
         {
             RDFSelectQuery query = new RDFSelectQuery()
@@ -755,7 +807,7 @@ WHERE {
         }
 
         [TestMethod]
-        public void ShouldPrintSelectQueryStarWithProjectonSubQuery()
+        public void ShouldPrintSelectQueryStarWithProjectionSubQuery()
         {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
@@ -1006,6 +1058,62 @@ WHERE {
                   .AddPatternGroup(new RDFPatternGroup("PG1")
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
                   )
+                  .AddProjectionVariable(new RDFVariable("?T"))
+                )
+                .AddProjectionVariable(new RDFVariable("?Z"))
+                .AddProjectionVariable(new RDFVariable("?T"));
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?Z ?T
+WHERE {
+  {
+    {
+      SELECT ?Z
+      WHERE {
+        {
+          ?S rdfs:label _:12345 .
+        }
+      }
+    }
+    UNION
+    {
+      SELECT ?T
+      WHERE {
+        {
+          ?S rdfs:label ""label""@EN .
+        }
+      }
+    }
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintSelectQueryProjectionWithMultipleUnionAllSubQueries()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
+                  .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
+                  )
+                  .UnionWithNext()
+                  .AddProjectionVariable(new RDFVariable("?Z"))
+                )
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
+                  .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                  )
+                  .UnionWithNext() //This subquery will not be printed as union, since it is the last query member
                   .AddProjectionVariable(new RDFVariable("?T"))
                 )
                 .AddProjectionVariable(new RDFVariable("?Z"))
@@ -3464,6 +3572,9 @@ WHERE {
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
+
+        //DESCRIBE
+        
         #endregion
     }
 }

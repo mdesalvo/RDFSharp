@@ -15,9 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -90,7 +88,27 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}> <{RDFVocabulary.RDF.TYPE}>"));
             Assert.IsTrue(propertyPath.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals($"?START rdf:Alt rdf:type"));
             Assert.IsTrue(propertyPath.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(propertyPath.PatternGroupMemberStringID)));
-        }        
+        }
+
+        [TestMethod]
+        public void ShouldAddSingleSequenceInverseStep()
+        {
+            RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
+            propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT).Inverse());
+
+            Assert.IsNotNull(propertyPath);
+            Assert.IsNotNull(propertyPath.Start);
+            Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
+            Assert.IsNotNull(propertyPath.End);
+            Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
+            Assert.IsNotNull(propertyPath.Steps);
+            Assert.IsTrue(propertyPath.Steps.Count == 1);
+            Assert.IsTrue(propertyPath.Depth == 1);
+            Assert.IsTrue(propertyPath.IsEvaluable);
+            Assert.IsTrue(propertyPath.ToString().Equals($"?START ^<{RDFVocabulary.RDF.ALT}> <{RDFVocabulary.RDF.TYPE}>"));
+            Assert.IsTrue(propertyPath.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals($"?START ^rdf:Alt rdf:type"));
+            Assert.IsTrue(propertyPath.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(propertyPath.PatternGroupMemberStringID)));
+        }
 
         [TestMethod]
         public void ShouldAddMultipleSequenceSteps()
