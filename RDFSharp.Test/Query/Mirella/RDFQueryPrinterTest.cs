@@ -15,6 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RDFSharp.Model;
@@ -4646,6 +4647,50 @@ WHERE {
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
+
+        [TestMethod]
+        public void ShouldPrintPatternMemberNull()
+          => Assert.IsNull(RDFQueryPrinter.PrintPatternMember(null, null));
+
+        [TestMethod]
+        public void ShouldPrintPatternMemberVariable()
+          => Assert.IsTrue(string.Equals("?S", RDFQueryPrinter.PrintPatternMember(new RDFVariable("?S"), null)));
+
+        [TestMethod]
+        public void ShouldPrintPatternMemberResourceBlank()
+          => Assert.IsTrue(string.Equals("_:12345", RDFQueryPrinter.PrintPatternMember(new RDFResource("bnode:12345"), null)));
+
+        [TestMethod]
+        public void ShouldPrintPatternMemberResourceNotBlankUnresolved()
+          => Assert.IsTrue(string.Equals("<http://example.org/test>", RDFQueryPrinter.PrintPatternMember(new RDFResource("http://example.org/test"), null)));
+
+        [TestMethod]
+        public void ShouldPrintPatternMemberResourceNotBlankResolved()
+          => Assert.IsTrue(string.Equals("ex:test", RDFQueryPrinter.PrintPatternMember(new RDFResource("http://example.org/test"), new List<RDFNamespace>() { new RDFNamespace("ex", "http://example.org/") })));
+
+        [TestMethod]
+        public void ShouldPrintPatternMemberContextUnresolved()
+          => Assert.IsTrue(string.Equals("<http://example.org/test>", RDFQueryPrinter.PrintPatternMember(new RDFContext(new Uri("http://example.org/test")), null)));
+
+        [TestMethod]
+        public void ShouldPrintPatternMemberContextResolved()
+          => Assert.IsTrue(string.Equals("ex:test", RDFQueryPrinter.PrintPatternMember(new RDFContext(new Uri("http://example.org/test")), new List<RDFNamespace>() { new RDFNamespace("ex", "http://example.org/") })));
+
+        [TestMethod]
+        public void ShouldPrintPatternMemberPlainLiteral()
+          => Assert.IsTrue(string.Equals("\"hello\"", RDFQueryPrinter.PrintPatternMember(new RDFPlainLiteral("hello"), null)));
+
+        [TestMethod]
+        public void ShouldPrintPatternMemberPlainLiteralWithLanguage()
+          => Assert.IsTrue(string.Equals("\"hello\"@EN-US", RDFQueryPrinter.PrintPatternMember(new RDFPlainLiteral("hello", "en-US"), null)));
+
+        [TestMethod]
+        public void ShouldPrintPatternMemberTypedLiteralUnresolved()
+          => Assert.IsTrue(string.Equals("\"hello\"^^<http://www.w3.org/2001/XMLSchema#string>", RDFQueryPrinter.PrintPatternMember(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING), null)));
+
+        [TestMethod]
+        public void ShouldPrintPatternMemberTypedLiteralResolved()
+          => Assert.IsTrue(string.Equals($"\"hello\"^^xsd:string", RDFQueryPrinter.PrintPatternMember(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING), new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd")})));
         #endregion
     }
 }
