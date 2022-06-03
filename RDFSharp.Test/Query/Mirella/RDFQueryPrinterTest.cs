@@ -3574,7 +3574,1078 @@ WHERE {
         }
 
         //DESCRIBE
-        
+        [TestMethod]
+        public void ShouldPrintDescribeQueryNull()
+            => Assert.IsTrue(string.IsNullOrEmpty(RDFQueryPrinter.PrintDescribeQuery(null)));
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryEmpty()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery();
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString =
+@"DESCRIBE *
+WHERE {
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryStarTermsPrefixed()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+DESCRIBE *
+WHERE {
+  {
+    ?S rdfs:label ""label""@EN .
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryStarTermsUnprefixed()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString =
+@"DESCRIBE *
+WHERE {
+  {
+    ?S <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryStarTermsWithOptionalPattern()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+DESCRIBE *
+WHERE {
+  {
+    OPTIONAL { ?S rdfs:label ""label""@EN } .
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryStarTermsWithOptionalPatternGroup()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                    .Optional()
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+DESCRIBE *
+WHERE {
+  OPTIONAL {
+    {
+      ?S rdfs:label ""label""@EN .
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryStarTermsWithOptionalPatternAndOptionalPatternGroup()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
+                    .Optional()
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+DESCRIBE *
+WHERE {
+  OPTIONAL {
+    {
+      OPTIONAL { ?S rdfs:label ""label""@EN } .
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryStarTermsWithSingleUnionPattern()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString =
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+DESCRIBE *
+WHERE {
+  {
+    ?S rdfs:label ""label""@EN .
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryStarTermsWithSingleUnionPatternGroup()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                    .UnionWithNext()
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString =
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+DESCRIBE *
+WHERE {
+  {
+    ?S rdfs:label ""label""@EN .
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryStarTermsWithSingleUnionPatternAndSingleUnionPatternGroup()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
+                    .UnionWithNext()
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString =
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+DESCRIBE *
+WHERE {
+  {
+    ?S rdfs:label ""label""@EN .
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryStarTermsWithEmptyPatternGroup()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPatternGroup(new RDFPatternGroup("PG1"));
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString =
+@"DESCRIBE *
+WHERE {
+  {
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryStarTermsWithEmptyOptionalPatternGroup()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPatternGroup(new RDFPatternGroup("PG1").Optional());
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString =
+@"DESCRIBE *
+WHERE {
+  OPTIONAL {
+    {
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryStarTermsWithEmptySingleUnionPatternGroup()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPatternGroup(new RDFPatternGroup("PG1").UnionWithNext());
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString =
+@"DESCRIBE *
+WHERE {
+  {
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryWithTermsAndOptionalPattern()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddDescribeTerm(RDFVocabulary.RDFS.LABEL)
+                .AddDescribeTerm(new RDFResource("bnode:12345"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Optional())
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+DESCRIBE ?S rdfs:label _:12345
+WHERE {
+  {
+    ?S rdfs:label ""label""@EN .
+    OPTIONAL { <ex:subj> <ex:pred> ?T } .
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryWithTermsAndOptionalPatternGroup()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddDescribeTerm(RDFVocabulary.RDF.TYPE)
+                .AddDescribeTerm(RDFVocabulary.RDF.ALT)
+                .AddDescribeTerm(RDFVocabulary.RDFS.LABEL)
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                )
+                .AddPatternGroup(new RDFPatternGroup("PG2")
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
+                    .Optional()
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+DESCRIBE <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt> rdfs:label
+WHERE {
+  {
+    ?S rdfs:label ""label""@EN .
+  }
+  OPTIONAL {
+    {
+      <ex:subj> <ex:pred> ?T .
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryWithTermsAndOptionalPatternAndOptionalPatternGroup()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                )
+                .AddPatternGroup(new RDFPatternGroup("PG2")
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj1"), new RDFResource("ex:pred1"), new RDFVariable("?T")))
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj2"), new RDFResource("ex:pred2"), new RDFVariable("?T")).Optional())
+                    .Optional()
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+DESCRIBE ?S
+WHERE {
+  {
+    ?S rdfs:label ""label""@EN .
+  }
+  OPTIONAL {
+    {
+      <ex:subj1> <ex:pred1> ?T .
+      OPTIONAL { <ex:subj2> <ex:pred2> ?T } .
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryWithTermsAndUnionPatternGroup()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddDescribeTerm(new RDFResource("bnode:12345"))
+                .AddDescribeTerm(new RDFResource("bnode:54321"))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                    .UnionWithNext()
+                )
+                .AddPatternGroup(new RDFPatternGroup("PG2")
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+DESCRIBE _:12345 _:54321 ?S
+WHERE {
+  {
+    {
+      ?S rdfs:label ""label""@EN .
+    }
+    UNION
+    {
+      <ex:subj> <ex:pred> ?T .
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryWithTermsAndMultipleUnionPatternGroup()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                    .UnionWithNext()
+                )
+                .AddPatternGroup(new RDFPatternGroup("PG2")
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
+                    .UnionWithNext()
+                )
+                .AddPatternGroup(new RDFPatternGroup("PG3")
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
+                    .UnionWithNext() //Will not be printed, since this is the last evaluable query member
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+DESCRIBE ?S
+WHERE {
+  {
+    {
+      ?S rdfs:label ""label""@EN .
+    }
+    UNION
+    {
+      <ex:subj> <ex:pred> ?T .
+    }
+    UNION
+    {
+      <ex:subj> rdfs:label ?T .
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryWithTermsAndMultipleUnionPatternGroupFollowedByPatternGroup()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                    .UnionWithNext()
+                )
+                .AddPatternGroup(new RDFPatternGroup("PG2")
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
+                    .UnionWithNext()
+                )
+                .AddPatternGroup(new RDFPatternGroup("PG3")
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
+                )
+                .AddPatternGroup(new RDFPatternGroup("PG4")
+                    .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+DESCRIBE ?S
+WHERE {
+  {
+    {
+      ?S rdfs:label ""label""@EN .
+    }
+    UNION
+    {
+      <ex:subj> <ex:pred> ?T .
+    }
+    UNION
+    {
+      <ex:subj> rdfs:label ?T .
+    }
+  }
+  {
+    _:12345 rdfs:label ?T .
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryWithTermsAndMultipleUnionPatternGroupFollowedByOptionalPatternGroup()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                    .UnionWithNext()
+                )
+                .AddPatternGroup(new RDFPatternGroup("PG2")
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
+                    .UnionWithNext()
+                )
+                .AddPatternGroup(new RDFPatternGroup("PG3")
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
+                )
+                .AddPatternGroup(new RDFPatternGroup("PG4")
+                    .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
+                    .Optional()
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+DESCRIBE ?S
+WHERE {
+  {
+    {
+      ?S rdfs:label ""label""@EN .
+    }
+    UNION
+    {
+      <ex:subj> <ex:pred> ?T .
+    }
+    UNION
+    {
+      <ex:subj> rdfs:label ?T .
+    }
+  }
+  OPTIONAL {
+    {
+      _:12345 rdfs:label ?T .
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryWithTermsAndMultipleUnionPatternGroupHavingOptionalPatternsAndFollowedByOptionalPatternGroup()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).Optional())
+                    .UnionWithNext()
+                )
+                .AddPatternGroup(new RDFPatternGroup("PG2")
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFVariable("?P"), new RDFResource("bnode:12345")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)).Optional())
+                    .UnionWithNext()
+                )
+                .AddPatternGroup(new RDFPatternGroup("PG3")
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
+                )
+                .AddPatternGroup(new RDFPatternGroup("PG4")
+                    .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
+                    .Optional()
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+DESCRIBE ?S
+WHERE {
+  {
+    {
+      ?S rdfs:label ""label""@EN .
+      OPTIONAL { ?S rdfs:comment ""comment"" } .
+    }
+    UNION
+    {
+      <ex:subj> <ex:pred> ?T .
+      OPTIONAL { <ex:subj> ?P _:12345 } .
+      OPTIONAL { ?S ?P ""25""^^xsd:integer } .
+    }
+    UNION
+    {
+      <ex:subj> rdfs:label ?T .
+    }
+  }
+  OPTIONAL {
+    {
+      _:12345 rdfs:label ?T .
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryWithTermsAndMultipleUnionPatternGroupHavingMultipleUnionPatterns()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddDescribeTerm(RDFVocabulary.RDFS.LABEL)
+                .AddDescribeTerm(new RDFResource("ex:org"))
+                .AddDescribeTerm(new RDFResource("bnode:12345"))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).UnionWithNext()) //Union will not be printed, since this is the last pattern group member
+                    .UnionWithNext()
+                )
+                .AddPatternGroup(new RDFPatternGroup("PG2")
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).UnionWithNext())
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T")).UnionWithNext())
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional())
+                    .UnionWithNext()
+                )
+                .AddPatternGroup(new RDFPatternGroup("PG3")
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
+                    .UnionWithNext() //Union will not be printed, since this is the last evaluable query member
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+DESCRIBE rdfs:label <ex:org> _:12345 ?S
+WHERE {
+  {
+    {
+      { ?S rdfs:label ""label""@EN }
+      UNION
+      { ?S rdfs:comment ""comment"" }
+    }
+    UNION
+    {
+      { <ex:subj> <ex:pred> ?T }
+      UNION
+      { <ex:subj> <ex:pred2> ?T }
+      UNION
+      { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
+    }
+    UNION
+    {
+      <ex:subj> rdfs:label ?T .
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryWithTermsAndStarSubQuery()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
+                  )
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+DESCRIBE ?S
+WHERE {
+  {
+    SELECT *
+    WHERE {
+      {
+        OPTIONAL { ?S rdfs:label ""label""@EN } .
+      }
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryWithTermsAndProjectionSubQuery()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
+                  )
+                  .AddProjectionVariable(new RDFVariable("?S"))
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+DESCRIBE ?S
+WHERE {
+  {
+    SELECT ?S
+    WHERE {
+      {
+        OPTIONAL { ?S rdfs:label ""label""@EN } .
+      }
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryWithTermsAndOptionalProjectionSubQuery()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddDescribeTerm(new RDFVariable("?T"))
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
+                  .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
+                  )
+                  .Optional()
+                  .AddProjectionVariable(new RDFVariable("?T"))
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+DESCRIBE ?T
+WHERE {
+  OPTIONAL {
+    SELECT ?T
+    WHERE {
+      {
+        OPTIONAL { ?S rdfs:label ""label""@EN } .
+      }
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryWithTermsAndMultipleSubQueries()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
+                  .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
+                  )
+                  .AddProjectionVariable(new RDFVariable("?Z"))
+                )
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
+                  .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                  )
+                  .AddProjectionVariable(new RDFVariable("?T"))
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+DESCRIBE ?S
+WHERE {
+  {
+    SELECT ?Z
+    WHERE {
+      {
+        ?S rdfs:label _:12345 .
+      }
+    }
+  }
+  {
+    SELECT ?T
+    WHERE {
+      {
+        ?S rdfs:label ""label""@EN .
+      }
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryWithTermsAndMultipleOptionalSubQueries()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
+                  .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
+                  )
+                  .AddProjectionVariable(new RDFVariable("?Z"))
+                )
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
+                  .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                  )
+                  .Optional()
+                  .AddProjectionVariable(new RDFVariable("?T"))
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+DESCRIBE ?S
+WHERE {
+  {
+    SELECT ?Z
+    WHERE {
+      {
+        ?S rdfs:label _:12345 .
+      }
+    }
+  }
+  OPTIONAL {
+    SELECT ?T
+    WHERE {
+      {
+        ?S rdfs:label ""label""@EN .
+      }
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryWithTermsAndMultipleUnionSubQueries()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddDescribeTerm(new RDFResource("ex:org"))
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
+                  .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
+                  )
+                  .UnionWithNext()
+                  .AddProjectionVariable(new RDFVariable("?Z"))
+                )
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
+                  .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                  )
+                  .AddProjectionVariable(new RDFVariable("?T"))
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+DESCRIBE <ex:org>
+WHERE {
+  {
+    {
+      SELECT ?Z
+      WHERE {
+        {
+          ?S rdfs:label _:12345 .
+        }
+      }
+    }
+    UNION
+    {
+      SELECT ?T
+      WHERE {
+        {
+          ?S rdfs:label ""label""@EN .
+        }
+      }
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintDescribeQueryWithTermsAndMultipleOptionalAndUnionSubQueries()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddDescribeTerm(new RDFVariable("?T"))
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
+                  .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
+                  )
+                  .UnionWithNext()
+                  .AddProjectionVariable(new RDFVariable("?Z"))
+                )
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
+                  .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                  )
+                  .AddProjectionVariable(new RDFVariable("?T"))
+                )
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
+                  .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                  )
+                  .Optional()
+                  .AddProjectionVariable(new RDFVariable("?T"))
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+DESCRIBE ?T
+WHERE {
+  {
+    {
+      SELECT ?Z
+      WHERE {
+        {
+          ?S rdfs:label _:12345 .
+        }
+      }
+    }
+    UNION
+    {
+      SELECT ?T
+      WHERE {
+        {
+          ?S rdfs:label ""label""@EN .
+        }
+      }
+    }
+  }
+  OPTIONAL {
+    SELECT ?T
+    WHERE {
+      {
+        ?S rdfs:label ""label""@EN .
+      }
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintComplexDescribeQuery()
+        {
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddDescribeTerm(new RDFVariable("?T"))
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
+                  .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup("PG1")
+                      .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
+                      .AddFilter(new RDFBoundFilter(new RDFVariable("?S")))
+                    )
+                    .AddModifier(new RDFDistinctModifier())
+                    .AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC))
+                    .AddModifier(new RDFLimitModifier(5))
+                    .AddModifier(new RDFOffsetModifier(1))
+                  )
+                  .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
+                  )
+                  .UnionWithNext()
+                  .AddProjectionVariable(new RDFVariable("?Z"))
+                )
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
+                  .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                  )
+                  .AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?S") })
+                    .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
+                      .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))
+                    )
+                  )
+                  .UnionWithNext()
+                )
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup("PG1")
+                      .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { new RDFResource("ex:org") }))
+                      .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
+                        .AddAlternativeSteps(new List<RDFPropertyPathStep>() {
+                          new RDFPropertyPathStep(RDFVocabulary.RDFS.CLASS),
+                          new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
+                          new RDFPropertyPathStep(RDFVocabulary.OWL.CLASS).Inverse()
+                        })
+                      )
+                    )
+                    .AddProjectionVariable(new RDFVariable("?START"))
+                  )
+                )
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
+                  .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+                  )
+                  .AddProjectionVariable(new RDFVariable("?T"))
+                );
+            string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
+            string expectedQueryString = 
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+DESCRIBE ?T
+WHERE {
+  {
+    {
+      SELECT ?Z
+      WHERE {
+        {
+          SELECT DISTINCT *
+          WHERE {
+            {
+              ?S rdfs:label _:12345 .
+              FILTER ( BOUND(?S) ) 
+            }
+          }
+          ORDER BY ASC(?S)
+          LIMIT 5
+          OFFSET 1
+        }
+        {
+          ?S rdfs:label _:12345 .
+        }
+      }
+    }
+    UNION
+    {
+      SELECT ?S (AVG(?S) AS ?AVG_S)
+      WHERE {
+        {
+          ?S rdfs:label ""label""@EN .
+        }
+      }
+      GROUP BY ?S
+      HAVING ((AVG(?S) >= ""11.44""^^xsd:float))
+    }
+    UNION
+    {
+      SELECT *
+      WHERE {
+        {
+          SELECT ?START
+          WHERE {
+            {
+              VALUES ?S { <ex:org> } .
+              ?START (rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class>) ?END .
+            }
+          }
+        }
+      }
+    }
+  }
+  {
+    SELECT ?T
+    WHERE {
+      {
+        ?S rdfs:label ""label""@EN .
+      }
+    }
+  }
+}";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
         #endregion
     }
 }
