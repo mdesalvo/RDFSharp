@@ -116,6 +116,135 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResults.Columns.Count == 0);
             Assert.IsTrue(result.SelectResultsCount == 0);
         }
+
+        [TestMethod]
+        public void ShouldEvaluateDescribeQueryWithResults()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddDescribeTerm(new RDFVariable("?Y"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional()))
+                .AddModifier(new RDFLimitModifier(2));
+            RDFDescribeQueryResult result = new RDFQueryEngine().EvaluateDescribeQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 3);
+            Assert.IsTrue(result.DescribeResultsCount == 2);
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[1]["?PREDICATE"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[1]["?OBJECT"].ToString(), "ex:paperino"));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateDescribeQueryWithResultsFromResourceTerm()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddDescribeTerm(new RDFResource("ex:pluto"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional()));
+            RDFDescribeQueryResult result = new RDFQueryEngine().EvaluateDescribeQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 3);
+            Assert.IsTrue(result.DescribeResultsCount == 1);
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateDescribeQueryWithResultsFromResourceTermOnly()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddDescribeTerm(new RDFResource("ex:pluto"));
+            RDFDescribeQueryResult result = new RDFQueryEngine().EvaluateDescribeQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 3);
+            Assert.IsTrue(result.DescribeResultsCount == 1);
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateDescribeQueryWithNoResults()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddDescribeTerm(new RDFVariable("?Y"))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional()));
+            RDFDescribeQueryResult result = new RDFQueryEngine().EvaluateDescribeQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 3);
+            Assert.IsTrue(result.DescribeResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateDescribeQueryWithNoResultsBecauseNoEvaluableQueryMembersAndVariableDescribeTerm()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US"))
+            });
+            
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddDescribeTerm(new RDFVariable("?Y"));
+            RDFDescribeQueryResult result = new RDFQueryEngine().EvaluateDescribeQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 3);
+            Assert.IsTrue(result.DescribeResultsCount == 0);
+        }
         #endregion
     }
 }
