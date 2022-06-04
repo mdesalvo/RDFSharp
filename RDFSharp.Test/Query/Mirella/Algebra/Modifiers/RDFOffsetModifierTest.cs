@@ -48,7 +48,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldApplyOffsetModifier()
         {
-            DataTable table = new DataTable("tablename");
+            DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
             table.Columns.Add("?C", typeof(string));            
@@ -84,14 +84,13 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(offsetTable.Rows[1]["?A"].ToString().Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString()));
             Assert.IsTrue(offsetTable.Rows[1]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en").ToString()));
             Assert.IsTrue(offsetTable.Rows[1]["?C"].ToString().Equals(string.Empty));
-            Assert.IsTrue(offsetTable.TableName.Equals("tablename"));
             Assert.IsTrue(offsetTable.DefaultView.Sort.Equals("?A DESC"));
         }
 
         [TestMethod]
         public void ShouldApplyOffsetExceedingModifier()
         {
-            DataTable table = new DataTable("tablename");
+            DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
             table.Columns.Add("?C", typeof(string));            
@@ -121,14 +120,13 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(offsetTable.Columns.Contains("?B"));
             Assert.IsTrue(offsetTable.Columns.Contains("?C"));
             Assert.IsTrue(offsetTable.Rows.Count == 0);
-            Assert.IsTrue(offsetTable.TableName.Equals("tablename"));
             Assert.IsTrue(offsetTable.DefaultView.Sort.Equals("?A DESC"));
         }
 
         [TestMethod]
         public void ShouldApplyOffsetModifierToEmptyTable()
         {
-            DataTable table = new DataTable("tablename");
+            DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
             table.Columns.Add("?C", typeof(string));            
@@ -143,7 +141,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(offsetTable.Columns.Contains("?B"));
             Assert.IsTrue(offsetTable.Columns.Contains("?C"));
             Assert.IsTrue(offsetTable.Rows.Count == 0);
-            Assert.IsTrue(offsetTable.TableName.Equals("tablename"));
             Assert.IsTrue(offsetTable.DefaultView.Sort.Equals("?A DESC"));
         }
         #endregion

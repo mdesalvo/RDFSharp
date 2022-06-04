@@ -81,8 +81,7 @@ namespace RDFSharp.Query
                 //Apply the modifiers of the query to the result table
                 queryResult.SelectResults = ApplyModifiers(selectQuery, queryResultTable);
             }
-            
-            queryResult.SelectResults.TableName = selectQuery.ToString();
+
             return queryResult;
         }
 
@@ -131,8 +130,7 @@ namespace RDFSharp.Query
 
             //Apply the modifiers of the query to the result table
             queryResult.DescribeResults = ApplyModifiers(describeQuery, describeResultTable);
-            
-            queryResult.DescribeResults.TableName = describeQuery.ToString();
+
             return queryResult;
         }
 
@@ -162,7 +160,6 @@ namespace RDFSharp.Query
             //Apply the modifiers of the query to the result table
             constructResult.ConstructResults = ApplyModifiers(constructQuery, filledResultTable);
 
-            constructResult.ConstructResults.TableName = constructQuery.ToString();
             return constructResult;
         }
 
@@ -264,7 +261,6 @@ namespace RDFSharp.Query
                     DataTable patternResultsTable = ApplyPattern(pattern, dataSource);
 
                     //Set name and metadata of result datatable
-                    patternResultsTable.TableName = pattern.ToString();
                     patternResultsTable.ExtendedProperties.Add("IsOptional", pattern.IsOptional);
                     patternResultsTable.ExtendedProperties.Add("JoinAsUnion", pattern.JoinAsUnion);
 
@@ -277,9 +273,6 @@ namespace RDFSharp.Query
                 else if (evaluablePGMember is RDFPropertyPath propertyPath)
                 {
                     DataTable pPathResultsTable = ApplyPropertyPath(propertyPath, dataSource);
-
-                    //Set name of result datatable
-                    pPathResultsTable.TableName = propertyPath.ToString();
 
                     //Save result datatable
                     QueryMemberTemporaryResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
@@ -306,7 +299,6 @@ namespace RDFSharp.Query
                     DataTable existsFilterResultsTable = ApplyPattern(existsFilter.Pattern, dataSource);
 
                     //Set name and metadata of result datatable
-                    existsFilterResultsTable.TableName = existsFilter.Pattern.ToString();
                     existsFilterResultsTable.ExtendedProperties.Add("IsOptional", false);
                     existsFilterResultsTable.ExtendedProperties.Add("JoinAsUnion", false);
 
@@ -330,9 +322,6 @@ namespace RDFSharp.Query
 
                 //Add it to the list of query member result tables
                 QueryMemberFinalResultTables.Add(patternGroup.QueryMemberID, queryMemberFinalResultTable);
-
-                //Populate its name
-                QueryMemberFinalResultTables[patternGroup.QueryMemberID].TableName = patternGroup.ToString();
 
                 //Populate its metadata (IsOptional)
                 if (!QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
@@ -1579,7 +1568,6 @@ namespace RDFSharp.Query
             }
             propPathCols.ForEach(ppc => resultTable.Columns.Remove(ppc));
 
-            resultTable.TableName = propertyPath.ToString();
             return resultTable;
         }
         #endregion

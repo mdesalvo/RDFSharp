@@ -90,7 +90,6 @@ namespace RDFSharp.Semantics.OWL
             });
 
             //Return the antecedent result
-            antecedentResult.TableName = this.ToString();
             return antecedentResult;
         }
         #endregion

@@ -48,7 +48,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldApplyLimitModifier()
         {
-            DataTable table = new DataTable("tablename");
+            DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
             table.Columns.Add("?C", typeof(string));            
@@ -81,14 +81,13 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(limitedTable.Rows[0]["?A"].ToString().Equals(new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString()));
             Assert.IsTrue(limitedTable.Rows[0]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en-US").ToString()));
             Assert.IsTrue(limitedTable.Rows[0]["?C"].ToString().Equals(new RDFResource("ex:value0").ToString()));
-            Assert.IsTrue(limitedTable.TableName.Equals("tablename"));
             Assert.IsTrue(limitedTable.DefaultView.Sort.Equals("?A DESC"));
         }
 
         [TestMethod]
         public void ShouldApplyLimitZeroModifier()
         {
-            DataTable table = new DataTable("tablename");
+            DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
             table.Columns.Add("?C", typeof(string));            
@@ -118,14 +117,13 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(limitedTable.Columns.Contains("?B"));
             Assert.IsTrue(limitedTable.Columns.Contains("?C"));
             Assert.IsTrue(limitedTable.Rows.Count == 0);
-            Assert.IsTrue(limitedTable.TableName.Equals("tablename"));
             Assert.IsTrue(limitedTable.DefaultView.Sort.Equals("?A DESC"));
         }
 
         [TestMethod]
         public void ShouldApplyLimitModifierToEmptyTable()
         {
-            DataTable table = new DataTable("tablename");
+            DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
             table.Columns.Add("?C", typeof(string));            
@@ -140,7 +138,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(limitedTable.Columns.Contains("?B"));
             Assert.IsTrue(limitedTable.Columns.Contains("?C"));
             Assert.IsTrue(limitedTable.Rows.Count == 0);
-            Assert.IsTrue(limitedTable.TableName.Equals("tablename"));
             Assert.IsTrue(limitedTable.DefaultView.Sort.Equals("?A DESC"));
         }
         #endregion

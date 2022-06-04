@@ -205,7 +205,6 @@ namespace RDFSharp.Query
                     {
                         using (MemoryStream sStream = new MemoryStream(sparqlResponse))
                             selResult = RDFSelectQueryResult.FromSparqlXmlResult(sStream);
-                        selResult.SelectResults.TableName = sparqlQuery;
                     }
                 }
 

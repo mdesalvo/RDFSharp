@@ -219,7 +219,6 @@ namespace RDFSharp.Query
                     {
                         using (MemoryStream sStream = new MemoryStream(sparqlResponse))
                             describeResult = RDFDescribeQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
-                        describeResult.DescribeResults.TableName = sparqlQuery;
                     }
                 }
 

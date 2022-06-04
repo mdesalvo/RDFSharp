@@ -401,7 +401,6 @@ namespace RDFSharp.Query
             //Apply the modifiers of the query to the result table
             constructResult.ConstructResults = ApplyModifiers(operation, filledResultTable);
 
-            constructResult.ConstructResults.TableName = operation.ToString();
             return constructResult;
         }
 
