@@ -186,7 +186,7 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldGetNamespaceByUriWithLookupService()
         {
-            RDFNamespace ns = RDFNamespaceRegister.GetByUri("http://dbpedia.org/ontology/", true);
+            RDFNamespace ns = RDFNamespaceRegister.GetByUri("http://dbpedia.org/ontology/", true); //Intentionally not mocked, since we want to monitor if the service is still alive or has been retired...
 
             Assert.IsNotNull(ns);
             Assert.IsTrue(ns.NamespacePrefix.Equals("dbo"));

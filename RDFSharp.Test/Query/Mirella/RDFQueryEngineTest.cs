@@ -137,6 +137,25 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldEvaluateSelectQuery_ProjMalesWithName()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?MALE"), RDFVocabulary.FOAF.GENDER, new RDFResource("ex:male")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?MALE"), RDFVocabulary.FOAF.NAME, new RDFVariable("?NAME"))))
+                .AddProjectionVariable(new RDFVariable("?MALE"));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResultsCount == 3);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?MALE"].ToString(), "ex:mark"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?MALE"].ToString(), "ex:john"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?MALE"].ToString(), "ex:steve"));
+        }
+
+        [TestMethod]
         public void ShouldEvaluateSelectQuery_ProjMalesWithOptionalName()
         {
             RDFSelectQuery query = new RDFSelectQuery()
@@ -313,6 +332,78 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResults.Columns.Count == 1);
             Assert.IsTrue(result.SelectResultsCount == 1);
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?MALE"].ToString(), "ex:mark"));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQuery_StarKnowersWithCountGreater2()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?KNOWER"), RDFVocabulary.FOAF.KNOWS, new RDFVariable("?KNOWN"))))
+                .AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?KNOWER") })
+                    .AddAggregator(new RDFCountAggregator(new RDFVariable("?KNOWN"), new RDFVariable("?COUNT_KNOWN"))
+                        .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_BYTE))))
+                .AddModifier(new RDFOrderByModifier(new RDFVariable("?COUNT_KNOWN"), RDFQueryEnums.RDFOrderByFlavors.DESC))
+                .AddProjectionVariable(new RDFVariable("?KNOWN")); //Will not be projected, since GroupBy overrides projector
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 2);
+            Assert.IsTrue(result.SelectResultsCount == 2);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?KNOWER"].ToString(), "ex:mark"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?COUNT_KNOWN"].ToString(), $"4^^{RDFVocabulary.XSD.DECIMAL}"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?KNOWER"].ToString(), "ex:valentine"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?COUNT_KNOWN"].ToString(), $"3^^{RDFVocabulary.XSD.DECIMAL}"));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQuery_ProjKnowersWithCountGreater2()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?KNOWER"), RDFVocabulary.FOAF.KNOWS, new RDFVariable("?KNOWN"))))
+                .AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?KNOWER") })
+                    .AddAggregator(new RDFCountAggregator(new RDFVariable("?KNOWN"), new RDFVariable("?COUNT_KNOWN"))
+                        .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_BYTE))))
+                .AddModifier(new RDFOrderByModifier(new RDFVariable("?COUNT_KNOWN"), RDFQueryEnums.RDFOrderByFlavors.DESC))
+                .AddProjectionVariable(new RDFVariable("?KNOWER"))
+                .AddProjectionVariable(new RDFVariable("?COUNT_KNOWN"));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 2);
+            Assert.IsTrue(result.SelectResultsCount == 2);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?KNOWER"].ToString(), "ex:mark"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?COUNT_KNOWN"].ToString(), $"4^^{RDFVocabulary.XSD.DECIMAL}"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?KNOWER"].ToString(), "ex:valentine"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?COUNT_KNOWN"].ToString(), $"3^^{RDFVocabulary.XSD.DECIMAL}"));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQuery_StarKnowersWithCountGreater2RestrictedByValuesFromSubQuery()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?KNOWER"), RDFVocabulary.FOAF.KNOWS, new RDFVariable("?KNOWN"))))
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup("PG2")
+                        .AddValues(new RDFValues()
+                            .AddColumn(new RDFVariable("?KNOWER"), new List<RDFPatternMember>() { new RDFResource("ex:mark") }))))
+                .AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?KNOWER") })
+                    .AddAggregator(new RDFCountAggregator(new RDFVariable("?KNOWN"), new RDFVariable("?COUNT_KNOWN"))
+                        .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_BYTE))))
+                .AddModifier(new RDFOrderByModifier(new RDFVariable("?COUNT_KNOWN"), RDFQueryEnums.RDFOrderByFlavors.DESC))
+                .AddProjectionVariable(new RDFVariable("?KNOWN")); //Will not be projected, since GroupBy overrides projector
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 2);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?KNOWER"].ToString(), "ex:mark"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?COUNT_KNOWN"].ToString(), $"4^^{RDFVocabulary.XSD.DECIMAL}"));
         }
         #endregion
     }
