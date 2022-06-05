@@ -439,6 +439,10 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(queryEngine.QueryMemberFinalResultTables);
             Assert.IsTrue(queryEngine.QueryMemberFinalResultTables.Count == 2);
+            Assert.IsTrue(queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
+            Assert.IsFalse((bool)queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.ExtendedProperties[RDFQueryEngine.IsOptional]);
+            Assert.IsTrue(queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
+            Assert.IsFalse((bool)queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
             Assert.IsTrue(queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.Columns.Count == 3);
             Assert.IsTrue(queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.Rows.Count == 2);
             Assert.IsTrue(string.Equals(queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(),"ex:pluto"));
@@ -447,6 +451,10 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.Rows[1]["?Y"].ToString(),"ex:fido"));
             Assert.IsTrue(string.Equals(queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.Rows[1]["?X"].ToString(),"ex:paperino"));
             Assert.IsTrue(string.Equals(queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(),"Donald Duck@EN-US"));
+            Assert.IsTrue(queryEngine.QueryMemberFinalResultTables.ElementAt(1).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
+            Assert.IsFalse((bool)queryEngine.QueryMemberFinalResultTables.ElementAt(1).Value.ExtendedProperties[RDFQueryEngine.IsOptional]);
+            Assert.IsTrue(queryEngine.QueryMemberFinalResultTables.ElementAt(1).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
+            Assert.IsFalse((bool)queryEngine.QueryMemberFinalResultTables.ElementAt(1).Value.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
             Assert.IsTrue(queryEngine.QueryMemberFinalResultTables.ElementAt(1).Value.Columns.Count == 1);
             Assert.IsTrue(queryEngine.QueryMemberFinalResultTables.ElementAt(1).Value.Rows.Count == 1);
             Assert.IsTrue(string.Equals(queryEngine.QueryMemberFinalResultTables.ElementAt(1).Value.Rows[0]["?Y"].ToString(),"ex:pluto"));
