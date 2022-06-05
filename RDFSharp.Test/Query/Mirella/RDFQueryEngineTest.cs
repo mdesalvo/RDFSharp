@@ -410,6 +410,47 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(result);
             Assert.IsFalse(result.AskResult);
         }
+
+        [TestMethod]
+        public void ShouldEvaluateQueryMembers()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
+                    .AddFilter(new RDFBoundFilter(new RDFVariable("?N"))))
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), new List<RDFPatternMember>() { new RDFResource("ex:pluto") }))))
+                .AddModifier(new RDFOrderByModifier(new RDFVariable("?Y"), RDFQueryEnums.RDFOrderByFlavors.ASC));
+            List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
+
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            queryEngine.EvaluateQueryMembers(query, evaluableQueryMembers, graph);
+
+            Assert.IsNotNull(queryEngine.QueryMemberFinalResultTables);
+            Assert.IsTrue(queryEngine.QueryMemberFinalResultTables.Count == 2);
+            Assert.IsTrue(queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.Columns.Count == 3);
+            Assert.IsTrue(queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.Rows.Count == 2);
+            Assert.IsTrue(string.Equals(queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(),"ex:pluto"));
+            Assert.IsTrue(string.Equals(queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.Rows[0]["?X"].ToString(),"ex:topolino"));
+            Assert.IsTrue(string.Equals(queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.Rows[0]["?N"].ToString(),"Mickey Mouse@EN-US"));
+            Assert.IsTrue(string.Equals(queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.Rows[1]["?Y"].ToString(),"ex:fido"));
+            Assert.IsTrue(string.Equals(queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.Rows[1]["?X"].ToString(),"ex:paperino"));
+            Assert.IsTrue(string.Equals(queryEngine.QueryMemberFinalResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(),"Donald Duck@EN-US"));
+            Assert.IsTrue(queryEngine.QueryMemberFinalResultTables.ElementAt(1).Value.Columns.Count == 1);
+            Assert.IsTrue(queryEngine.QueryMemberFinalResultTables.ElementAt(1).Value.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(queryEngine.QueryMemberFinalResultTables.ElementAt(1).Value.Rows[0]["?Y"].ToString(),"ex:pluto"));
+        }
         #endregion
     }
 }

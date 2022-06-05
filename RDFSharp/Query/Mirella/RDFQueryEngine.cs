@@ -225,10 +225,10 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region SUBQUERY
-                else if (evaluableQueryMember is RDFQuery subQuery)
+                else if (evaluableQueryMember is RDFSelectQuery subQuery)
                 {
                     //Get the result table of the subquery
-                    RDFSelectQueryResult subQueryResult = ((RDFSelectQuery)subQuery).ApplyToDataSource(datasource);
+                    RDFSelectQueryResult subQueryResult = subQuery.ApplyToDataSource(datasource);
                     if (!QueryMemberFinalResultTables.ContainsKey(subQuery.QueryMemberID))
                     {
                         //Populate its name
@@ -829,13 +829,13 @@ namespace RDFSharp.Query
             foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
             {
                 #region PATTERN GROUP
-                if (evaluableQueryMember is RDFPatternGroup)
-                    ((RDFPatternGroup)evaluableQueryMember).Variables.ForEach(v => describeQuery.AddDescribeTerm(v));
+                if (evaluableQueryMember is RDFPatternGroup pgEvaluableQueryMember)
+                    pgEvaluableQueryMember.Variables.ForEach(v => describeQuery.AddDescribeTerm(v));
                 #endregion
 
                 #region SUBQUERY
-                else if (evaluableQueryMember is RDFQuery)
-                    GetDescribeTermsFromQueryMembers(describeQuery, ((RDFSelectQuery)evaluableQueryMember).GetEvaluableQueryMembers());
+                else if (evaluableQueryMember is RDFSelectQuery sqEvaluableQueryMember)
+                    GetDescribeTermsFromQueryMembers(describeQuery, sqEvaluableQueryMember.GetEvaluableQueryMembers());
                 #endregion
             }
         }
