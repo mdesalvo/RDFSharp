@@ -94,8 +94,8 @@ namespace RDFSharp.Query
         internal DataTable GetDataTable()
         {
             DataTable result = new DataTable();
-            result.ExtendedProperties.Add("IsOptional", false);
-            result.ExtendedProperties.Add("JoinAsUnion", false);
+            result.ExtendedProperties.Add(RDFQueryEngine.IsOptional, false);
+            result.ExtendedProperties.Add(RDFQueryEngine.JoinAsUnion, false);
 
             //Create the columns of the SPARQL values
             this.Bindings.ToList()
@@ -113,7 +113,7 @@ namespace RDFSharp.Query
                                  RDFPatternMember bindingValue = b.Value.ElementAtOrDefault(i);
                                  bindings.Add(b.Key, bindingValue?.ToString());
                                  if (bindingValue == null)
-                                     result.ExtendedProperties["IsOptional"] = true;
+                                     result.ExtendedProperties[RDFQueryEngine.IsOptional] = true;
                              });
                 RDFQueryEngine.AddRow(result, bindings);
             }

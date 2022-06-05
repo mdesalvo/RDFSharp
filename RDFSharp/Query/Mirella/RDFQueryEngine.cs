@@ -44,6 +44,21 @@ namespace RDFSharp.Query
         /// Default column type used for Mirella tables
         /// </summary>
         internal static readonly Type SystemString = typeof(string); 
+
+        /// <summary>
+        /// Attribute denoting an optional pattern/patternGroup/query
+        /// </summary>
+        internal static readonly string IsOptional = "IsOptional";
+
+        /// <summary>
+        /// Attribute denoting a pattern/patternGroup/query to be joined as union
+        /// </summary>
+        internal static readonly string JoinAsUnion = "JoinAsUnion";
+
+        /// <summary>
+        /// Attribute denoting a logically deleted intermediate results table
+        /// </summary>
+        internal static readonly string LogicallyDeleted = "LogicallyDeleted";
         #endregion
 
         #region Ctors
@@ -198,13 +213,6 @@ namespace RDFSharp.Query
                 #region PATTERN GROUP
                 if (evaluableQueryMember is RDFPatternGroup patternGroup)
                 {
-                    //Cleanup eventual data from stateful pattern group members
-                    patternGroup.GroupMembers.ForEach(gm =>
-                    {
-                        if (gm is RDFExistsFilter existsFilter)
-                            existsFilter.PatternResults?.Clear();
-                    });
-
                     //Get the intermediate result tables of the pattern group
                     EvaluatePatternGroup(query, patternGroup, datasource);
 
@@ -227,17 +235,17 @@ namespace RDFSharp.Query
                         QueryMemberFinalResultTables.Add(subQuery.QueryMemberID, subQueryResult.SelectResults);
 
                         //Populate its metadata (IsOptional)
-                        if (!QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
-                            QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties.Add("IsOptional", subQuery.IsOptional);
+                        if (!QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties.ContainsKey(IsOptional))
+                            QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties.Add(IsOptional, subQuery.IsOptional);
                         else
-                            QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties["IsOptional"] = subQuery.IsOptional
-                                                                                                                      || (bool)QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties["IsOptional"];
+                            QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties[IsOptional] = subQuery.IsOptional
+                                                                                                                      || (bool)QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties[IsOptional];
 
                         //Populate its metadata (JoinAsUnion)
-                        if (!QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
-                            QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", subQuery.JoinAsUnion);
+                        if (!QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties.ContainsKey(JoinAsUnion))
+                            QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties.Add(JoinAsUnion, subQuery.JoinAsUnion);
                         else
-                            QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties["JoinAsUnion"] = subQuery.JoinAsUnion;
+                            QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties[JoinAsUnion] = subQuery.JoinAsUnion;
                     }
                 }
                 #endregion
@@ -261,8 +269,8 @@ namespace RDFSharp.Query
                     DataTable patternResultsTable = ApplyPattern(pattern, dataSource);
 
                     //Set name and metadata of result datatable
-                    patternResultsTable.ExtendedProperties.Add("IsOptional", pattern.IsOptional);
-                    patternResultsTable.ExtendedProperties.Add("JoinAsUnion", pattern.JoinAsUnion);
+                    patternResultsTable.ExtendedProperties.Add(IsOptional, pattern.IsOptional);
+                    patternResultsTable.ExtendedProperties.Add(JoinAsUnion, pattern.JoinAsUnion);
 
                     //Save result datatable
                     QueryMemberTemporaryResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
@@ -299,10 +307,11 @@ namespace RDFSharp.Query
                     DataTable existsFilterResultsTable = ApplyPattern(existsFilter.Pattern, dataSource);
 
                     //Set name and metadata of result datatable
-                    existsFilterResultsTable.ExtendedProperties.Add("IsOptional", false);
-                    existsFilterResultsTable.ExtendedProperties.Add("JoinAsUnion", false);
+                    existsFilterResultsTable.ExtendedProperties.Add(IsOptional, false);
+                    existsFilterResultsTable.ExtendedProperties.Add(JoinAsUnion, false);
 
                     //Save result datatable (directly into the filter)
+                    existsFilter.PatternResults?.Clear();
                     existsFilter.PatternResults = existsFilterResultsTable;
                 }
                 #endregion
@@ -324,17 +333,17 @@ namespace RDFSharp.Query
                 QueryMemberFinalResultTables.Add(patternGroup.QueryMemberID, queryMemberFinalResultTable);
 
                 //Populate its metadata (IsOptional)
-                if (!QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
-                    QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add("IsOptional", patternGroup.IsOptional);
+                if (!QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey(IsOptional))
+                    QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add(IsOptional, patternGroup.IsOptional);
                 else
-                    QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"] = patternGroup.IsOptional
-                                                                                                                    || (bool)QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"];
+                    QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties[IsOptional] = patternGroup.IsOptional
+                                                                                                                || (bool)QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties[IsOptional];
 
                 //Populate its metadata (JoinAsUnion)
-                if (!QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
-                    QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", patternGroup.JoinAsUnion);
+                if (!QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey(JoinAsUnion))
+                    QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add(JoinAsUnion, patternGroup.JoinAsUnion);
                 else
-                    QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["JoinAsUnion"] = patternGroup.JoinAsUnion;
+                    QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties[JoinAsUnion] = patternGroup.JoinAsUnion;
             }
         }
 
@@ -1549,8 +1558,8 @@ namespace RDFSharp.Query
                 DataTable patternTable = ApplyPattern(pattern, dataSource);
 
                 //Set extended properties
-                patternTable.ExtendedProperties.Add("IsOptional", pattern.IsOptional);
-                patternTable.ExtendedProperties.Add("JoinAsUnion", pattern.JoinAsUnion);
+                patternTable.ExtendedProperties.Add(IsOptional, pattern.IsOptional);
+                patternTable.ExtendedProperties.Add(JoinAsUnion, pattern.JoinAsUnion);
 
                 //Add produced table
                 patternTables.Add(patternTable);
@@ -1917,7 +1926,7 @@ namespace RDFSharp.Query
             DataColumn[] dt1Columns = dt1.Columns.OfType<DataColumn>().ToArray();
             DataColumn[] dt2Columns = dt2.Columns.OfType<DataColumn>().ToArray();
 
-            bool dt2IsOptionalTable = (dt2.ExtendedProperties.ContainsKey("IsOptional") && dt2.ExtendedProperties["IsOptional"].Equals(true));
+            bool dt2IsOptionalTable = (dt2.ExtendedProperties.ContainsKey(IsOptional) && dt2.ExtendedProperties[IsOptional].Equals(true));
             bool joinInvalidationFlag = false;
             bool foundAnyResult = false;
 
@@ -2066,27 +2075,27 @@ namespace RDFSharp.Query
                 //Process Unions
                 for (int i = 1; i < dataTables.Count; i++)
                 {
-                    if (isMerge || (dataTables[i - 1].ExtendedProperties.ContainsKey("JoinAsUnion") && dataTables[i - 1].ExtendedProperties["JoinAsUnion"].Equals(true)))
+                    if (isMerge || (dataTables[i-1].ExtendedProperties.ContainsKey(JoinAsUnion) && dataTables[i-1].ExtendedProperties[JoinAsUnion].Equals(true)))
                     {
                         //Merge the previous table into the current one
-                        dataTables[i].Merge(dataTables[i - 1], true, MissingSchemaAction.Add);
+                        dataTables[i].Merge(dataTables[i-1], true, MissingSchemaAction.Add);
 
                         //Clear the previous table and flag it as logically deleted
-                        dataTables[i - 1].Rows.Clear();
-                        dataTables[i - 1].ExtendedProperties.Add("LogicallyDeleted", true);
+                        dataTables[i-1].Rows.Clear();
+                        dataTables[i-1].ExtendedProperties.Add(LogicallyDeleted, true);
 
                         //Set automatic switch to OuterJoin (because we have done Unions, so null values must be preserved)
                         switchToOuterJoin = true;
                     }
                 }
-                dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey("LogicallyDeleted") && dt.ExtendedProperties["LogicallyDeleted"].Equals(true));
+                dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
 
                 //Process Joins
                 finalTable = dataTables[0];
                 for (int i = 1; i < dataTables.Count; i++)
                 {
                     //Set automatic switch to OuterJoin in case of relevant "Optional" detected
-                    switchToOuterJoin = (switchToOuterJoin || (dataTables[i].ExtendedProperties.ContainsKey("IsOptional") && dataTables[i].ExtendedProperties["IsOptional"].Equals(true)));
+                    switchToOuterJoin = (switchToOuterJoin || (dataTables[i].ExtendedProperties.ContainsKey(IsOptional) && dataTables[i].ExtendedProperties[IsOptional].Equals(true)));
 
                     //Support OPTIONAL data
                     if (switchToOuterJoin)

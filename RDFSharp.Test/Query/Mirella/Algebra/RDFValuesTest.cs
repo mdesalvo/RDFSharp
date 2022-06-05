@@ -90,10 +90,10 @@ namespace RDFSharp.Test.Query
             DataTable valuesTable = values.GetDataTable();
 
             Assert.IsNotNull(valuesTable);
-            Assert.IsTrue(valuesTable.ExtendedProperties.ContainsKey("IsOptional"));
-            Assert.IsTrue((bool)valuesTable.ExtendedProperties["IsOptional"]);
-            Assert.IsTrue(valuesTable.ExtendedProperties.ContainsKey("JoinAsUnion"));
-            Assert.IsFalse((bool)valuesTable.ExtendedProperties["JoinAsUnion"]);
+            Assert.IsTrue(valuesTable.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
+            Assert.IsTrue((bool)valuesTable.ExtendedProperties[RDFQueryEngine.IsOptional]);
+            Assert.IsTrue(valuesTable.ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
+            Assert.IsFalse((bool)valuesTable.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
             Assert.IsTrue(valuesTable.Columns.Count == 3);
             Assert.IsTrue(valuesTable.Columns.Contains("?V1"));
             Assert.IsTrue(valuesTable.Columns.Contains("?V2"));
