@@ -189,7 +189,7 @@ namespace RDFSharp.Store
             RDFVariable P = new RDFVariable("P");
             RDFVariable O = new RDFVariable("O");
             RDFSelectQuery Q = new RDFSelectQuery()
-                                .AddPatternGroup(new RDFPatternGroup("UnreifyQuadruples")
+                                .AddPatternGroup(new RDFPatternGroup()
                                     .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT))
                                     .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.SUBJECT, S))
                                     .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.PREDICATE, P))

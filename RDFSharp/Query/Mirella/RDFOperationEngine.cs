@@ -243,7 +243,7 @@ namespace RDFSharp.Query
                     if (clearOperation.FromContext != null)
                     {
                         deleteWhereOperation
-                            .AddPatternGroup(new RDFPatternGroup("PG1")
+                            .AddPatternGroup(new RDFPatternGroup()
                                 .AddPattern(new RDFPattern(new RDFContext(clearOperation.FromContext), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O"))))
                             .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFContext(clearOperation.FromContext), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
                     }
@@ -256,7 +256,7 @@ namespace RDFSharp.Query
                             //Default => delete quadruples having the default namespace as context
                             case RDFQueryEnums.RDFClearOperationFlavor.DEFAULT:
                                 deleteWhereOperation
-                                    .AddPatternGroup(new RDFPatternGroup("PG1")
+                                    .AddPatternGroup(new RDFPatternGroup()
                                         .AddPattern(new RDFPattern(new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O"))))
                                     .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
                                 break;
@@ -264,7 +264,7 @@ namespace RDFSharp.Query
                             //Default => delete quadruples NOT having the default namespace as context
                             case RDFQueryEnums.RDFClearOperationFlavor.NAMED:
                                 deleteWhereOperation
-                                    .AddPatternGroup(new RDFPatternGroup("PG1")
+                                    .AddPatternGroup(new RDFPatternGroup()
                                         .AddPattern(new RDFPattern(new RDFVariable("C"), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")))
                                         .AddFilter(new RDFBooleanNotFilter(new RDFSameTermFilter(new RDFVariable("C"), new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri)))))
                                     .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFVariable("C"), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
@@ -273,7 +273,7 @@ namespace RDFSharp.Query
                             //Default => delete all quadruples
                             case RDFQueryEnums.RDFClearOperationFlavor.ALL:
                                 deleteWhereOperation
-                                    .AddPatternGroup(new RDFPatternGroup("PG1")
+                                    .AddPatternGroup(new RDFPatternGroup()
                                         .AddPattern(new RDFPattern(new RDFVariable("C"), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O"))))
                                     .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFVariable("C"), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
                                 break;

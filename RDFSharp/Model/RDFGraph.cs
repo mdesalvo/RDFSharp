@@ -382,7 +382,7 @@ namespace RDFSharp.Model
             RDFVariable P = new RDFVariable("P");
             RDFVariable O = new RDFVariable("O");
             RDFSelectQuery Q = new RDFSelectQuery()
-                                    .AddPatternGroup(new RDFPatternGroup("UnreifyTriples")
+                                    .AddPatternGroup(new RDFPatternGroup()
                                         .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT))
                                         .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.SUBJECT, S))
                                         .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.PREDICATE, P))

@@ -82,14 +82,14 @@ namespace RDFSharp.Test.Query
             query.AddDescribeTerm(new RDFResource("ex:flower")); //Will be discarded, since duplicate terms are not allowed
             query.AddDescribeTerm(null as RDFResource); //Will be discarded, since null templates are not allowed
             query.AddPatternGroup(
-                new RDFPatternGroup("PG1")
+                new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
                     .AddFilter(new RDFIsUriFilter(new RDFVariable("?S"))));
             query.AddSubQuery(
                 new RDFSelectQuery()
                     .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))
                     .AddPatternGroup(
-                        new RDFPatternGroup("PG1")
+                        new RDFPatternGroup()
                             .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
                             .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { RDFVocabulary.RDFS.CLASS })))
                     .AddProjectionVariable(new RDFVariable("?S"))
@@ -118,14 +118,14 @@ namespace RDFSharp.Test.Query
             query.AddDescribeTerm(new RDFVariable("?S"));
             query.AddDescribeTerm(new RDFResource("ex:flower"));
             query.AddPatternGroup(
-                new RDFPatternGroup("PG1")
+                new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
                     .AddFilter(new RDFIsUriFilter(new RDFVariable("?S"))));
             query.AddSubQuery(
                 new RDFSelectQuery()
                     .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))
                     .AddPatternGroup(
-                        new RDFPatternGroup("PG1")
+                        new RDFPatternGroup()
                             .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
                             .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { RDFVocabulary.RDFS.CLASS })))
                     .AddProjectionVariable(new RDFVariable("?S"))
@@ -156,7 +156,7 @@ namespace RDFSharp.Test.Query
             query.AddDescribeTerm(new RDFVariable("?S"));
             query.AddDescribeTerm(new RDFResource("ex:flower"));
             query.AddPatternGroup(
-                new RDFPatternGroup("PG1")
+                new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
                     .AddFilter(new RDFIsUriFilter(new RDFVariable("?S")))
                     .UnionWithNext());
@@ -164,7 +164,7 @@ namespace RDFSharp.Test.Query
                 new RDFSelectQuery()
                     .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))
                     .AddPatternGroup(
-                        new RDFPatternGroup("PG1")
+                        new RDFPatternGroup()
                             .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
                             .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { RDFVocabulary.RDFS.CLASS })))
                     .AddProjectionVariable(new RDFVariable("?S"))
@@ -195,7 +195,7 @@ namespace RDFSharp.Test.Query
             graph.AddTriple(new RDFTriple(new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
                 .AddModifier(new RDFDistinctModifier());
             RDFDescribeQueryResult result = query.ApplyToGraph(graph);
@@ -227,7 +227,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFResource("ex:flower"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
             RDFDescribeQueryResult result = query.ApplyToGraph(graph);
 
@@ -255,7 +255,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
             RDFDescribeQueryResult result = query.ApplyToGraph(graph);
 
@@ -286,7 +286,7 @@ namespace RDFSharp.Test.Query
                 .AddDescribeTerm(new RDFVariable("?S"))
                 .AddDescribeTerm(new RDFVariable("?P"))
                 .AddDescribeTerm(new RDFVariable("?L"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS))
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFResource("ex:color"), new RDFVariable("?L"))))
                 .AddModifier(new RDFDistinctModifier());
@@ -349,7 +349,7 @@ namespace RDFSharp.Test.Query
                 .AddDescribeTerm(new RDFVariable("?S"))
                 .AddDescribeTerm(new RDFVariable("?P"))
                 .AddDescribeTerm(new RDFVariable("?Q")) //This variable will not be evaluated, since it is not part of results table
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
             RDFDescribeQueryResult result = query.ApplyToGraph(graph);
 
@@ -372,7 +372,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?L"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS))
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFResource("ex:color"), new RDFVariable("?L"))).Optional()
                     .AddFilter(new RDFBooleanNotFilter(new RDFBoundFilter(new RDFVariable("?L")))));
@@ -393,7 +393,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
                 .AddModifier(new RDFDistinctModifier());
             RDFDescribeQueryResult result = query.ApplyToGraph(null);
@@ -413,7 +413,7 @@ namespace RDFSharp.Test.Query
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
                 .AddModifier(new RDFDistinctModifier());
             RDFDescribeQueryResult result = query.ApplyToStore(store);
@@ -449,7 +449,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFResource("ex:flower"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
             RDFDescribeQueryResult result = query.ApplyToStore(store);
 
@@ -481,7 +481,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFResource("ex:ctx2"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS)));
             RDFDescribeQueryResult result = query.ApplyToStore(store);
 
@@ -509,7 +509,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFResource("bnode:12345"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS)));
             RDFDescribeQueryResult result = query.ApplyToStore(store);
 
@@ -536,7 +536,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
             RDFDescribeQueryResult result = query.ApplyToStore(store);
 
@@ -568,7 +568,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?C"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS)));
             RDFDescribeQueryResult result = query.ApplyToStore(store);
 
@@ -606,7 +606,7 @@ namespace RDFSharp.Test.Query
                 .AddDescribeTerm(new RDFVariable("?S"))
                 .AddDescribeTerm(new RDFVariable("?P"))
                 .AddDescribeTerm(new RDFVariable("?L"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS))
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFResource("ex:color"), new RDFVariable("?L"))))
                 .AddModifier(new RDFDistinctModifier());
@@ -682,7 +682,7 @@ namespace RDFSharp.Test.Query
                 .AddDescribeTerm(new RDFVariable("?S"))
                 .AddDescribeTerm(new RDFVariable("?P"))
                 .AddDescribeTerm(new RDFVariable("?Q")) //This variable will not be evaluated, since it is not part of results table
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
             RDFDescribeQueryResult result = query.ApplyToStore(store);
 
@@ -706,7 +706,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?L"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS))
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFResource("ex:color"), new RDFVariable("?L"))).Optional()
                     .AddFilter(new RDFBooleanNotFilter(new RDFBoundFilter(new RDFVariable("?L")))));
@@ -728,7 +728,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
                 .AddModifier(new RDFDistinctModifier());
             RDFDescribeQueryResult result = query.ApplyToStore(null);
@@ -753,7 +753,7 @@ namespace RDFSharp.Test.Query
             federation.AddGraph(graph);
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
                 .AddModifier(new RDFDistinctModifier());
             RDFDescribeQueryResult result = query.ApplyToFederation(federation);
@@ -795,7 +795,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFResource("ex:flower"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
             RDFDescribeQueryResult result = query.ApplyToFederation(federation);
 
@@ -829,7 +829,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFResource("ex:ctx2"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS)));
             RDFDescribeQueryResult result = query.ApplyToFederation(federation);
 
@@ -859,7 +859,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFResource("bnode:12345"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS)));
             RDFDescribeQueryResult result = query.ApplyToFederation(federation);
 
@@ -888,7 +888,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
             RDFDescribeQueryResult result = query.ApplyToFederation(federation);
 
@@ -922,7 +922,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?C"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS)));
             RDFDescribeQueryResult result = query.ApplyToFederation(federation);
 
@@ -962,7 +962,7 @@ namespace RDFSharp.Test.Query
                 .AddDescribeTerm(new RDFVariable("?S"))
                 .AddDescribeTerm(new RDFVariable("?P"))
                 .AddDescribeTerm(new RDFVariable("?L"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS))
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFResource("ex:color"), new RDFVariable("?L"))))
                 .AddModifier(new RDFDistinctModifier());
@@ -1036,7 +1036,7 @@ namespace RDFSharp.Test.Query
                 .AddDescribeTerm(new RDFVariable("?S"))
                 .AddDescribeTerm(new RDFVariable("?P"))
                 .AddDescribeTerm(new RDFVariable("?Q")) //This variable will not be evaluated, since it is not part of results table
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
             RDFDescribeQueryResult result = query.ApplyToFederation(federation);
 
@@ -1062,7 +1062,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?L"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS))
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFResource("ex:color"), new RDFVariable("?L"))).Optional()
                     .AddFilter(new RDFBooleanNotFilter(new RDFBoundFilter(new RDFVariable("?L")))));
@@ -1084,7 +1084,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
                 .AddModifier(new RDFDistinctModifier());
             RDFDescribeQueryResult result = query.ApplyToFederation(null);
@@ -1101,7 +1101,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
                 .AddModifier(new RDFDistinctModifier());
             RDFDescribeQueryResult result = query.ApplyToFederation(new RDFFederation().AddFederation(new RDFFederation()));
@@ -1130,7 +1130,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldApplyDescribeQueryToSPARQLEndpointAndHaveResults/sparql"));
             RDFDescribeQueryResult result = query.ApplyToSPARQLEndpoint(endpoint);
@@ -1162,7 +1162,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldApplyDescribeQueryToSPARQLEndpointAndNotHaveResults/sparql"));
             RDFDescribeQueryResult result = query.ApplyToSPARQLEndpoint(endpoint);
@@ -1179,7 +1179,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFDescribeQueryResult result = query.ApplyToSPARQLEndpoint(null);
 
@@ -1207,7 +1207,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldThrowExceptionWhenApplyingDescribeQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql"));
 
@@ -1232,7 +1232,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldGiveEmptyResultWhenApplyingDescribeQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql"));
             RDFDescribeQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(250, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult));
@@ -1261,7 +1261,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldThrowExceptionWhenApplyingDescribeQueryToSPARQLEndpointAccordingToBehavior/sparql"));
 
@@ -1286,7 +1286,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldGiveEmptyResultWhenApplyingDescribeQueryToSPARQLEndpointAccordingToBehavior/sparql"));
             RDFDescribeQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(750, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult));
@@ -1308,7 +1308,7 @@ namespace RDFSharp.Test.Query
             graph.AddTriple(new RDFTriple(new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
                 .AddModifier(new RDFDistinctModifier());
             RDFDescribeQueryResult result = await query.ApplyToGraphAsync(graph);
@@ -1343,7 +1343,7 @@ namespace RDFSharp.Test.Query
                 .AddDescribeTerm(new RDFVariable("?S"))
                 .AddDescribeTerm(new RDFVariable("?P"))
                 .AddDescribeTerm(new RDFVariable("?Q")) //This variable will not be evaluated, since it is not part of results table
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
             RDFDescribeQueryResult result = await query.ApplyToGraphAsync(graph);
 
@@ -1362,7 +1362,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
                 .AddModifier(new RDFDistinctModifier());
             RDFDescribeQueryResult result = await query.ApplyToGraphAsync(null);
@@ -1382,7 +1382,7 @@ namespace RDFSharp.Test.Query
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
                 .AddModifier(new RDFDistinctModifier());
             RDFDescribeQueryResult result = await query.ApplyToStoreAsync(store);
@@ -1421,7 +1421,7 @@ namespace RDFSharp.Test.Query
                 .AddDescribeTerm(new RDFVariable("?S"))
                 .AddDescribeTerm(new RDFVariable("?P"))
                 .AddDescribeTerm(new RDFVariable("?Q")) //This variable will not be evaluated, since it is not part of results table
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
             RDFDescribeQueryResult result = await query.ApplyToStoreAsync(store);
 
@@ -1441,7 +1441,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
                 .AddModifier(new RDFDistinctModifier());
             RDFDescribeQueryResult result = await query.ApplyToStoreAsync(null);
@@ -1466,7 +1466,7 @@ namespace RDFSharp.Test.Query
             federation.AddGraph(graph);
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
                 .AddModifier(new RDFDistinctModifier());
             RDFDescribeQueryResult result = await query.ApplyToFederationAsync(federation);
@@ -1511,7 +1511,7 @@ namespace RDFSharp.Test.Query
                 .AddDescribeTerm(new RDFVariable("?S"))
                 .AddDescribeTerm(new RDFVariable("?P"))
                 .AddDescribeTerm(new RDFVariable("?Q")) //This variable will not be evaluated, since it is not part of results table
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
             RDFDescribeQueryResult result = await query.ApplyToFederationAsync(federation);
 
@@ -1531,7 +1531,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
                 .AddModifier(new RDFDistinctModifier());
             RDFDescribeQueryResult result = await query.ApplyToFederationAsync(null);
@@ -1560,7 +1560,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldApplyDescribeQueryToSPARQLEndpointAsyncAndHaveResults/sparql"));
             RDFDescribeQueryResult result = await query.ApplyToSPARQLEndpointAsync(endpoint);
@@ -1592,7 +1592,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldApplyDescribeQueryToSPARQLEndpointAsyncAndNotHaveResults/sparql"));
             RDFDescribeQueryResult result = await query.ApplyToSPARQLEndpointAsync(endpoint);
@@ -1609,7 +1609,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
+                .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFDescribeQueryResult result = await query.ApplyToSPARQLEndpointAsync(null);
 

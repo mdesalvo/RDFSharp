@@ -54,15 +54,10 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty named pattern group
+        /// Default-ctor to build an empty pattern group
         /// </summary>
-        public RDFPatternGroup(string patternGroupName)
+        public RDFPatternGroup()
         {
-            string trimmedPatternGroupName = patternGroupName?.Trim();
-            if (string.IsNullOrWhiteSpace(trimmedPatternGroupName))
-                throw new RDFQueryException("Cannot create RDFPatternGroup because given \"patternGroupName\" parameter is null or empty.");
-            
-            this.PatternGroupName = trimmedPatternGroupName.ToUpperInvariant();
             this.IsEvaluable = true;
             this.IsOptional = false;
             this.JoinAsUnion = false;
@@ -73,7 +68,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// List-ctor to build a named pattern group with the given list of patterns
         /// </summary>
-        public RDFPatternGroup(string patternGroupName, List<RDFPattern> patterns) : this(patternGroupName)
+        public RDFPatternGroup(List<RDFPattern> patterns) : this()
         {
             if (patterns != null)
                 patterns.ForEach(p => this.AddPattern(p));
@@ -82,7 +77,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// List-ctor to build a named pattern group with the given list of patterns and filters
         /// </summary>
-        public RDFPatternGroup(string patternGroupName, List<RDFPattern> patterns, List<RDFFilter> filters) : this(patternGroupName, patterns)
+        public RDFPatternGroup(List<RDFPattern> patterns, List<RDFFilter> filters) : this(patterns)
         {
             if (filters != null)
                 filters.ForEach(f => this.AddFilter(f));

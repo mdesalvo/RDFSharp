@@ -30,10 +30,9 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldCreatePatternGroup()
         {
-            RDFPatternGroup pGroup = new RDFPatternGroup(" pGroup ");
+            RDFPatternGroup pGroup = new RDFPatternGroup();
 
             Assert.IsNotNull(pGroup);
-            Assert.IsTrue(pGroup.PatternGroupName.Equals("PGROUP"));
             Assert.IsTrue(pGroup.IsEvaluable);
             Assert.IsFalse(pGroup.IsOptional);
             Assert.IsFalse(pGroup.JoinAsUnion);
@@ -51,16 +50,11 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingPatternGroupBecauseNullOrWhitespaceName()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFPatternGroup(null));
-
-        [TestMethod]
         public void ShouldCreateOptionalPatternGroup()
         {
-            RDFPatternGroup pGroup = new RDFPatternGroup(" pGroup ").Optional();
+            RDFPatternGroup pGroup = new RDFPatternGroup().Optional();
 
             Assert.IsNotNull(pGroup);
-            Assert.IsTrue(pGroup.PatternGroupName.Equals("PGROUP"));
             Assert.IsTrue(pGroup.IsEvaluable);
             Assert.IsTrue(pGroup.IsOptional);
             Assert.IsFalse(pGroup.JoinAsUnion);
@@ -80,10 +74,9 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldCreateUnionWithNextPatternGroup()
         {
-            RDFPatternGroup pGroup = new RDFPatternGroup(" pGroup ").UnionWithNext();
+            RDFPatternGroup pGroup = new RDFPatternGroup().UnionWithNext();
 
             Assert.IsNotNull(pGroup);
-            Assert.IsTrue(pGroup.PatternGroupName.Equals("PGROUP"));
             Assert.IsTrue(pGroup.IsEvaluable);
             Assert.IsFalse(pGroup.IsOptional);
             Assert.IsTrue(pGroup.JoinAsUnion);
@@ -107,7 +100,7 @@ namespace RDFSharp.Test.Query
             RDFPattern pattern2 = new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o"));
             RDFPattern pattern3 = new RDFPattern(new RDFVariable("c"), new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
             RDFPattern groundPattern = new RDFPattern(RDFVocabulary.OWL.CLASS, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
-            RDFPatternGroup pGroup = new RDFPatternGroup(" pGroup ", 
+            RDFPatternGroup pGroup = new RDFPatternGroup(
                 new List<RDFPattern>() {
                     pattern1,
                     pattern2,
@@ -118,7 +111,6 @@ namespace RDFSharp.Test.Query
                 });
 
             Assert.IsNotNull(pGroup);
-            Assert.IsTrue(pGroup.PatternGroupName.Equals("PGROUP"));
             Assert.IsTrue(pGroup.IsEvaluable);
             Assert.IsFalse(pGroup.IsOptional);
             Assert.IsFalse(pGroup.JoinAsUnion);
@@ -144,7 +136,7 @@ namespace RDFSharp.Test.Query
             RDFPattern pattern3 = new RDFPattern(new RDFVariable("c"), new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
             RDFPattern groundPattern = new RDFPattern(RDFVocabulary.OWL.CLASS, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
             RDFIsUriFilter filter = new RDFIsUriFilter(new RDFVariable("s"));
-            RDFPatternGroup pGroup = new RDFPatternGroup(" pGroup ", 
+            RDFPatternGroup pGroup = new RDFPatternGroup(
                 new List<RDFPattern>() {
                     pattern1,
                     pattern2,
@@ -160,7 +152,6 @@ namespace RDFSharp.Test.Query
                 });
 
             Assert.IsNotNull(pGroup);
-            Assert.IsTrue(pGroup.PatternGroupName.Equals("PGROUP"));
             Assert.IsTrue(pGroup.IsEvaluable);
             Assert.IsFalse(pGroup.IsOptional);
             Assert.IsFalse(pGroup.JoinAsUnion);
@@ -185,7 +176,7 @@ namespace RDFSharp.Test.Query
             RDFPattern pattern2 = new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o"));
             RDFPattern pattern3 = new RDFPattern(new RDFVariable("c"), new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
             RDFPattern groundPattern = new RDFPattern(RDFVocabulary.OWL.CLASS, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
-            RDFPatternGroup pGroup = new RDFPatternGroup(" pGroup ");
+            RDFPatternGroup pGroup = new RDFPatternGroup();
             pGroup.AddPattern(pattern1);
             pGroup.AddPattern(pattern2);
             pGroup.AddPattern(pattern3);
@@ -194,7 +185,6 @@ namespace RDFSharp.Test.Query
             pGroup.AddPattern(groundPattern); //Will not be added, since ground patterns are not allowed
 
             Assert.IsNotNull(pGroup);
-            Assert.IsTrue(pGroup.PatternGroupName.Equals("PGROUP"));
             Assert.IsTrue(pGroup.IsEvaluable);
             Assert.IsFalse(pGroup.IsOptional);
             Assert.IsFalse(pGroup.JoinAsUnion);
@@ -216,13 +206,12 @@ namespace RDFSharp.Test.Query
         public void ShouldAddFilter()
         {
             RDFIsUriFilter filter = new RDFIsUriFilter(new RDFVariable("s"));
-            RDFPatternGroup pGroup = new RDFPatternGroup(" pGroup ");
+            RDFPatternGroup pGroup = new RDFPatternGroup();
             pGroup.AddFilter(filter);
             pGroup.AddFilter(null); //Will not be added, since null is not allowed
             pGroup.AddFilter(filter); //Will not be added, since duplicate filters are not allowed
 
             Assert.IsNotNull(pGroup);
-            Assert.IsTrue(pGroup.PatternGroupName.Equals("PGROUP"));
             Assert.IsTrue(pGroup.IsEvaluable);
             Assert.IsFalse(pGroup.IsOptional);
             Assert.IsFalse(pGroup.JoinAsUnion);
@@ -245,13 +234,12 @@ namespace RDFSharp.Test.Query
         {
             RDFPropertyPath pPath = new RDFPropertyPath(new RDFVariable("s"), new RDFVariable("e")).AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE))
                                                                                                    .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE)); 
-            RDFPatternGroup pGroup = new RDFPatternGroup(" pGroup ");
+            RDFPatternGroup pGroup = new RDFPatternGroup();
             pGroup.AddPropertyPath(pPath);
             pGroup.AddPropertyPath(null); //Will not be added, since null is not allowed
             pGroup.AddPropertyPath(pPath); //Will not be added, since duplicate property paths are not allowed
 
             Assert.IsNotNull(pGroup);
-            Assert.IsTrue(pGroup.PatternGroupName.Equals("PGROUP"));
             Assert.IsTrue(pGroup.IsEvaluable);
             Assert.IsFalse(pGroup.IsOptional);
             Assert.IsFalse(pGroup.JoinAsUnion);
@@ -273,13 +261,12 @@ namespace RDFSharp.Test.Query
         public void ShouldAddValues()
         {
             RDFValues values = new RDFValues().AddColumn(new RDFVariable("s"), new List<RDFPatternMember>() { new RDFPlainLiteral("lit") });
-            RDFPatternGroup pGroup = new RDFPatternGroup(" pGroup ");
+            RDFPatternGroup pGroup = new RDFPatternGroup();
             pGroup.AddValues(values);
             pGroup.AddValues(null); //Will not be added, since null is not allowed
             pGroup.AddValues(values); //Will not be added, since duplicate values are not allowed
 
             Assert.IsNotNull(pGroup);
-            Assert.IsTrue(pGroup.PatternGroupName.Equals("PGROUP"));
             Assert.IsTrue(pGroup.IsEvaluable);
             Assert.IsFalse(pGroup.IsOptional);
             Assert.IsFalse(pGroup.JoinAsUnion);
@@ -302,12 +289,11 @@ namespace RDFSharp.Test.Query
         public void ShouldAddInjectedValues()
         {
             RDFValues values = new RDFValues().AddColumn(new RDFVariable("s"), new List<RDFPatternMember>() { new RDFPlainLiteral("lit") });
-            RDFPatternGroup pGroup = new RDFPatternGroup(" pGroup ");
+            RDFPatternGroup pGroup = new RDFPatternGroup();
             pGroup.AddInjectedValues(values);
             pGroup.AddInjectedValues(null); //Will not be added, since null is not allowed
 
             Assert.IsNotNull(pGroup);
-            Assert.IsTrue(pGroup.PatternGroupName.Equals("PGROUP"));
             Assert.IsTrue(pGroup.IsEvaluable);
             Assert.IsFalse(pGroup.IsOptional);
             Assert.IsFalse(pGroup.JoinAsUnion);

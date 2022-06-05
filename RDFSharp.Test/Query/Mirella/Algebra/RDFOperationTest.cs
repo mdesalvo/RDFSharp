@@ -177,7 +177,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldAddPatternGroup()
         {
-            RDFPatternGroup patternGroup = new RDFPatternGroup("PG1");
+            RDFPatternGroup patternGroup = new RDFPatternGroup();
             RDFOperation operation = new RDFOperation();
             operation.AddPatternGroup<RDFOperation>(patternGroup);
             operation.AddPatternGroup<RDFOperation>(patternGroup); //Will be discarded, since duplicate pattern groups are not allowed

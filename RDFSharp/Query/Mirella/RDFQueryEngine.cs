@@ -631,7 +631,7 @@ namespace RDFSharp.Query
                         //Create CONSTRUCT query to build term description
                         RDFConstructQuery constructQuery =
                             new RDFConstructQuery()
-                                .AddPatternGroup(new RDFPatternGroup("PG1")
+                                .AddPatternGroup(new RDFPatternGroup()
                                     .AddPattern(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
                                     .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), describeResource, new RDFVariable("?OBJECT")).UnionWithNext())
                                     .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource))
@@ -732,7 +732,7 @@ namespace RDFSharp.Query
                             RDFConstructQuery constructQuery =
                                 describeVariableValue is RDFResource describeVariableValueResource
                                     ? new RDFConstructQuery()
-                                        .AddPatternGroup(new RDFPatternGroup("PG1")
+                                        .AddPatternGroup(new RDFPatternGroup()
                                             .AddPattern(new RDFPattern(describeVariableValueResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
                                             .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), describeVariableValueResource, new RDFVariable("?OBJECT")).UnionWithNext())
                                             .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeVariableValueResource)))
@@ -740,7 +740,7 @@ namespace RDFSharp.Query
                                         .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), describeVariableValueResource, new RDFVariable("?OBJECT")))
                                         .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeVariableValueResource))
                                     : new RDFConstructQuery()
-                                        .AddPatternGroup(new RDFPatternGroup("PG1")
+                                        .AddPatternGroup(new RDFPatternGroup()
                                             .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), (RDFLiteral)describeVariableValue)))
                                         .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), (RDFLiteral)describeVariableValue));
 
@@ -792,7 +792,7 @@ namespace RDFSharp.Query
                         //Create CONSTRUCT query to build term description
                         RDFConstructQuery constructQuery =
                             new RDFConstructQuery()
-                                .AddPatternGroup(new RDFPatternGroup("PG1")
+                                .AddPatternGroup(new RDFPatternGroup()
                                     .AddPattern(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
                                     .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), describeResource, new RDFVariable("?OBJECT")).UnionWithNext())
                                     .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource)))
@@ -1514,7 +1514,7 @@ namespace RDFSharp.Query
             //Transform the pattern into an equivalent "SELECT *" query
             RDFSelectQuery selectQuery =
                 new RDFSelectQuery()
-                    .AddPatternGroup(new RDFPatternGroup("FEDQUERY")
+                    .AddPatternGroup(new RDFPatternGroup()
                         .AddPattern(pattern));
 
             //Apply the query to the SPARQL endpoint

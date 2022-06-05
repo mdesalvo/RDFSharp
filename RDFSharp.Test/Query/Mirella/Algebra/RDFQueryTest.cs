@@ -53,7 +53,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldAddPatternGroup()
         {
-            RDFPatternGroup pg1 = new RDFPatternGroup("PG1");
+            RDFPatternGroup pg1 = new RDFPatternGroup();
             RDFQuery query = new RDFQuery()
                 .AddPatternGroup<RDFQuery>(pg1)
                 .AddPatternGroup<RDFQuery>(null) //Will not be accepted, since null pattern groups are not allowed
@@ -172,7 +172,7 @@ namespace RDFSharp.Test.Query
             List<RDFValues> values = new List<RDFValues>() { 
                 new RDFValues().AddColumn(new RDFVariable("?V"), new List<RDFPatternMember>() { new RDFResource("ex:value") }) };
             RDFQuery query = new RDFQuery()
-                .AddPatternGroup<RDFQuery>(new RDFPatternGroup("PG1"))
+                .AddPatternGroup<RDFQuery>(new RDFPatternGroup())
                 .InjectValues(values)
                 .InjectValues(null);
 
@@ -202,7 +202,7 @@ namespace RDFSharp.Test.Query
             List<RDFValues> values = new List<RDFValues>() { 
                 new RDFValues().AddColumn(new RDFVariable("?V"), new List<RDFPatternMember>() { new RDFResource("ex:value") }) };
             RDFQuery query = new RDFQuery()
-                .AddSubQuery<RDFQuery>(new RDFSelectQuery().AddPatternGroup(new RDFPatternGroup("PG1")))
+                .AddSubQuery<RDFQuery>(new RDFSelectQuery().AddPatternGroup(new RDFPatternGroup()))
                 .InjectValues(values)
                 .InjectValues(null);
 

@@ -696,7 +696,7 @@ namespace RDFSharp.Semantics.OWL
                 //Execute construct query for getting property chain axiom data from ontology
                 RDFConstructQueryResult queryResult =
                     new RDFConstructQuery()
-                        .AddPatternGroup(new RDFPatternGroup("PROPERTY_CHAIN_AXIOM")
+                        .AddPatternGroup(new RDFPatternGroup()
                             .AddPropertyPath(propertyChainAxiomPath))
                         .AddTemplate(new RDFPattern(new RDFVariable("?PROPERTY_CHAIN_AXIOM_START"), (RDFResource)propertyChainAxiomTaxonomy.Key.Value, new RDFVariable("?PROPERTY_CHAIN_AXIOM_END")))
                         .ApplyToGraph(ontologyGraph);
