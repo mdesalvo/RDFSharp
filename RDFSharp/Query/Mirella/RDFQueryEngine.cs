@@ -214,13 +214,13 @@ namespace RDFSharp.Query
                 if (evaluableQueryMember is RDFPatternGroup patternGroup)
                 {
                     //Get the intermediate result tables of the pattern group
-                    EvaluatePatternGroup(query, patternGroup, datasource);
+                    EvaluatePatternGroup(patternGroup, datasource);
 
                     //Get the result table of the pattern group
-                    FinalizePatternGroup(query, patternGroup);
+                    FinalizePatternGroup(patternGroup);
 
                     //Apply the filters of the pattern group to its result table
-                    ApplyFilters(query, patternGroup);
+                    ApplyFilters(patternGroup);
                 }
                 #endregion
 
@@ -255,7 +255,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the intermediate result tables of the given pattern group
         /// </summary>
-        internal void EvaluatePatternGroup(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource dataSource)
+        internal void EvaluatePatternGroup(RDFPatternGroup patternGroup, RDFDataSource dataSource)
         {
             PatternGroupMemberResultTables[patternGroup.QueryMemberID] = new List<DataTable>();
 
@@ -301,7 +301,7 @@ namespace RDFSharp.Query
                 }
                 #endregion
 
-                #region Filter (Exists)
+                #region Filter (Exists/Not Exists)
                 else if (evaluablePGMember is RDFExistsFilter existsFilter)
                 {
                     DataTable existsFilterResultsTable = ApplyPattern(existsFilter.Pattern, dataSource);
@@ -321,7 +321,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the final result table of the given pattern group
         /// </summary>
-        internal void FinalizePatternGroup(RDFQuery query, RDFPatternGroup patternGroup)
+        internal void FinalizePatternGroup(RDFPatternGroup patternGroup)
         {
             List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
             if (evaluablePGMembers.Any())
@@ -350,7 +350,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filters of the given pattern group to its result table
         /// </summary>
-        internal void ApplyFilters(RDFQuery query, RDFPatternGroup patternGroup)
+        internal void ApplyFilters(RDFPatternGroup patternGroup)
         {
             List<RDFPatternGroupMember> evaluablePatternGroupMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
             List<RDFFilter> filters = patternGroup.GetFilters().ToList();
@@ -390,24 +390,24 @@ namespace RDFSharp.Query
         {
             #region GROUPBY/ORDERBY/PROJECTION
             List<RDFModifier> modifiers = query.GetModifiers().ToList();
-            if (query is RDFSelectQuery)
+            if (query is RDFSelectQuery selectQuery)
             {
                 #region GROUPBY
-                var groupbyModifier = modifiers.SingleOrDefault(m => m is RDFGroupByModifier);
+                RDFGroupByModifier groupbyModifier = modifiers.OfType<RDFGroupByModifier>().SingleOrDefault();
                 if (groupbyModifier != null)
                 {
                     table = groupbyModifier.ApplyModifier(table);
 
                     #region PROJECTION
-                    ((RDFSelectQuery)query).ProjectionVars.Clear();
-                    ((RDFGroupByModifier)groupbyModifier).PartitionVariables.ForEach(pv => ((RDFSelectQuery)query).AddProjectionVariable(pv));
-                    ((RDFGroupByModifier)groupbyModifier).Aggregators.ForEach(ag => ((RDFSelectQuery)query).AddProjectionVariable(ag.ProjectionVariable));
+                    selectQuery.ProjectionVars.Clear();
+                    groupbyModifier.PartitionVariables.ForEach(pv => selectQuery.AddProjectionVariable(pv));
+                    groupbyModifier.Aggregators.ForEach(ag => selectQuery.AddProjectionVariable(ag.ProjectionVariable));
                     #endregion
                 }
                 #endregion
 
                 #region ORDERBY
-                var orderbyModifiers = modifiers.Where(m => m is RDFOrderByModifier);
+                IEnumerable<RDFOrderByModifier> orderbyModifiers = modifiers.OfType<RDFOrderByModifier>();
                 if (orderbyModifiers.Any())
                 {
                     table = orderbyModifiers.Aggregate(table, (current, modifier) => modifier.ApplyModifier(current));
@@ -416,25 +416,25 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region PROJECTION
-                table = ProjectTable((RDFSelectQuery)query, table);
+                table = ProjectTable(selectQuery, table);
                 #endregion
             }
             #endregion
 
             #region DISTINCT
-            var distinctModifier = modifiers.SingleOrDefault(m => m is RDFDistinctModifier);
+            RDFDistinctModifier distinctModifier = modifiers.OfType<RDFDistinctModifier>().SingleOrDefault();
             if (distinctModifier != null)
                 table = distinctModifier.ApplyModifier(table);
             #endregion
 
             #region OFFSET
-            var offsetModifier = modifiers.SingleOrDefault(m => m is RDFOffsetModifier);
+            RDFOffsetModifier offsetModifier = modifiers.OfType<RDFOffsetModifier>().SingleOrDefault();
             if (offsetModifier != null)
                 table = offsetModifier.ApplyModifier(table);
             #endregion
 
             #region  LIMIT
-            var limitModifier = modifiers.SingleOrDefault(m => m is RDFLimitModifier);
+            RDFLimitModifier limitModifier = modifiers.OfType<RDFLimitModifier>().SingleOrDefault();
             if (limitModifier != null)
                 table = limitModifier.ApplyModifier(table);
             #endregion
