@@ -378,7 +378,7 @@ namespace RDFSharp.Query
                 EvaluateQueryMembers(operation, evaluableQueryMembers, datasource);
 
                 //Get the result table of the operation
-                resultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
+                resultTable = CombineTables(QueryMemberResultTables.Values.ToList(), false);
             }
 
             //Fill the templates from the result table

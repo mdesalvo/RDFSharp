@@ -31,14 +31,14 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Dictionary of temporary result tables produced by evaluation of query members
+        /// Dictionary of result tables produced by evaluation of patternGroup members
         /// </summary>
-        internal Dictionary<long, List<DataTable>> QueryMemberTemporaryResultTables { get; set; }
+        internal Dictionary<long, List<DataTable>> PatternGroupMemberResultTables { get; set; }
 
         /// <summary>
-        /// Dictionary of final result tables produced by evaluation of query members
+        /// Dictionary of result tables produced by evaluation of query members
         /// </summary>
-        internal Dictionary<long, DataTable> QueryMemberFinalResultTables { get; set; }
+        internal Dictionary<long, DataTable> QueryMemberResultTables { get; set; }
 
         /// <summary>
         /// Default column type used for Mirella tables
@@ -67,8 +67,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFQueryEngine()
         {
-            this.QueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
-            this.QueryMemberFinalResultTables = new Dictionary<long, DataTable>();
+            this.PatternGroupMemberResultTables = new Dictionary<long, List<DataTable>>();
+            this.QueryMemberResultTables = new Dictionary<long, DataTable>();
         }
         #endregion
 
@@ -91,7 +91,7 @@ namespace RDFSharp.Query
                 EvaluateQueryMembers(selectQuery, evaluableQueryMembers, datasource);
 
                 //Get the result table of the query
-                DataTable queryResultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
+                DataTable queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList(), false);
 
                 //Apply the modifiers of the query to the result table
                 queryResult.SelectResults = ApplyModifiers(selectQuery, queryResultTable);
@@ -137,7 +137,7 @@ namespace RDFSharp.Query
                 EvaluateQueryMembers(describeQuery, evaluableQueryMembers, datasource);
 
                 //Get the result table of the query
-                queryResultTable = CombineTables(this.QueryMemberFinalResultTables.Values.ToList(), false);
+                queryResultTable = CombineTables(this.QueryMemberResultTables.Values.ToList(), false);
             }
 
             //Describe the terms from the result table
@@ -166,7 +166,7 @@ namespace RDFSharp.Query
                 EvaluateQueryMembers(constructQuery, evaluableQueryMembers, datasource);
 
                 //Get the result table of the query
-                queryResultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
+                queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList(), false);
             }
 
             //Fill the templates from the result table
@@ -194,7 +194,7 @@ namespace RDFSharp.Query
                 EvaluateQueryMembers(askQuery, evaluableQueryMembers, datasource);
 
                 //Get the result table of the query
-                DataTable queryResultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
+                DataTable queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList(), false);
 
                 //Transform the result into a boolean response
                 askResult.AskResult = (queryResultTable.Rows.Count > 0);
@@ -229,23 +229,23 @@ namespace RDFSharp.Query
                 {
                     //Get the result table of the subquery
                     RDFSelectQueryResult subQueryResult = subQuery.ApplyToDataSource(datasource);
-                    if (!QueryMemberFinalResultTables.ContainsKey(subQuery.QueryMemberID))
+                    if (!QueryMemberResultTables.ContainsKey(subQuery.QueryMemberID))
                     {
                         //Populate its name
-                        QueryMemberFinalResultTables.Add(subQuery.QueryMemberID, subQueryResult.SelectResults);
+                        QueryMemberResultTables.Add(subQuery.QueryMemberID, subQueryResult.SelectResults);
 
                         //Populate its metadata (IsOptional)
-                        if (!QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties.ContainsKey(IsOptional))
-                            QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties.Add(IsOptional, subQuery.IsOptional);
+                        if (!QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties.ContainsKey(IsOptional))
+                            QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties.Add(IsOptional, subQuery.IsOptional);
                         else
-                            QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties[IsOptional] = subQuery.IsOptional
-                                                                                                                      || (bool)QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties[IsOptional];
+                            QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties[IsOptional] = subQuery.IsOptional
+                                                                                                                      || (bool)QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties[IsOptional];
 
                         //Populate its metadata (JoinAsUnion)
-                        if (!QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties.ContainsKey(JoinAsUnion))
-                            QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties.Add(JoinAsUnion, subQuery.JoinAsUnion);
+                        if (!QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties.ContainsKey(JoinAsUnion))
+                            QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties.Add(JoinAsUnion, subQuery.JoinAsUnion);
                         else
-                            QueryMemberFinalResultTables[subQuery.QueryMemberID].ExtendedProperties[JoinAsUnion] = subQuery.JoinAsUnion;
+                            QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties[JoinAsUnion] = subQuery.JoinAsUnion;
                     }
                 }
                 #endregion
@@ -257,7 +257,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal void EvaluatePatternGroup(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource dataSource)
         {
-            QueryMemberTemporaryResultTables[patternGroup.QueryMemberID] = new List<DataTable>();
+            PatternGroupMemberResultTables[patternGroup.QueryMemberID] = new List<DataTable>();
 
             //Iterate the evaluable members of the pattern group
             List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().Distinct().ToList();
@@ -273,7 +273,7 @@ namespace RDFSharp.Query
                     patternResultsTable.ExtendedProperties.Add(JoinAsUnion, pattern.JoinAsUnion);
 
                     //Save result datatable
-                    QueryMemberTemporaryResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
+                    PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
                 }
                 #endregion
 
@@ -283,7 +283,7 @@ namespace RDFSharp.Query
                     DataTable pPathResultsTable = ApplyPropertyPath(propertyPath, dataSource);
 
                     //Save result datatable
-                    QueryMemberTemporaryResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
+                    PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
                 }
                 #endregion
 
@@ -294,7 +294,7 @@ namespace RDFSharp.Query
                     RDFValuesFilter valuesFilter = values.GetValuesFilter();
                     
                     //Save result datatable
-                    QueryMemberTemporaryResultTables[patternGroup.QueryMemberID].Add(valuesFilter.ValuesTable);
+                    PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(valuesFilter.ValuesTable);
 
                     //Inject SPARQL values filter
                     patternGroup.AddFilter(valuesFilter);
@@ -326,24 +326,24 @@ namespace RDFSharp.Query
             List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
             if (evaluablePGMembers.Any())
             {
-                //Populate query member result table
-                DataTable queryMemberFinalResultTable = CombineTables(QueryMemberTemporaryResultTables[patternGroup.QueryMemberID], false);
+                //Populate patternGroup result table
+                DataTable patternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID], false);
 
                 //Add it to the list of query member result tables
-                QueryMemberFinalResultTables.Add(patternGroup.QueryMemberID, queryMemberFinalResultTable);
+                QueryMemberResultTables.Add(patternGroup.QueryMemberID, patternGroupResultTable);
 
                 //Populate its metadata (IsOptional)
-                if (!QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey(IsOptional))
-                    QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add(IsOptional, patternGroup.IsOptional);
+                if (!QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey(IsOptional))
+                    QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add(IsOptional, patternGroup.IsOptional);
                 else
-                    QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties[IsOptional] = patternGroup.IsOptional
-                                                                                                                || (bool)QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties[IsOptional];
+                    QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties[IsOptional] = patternGroup.IsOptional
+                                                                                                            || (bool)QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties[IsOptional];
 
                 //Populate its metadata (JoinAsUnion)
-                if (!QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey(JoinAsUnion))
-                    QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add(JoinAsUnion, patternGroup.JoinAsUnion);
+                if (!QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey(JoinAsUnion))
+                    QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add(JoinAsUnion, patternGroup.JoinAsUnion);
                 else
-                    QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties[JoinAsUnion] = patternGroup.JoinAsUnion;
+                    QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties[JoinAsUnion] = patternGroup.JoinAsUnion;
             }
         }
 
@@ -356,8 +356,8 @@ namespace RDFSharp.Query
             List<RDFFilter> filters = patternGroup.GetFilters().ToList();
             if (evaluablePatternGroupMembers.Any() && filters.Any())
             {
-                DataTable filteredTable = QueryMemberFinalResultTables[patternGroup.QueryMemberID].Clone();
-                IEnumerator rowsEnum = QueryMemberFinalResultTables[patternGroup.QueryMemberID].Rows.GetEnumerator();
+                DataTable filteredTable = QueryMemberResultTables[patternGroup.QueryMemberID].Clone();
+                IEnumerator rowsEnum = QueryMemberResultTables[patternGroup.QueryMemberID].Rows.GetEnumerator();
 
                 //Iterate the rows of the pattern group's result table
                 bool keepRow = false;
@@ -379,7 +379,7 @@ namespace RDFSharp.Query
                 }
 
                 //Save the result datatable
-                QueryMemberFinalResultTables[patternGroup.QueryMemberID] = filteredTable;
+                QueryMemberResultTables[patternGroup.QueryMemberID] = filteredTable;
             }
         }
 
