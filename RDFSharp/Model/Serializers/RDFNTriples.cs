@@ -35,67 +35,67 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to detect S->P->B form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> SPB = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*_:[^<>\s]+\s*\.$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> SPB = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*_:[^<>\s]+\s*\.$"));
 
         /// <summary>
         /// Regex to detect S->P->O form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> SPO = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> SPO = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*<[^<>\s]+>\s*\.$"));
 
         /// <summary>
         /// Regex to detect S->P->L(PLAIN) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> SPL_PLAIN = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""\s*\.$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> SPL_PLAIN = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""\s*\.$"));
 
         /// <summary>
         /// Regex to detect S->P->L(PLAIN LANGUAGE) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> SPL_PLANG = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*\.$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> SPL_PLANG = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*\.$"));
 
         /// <summary>
         /// Regex to detect S->P->L(TYPED) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> SPL_TLIT = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""\^\^<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> SPL_TLIT = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""\^\^<[^<>\s]+>\s*\.$"));
 
         /// <summary>
         /// Regex to detect B->P->B form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> BPB = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*_:[^<>\s]+\s*\.$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> BPB = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*_:[^<>\s]+\s*\.$"));
 
         /// <summary>
         /// Regex to detect B->P->O form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> BPO = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> BPO = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*<[^<>\s]+>\s*\.$"));
 
         /// <summary>
         /// Regex to detect B->P->L(PLAIN) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> BPL_PLAIN = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""\s*\.$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> BPL_PLAIN = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""\s*\.$"));
 
         /// <summary>
         /// Regex to detect B->P->L(PLAIN LANGUAGE) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> BPL_PLANG = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*\.$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> BPL_PLANG = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*\.$"));
 
         /// <summary>
         /// Regex to detect B->P->L(TYPED) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> BPL_TLIT = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""\^\^<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> BPL_TLIT = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""\^\^<[^<>\s]+>\s*\.$"));
 
         /// <summary>
         /// Regex to detect presence of a plain literal with language tag within a given N-Triple
         /// </summary>
-        internal static readonly Lazy<Regex> regexLPL = new Lazy<Regex>(() => new Regex(@"@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> regexLPL = new Lazy<Regex>(() => new Regex(@"@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$"));
 
         /// <summary>
         /// Regex to detect presence of starting " in the value of a given N-Triple literal
         /// </summary>
-        internal static readonly Lazy<Regex> regexSqt = new Lazy<Regex>(() => new Regex(@"^""", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> regexSqt = new Lazy<Regex>(() => new Regex(@"^"""));
 
         /// <summary>
         /// Regex to detect presence of ending " in the value of a given N-Triple literal
         /// </summary>
-        internal static readonly Lazy<Regex> regexEqt = new Lazy<Regex>(() => new Regex(@"""$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> regexEqt = new Lazy<Regex>(() => new Regex(@"""$"));
         #endregion
 
         #region Methods

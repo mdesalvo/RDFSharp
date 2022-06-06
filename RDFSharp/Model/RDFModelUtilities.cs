@@ -57,15 +57,15 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to catch 8-byte unicodes
         /// </summary>
-        internal static readonly Lazy<Regex> regexU8 = new Lazy<Regex>(() => new Regex(@"\\U([0-9A-Fa-f]{8})", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> regexU8 = new Lazy<Regex>(() => new Regex(@"\\U([0-9A-Fa-f]{8})"));
         /// <summary>
         /// Regex to catch 4-byte unicodes
         /// </summary>
-        internal static readonly Lazy<Regex> regexU4 = new Lazy<Regex>(() => new Regex(@"\\u([0-9A-Fa-f]{4})", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> regexU4 = new Lazy<Regex>(() => new Regex(@"\\u([0-9A-Fa-f]{4})"));
         /// <summary>
         /// Regex to catch xsd:hexBinary typed literals
         /// </summary>
-        internal static readonly Lazy<Regex> hexBinary = new Lazy<Regex>(() => new Regex(@"^([0-9a-fA-F]{2})*$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> hexBinary = new Lazy<Regex>(() => new Regex(@"^([0-9a-fA-F]{2})*$"));
 
         /// <summary>
         /// Alternative representations of boolean True
