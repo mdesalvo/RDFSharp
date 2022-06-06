@@ -32,52 +32,52 @@ namespace RDFSharp.Store
         /// <summary>
         /// Regex to detect S->P->B->C form of N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> SPBC = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*_:[^<>\s]+\s*<[^<>\s]+>\s*\.$"));
+        internal static readonly Lazy<Regex> SPBC = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*_:[^<>\s]+\s*<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect S->P->O->C form of N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> SPOC = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*<[^<>\s]+>\s*<[^<>\s]+>\s*\.$"));
+        internal static readonly Lazy<Regex> SPOC = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*<[^<>\s]+>\s*<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect S->P->L(PLAIN)->C form of N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> SPLC_PLAIN = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""\s*<[^<>\s]+>\s*\.$"));
+        internal static readonly Lazy<Regex> SPLC_PLAIN = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""\s*<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect S->P->L(PLAIN LANGUAGE)->C form of N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> SPLC_PLANG = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*<[^<>\s]+>\s*\.$"));
+        internal static readonly Lazy<Regex> SPLC_PLANG = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect S->P->B->L(TYPED) form of N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> SPLC_TLIT = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""\^\^<[^<>\s]+>\s*<[^<>\s]+>\s*\.$"));
+        internal static readonly Lazy<Regex> SPLC_TLIT = new Lazy<Regex>(() => new Regex(@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""\^\^<[^<>\s]+>\s*<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect B->P->B->C form of N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> BPBC = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*_:[^<>\s]+\s*<[^<>\s]+>\s*\.$"));
+        internal static readonly Lazy<Regex> BPBC = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*_:[^<>\s]+\s*<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect B->P->O->C form of N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> BPOC = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*<[^<>\s]+>\s*<[^<>\s]+>\s*\.$"));
+        internal static readonly Lazy<Regex> BPOC = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*<[^<>\s]+>\s*<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect B->P->L(PLAIN)->C form of N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> BPLC_PLAIN = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""\s*<[^<>\s]+>\s*\.$"));
+        internal static readonly Lazy<Regex> BPLC_PLAIN = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""\s*<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect B->P->L(PLAIN LANGUAGE)->C form of N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> BPLC_PLANG = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*<[^<>\s]+>\s*\.$"));
+        internal static readonly Lazy<Regex> BPLC_PLANG = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect B->P->L(TYPED)->C form of N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> BPLC_TLIT = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""\^\^<[^<>\s]+>\s*<[^<>\s]+>\s*\.$"));
+        internal static readonly Lazy<Regex> BPLC_TLIT = new Lazy<Regex>(() => new Regex(@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""\^\^<[^<>\s]+>\s*<[^<>\s]+>\s*\.$", RegexOptions.Compiled));
         #endregion
 
         #region Methods

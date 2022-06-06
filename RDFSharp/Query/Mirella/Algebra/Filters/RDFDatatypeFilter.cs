@@ -54,7 +54,7 @@ namespace RDFSharp.Query
 
             this.VariableName = variable.ToString();
             this.Datatype = datatype;
-            this.DatatypeRegex = new Regex($"\\^\\^{RDFModelUtilities.GetDatatypeFromEnum(this.Datatype)}$");
+            this.DatatypeRegex = new Regex($"\\^\\^{RDFModelUtilities.GetDatatypeFromEnum(this.Datatype)}$", RegexOptions.Compiled);
         }
         #endregion
 

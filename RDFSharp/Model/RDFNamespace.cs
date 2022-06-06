@@ -28,7 +28,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex for validation of prefixes
         /// </summary>
-        internal static readonly Lazy<Regex> PrefixRegex = new Lazy<Regex>(() => new Regex(@"^[a-zA-Z0-9_\-]+$"));
+        internal static readonly Lazy<Regex> PrefixRegex = new Lazy<Regex>(() => new Regex(@"^[a-zA-Z0-9_\-]+$", RegexOptions.Compiled));
 
         /// <summary>
         /// Unique representation of the namespace
