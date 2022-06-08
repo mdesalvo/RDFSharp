@@ -804,6 +804,76 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?Y"].ToString(), string.Empty));
             Assert.IsTrue(patternGroup.GetFilters().Single() is RDFValuesFilter);
         }
+
+        [TestMethod]
+        public void ShouldEvaluatePatternGroupWithResultsFromExistsFilter()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+
+            RDFPatternGroup patternGroup = new RDFPatternGroup()
+                .AddFilter(new RDFExistsFilter(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            queryEngine.EvaluatePatternGroup(patternGroup, graph);
+
+            Assert.IsNotNull(queryEngine.PatternGroupMemberResultTables);
+            Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.Count == 1);
+            Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value.Count == 0);
+            Assert.IsTrue(patternGroup.GetFilters().Single() is RDFExistsFilter);
+
+            RDFExistsFilter existsFilter = (RDFExistsFilter)patternGroup.GetFilters().Single();
+            Assert.IsNotNull(existsFilter.PatternResults);
+            Assert.IsTrue(existsFilter.PatternResults.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
+            Assert.IsFalse((bool)existsFilter.PatternResults.ExtendedProperties[RDFQueryEngine.IsOptional]);
+            Assert.IsTrue(existsFilter.PatternResults.ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
+            Assert.IsFalse((bool)existsFilter.PatternResults.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
+            Assert.IsTrue(existsFilter.PatternResults.Columns.Count == 2);
+            Assert.IsTrue(existsFilter.PatternResults.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[2]["?X"].ToString(), "ex:whoever"));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluatePatternGroupWithNoResultsFromExistsFilter()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+
+            RDFPatternGroup patternGroup = new RDFPatternGroup()
+                .AddFilter(new RDFExistsFilter(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X"))));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            queryEngine.EvaluatePatternGroup(patternGroup, graph);
+
+            Assert.IsNotNull(queryEngine.PatternGroupMemberResultTables);
+            Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.Count == 1);
+            Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value.Count == 0);
+            Assert.IsTrue(patternGroup.GetFilters().Single() is RDFExistsFilter);
+
+            RDFExistsFilter existsFilter = (RDFExistsFilter)patternGroup.GetFilters().Single();
+            Assert.IsNotNull(existsFilter.PatternResults);
+            Assert.IsTrue(existsFilter.PatternResults.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
+            Assert.IsFalse((bool)existsFilter.PatternResults.ExtendedProperties[RDFQueryEngine.IsOptional]);
+            Assert.IsTrue(existsFilter.PatternResults.ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
+            Assert.IsFalse((bool)existsFilter.PatternResults.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
+            Assert.IsTrue(existsFilter.PatternResults.Columns.Count == 2);
+            Assert.IsTrue(existsFilter.PatternResults.Rows.Count == 0);
+        }
         #endregion
     }
 }
