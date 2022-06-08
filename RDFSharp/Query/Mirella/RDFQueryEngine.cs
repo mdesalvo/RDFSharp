@@ -239,7 +239,7 @@ namespace RDFSharp.Query
                             QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties.Add(IsOptional, subQuery.IsOptional);
                         else
                             QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties[IsOptional] = subQuery.IsOptional
-                                                                                                                      || (bool)QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties[IsOptional];
+                                                                                                                || (bool)QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties[IsOptional];
 
                         //Populate its metadata (JoinAsUnion)
                         if (!QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties.ContainsKey(JoinAsUnion))
