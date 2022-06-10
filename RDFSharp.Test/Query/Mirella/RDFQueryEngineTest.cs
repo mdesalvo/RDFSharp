@@ -17,6 +17,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using RDFSharp.Model;
@@ -1030,6 +1031,42 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto"));
             Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?X"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyModifiers()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional()))
+                .AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?Y") })
+                    .AddAggregator(new RDFSampleAggregator(new RDFVariable("?X"), new RDFVariable("?SAMPLE_X"))))
+                .AddModifier(new RDFOrderByModifier(new RDFVariable("?SAMPLE_X"), RDFQueryEnums.RDFOrderByFlavors.ASC))
+                .AddModifier(new RDFOffsetModifier(1))
+                .AddModifier(new RDFLimitModifier(2))
+                .AddProjectionVariable(new RDFVariable("?N"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            queryEngine.EvaluatePatternGroup(query.GetPatternGroups().Single(), graph); //Just to obtain real pattern tables (instead of mocking them)
+            queryEngine.FinalizePatternGroup(query.GetPatternGroups().Single()); //Just to obtain real pattern group table  (instead of mocking it)
+            queryEngine.ApplyFilters(query.GetPatternGroups().Single()); //Just to obtain real filtered table (instead of mocking it)
+            DataTable resultTable = queryEngine.ApplyModifiers(query, queryEngine.QueryMemberResultTables.ElementAt(0).Value);
+            
+            Assert.IsTrue(resultTable.Columns.Count == 2);
+            Assert.IsTrue(resultTable.Rows.Count == 2);
+            Assert.IsTrue(string.Equals(resultTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(resultTable.Rows[0]["?SAMPLE_X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(resultTable.Rows[1]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(resultTable.Rows[1]["?SAMPLE_X"].ToString(), "ex:whoever"));            
         }
         #endregion
     }
