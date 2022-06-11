@@ -597,9 +597,8 @@ namespace RDFSharp.Query
             AddColumn(result, "?OBJECT");
 
             //In case of "DESCRIBE *" query, all the variables must be considered describe terms
-            IEnumerable<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers();            
             if (!describeQuery.DescribeTerms.Any())
-                GetDescribeTermsFromQueryMembers(describeQuery, evaluableQueryMembers);
+                FetchDescribeVariablesFromQueryMembers(describeQuery, describeQuery.GetEvaluableQueryMembers());
 
             //Iterate the describe terms of the query
             foreach (RDFPatternMember describeTerm in describeQuery.DescribeTerms)
@@ -777,9 +776,9 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Exracts the describe terms from the given collection of query members
+        /// Fetches the describe variables from the given collection of query members and give them to the given describe query
         /// </summary>
-        internal void GetDescribeTermsFromQueryMembers(RDFDescribeQuery describeQuery, IEnumerable<RDFQueryMember> evaluableQueryMembers)
+        internal void FetchDescribeVariablesFromQueryMembers(RDFDescribeQuery describeQuery, IEnumerable<RDFQueryMember> evaluableQueryMembers)
         {
             foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
             {
@@ -790,7 +789,7 @@ namespace RDFSharp.Query
 
                 #region SUBQUERY
                 else if (evaluableQueryMember is RDFSelectQuery sqEvaluableQueryMember)
-                    GetDescribeTermsFromQueryMembers(describeQuery, sqEvaluableQueryMember.GetEvaluableQueryMembers());
+                    FetchDescribeVariablesFromQueryMembers(describeQuery, sqEvaluableQueryMember.GetEvaluableQueryMembers());
                 #endregion
             }
         }
