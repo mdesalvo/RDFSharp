@@ -768,7 +768,7 @@ namespace RDFSharp.Query
                     //Apply the query to the SPARQL endpoint / FEDERATION
                     RDFConstructQueryResult constructQueryResults =
                         dataSource.IsSPARQLEndpoint() ? constructQuery.ApplyToSPARQLEndpoint((RDFSPARQLEndpoint)dataSource)
-                                                        : constructQuery.ApplyToFederation((RDFFederation)dataSource);
+                                                      : constructQuery.ApplyToFederation((RDFFederation)dataSource);
                     result.Merge(constructQueryResults.ConstructResults, true, MissingSchemaAction.Add);
                 }
             }
