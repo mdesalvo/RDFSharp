@@ -1054,7 +1054,8 @@ namespace RDFSharp.Test.Query
                 .AddModifier(new RDFOrderByModifier(new RDFVariable("?SAMPLE_X"), RDFQueryEnums.RDFOrderByFlavors.ASC))
                 .AddModifier(new RDFOffsetModifier(1))
                 .AddModifier(new RDFLimitModifier(2))
-                .AddProjectionVariable(new RDFVariable("?N"));
+                .AddModifier(new RDFDistinctModifier())
+                .AddProjectionVariable(new RDFVariable("?N")); //Will be overridden by GroupBy operator
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             queryEngine.EvaluatePatternGroup(query.GetPatternGroups().Single(), graph); //Just to obtain real pattern tables (instead of mocking them)
             queryEngine.FinalizePatternGroup(query.GetPatternGroups().Single()); //Just to obtain real pattern group table  (instead of mocking it)
@@ -1089,6 +1090,14 @@ namespace RDFSharp.Test.Query
             row1["?Y"] = "ex:fido";
             row1["?X"] = "ex:paperino";
             table.Rows.Add(row1);
+            DataRow row2 = table.NewRow();
+            row2["?Y"] = DBNull.Value.ToString(); //Will not be considered, since null values are not allowed
+            row2["?X"] = "ex:paperino";
+            table.Rows.Add(row2);
+            DataRow row3 = table.NewRow();
+            row3["?Y"] = "hello"; //Will not be considered, since literal values are not allowed in subject
+            row3["?X"] = "ex:paperino";
+            table.Rows.Add(row3);
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable filledTable = queryEngine.FillTemplates(templates, table, false);
 
@@ -1127,11 +1136,11 @@ namespace RDFSharp.Test.Query
             row1["?X"] = "ex:paperino";
             table.Rows.Add(row1);
             DataRow row2 = table.NewRow();
-            row2["?Y"] = DBNull.Value.ToString();
+            row2["?Y"] = DBNull.Value.ToString(); //Will not be considered, since null values are not allowed
             row2["?X"] = "ex:paperino";
             table.Rows.Add(row2);
             DataRow row3 = table.NewRow();
-            row3["?Y"] = "hello";
+            row3["?Y"] = "hello"; //Will not be considered, since literal values are not allowed in context
             row3["?X"] = "ex:paperino";
             table.Rows.Add(row3);
             RDFQueryEngine queryEngine = new RDFQueryEngine();
@@ -1152,6 +1161,359 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(filledTable.Rows[2]["?SUBJECT"].ToString(), "ex:fido"));
             Assert.IsTrue(string.Equals(filledTable.Rows[2]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(string.Equals(filledTable.Rows[2]["?OBJECT"].ToString(), "ex:dog"));
+        }
+
+        [TestMethod]
+        public void ShouldDescribeStarTerms()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
+            });
+            
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
+                    .UnionWithNext())
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
+
+            DataTable table = new DataTable();
+            table.Columns.Add("?Y", typeof(string));
+            table.Columns.Add("?X", typeof(string));
+            table.Columns.Add("?N", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            table.AcceptChanges();
+            DataRow row0 = table.NewRow();
+            row0["?Y"] = "ex:pluto";
+            row0["?X"] = "ex:topolino";
+            row0["?N"] = "Mickey Mouse@EN-US";
+            row0["?C"] = null;
+            table.Rows.Add(row0);
+            DataRow row1 = table.NewRow();
+            row1["?Y"] = "ex:fido";
+            row1["?X"] = "ex:paperino";
+            row1["?N"] = "Donald Duck@EN-US";
+            row1["?C"] = null;
+            table.Rows.Add(row1);
+            DataRow row2 = table.NewRow();
+            row2["?Y"] = "ex:balto";
+            row2["?X"] = "ex:whoever";
+            row2["?N"] = null;
+            row2["?C"] = null;
+            table.Rows.Add(row2);
+            DataRow row3 = table.NewRow();
+            row3["?Y"] = null;
+            row3["?X"] = null;
+            row3["?N"] = null;
+            row3["?C"] = "green@EN";
+            table.Rows.Add(row3);
+
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.DescribeTerms(query, graph, table);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 3);
+            Assert.IsTrue(result.Rows.Count == 12);
+        }
+
+        [TestMethod]
+        public void ShouldDescribeResourceTerms()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
+            });
+            
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddDescribeTerm(new RDFResource("ex:balto"))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
+                    .UnionWithNext())
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
+
+            DataTable table = new DataTable();
+            table.Columns.Add("?Y", typeof(string));
+            table.Columns.Add("?X", typeof(string));
+            table.Columns.Add("?N", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            table.AcceptChanges();
+            DataRow row0 = table.NewRow();
+            row0["?Y"] = "ex:pluto";
+            row0["?X"] = "ex:topolino";
+            row0["?N"] = "Mickey Mouse@EN-US";
+            row0["?C"] = null;
+            table.Rows.Add(row0);
+            DataRow row1 = table.NewRow();
+            row1["?Y"] = "ex:fido";
+            row1["?X"] = "ex:paperino";
+            row1["?N"] = "Donald Duck@EN-US";
+            row1["?C"] = null;
+            table.Rows.Add(row1);
+            DataRow row2 = table.NewRow();
+            row2["?Y"] = "ex:balto";
+            row2["?X"] = "ex:whoever";
+            row2["?N"] = null;
+            row2["?C"] = null;
+            table.Rows.Add(row2);
+            DataRow row3 = table.NewRow();
+            row3["?Y"] = null;
+            row3["?X"] = null;
+            row3["?N"] = null;
+            row3["?C"] = "green@EN";
+            table.Rows.Add(row3);
+
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.DescribeTerms(query, graph, table);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 3);
+            Assert.IsTrue(result.Rows.Count == 2);
+        }
+
+        [TestMethod]
+        public void ShouldDescribeUnexistingResourceTerms()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
+            });
+            
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddDescribeTerm(new RDFResource("ex:balto2"))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
+                    .UnionWithNext())
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
+
+            DataTable table = new DataTable();
+            table.Columns.Add("?Y", typeof(string));
+            table.Columns.Add("?X", typeof(string));
+            table.Columns.Add("?N", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            table.AcceptChanges();
+            DataRow row0 = table.NewRow();
+            row0["?Y"] = "ex:pluto";
+            row0["?X"] = "ex:topolino";
+            row0["?N"] = "Mickey Mouse@EN-US";
+            row0["?C"] = null;
+            table.Rows.Add(row0);
+            DataRow row1 = table.NewRow();
+            row1["?Y"] = "ex:fido";
+            row1["?X"] = "ex:paperino";
+            row1["?N"] = "Donald Duck@EN-US";
+            row1["?C"] = null;
+            table.Rows.Add(row1);
+            DataRow row2 = table.NewRow();
+            row2["?Y"] = "ex:balto";
+            row2["?X"] = "ex:whoever";
+            row2["?N"] = null;
+            row2["?C"] = null;
+            table.Rows.Add(row2);
+            DataRow row3 = table.NewRow();
+            row3["?Y"] = null;
+            row3["?X"] = null;
+            row3["?N"] = null;
+            row3["?C"] = "green@EN";
+            table.Rows.Add(row3);
+
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.DescribeTerms(query, graph, table);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 3);
+            Assert.IsTrue(result.Rows.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDescribeVariableTerms()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
+            });
+            
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddDescribeTerm(new RDFVariable("?Y"))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
+                    .UnionWithNext())
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
+
+            DataTable table = new DataTable();
+            table.Columns.Add("?Y", typeof(string));
+            table.Columns.Add("?X", typeof(string));
+            table.Columns.Add("?N", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            table.AcceptChanges();
+            DataRow row0 = table.NewRow();
+            row0["?Y"] = "ex:pluto";
+            row0["?X"] = "ex:topolino";
+            row0["?N"] = "Mickey Mouse@EN-US";
+            row0["?C"] = null;
+            table.Rows.Add(row0);
+            DataRow row1 = table.NewRow();
+            row1["?Y"] = "ex:fido";
+            row1["?X"] = "ex:paperino";
+            row1["?N"] = "Donald Duck@EN-US";
+            row1["?C"] = null;
+            table.Rows.Add(row1);
+            DataRow row2 = table.NewRow();
+            row2["?Y"] = "ex:balto";
+            row2["?X"] = "ex:whoever";
+            row2["?N"] = null;
+            row2["?C"] = null;
+            table.Rows.Add(row2);
+            DataRow row3 = table.NewRow();
+            row3["?Y"] = null;
+            row3["?X"] = null;
+            row3["?N"] = null;
+            row3["?C"] = "green@EN";
+            table.Rows.Add(row3);
+
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.DescribeTerms(query, graph, table);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 3);
+            Assert.IsTrue(result.Rows.Count == 4);
+        }
+
+        [TestMethod]
+        public void ShouldDescribeUnexistingVariableTerms()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
+            });
+            
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddDescribeTerm(new RDFVariable("?Z"))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
+                    .UnionWithNext())
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
+
+            DataTable table = new DataTable();
+            table.Columns.Add("?Y", typeof(string));
+            table.Columns.Add("?X", typeof(string));
+            table.Columns.Add("?N", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            table.AcceptChanges();
+            DataRow row0 = table.NewRow();
+            row0["?Y"] = "ex:pluto";
+            row0["?X"] = "ex:topolino";
+            row0["?N"] = "Mickey Mouse@EN-US";
+            row0["?C"] = null;
+            table.Rows.Add(row0);
+            DataRow row1 = table.NewRow();
+            row1["?Y"] = "ex:fido";
+            row1["?X"] = "ex:paperino";
+            row1["?N"] = "Donald Duck@EN-US";
+            row1["?C"] = null;
+            table.Rows.Add(row1);
+            DataRow row2 = table.NewRow();
+            row2["?Y"] = "ex:balto";
+            row2["?X"] = "ex:whoever";
+            row2["?N"] = null;
+            row2["?C"] = null;
+            table.Rows.Add(row2);
+            DataRow row3 = table.NewRow();
+            row3["?Y"] = null;
+            row3["?X"] = null;
+            row3["?N"] = null;
+            row3["?C"] = "green@EN";
+            table.Rows.Add(row3);
+
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.DescribeTerms(query, graph, table);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 3);
+            Assert.IsTrue(result.Rows.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDescribeLiteralBoundVariableTerms()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
+            });
+            
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddDescribeTerm(new RDFVariable("?C"))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
+                    .UnionWithNext())
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
+
+            DataTable table = new DataTable();
+            table.Columns.Add("?Y", typeof(string));
+            table.Columns.Add("?X", typeof(string));
+            table.Columns.Add("?N", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            table.AcceptChanges();
+            DataRow row0 = table.NewRow();
+            row0["?Y"] = null;
+            row0["?X"] = null;
+            row0["?N"] = null;
+            row0["?C"] = "green@EN";
+            table.Rows.Add(row0);
+
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.DescribeTerms(query, graph, table);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 3);
+            Assert.IsTrue(result.Rows.Count == 1);
         }
         #endregion
     }
