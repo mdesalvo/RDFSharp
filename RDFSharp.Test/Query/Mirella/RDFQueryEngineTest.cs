@@ -1066,7 +1066,92 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(resultTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
             Assert.IsTrue(string.Equals(resultTable.Rows[0]["?SAMPLE_X"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(resultTable.Rows[1]["?Y"].ToString(), "ex:balto"));
-            Assert.IsTrue(string.Equals(resultTable.Rows[1]["?SAMPLE_X"].ToString(), "ex:whoever"));            
+            Assert.IsTrue(string.Equals(resultTable.Rows[1]["?SAMPLE_X"].ToString(), "ex:whoever"));
+        }
+
+        [TestMethod]
+        public void ShouldFillTemplateTriples()
+        {
+            List<RDFPattern> templates = new List<RDFPattern>()
+            {
+                new RDFPattern(new RDFResource("ex:bracco"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")),
+                new RDFPattern(new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog"))
+            };
+            DataTable table = new DataTable();
+            table.Columns.Add("?Y", typeof(string));
+            table.Columns.Add("?X", typeof(string));
+            table.AcceptChanges();
+            DataRow row0 = table.NewRow();
+            row0["?Y"] = "ex:pluto";
+            row0["?X"] = "ex:topolino";
+            table.Rows.Add(row0);
+            DataRow row1 = table.NewRow();
+            row1["?Y"] = "ex:fido";
+            row1["?X"] = "ex:paperino";
+            table.Rows.Add(row1);
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable filledTable = queryEngine.FillTemplates(templates, table, false);
+
+            Assert.IsNotNull(filledTable);
+            Assert.IsTrue(filledTable.Columns.Count == 3);
+            Assert.IsTrue(filledTable.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(filledTable.Rows[0]["?SUBJECT"].ToString(), "ex:bracco"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[0]["?OBJECT"].ToString(), "ex:dog"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[1]["?SUBJECT"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[1]["?OBJECT"].ToString(), "ex:dog"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[2]["?SUBJECT"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[2]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[2]["?OBJECT"].ToString(), "ex:dog"));
+        }
+
+        [TestMethod]
+        public void ShouldFillTemplateQuadruples()
+        {
+            List<RDFPattern> templates = new List<RDFPattern>()
+            {
+                new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:bracco"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")),
+                new RDFPattern(new RDFVariable("?Y"), new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog"))
+            };
+            DataTable table = new DataTable();
+            table.Columns.Add("?Y", typeof(string));
+            table.Columns.Add("?X", typeof(string));
+            table.AcceptChanges();
+            DataRow row0 = table.NewRow();
+            row0["?Y"] = "ex:pluto";
+            row0["?X"] = "ex:topolino";
+            table.Rows.Add(row0);
+            DataRow row1 = table.NewRow();
+            row1["?Y"] = "ex:fido";
+            row1["?X"] = "ex:paperino";
+            table.Rows.Add(row1);
+            DataRow row2 = table.NewRow();
+            row2["?Y"] = DBNull.Value.ToString();
+            row2["?X"] = "ex:paperino";
+            table.Rows.Add(row2);
+            DataRow row3 = table.NewRow();
+            row3["?Y"] = "hello";
+            row3["?X"] = "ex:paperino";
+            table.Rows.Add(row3);
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable filledTable = queryEngine.FillTemplates(templates, table, true);
+
+            Assert.IsNotNull(filledTable);
+            Assert.IsTrue(filledTable.Columns.Count == 4);
+            Assert.IsTrue(filledTable.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(filledTable.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[0]["?SUBJECT"].ToString(), "ex:bracco"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[0]["?OBJECT"].ToString(), "ex:dog"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[1]["?CONTEXT"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[1]["?SUBJECT"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[1]["?OBJECT"].ToString(), "ex:dog"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[2]["?CONTEXT"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[2]["?SUBJECT"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[2]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(string.Equals(filledTable.Rows[2]["?OBJECT"].ToString(), "ex:dog"));
         }
         #endregion
     }
