@@ -1028,7 +1028,7 @@ namespace RDFSharp.Query
                     //In case of same S and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Object))
                         matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList());
-                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CSP, patternResultTable);
+                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CSO, patternResultTable);
                     break;
                 case "SPO":
                     matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, null, null, null, null);
