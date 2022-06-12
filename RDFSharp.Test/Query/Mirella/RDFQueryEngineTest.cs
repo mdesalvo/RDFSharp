@@ -1767,6 +1767,72 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldDescribeResourceTermsOnFederation()
+        {
+            RDFGraph graph1 = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino"))
+            });
+            RDFGraph graph2 = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
+            });
+            RDFFederation federation = new RDFFederation().AddGraph(graph1).AddGraph(graph2);
+            
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddDescribeTerm(new RDFResource("ex:balto"))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
+                    .UnionWithNext())
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
+
+            DataTable table = new DataTable();
+            table.Columns.Add("?Y", typeof(string));
+            table.Columns.Add("?X", typeof(string));
+            table.Columns.Add("?N", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            table.AcceptChanges();
+            DataRow row0 = table.NewRow();
+            row0["?Y"] = "ex:pluto";
+            row0["?X"] = "ex:topolino";
+            row0["?N"] = "Mickey Mouse@EN-US";
+            row0["?C"] = null;
+            table.Rows.Add(row0);
+            DataRow row1 = table.NewRow();
+            row1["?Y"] = "ex:fido";
+            row1["?X"] = "ex:paperino";
+            row1["?N"] = "Donald Duck@EN-US";
+            row1["?C"] = null;
+            table.Rows.Add(row1);
+            DataRow row2 = table.NewRow();
+            row2["?Y"] = "ex:balto";
+            row2["?X"] = "ex:whoever";
+            row2["?N"] = null;
+            row2["?C"] = null;
+            table.Rows.Add(row2);
+            DataRow row3 = table.NewRow();
+            row3["?Y"] = null;
+            row3["?X"] = null;
+            row3["?N"] = null;
+            row3["?C"] = "green@EN";
+            table.Rows.Add(row3);
+
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.DescribeTerms(query, federation, table);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 3);
+            Assert.IsTrue(result.Rows.Count == 2);
+        }
+
+        [TestMethod]
         public void ShouldDescribeUnexistingResourceTerms()
         {
             RDFGraph graph = new RDFGraph(new List<RDFTriple>()
@@ -1884,6 +1950,72 @@ namespace RDFSharp.Test.Query
 
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.DescribeTerms(query, graph, table);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 3);
+            Assert.IsTrue(result.Rows.Count == 4);
+        }
+
+        [TestMethod]
+        public void ShouldDescribeVariableTermsOnFederation()
+        {
+            RDFGraph graph1 = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino"))
+            });
+            RDFGraph graph2 = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
+            });
+            RDFFederation federation = new RDFFederation().AddGraph(graph1).AddGraph(graph2);
+            
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddDescribeTerm(new RDFVariable("?Y"))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
+                    .UnionWithNext())
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
+
+            DataTable table = new DataTable();
+            table.Columns.Add("?Y", typeof(string));
+            table.Columns.Add("?X", typeof(string));
+            table.Columns.Add("?N", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            table.AcceptChanges();
+            DataRow row0 = table.NewRow();
+            row0["?Y"] = "ex:pluto";
+            row0["?X"] = "ex:topolino";
+            row0["?N"] = "Mickey Mouse@EN-US";
+            row0["?C"] = null;
+            table.Rows.Add(row0);
+            DataRow row1 = table.NewRow();
+            row1["?Y"] = "ex:fido";
+            row1["?X"] = "ex:paperino";
+            row1["?N"] = "Donald Duck@EN-US";
+            row1["?C"] = null;
+            table.Rows.Add(row1);
+            DataRow row2 = table.NewRow();
+            row2["?Y"] = "ex:balto";
+            row2["?X"] = "ex:whoever";
+            row2["?N"] = null;
+            row2["?C"] = null;
+            table.Rows.Add(row2);
+            DataRow row3 = table.NewRow();
+            row3["?Y"] = null;
+            row3["?X"] = null;
+            row3["?N"] = null;
+            row3["?C"] = "green@EN";
+            table.Rows.Add(row3);
+
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.DescribeTerms(query, federation, table);
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Columns.Count == 3);
