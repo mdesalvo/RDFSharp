@@ -66,9 +66,7 @@ namespace RDFSharp.Store
                     pLit = new RDFPlainLiteral(pLitValue, pLitLang);
                 }
                 else
-                {
                     pLit = new RDFPlainLiteral(literal);
-                }
                 return new RDFQuadruple(qContext, qSubject, qPredicate, pLit);
             }
 

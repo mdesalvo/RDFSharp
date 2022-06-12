@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
 
 namespace RDFSharp.Query
 {
@@ -821,134 +822,85 @@ namespace RDFSharp.Query
         /// </summary>
         internal DataTable ApplyPattern(RDFPattern pattern, RDFGraph graph)
         {
+            DataTable patternResultTable = new DataTable();
+            StringBuilder templateHoleDetector = new StringBuilder();
+
+            //Analyze subject of the pattern
+            if (pattern.Subject is RDFVariable)
+            {
+                templateHoleDetector.Append("S");
+                AddColumn(patternResultTable, pattern.Subject.ToString());
+            }
+
+            //Analyze predicate of the pattern
+            if (pattern.Predicate is RDFVariable)
+            {
+                templateHoleDetector.Append("P");
+                AddColumn(patternResultTable, pattern.Predicate.ToString());
+            }
+
+            //Analyze object of the pattern
+            bool patternObjectIsResource = pattern.Object is RDFResource;
+            bool patternObjectIsLiteral = pattern.Object is RDFLiteral;
+            if (pattern.Object is RDFVariable)
+            {
+                templateHoleDetector.Append("O");
+                AddColumn(patternResultTable, pattern.Object.ToString());
+            }
+            
+            //Analyze templateHoleDetector to decide hole filling strategy
             List<RDFTriple> matchingTriples = new List<RDFTriple>();
-            DataTable resultTable = new DataTable();
-
-            //SPO pattern
-            if (pattern.Subject is RDFResource)
+            switch (templateHoleDetector.ToString())
             {
-                if (pattern.Predicate is RDFResource)
-                {
-                    //S->P->
+                case "S":
+                    matchingTriples = RDFModelUtilities.SelectTriples(graph, null, (RDFResource)pattern.Predicate, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
+                    PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.S, patternResultTable);
+                    break;
+                case "P":
+                    matchingTriples = RDFModelUtilities.SelectTriples(graph, (RDFResource)pattern.Subject, null, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
+                    PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.P, patternResultTable);
+                    break;
+                case "O":
                     matchingTriples = RDFModelUtilities.SelectTriples(graph, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, null, null);
-                    AddColumn(resultTable, pattern.Object.ToString());
-                    PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.O, resultTable);
-                }
-                else
-                {
-                    if (pattern.Object is RDFResource || pattern.Object is RDFLiteral)
-                    {
-                        if (pattern.Object is RDFResource)
-                        {
-                            //S->->O
-                            matchingTriples = RDFModelUtilities.SelectTriples(graph, (RDFResource)pattern.Subject, null, (RDFResource)pattern.Object, null);
-                        }
-                        else
-                        {
-                            //S->->L
-                            matchingTriples = RDFModelUtilities.SelectTriples(graph, (RDFResource)pattern.Subject, null, null, (RDFLiteral)pattern.Object);
-                        }
-                        AddColumn(resultTable, pattern.Predicate.ToString());
-                        PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.P, resultTable);
-                    }
-                    else
-                    {
-                        //S->->
-                        matchingTriples = RDFModelUtilities.SelectTriples(graph, (RDFResource)pattern.Subject, null, null, null);
-                        //In case of same P and O variable, must refine matching triples with a further value comparison
-                        if (pattern.Predicate.Equals(pattern.Object))
-                        {
-                            matchingTriples = matchingTriples.FindAll(mt => mt.Predicate.Equals(mt.Object));
-                        }
-                        AddColumn(resultTable, pattern.Predicate.ToString());
-                        AddColumn(resultTable, pattern.Object.ToString());
-                        PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.PO, resultTable);
-                    }
-                }
-            }
-            else
-            {
-                if (pattern.Predicate is RDFResource)
-                {
-                    if (pattern.Object is RDFResource || pattern.Object is RDFLiteral)
-                    {
-                        if (pattern.Object is RDFResource)
-                        {
-                            //->P->O
-                            matchingTriples = RDFModelUtilities.SelectTriples(graph, null, (RDFResource)pattern.Predicate, (RDFResource)pattern.Object, null);
-                        }
-                        else
-                        {
-                            //->P->L
-                            matchingTriples = RDFModelUtilities.SelectTriples(graph, null, (RDFResource)pattern.Predicate, null, (RDFLiteral)pattern.Object);
-                        }
-                        AddColumn(resultTable, pattern.Subject.ToString());
-                        PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.S, resultTable);
-                    }
-                    else
-                    {
-                        //->P->
-                        matchingTriples = RDFModelUtilities.SelectTriples(graph, null, (RDFResource)pattern.Predicate, null, null);
-                        //In case of same S and O variable, must refine matching triples with a further value comparison
-                        if (pattern.Subject.Equals(pattern.Object))
-                        {
-                            matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Object));
-                        }
-                        AddColumn(resultTable, pattern.Subject.ToString());
-                        AddColumn(resultTable, pattern.Object.ToString());
-                        PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SO, resultTable);
-                    }
-                }
-                else
-                {
-                    if (pattern.Object is RDFResource || pattern.Object is RDFLiteral)
-                    {
-                        if (pattern.Object is RDFResource)
-                        {
-                            matchingTriples = RDFModelUtilities.SelectTriples(graph, null, null, (RDFResource)pattern.Object, null);
-                        }
-                        else
-                        {
-                            //->->L
-                            matchingTriples = RDFModelUtilities.SelectTriples(graph, null, null, null, (RDFLiteral)pattern.Object);
-                        }
-                        //In case of same S and P variable, must refine matching triples with a further value comparison
-                        if (pattern.Subject.Equals(pattern.Predicate))
-                        {
-                            matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Predicate));
-                        }
-                        AddColumn(resultTable, pattern.Subject.ToString());
-                        AddColumn(resultTable, pattern.Predicate.ToString());
-                        PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SP, resultTable);
-                    }
-                    else
-                    {
-                        //->->
-                        matchingTriples = RDFModelUtilities.SelectTriples(graph, null, null, null, null);
-                        //In case of same S and P variable, must refine matching triples with a further value comparison
-                        if (pattern.Subject.Equals(pattern.Predicate))
-                        {
-                            matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Predicate));
-                        }
-                        //In case of same S and O variable, must refine matching triples with a further value comparison
-                        if (pattern.Subject.Equals(pattern.Object))
-                        {
-                            matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Object));
-                        }
-                        //In case of same P and O variable, must refine matching triples with a further value comparison
-                        if (pattern.Predicate.Equals(pattern.Object))
-                        {
-                            matchingTriples = matchingTriples.FindAll(mt => mt.Predicate.Equals(mt.Object));
-                        }
-                        AddColumn(resultTable, pattern.Subject.ToString());
-                        AddColumn(resultTable, pattern.Predicate.ToString());
-                        AddColumn(resultTable, pattern.Object.ToString());
-                        PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SPO, resultTable);
-                    }
-                }
+                    PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.O, patternResultTable);
+                    break;
+                case "SP":
+                    matchingTriples = RDFModelUtilities.SelectTriples(graph, null, null, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
+                    //In case of same S and P variable, must refine matching triples with a further value comparison
+                    if (pattern.Subject.Equals(pattern.Predicate))
+                        matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Predicate));
+                    PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SP, patternResultTable);
+                    break;
+                case "SO":
+                    matchingTriples = RDFModelUtilities.SelectTriples(graph, null, (RDFResource)pattern.Predicate, null, null);
+                    //In case of same S and O variable, must refine matching triples with a further value comparison
+                    if (pattern.Subject.Equals(pattern.Object))
+                        matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Object));
+                    PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SO, patternResultTable);
+                    break;
+                case "PO":
+                    matchingTriples = RDFModelUtilities.SelectTriples(graph, (RDFResource)pattern.Subject, null, null, null);
+                    //In case of same P and O variable, must refine matching triples with a further value comparison
+                    if (pattern.Predicate.Equals(pattern.Object))
+                        matchingTriples = matchingTriples.FindAll(mt => mt.Predicate.Equals(mt.Object));
+                    PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.PO, patternResultTable);
+                    break;
+                case "SPO":
+                    matchingTriples = RDFModelUtilities.SelectTriples(graph, null, null, null, null);
+                    //In case of same S and P variable, must refine matching triples with a further value comparison
+                    if (pattern.Subject.Equals(pattern.Predicate))
+                        matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Predicate));
+                    //In case of same S and O variable, must refine matching triples with a further value comparison
+                    if (pattern.Subject.Equals(pattern.Object))
+                        matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Object));
+                    //In case of same P and O variable, must refine matching triples with a further value comparison
+                    if (pattern.Predicate.Equals(pattern.Object))
+                        matchingTriples = matchingTriples.FindAll(mt => mt.Predicate.Equals(mt.Object));
+                    PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SPO, patternResultTable);
+                    break;
             }
 
-            return resultTable;
+            return patternResultTable;
         }
 
         /// <summary>
@@ -1595,50 +1547,53 @@ namespace RDFSharp.Query
         /// </summary>
         internal void PopulateTable(RDFPattern pattern, List<RDFTriple> triples, RDFQueryEnums.RDFPatternHoles patternHole, DataTable resultTable)
         {
+            string patternSubject = pattern.Subject.ToString();
+            string patternPredicate = pattern.Predicate.ToString();
+            string patternObject = pattern.Object.ToString();
             Dictionary<string, string> bindings = new Dictionary<string, string>();
 
             //Iterate result graph's triples
-            foreach (RDFTriple t in triples)
+            foreach (RDFTriple triple in triples)
             {
                 switch (patternHole)
                 {
                     //->P->O
                     case RDFQueryEnums.RDFPatternHoles.S:
-                        bindings.Add(pattern.Subject.ToString(), t.Subject.ToString());
+                        bindings.Add(patternSubject, triple.Subject.ToString());
                         break;
                     //S->->O
                     case RDFQueryEnums.RDFPatternHoles.P:
-                        bindings.Add(pattern.Predicate.ToString(), t.Predicate.ToString());
+                        bindings.Add(patternPredicate, triple.Predicate.ToString());
                         break;
                     //S->P->
                     case RDFQueryEnums.RDFPatternHoles.O:
-                        bindings.Add(pattern.Object.ToString(), t.Object.ToString());
+                        bindings.Add(patternObject, triple.Object.ToString());
                         break;
                     //->->O
                     case RDFQueryEnums.RDFPatternHoles.SP:
-                        bindings.Add(pattern.Subject.ToString(), t.Subject.ToString());
-                        if (!bindings.ContainsKey(pattern.Predicate.ToString()))
-                            bindings.Add(pattern.Predicate.ToString(), t.Predicate.ToString());
+                        bindings.Add(patternSubject, triple.Subject.ToString());
+                        if (!bindings.ContainsKey(patternPredicate))
+                            bindings.Add(patternPredicate, triple.Predicate.ToString());
                         break;
                     //->P->
                     case RDFQueryEnums.RDFPatternHoles.SO:
-                        bindings.Add(pattern.Subject.ToString(), t.Subject.ToString());
-                        if (!bindings.ContainsKey(pattern.Object.ToString()))
-                            bindings.Add(pattern.Object.ToString(), t.Object.ToString());
+                        bindings.Add(patternSubject, triple.Subject.ToString());
+                        if (!bindings.ContainsKey(patternObject))
+                            bindings.Add(patternObject, triple.Object.ToString());
                         break;
                     //S->->
                     case RDFQueryEnums.RDFPatternHoles.PO:
-                        bindings.Add(pattern.Predicate.ToString(), t.Predicate.ToString());
-                        if (!bindings.ContainsKey(pattern.Object.ToString()))
-                            bindings.Add(pattern.Object.ToString(), t.Object.ToString());
+                        bindings.Add(patternPredicate, triple.Predicate.ToString());
+                        if (!bindings.ContainsKey(patternObject))
+                            bindings.Add(patternObject, triple.Object.ToString());
                         break;
                     //->->
                     case RDFQueryEnums.RDFPatternHoles.SPO:
-                        bindings.Add(pattern.Subject.ToString(), t.Subject.ToString());
-                        if (!bindings.ContainsKey(pattern.Predicate.ToString()))
-                            bindings.Add(pattern.Predicate.ToString(), t.Predicate.ToString());
-                        if (!bindings.ContainsKey(pattern.Object.ToString()))
-                            bindings.Add(pattern.Object.ToString(), t.Object.ToString());
+                        bindings.Add(patternSubject, triple.Subject.ToString());
+                        if (!bindings.ContainsKey(patternPredicate))
+                            bindings.Add(patternPredicate, triple.Predicate.ToString());
+                        if (!bindings.ContainsKey(patternObject))
+                            bindings.Add(patternObject, triple.Object.ToString());
                         break;
                 }
                 AddRow(resultTable, bindings);
