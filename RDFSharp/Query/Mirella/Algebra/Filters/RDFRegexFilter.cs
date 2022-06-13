@@ -65,13 +65,13 @@ namespace RDFSharp.Query
         {
             StringBuilder regexFlags = new StringBuilder();
             if (this.RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
-                regexFlags.Append("i");
+                regexFlags.Append('i');
             if (this.RegEx.Options.HasFlag(RegexOptions.Singleline))
-                regexFlags.Append("s");
+                regexFlags.Append('s');
             if (this.RegEx.Options.HasFlag(RegexOptions.Multiline))
-                regexFlags.Append("m");
+                regexFlags.Append('m');
             if (this.RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
-                regexFlags.Append("x");
+                regexFlags.Append('x');
 
             if (!string.IsNullOrEmpty(regexFlags.ToString()))
                 return string.Concat("FILTER ( REGEX(STR(", this.VariableName, "), \"", this.RegEx, "\", \"", regexFlags, "\") )");

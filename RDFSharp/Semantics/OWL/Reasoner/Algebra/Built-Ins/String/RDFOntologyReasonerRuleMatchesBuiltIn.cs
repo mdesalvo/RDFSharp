@@ -43,13 +43,13 @@ namespace RDFSharp.Semantics.OWL
             //For printing, this built-in requires simulation of the right argument as plain literal
             StringBuilder regexFlags = new StringBuilder();
             if (matchesRegex.Options.HasFlag(RegexOptions.IgnoreCase))
-                regexFlags.Append("i");
+                regexFlags.Append('i');
             if (matchesRegex.Options.HasFlag(RegexOptions.Singleline))
-                regexFlags.Append("s");
+                regexFlags.Append('s');
             if (matchesRegex.Options.HasFlag(RegexOptions.Multiline))
-                regexFlags.Append("m");
+                regexFlags.Append('m');
             if (matchesRegex.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
-                regexFlags.Append("x");
+                regexFlags.Append('x');
             this.RightArgument = regexFlags.ToString() != string.Empty ? new RDFOntologyLiteral(new RDFPlainLiteral($"{matchesRegex}\",\"{regexFlags}"))
                                                                        : new RDFOntologyLiteral(new RDFPlainLiteral($"{matchesRegex}"));
 

@@ -227,7 +227,7 @@ namespace RDFSharp.Model
                 //Filter by Subject
                 if (subj != null)
                 {
-                    queryFilters.Append("S");
+                    queryFilters.Append('S');
                     foreach (long t in graph.GraphIndex.SelectIndexBySubject(subj))
                         S.Add(graph.Triples[t]);
                 }
@@ -235,7 +235,7 @@ namespace RDFSharp.Model
                 //Filter by Predicate
                 if (pred != null)
                 {
-                    queryFilters.Append("P");
+                    queryFilters.Append('P');
                     foreach (long t in graph.GraphIndex.SelectIndexByPredicate(pred))
                         P.Add(graph.Triples[t]);
                 }
@@ -243,7 +243,7 @@ namespace RDFSharp.Model
                 //Filter by Object
                 if (obj != null)
                 {
-                    queryFilters.Append("O");
+                    queryFilters.Append('O');
                     foreach (long t in graph.GraphIndex.SelectIndexByObject(obj))
                         O.Add(graph.Triples[t]);
                 }
@@ -251,7 +251,7 @@ namespace RDFSharp.Model
                 //Filter by Literal
                 if (lit != null)
                 {
-                    queryFilters.Append("L");
+                    queryFilters.Append('L');
                     foreach (long t in graph.GraphIndex.SelectIndexByLiteral(lit))
                         L.Add(graph.Triples[t]);
                 }

@@ -802,17 +802,17 @@ namespace RDFSharp.Query
         {
             switch (dataSource)
             {
-                case RDFGraph dataSourceGraph:
-                    return ApplyPattern(pattern, dataSourceGraph);
+                case RDFGraph graph:
+                    return ApplyPatternToGraph(pattern, graph);
 
-                case RDFStore dataSourceStore:
-                    return ApplyPattern(pattern, dataSourceStore);
+                case RDFStore store:
+                    return ApplyPatternToStore(pattern, store);
 
-                case RDFFederation dataSourceFederation:
-                    return ApplyPattern(pattern, dataSourceFederation);
+                case RDFFederation federation:
+                    return ApplyPatternToFederation(pattern, federation);
 
-                case RDFSPARQLEndpoint dataSourceSparqlEndpoint:
-                    return ApplyPattern(pattern, dataSourceSparqlEndpoint);
+                case RDFSPARQLEndpoint sparqlEndpoint:
+                    return ApplyPatternToSPARQLEndpoint(pattern, sparqlEndpoint);
             }
             return new DataTable();
         }
@@ -820,7 +820,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the given pattern to the given graph
         /// </summary>
-        internal DataTable ApplyPattern(RDFPattern pattern, RDFGraph graph)
+        internal DataTable ApplyPatternToGraph(RDFPattern pattern, RDFGraph graph)
         {
             DataTable patternResultTable = new DataTable();
             StringBuilder templateHoleDetector = new StringBuilder();
@@ -828,14 +828,14 @@ namespace RDFSharp.Query
             //Analyze subject of the pattern
             if (pattern.Subject is RDFVariable)
             {
-                templateHoleDetector.Append("S");
+                templateHoleDetector.Append('S');
                 AddColumn(patternResultTable, pattern.Subject.ToString());
             }
 
             //Analyze predicate of the pattern
             if (pattern.Predicate is RDFVariable)
             {
-                templateHoleDetector.Append("P");
+                templateHoleDetector.Append('P');
                 AddColumn(patternResultTable, pattern.Predicate.ToString());
             }
 
@@ -844,7 +844,7 @@ namespace RDFSharp.Query
             bool patternObjectIsLiteral = pattern.Object is RDFLiteral;
             if (pattern.Object is RDFVariable)
             {
-                templateHoleDetector.Append("O");
+                templateHoleDetector.Append('O');
                 AddColumn(patternResultTable, pattern.Object.ToString());
             }
             
@@ -906,7 +906,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the given pattern to the given store
         /// </summary>
-        internal DataTable ApplyPattern(RDFPattern pattern, RDFStore store)
+        internal DataTable ApplyPatternToStore(RDFPattern pattern, RDFStore store)
         {
             DataTable patternResultTable = new DataTable();
             StringBuilder templateHoleDetector = new StringBuilder();
@@ -915,21 +915,21 @@ namespace RDFSharp.Query
             bool hasContext = (pattern.Context != null);
             if (hasContext && pattern.Context is RDFVariable)
             {
-                templateHoleDetector.Append("C");
+                templateHoleDetector.Append('C');
                 AddColumn(patternResultTable, pattern.Context.ToString());
             }
 
             //Analyze subject of the pattern
             if (pattern.Subject is RDFVariable)
             {
-                templateHoleDetector.Append("S");
+                templateHoleDetector.Append('S');
                 AddColumn(patternResultTable, pattern.Subject.ToString());
             }
 
             //Analyze predicate of the pattern
             if (pattern.Predicate is RDFVariable)
             {
-                templateHoleDetector.Append("P");
+                templateHoleDetector.Append('P');
                 AddColumn(patternResultTable, pattern.Predicate.ToString());
             }
 
@@ -938,7 +938,7 @@ namespace RDFSharp.Query
             bool patternObjectIsLiteral = pattern.Object is RDFLiteral;
             if (pattern.Object is RDFVariable)
             {
-                templateHoleDetector.Append("O");
+                templateHoleDetector.Append('O');
                 AddColumn(patternResultTable, pattern.Object.ToString());
             }
             
@@ -1073,7 +1073,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the given pattern to the given federation
         /// </summary>
-        internal DataTable ApplyPattern(RDFPattern pattern, RDFFederation federation)
+        internal DataTable ApplyPatternToFederation(RDFPattern pattern, RDFFederation federation)
         {
             DataTable resultTable = new DataTable();
 
@@ -1083,22 +1083,22 @@ namespace RDFSharp.Query
                 switch (dataSource)
                 {
                     case RDFGraph dataSourceGraph:
-                        DataTable graphTable = ApplyPattern(pattern, dataSourceGraph);
+                        DataTable graphTable = ApplyPatternToGraph(pattern, dataSourceGraph);
                         resultTable.Merge(graphTable, true, MissingSchemaAction.Add);
                         break;
 
                     case RDFStore dataSourceStore:
-                        DataTable storeTable = ApplyPattern(pattern, dataSourceStore);
+                        DataTable storeTable = ApplyPatternToStore(pattern, dataSourceStore);
                         resultTable.Merge(storeTable, true, MissingSchemaAction.Add);
                         break;
 
                     case RDFFederation dataSourceFederation:
-                        DataTable federationTable = ApplyPattern(pattern, dataSourceFederation);
+                        DataTable federationTable = ApplyPatternToFederation(pattern, dataSourceFederation);
                         resultTable.Merge(federationTable, true, MissingSchemaAction.Add);
                         break;
 
                     case RDFSPARQLEndpoint dataSourceSparqlEndpoint:
-                        DataTable sparqlEndpointTable = ApplyPattern(pattern, dataSourceSparqlEndpoint);
+                        DataTable sparqlEndpointTable = ApplyPatternToSPARQLEndpoint(pattern, dataSourceSparqlEndpoint);
                         resultTable.Merge(sparqlEndpointTable, true, MissingSchemaAction.Add);
                         break;
                 }
@@ -1110,7 +1110,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the given pattern to the given federation
         /// </summary>
-        internal DataTable ApplyPattern(RDFPattern pattern, RDFSPARQLEndpoint sparqlEndpoint)
+        internal DataTable ApplyPatternToSPARQLEndpoint(RDFPattern pattern, RDFSPARQLEndpoint sparqlEndpoint)
         {
             //Transform the pattern into an equivalent "SELECT *" query
             RDFSelectQuery selectQuery =

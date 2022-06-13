@@ -96,7 +96,7 @@ namespace RDFSharp.Store
                 //Filter by Context
                 if (ctx != null)
                 {
-                    queryFilters.Append("C");
+                    queryFilters.Append('C');
                     foreach (long q in store.StoreIndex.SelectIndexByContext(ctx))
                         C.Add(store.Quadruples[q]);
                 }
@@ -104,7 +104,7 @@ namespace RDFSharp.Store
                 //Filter by Subject
                 if (subj != null)
                 {
-                    queryFilters.Append("S");
+                    queryFilters.Append('S');
                     foreach (long q in store.StoreIndex.SelectIndexBySubject(subj))
                         S.Add(store.Quadruples[q]);
                 }
@@ -112,7 +112,7 @@ namespace RDFSharp.Store
                 //Filter by Predicate
                 if (pred != null)
                 {
-                    queryFilters.Append("P");
+                    queryFilters.Append('P');
                     foreach (long q in store.StoreIndex.SelectIndexByPredicate(pred))
                         P.Add(store.Quadruples[q]);
                 }
@@ -120,7 +120,7 @@ namespace RDFSharp.Store
                 //Filter by Object
                 if (obj != null)
                 {
-                    queryFilters.Append("O");
+                    queryFilters.Append('O');
                     foreach (long q in store.StoreIndex.SelectIndexByObject(obj))
                         O.Add(store.Quadruples[q]);
                 }
@@ -128,7 +128,7 @@ namespace RDFSharp.Store
                 //Filter by Literal
                 if (lit != null)
                 {
-                    queryFilters.Append("L");
+                    queryFilters.Append('L');
                     foreach (var q in store.StoreIndex.SelectIndexByLiteral(lit))
                         L.Add(store.Quadruples[q]);
                 }

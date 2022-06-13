@@ -109,13 +109,13 @@ namespace RDFSharp.Model
                 //sh:flags
                 StringBuilder regexFlags = new StringBuilder();
                 if (this.RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
-                    regexFlags.Append("i");
+                    regexFlags.Append('i');
                 if (this.RegEx.Options.HasFlag(RegexOptions.Singleline))
-                    regexFlags.Append("s");
+                    regexFlags.Append('s');
                 if (this.RegEx.Options.HasFlag(RegexOptions.Multiline))
-                    regexFlags.Append("m");
+                    regexFlags.Append('m');
                 if (this.RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
-                    regexFlags.Append("x");
+                    regexFlags.Append('x');
                 if (regexFlags.ToString() != string.Empty)
                     result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.FLAGS, new RDFTypedLiteral(regexFlags.ToString(), RDFModelEnums.RDFDatatypes.XSD_STRING)));
             }
