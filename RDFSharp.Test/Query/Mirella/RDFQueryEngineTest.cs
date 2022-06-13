@@ -19,7 +19,12 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
+using WireMock.Server;
 using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Store;
@@ -29,6 +34,14 @@ namespace RDFSharp.Test.Query
     [TestClass]
     public class RDFQueryEngineTest
     {
+        private WireMockServer server;
+
+        [TestInitialize]
+        public void Initialize() { server = WireMockServer.Start(); }
+
+        [TestCleanup]
+        public void Cleanup()  { server.Stop(); server.Dispose(); }
+
         #region Tests
         [TestMethod]
         public void ShouldCreateQueryEngine()
@@ -2126,6 +2139,152 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Columns.Count == 3);
             Assert.IsTrue(result.Rows.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternToDataSourceGraph()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPattern(pattern, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternToDataSourceStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext(), new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext(), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext(), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext(), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext(), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPattern(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternToDataSourceFederation()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US"))
+            });
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext(), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext(), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext(), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFFederation federation = new RDFFederation().AddGraph(graph).AddStore(store);
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPattern(pattern, federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternToDataSourceSPARQLEndpoint()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFQueryEngineTest/ShouldApplyPatternToDataSourceSPARQLEndpoint/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?Y"" />
+    <variable name=""?X"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:pluto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:topolino</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:fido</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:paperino</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:balto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:whoever</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>", encoding: Encoding.UTF8)
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldApplyPatternToDataSourceSPARQLEndpoint/sparql"));
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPattern(pattern, endpoint);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
         }
         #endregion
     }
