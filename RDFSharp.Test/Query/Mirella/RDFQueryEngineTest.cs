@@ -2286,6 +2286,264 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
             Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
         }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithSubjectVariableToGraph()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithPredicateVariableToGraph()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithObjectVariableToGraph()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithLiteralVariableToGraph()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:topolino"), new RDFResource("ex:hasName"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "Mickey Mouse@EN-US"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithSubjectPredicateVariableToGraph()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFVariable("?V"), new RDFResource("ex:topolino"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithEqualSubjectPredicateVariableToGraph()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:pluto"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFVariable("?Y"), new RDFResource("ex:topolino"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithSubjectObjectVariableToGraph()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithEqualSubjectObjectVariableToGraph()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:pluto")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?Y"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithPredicateObjectVariableToGraph()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFVariable("?V"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithEqualPredicateObjectVariableToGraph()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:dogOf")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFVariable("?V"), new RDFVariable("?V"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithSubjectPredicateObjectVariableToGraph()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:dogOf")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFVariable("?V"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 3);
+            Assert.IsTrue(result.Rows.Count == 5); //All the triples...
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithEqualSubjectPredicateObjectVariableToGraph()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:pluto"),new RDFResource("ex:pluto")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFVariable("?Y"), new RDFVariable("?Y"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        }
         #endregion
     }
 }
