@@ -210,6 +210,9 @@ namespace RDFSharp.Query
                     webClient.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
                     webClient.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
 
+                    //Insert eventual authorization headers
+                    sparqlEndpoint.FillWebClientAuthorization(webClient);
+
                     //Send querystring to SPARQL endpoint
                     byte[] sparqlResponse = default;
                     try

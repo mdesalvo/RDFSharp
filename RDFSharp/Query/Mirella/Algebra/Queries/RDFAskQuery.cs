@@ -133,6 +133,9 @@ namespace RDFSharp.Query
                     //Insert request headers
                     webClient.Headers.Add(HttpRequestHeader.Accept, "application/sparql-results+xml");
 
+                    //Insert eventual authorization headers
+                    sparqlEndpoint.FillWebClientAuthorization(webClient);
+
                     //Send querystring to SPARQL endpoint
                     byte[] sparqlResponse = default;
                     try

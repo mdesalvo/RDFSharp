@@ -118,6 +118,25 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// RDFSPARQLEndpointAuthorizationTypes represents an enumeration for possible authorization header types to be sent to a SPARQL endpoint
+        /// </summary>
+        public enum RDFSPARQLEndpointAuthorizationTypes
+        {
+            /// <summary>
+            /// No authorization header will be sent to the SPARQL endpoint
+            /// </summary>
+            None = 0,
+            /// <summary>
+            /// Basic authorization header will be sent to the SPARQL endpoint
+            /// </summary>
+            Basic = 1,
+            /// <summary>
+            /// Bearer authorization header will be sent to the SPARQL endpoint
+            /// </summary>
+            Bearer = 2
+        }
+
+        /// <summary>
         /// RDFSPARQLEndpointOperationContentTypes represents an enumeration for supported Content-Type headers to be sent for SPARQL UPDATE operations
         /// </summary>
         public enum RDFSPARQLEndpointOperationContentTypes

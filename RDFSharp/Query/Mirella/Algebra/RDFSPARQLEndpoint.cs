@@ -15,8 +15,10 @@
 */
 
 using RDFSharp.Model;
+using static RDFSharp.Query.RDFQueryUtilities;
 using System;
 using System.Collections.Specialized;
+using System.Net;
 
 namespace RDFSharp.Query
 {
@@ -30,6 +32,16 @@ namespace RDFSharp.Query
         /// Base address of the SPARQL endpoint
         /// </summary>
         public Uri BaseAddress { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating the type of authorization header which will eventually be sent to the SPARQL endpoint
+        /// </summary>
+        public RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes AuthorizationType { get; internal set; }
+
+        /// <summary>
+        /// Value of the authorization header which will eventually be sent to the SPARQL endpoint
+        /// </summary>
+        internal string AuthorizationValue { get; set; }
 
         /// <summary>
         /// Collection of query params sent to the SPARQL endpoint
@@ -48,6 +60,8 @@ namespace RDFSharp.Query
 
             this.BaseAddress = baseAddress;
             this.QueryParams = new NameValueCollection();
+            this.AuthorizationType = RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.None;
+            this.AuthorizationValue = null;
         }
         #endregion
 
@@ -61,12 +75,56 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// Sets the "Basic {basicAuthHeaderValue}" authorization header which will be sent to the the SPARQL endpoint
+        /// </summary>
+        public RDFSPARQLEndpoint SetBasicAuthorizationHeader(string basicAuthHeaderValue)
+        {
+            if (!string.IsNullOrEmpty(basicAuthHeaderValue))
+            {
+                this.AuthorizationType = RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Basic;
+                this.AuthorizationValue = basicAuthHeaderValue;
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the "Bearer {bearerAuthHeaderValue}" authorization header which will be sent to the the SPARQL endpoint
+        /// </summary>
+        public RDFSPARQLEndpoint SetBearerAuthorizationHeader(string bearerAuthHeaderValue)
+        {
+            if (!string.IsNullOrEmpty(bearerAuthHeaderValue))
+            {
+                this.AuthorizationType = RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Bearer;
+                this.AuthorizationValue = bearerAuthHeaderValue;
+            }
+            return this;
+        }
+
+        /// <summary>
         /// Adds a "default-graph-uri" parameter to be sent to the SPARQL endpoint
         /// </summary>
         public RDFSPARQLEndpoint AddDefaultGraphUri(string defaultGraphUri)
         {
             this.QueryParams.Add("default-graph-uri", defaultGraphUri ?? string.Empty);
             return this;
+        }
+
+        /// <summary>
+        /// Adds the proper authorization header to the given RDF WebClient
+        /// </summary>
+        internal void FillWebClientAuthorization(RDFWebClient webClient)
+        {
+            switch (this.AuthorizationType)
+            {
+                //Basic
+                case RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Basic:
+                    webClient.Headers.Add(HttpRequestHeader.Authorization, $"Basic {this.AuthorizationValue}");
+                    break;
+                //Bearer
+                case RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Bearer:
+                    webClient.Headers.Add(HttpRequestHeader.Authorization, $"Bearer {this.AuthorizationValue}");
+                    break;
+            }
         }
 
         /// <summary>

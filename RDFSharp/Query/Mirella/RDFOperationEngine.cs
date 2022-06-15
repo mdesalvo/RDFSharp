@@ -337,6 +337,9 @@ namespace RDFSharp.Query
                         break;
                 }
 
+                //Insert eventual authorization headers
+                sparqlUpdateEndpoint.FillWebClientAuthorization(webClient);
+
                 //Send operation to SPARQL UPDATE endpoint
                 string sparqlUpdateResponse = default;
                 try
