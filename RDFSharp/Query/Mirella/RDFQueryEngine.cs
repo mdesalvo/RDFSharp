@@ -1030,6 +1030,19 @@ namespace RDFSharp.Query
                         matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList());
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CSO, patternResultTable);
                     break;
+                case "CPO":
+                    matchingQuadruples = store.SelectQuadruples(null, (RDFResource)pattern.Subject, null, null, null);
+                    //In case of same C and P variable, must refine matching quadruples with a further value comparison
+                    if (pattern.Context.Equals(pattern.Predicate))
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Predicate)).ToList());
+                    //In case of same C and O variable, must refine matching quadruples with a further value comparison
+                    if (pattern.Context.Equals(pattern.Object))
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Object)).ToList());
+                    //In case of same P and O variable, must refine matching quadruples with a further value comparison
+                    if (pattern.Predicate.Equals(pattern.Object))
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList());
+                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CPO, patternResultTable);
+                    break;
                 case "SPO":
                     matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, null, null, null, null);
                     //In case of same S and P variable, must refine matching quadruples with a further value comparison

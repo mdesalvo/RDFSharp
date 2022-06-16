@@ -2544,6 +2544,615 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.Rows.Count == 1);
             Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
         }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithContextVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithSubjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithPredicateVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithObjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithLiteralVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:topolino"), new RDFResource("ex:hasName"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "Mickey Mouse@EN-US"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithContextSubjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithEqualContextSubjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:ctx"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?C"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithContextPredicateVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithEqualContextPredicateVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:ctx"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFVariable("?C"), new RDFResource("ex:topolino"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithContextObjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithEqualContextObjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:ctx")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?C"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithContextLiteralVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:topolino"), new RDFResource("ex:hasName"), new RDFVariable("?N"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithContextSubjectPredicateVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?Y"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 3);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithEqualContextSubjectPredicateVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:ctx"),new RDFResource("ex:ctx"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?C"), new RDFVariable("?C"), new RDFResource("ex:topolino"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithContextSubjectObjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 3);
+            Assert.IsTrue(result.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?C"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?C"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithEqualContextSubjectObjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:ctx"),new RDFResource("ex:dogOf"),new RDFResource("ex:ctx")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?C"), new RDFResource("ex:dogOf"), new RDFVariable("?C"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithContextPredicateObjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 3);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?P"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithEqualContextPredicateObjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:ctx"),new RDFResource("ex:ctx")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFVariable("?C"), new RDFVariable("?C"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithContextSubjectPredicateObjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?Y"), new RDFVariable("?P"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 4);
+            Assert.IsTrue(result.Rows.Count == 5); //All the quadruples...
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithEqualContextSubjectPredicateObjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:ctx"),new RDFResource("ex:ctx"),new RDFResource("ex:ctx")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?C"), new RDFVariable("?C"), new RDFVariable("?C"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithSubjectPredicateVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?Y"), new RDFVariable("?V"), new RDFResource("ex:topolino"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithEqualSubjectPredicateVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:pluto"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?Y"), new RDFVariable("?Y"), new RDFResource("ex:topolino"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithSubjectObjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithEqualSubjectObjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:pluto")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?Y"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithPredicateObjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFVariable("?V"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithEqualPredicateObjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:dogOf")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFVariable("?V"), new RDFVariable("?V"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithSubjectPredicateObjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:dogOf")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?Y"), new RDFVariable("?V"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 3);
+            Assert.IsTrue(result.Rows.Count == 5); //All the quadruples...
+        }
+
+        [TestMethod]
+        public void ShouldApplyPatternWithEqualSubjectPredicateObjectVariableToStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:pluto"),new RDFResource("ex:pluto")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?Y"), new RDFVariable("?Y"), new RDFVariable("?Y"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        }
         #endregion
     }
 }
