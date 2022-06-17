@@ -3384,6 +3384,65 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
             Assert.IsTrue(string.Equals(result.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
         }
+
+        //MIRELLA TABLES
+
+        [TestMethod]
+        public void ShouldCompareDataColumns()
+        {
+            DataColumn colA = new DataColumn("?A", typeof(string));
+            DataColumn colB = new DataColumn("?B", typeof(string));
+            Assert.IsTrue(RDFQueryEngine.dtComparer.Equals(colA, colA));
+            Assert.IsFalse(RDFQueryEngine.dtComparer.Equals(colA, colB));
+            Assert.IsFalse(RDFQueryEngine.dtComparer.Equals(null, colB));
+            Assert.IsFalse(RDFQueryEngine.dtComparer.Equals(colA, null));
+            Assert.IsTrue(RDFQueryEngine.dtComparer.Equals(null, null));
+        }
+
+        [TestMethod]
+        public void ShouldAddDataColumn()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, " ?Col ");
+            RDFQueryEngine.AddColumn(table, "?COL");
+
+            Assert.IsTrue(table.Columns.Count == 1);
+            Assert.IsTrue(string.Equals(table.Columns[0].ColumnName, "?COL"));
+            Assert.IsTrue(table.Columns[0].DataType.Equals(RDFQueryEngine.SystemString));
+        }
+
+        [TestMethod]
+        public void ShouldAddDataRow()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?Y");
+            RDFQueryEngine.AddColumn(table, "?X");
+            Dictionary<string, string> bindings = new Dictionary<string, string>()
+            {
+                { "?Y", "ex:pluto" },
+                { "?X", "ex:topolino" }
+            };
+            RDFQueryEngine.AddRow(table, bindings);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?X"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldNotAddDataRowBecauseUnknownBinding()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?Y");
+            RDFQueryEngine.AddColumn(table, "?X");
+            Dictionary<string, string> bindings = new Dictionary<string, string>()
+            {
+                { "?Z", "ex:pluto" } //Will not be added to the table, because it is not a column
+            };
+            RDFQueryEngine.AddRow(table, bindings);
+
+            Assert.IsTrue(table.Rows.Count == 0);
+        }
         #endregion
     }
 }

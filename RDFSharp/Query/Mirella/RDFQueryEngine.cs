@@ -1192,18 +1192,16 @@ namespace RDFSharp.Query
         /// </summary>
         internal class DataColumnComparer : IEqualityComparer<DataColumn>
         {
-            #region Methods
             public bool Equals(DataColumn column1, DataColumn column2)
             {
                 if (column1 != null)
-                    return column2 != null && column1.ColumnName.Equals(column2.ColumnName, StringComparison.Ordinal);
+                    return column2 != null && string.Equals(column1.ColumnName, column2.ColumnName, StringComparison.Ordinal);
 
                 return column2 == null;
             }
 
             public int GetHashCode(DataColumn column)
                 => column.ColumnName.GetHashCode();
-            #endregion
         }
         /// <summary>
         /// Static instance of the comparer used by the engine to compare data columns
