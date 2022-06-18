@@ -3854,6 +3854,298 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
             Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
         }
+
+        [TestMethod]
+        public void ShouldProductJoinTables()
+        {
+            DataTable dt1 = new DataTable();
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            {
+                { "?Y", "ex:pluto" },
+                { "?X", "ex:topolino" }
+            };
+            RDFQueryEngine.AddRow(dt1, dt1Bindings);
+
+            DataTable dt2 = new DataTable();
+            RDFQueryEngine.AddColumn(dt2, "?Z");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            {
+                { "?Z", "ex:topolino" },
+                { "?N", "Mickey Mouse@EN-US" }
+            };
+            RDFQueryEngine.AddRow(dt2, dt2Bindings);
+
+            DataTable joinTable = RDFQueryEngine.InnerJoinTables(dt1, dt2);
+
+            Assert.IsNotNull(joinTable);
+            Assert.IsTrue(joinTable.Columns.Count == 4);
+            Assert.IsTrue(joinTable.Columns.Contains("?Y"));
+            Assert.IsTrue(joinTable.Columns.Contains("?X"));
+            Assert.IsTrue(joinTable.Columns.Contains("?Z"));
+            Assert.IsTrue(joinTable.Columns.Contains("?N"));
+            Assert.IsTrue(joinTable.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Z"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+        }
+
+        [TestMethod]
+        public void ShouldProductJoinTablesWithEmptyRight()
+        {
+            DataTable dt1 = new DataTable();
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            {
+                { "?Y", "ex:pluto" },
+                { "?X", "ex:topolino" }
+            };
+            RDFQueryEngine.AddRow(dt1, dt1Bindings);
+
+            DataTable dt2 = new DataTable();
+            RDFQueryEngine.AddColumn(dt2, "?Z");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+            DataTable joinTable = RDFQueryEngine.InnerJoinTables(dt1, dt2);
+
+            Assert.IsNotNull(joinTable);
+            Assert.IsTrue(joinTable.Columns.Count == 4);
+            Assert.IsTrue(joinTable.Columns.Contains("?Y"));
+            Assert.IsTrue(joinTable.Columns.Contains("?X"));
+            Assert.IsTrue(joinTable.Columns.Contains("?Z"));
+            Assert.IsTrue(joinTable.Columns.Contains("?N"));
+            Assert.IsTrue(joinTable.Rows.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldProductJoinTablesWithEmptyLeft()
+        {
+            DataTable dt1 = new DataTable();
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+
+            DataTable dt2 = new DataTable();
+            RDFQueryEngine.AddColumn(dt2, "?Z");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            {
+                { "?Z", "ex:topolino" },
+                { "?N", "Mickey Mouse@EN-US" }
+            };
+            RDFQueryEngine.AddRow(dt2, dt2Bindings);
+
+            DataTable joinTable = RDFQueryEngine.InnerJoinTables(dt1, dt2);
+
+            Assert.IsNotNull(joinTable);
+            Assert.IsTrue(joinTable.Columns.Count == 4);
+            Assert.IsTrue(joinTable.Columns.Contains("?Y"));
+            Assert.IsTrue(joinTable.Columns.Contains("?X"));
+            Assert.IsTrue(joinTable.Columns.Contains("?Z"));
+            Assert.IsTrue(joinTable.Columns.Contains("?N"));
+            Assert.IsTrue(joinTable.Rows.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldProductJoinTablesWithEmptyBoth()
+        {
+            DataTable dt1 = new DataTable();
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+
+            DataTable dt2 = new DataTable();
+            RDFQueryEngine.AddColumn(dt2, "?Z");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+
+            DataTable joinTable = RDFQueryEngine.InnerJoinTables(dt1, dt2);
+
+            Assert.IsNotNull(joinTable);
+            Assert.IsTrue(joinTable.Columns.Count == 4);
+            Assert.IsTrue(joinTable.Columns.Contains("?Y"));
+            Assert.IsTrue(joinTable.Columns.Contains("?X"));
+            Assert.IsTrue(joinTable.Columns.Contains("?Z"));
+            Assert.IsTrue(joinTable.Columns.Contains("?N"));
+            Assert.IsTrue(joinTable.Rows.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldInnerJoinTables()
+        {
+            DataTable dt1 = new DataTable();
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            {
+                { "?Y", "ex:pluto" },
+                { "?X", "ex:topolino" }
+            };
+            RDFQueryEngine.AddRow(dt1, dt1Bindings);
+
+            DataTable dt2 = new DataTable();
+            RDFQueryEngine.AddColumn(dt2, "?X");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            {
+                { "?X", "ex:topolino" },
+                { "?N", "Mickey Mouse@EN-US" }
+            };
+            RDFQueryEngine.AddRow(dt2, dt2Bindings);
+
+            DataTable joinTable = RDFQueryEngine.InnerJoinTables(dt1, dt2);
+
+            Assert.IsNotNull(joinTable);
+            Assert.IsTrue(joinTable.Columns.Count == 3);
+            Assert.IsTrue(joinTable.Columns.Contains("?Y"));
+            Assert.IsTrue(joinTable.Columns.Contains("?X"));
+            Assert.IsTrue(joinTable.Columns.Contains("?N"));
+            Assert.IsTrue(joinTable.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+        }
+
+        [TestMethod]
+        public void ShouldInnerJoinTablesWithUnmatchingKeys()
+        {
+            DataTable dt1 = new DataTable();
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            {
+                { "?Y", "ex:pluto" },
+                { "?X", "ex:topolino" }
+            };
+            RDFQueryEngine.AddRow(dt1, dt1Bindings);
+
+            DataTable dt2 = new DataTable();
+            RDFQueryEngine.AddColumn(dt2, "?X");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            {
+                { "?X", "ex:minnie" },
+                { "?N", "Mickey Mouse@EN-US" }
+            };
+            RDFQueryEngine.AddRow(dt2, dt2Bindings);
+
+            DataTable joinTable = RDFQueryEngine.InnerJoinTables(dt1, dt2);
+
+            Assert.IsNotNull(joinTable);
+            Assert.IsTrue(joinTable.Columns.Count == 3);
+            Assert.IsTrue(joinTable.Columns.Contains("?Y"));
+            Assert.IsTrue(joinTable.Columns.Contains("?X"));
+            Assert.IsTrue(joinTable.Columns.Contains("?N"));
+            Assert.IsTrue(joinTable.Rows.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldInnerJoinTablesWithUnmatchingKeysBecauseNotOptional()
+        {
+            DataTable dt1 = new DataTable();
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            {
+                { "?Y", "ex:pluto" },
+                { "?X", "ex:topolino" }
+            };
+            RDFQueryEngine.AddRow(dt1, dt1Bindings);
+
+            DataTable dt2 = new DataTable();
+            RDFQueryEngine.AddColumn(dt2, "?X");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            {
+                { "?X", DBNull.Value.ToString() },
+                { "?N", "Mickey Mouse@EN-US" }
+            };
+            RDFQueryEngine.AddRow(dt2, dt2Bindings);
+
+            DataTable joinTable = RDFQueryEngine.InnerJoinTables(dt1, dt2);
+
+            Assert.IsNotNull(joinTable);
+            Assert.IsTrue(joinTable.Columns.Count == 3);
+            Assert.IsTrue(joinTable.Columns.Contains("?Y"));
+            Assert.IsTrue(joinTable.Columns.Contains("?X"));
+            Assert.IsTrue(joinTable.Columns.Contains("?N"));
+            Assert.IsTrue(joinTable.Rows.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldInnerJoinTablesWithEmptyRight()
+        {
+            DataTable dt1 = new DataTable();
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            {
+                { "?Y", "ex:pluto" },
+                { "?X", "ex:topolino" }
+            };
+            RDFQueryEngine.AddRow(dt1, dt1Bindings);
+
+            DataTable dt2 = new DataTable();
+            RDFQueryEngine.AddColumn(dt2, "?X");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+
+            DataTable joinTable = RDFQueryEngine.InnerJoinTables(dt1, dt2);
+
+            Assert.IsNotNull(joinTable);
+            Assert.IsTrue(joinTable.Columns.Count == 3);
+            Assert.IsTrue(joinTable.Columns.Contains("?Y"));
+            Assert.IsTrue(joinTable.Columns.Contains("?X"));
+            Assert.IsTrue(joinTable.Columns.Contains("?N"));
+            Assert.IsTrue(joinTable.Rows.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldInnerJoinTablesWithEmptyLeft()
+        {
+            DataTable dt1 = new DataTable();
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+
+            DataTable dt2 = new DataTable();
+            RDFQueryEngine.AddColumn(dt2, "?X");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            {
+                { "?X", "ex:minnie" },
+                { "?N", "Mickey Mouse@EN-US" }
+            };
+            RDFQueryEngine.AddRow(dt2, dt2Bindings);
+
+            DataTable joinTable = RDFQueryEngine.InnerJoinTables(dt1, dt2);
+
+            Assert.IsNotNull(joinTable);
+            Assert.IsTrue(joinTable.Columns.Count == 3);
+            Assert.IsTrue(joinTable.Columns.Contains("?Y"));
+            Assert.IsTrue(joinTable.Columns.Contains("?X"));
+            Assert.IsTrue(joinTable.Columns.Contains("?N"));
+            Assert.IsTrue(joinTable.Rows.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldInnerJoinTablesWithEmptyBoth()
+        {
+            DataTable dt1 = new DataTable();
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+
+            DataTable dt2 = new DataTable();
+            RDFQueryEngine.AddColumn(dt2, "?X");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+
+            DataTable joinTable = RDFQueryEngine.InnerJoinTables(dt1, dt2);
+
+            Assert.IsNotNull(joinTable);
+            Assert.IsTrue(joinTable.Columns.Count == 3);
+            Assert.IsTrue(joinTable.Columns.Contains("?Y"));
+            Assert.IsTrue(joinTable.Columns.Contains("?X"));
+            Assert.IsTrue(joinTable.Columns.Contains("?N"));
+            Assert.IsTrue(joinTable.Rows.Count == 0);
+        }
         #endregion
     }
 }

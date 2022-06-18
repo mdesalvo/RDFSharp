@@ -1467,7 +1467,7 @@ namespace RDFSharp.Query
                     ds.Tables.Add(dt1);
                     ds.Tables.Add(dt2);
 
-                    //Identify relation columns
+                    //Create the relation linking the common columns
                     DataColumn[] parentColumns = new DataColumn[commonColumns.Length];
                     DataColumn[] childColumns = new DataColumn[commonColumns.Length];
                     for (int i = 0; i < commonColumns.Length; i++)
@@ -1475,8 +1475,6 @@ namespace RDFSharp.Query
                         parentColumns[i] = ds.Tables[0].Columns[commonColumns[i].ColumnName];
                         childColumns[i] = ds.Tables[1].Columns[commonColumns[i].ColumnName];
                     }
-
-                    //Create the relation linking the common columns
                     DataRelation r = new DataRelation("JoinRelation", parentColumns, childColumns, false);
                     ds.Relations.Add(r);
 
@@ -1490,7 +1488,7 @@ namespace RDFSharp.Query
                             result.Columns.Add(ds.Tables[1].Columns[i].ColumnName, ds.Tables[1].Columns[i].DataType);
                         else
                         {
-                            //Keep track of duplicate columns by appending a known identificator to their name
+                            //Keep track of duplicate columns by appending a known identifier to their name
                             string duplicateColKey = string.Concat(ds.Tables[1].Columns[i].ColumnName, "_DUPLICATE_");
                             result.Columns.Add(duplicateColKey, ds.Tables[1].Columns[i].DataType);
                             duplicateCols.Add(duplicateColKey);
