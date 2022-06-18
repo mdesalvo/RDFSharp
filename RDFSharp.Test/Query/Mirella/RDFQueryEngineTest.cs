@@ -3565,6 +3565,295 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
             Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
         }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromStoreWithPatternHoleC()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?C");
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
+            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
+            RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.C, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx"));
+        }       
+
+        [TestMethod]
+        public void ShouldPopulateTableFromStoreWithPatternHoleS()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?S");
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?S"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
+            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
+            RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.S, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromStoreWithPatternHoleP()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?P");
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
+            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
+            RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.P, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromStoreWithPatternHoleO()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?O");
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?O"));
+            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
+            RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.O, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromStoreWithPatternHoleCS()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?C");
+            RDFQueryEngine.AddColumn(table, "?S");
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
+            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
+            RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CS, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromStoreWithPatternHoleCP()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?C");
+            RDFQueryEngine.AddColumn(table, "?P");
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
+            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
+            RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CP, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromStoreWithPatternHoleCO()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?C");
+            RDFQueryEngine.AddColumn(table, "?O");
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?O"));
+            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
+            RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CO, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromStoreWithPatternHoleSP()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?S");
+            RDFQueryEngine.AddColumn(table, "?P");
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
+            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
+            RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.SP, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromStoreWithPatternHoleSO()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?S");
+            RDFQueryEngine.AddColumn(table, "?O");
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?S"), new RDFResource("ex:dogOf"), new RDFVariable("?O"));
+            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
+            RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.SO, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromStoreWithPatternHolePO()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?P");
+            RDFQueryEngine.AddColumn(table, "?O");
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFVariable("?O"));
+            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
+            RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.PO, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromStoreWithPatternHoleCSP()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?C");
+            RDFQueryEngine.AddColumn(table, "?S");
+            RDFQueryEngine.AddColumn(table, "?P");
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
+            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
+            RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CSP, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromStoreWithPatternHoleCSO()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?C");
+            RDFQueryEngine.AddColumn(table, "?S");
+            RDFQueryEngine.AddColumn(table, "?O");
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFResource("ex:dogOf"), new RDFVariable("?O"));
+            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
+            RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CSO, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromStoreWithPatternHoleCPO()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?C");
+            RDFQueryEngine.AddColumn(table, "?P");
+            RDFQueryEngine.AddColumn(table, "?O");
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFVariable("?O"));
+            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
+            RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CPO, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromStoreWithPatternHoleSPO()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?S");
+            RDFQueryEngine.AddColumn(table, "?P");
+            RDFQueryEngine.AddColumn(table, "?O");
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFVariable("?O"));
+            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
+            RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.SPO, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromStoreWithPatternHoleCSPO()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?C");
+            RDFQueryEngine.AddColumn(table, "?S");
+            RDFQueryEngine.AddColumn(table, "?P");
+            RDFQueryEngine.AddColumn(table, "?O");
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), new RDFVariable("?O"));
+            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
+            RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CSPO, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        }
         #endregion
     }
 }
