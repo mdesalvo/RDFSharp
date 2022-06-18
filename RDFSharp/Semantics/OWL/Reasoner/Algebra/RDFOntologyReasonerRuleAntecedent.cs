@@ -75,19 +75,18 @@ namespace RDFSharp.Semantics.OWL
         {
             //Execute the antecedent atoms
             List<DataTable> atomResults = new List<DataTable>();
-            this.Atoms.Where(atom => !atom.IsBuiltIn).ToList().ForEach(atom =>
-            {
-                atomResults.Add(atom.EvaluateOnAntecedent(ontology, options));
-            });
+            this.Atoms.Where(atom => !atom.IsBuiltIn)
+                      .ToList()
+                      .ForEach(atom => atomResults.Add(atom.EvaluateOnAntecedent(ontology, options)));
 
             //Join results of antecedent atoms
-            DataTable antecedentResult = new RDFQueryEngine().CombineTables(atomResults, false);
+            DataTable antecedentResult = RDFQueryEngine.CombineTables(atomResults, false);
 
             //Execute the antecedent built-ins
-            this.Atoms.Where(atom => atom.IsBuiltIn).OfType<RDFOntologyReasonerRuleBuiltIn>().ToList().ForEach(builtin =>
-            {
-                antecedentResult = builtin.Evaluate(antecedentResult, ontology, options);
-            });
+            this.Atoms.Where(atom => atom.IsBuiltIn)
+                      .OfType<RDFOntologyReasonerRuleBuiltIn>()
+                      .ToList()
+                      .ForEach(builtin => antecedentResult = builtin.Evaluate(antecedentResult, ontology, options));
 
             //Return the antecedent result
             return antecedentResult;

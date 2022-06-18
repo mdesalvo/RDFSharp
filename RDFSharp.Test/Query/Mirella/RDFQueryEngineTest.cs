@@ -3443,6 +3443,128 @@ namespace RDFSharp.Test.Query
 
             Assert.IsTrue(table.Rows.Count == 0);
         }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromGraphWithPatternHoleS()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?S");
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?S"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
+            List<RDFTriple> matchingTriples = new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.S, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromGraphWithPatternHoleP()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?P");
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
+            List<RDFTriple> matchingTriples = new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.P, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromGraphWithPatternHoleO()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?O");
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?O"));
+            List<RDFTriple> matchingTriples = new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.O, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromGraphWithPatternHoleSP()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?S");
+            RDFQueryEngine.AddColumn(table, "?P");
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
+            List<RDFTriple> matchingTriples = new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SP, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromGraphWithPatternHoleSO()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?S");
+            RDFQueryEngine.AddColumn(table, "?O");
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?S"), new RDFResource("ex:dogOf"), new RDFVariable("?O"));
+            List<RDFTriple> matchingTriples = new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SO, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromGraphWithPatternHolePO()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?P");
+            RDFQueryEngine.AddColumn(table, "?O");
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFVariable("?O"));
+            List<RDFTriple> matchingTriples = new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.PO, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        }
+
+        [TestMethod]
+        public void ShouldPopulateTableFromGraphWithPatternHoleSPO()
+        {
+            DataTable table = new DataTable();
+            RDFQueryEngine.AddColumn(table, "?S");
+            RDFQueryEngine.AddColumn(table, "?P");
+            RDFQueryEngine.AddColumn(table, "?O");
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFVariable("?O"));
+            List<RDFTriple> matchingTriples = new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
+            };
+            RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SPO, table);
+
+            Assert.IsTrue(table.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        }
         #endregion
     }
 }

@@ -1242,7 +1242,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Builds the table results of the pattern with values from the given graph
         /// </summary>
-        internal void PopulateTable(RDFPattern pattern, List<RDFTriple> triples, RDFQueryEnums.RDFPatternHoles patternHole, DataTable resultTable)
+        internal static void PopulateTable(RDFPattern pattern, List<RDFTriple> triples, RDFQueryEnums.RDFPatternHoles patternHole, DataTable resultTable)
         {
             string patternSubject = pattern.Subject.ToString();
             string patternPredicate = pattern.Predicate.ToString();
@@ -1301,7 +1301,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Builds the table results of the pattern with values from the given store
         /// </summary>
-        internal void PopulateTable(RDFPattern pattern, RDFMemoryStore store, RDFQueryEnums.RDFPatternHoles patternHole, DataTable resultTable)
+        internal static void PopulateTable(RDFPattern pattern, RDFMemoryStore store, RDFQueryEnums.RDFPatternHoles patternHole, DataTable resultTable)
         {
             string patternContext = pattern.Context?.ToString();
             string patternSubject = pattern.Subject.ToString();
@@ -1417,7 +1417,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Joins two datatables WITHOUT support for OPTIONAL data
         /// </summary>
-        internal DataTable InnerJoinTables(DataTable dt1, DataTable dt2)
+        internal static DataTable InnerJoinTables(DataTable dt1, DataTable dt2)
         {
             DataTable result = new DataTable();
             DataColumn[] dt1Columns = dt1.Columns.OfType<DataColumn>().ToArray();
@@ -1530,7 +1530,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Joins two datatables WITH support for OPTIONAL data
         /// </summary>
-        internal DataTable OuterJoinTables(DataTable dt1, DataTable dt2)
+        internal static DataTable OuterJoinTables(DataTable dt1, DataTable dt2)
         {
             DataTable finalResult = new DataTable();
             DataColumn[] dt1Columns = dt1.Columns.OfType<DataColumn>().ToArray();
@@ -1675,7 +1675,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Combines the given list of data tables, depending on presence of common columns and dynamic detection of Optional / Union operators
         /// </summary>
-        internal DataTable CombineTables(List<DataTable> dataTables, bool isMerge)
+        internal static DataTable CombineTables(List<DataTable> dataTables, bool isMerge)
         {
             DataTable finalTable = new DataTable();
 
@@ -1723,7 +1723,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the projection operator on the given table, based on the given query's projection variables
         /// </summary>
-        internal DataTable ProjectTable(RDFSelectQuery query, DataTable table)
+        internal static DataTable ProjectTable(RDFSelectQuery query, DataTable table)
         {
             if (query.ProjectionVars.Any())
             {
