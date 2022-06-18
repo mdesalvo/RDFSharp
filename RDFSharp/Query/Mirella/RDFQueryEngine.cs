@@ -1557,13 +1557,13 @@ namespace RDFSharp.Query
             {
                 //COMMON attribution
                 bool commonAttribution = false;
-                if (commonColumns.Any(col => col.ColumnName.Equals(resultColumn.ColumnName, StringComparison.Ordinal)))
+                if (commonColumns.Any(commonColumn => string.Equals(commonColumn.ColumnName, resultColumn.ColumnName, StringComparison.Ordinal)))
                     commonAttribution = true;
 
                 //DT attribution
-                string dtAttribution = "DT2";
-                if (dt1Columns.Any(col => col.ColumnName.Equals(resultColumn.ColumnName, StringComparison.Ordinal)))
-                    dtAttribution = "DT1";
+                string dtAttribution = "DT1";
+                if (dt2Columns.Any(dt2Column => string.Equals(dt2Column.ColumnName, resultColumn.ColumnName, StringComparison.Ordinal)))
+                    dtAttribution = "DT2";
 
                 resultColumnsAttribution.Add(resultColumn.ColumnName, (commonAttribution, dtAttribution));
             }
