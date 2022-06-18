@@ -1730,20 +1730,19 @@ namespace RDFSharp.Query
             if (query.ProjectionVars.Any())
             {
                 //Remove non-projection variables
-                List<DataColumn> nonProjCols = new List<DataColumn>();
-                foreach (DataColumn dtCol in table.Columns)
+                DataColumn[] tableColumns = table.Columns.OfType<DataColumn>().ToArray();
+                foreach (DataColumn tableColumn in tableColumns)
                 {
-                    if (!query.ProjectionVars.Any(pv => string.Equals(pv.Key.ToString(), dtCol.ColumnName, StringComparison.OrdinalIgnoreCase)))
-                        nonProjCols.Add(dtCol);
+                    if (!query.ProjectionVars.Any(projVar => string.Equals(projVar.Key.ToString(), tableColumn.ColumnName, StringComparison.OrdinalIgnoreCase)))
+                        table.Columns.Remove(tableColumn);
                 }
-                nonProjCols.ForEach(npc => table.Columns.Remove(npc.ColumnName));
 
-                //Adjust ordinals
-                foreach (var projectionVar in query.ProjectionVars)
+                //Adjust projection ordinals
+                foreach (var projVar in query.ProjectionVars)
                 {
-                    string projectionVarString = projectionVar.Key.ToString();
-                    AddColumn(table, projectionVarString);
-                    table.Columns[projectionVarString].SetOrdinal(projectionVar.Value);
+                    string projVarString = projVar.Key.ToString();
+                    AddColumn(table, projVarString);
+                    table.Columns[projVarString].SetOrdinal(projVar.Value);
                 }
             }
             return table;
