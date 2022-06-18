@@ -1436,21 +1436,23 @@ namespace RDFSharp.Query
                               .Select(c => new DataColumn(c.ColumnName, c.DataType))
                               .ToArray());
 
-                //Loop through dt1 table
+                //Loop dt1 table
                 result.AcceptChanges();
                 result.BeginLoadData();
                 foreach (DataRow parentRow in dt1.Rows)
                 {
-                    object[] firstArray = parentRow.ItemArray;
+                    object[] parentArray = parentRow.ItemArray;
 
-                    //Loop through dt2 table
+                    //Loop dt2 table
                     foreach (DataRow childRow in dt2.Rows)
                     {
-                        object[] secondArray = childRow.ItemArray;
-                        object[] productArray = new object[firstArray.Length + secondArray.Length];
-                        Array.Copy(firstArray, 0, productArray, 0, firstArray.Length);
-                        Array.Copy(secondArray, 0, productArray, firstArray.Length, secondArray.Length);
-                        result.LoadDataRow(productArray, true);
+                        object[] childArray = childRow.ItemArray;
+
+                        //Product-Join parent array with child array into result array
+                        object[] resultArray = new object[parentArray.Length + childArray.Length];
+                        Array.Copy(parentArray, 0, resultArray, 0, parentArray.Length);
+                        Array.Copy(childArray, 0, resultArray, parentArray.Length, childArray.Length);
+                        result.LoadDataRow(resultArray, true);
                     }
                 }
                 result.EndLoadData();
@@ -1459,21 +1461,20 @@ namespace RDFSharp.Query
             //INNER-JOIN
             else
             {
-                //Use a DataSet to leverage a relation linking the common columns
                 using (DataSet ds = new DataSet())
                 {
-                    //Add copy of the tables to the dataset
-                    ds.Tables.AddRange(new DataTable[] { dt1, dt2 });
+                    //Add tables to the dataset
+                    ds.Tables.Add(dt1);
+                    ds.Tables.Add(dt2);
 
-                    //Identify join columns from dt1
+                    //Identify relation columns
                     DataColumn[] parentColumns = new DataColumn[commonColumns.Length];
-                    for (int i = 0; i < parentColumns.Length; i++)
-                        parentColumns[i] = ds.Tables[0].Columns[commonColumns[i].ColumnName];
-
-                    //Identify join columns from dt2
                     DataColumn[] childColumns = new DataColumn[commonColumns.Length];
-                    for (int i = 0; i < childColumns.Length; i++)
+                    for (int i = 0; i < commonColumns.Length; i++)
+                    {
+                        parentColumns[i] = ds.Tables[0].Columns[commonColumns[i].ColumnName];
                         childColumns[i] = ds.Tables[1].Columns[commonColumns[i].ColumnName];
+                    }
 
                     //Create the relation linking the common columns
                     DataRelation r = new DataRelation("JoinRelation", parentColumns, childColumns, false);
@@ -1489,38 +1490,40 @@ namespace RDFSharp.Query
                             result.Columns.Add(ds.Tables[1].Columns[i].ColumnName, ds.Tables[1].Columns[i].DataType);
                         else
                         {
-                            //Manage duplicate columns by appending a known identificator to their name
+                            //Keep track of duplicate columns by appending a known identificator to their name
                             string duplicateColKey = string.Concat(ds.Tables[1].Columns[i].ColumnName, "_DUPLICATE_");
                             result.Columns.Add(duplicateColKey, ds.Tables[1].Columns[i].DataType);
                             duplicateCols.Add(duplicateColKey);
                         }
                     }
 
-                    //Loop through dt1 table
+                    //Loop dt1 table
                     result.AcceptChanges();
                     result.BeginLoadData();
-                    foreach (DataRow firstRow in ds.Tables[0].Rows)
+                    foreach (DataRow parentRow in ds.Tables[0].Rows)
                     {
-
-                        //Get "joined" dt2 rows by exploiting the leveraged relation
-                        DataRow[] childRows = firstRow.GetChildRows(r);
+                        DataRow[] childRows = parentRow.GetChildRows(r);
                         if (childRows.Length > 0)
                         {
-                            object[] parentArray = firstRow.ItemArray;
-                            foreach (DataRow secondRow in childRows)
+                            object[] parentArray = parentRow.ItemArray;
+
+                            //Loop dt2 table (only rows from relation)
+                            foreach (DataRow childRow in childRows)
                             {
-                                object[] secondArray = secondRow.ItemArray;
-                                object[] joinArray = new object[parentArray.Length + secondArray.Length];
-                                Array.Copy(parentArray, 0, joinArray, 0, parentArray.Length);
-                                Array.Copy(secondArray, 0, joinArray, parentArray.Length, secondArray.Length);
-                                result.LoadDataRow(joinArray, true);
+                                object[] childArray = childRow.ItemArray;
+
+                                //Inner-Join parent array with child array into result array
+                                object[] resultArray = new object[parentArray.Length + childArray.Length];
+                                Array.Copy(parentArray, 0, resultArray, 0, parentArray.Length);
+                                Array.Copy(childArray, 0, resultArray, parentArray.Length, childArray.Length);
+                                result.LoadDataRow(resultArray, true);
                             }
                         }
-
                     }
+                    result.EndLoadData();
+
                     //Eliminate the duplicated columns from the result table
                     duplicateCols.ForEach(c => result.Columns.Remove(c));
-                    result.EndLoadData();
                 }
             }
 
