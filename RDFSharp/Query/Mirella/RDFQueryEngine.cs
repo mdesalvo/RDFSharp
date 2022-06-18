@@ -1533,87 +1533,87 @@ namespace RDFSharp.Query
         /// </summary>
         internal static DataTable OuterJoinTables(DataTable dt1, DataTable dt2)
         {
-            DataTable finalResult = new DataTable();
+            DataTable result = new DataTable();
             DataColumn[] dt1Columns = dt1.Columns.OfType<DataColumn>().ToArray();
             DataColumn[] dt2Columns = dt2.Columns.OfType<DataColumn>().ToArray();
 
             bool dt2IsOptionalTable = (dt2.ExtendedProperties.ContainsKey(IsOptional) && dt2.ExtendedProperties[IsOptional].Equals(true));
             bool joinInvalidationFlag = false;
-            bool foundAnyResult = false;
+            bool foundResults = false;
 
             //Determine common columns
             DataColumn[] commonColumns = dt1Columns.Intersect(dt2Columns, dtComparer)
                                                    .Select(c => new DataColumn(c.ColumnName, c.DataType))
                                                    .ToArray();
 
-            //Create structure of finalResult table
-            finalResult.Columns.AddRange(dt1Columns.Union(dt2Columns.Except(commonColumns), dtComparer)
-                               .Select(c => new DataColumn(c.ColumnName, c.DataType))
-                               .ToArray());
+            //Create structure of result table
+            result.Columns.AddRange(dt1Columns.Union(dt2Columns.Except(commonColumns), dtComparer)
+                          .Select(c => new DataColumn(c.ColumnName, c.DataType))
+                          .ToArray());
 
-            //Calculate finalResult columns attribution
-            Dictionary<string, (bool,string)> finalResColumnsAttribution = new Dictionary<string, (bool,string)>();
-            foreach (DataColumn finalResCol in finalResult.Columns)
+            //Calculate result columns attribution
+            Dictionary<string, (bool,string)> resultColumnsAttribution = new Dictionary<string, (bool,string)>();
+            foreach (DataColumn resultColumn in result.Columns)
             {
                 //COMMON attribution
                 bool commonAttribution = false;
-                if (commonColumns.Any(col => col.ColumnName.Equals(finalResCol.ColumnName, StringComparison.Ordinal)))
+                if (commonColumns.Any(col => col.ColumnName.Equals(resultColumn.ColumnName, StringComparison.Ordinal)))
                     commonAttribution = true;
 
                 //DT attribution
                 string dtAttribution = "DT2";
-                if (dt1Columns.Any(col => col.ColumnName.Equals(finalResCol.ColumnName, StringComparison.Ordinal)))
+                if (dt1Columns.Any(col => col.ColumnName.Equals(resultColumn.ColumnName, StringComparison.Ordinal)))
                     dtAttribution = "DT1";
 
-                finalResColumnsAttribution.Add(finalResCol.ColumnName, (commonAttribution, dtAttribution));
+                resultColumnsAttribution.Add(resultColumn.ColumnName, (commonAttribution, dtAttribution));
             }
 
-            //Loop through dt1 table
-            finalResult.AcceptChanges();
-            finalResult.BeginLoadData();
+            //Loop dt1 table
+            result.AcceptChanges();
+            result.BeginLoadData();
             foreach (DataRow leftRow in dt1.Rows)
             {
-                foundAnyResult = false;
+                foundResults = false;
 
-                //Loop through dt2 table
+                //Loop dt2 table
                 foreach (DataRow rightRow in dt2.Rows)
                 {
                     joinInvalidationFlag = false;
 
-                    //Create a temporary join row
-                    DataRow joinRow = finalResult.NewRow();
-                    foreach (DataColumn finalResCol in finalResult.Columns)
+                    //Create a temporary row
+                    DataRow resultRow = result.NewRow();
+                    foreach (DataColumn resultColumn in result.Columns)
                     {
                         //NON-COMMON column
-                        if (!finalResColumnsAttribution[finalResCol.ColumnName].Item1)
+                        if (!resultColumnsAttribution[resultColumn.ColumnName].Item1)
                         {
                             //Take value from left
-                            if (finalResColumnsAttribution[finalResCol.ColumnName].Item2 == "DT1")
-                                joinRow[finalResCol.ColumnName] = leftRow[finalResCol.ColumnName];
+                            if (string.Equals(resultColumnsAttribution[resultColumn.ColumnName].Item2, "DT1", StringComparison.Ordinal))
+                                resultRow[resultColumn.ColumnName] = leftRow[resultColumn.ColumnName];
 
                             //Take value from right
                             else
-                                joinRow[finalResCol.ColumnName] = rightRow[finalResCol.ColumnName];
+                                resultRow[resultColumn.ColumnName] = rightRow[resultColumn.ColumnName];
                         }
 
                         //COMMON column
                         else
                         {
                             //Left value is NULL
-                            if (leftRow.IsNull(finalResCol.ColumnName))
+                            if (leftRow.IsNull(resultColumn.ColumnName))
                             {
                                 //Right value is NULL
-                                if (rightRow.IsNull(finalResCol.ColumnName))
+                                if (rightRow.IsNull(resultColumn.ColumnName))
                                 {
                                     //Take NULL value
-                                    joinRow[finalResCol.ColumnName] = DBNull.Value;
+                                    resultRow[resultColumn.ColumnName] = DBNull.Value;
                                 }
 
                                 //Right value is NOT NULL
                                 else
                                 {
                                     //Take value from right
-                                    joinRow[finalResCol.ColumnName] = rightRow[finalResCol.ColumnName];
+                                    resultRow[resultColumn.ColumnName] = rightRow[resultColumn.ColumnName];
                                 }
                             }
 
@@ -1621,20 +1621,20 @@ namespace RDFSharp.Query
                             else
                             {
                                 //Right value is NULL
-                                if (rightRow.IsNull(finalResCol.ColumnName))
+                                if (rightRow.IsNull(resultColumn.ColumnName))
                                 {
                                     //Take value from left
-                                    joinRow[finalResCol.ColumnName] = leftRow[finalResCol.ColumnName];
+                                    resultRow[resultColumn.ColumnName] = leftRow[resultColumn.ColumnName];
                                 }
 
                                 //Right value is NOT NULL
                                 else
                                 {
                                     //Left value is EQUAL TO right value
-                                    if (leftRow[finalResCol.ColumnName].ToString().Equals(rightRow[finalResCol.ColumnName].ToString(), StringComparison.Ordinal))
+                                    if (string.Equals(leftRow[resultColumn.ColumnName].ToString(), rightRow[resultColumn.ColumnName].ToString(), StringComparison.Ordinal))
                                     {
-                                        //Take value from left (it's the same)
-                                        joinRow[finalResCol.ColumnName] = leftRow[finalResCol.ColumnName];
+                                        //Take value from left (it's the same as right)
+                                        resultRow[resultColumn.ColumnName] = leftRow[resultColumn.ColumnName];
                                     }
 
                                     //Left value is NOT EQUAL TO right value
@@ -1642,6 +1642,7 @@ namespace RDFSharp.Query
                                     {
                                         //Raise the join invalidation flag
                                         joinInvalidationFlag = true;
+                                        resultRow.RejectChanges();
                                         break;
                                     }
                                 }
@@ -1649,28 +1650,28 @@ namespace RDFSharp.Query
                         }
                     }
 
-                    //Add join row to finalResults table
+                    //Add row to result table
                     if (!joinInvalidationFlag)
                     {
-                        joinRow.AcceptChanges();
-                        finalResult.Rows.Add(joinRow);
-                        foundAnyResult = true;
+                        resultRow.AcceptChanges();
+                        result.Rows.Add(resultRow);
+                        foundResults = true;
                     }
                 }
 
                 //Manage presence of "OPTIONAL" pattern to the right
-                if (!foundAnyResult && dt2IsOptionalTable)
+                if (!foundResults && dt2IsOptionalTable)
                 {
-                    //In this case, the left row must be kept anyway and other columns from right are NULL
-                    DataRow optionalRow = finalResult.NewRow();
+                    //In this case, left row must be kept and other columns from right are NULL
+                    DataRow optionalRow = result.NewRow();
                     optionalRow.ItemArray = leftRow.ItemArray;
                     optionalRow.AcceptChanges();
-                    finalResult.Rows.Add(optionalRow);
+                    result.Rows.Add(optionalRow);
                 }
             }
-            finalResult.EndLoadData();
+            result.EndLoadData();
 
-            return finalResult;
+            return result;
         }
 
         /// <summary>
