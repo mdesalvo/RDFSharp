@@ -1557,13 +1557,13 @@ namespace RDFSharp.Query
             {
                 //COMMON attribution
                 bool commonAttribution = false;
-                if (commonColumns.Any(commonColumn => string.Equals(commonColumn.ColumnName, resultColumn.ColumnName, StringComparison.Ordinal)))
+                if (commonColumns.Contains(resultColumn, dtComparer))
                     commonAttribution = true;
 
                 //DT attribution
-                string dtAttribution = "DT1";
-                if (dt2Columns.Any(dt2Column => string.Equals(dt2Column.ColumnName, resultColumn.ColumnName, StringComparison.Ordinal)))
-                    dtAttribution = "DT2";
+                string dtAttribution = "DT2";
+                if (dt1Columns.Contains(resultColumn, dtComparer))
+                    dtAttribution = "DT1";
 
                 resultColumnsAttribution.Add(resultColumn.ColumnName, (commonAttribution, dtAttribution));
             }
@@ -1662,7 +1662,7 @@ namespace RDFSharp.Query
                 //Manage presence of "OPTIONAL" pattern to the right
                 if (!foundResults && dt2IsOptionalTable)
                 {
-                    //In this case, left row must be kept and other columns from right are NULL
+                    //In this case, left row must be kept anyway and other columns from right are NULL
                     DataRow optionalRow = result.NewRow();
                     optionalRow.ItemArray = leftRow.ItemArray;
                     optionalRow.AcceptChanges();
@@ -1733,16 +1733,17 @@ namespace RDFSharp.Query
                 List<DataColumn> nonProjCols = new List<DataColumn>();
                 foreach (DataColumn dtCol in table.Columns)
                 {
-                    if (!query.ProjectionVars.Any(pv => pv.Key.ToString().Equals(dtCol.ColumnName, StringComparison.OrdinalIgnoreCase)))
+                    if (!query.ProjectionVars.Any(pv => string.Equals(pv.Key.ToString(), dtCol.ColumnName, StringComparison.OrdinalIgnoreCase)))
                         nonProjCols.Add(dtCol);
                 }
                 nonProjCols.ForEach(npc => table.Columns.Remove(npc.ColumnName));
 
                 //Adjust ordinals
-                foreach (var pVar in query.ProjectionVars)
+                foreach (var projectionVar in query.ProjectionVars)
                 {
-                    AddColumn(table, pVar.Key.ToString());
-                    table.Columns[pVar.Key.ToString()].SetOrdinal(pVar.Value);
+                    string projectionVarString = projectionVar.Key.ToString();
+                    AddColumn(table, projectionVarString);
+                    table.Columns[projectionVarString].SetOrdinal(projectionVar.Value);
                 }
             }
             return table;
