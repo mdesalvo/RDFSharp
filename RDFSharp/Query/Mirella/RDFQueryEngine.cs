@@ -1690,8 +1690,17 @@ namespace RDFSharp.Query
                     bool previousTableRequiresUnion = dataTables[i-1].ExtendedProperties.ContainsKey(JoinAsUnion) && dataTables[i-1].ExtendedProperties[JoinAsUnion].Equals(true);
                     if (isMerge || previousTableRequiresUnion)
                     {
+                        //Backup extended attributes of the current table
+                        bool currentTableRequiresUnion = dataTables[i].ExtendedProperties.ContainsKey(JoinAsUnion) && dataTables[i].ExtendedProperties[JoinAsUnion].Equals(true);
+                        bool currentTableRequiresOptional = dataTables[i].ExtendedProperties.ContainsKey(IsOptional) && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
+
                         //Merge the previous table into the current one
                         dataTables[i].Merge(dataTables[i-1], true, MissingSchemaAction.Add);
+
+                        //Restore extended attributes of the current table
+                        dataTables[i].ExtendedProperties.Clear();
+                        dataTables[i].ExtendedProperties.Add(JoinAsUnion, currentTableRequiresUnion);
+                        dataTables[i].ExtendedProperties.Add(IsOptional, currentTableRequiresOptional);
 
                         //Clear the previous table and flag it as logically deleted
                         dataTables[i-1].Rows.Clear();

@@ -4888,27 +4888,11 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(combineTable.Columns.Contains("?X"));
             Assert.IsTrue(combineTable.Columns.Contains("?N"));
             Assert.IsTrue(combineTable.Columns.Contains("?Q"));
-            Assert.IsTrue(combineTable.Rows.Count == 5);
-            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(combineTable.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
             Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), "ex:topolino"));
-            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Y"].ToString(), "ex:paperino"));
-            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?X"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?N"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Q"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Y"].ToString(), "ex:pluto"));
-            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?X"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?N"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Q"].ToString(), "Pluto@IT"));
-            Assert.IsTrue(string.Equals(combineTable.Rows[3]["?Y"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[3]["?X"].ToString(), "ex:topolino"));
-            Assert.IsTrue(string.Equals(combineTable.Rows[3]["?N"].ToString(), "Mickey Mouse@EN-US"));
-            Assert.IsTrue(string.Equals(combineTable.Rows[3]["?Q"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[4]["?Y"].ToString(), "ex:pluto"));
-            Assert.IsTrue(string.Equals(combineTable.Rows[4]["?X"].ToString(), "ex:minnie"));
-            Assert.IsTrue(string.Equals(combineTable.Rows[4]["?N"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[4]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), "Pluto@IT"));
         }
         #endregion
     }
