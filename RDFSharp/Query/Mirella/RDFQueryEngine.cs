@@ -1687,7 +1687,8 @@ namespace RDFSharp.Query
                 //Process Unions
                 for (int i = 1; i < dataTables.Count; i++)
                 {
-                    if (isMerge || (dataTables[i-1].ExtendedProperties.ContainsKey(JoinAsUnion) && dataTables[i-1].ExtendedProperties[JoinAsUnion].Equals(true)))
+                    bool previousTableRequiresUnion = dataTables[i-1].ExtendedProperties.ContainsKey(JoinAsUnion) && dataTables[i-1].ExtendedProperties[JoinAsUnion].Equals(true);
+                    if (isMerge || previousTableRequiresUnion)
                     {
                         //Merge the previous table into the current one
                         dataTables[i].Merge(dataTables[i-1], true, MissingSchemaAction.Add);
@@ -1706,8 +1707,9 @@ namespace RDFSharp.Query
                 finalTable = dataTables[0];
                 for (int i = 1; i < dataTables.Count; i++)
                 {
-                    //Set automatic switch to OuterJoin in case of relevant "Optional" detected
-                    switchToOuterJoin = (switchToOuterJoin || (dataTables[i].ExtendedProperties.ContainsKey(IsOptional) && dataTables[i].ExtendedProperties[IsOptional].Equals(true)));
+                    //Set automatic switch to OuterJoin in case of "Optional" detected
+                    bool currentTableRequiresOptional = dataTables[i].ExtendedProperties.ContainsKey(IsOptional) && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
+                    switchToOuterJoin = (switchToOuterJoin || currentTableRequiresOptional);
 
                     //Support OPTIONAL data
                     if (switchToOuterJoin)

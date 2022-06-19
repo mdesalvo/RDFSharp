@@ -4435,6 +4435,417 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(joinTable.Columns.Contains("?N"));
             Assert.IsTrue(joinTable.Rows.Count == 0);
         }
+
+        [TestMethod]
+        public void ShouldCombineTablesUnion()
+        {
+            DataTable dt1 = new DataTable();
+            dt1.ExtendedProperties.Add(RDFQueryEngine.JoinAsUnion, true); //Need to simulate Mirella here, since left-union will merge tables
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            {
+                { "?Y", "ex:pluto" },
+                { "?X", "ex:minnie" }
+            };
+            RDFQueryEngine.AddRow(dt1, dt1Bindings);
+
+            DataTable dt2 = new DataTable();
+            dt2.ExtendedProperties.Add(RDFQueryEngine.JoinAsUnion, true); //Need to simulate Mirella here, since left-union will merge tables
+            RDFQueryEngine.AddColumn(dt2, "?X");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            {
+                { "?X", "ex:topolino" },
+                { "?N", "Mickey Mouse@EN-US" }
+            };
+            RDFQueryEngine.AddRow(dt2, dt2Bindings);
+
+            DataTable dt3 = new DataTable();
+            RDFQueryEngine.AddColumn(dt3, "?Q");
+            Dictionary<string, string> dt3Bindings = new Dictionary<string, string>()
+            {
+                { "?Q", null }
+            };
+            RDFQueryEngine.AddRow(dt3, dt3Bindings);
+
+            List<DataTable> tables = new List<DataTable>() { dt1, dt2, dt3 };
+            DataTable combineTable = RDFQueryEngine.CombineTables(tables, false);
+
+            Assert.IsNotNull(combineTable);
+            Assert.IsTrue(combineTable.Columns.Count == 4);
+            Assert.IsTrue(combineTable.Columns.Contains("?Y"));
+            Assert.IsTrue(combineTable.Columns.Contains("?X"));
+            Assert.IsTrue(combineTable.Columns.Contains("?N"));
+            Assert.IsTrue(combineTable.Columns.Contains("?Q"));
+            Assert.IsTrue(combineTable.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Y"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?N"].ToString(), "Mickey Mouse@EN-US"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?X"].ToString(), "ex:minnie"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Q"].ToString(), DBNull.Value.ToString()));            
+        }
+
+        [TestMethod]
+        public void ShouldCombineTablesUnionWithEmptyTable()
+        {
+            DataTable dt1 = new DataTable();
+            dt1.ExtendedProperties.Add(RDFQueryEngine.JoinAsUnion, true); //Need to simulate Mirella here, since left-union will merge tables
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            {
+                { "?Y", "ex:pluto" },
+                { "?X", "ex:minnie" }
+            };
+            RDFQueryEngine.AddRow(dt1, dt1Bindings);
+
+            DataTable dt2 = new DataTable();
+            dt2.ExtendedProperties.Add(RDFQueryEngine.JoinAsUnion, true); //Need to simulate Mirella here, since left-union will merge tables
+            RDFQueryEngine.AddColumn(dt2, "?X");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            {
+                { "?X", "ex:topolino" },
+                { "?N", "Mickey Mouse@EN-US" }
+            };
+            RDFQueryEngine.AddRow(dt2, dt2Bindings);
+
+            DataTable dt3 = new DataTable();
+            RDFQueryEngine.AddColumn(dt3, "?Q");
+
+            List<DataTable> tables = new List<DataTable>() { dt1, dt2, dt3 };
+            DataTable combineTable = RDFQueryEngine.CombineTables(tables, false);
+
+            Assert.IsNotNull(combineTable);
+            Assert.IsTrue(combineTable.Columns.Count == 4);
+            Assert.IsTrue(combineTable.Columns.Contains("?Y"));
+            Assert.IsTrue(combineTable.Columns.Contains("?X"));
+            Assert.IsTrue(combineTable.Columns.Contains("?N"));
+            Assert.IsTrue(combineTable.Columns.Contains("?Q"));
+            Assert.IsTrue(combineTable.Rows.Count == 2);
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?X"].ToString(), "ex:minnie"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Q"].ToString(), DBNull.Value.ToString()));
+        }
+
+        [TestMethod]
+        public void ShouldCombineTablesMerge()
+        {
+            DataTable dt1 = new DataTable();
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            {
+                { "?Y", "ex:pluto" },
+                { "?X", "ex:minnie" }
+            };
+            RDFQueryEngine.AddRow(dt1, dt1Bindings);
+
+            DataTable dt2 = new DataTable();
+            RDFQueryEngine.AddColumn(dt2, "?X");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            {
+                { "?X", "ex:topolino" },
+                { "?N", "Mickey Mouse@EN-US" }
+            };
+            RDFQueryEngine.AddRow(dt2, dt2Bindings);
+
+            DataTable dt3 = new DataTable();
+            RDFQueryEngine.AddColumn(dt3, "?Q");
+            Dictionary<string, string> dt3Bindings = new Dictionary<string, string>()
+            {
+                { "?Q", null }
+            };
+            RDFQueryEngine.AddRow(dt3, dt3Bindings);
+
+            List<DataTable> tables = new List<DataTable>() { dt1, dt2, dt3 };
+            DataTable combineTable = RDFQueryEngine.CombineTables(tables, true);
+
+            Assert.IsNotNull(combineTable);
+            Assert.IsTrue(combineTable.Columns.Count == 4);
+            Assert.IsTrue(combineTable.Columns.Contains("?Y"));
+            Assert.IsTrue(combineTable.Columns.Contains("?X"));
+            Assert.IsTrue(combineTable.Columns.Contains("?N"));
+            Assert.IsTrue(combineTable.Columns.Contains("?Q"));
+            Assert.IsTrue(combineTable.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Y"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?N"].ToString(), "Mickey Mouse@EN-US"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?X"].ToString(), "ex:minnie"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Q"].ToString(), DBNull.Value.ToString()));            
+        }
+
+        [TestMethod]
+        public void ShouldCombineTablesMergeWithEmptyTable()
+        {
+            DataTable dt1 = new DataTable();
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            {
+                { "?Y", "ex:pluto" },
+                { "?X", "ex:minnie" }
+            };
+            RDFQueryEngine.AddRow(dt1, dt1Bindings);
+
+            DataTable dt2 = new DataTable();
+            RDFQueryEngine.AddColumn(dt2, "?X");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            {
+                { "?X", "ex:topolino" },
+                { "?N", "Mickey Mouse@EN-US" }
+            };
+            RDFQueryEngine.AddRow(dt2, dt2Bindings);
+
+            DataTable dt3 = new DataTable();
+            RDFQueryEngine.AddColumn(dt3, "?Q");
+
+            List<DataTable> tables = new List<DataTable>() { dt1, dt2, dt3 };
+            DataTable combineTable = RDFQueryEngine.CombineTables(tables, true);
+
+            Assert.IsNotNull(combineTable);
+            Assert.IsTrue(combineTable.Columns.Count == 4);
+            Assert.IsTrue(combineTable.Columns.Contains("?Y"));
+            Assert.IsTrue(combineTable.Columns.Contains("?X"));
+            Assert.IsTrue(combineTable.Columns.Contains("?N"));
+            Assert.IsTrue(combineTable.Columns.Contains("?Q"));
+            Assert.IsTrue(combineTable.Rows.Count == 2);
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?X"].ToString(), "ex:minnie"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Q"].ToString(), DBNull.Value.ToString()));
+        }
+
+        [TestMethod]
+        public void ShouldCombineTablesOuterJoin()
+        {
+            DataTable dt1 = new DataTable();
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            {
+                { "?Y", "ex:pluto" },
+                { "?X", "ex:minnie" }
+            };
+            RDFQueryEngine.AddRow(dt1, dt1Bindings);
+
+            DataTable dt2 = new DataTable();
+            dt2.ExtendedProperties.Add(RDFQueryEngine.IsOptional, true); //Need to simulate Mirella here, since right-optionality  will keep at least left rows
+            RDFQueryEngine.AddColumn(dt2, "?X");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            {
+                { "?X", null },
+                { "?N", "Mickey Mouse@EN-US" }
+            };
+            RDFQueryEngine.AddRow(dt2, dt2Bindings);
+
+            DataTable dt3 = new DataTable();
+            RDFQueryEngine.AddColumn(dt3, "?Q");
+            Dictionary<string, string> dt3Bindings = new Dictionary<string, string>()
+            {
+                { "?Q", null }
+            };
+            RDFQueryEngine.AddRow(dt3, dt3Bindings);
+
+            List<DataTable> tables = new List<DataTable>() { dt1, dt2, dt3 };
+            DataTable combineTable = RDFQueryEngine.CombineTables(tables, false);
+
+            Assert.IsNotNull(combineTable);
+            Assert.IsTrue(combineTable.Columns.Count == 4);
+            Assert.IsTrue(combineTable.Columns.Contains("?Y"));
+            Assert.IsTrue(combineTable.Columns.Contains("?X"));
+            Assert.IsTrue(combineTable.Columns.Contains("?N"));
+            Assert.IsTrue(combineTable.Columns.Contains("?Q"));
+            Assert.IsTrue(combineTable.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), "ex:minnie"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString()));
+        }
+
+        [TestMethod]
+        public void ShouldCombineTablesInnerJoin()
+        {
+            DataTable dt1 = new DataTable();
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            {
+                { "?Y", "ex:pluto" },
+                { "?X", "ex:minnie" }
+            };
+            RDFQueryEngine.AddRow(dt1, dt1Bindings);
+
+            DataTable dt2 = new DataTable();
+            RDFQueryEngine.AddColumn(dt2, "?X");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            {
+                { "?X", "ex:minnie" },
+                { "?N", "Mickey Mouse@EN-US" }
+            };
+            RDFQueryEngine.AddRow(dt2, dt2Bindings);
+
+            List<DataTable> tables = new List<DataTable>() { dt1, dt2 };
+            DataTable combineTable = RDFQueryEngine.CombineTables(tables, false);
+
+            Assert.IsNotNull(combineTable);
+            Assert.IsTrue(combineTable.Columns.Count == 3);
+            Assert.IsTrue(combineTable.Columns.Contains("?Y"));
+            Assert.IsTrue(combineTable.Columns.Contains("?X"));
+            Assert.IsTrue(combineTable.Columns.Contains("?N"));
+            Assert.IsTrue(combineTable.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), "ex:minnie"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+        }
+
+        [TestMethod]
+        public void ShouldCombineTablesInnerJoinWithNoResults()
+        {
+            DataTable dt1 = new DataTable();
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            {
+                { "?Y", "ex:pluto" },
+                { "?X", "ex:topolino" }
+            };
+            RDFQueryEngine.AddRow(dt1, dt1Bindings);
+
+            DataTable dt2 = new DataTable();
+            RDFQueryEngine.AddColumn(dt2, "?X");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            {
+                { "?X", "ex:minnie" },
+                { "?N", "Mickey Mouse@EN-US" }
+            };
+            RDFQueryEngine.AddRow(dt2, dt2Bindings);
+
+            List<DataTable> tables = new List<DataTable>() { dt1, dt2 };
+            DataTable combineTable = RDFQueryEngine.CombineTables(tables, false);
+
+            Assert.IsNotNull(combineTable);
+            Assert.IsTrue(combineTable.Columns.Count == 3);
+            Assert.IsTrue(combineTable.Columns.Contains("?Y"));
+            Assert.IsTrue(combineTable.Columns.Contains("?X"));
+            Assert.IsTrue(combineTable.Columns.Contains("?N"));
+            Assert.IsTrue(combineTable.Rows.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldCombineTablesUnionOuterUnion()
+        {
+            DataTable dt1 = new DataTable();
+            dt1.ExtendedProperties.Add(RDFQueryEngine.JoinAsUnion, true); //Need to simulate Mirella here, since left-union will merge tables
+            RDFQueryEngine.AddColumn(dt1, "?Y");
+            RDFQueryEngine.AddColumn(dt1, "?X");
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            {
+                { "?Y", "ex:pluto" },
+                { "?X", "ex:minnie" }
+            };
+            RDFQueryEngine.AddRow(dt1, dt1Bindings);
+
+            DataTable dt2 = new DataTable();
+            RDFQueryEngine.AddColumn(dt2, "?X");
+            RDFQueryEngine.AddColumn(dt2, "?N");
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            {
+                { "?X", "ex:topolino" },
+                { "?N", "Mickey Mouse@EN-US" }
+            };
+            RDFQueryEngine.AddRow(dt2, dt2Bindings);
+
+            DataTable dt3 = new DataTable();
+            dt3.ExtendedProperties.Add(RDFQueryEngine.IsOptional, true); //Need to simulate Mirella here, since right-optionality  will keep at least left rows
+            RDFQueryEngine.AddColumn(dt3, "?Y");
+            RDFQueryEngine.AddColumn(dt3, "?X");
+            RDFQueryEngine.AddColumn(dt3, "?Q");
+            Dictionary<string, string> dt3Bindings = new Dictionary<string, string>()
+            {
+                { "?Y", "ex:pluto" },
+                { "?X", null },
+                { "?Q", "Pluto@IT" }
+            };
+            RDFQueryEngine.AddRow(dt3, dt3Bindings);
+
+            DataTable dt4 = new DataTable();
+            dt4.ExtendedProperties.Add(RDFQueryEngine.JoinAsUnion, true); //Need to simulate Mirella here, since left-union will merge tables
+            RDFQueryEngine.AddColumn(dt4, "?Y");
+            Dictionary<string, string> dt4Bindings = new Dictionary<string, string>()
+            {
+                { "?Y", "ex:paperino" }
+            };
+            RDFQueryEngine.AddRow(dt4, dt4Bindings);
+
+            DataTable dt5 = new DataTable();
+            RDFQueryEngine.AddColumn(dt5, "?X");
+            Dictionary<string, string> dt5Bindings = new Dictionary<string, string>()
+            {
+                { "?X", "ex:topolino" }
+            };
+            RDFQueryEngine.AddRow(dt5, dt5Bindings);
+
+            List<DataTable> tables = new List<DataTable>() { dt1, dt2, dt3, dt4, dt5 };
+            DataTable combineTable = RDFQueryEngine.CombineTables(tables, false);
+
+            Assert.IsNotNull(combineTable);
+            Assert.IsTrue(combineTable.Columns.Count == 4);
+            Assert.IsTrue(combineTable.Columns.Contains("?Y"));
+            Assert.IsTrue(combineTable.Columns.Contains("?X"));
+            Assert.IsTrue(combineTable.Columns.Contains("?N"));
+            Assert.IsTrue(combineTable.Columns.Contains("?Q"));
+            Assert.IsTrue(combineTable.Rows.Count == 5);
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Y"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?X"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?X"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Q"].ToString(), "Pluto@IT"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[3]["?Y"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[3]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[3]["?N"].ToString(), "Mickey Mouse@EN-US"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[3]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[4]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[4]["?X"].ToString(), "ex:minnie"));
+            Assert.IsTrue(string.Equals(combineTable.Rows[4]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[4]["?Q"].ToString(), DBNull.Value.ToString()));
+        }
         #endregion
     }
 }
