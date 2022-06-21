@@ -1710,7 +1710,8 @@ namespace RDFSharp.Query
                         switchToOuterJoin = true;
                     }
                 }
-                dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
+                if (switchToOuterJoin)
+                    dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
 
                 //Process Joins
                 finalTable = dataTables[0];

@@ -69,7 +69,7 @@ namespace RDFSharp.Query
         {
             if (projectionVariable != null)
             {
-                if (!this.ProjectionVars.Any(pv => pv.Key.ToString().Equals(projectionVariable.ToString(), StringComparison.OrdinalIgnoreCase)))
+                if (!this.ProjectionVars.Any(pv => string.Equals(pv.Key.ToString(), projectionVariable.ToString(), StringComparison.OrdinalIgnoreCase)))
                     this.ProjectionVars.Add(projectionVariable, this.ProjectionVars.Count);
             }
             return this;

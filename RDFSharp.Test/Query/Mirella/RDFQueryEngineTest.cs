@@ -5050,6 +5050,77 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
             Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), "Pluto@IT"));
         }
+
+        [TestMethod]
+        public void ShouldProjectStarTable()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional()));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            DataTable projTable = RDFQueryEngine.ProjectTable(query, result.SelectResults);
+
+            Assert.IsNotNull(projTable);
+            Assert.IsTrue(projTable.Columns.Count == 3);
+            Assert.IsTrue(projTable.Columns.Contains("?Y"));
+            Assert.IsTrue(projTable.Columns["?Y"].Ordinal == 0);
+            Assert.IsTrue(projTable.Columns.Contains("?X"));
+            Assert.IsTrue(projTable.Columns["?X"].Ordinal == 1);
+            Assert.IsTrue(projTable.Columns.Contains("?N"));
+            Assert.IsTrue(projTable.Columns["?N"].Ordinal == 2);
+            Assert.IsTrue(projTable.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(projTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(projTable.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(projTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+            Assert.IsTrue(string.Equals(projTable.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(projTable.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(projTable.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
+            Assert.IsTrue(string.Equals(projTable.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(projTable.Rows[2]["?X"].ToString(), "ex:whoever"));
+            Assert.IsTrue(string.Equals(projTable.Rows[2]["?N"].ToString(), DBNull.Value.ToString()));
+        }
+
+        [TestMethod]
+        public void ShouldProjectNonStarTable()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional()))
+                .AddProjectionVariable(new RDFVariable("?X"));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            DataTable projTable = RDFQueryEngine.ProjectTable(query, result.SelectResults);
+
+            Assert.IsNotNull(projTable);
+            Assert.IsTrue(projTable.Columns.Count == 1);
+            Assert.IsTrue(projTable.Columns.Contains("?X"));
+            Assert.IsTrue(projTable.Columns["?X"].Ordinal == 0);
+            Assert.IsTrue(projTable.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(projTable.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(projTable.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(projTable.Rows[2]["?X"].ToString(), "ex:whoever"));
+        }
         #endregion
     }
 }
