@@ -864,7 +864,7 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldEvaluateDescribeQueryOnStoreWithResults()
+        public void ShouldEvaluateDescribeQueryOnStoreWithResultsFromvariableTerms()
         {
             RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
             {
@@ -889,6 +889,40 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.DescribeResultsCount == 2);
             Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx1"));
             Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[1]["?CONTEXT"].ToString(), "ex:ctx2"));
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[1]["?PREDICATE"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[1]["?OBJECT"].ToString(), "ex:paperino"));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateDescribeQueryOnStoreWithResultsFromvariableTermAssumingBlankValues()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx1"),new RDFResource("bnode:12345"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext("ex:ctx1"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddDescribeTerm(new RDFVariable("?Y"))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional()))
+                .AddModifier(new RDFLimitModifier(2));
+            RDFDescribeQueryResult result = new RDFQueryEngine().EvaluateDescribeQuery(query, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 4);
+            Assert.IsTrue(result.DescribeResultsCount == 2);
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx1"));
+            Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?SUBJECT"].ToString(), "bnode:12345"));
             Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf"));
             Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(result.DescribeResults.Rows[1]["?CONTEXT"].ToString(), "ex:ctx2"));
