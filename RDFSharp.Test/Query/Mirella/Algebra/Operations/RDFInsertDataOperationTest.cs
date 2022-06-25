@@ -137,7 +137,9 @@ INSERT DATA {
             Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), $"{RDFVocabulary.OWL.CLASS}"));
             Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
             Assert.IsTrue(result.DeleteResultsCount == 0);
+            Assert.IsTrue(graph.TriplesCount == 2);
         }
 
         [TestMethod]
@@ -180,7 +182,9 @@ INSERT DATA {
             Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), $"{RDFVocabulary.OWL.CLASS}"));
             Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
             Assert.IsTrue(result.DeleteResultsCount == 0);
+            Assert.IsTrue(graph.TriplesCount == 2);
         }
 
         [TestMethod]
@@ -203,12 +207,12 @@ INSERT DATA {
         [TestMethod]
         public void ShouldApplyToStore()
         {
-            RDFMemoryStore graph = new RDFMemoryStore();
+            RDFMemoryStore store = new RDFMemoryStore();
             RDFInsertDataOperation operation = new RDFInsertDataOperation();
             operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
             operation.AddInsertTemplate(new RDFPattern(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
             operation.AddInsertTemplate(new RDFPattern(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS)); //Duplicate triple...
-            RDFOperationResult result = operation.ApplyToStore(graph);
+            RDFOperationResult result = operation.ApplyToStore(store);
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.InsertResults);
@@ -227,7 +231,9 @@ INSERT DATA {
             Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), $"{RDFVocabulary.OWL.CLASS}"));
             Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
             Assert.IsTrue(result.DeleteResultsCount == 0);
+            Assert.IsTrue(store.QuadruplesCount == 2);
         }
 
         [TestMethod]
@@ -250,12 +256,12 @@ INSERT DATA {
         [TestMethod]
         public async Task ShouldApplyToStoreAsync()
         {
-            RDFMemoryStore graph = new RDFMemoryStore();
+            RDFMemoryStore store = new RDFMemoryStore();
             RDFInsertDataOperation operation = new RDFInsertDataOperation();
             operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
             operation.AddInsertTemplate(new RDFPattern(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
             operation.AddInsertTemplate(new RDFPattern(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS)); //Duplicate triple...
-            RDFOperationResult result = await operation.ApplyToStoreAsync(graph);
+            RDFOperationResult result = await operation.ApplyToStoreAsync(store);
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.InsertResults);
@@ -274,7 +280,9 @@ INSERT DATA {
             Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), $"{RDFVocabulary.OWL.CLASS}"));
             Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
             Assert.IsTrue(result.DeleteResultsCount == 0);
+            Assert.IsTrue(store.QuadruplesCount == 2);
         }
 
         [TestMethod]
@@ -424,12 +432,12 @@ INSERT DATA {
             server
                 .Given(
                     Request.Create()
-                           .WithPath("/RDFInsertDataOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"))
+                           .WithPath("/RDFInsertDataOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpoint"))
                 .RespondWith(
                     Response.Create()
                             .WithStatusCode(HttpStatusCode.InternalServerError));
 
-            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFInsertDataOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFInsertDataOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpoint"));
 
             RDFInsertDataOperation operation = new RDFInsertDataOperation();
             operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
