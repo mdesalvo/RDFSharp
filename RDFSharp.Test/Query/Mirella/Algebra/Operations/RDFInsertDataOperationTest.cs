@@ -332,6 +332,112 @@ INSERT DATA {
         }
 
         [TestMethod]
+        public void ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFInsertDataOperationTest/ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(250));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFInsertDataOperationTest/ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"));
+
+            RDFInsertDataOperation operation = new RDFInsertDataOperation();
+            operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(1000));
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToSPARQLUpdateEndpointWithRequestContentType()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFInsertDataOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentType")
+                           .WithBody(new RegexMatcher("update=.*")))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(250));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFInsertDataOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentType"));
+
+            RDFInsertDataOperation operation = new RDFInsertDataOperation();
+            operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(1000, RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded));
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFInsertDataOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams")
+                           .WithBody(new RegexMatcher("using-named-graph-uri=ex%3actx2&using-graph-uri=ex%3actx1&update=.*")))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(250));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFInsertDataOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams"));
+            endpoint.AddDefaultGraphUri("ex:ctx1");
+            endpoint.AddNamedGraphUri("ex:ctx2");
+
+            RDFInsertDataOperation operation = new RDFInsertDataOperation();
+            operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(1000, RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded));
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFInsertDataOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(750));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFInsertDataOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"));
+
+            RDFInsertDataOperation operation = new RDFInsertDataOperation();
+            operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+
+            Assert.ThrowsException<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(250)));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpoint()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFInsertDataOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.InternalServerError));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFInsertDataOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"));
+
+            RDFInsertDataOperation operation = new RDFInsertDataOperation();
+            operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+
+            Assert.ThrowsException<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint));
+        }
+
+        [TestMethod]
         public async Task ShouldApplyToNullSPARQLUpdateEndpointAsync()
         {
             RDFInsertDataOperation operation = new RDFInsertDataOperation();
