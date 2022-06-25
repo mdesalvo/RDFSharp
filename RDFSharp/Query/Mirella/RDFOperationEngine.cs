@@ -298,8 +298,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal bool EvaluateOperationOnSPARQLUpdateEndpoint(RDFOperation operation, RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions)
         {
-            bool opResult = false;
-
             //Initialize operation options if not provided
             if (sparqlUpdateEndpointOperationOptions == null)
                 sparqlUpdateEndpointOperationOptions = new RDFSPARQLEndpointOperationOptions();
@@ -347,7 +345,7 @@ namespace RDFSharp.Query
                     sparqlUpdateResponse = webClient.UploadString(sparqlUpdateEndpoint.BaseAddress, operationString);
 
                     //We assume that (by design) the SPARQL UPDATE endpoint should raise an exception in case of operation failure
-                    opResult = true;
+                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -355,13 +353,11 @@ namespace RDFSharp.Query
                     bool isLoadSilent = operation is RDFLoadOperation loadOperation && loadOperation.IsSilent;
                     bool isClearSilent = operation is RDFClearOperation clearOperation && clearOperation.IsSilent;
                     if (isLoadSilent || isClearSilent)
-                        return opResult;
+                        return false;
 
                     throw new RDFQueryException($"Operation on SPARQL UPDATE endpoint {sparqlUpdateEndpoint.BaseAddress} failed because: {ex.Message}; Endpoint's response was: {sparqlUpdateResponse}", ex);
                 }
             }
-
-            return opResult;
         }
 
         /// <summary>

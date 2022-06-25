@@ -16,7 +16,13 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Net;
+using System.Web;
 using System.Threading.Tasks;
+using WireMock.Matchers;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
+using WireMock.Server;
 using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Store;
@@ -26,6 +32,14 @@ namespace RDFSharp.Test.Query
     [TestClass]
     public class RDFInsertDataOperationTest
     {
+        private WireMockServer server;
+
+        [TestInitialize]
+        public void Initialize() { server = WireMockServer.Start(); }
+
+        [TestCleanup]
+        public void Cleanup()  { server.Stop(); server.Dispose(); }
+
         #region Tests
         [TestMethod]
         public void ShouldCreateInsertDataOperation()
@@ -261,6 +275,114 @@ INSERT DATA {
             Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), $"{RDFVocabulary.OWL.CLASS}"));
             Assert.IsNotNull(result.DeleteResults);
             Assert.IsTrue(result.DeleteResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToNullSPARQLUpdateEndpoint()
+        {
+            RDFInsertDataOperation operation = new RDFInsertDataOperation();
+            operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(null);
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToSPARQLUpdateEndpoint()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFInsertDataOperationTest/ShouldApplyToSPARQLUpdateEndpoint"))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFInsertDataOperationTest/ShouldApplyToSPARQLUpdateEndpoint"));
+
+            RDFInsertDataOperation operation = new RDFInsertDataOperation();
+            operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(endpoint);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToSPARQLUpdateEndpointWithParams()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFInsertDataOperationTest/ShouldApplyToSPARQLUpdateEndpointWithParams")
+                           .WithParam("using-graph-uri", new ExactMatcher("ex:ctx1"))
+                           .WithParam("using-named-graph-uri", new ExactMatcher("ex:ctx2")))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFInsertDataOperationTest/ShouldApplyToSPARQLUpdateEndpointWithParams"));
+            endpoint.AddDefaultGraphUri("ex:ctx1");
+            endpoint.AddNamedGraphUri("ex:ctx2");
+
+            RDFInsertDataOperation operation = new RDFInsertDataOperation();
+            operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(endpoint);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToNullSPARQLUpdateEndpointAsync()
+        {
+            RDFInsertDataOperation operation = new RDFInsertDataOperation();
+            operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            bool result = await operation.ApplyToSPARQLUpdateEndpointAsync(null);
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToSPARQLUpdateEndpointAsync()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFInsertDataOperationTest/ShouldApplyToSPARQLUpdateEndpointAsync"))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFInsertDataOperationTest/ShouldApplyToSPARQLUpdateEndpointAsync"));
+
+            RDFInsertDataOperation operation = new RDFInsertDataOperation();
+            operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            bool result = await operation.ApplyToSPARQLUpdateEndpointAsync(endpoint);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToSPARQLUpdateEndpointWithParamsAsync()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFInsertDataOperationTest/ShouldApplyToSPARQLUpdateEndpointWithParamsAsync")
+                           .WithParam("using-graph-uri", new ExactMatcher("ex:ctx1"))
+                           .WithParam("using-named-graph-uri", new ExactMatcher("ex:ctx2")))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFInsertDataOperationTest/ShouldApplyToSPARQLUpdateEndpointWithParamsAsync"));
+            endpoint.AddDefaultGraphUri("ex:ctx1");
+            endpoint.AddNamedGraphUri("ex:ctx2");
+
+            RDFInsertDataOperation operation = new RDFInsertDataOperation();
+            operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            bool result = await operation.ApplyToSPARQLUpdateEndpointAsync(endpoint);
+
+            Assert.IsTrue(result);
         }
         #endregion
     }
