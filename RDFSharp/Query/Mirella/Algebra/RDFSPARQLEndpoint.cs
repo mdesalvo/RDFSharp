@@ -186,6 +186,11 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
+        /// Represents the timeout observed for the query sent to the SPARQL UPDATE endpoint (defaults to: -1)
+        /// </summary>
+        public int TimeoutMilliseconds { get; set; }
+
+        /// <summary>
         /// Represents the Content-Type header to be used when posting the operation to the SPARQL UPDATE endpoint (defaults to: application/sparql-update)
         /// </summary>
         public RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes RequestContentType { get; set; }
@@ -196,12 +201,21 @@ namespace RDFSharp.Query
         /// Default-ctor to configure options for a SPARQL UPDATE endpoint operation
         /// </summary>
         public RDFSPARQLEndpointOperationOptions()
-            => this.RequestContentType = RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update;
+        {
+            this.TimeoutMilliseconds = -1;
+            this.RequestContentType = RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update;
+        }
 
         /// <summary>
         /// Custom-ctor to configure options for a SPARQL UPDATE endpoint operation
         /// </summary>
-        public RDFSPARQLEndpointOperationOptions(RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes requestContentType) : this()
+        public RDFSPARQLEndpointOperationOptions(int timeoutMilliseconds) : this()
+            => this.TimeoutMilliseconds = timeoutMilliseconds < -1 ? -1 : timeoutMilliseconds;
+
+        /// <summary>
+        /// Custom-ctor to configure options for a SPARQL UPDATE endpoint operation
+        /// </summary>
+        public RDFSPARQLEndpointOperationOptions(int timeoutMilliseconds, RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes requestContentType) : this(timeoutMilliseconds)
             => this.RequestContentType = requestContentType;
         #endregion
     }

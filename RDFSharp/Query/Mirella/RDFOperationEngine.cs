@@ -304,8 +304,8 @@ namespace RDFSharp.Query
             if (sparqlUpdateEndpointOperationOptions == null)
                 sparqlUpdateEndpointOperationOptions = new RDFSPARQLEndpointOperationOptions();
 
-            //Establish a connection to the given SPARQL UPDATE endpoint (60s timeout)
-            using (RDFWebClient webClient = new RDFWebClient(60000))
+            //Establish a connection to the given SPARQL UPDATE endpoint
+            using (RDFWebClient webClient = new RDFWebClient(sparqlUpdateEndpointOperationOptions.TimeoutMilliseconds))
             {
                 //Parse user-provided parameters
                 string defaultGraphUri = sparqlUpdateEndpoint.QueryParams.Get("default-graph-uri");

@@ -96,21 +96,45 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(sparqlEndpointQueryOptions.ErrorBehavior == RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult);
         }
 
+        //SPARQL UPDATE
+
         [TestMethod]
         public void ShouldCreateSPARQLEndpointOperationOptions()
         {
             RDFSPARQLEndpointOperationOptions sparqlEndpointOperationOptions = new RDFSPARQLEndpointOperationOptions();
 
             Assert.IsNotNull(sparqlEndpointOperationOptions);
+            Assert.IsTrue(sparqlEndpointOperationOptions.TimeoutMilliseconds == -1);
             Assert.IsTrue(sparqlEndpointOperationOptions.RequestContentType == RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update);
         }
 
         [TestMethod]
-        public void ShouldCreateSPARQLEndpointOperationOptionsWithRequestContentType()
+        public void ShouldCreateSPARQLEndpointOperationOptionsWithTimeoutMilliseconds()
         {
-            RDFSPARQLEndpointOperationOptions sparqlEndpointOperationOptions = new RDFSPARQLEndpointOperationOptions(RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded);
+            RDFSPARQLEndpointOperationOptions sparqlEndpointOperationOptions = new RDFSPARQLEndpointOperationOptions(20000);
 
             Assert.IsNotNull(sparqlEndpointOperationOptions);
+            Assert.IsTrue(sparqlEndpointOperationOptions.TimeoutMilliseconds == 20000);
+            Assert.IsTrue(sparqlEndpointOperationOptions.RequestContentType == RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update);
+        }
+
+        [TestMethod]
+        public void ShouldCreateSPARQLEndpointOperationOptionsWithNegativeTimeoutMilliseconds()
+        {
+            RDFSPARQLEndpointOperationOptions sparqlEndpointOperationOptions = new RDFSPARQLEndpointOperationOptions(-2000);
+
+            Assert.IsNotNull(sparqlEndpointOperationOptions);
+            Assert.IsTrue(sparqlEndpointOperationOptions.TimeoutMilliseconds == -1);
+            Assert.IsTrue(sparqlEndpointOperationOptions.RequestContentType == RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update);
+        }
+
+        [TestMethod]
+        public void ShouldCreateSPARQLEndpointOperationOptionsWithTimeouteMillisecondsAndRequestContentType()
+        {
+            RDFSPARQLEndpointOperationOptions sparqlEndpointOperationOptions = new RDFSPARQLEndpointOperationOptions(20000, RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded);
+
+            Assert.IsNotNull(sparqlEndpointOperationOptions);
+            Assert.IsTrue(sparqlEndpointOperationOptions.TimeoutMilliseconds == 20000);
             Assert.IsTrue(sparqlEndpointOperationOptions.RequestContentType == RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded);
         }
         #endregion
