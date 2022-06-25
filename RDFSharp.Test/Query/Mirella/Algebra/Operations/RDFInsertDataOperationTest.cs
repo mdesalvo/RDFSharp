@@ -19,6 +19,7 @@ using System;
 using System.Threading.Tasks;
 using RDFSharp.Model;
 using RDFSharp.Query;
+using RDFSharp.Store;
 
 namespace RDFSharp.Test.Query
 {
@@ -161,6 +162,100 @@ INSERT DATA {
             Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
             Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
             Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?SUBJECT"].ToString(), $"{RDFVocabulary.RDFS.CLASS}"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), $"{RDFVocabulary.OWL.CLASS}"));
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToNullStore()
+        {
+            RDFInsertDataOperation operation = new RDFInsertDataOperation();
+            operation.AddInsertTemplate(new RDFPattern(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            operation.AddInsertTemplate(new RDFPattern(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            RDFOperationResult result = operation.ApplyToStore(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsNotNull(result.InsertResultsCount == 0);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
+            Assert.IsTrue(result.DeleteResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToStore()
+        {
+            RDFMemoryStore graph = new RDFMemoryStore();
+            RDFInsertDataOperation operation = new RDFInsertDataOperation();
+            operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            operation.AddInsertTemplate(new RDFPattern(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            operation.AddInsertTemplate(new RDFPattern(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS)); //Duplicate triple...
+            RDFOperationResult result = operation.ApplyToStore(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 4);
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?CONTEXT"));
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?OBJECT"));
+            Assert.IsNotNull(result.InsertResultsCount == 2);
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?CONTEXT"].ToString(), $"{RDFNamespaceRegister.DefaultNamespace}"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?SUBJECT"].ToString(), $"{RDFVocabulary.RDFS.CLASS}"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), $"{RDFVocabulary.OWL.CLASS}"));
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResultsCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToNullStoreAsync()
+        {
+            RDFInsertDataOperation operation = new RDFInsertDataOperation();
+            operation.AddInsertTemplate(new RDFPattern(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            operation.AddInsertTemplate(new RDFPattern(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            RDFOperationResult result = await operation.ApplyToStoreAsync(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsNotNull(result.InsertResultsCount == 0);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
+            Assert.IsTrue(result.DeleteResultsCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToStoreAsync()
+        {
+            RDFMemoryStore graph = new RDFMemoryStore();
+            RDFInsertDataOperation operation = new RDFInsertDataOperation();
+            operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            operation.AddInsertTemplate(new RDFPattern(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            operation.AddInsertTemplate(new RDFPattern(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS)); //Duplicate triple...
+            RDFOperationResult result = await operation.ApplyToStoreAsync(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 4);
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?CONTEXT"));
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?OBJECT"));
+            Assert.IsNotNull(result.InsertResultsCount == 2);
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?CONTEXT"].ToString(), $"{RDFNamespaceRegister.DefaultNamespace}"));
             Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?SUBJECT"].ToString(), $"{RDFVocabulary.RDFS.CLASS}"));
             Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), $"{RDFVocabulary.OWL.CLASS}"));
