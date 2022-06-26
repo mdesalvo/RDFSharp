@@ -56,8 +56,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an empty pattern group
         /// </summary>
-        public RDFPatternGroup()
+        public RDFPatternGroup(string patternGroupName = null)
         {
+            this.PatternGroupName = patternGroupName;
             this.IsEvaluable = true;
             this.IsOptional = false;
             this.JoinAsUnion = false;
