@@ -17,7 +17,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Net;
-using System.Web;
 using System.Threading.Tasks;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;

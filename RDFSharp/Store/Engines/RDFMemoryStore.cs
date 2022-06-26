@@ -786,13 +786,21 @@ namespace RDFSharp.Store
                 HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
                 if (webRequest.HaveResponse)
                 {
+                    //Cascade detection of ContentType from response
+                    string responseContentType = webResponse.ContentType;
+                    if (string.IsNullOrWhiteSpace(responseContentType))
+                    {
+                        responseContentType = webResponse.Headers["ContentType"];
+                        if (string.IsNullOrWhiteSpace(responseContentType))
+                            responseContentType = "application/n-quads"; //Fallback to N-QUADS
+                    }
+
                     //N-QUADS
-                    if (string.IsNullOrEmpty(webResponse.ContentType) ||
-                            webResponse.ContentType.Contains("application/n-quads"))
+                    if (responseContentType.Contains("application/n-quads"))
                         result = FromStream(RDFStoreEnums.RDFFormats.NQuads, webResponse.GetResponseStream());
 
                     //TRIX
-                    else if (webResponse.ContentType.Contains("application/trix"))
+                    else if (responseContentType.Contains("application/trix"))
                         result = FromStream(RDFStoreEnums.RDFFormats.TriX, webResponse.GetResponseStream());
                 }
             }

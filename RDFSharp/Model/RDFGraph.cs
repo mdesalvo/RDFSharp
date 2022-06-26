@@ -784,23 +784,31 @@ namespace RDFSharp.Model
                 HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
                 if (webRequest.HaveResponse)
                 {
+                    //Cascade detection of ContentType from response
+                    string responseContentType = webResponse.ContentType;
+                    if (string.IsNullOrWhiteSpace(responseContentType))
+                    {
+                        responseContentType = webResponse.Headers["ContentType"];
+                        if (string.IsNullOrWhiteSpace(responseContentType))
+                            responseContentType = "application/rdf+xml"; //Fallback to RDF/XML
+                    }
+
                     //RDF/XML
-                    if (string.IsNullOrEmpty(webResponse.ContentType) ||
-                            webResponse.ContentType.Contains("application/rdf+xml"))
+                    if (responseContentType.Contains("application/rdf+xml"))
                         result = FromStream(RDFModelEnums.RDFFormats.RdfXml, webResponse.GetResponseStream(), webRequest.Address);
 
                     //TURTLE
-                    else if (webResponse.ContentType.Contains("text/turtle") ||
-                                webResponse.ContentType.Contains("application/turtle") ||
-                                    webResponse.ContentType.Contains("application/x-turtle"))
+                    else if (responseContentType.Contains("text/turtle") ||
+                                responseContentType.Contains("application/turtle") ||
+                                   responseContentType.Contains("application/x-turtle"))
                         result = FromStream(RDFModelEnums.RDFFormats.Turtle, webResponse.GetResponseStream(), webRequest.Address);
 
                     //N-TRIPLES
-                    else if (webResponse.ContentType.Contains("application/n-triples"))
+                    else if (responseContentType.Contains("application/n-triples"))
                         result = FromStream(RDFModelEnums.RDFFormats.NTriples, webResponse.GetResponseStream(), webRequest.Address);
 
                     //TRIX
-                    else if (webResponse.ContentType.Contains("application/trix"))
+                    else if (responseContentType.Contains("application/trix"))
                         result = FromStream(RDFModelEnums.RDFFormats.TriX, webResponse.GetResponseStream(), webRequest.Address);
                 }
             }
