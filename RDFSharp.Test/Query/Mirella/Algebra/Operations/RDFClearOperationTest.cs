@@ -98,6 +98,346 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(operation.IsSilent);
             Assert.IsTrue(string.Equals(operation.ToString(), $"CLEAR SILENT {opFlavor}"));
         }
+
+        [TestMethod]
+        public void ShouldApplyToNullGraph()
+        {
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+            RDFOperationResult result = operation.ApplyToGraph(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
+            Assert.IsNotNull(result.DeleteResultsCount == 0);
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsTrue(result.InsertResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToGraph()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            graph.AddTriple(new RDFTriple(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+            RDFOperationResult result = operation.ApplyToGraph(graph); //When applied to a graph, CLEAR behavior is ALL
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 3);
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
+            Assert.IsNotNull(result.DeleteResultsCount == 2);
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?SUBJECT"].ToString(), $"{RDFVocabulary.RDFS.CLASS}"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?OBJECT"].ToString(), $"{RDFVocabulary.OWL.CLASS}"));
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsTrue(result.InsertResultsCount == 0);
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToNullGraphAsync()
+        {
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+            RDFOperationResult result = await operation.ApplyToGraphAsync(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
+            Assert.IsNotNull(result.DeleteResultsCount == 0);
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsTrue(result.InsertResultsCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToGraphAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            graph.AddTriple(new RDFTriple(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+            RDFOperationResult result = await operation.ApplyToGraphAsync(graph); //When applied to a graph, CLEAR behavior is ALL
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 3);
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
+            Assert.IsNotNull(result.DeleteResultsCount == 2);
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?SUBJECT"].ToString(), $"{RDFVocabulary.RDFS.CLASS}"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?OBJECT"].ToString(), $"{RDFVocabulary.OWL.CLASS}"));
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsTrue(result.InsertResultsCount == 0);
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToNullStore()
+        {
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+            RDFOperationResult result = operation.ApplyToStore(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
+            Assert.IsNotNull(result.DeleteResultsCount == 0);
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsTrue(result.InsertResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToStoreWithContextBehavior()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+            RDFOperationResult result = operation.ApplyToStore(store);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 4);
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?CONTEXT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
+            Assert.IsNotNull(result.DeleteResultsCount == 1);
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsTrue(result.InsertResultsCount == 0);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToStoreWithAllFlavorBehavior()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            RDFClearOperation operation = new RDFClearOperation(RDFQueryEnums.RDFClearOperationFlavor.ALL);
+            RDFOperationResult result = operation.ApplyToStore(store);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 4);
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?CONTEXT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
+            Assert.IsNotNull(result.DeleteResultsCount == 2);
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?CONTEXT"].ToString(), $"{RDFNamespaceRegister.DefaultNamespace}"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?SUBJECT"].ToString(), $"{RDFVocabulary.RDFS.CLASS}"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?OBJECT"].ToString(), $"{RDFVocabulary.OWL.CLASS}"));
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsTrue(result.InsertResultsCount == 0);
+            Assert.IsTrue(store.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToStoreWithDefaultFlavorBehavior()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            RDFClearOperation operation = new RDFClearOperation(RDFQueryEnums.RDFClearOperationFlavor.DEFAULT);
+            RDFOperationResult result = operation.ApplyToStore(store);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 4);
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?CONTEXT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
+            Assert.IsNotNull(result.DeleteResultsCount == 1);
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?CONTEXT"].ToString(), $"{RDFNamespaceRegister.DefaultNamespace}"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), $"{RDFVocabulary.RDFS.CLASS}"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), $"{RDFVocabulary.OWL.CLASS}"));
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsTrue(result.InsertResultsCount == 0);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToStoreWithNamedFlavorBehavior()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            RDFClearOperation operation = new RDFClearOperation(RDFQueryEnums.RDFClearOperationFlavor.NAMED);
+            RDFOperationResult result = operation.ApplyToStore(store);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 4);
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?CONTEXT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
+            Assert.IsNotNull(result.DeleteResultsCount == 1);
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsTrue(result.InsertResultsCount == 0);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToNullStoreAsync()
+        {
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+            RDFOperationResult result = await operation.ApplyToStoreAsync(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
+            Assert.IsNotNull(result.DeleteResultsCount == 0);
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsTrue(result.InsertResultsCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToStoreWithContextBehaviorAsync()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+            RDFOperationResult result = await operation.ApplyToStoreAsync(store);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 4);
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?CONTEXT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
+            Assert.IsNotNull(result.DeleteResultsCount == 1);
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsTrue(result.InsertResultsCount == 0);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToStoreWithAllFlavorBehaviorAsync()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            RDFClearOperation operation = new RDFClearOperation(RDFQueryEnums.RDFClearOperationFlavor.ALL);
+            RDFOperationResult result = await operation.ApplyToStoreAsync(store);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 4);
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?CONTEXT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
+            Assert.IsNotNull(result.DeleteResultsCount == 2);
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?CONTEXT"].ToString(), $"{RDFNamespaceRegister.DefaultNamespace}"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?SUBJECT"].ToString(), $"{RDFVocabulary.RDFS.CLASS}"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?OBJECT"].ToString(), $"{RDFVocabulary.OWL.CLASS}"));
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsTrue(result.InsertResultsCount == 0);
+            Assert.IsTrue(store.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToStoreWithDefaultFlavorBehaviorAsync()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            RDFClearOperation operation = new RDFClearOperation(RDFQueryEnums.RDFClearOperationFlavor.DEFAULT);
+            RDFOperationResult result = await operation.ApplyToStoreAsync(store);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 4);
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?CONTEXT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
+            Assert.IsNotNull(result.DeleteResultsCount == 1);
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?CONTEXT"].ToString(), $"{RDFNamespaceRegister.DefaultNamespace}"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), $"{RDFVocabulary.RDFS.CLASS}"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), $"{RDFVocabulary.OWL.CLASS}"));
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsTrue(result.InsertResultsCount == 0);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToStoreWithNamedFlavorBehaviorAsync()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            RDFClearOperation operation = new RDFClearOperation(RDFQueryEnums.RDFClearOperationFlavor.NAMED);
+            RDFOperationResult result = await operation.ApplyToStoreAsync(store);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 4);
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?CONTEXT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
+            Assert.IsNotNull(result.DeleteResultsCount == 1);
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsTrue(result.InsertResultsCount == 0);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
         #endregion
     }
 }
