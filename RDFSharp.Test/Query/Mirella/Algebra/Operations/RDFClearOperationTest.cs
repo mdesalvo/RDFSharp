@@ -438,6 +438,209 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.InsertResultsCount == 0);
             Assert.IsTrue(store.QuadruplesCount == 1);
         }
+
+        [TestMethod]
+        public void ShouldApplyToNullSPARQLUpdateEndpoint()
+        {
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(null);
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToSPARQLUpdateEndpoint()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpoint"))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpoint"));
+
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(endpoint);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToSPARQLUpdateEndpointWithParams()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpointWithParams")
+                           .WithParam("using-graph-uri", new ExactMatcher("ex:ctx1"))
+                           .WithParam("using-named-graph-uri", new ExactMatcher("ex:ctx2")))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpointWithParams"));
+            endpoint.AddDefaultGraphUri("ex:ctx1");
+            endpoint.AddNamedGraphUri("ex:ctx2");
+
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(endpoint);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(250));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"));
+
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(1000));
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToSPARQLUpdateEndpointWithRequestContentType()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentType")
+                           .WithBody(new RegexMatcher("update=.*")))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(250));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentType"));
+
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(1000, RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded));
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams")
+                           .WithBody(new RegexMatcher("using-named-graph-uri=ex%3actx2&using-graph-uri=ex%3actx1&update=.*")))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(250));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams"));
+            endpoint.AddDefaultGraphUri("ex:ctx1");
+            endpoint.AddNamedGraphUri("ex:ctx2");
+
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(1000, RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded));
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFClearOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(750));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFClearOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"));
+
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+
+            Assert.ThrowsException<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(250)));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpoint()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFClearOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpoint"))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.InternalServerError));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFClearOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpoint"));
+
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+
+            Assert.ThrowsException<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint));
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToNullSPARQLUpdateEndpointAsync()
+        {
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+            bool result = await operation.ApplyToSPARQLUpdateEndpointAsync(null);
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToSPARQLUpdateEndpointAsync()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpointAsync"))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpointAsync"));
+
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+            bool result = await operation.ApplyToSPARQLUpdateEndpointAsync(endpoint);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToSPARQLUpdateEndpointWithParamsAsync()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpointWithParamsAsync")
+                           .WithParam("using-graph-uri", new ExactMatcher("ex:ctx1"))
+                           .WithParam("using-named-graph-uri", new ExactMatcher("ex:ctx2")))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpointWithParamsAsync"));
+            endpoint.AddDefaultGraphUri("ex:ctx1");
+            endpoint.AddNamedGraphUri("ex:ctx2");
+
+            RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
+            bool result = await operation.ApplyToSPARQLUpdateEndpointAsync(endpoint);
+
+            Assert.IsTrue(result);
+        }
         #endregion
     }
 }
