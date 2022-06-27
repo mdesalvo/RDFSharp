@@ -190,22 +190,23 @@ namespace RDFSharp.Query
 
             try
             {
-                //Dereference graph Uri in order to try fetching RDF data
-                RDFGraph insertGraph = RDFGraph.FromUri(loadOperation.FromContext);
-
-                //Use fetched RDF data for execution of the operation
                 List<RDFPattern> insertTemplates = new List<RDFPattern>();
+
+                //GRAPH => Dereference triples
                 if (datasource.IsGraph())
                 {
-                    foreach (RDFTriple insertTriple in insertGraph)
-                        insertTemplates.Add(new RDFPattern(insertTriple.Subject, insertTriple.Predicate, insertTriple.Object));
+                    foreach (RDFTriple loadTriple in RDFGraph.FromUri(loadOperation.FromContext))
+                        insertTemplates.Add(new RDFPattern(loadTriple.Subject, loadTriple.Predicate, loadTriple.Object));
                 }
+
+                //STORE => Dereference quadruples (respect the target context, if provided by the operation)
                 else if (datasource.IsStore())
                 {
-                    RDFContext context = new RDFContext(loadOperation.ToContext ?? RDFNamespaceRegister.DefaultNamespace.NamespaceUri);
-                    foreach (RDFTriple insertTriple in insertGraph)
-                        insertTemplates.Add(new RDFPattern(context, insertTriple.Subject, insertTriple.Predicate, insertTriple.Object)); 
+                    RDFContext targetContext = (loadOperation.ToContext != null ? new RDFContext(loadOperation.ToContext) : null);
+                    foreach (RDFQuadruple loadQuadruple in RDFMemoryStore.FromUri(loadOperation.FromContext))
+                        insertTemplates.Add(new RDFPattern(targetContext ?? loadQuadruple.Context, loadQuadruple.Subject, loadQuadruple.Predicate, loadQuadruple.Object)); 
                 }
+
                 operationResult.InsertResults = PopulateInsertOperationResults(insertTemplates, datasource);
             }
             catch
