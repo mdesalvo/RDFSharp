@@ -204,7 +204,7 @@ namespace RDFSharp.Query
                 {
                     RDFContext targetContext = (loadOperation.ToContext != null ? new RDFContext(loadOperation.ToContext) : null);
                     foreach (RDFQuadruple loadQuadruple in RDFMemoryStore.FromUri(loadOperation.FromContext))
-                        insertTemplates.Add(new RDFPattern(targetContext ?? loadQuadruple.Context, loadQuadruple.Subject, loadQuadruple.Predicate, loadQuadruple.Object)); 
+                        insertTemplates.Add(new RDFPattern(targetContext ?? loadQuadruple.Context, loadQuadruple.Subject, loadQuadruple.Predicate, loadQuadruple.Object));
                 }
 
                 operationResult.InsertResults = PopulateInsertOperationResults(insertTemplates, datasource);
@@ -322,7 +322,7 @@ namespace RDFSharp.Query
                         if (!string.IsNullOrEmpty(defaultGraphUri))
                             operationString = string.Concat("using-graph-uri=", HttpUtility.UrlEncode(defaultGraphUri), "&", operationString);
                         if (!string.IsNullOrEmpty(namedGraphUri))
-                            operationString = string.Concat("using-named-graph-uri=", HttpUtility.UrlEncode(namedGraphUri), "&", operationString);                        
+                            operationString = string.Concat("using-named-graph-uri=", HttpUtility.UrlEncode(namedGraphUri), "&", operationString);
                         break;
 
                     //update via POST directly
@@ -364,7 +364,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Executes the CONSTRUCT query for materialization of the operation templates
         /// </summary>
-        private RDFConstructQueryResult ExecuteConstructQueryFromOperation(RDFOperation operation, RDFDataSource datasource, string deleteInsertCommand=null)
+        private RDFConstructQueryResult ExecuteConstructQueryFromOperation(RDFOperation operation, RDFDataSource datasource, string deleteInsertCommand = null)
         {
             //Inject SPARQL values within every evaluable member
             operation.InjectValues(operation.GetValues());

@@ -275,6 +275,375 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.DeleteResultsCount == 0);
             Assert.IsTrue(store.QuadruplesCount == 1);
         }
+
+        [TestMethod]
+        public async Task ShouldApplyToNullStoreAsync()
+        {
+            RDFLoadOperation operation = new RDFLoadOperation(new Uri("ex:ctx"));
+            RDFOperationResult result = await operation.ApplyToStoreAsync(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
+            Assert.IsNotNull(result.DeleteResultsCount == 0);
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsTrue(result.InsertResultsCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToStoreAsync()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFLoadOperationTest/ShouldApplyToStoreAsync"))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("ContentType", "application/n-quads")
+                            .WithBody($"<ex:subj> <ex:pred> <ex:obj> <ex:ctx>."));
+
+            RDFMemoryStore store = new RDFMemoryStore();
+            RDFLoadOperation operation = new RDFLoadOperation(new Uri(server.Url + "/RDFLoadOperationTest/ShouldApplyToStoreAsync"));
+            RDFOperationResult result = await operation.ApplyToStoreAsync(store);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 4);
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?CONTEXT"));
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?OBJECT"));
+            Assert.IsNotNull(result.InsertResultsCount == 1);
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
+            Assert.IsTrue(result.DeleteResultsCount == 0);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToStoreWithDefaultContextAsync()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFLoadOperationTest/ShouldApplyToStoreWithDefaultContextAsync"))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("ContentType", "application/n-quads")
+                            .WithBody($"<ex:subj> <ex:pred> <ex:obj>."));
+
+            RDFMemoryStore store = new RDFMemoryStore();
+            RDFLoadOperation operation = new RDFLoadOperation(new Uri(server.Url + "/RDFLoadOperationTest/ShouldApplyToStoreWithDefaultContextAsync"));
+            RDFOperationResult result = await operation.ApplyToStoreAsync(store);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 4);
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?CONTEXT"));
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?OBJECT"));
+            Assert.IsNotNull(result.InsertResultsCount == 1);
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), $"{RDFNamespaceRegister.DefaultNamespace}"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
+            Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
+            Assert.IsTrue(result.DeleteResultsCount == 0);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionWhenApplyingNonSilentCrashingLoadOperation()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFLoadOperationTest/ShouldThrowExceptionWhenApplyingNonSilentCrashingLoadOperation"))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("ContentType", "text/turtle")
+                            .WithBody($"<ex:subj> a <ex:obj ."));
+
+            RDFGraph graph = new RDFGraph();
+            RDFLoadOperation operation = new RDFLoadOperation(new Uri(server.Url + "/RDFLoadOperationTest/ShouldThrowExceptionWhenApplyingNonSilentCrashingLoadOperation"));
+            Assert.ThrowsException<RDFModelException>(() => operation.ApplyToGraph(graph));
+        }
+
+        [TestMethod]
+        public void ShouldNotThrowExceptionWhenApplyingSilentCrashingLoadOperation()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFLoadOperationTest/ShouldNotThrowExceptionWhenApplyingSilentCrashingLoadOperation"))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("ContentType", "text/turtle")
+                            .WithBody($"<ex:subj> a <ex:obj ."));
+
+            RDFGraph graph = new RDFGraph();
+            RDFLoadOperation operation = new RDFLoadOperation(new Uri(server.Url + "/RDFLoadOperationTest/ShouldNotThrowExceptionWhenApplyingSilentCrashingLoadOperation")).Silent();
+            RDFOperationResult result = operation.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsNotNull(result.InsertResultsCount == 0);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
+            Assert.IsNotNull(result.DeleteResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToNullSPARQLUpdateEndpoint()
+        {
+            RDFLoadOperation operation = new RDFLoadOperation(new Uri("ex:ctx"));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(null);
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToSPARQLUpdateEndpoint()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("ex:ShouldApplyToSPARQLUpdateEndpoint"))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("ContentType", "text/turtle")
+                            .WithBody($"<ex:subj> a <ex:obj> ."));
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpoint"))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpoint"));
+
+            RDFLoadOperation operation = new RDFLoadOperation(new Uri("ex:ShouldApplyToSPARQLUpdateEndpoint"));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(endpoint);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToSPARQLUpdateEndpointWithParams()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("ex:ShouldApplyToSPARQLUpdateEndpointWithParams"))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("ContentType", "text/turtle")
+                            .WithBody($"<ex:subj> a <ex:obj> ."));
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointWithParams")
+                           .WithParam("using-graph-uri", new ExactMatcher("ex:ctx1"))
+                           .WithParam("using-named-graph-uri", new ExactMatcher("ex:ctx2")))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointWithParams"));
+            endpoint.AddDefaultGraphUri("ex:ctx1");
+            endpoint.AddNamedGraphUri("ex:ctx2");
+
+            RDFLoadOperation operation = new RDFLoadOperation(new Uri("ex:ShouldApplyToSPARQLUpdateEndpointWithParams"));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(endpoint);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToSPARQLUpdateEndpointWithRequestContentType()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("ex:ShouldApplyToSPARQLUpdateEndpointWithRequestContentType"))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("ContentType", "text/turtle")
+                            .WithBody($"<ex:subj> a <ex:obj> ."));
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentType")
+                           .WithBody(new RegexMatcher("update=.*")))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(250));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentType"));
+
+            RDFLoadOperation operation = new RDFLoadOperation(new Uri("ex:ShouldApplyToSPARQLUpdateEndpointWithRequestContentType"));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(1000, RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded));
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("ex:ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams"))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("ContentType", "text/turtle")
+                            .WithBody($"<ex:subj> a <ex:obj> ."));
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams")
+                           .WithBody(new RegexMatcher("using-named-graph-uri=ex%3actx2&using-graph-uri=ex%3actx1&update=.*")))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(250));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams"));
+            endpoint.AddDefaultGraphUri("ex:ctx1");
+            endpoint.AddNamedGraphUri("ex:ctx2");
+
+            RDFLoadOperation operation = new RDFLoadOperation(new Uri("ex:ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams"));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(1000, RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded));
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("ex:ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("ContentType", "text/turtle")
+                            .WithBody($"<ex:subj> a <ex:obj> ."));
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(250));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"));
+
+            RDFLoadOperation operation = new RDFLoadOperation(new Uri("ex:ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"));
+            bool result = operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(1000));
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("ex:ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("ContentType", "text/turtle")
+                            .WithBody($"<ex:subj> a <ex:obj> ."));
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFLoadOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(750));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFLoadOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"));
+
+            RDFLoadOperation operation = new RDFLoadOperation(new Uri("ex:ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"));
+
+            Assert.ThrowsException<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(250)));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpoint()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("ex:ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpoint"))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("ContentType", "text/turtle")
+                            .WithBody($"<ex:subj> a <ex:obj> ."));
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFLoadOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpoint"))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.InternalServerError));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFLoadOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpoint"));
+
+            RDFLoadOperation operation = new RDFLoadOperation(new Uri("ex:ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpoint"));
+
+            Assert.ThrowsException<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint));
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToNullSPARQLUpdateEndpointAsync()
+        {
+            RDFLoadOperation operation = new RDFLoadOperation(new Uri("ex:ctx"));
+            bool result = await operation.ApplyToSPARQLUpdateEndpointAsync(null);
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyToSPARQLUpdateEndpointAsync()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("ex:ShouldApplyToSPARQLUpdateEndpointAsync"))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("ContentType", "text/turtle")
+                            .WithBody($"<ex:subj> a <ex:obj> ."));
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointAsync"))
+                .RespondWith(
+                    Response.Create()
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointAsync"));
+
+            RDFLoadOperation operation = new RDFLoadOperation(new Uri("ex:ShouldApplyToSPARQLUpdateEndpointAsync"));
+            bool result = await operation.ApplyToSPARQLUpdateEndpointAsync(endpoint);
+
+            Assert.IsTrue(result);
+        }
         #endregion
     }
 }
