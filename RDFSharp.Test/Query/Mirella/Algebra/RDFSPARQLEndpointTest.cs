@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Query;
 
@@ -54,6 +55,37 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(sparqlEndpoint.QueryParams["default-graph-uri"].Equals("http://ex1.org/"));
             Assert.IsTrue(sparqlEndpoint.QueryParams["named-graph-uri"].Equals("http://ex2.org/"));
             Assert.IsTrue(sparqlEndpoint.ToString().Equals("http://sparql/query"));
+        }
+
+        [TestMethod]
+        public void ShouldSetBasicAuthorizationHeader()
+        {
+            string authHeaderValue = Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes("user:pwd"));
+            RDFSPARQLEndpoint sparqlEndpoint = new RDFSPARQLEndpoint(new Uri("http://sparql/query"));
+            sparqlEndpoint.SetBasicAuthorizationHeader(authHeaderValue);
+
+            Assert.IsNotNull(sparqlEndpoint);
+            Assert.IsTrue(sparqlEndpoint.BaseAddress.Equals(new Uri("http://sparql/query")));
+            Assert.IsNotNull(sparqlEndpoint.QueryParams);
+            Assert.IsTrue(sparqlEndpoint.QueryParams.Count == 0);
+            Assert.IsTrue(string.Equals(sparqlEndpoint.ToString(), "http://sparql/query"));
+            Assert.IsTrue(sparqlEndpoint.AuthorizationType == RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Basic);
+            Assert.IsTrue(string.Equals(sparqlEndpoint.AuthorizationValue, authHeaderValue));
+        }
+
+        [TestMethod]
+        public void ShouldSetBearerAuthorizationHeader()
+        {
+            RDFSPARQLEndpoint sparqlEndpoint = new RDFSPARQLEndpoint(new Uri("http://sparql/query"));
+            sparqlEndpoint.SetBearerAuthorizationHeader("vF9dft4qmT");
+
+            Assert.IsNotNull(sparqlEndpoint);
+            Assert.IsTrue(sparqlEndpoint.BaseAddress.Equals(new Uri("http://sparql/query")));
+            Assert.IsNotNull(sparqlEndpoint.QueryParams);
+            Assert.IsTrue(sparqlEndpoint.QueryParams.Count == 0);
+            Assert.IsTrue(string.Equals(sparqlEndpoint.ToString(), "http://sparql/query"));
+            Assert.IsTrue(sparqlEndpoint.AuthorizationType == RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Bearer);
+            Assert.IsTrue(string.Equals(sparqlEndpoint.AuthorizationValue, "vF9dft4qmT"));
         }
 
         [TestMethod]
