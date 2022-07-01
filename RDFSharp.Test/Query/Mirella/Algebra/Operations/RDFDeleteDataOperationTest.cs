@@ -107,7 +107,7 @@ DELETE DATA {
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.DeleteResults);
             Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
-            Assert.IsNotNull(result.DeleteResultsCount == 0);
+            Assert.IsTrue(result.DeleteResultsCount == 0);
             Assert.IsNotNull(result.InsertResults);
             Assert.IsTrue(result.InsertResults.Columns.Count == 0);
             Assert.IsTrue(result.InsertResultsCount == 0);
@@ -131,7 +131,7 @@ DELETE DATA {
             Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
             Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
             Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
-            Assert.IsNotNull(result.DeleteResultsCount == 2);
+            Assert.IsTrue(result.DeleteResultsCount == 2);
             Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
             Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
             Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
@@ -155,7 +155,7 @@ DELETE DATA {
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.DeleteResults);
             Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
-            Assert.IsNotNull(result.DeleteResultsCount == 0);
+            Assert.IsTrue(result.DeleteResultsCount == 0);
             Assert.IsNotNull(result.InsertResults);
             Assert.IsTrue(result.InsertResults.Columns.Count == 0);
             Assert.IsTrue(result.InsertResultsCount == 0);
@@ -179,7 +179,7 @@ DELETE DATA {
             Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
             Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
             Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
-            Assert.IsNotNull(result.DeleteResultsCount == 2);
+            Assert.IsTrue(result.DeleteResultsCount == 2);
             Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
             Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
             Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
@@ -203,7 +203,7 @@ DELETE DATA {
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.DeleteResults);
             Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
-            Assert.IsNotNull(result.DeleteResultsCount == 0);
+            Assert.IsTrue(result.DeleteResultsCount == 0);
             Assert.IsNotNull(result.InsertResults);
             Assert.IsTrue(result.InsertResults.Columns.Count == 0);
             Assert.IsTrue(result.InsertResultsCount == 0);
@@ -228,7 +228,7 @@ DELETE DATA {
             Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
             Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
             Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
-            Assert.IsNotNull(result.DeleteResultsCount == 2);
+            Assert.IsTrue(result.DeleteResultsCount == 2);
             Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
             Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
             Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
@@ -254,7 +254,7 @@ DELETE DATA {
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.DeleteResults);
             Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
-            Assert.IsNotNull(result.DeleteResultsCount == 0);
+            Assert.IsTrue(result.DeleteResultsCount == 0);
             Assert.IsNotNull(result.InsertResults);
             Assert.IsTrue(result.InsertResults.Columns.Count == 0);
             Assert.IsTrue(result.InsertResultsCount == 0);
@@ -279,7 +279,7 @@ DELETE DATA {
             Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
             Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
             Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
-            Assert.IsNotNull(result.DeleteResultsCount == 2);
+            Assert.IsTrue(result.DeleteResultsCount == 2);
             Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
             Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
             Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
