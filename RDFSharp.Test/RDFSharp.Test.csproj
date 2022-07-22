@@ -24,6 +24,7 @@
 		<ProjectReference Include="..\RDFSharp\RDFSharp.csproj"/>
 	</ItemGroup>
 	<ItemGroup>
+		<Folder Include="Model\"/>
 		<Folder Include="Store\"/>
 		<Folder Include="Query\"/>
 	</ItemGroup>
