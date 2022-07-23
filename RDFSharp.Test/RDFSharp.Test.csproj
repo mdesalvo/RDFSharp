@@ -7,6 +7,7 @@
 		<Authors>Marco De Salvo</Authors>
 		<Copyright>Marco De Salvo</Copyright>
 		<TargetFramework>net6.0</TargetFramework>
+		<LangVersion>preview</LangVersion>
 		<IsPackable>false</IsPackable>
 		<Product>RDFSharp</Product>
 	</PropertyGroup>
