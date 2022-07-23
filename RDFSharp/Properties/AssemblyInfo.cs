@@ -24,5 +24,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("RDFSharp.Extensions.Firebird")]
 [assembly: InternalsVisibleTo("RDFSharp.Extensions.MySQL")]
 [assembly: InternalsVisibleTo("RDFSharp.Extensions.PostgreSQL")]
-[assembly: InternalsVisibleTo("RDFSharp.Extensions.RDFOracle")]
+[assembly: InternalsVisibleTo("RDFSharp.Extensions.Oracle")]
 [assembly: InternalsVisibleTo("RDFSharp.Test")]
