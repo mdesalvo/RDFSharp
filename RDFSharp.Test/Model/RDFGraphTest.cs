@@ -16,11 +16,7 @@
 
 using RDFSharp.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using System;
 using System.Data;
-using System.Threading.Tasks;
-using System.IO;
 
 namespace RDFSharp.Test.Model
 {
@@ -37,6 +33,8 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(graph.IndexedTriples);
             Assert.IsTrue(graph.TriplesCount == 0);
             Assert.IsNotNull(graph.GraphIndex);
+            Assert.IsTrue(graph.GraphIndex.ResourcesRegister.Count == 0);
+            Assert.IsTrue(graph.GraphIndex.LiteralsRegister.Count == 0);
             Assert.IsTrue(graph.GraphIndex.SubjectsIndex.Count == 0);
             Assert.IsTrue(graph.GraphIndex.PredicatesIndex.Count == 0);
             Assert.IsTrue(graph.GraphIndex.ObjectsIndex.Count == 0);
@@ -67,6 +65,8 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(graph.IndexedTriples);
             Assert.IsTrue(graph.TriplesCount == 2);
             Assert.IsNotNull(graph.GraphIndex);
+            Assert.IsTrue(graph.GraphIndex.ResourcesRegister.Count == 3);
+            Assert.IsTrue(graph.GraphIndex.LiteralsRegister.Count == 1);
             Assert.IsTrue(graph.GraphIndex.SubjectsIndex.Count == 1);
             Assert.IsTrue(graph.GraphIndex.PredicatesIndex.Count == 1);
             Assert.IsTrue(graph.GraphIndex.ObjectsIndex.Count == 1);

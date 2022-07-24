@@ -212,7 +212,7 @@ namespace RDFSharp.Model
                 {
                     if (!this.SubjectsIndex.ContainsKey(triple.Object.PatternMemberID)
                           && !this.PredicatesIndex.ContainsKey(triple.Object.PatternMemberID)
-                            && !this.ObjectsIndex.ContainsKey(triple.Object.PatternMemberID))
+                            && !this.LiteralsIndex.ContainsKey(triple.Object.PatternMemberID))
                         this.LiteralsRegister.Remove(triple.Object.PatternMemberID);
                 }
             }
