@@ -218,10 +218,11 @@ namespace RDFSharp.Model
             List<RDFTriple> matchResult = new List<RDFTriple>();
             if (graph != null)
             {
-                List<RDFTriple> S = new List<RDFTriple>();
-                List<RDFTriple> P = new List<RDFTriple>();
-                List<RDFTriple> O = new List<RDFTriple>();
-                List<RDFTriple> L = new List<RDFTriple>();
+                List<RDFIndexedTriple> S = new List<RDFIndexedTriple>();
+                List<RDFIndexedTriple> P = new List<RDFIndexedTriple>();
+                List<RDFIndexedTriple> O = new List<RDFIndexedTriple>();
+                List<RDFIndexedTriple> L = new List<RDFIndexedTriple>();
+                List<RDFIndexedTriple>matchResultIndexedTriples = new List<RDFIndexedTriple>();
                 StringBuilder queryFilters = new StringBuilder();
 
                 //Filter by Subject
@@ -229,7 +230,7 @@ namespace RDFSharp.Model
                 {
                     queryFilters.Append('S');
                     foreach (long t in graph.GraphIndex.SelectIndexBySubject(subj))
-                        S.Add(new RDFTriple(graph.IndexedTriples[t], graph.GraphIndex));
+                        S.Add(graph.IndexedTriples[t]);
                 }
 
                 //Filter by Predicate
@@ -237,7 +238,7 @@ namespace RDFSharp.Model
                 {
                     queryFilters.Append('P');
                     foreach (long t in graph.GraphIndex.SelectIndexByPredicate(pred))
-                        P.Add(new RDFTriple(graph.IndexedTriples[t], graph.GraphIndex));
+                        P.Add(graph.IndexedTriples[t]);
                 }
 
                 //Filter by Object
@@ -245,7 +246,7 @@ namespace RDFSharp.Model
                 {
                     queryFilters.Append('O');
                     foreach (long t in graph.GraphIndex.SelectIndexByObject(obj))
-                        O.Add(new RDFTriple(graph.IndexedTriples[t], graph.GraphIndex));
+                        O.Add(graph.IndexedTriples[t]);
                 }
 
                 //Filter by Literal
@@ -253,7 +254,7 @@ namespace RDFSharp.Model
                 {
                     queryFilters.Append('L');
                     foreach (long t in graph.GraphIndex.SelectIndexByLiteral(lit))
-                        L.Add(new RDFTriple(graph.IndexedTriples[t], graph.GraphIndex));
+                        L.Add(graph.IndexedTriples[t]);
                 }
 
                 //Intersect the filters
@@ -261,42 +262,45 @@ namespace RDFSharp.Model
                 switch (queryFilter)
                 {
                     case "S":
-                        matchResult = S;
+                        matchResultIndexedTriples = S;
                         break;
                     case "P":
-                        matchResult = P;
+                        matchResultIndexedTriples = P;
                         break;
                     case "O":
-                        matchResult = O;
+                        matchResultIndexedTriples = O;
                         break;
                     case "L":
-                        matchResult = L;
+                        matchResultIndexedTriples = L;
                         break;
                     case "SP":
-                        matchResult = S.Intersect(P).ToList();
+                        matchResultIndexedTriples = S.Intersect(P).ToList();
                         break;
                     case "SO":
-                        matchResult = S.Intersect(O).ToList();
+                        matchResultIndexedTriples = S.Intersect(O).ToList();
                         break;
                     case "SL":
-                        matchResult = S.Intersect(L).ToList();
+                        matchResultIndexedTriples = S.Intersect(L).ToList();
                         break;
                     case "PO":
-                        matchResult = P.Intersect(O).ToList();
+                        matchResultIndexedTriples = P.Intersect(O).ToList();
                         break;
                     case "PL":
-                        matchResult = P.Intersect(L).ToList();
+                        matchResultIndexedTriples = P.Intersect(L).ToList();
                         break;
                     case "SPO":
-                        matchResult = S.Intersect(P).Intersect(O).ToList();
+                        matchResultIndexedTriples = S.Intersect(P).Intersect(O).ToList();
                         break;
                     case "SPL":
-                        matchResult = S.Intersect(P).Intersect(L).ToList();
+                        matchResultIndexedTriples = S.Intersect(P).Intersect(L).ToList();
                         break;
                     default:
-                        matchResult = graph.ToList();
+                        matchResultIndexedTriples = graph.IndexedTriples.Values.ToList();
                         break;
                 }
+
+                //Decompress indexed triples
+                matchResultIndexedTriples.ForEach(indexedTriple => matchResult.Add(new RDFTriple(indexedTriple, graph.GraphIndex)));
             }
             return matchResult;
         }
