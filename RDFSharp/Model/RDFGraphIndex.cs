@@ -31,7 +31,7 @@ namespace RDFSharp.Model
         internal Dictionary<long, RDFResource> ResourcesRegister { get; set; }
 
         /// <summary>
-        /// Register of the graph's lietarls
+        /// Register of the graph's literals
         /// </summary>
         internal Dictionary<long, RDFLiteral> LiteralsRegister { get; set; }
 
