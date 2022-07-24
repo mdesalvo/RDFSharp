@@ -86,11 +86,12 @@ namespace RDFSharp.Store
             List<RDFQuadruple> matchResult = new List<RDFQuadruple>();
             if (store != null)
             {
-                List<RDFQuadruple> C = new List<RDFQuadruple>();
-                List<RDFQuadruple> S = new List<RDFQuadruple>();
-                List<RDFQuadruple> P = new List<RDFQuadruple>();
-                List<RDFQuadruple> O = new List<RDFQuadruple>();
-                List<RDFQuadruple> L = new List<RDFQuadruple>();
+                List<RDFIndexedQuadruple> C = new List<RDFIndexedQuadruple>();
+                List<RDFIndexedQuadruple> S = new List<RDFIndexedQuadruple>();
+                List<RDFIndexedQuadruple> P = new List<RDFIndexedQuadruple>();
+                List<RDFIndexedQuadruple> O = new List<RDFIndexedQuadruple>();
+                List<RDFIndexedQuadruple> L = new List<RDFIndexedQuadruple>();
+                List<RDFIndexedQuadruple> matchResultIndexedQuadruples = new List<RDFIndexedQuadruple>();
                 StringBuilder queryFilters = new StringBuilder();
 
                 //Filter by Context
@@ -98,7 +99,7 @@ namespace RDFSharp.Store
                 {
                     queryFilters.Append('C');
                     foreach (long q in store.StoreIndex.SelectIndexByContext(ctx))
-                        C.Add(store.Quadruples[q]);
+                        C.Add(store.IndexedQuadruples[q]);
                 }
 
                 //Filter by Subject
@@ -106,7 +107,7 @@ namespace RDFSharp.Store
                 {
                     queryFilters.Append('S');
                     foreach (long q in store.StoreIndex.SelectIndexBySubject(subj))
-                        S.Add(store.Quadruples[q]);
+                        S.Add(store.IndexedQuadruples[q]);
                 }
 
                 //Filter by Predicate
@@ -114,7 +115,7 @@ namespace RDFSharp.Store
                 {
                     queryFilters.Append('P');
                     foreach (long q in store.StoreIndex.SelectIndexByPredicate(pred))
-                        P.Add(store.Quadruples[q]);
+                        P.Add(store.IndexedQuadruples[q]);
                 }
 
                 //Filter by Object
@@ -122,7 +123,7 @@ namespace RDFSharp.Store
                 {
                     queryFilters.Append('O');
                     foreach (long q in store.StoreIndex.SelectIndexByObject(obj))
-                        O.Add(store.Quadruples[q]);
+                        O.Add(store.IndexedQuadruples[q]);
                 }
 
                 //Filter by Literal
@@ -130,7 +131,7 @@ namespace RDFSharp.Store
                 {
                     queryFilters.Append('L');
                     foreach (var q in store.StoreIndex.SelectIndexByLiteral(lit))
-                        L.Add(store.Quadruples[q]);
+                        L.Add(store.IndexedQuadruples[q]);
                 }
 
                 //Intersect the filters
@@ -138,78 +139,81 @@ namespace RDFSharp.Store
                 switch (queryFilter)
                 {
                     case "C":
-                        matchResult = C;
+                        matchResultIndexedQuadruples = C;
                         break;
                     case "S":
-                        matchResult = S;
+                        matchResultIndexedQuadruples = S;
                         break;
                     case "P":
-                        matchResult = P;
+                        matchResultIndexedQuadruples = P;
                         break;
                     case "O":
-                        matchResult = O;
+                        matchResultIndexedQuadruples = O;
                         break;
                     case "L":
-                        matchResult = L;
+                        matchResultIndexedQuadruples = L;
                         break;
                     case "CS":
-                        matchResult = C.Intersect(S).ToList();
+                        matchResultIndexedQuadruples = C.Intersect(S).ToList();
                         break;
                     case "CP":
-                        matchResult = C.Intersect(P).ToList();
+                        matchResultIndexedQuadruples = C.Intersect(P).ToList();
                         break;
                     case "CO":
-                        matchResult = C.Intersect(O).ToList();
+                        matchResultIndexedQuadruples = C.Intersect(O).ToList();
                         break;
                     case "CL":
-                        matchResult = C.Intersect(L).ToList();
+                        matchResultIndexedQuadruples = C.Intersect(L).ToList();
                         break;
                     case "CSP":
-                        matchResult = C.Intersect(S).Intersect(P).ToList();
+                        matchResultIndexedQuadruples = C.Intersect(S).Intersect(P).ToList();
                         break;
                     case "CSO":
-                        matchResult = C.Intersect(S).Intersect(O).ToList();
+                        matchResultIndexedQuadruples = C.Intersect(S).Intersect(O).ToList();
                         break;
                     case "CSL":
-                        matchResult = C.Intersect(S).Intersect(L).ToList();
+                        matchResultIndexedQuadruples = C.Intersect(S).Intersect(L).ToList();
                         break;
                     case "CPO":
-                        matchResult = C.Intersect(P).Intersect(O).ToList();
+                        matchResultIndexedQuadruples = C.Intersect(P).Intersect(O).ToList();
                         break;
                     case "CPL":
-                        matchResult = C.Intersect(P).Intersect(L).ToList();
+                        matchResultIndexedQuadruples = C.Intersect(P).Intersect(L).ToList();
                         break;
                     case "CSPO":
-                        matchResult = C.Intersect(S).Intersect(P).Intersect(O).ToList();
+                        matchResultIndexedQuadruples = C.Intersect(S).Intersect(P).Intersect(O).ToList();
                         break;
                     case "CSPL":
-                        matchResult = C.Intersect(S).Intersect(P).Intersect(L).ToList();
+                        matchResultIndexedQuadruples = C.Intersect(S).Intersect(P).Intersect(L).ToList();
                         break;
                     case "SP":
-                        matchResult = S.Intersect(P).ToList();
+                        matchResultIndexedQuadruples = S.Intersect(P).ToList();
                         break;
                     case "SO":
-                        matchResult = S.Intersect(O).ToList();
+                        matchResultIndexedQuadruples = S.Intersect(O).ToList();
                         break;
                     case "SL":
-                        matchResult = S.Intersect(L).ToList();
+                        matchResultIndexedQuadruples = S.Intersect(L).ToList();
                         break;
                     case "SPO":
-                        matchResult = S.Intersect(P).Intersect(O).ToList();
+                        matchResultIndexedQuadruples = S.Intersect(P).Intersect(O).ToList();
                         break;
                     case "SPL":
-                        matchResult = S.Intersect(P).Intersect(L).ToList();
+                        matchResultIndexedQuadruples = S.Intersect(P).Intersect(L).ToList();
                         break;
                     case "PO":
-                        matchResult = P.Intersect(O).ToList();
+                        matchResultIndexedQuadruples = P.Intersect(O).ToList();
                         break;
                     case "PL":
-                        matchResult = P.Intersect(L).ToList();
+                        matchResultIndexedQuadruples = P.Intersect(L).ToList();
                         break;
                     default:
-                        matchResult = store.ToList();
+                        matchResultIndexedQuadruples = store.IndexedQuadruples.Values.ToList();
                         break;
                 }
+
+                //Decompress indexed quadruples
+                matchResultIndexedQuadruples.ForEach(indexedQuadruple => matchResult.Add(new RDFQuadruple(indexedQuadruple, store.StoreIndex)));
             }
             return matchResult;
         }

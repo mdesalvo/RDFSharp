@@ -39,7 +39,7 @@ namespace RDFSharp.Test.Store
             Assert.IsNotNull(store);
             Assert.IsTrue(store.StoreType.Equals("MEMORY"));
             Assert.IsNotNull(store.StoreIndex);
-            Assert.IsNotNull(store.Quadruples);
+            Assert.IsNotNull(store.IndexedQuadruples);
             Assert.IsTrue(store.QuadruplesCount == 0);
             Assert.IsTrue(store.StoreID.Equals(RDFModelUtilities.CreateHash(store.ToString())));
             Assert.IsTrue(store.ToString().Equals($"MEMORY|ID={store.StoreGUID}"));
@@ -56,7 +56,7 @@ namespace RDFSharp.Test.Store
             Assert.IsNotNull(store);
             Assert.IsTrue(store.StoreType.Equals("MEMORY"));
             Assert.IsNotNull(store.StoreIndex);
-            Assert.IsNotNull(store.Quadruples);
+            Assert.IsNotNull(store.IndexedQuadruples);
             Assert.IsTrue(store.QuadruplesCount == 1);
             Assert.IsTrue(store.StoreID.Equals(RDFModelUtilities.CreateHash(store.ToString())));
             Assert.IsTrue(store.ToString().Equals($"MEMORY|ID={store.StoreGUID}"));
@@ -496,11 +496,11 @@ namespace RDFSharp.Test.Store
             store.ClearQuadruples();
 
             Assert.IsTrue(store.QuadruplesCount == 0);
-            Assert.IsTrue(store.StoreIndex.Contexts.Count == 0);
-            Assert.IsTrue(store.StoreIndex.Subjects.Count == 0);
-            Assert.IsTrue(store.StoreIndex.Predicates.Count == 0);
-            Assert.IsTrue(store.StoreIndex.Objects.Count == 0);
-            Assert.IsTrue(store.StoreIndex.Literals.Count == 0);
+            Assert.IsTrue(store.StoreIndex.ContextsIndex.Count == 0);
+            Assert.IsTrue(store.StoreIndex.SubjectsIndex.Count == 0);
+            Assert.IsTrue(store.StoreIndex.PredicatesIndex.Count == 0);
+            Assert.IsTrue(store.StoreIndex.ObjectsIndex.Count == 0);
+            Assert.IsTrue(store.StoreIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
