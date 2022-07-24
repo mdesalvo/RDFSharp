@@ -52,9 +52,9 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
-            Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                    && t.Value.Predicate.Equals(RDFVocabulary.SHACL.MIN_LENGTH)
-                                                        && t.Value.Object.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.MIN_LENGTH.PatternMemberID)
+                                                        && t.Value.ObjectID.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER).PatternMemberID)));
         }
 
         //NS-CONFORMS:TRUE

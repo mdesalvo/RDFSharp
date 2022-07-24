@@ -66,15 +66,15 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 3);
-            Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                    && t.Value.Predicate.Equals(RDFVocabulary.SHACL.QUALIFIED_VALUE_SHAPE)
-                                                        && t.Value.Object.Equals(new RDFResource("ex:QVShape"))));
-            Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                    && t.Value.Predicate.Equals(RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT)
-                                                        && t.Value.Object.Equals(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
-            Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                    && t.Value.Predicate.Equals(RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT)
-                                                        && t.Value.Object.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.QUALIFIED_VALUE_SHAPE.PatternMemberID)
+                                                        && t.Value.ObjectID.Equals(new RDFResource("ex:QVShape").PatternMemberID)));
+            Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT.PatternMemberID)
+                                                        && t.Value.ObjectID.Equals(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER).PatternMemberID)));
+            Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT.PatternMemberID)
+                                                        && t.Value.ObjectID.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER).PatternMemberID)));
         }
 
         //NS-CONFORMS:TRUE

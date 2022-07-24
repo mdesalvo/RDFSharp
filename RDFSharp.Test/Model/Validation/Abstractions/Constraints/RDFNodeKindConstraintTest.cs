@@ -58,34 +58,34 @@ namespace RDFSharp.Test.Model
             switch (nodeKind)
             {
                 case RDFValidationEnums.RDFNodeKinds.BlankNode:
-                    Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                        && t.Value.Predicate.Equals(RDFVocabulary.SHACL.NODE_KIND)
-                                                            && t.Value.Object.Equals(RDFVocabulary.SHACL.BLANK_NODE)));
+                    Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                        && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.NODE_KIND.PatternMemberID)
+                                                            && t.Value.ObjectID.Equals(RDFVocabulary.SHACL.BLANK_NODE.PatternMemberID)));
                     break;
                 case RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI:
-                    Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                        && t.Value.Predicate.Equals(RDFVocabulary.SHACL.NODE_KIND)
-                                                            && t.Value.Object.Equals(RDFVocabulary.SHACL.BLANK_NODE_OR_IRI)));
+                    Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                        && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.NODE_KIND.PatternMemberID)
+                                                            && t.Value.ObjectID.Equals(RDFVocabulary.SHACL.BLANK_NODE_OR_IRI.PatternMemberID)));
                     break;
                 case RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral:
-                    Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                        && t.Value.Predicate.Equals(RDFVocabulary.SHACL.NODE_KIND)
-                                                            && t.Value.Object.Equals(RDFVocabulary.SHACL.BLANK_NODE_OR_LITERAL)));
+                    Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                        && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.NODE_KIND.PatternMemberID)
+                                                            && t.Value.ObjectID.Equals(RDFVocabulary.SHACL.BLANK_NODE_OR_LITERAL.PatternMemberID)));
                     break;
                 case RDFValidationEnums.RDFNodeKinds.IRI:
-                    Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                        && t.Value.Predicate.Equals(RDFVocabulary.SHACL.NODE_KIND)
-                                                            && t.Value.Object.Equals(RDFVocabulary.SHACL.IRI)));
+                    Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                        && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.NODE_KIND.PatternMemberID)
+                                                            && t.Value.ObjectID.Equals(RDFVocabulary.SHACL.IRI.PatternMemberID)));
                     break;
                 case RDFValidationEnums.RDFNodeKinds.IRIOrLiteral:
-                    Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                        && t.Value.Predicate.Equals(RDFVocabulary.SHACL.NODE_KIND)
-                                                            && t.Value.Object.Equals(RDFVocabulary.SHACL.IRI_OR_LITERAL)));
+                    Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                        && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.NODE_KIND.PatternMemberID)
+                                                            && t.Value.ObjectID.Equals(RDFVocabulary.SHACL.IRI_OR_LITERAL.PatternMemberID)));
                     break;
                 case RDFValidationEnums.RDFNodeKinds.Literal:
-                    Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                        && t.Value.Predicate.Equals(RDFVocabulary.SHACL.NODE_KIND)
-                                                            && t.Value.Object.Equals(RDFVocabulary.SHACL.LITERAL)));
+                    Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                        && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.NODE_KIND.PatternMemberID)
+                                                            && t.Value.ObjectID.Equals(RDFVocabulary.SHACL.LITERAL.PatternMemberID)));
                     break;
             }            
         }

@@ -61,24 +61,17 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 7);
-            Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                    && t.Value.Predicate.Equals(RDFVocabulary.SHACL.OR)
-                                                        && t.Value.Object is RDFResource objRes && objRes.IsBlank));
-            Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject is RDFResource subjRes && subjRes.IsBlank
-                                                    && t.Value.Predicate.Equals(RDFVocabulary.RDF.TYPE)
-                                                        && t.Value.Object.Equals(RDFVocabulary.RDF.LIST))); //2 occurrences of this
-            Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject is RDFResource subjRes && subjRes.IsBlank
-                                                    && t.Value.Predicate.Equals(RDFVocabulary.RDF.FIRST)
-                                                        && t.Value.Object.Equals(new RDFResource("ex:NodeShape1"))));
-            Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject is RDFResource subjRes && subjRes.IsBlank
-                                                    && t.Value.Predicate.Equals(RDFVocabulary.RDF.REST)
-                                                        && t.Value.Object is RDFResource objRes && objRes.IsBlank));
-            Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject is RDFResource subjRes && subjRes.IsBlank
-                                                    && t.Value.Predicate.Equals(RDFVocabulary.RDF.FIRST)
-                                                        && t.Value.Object.Equals(new RDFResource("ex:NodeShape2"))));
-            Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject is RDFResource subjRes && subjRes.IsBlank
-                                                    && t.Value.Predicate.Equals(RDFVocabulary.RDF.REST)
-                                                        && t.Value.Object.Equals(RDFVocabulary.RDF.NIL)));
+            Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.OR.PatternMemberID)));
+            Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
+                                                        && t.Value.ObjectID.Equals(RDFVocabulary.RDF.LIST.PatternMemberID))); //2 occurrences of this
+            Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
+                                                        && t.Value.ObjectID.Equals(new RDFResource("ex:NodeShape1").PatternMemberID)));
+            Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.REST.PatternMemberID)));
+            Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
+                                                        && t.Value.ObjectID.Equals(new RDFResource("ex:NodeShape2").PatternMemberID)));
+            Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.REST.PatternMemberID)
+                                                        && t.Value.ObjectID.Equals(RDFVocabulary.RDF.NIL.PatternMemberID)));
         }
 
         //NS-CONFORMS:TRUE
