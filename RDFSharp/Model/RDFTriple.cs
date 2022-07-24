@@ -94,6 +94,22 @@ namespace RDFSharp.Model
             this.LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
             this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.TripleID.ToString())));
         }
+
+        /// <summary>
+        /// Default-ctor to build a triple from the given indexed triple
+        /// </summary>
+        internal RDFTriple(RDFIndexedTriple indexedTriple, RDFGraphIndex graphIndex)
+        {
+            this.TripleFlavor = indexedTriple.TripleFlavor;
+            this.Subject = graphIndex.ResourcesRegister[indexedTriple.SubjectID];
+            this.Predicate = graphIndex.ResourcesRegister[indexedTriple.PredicateID];
+            if (indexedTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                this.Object = graphIndex.ResourcesRegister[indexedTriple.ObjectID];
+            else
+                this.Object = graphIndex.LiteralsRegister[indexedTriple.ObjectID];
+            this.LazyTripleID = new Lazy<long>(() => indexedTriple.TripleID);
+            this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.TripleID.ToString())));
+        }
         #endregion
 
         #region Interfaces
@@ -128,6 +144,61 @@ namespace RDFSharp.Model
 
             return reifGraph;
         }
+        #endregion
+    }
+
+    /// <summary>
+    /// RDFIndexedTriple represents the internal hashed representation of a triple in the library
+    /// </summary>
+    internal class RDFIndexedTriple : IEquatable<RDFIndexedTriple>
+    {
+        #region Properties
+        /// <summary>
+        /// Identifier of the triple
+        /// </summary>
+        internal long TripleID { get; set; }
+
+        /// <summary>
+        /// Identifier of the member acting as subject token of the triple
+        /// </summary>
+        internal long SubjectID { get; set; }
+
+        /// <summary>
+        /// Identifier of the member acting as predicate token of the triple
+        /// </summary>
+        internal long PredicateID { get; set; }
+
+        /// <summary>
+        /// Identifier of the member acting as object token of the triple
+        /// </summary>
+        internal long ObjectID { get; set; }
+
+        /// <summary>
+        /// Flavor of the triple
+        /// </summary>
+        internal RDFModelEnums.RDFTripleFlavors TripleFlavor { get; set; }
+        #endregion
+
+        #region Ctor
+        /// <summary>
+        /// Default-ctor to build an indexed triple from the given triple
+        /// </summary>
+        internal RDFIndexedTriple(RDFTriple triple)
+        {
+            this.TripleFlavor = triple.TripleFlavor;
+            this.TripleID = triple.TripleID;
+            this.SubjectID = triple.Subject.PatternMemberID;
+            this.PredicateID = triple.Predicate.PatternMemberID;
+            this.ObjectID = triple.Object.PatternMemberID;            
+        }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Performs the equality comparison between two indexed triples
+        /// </summary>
+        public bool Equals(RDFIndexedTriple other)
+            => other != null && this.TripleID.Equals(other.TripleID);
         #endregion
     }
 }

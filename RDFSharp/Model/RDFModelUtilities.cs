@@ -229,7 +229,7 @@ namespace RDFSharp.Model
                 {
                     queryFilters.Append('S');
                     foreach (long t in graph.GraphIndex.SelectIndexBySubject(subj))
-                        S.Add(graph.Triples[t]);
+                        S.Add(new RDFTriple(graph.IndexedTriples[t], graph.GraphIndex));
                 }
 
                 //Filter by Predicate
@@ -237,7 +237,7 @@ namespace RDFSharp.Model
                 {
                     queryFilters.Append('P');
                     foreach (long t in graph.GraphIndex.SelectIndexByPredicate(pred))
-                        P.Add(graph.Triples[t]);
+                        P.Add(new RDFTriple(graph.IndexedTriples[t], graph.GraphIndex));
                 }
 
                 //Filter by Object
@@ -245,7 +245,7 @@ namespace RDFSharp.Model
                 {
                     queryFilters.Append('O');
                     foreach (long t in graph.GraphIndex.SelectIndexByObject(obj))
-                        O.Add(graph.Triples[t]);
+                        O.Add(new RDFTriple(graph.IndexedTriples[t], graph.GraphIndex));
                 }
 
                 //Filter by Literal
@@ -253,7 +253,7 @@ namespace RDFSharp.Model
                 {
                     queryFilters.Append('L');
                     foreach (long t in graph.GraphIndex.SelectIndexByLiteral(lit))
-                        L.Add(graph.Triples[t]);
+                        L.Add(new RDFTriple(graph.IndexedTriples[t], graph.GraphIndex));
                 }
 
                 //Intersect the filters

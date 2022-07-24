@@ -101,7 +101,7 @@ namespace RDFSharp.Model
                                                 ContainerType = t.Object.Equals(RDFVocabulary.RDF.ALT) ? RDFModelEnums.RDFContainerTypes.Alt :
                                                                   t.Object.Equals(RDFVocabulary.RDF.BAG) ? RDFModelEnums.RDFContainerTypes.Bag :
                                                                                                              RDFModelEnums.RDFContainerTypes.Seq,
-                                                IsFloatingContainer = !graph.Triples.Any(v => v.Value.Object.Equals(t.Subject))
+                                                IsFloatingContainer = !graph.IndexedTriples.Any(v => v.Value.ObjectID.Equals(t.Subject.PatternMemberID))
                                             }).ToList();
 
                     //Fetch data describing collections of the graph
@@ -113,7 +113,7 @@ namespace RDFSharp.Model
                                                                            .FirstOrDefault()?.Object,
                                                  CollectionNext = rdfRest.SelectTriplesBySubject((RDFResource)t.Subject)
                                                                          .FirstOrDefault()?.Object,
-                                                 IsFloatingCollection = !graph.Triples.Any(v => v.Value.Object.Equals(t.Subject))
+                                                 IsFloatingCollection = !graph.IndexedTriples.Any(v => v.Value.ObjectID.Equals(t.Subject.PatternMemberID))
                                              }).ToList();
                     #endregion
 
@@ -754,7 +754,7 @@ namespace RDFSharp.Model
         private static List<RDFNamespace> GetAutomaticNamespaces(RDFGraph graph)
         {
             List<RDFNamespace> result = new List<RDFNamespace>();
-            foreach (string pred in graph.Triples.Select(x => x.Value.Predicate.ToString()).Distinct())
+            foreach (string pred in graph.IndexedTriples.Select(x => graph.GraphIndex.ResourcesRegister[x.Value.PredicateID].ToString()).Distinct())
             {
                 RDFNamespace nspace = GenerateNamespace(pred, false);
 
