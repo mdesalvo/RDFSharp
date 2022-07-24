@@ -33,7 +33,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Flag indicating the resource is blank or not
         /// </summary>
-        public bool IsBlank { get; internal set; }
+        public bool IsBlank => string.Equals(this.URI.Scheme, "bnode");
         #endregion
 
         #region Ctors
@@ -48,11 +48,7 @@ namespace RDFSharp.Model
         public RDFResource(string uriString)
         {
             Uri tempUri = RDFModelUtilities.GetUriFromString(uriString);
-            if (tempUri == null)
-                throw new RDFModelException("Cannot create RDFResource because given \"uriString\" parameter is null or cannot be converted to a valid Uri");
-
-            this.URI = tempUri;
-            this.IsBlank = this.URI.ToString().StartsWith("bnode:");
+            this.URI = tempUri ?? throw new RDFModelException("Cannot create RDFResource because given \"uriString\" parameter is null or cannot be converted to a valid Uri");
         }
         #endregion
 
@@ -60,8 +56,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the resource
         /// </summary>
-        public override string ToString()
-            => this.URI.ToString();
+        public override string ToString() => this.URI.ToString();
         #endregion
     }
 }
