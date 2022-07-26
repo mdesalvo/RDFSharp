@@ -102,6 +102,23 @@ namespace RDFSharp.Store
             this.LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
             this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.QuadrupleID.ToString())));
         }
+
+        /// <summary>
+        /// Default-ctor to build a quadruple from the given indexed quadruple
+        /// </summary>
+        internal RDFQuadruple(RDFIndexedQuadruple indexedQuadruple, RDFStoreIndex storeIndex)
+        {
+            this.TripleFlavor = indexedQuadruple.TripleFlavor;
+            this.Context = storeIndex.ContextsRegister[indexedQuadruple.ContextID];
+            this.Subject = storeIndex.ResourcesRegister[indexedQuadruple.SubjectID];
+            this.Predicate = storeIndex.ResourcesRegister[indexedQuadruple.PredicateID];
+            if (indexedQuadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                this.Object = storeIndex.ResourcesRegister[indexedQuadruple.ObjectID];
+            else
+                this.Object = storeIndex.LiteralsRegister[indexedQuadruple.ObjectID];
+            this.LazyQuadrupleID = new Lazy<long>(() => indexedQuadruple.QuadrupleID);
+            this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.QuadrupleID.ToString())));
+        }
         #endregion
 
         #region Interfaces
@@ -136,6 +153,67 @@ namespace RDFSharp.Store
 
             return reifStore;
         }
+        #endregion
+    }
+
+    /// <summary>
+    /// RDFIndexedQuadruple represents the internal hashed representation of a quadruple in the library
+    /// </summary>
+    internal class RDFIndexedQuadruple : IEquatable<RDFIndexedQuadruple>
+    {
+        #region Properties
+        /// <summary>
+        /// Identifier of the quadruple
+        /// </summary>
+        internal long QuadrupleID { get; set; }
+
+        /// <summary>
+        /// Identifier of the member acting as context token of the quadruple
+        /// </summary>
+        internal long ContextID { get; set; }
+
+        /// <summary>
+        /// Identifier of the member acting as subject token of the quadruple
+        /// </summary>
+        internal long SubjectID { get; set; }
+
+        /// <summary>
+        /// Identifier of the member acting as predicate token of the quadruple
+        /// </summary>
+        internal long PredicateID { get; set; }
+
+        /// <summary>
+        /// Identifier of the member acting as object token of the quadruple
+        /// </summary>
+        internal long ObjectID { get; set; }
+
+        /// <summary>
+        /// Flavor of the quadruple
+        /// </summary>
+        internal RDFModelEnums.RDFTripleFlavors TripleFlavor { get; set; }
+        #endregion
+
+        #region Ctor
+        /// <summary>
+        /// Default-ctor to build an indexed quadruple from the given quadruple
+        /// </summary>
+        internal RDFIndexedQuadruple(RDFQuadruple quadruple)
+        {
+            this.TripleFlavor = quadruple.TripleFlavor;
+            this.QuadrupleID = quadruple.QuadrupleID;
+            this.ContextID = quadruple.Context.PatternMemberID;
+            this.SubjectID = quadruple.Subject.PatternMemberID;
+            this.PredicateID = quadruple.Predicate.PatternMemberID;
+            this.ObjectID = quadruple.Object.PatternMemberID;
+        }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Performs the equality comparison between two indexed quadruples
+        /// </summary>
+        public bool Equals(RDFIndexedQuadruple other)
+            => other != null && this.QuadrupleID.Equals(other.QuadrupleID);
         #endregion
     }
 }

@@ -48,13 +48,13 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
             if (uniqueLang)
-                Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                        && t.Value.Predicate.Equals(RDFVocabulary.SHACL.UNIQUE_LANG)
-                                                            && t.Value.Object.Equals(RDFTypedLiteral.True)));
+                Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                        && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.UNIQUE_LANG.PatternMemberID)
+                                                            && t.Value.ObjectID.Equals(RDFTypedLiteral.True.PatternMemberID)));
             else
-                Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                        && t.Value.Predicate.Equals(RDFVocabulary.SHACL.UNIQUE_LANG)
-                                                            && t.Value.Object.Equals(RDFTypedLiteral.False)));
+                Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                        && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.UNIQUE_LANG.PatternMemberID)
+                                                            && t.Value.ObjectID.Equals(RDFTypedLiteral.False.PatternMemberID)));
         }
 
         //PS-CONFORMS:TRUE

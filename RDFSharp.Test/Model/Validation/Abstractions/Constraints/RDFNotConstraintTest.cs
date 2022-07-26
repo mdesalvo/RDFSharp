@@ -46,9 +46,9 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
-            Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                    && t.Value.Predicate.Equals(RDFVocabulary.SHACL.NOT)
-                                                        && t.Value.Object.Equals(new RDFResource("ex:NotShapeConstraint"))));
+            Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.NOT.PatternMemberID)
+                                                        && t.Value.ObjectID.Equals(new RDFResource("ex:NotShapeConstraint").PatternMemberID)));
         }
 
         //NS-CONFORMS:TRUE

@@ -30,7 +30,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default namespace of the library (rdfsharp)
         /// </summary>
-        private static RDFNamespace RDFSharpNS = new RDFNamespace(RDFVocabulary.RDFSHARP.PREFIX, RDFVocabulary.RDFSHARP.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.RDFSHARP.DEREFERENCE_URI));
+        private static readonly RDFNamespace RDFSharpNS = new RDFNamespace(RDFVocabulary.RDFSHARP.PREFIX, RDFVocabulary.RDFSHARP.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.RDFSHARP.DEREFERENCE_URI));
 
         /// <summary>
         /// Default namespace of the library
