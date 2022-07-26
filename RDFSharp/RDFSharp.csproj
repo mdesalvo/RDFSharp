@@ -11,7 +11,7 @@
     <SignAssembly>false</SignAssembly>
     <Product>RDFSharp</Product>
     <PackageId>RDFSharp</PackageId>
-	<PackageVersion>3.0.0-preview1</PackageVersion>
+	<PackageVersion>3.0.0-preview2</PackageVersion>
     <PackageTags>rdf sparql sparql-update shacl rdfs owl-dl owl2 skos swrl ontology reasoner semantic-web linked-data</PackageTags>
     <PackageProjectUrl>https://github.com/mdesalvo/RDFSharp</PackageProjectUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
