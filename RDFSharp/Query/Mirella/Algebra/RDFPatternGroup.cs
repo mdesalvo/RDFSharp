@@ -27,11 +27,6 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Name of the pattern group, which must be unique in a query
-        /// </summary>
-        public string PatternGroupName { get; internal set; }
-
-        /// <summary>
         /// Flag indicating the pattern group to be joined as Optional
         /// </summary>
         internal bool IsOptional { get; set; }
@@ -56,9 +51,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an empty pattern group
         /// </summary>
-        public RDFPatternGroup(string patternGroupName = null)
+        public RDFPatternGroup()
         {
-            this.PatternGroupName = patternGroupName;
             this.IsEvaluable = true;
             this.IsOptional = false;
             this.JoinAsUnion = false;
