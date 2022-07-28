@@ -46,9 +46,9 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
-            Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                    && t.Value.Predicate.Equals(RDFVocabulary.SHACL.MAX_EXCLUSIVE)
-                                                        && t.Value.Object.Equals(new RDFResource("ex:value"))));
+            Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.MAX_EXCLUSIVE.PatternMemberID)
+                                                        && t.Value.ObjectID.Equals(new RDFResource("ex:value").PatternMemberID)));
         }
 
         [TestMethod]
@@ -72,9 +72,9 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
-            Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                    && t.Value.Predicate.Equals(RDFVocabulary.SHACL.MAX_EXCLUSIVE)
-                                                        && t.Value.Object.Equals(new RDFPlainLiteral("value"))));
+            Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.MAX_EXCLUSIVE.PatternMemberID)
+                                                        && t.Value.ObjectID.Equals(new RDFPlainLiteral("value").PatternMemberID)));
         }
 
         //NS-CONFORMS:TRUE

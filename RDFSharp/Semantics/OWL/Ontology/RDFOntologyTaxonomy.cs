@@ -34,12 +34,14 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the taxonomy entries
         /// </summary>
-        public long EntriesCount => this.Entries.Count;
+        public long EntriesCount
+            => this.Entries.Count;
 
         /// <summary>
         /// Gets the enumerator on the taxonomy entries for iteration
         /// </summary>
-        public IEnumerator<RDFOntologyTaxonomyEntry> EntriesEnumerator => this.Entries.GetEnumerator();
+        public IEnumerator<RDFOntologyTaxonomyEntry> EntriesEnumerator
+            => this.Entries.GetEnumerator();
 
         /// <summary>
         /// Dictionary of ontology entries composing the taxonomy
@@ -74,12 +76,14 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Exposes a typed enumerator on the taxonomy entries
         /// </summary>
-        IEnumerator<RDFOntologyTaxonomyEntry> IEnumerable<RDFOntologyTaxonomyEntry>.GetEnumerator() => this.EntriesEnumerator;
+        IEnumerator<RDFOntologyTaxonomyEntry> IEnumerable<RDFOntologyTaxonomyEntry>.GetEnumerator()
+            => this.EntriesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the taxonomy entries
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() => this.EntriesEnumerator;
+        IEnumerator IEnumerable.GetEnumerator()
+            => this.EntriesEnumerator;
         #endregion
 
         #region Methods
@@ -137,10 +141,10 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyTaxonomy SelectEntriesBySubject(RDFOntologyResource subjectResource)
         {
-            var resultTaxonomy = new RDFOntologyTaxonomy(this.Category, this.AcceptDuplicates);
+            RDFOntologyTaxonomy resultTaxonomy = new RDFOntologyTaxonomy(this.Category, this.AcceptDuplicates);
             if (subjectResource != null)
             {
-                foreach (var te in this.Where(tEntry => tEntry.TaxonomySubject.Equals(subjectResource)))
+                foreach (RDFOntologyTaxonomyEntry te in this.Where(tEntry => tEntry.TaxonomySubject.Equals(subjectResource)))
                     resultTaxonomy.AddEntry(te);
             }
             return resultTaxonomy;
@@ -151,10 +155,10 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyTaxonomy SelectEntriesByPredicate(RDFOntologyResource predicateResource)
         {
-            var resultTaxonomy = new RDFOntologyTaxonomy(this.Category, this.AcceptDuplicates);
+            RDFOntologyTaxonomy resultTaxonomy = new RDFOntologyTaxonomy(this.Category, this.AcceptDuplicates);
             if (predicateResource != null)
             {
-                foreach (var te in this.Where(tEntry => tEntry.TaxonomyPredicate.Equals(predicateResource)))
+                foreach (RDFOntologyTaxonomyEntry te in this.Where(tEntry => tEntry.TaxonomyPredicate.Equals(predicateResource)))
                     resultTaxonomy.AddEntry(te);
             }
             return resultTaxonomy;
@@ -165,10 +169,10 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyTaxonomy SelectEntriesByObject(RDFOntologyResource objectResource)
         {
-            var resultTaxonomy = new RDFOntologyTaxonomy(this.Category, this.AcceptDuplicates);
+            RDFOntologyTaxonomy resultTaxonomy = new RDFOntologyTaxonomy(this.Category, this.AcceptDuplicates);
             if (objectResource != null)
             {
-                foreach (var te in this.Where(tEntry => tEntry.TaxonomyObject.Equals(objectResource)))
+                foreach (RDFOntologyTaxonomyEntry te in this.Where(tEntry => tEntry.TaxonomyObject.Equals(objectResource)))
                     resultTaxonomy.AddEntry(te);
             }
             return resultTaxonomy;

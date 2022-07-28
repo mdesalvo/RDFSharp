@@ -31,14 +31,18 @@ namespace RDFSharp.Test.Model
             RDFGraphIndex graphIndex = new RDFGraphIndex();
 
             Assert.IsNotNull(graphIndex);
-            Assert.IsNotNull(graphIndex.Subjects);
-            Assert.IsTrue(graphIndex.Subjects.Count == 0);
-            Assert.IsNotNull(graphIndex.Predicates);
-            Assert.IsTrue(graphIndex.Predicates.Count == 0);
-            Assert.IsNotNull(graphIndex.Objects);
-            Assert.IsTrue(graphIndex.Objects.Count == 0);
-            Assert.IsNotNull(graphIndex.Literals);
-            Assert.IsTrue(graphIndex.Literals.Count == 0);
+            Assert.IsNotNull(graphIndex.ResourcesRegister);
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 0);
+            Assert.IsNotNull(graphIndex.LiteralsRegister);
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
+            Assert.IsNotNull(graphIndex.SubjectsIndex);
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 0);
+            Assert.IsNotNull(graphIndex.PredicatesIndex);
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 0);
+            Assert.IsNotNull(graphIndex.ObjectsIndex);
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 0);
+            Assert.IsNotNull(graphIndex.LiteralsIndex);
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
@@ -50,13 +54,18 @@ namespace RDFSharp.Test.Model
             RDFTriple triple = new RDFTriple(subj, pred, obj);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 1);
-            Assert.IsTrue(graphIndex.Subjects[subj.PatternMemberID].Contains(triple.TripleID));
-            Assert.IsTrue(graphIndex.Predicates.Count == 1);
-            Assert.IsTrue(graphIndex.Predicates[pred.PatternMemberID].Contains(triple.TripleID));
-            Assert.IsTrue(graphIndex.Objects.Count == 1);
-            Assert.IsTrue(graphIndex.Objects[obj.PatternMemberID].Contains(triple.TripleID));
-            Assert.IsTrue(graphIndex.Literals.Count == 0);
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 3);
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(pred.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(obj.PatternMemberID));
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 1);
+            Assert.IsTrue(graphIndex.SubjectsIndex[subj.PatternMemberID].Contains(triple.TripleID));
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 1);
+            Assert.IsTrue(graphIndex.PredicatesIndex[pred.PatternMemberID].Contains(triple.TripleID));
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 1);
+            Assert.IsTrue(graphIndex.ObjectsIndex[obj.PatternMemberID].Contains(triple.TripleID));
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
@@ -68,13 +77,18 @@ namespace RDFSharp.Test.Model
             RDFTriple triple = new RDFTriple(subj, pred, lit);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 1);
-            Assert.IsTrue(graphIndex.Subjects[subj.PatternMemberID].Contains(triple.TripleID));
-            Assert.IsTrue(graphIndex.Predicates.Count == 1);
-            Assert.IsTrue(graphIndex.Predicates[pred.PatternMemberID].Contains(triple.TripleID));
-            Assert.IsTrue(graphIndex.Objects.Count == 0);            
-            Assert.IsTrue(graphIndex.Literals.Count == 1);
-            Assert.IsTrue(graphIndex.Literals[lit.PatternMemberID].Contains(triple.TripleID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 2);
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(pred.PatternMemberID));
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 1);
+            Assert.IsTrue(graphIndex.LiteralsRegister.ContainsKey(lit.PatternMemberID));
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 1);
+            Assert.IsTrue(graphIndex.SubjectsIndex[subj.PatternMemberID].Contains(triple.TripleID));
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 1);
+            Assert.IsTrue(graphIndex.PredicatesIndex[pred.PatternMemberID].Contains(triple.TripleID));
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 0);            
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 1);
+            Assert.IsTrue(graphIndex.LiteralsIndex[lit.PatternMemberID].Contains(triple.TripleID));
         }
 
         [TestMethod]
@@ -89,16 +103,23 @@ namespace RDFSharp.Test.Model
             RDFTriple triple2 = new RDFTriple(subj, pred2, obj2);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple1).AddIndex(triple2);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 1);
-            Assert.IsTrue(graphIndex.Subjects[subj.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsTrue(graphIndex.Subjects[subj.PatternMemberID].Contains(triple2.TripleID));
-            Assert.IsTrue(graphIndex.Predicates.Count == 2);
-            Assert.IsTrue(graphIndex.Predicates[pred1.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsTrue(graphIndex.Predicates[pred2.PatternMemberID].Contains(triple2.TripleID));
-            Assert.IsTrue(graphIndex.Objects.Count == 2);
-            Assert.IsTrue(graphIndex.Objects[obj1.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsTrue(graphIndex.Objects[obj2.PatternMemberID].Contains(triple2.TripleID));
-            Assert.IsTrue(graphIndex.Literals.Count == 0);
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 5);
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(pred1.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(obj1.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(pred2.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(obj2.PatternMemberID));
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 1);
+            Assert.IsTrue(graphIndex.SubjectsIndex[subj.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsTrue(graphIndex.SubjectsIndex[subj.PatternMemberID].Contains(triple2.TripleID));
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 2);
+            Assert.IsTrue(graphIndex.PredicatesIndex[pred1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsTrue(graphIndex.PredicatesIndex[pred2.PatternMemberID].Contains(triple2.TripleID));
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 2);
+            Assert.IsTrue(graphIndex.ObjectsIndex[obj1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsTrue(graphIndex.ObjectsIndex[obj2.PatternMemberID].Contains(triple2.TripleID));
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
@@ -113,16 +134,23 @@ namespace RDFSharp.Test.Model
             RDFTriple triple2 = new RDFTriple(subj2, pred, obj2);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple1).AddIndex(triple2);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 2);
-            Assert.IsTrue(graphIndex.Subjects[subj1.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsTrue(graphIndex.Subjects[subj2.PatternMemberID].Contains(triple2.TripleID));
-            Assert.IsTrue(graphIndex.Predicates.Count == 1);
-            Assert.IsTrue(graphIndex.Predicates[pred.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsTrue(graphIndex.Predicates[pred.PatternMemberID].Contains(triple2.TripleID));
-            Assert.IsTrue(graphIndex.Objects.Count == 2);
-            Assert.IsTrue(graphIndex.Objects[obj1.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsTrue(graphIndex.Objects[obj2.PatternMemberID].Contains(triple2.TripleID));
-            Assert.IsTrue(graphIndex.Literals.Count == 0);
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 5);
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(pred.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(obj1.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj2.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(obj2.PatternMemberID));
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 2);
+            Assert.IsTrue(graphIndex.SubjectsIndex[subj1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsTrue(graphIndex.SubjectsIndex[subj2.PatternMemberID].Contains(triple2.TripleID));
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 1);
+            Assert.IsTrue(graphIndex.PredicatesIndex[pred.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsTrue(graphIndex.PredicatesIndex[pred.PatternMemberID].Contains(triple2.TripleID));
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 2);
+            Assert.IsTrue(graphIndex.ObjectsIndex[obj1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsTrue(graphIndex.ObjectsIndex[obj2.PatternMemberID].Contains(triple2.TripleID));
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
@@ -137,16 +165,23 @@ namespace RDFSharp.Test.Model
             RDFTriple triple2 = new RDFTriple(subj2, pred2, obj);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple1).AddIndex(triple2);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 2);
-            Assert.IsTrue(graphIndex.Subjects[subj1.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsTrue(graphIndex.Subjects[subj2.PatternMemberID].Contains(triple2.TripleID));
-            Assert.IsTrue(graphIndex.Predicates.Count == 2);
-            Assert.IsTrue(graphIndex.Predicates[pred1.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsTrue(graphIndex.Predicates[pred2.PatternMemberID].Contains(triple2.TripleID));
-            Assert.IsTrue(graphIndex.Objects.Count == 1);
-            Assert.IsTrue(graphIndex.Objects[obj.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsTrue(graphIndex.Objects[obj.PatternMemberID].Contains(triple2.TripleID));
-            Assert.IsTrue(graphIndex.Literals.Count == 0);
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 5);
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(pred1.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(obj.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj2.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(pred2.PatternMemberID));
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 2);
+            Assert.IsTrue(graphIndex.SubjectsIndex[subj1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsTrue(graphIndex.SubjectsIndex[subj2.PatternMemberID].Contains(triple2.TripleID));
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 2);
+            Assert.IsTrue(graphIndex.PredicatesIndex[pred1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsTrue(graphIndex.PredicatesIndex[pred2.PatternMemberID].Contains(triple2.TripleID));
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 1);
+            Assert.IsTrue(graphIndex.ObjectsIndex[obj.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsTrue(graphIndex.ObjectsIndex[obj.PatternMemberID].Contains(triple2.TripleID));
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
@@ -161,16 +196,23 @@ namespace RDFSharp.Test.Model
             RDFTriple triple2 = new RDFTriple(subj2, pred2, lit);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple1).AddIndex(triple2);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 2);
-            Assert.IsTrue(graphIndex.Subjects[subj1.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsTrue(graphIndex.Subjects[subj2.PatternMemberID].Contains(triple2.TripleID));
-            Assert.IsTrue(graphIndex.Predicates.Count == 2);
-            Assert.IsTrue(graphIndex.Predicates[pred1.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsTrue(graphIndex.Predicates[pred2.PatternMemberID].Contains(triple2.TripleID));
-            Assert.IsTrue(graphIndex.Objects.Count == 0);            
-            Assert.IsTrue(graphIndex.Literals.Count == 1);
-            Assert.IsTrue(graphIndex.Literals[lit.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsTrue(graphIndex.Literals[lit.PatternMemberID].Contains(triple2.TripleID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 4);
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(pred1.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj2.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(pred2.PatternMemberID));
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 1);
+            Assert.IsTrue(graphIndex.LiteralsRegister.ContainsKey(lit.PatternMemberID));
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 2);
+            Assert.IsTrue(graphIndex.SubjectsIndex[subj1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsTrue(graphIndex.SubjectsIndex[subj2.PatternMemberID].Contains(triple2.TripleID));
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 2);
+            Assert.IsTrue(graphIndex.PredicatesIndex[pred1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsTrue(graphIndex.PredicatesIndex[pred2.PatternMemberID].Contains(triple2.TripleID));
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 0);            
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 1);
+            Assert.IsTrue(graphIndex.LiteralsIndex[lit.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsTrue(graphIndex.LiteralsIndex[lit.PatternMemberID].Contains(triple2.TripleID));
         }
 
         [TestMethod]
@@ -178,10 +220,12 @@ namespace RDFSharp.Test.Model
         {
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(null);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 0);
-            Assert.IsTrue(graphIndex.Predicates.Count == 0);
-            Assert.IsTrue(graphIndex.Objects.Count == 0);
-            Assert.IsTrue(graphIndex.Literals.Count == 0);
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 0);
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
@@ -193,10 +237,12 @@ namespace RDFSharp.Test.Model
             RDFTriple triple = new RDFTriple(subj, pred, obj);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple).RemoveIndex(triple);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 0);
-            Assert.IsTrue(graphIndex.Predicates.Count == 0);
-            Assert.IsTrue(graphIndex.Objects.Count == 0);
-            Assert.IsTrue(graphIndex.Literals.Count == 0);
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 0);
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
@@ -208,83 +254,97 @@ namespace RDFSharp.Test.Model
             RDFTriple triple = new RDFTriple(subj, pred, lit);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple).RemoveIndex(triple);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 0);
-            Assert.IsTrue(graphIndex.Predicates.Count == 0);
-            Assert.IsTrue(graphIndex.Objects.Count == 0);
-            Assert.IsTrue(graphIndex.Literals.Count == 0);
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 0);
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
         public void ShouldAddSameSubjectMultipleTimesAndRemoveOneOccurrence()
         {
-            RDFResource subj = new RDFResource("http://subj/");
+            RDFResource subj1 = new RDFResource("http://subj1/");
             RDFResource pred1 = new RDFResource("http://pred1/");
             RDFResource obj1 = new RDFResource("http://obj1/");
-            RDFTriple triple1 = new RDFTriple(subj, pred1, obj1);
+            RDFTriple triple1 = new RDFTriple(subj1, pred1, obj1);
             RDFResource pred2 = new RDFResource("http://pred2/");
             RDFResource obj2 = new RDFResource("http://obj2/");
-            RDFTriple triple2 = new RDFTriple(subj, pred2, obj2);
+            RDFTriple triple2 = new RDFTriple(subj1, pred2, obj2);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2).RemoveIndex(triple2);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 1);
-            Assert.IsTrue(graphIndex.Subjects[subj.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsFalse(graphIndex.Subjects[subj.PatternMemberID].Contains(triple2.TripleID));
-            Assert.IsTrue(graphIndex.Predicates.Count == 1);
-            Assert.IsTrue(graphIndex.Predicates[pred1.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsFalse(graphIndex.Predicates.ContainsKey(pred2.PatternMemberID));
-            Assert.IsTrue(graphIndex.Objects.Count == 1);
-            Assert.IsTrue(graphIndex.Objects[obj1.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsFalse(graphIndex.Objects.ContainsKey(obj2.PatternMemberID));
-            Assert.IsTrue(graphIndex.Literals.Count == 0);
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 3);
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(pred1.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(obj1.PatternMemberID));
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 1);
+            Assert.IsTrue(graphIndex.SubjectsIndex[subj1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsFalse(graphIndex.SubjectsIndex[subj1.PatternMemberID].Contains(triple2.TripleID));
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 1);
+            Assert.IsTrue(graphIndex.PredicatesIndex[pred1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsFalse(graphIndex.PredicatesIndex.ContainsKey(pred2.PatternMemberID));
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 1);
+            Assert.IsTrue(graphIndex.ObjectsIndex[obj1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsFalse(graphIndex.ObjectsIndex.ContainsKey(obj2.PatternMemberID));
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
         public void ShouldAddSameSubjectMultipleTimesAndRemoveEveryOccurrences()
         {
-            RDFResource subj = new RDFResource("http://subj/");
+            RDFResource subj1 = new RDFResource("http://subj1/");
             RDFResource pred1 = new RDFResource("http://pred1/");
             RDFResource obj1 = new RDFResource("http://obj1/");
-            RDFTriple triple1 = new RDFTriple(subj, pred1, obj1);
+            RDFTriple triple1 = new RDFTriple(subj1, pred1, obj1);
             RDFResource pred2 = new RDFResource("http://pred2/");
             RDFResource obj2 = new RDFResource("http://obj2/");
-            RDFTriple triple2 = new RDFTriple(subj, pred2, obj2);
+            RDFTriple triple2 = new RDFTriple(subj1, pred2, obj2);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2).RemoveIndex(triple2).RemoveIndex(triple2).RemoveIndex(triple1);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 0);
-            Assert.IsTrue(graphIndex.Predicates.Count == 0);
-            Assert.IsTrue(graphIndex.Objects.Count == 0);
-            Assert.IsTrue(graphIndex.Literals.Count == 0);
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 0);
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
         public void ShouldAddSamePredicateMultipleTimesAndRemoveOneOccurrence()
         {
             RDFResource subj1 = new RDFResource("http://subj1/");
-            RDFResource pred = new RDFResource("http://pred/");
+            RDFResource pred1 = new RDFResource("http://pred1/");
             RDFResource obj1 = new RDFResource("http://obj1/");
-            RDFTriple triple1 = new RDFTriple(subj1, pred, obj1);
+            RDFTriple triple1 = new RDFTriple(subj1, pred1, obj1);
             RDFResource subj2 = new RDFResource("http://subj2/");
             RDFResource obj2 = new RDFResource("http://obj2/");
-            RDFTriple triple2 = new RDFTriple(subj2, pred, obj2);
+            RDFTriple triple2 = new RDFTriple(subj2, pred1, obj2);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2).RemoveIndex(triple2);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 1);
-            Assert.IsTrue(graphIndex.Subjects[subj1.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsFalse(graphIndex.Subjects.ContainsKey(subj2.PatternMemberID));
-            Assert.IsTrue(graphIndex.Predicates.Count == 1);
-            Assert.IsTrue(graphIndex.Predicates[pred.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsFalse(graphIndex.Predicates[pred.PatternMemberID].Contains(triple2.TripleID));
-            Assert.IsTrue(graphIndex.Objects.Count == 1);
-            Assert.IsTrue(graphIndex.Objects[obj1.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsFalse(graphIndex.Objects.ContainsKey(obj2.PatternMemberID));
-            Assert.IsTrue(graphIndex.Literals.Count == 0);
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 3);
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(pred1.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(obj1.PatternMemberID));
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 1);
+            Assert.IsTrue(graphIndex.SubjectsIndex[subj1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsFalse(graphIndex.SubjectsIndex.ContainsKey(subj2.PatternMemberID));
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 1);
+            Assert.IsTrue(graphIndex.PredicatesIndex[pred1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsFalse(graphIndex.PredicatesIndex[pred1.PatternMemberID].Contains(triple2.TripleID));
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 1);
+            Assert.IsTrue(graphIndex.ObjectsIndex[obj1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsFalse(graphIndex.ObjectsIndex.ContainsKey(obj2.PatternMemberID));
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
         public void ShouldAddSamePredicateMultipleTimesAndRemoveEveryOccurrence()
         {
             RDFResource subj1 = new RDFResource("http://subj1/");
-            RDFResource pred = new RDFResource("http://pred/");
+            RDFResource pred = new RDFResource("http://pred1/");
             RDFResource obj1 = new RDFResource("http://obj1/");
             RDFTriple triple1 = new RDFTriple(subj1, pred, obj1);
             RDFResource subj2 = new RDFResource("http://subj2/");
@@ -292,10 +352,12 @@ namespace RDFSharp.Test.Model
             RDFTriple triple2 = new RDFTriple(subj2, pred, obj2);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2).RemoveIndex(triple2).RemoveIndex(triple2).RemoveIndex(triple1);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 0);
-            Assert.IsTrue(graphIndex.Predicates.Count == 0);
-            Assert.IsTrue(graphIndex.Objects.Count == 0);
-            Assert.IsTrue(graphIndex.Literals.Count == 0);
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 0);
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
@@ -303,23 +365,28 @@ namespace RDFSharp.Test.Model
         {
             RDFResource subj1 = new RDFResource("http://subj1/");
             RDFResource pred1 = new RDFResource("http://pred1/");
-            RDFResource obj = new RDFResource("http://obj/");
-            RDFTriple triple1 = new RDFTriple(subj1, pred1, obj);
+            RDFResource obj1 = new RDFResource("http://obj1/");
+            RDFTriple triple1 = new RDFTriple(subj1, pred1, obj1);
             RDFResource subj2 = new RDFResource("http://subj2/");
             RDFResource pred2 = new RDFResource("http://pred2/");
-            RDFTriple triple2 = new RDFTriple(subj2, pred2, obj);
+            RDFTriple triple2 = new RDFTriple(subj2, pred2, obj1);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2).RemoveIndex(triple2);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 1);
-            Assert.IsTrue(graphIndex.Subjects[subj1.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsFalse(graphIndex.Subjects.ContainsKey(subj2.PatternMemberID));
-            Assert.IsTrue(graphIndex.Predicates.Count == 1);
-            Assert.IsTrue(graphIndex.Predicates[pred1.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsFalse(graphIndex.Predicates.ContainsKey(pred2.PatternMemberID));
-            Assert.IsTrue(graphIndex.Objects.Count == 1);
-            Assert.IsTrue(graphIndex.Objects[obj.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsFalse(graphIndex.Objects[obj.PatternMemberID].Contains(triple2.TripleID));
-            Assert.IsTrue(graphIndex.Literals.Count == 0);
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 3);
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(pred1.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(obj1.PatternMemberID));
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 1);
+            Assert.IsTrue(graphIndex.SubjectsIndex[subj1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsFalse(graphIndex.SubjectsIndex.ContainsKey(subj2.PatternMemberID));
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 1);
+            Assert.IsTrue(graphIndex.PredicatesIndex[pred1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsFalse(graphIndex.PredicatesIndex.ContainsKey(pred2.PatternMemberID));
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 1);
+            Assert.IsTrue(graphIndex.ObjectsIndex[obj1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsFalse(graphIndex.ObjectsIndex[obj1.PatternMemberID].Contains(triple2.TripleID));
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
@@ -327,17 +394,19 @@ namespace RDFSharp.Test.Model
         {
             RDFResource subj1 = new RDFResource("http://subj1/");
             RDFResource pred1 = new RDFResource("http://pred1/");
-            RDFResource obj = new RDFResource("http://obj/");
-            RDFTriple triple1 = new RDFTriple(subj1, pred1, obj);
+            RDFResource obj1 = new RDFResource("http://obj1/");
+            RDFTriple triple1 = new RDFTriple(subj1, pred1, obj1);
             RDFResource subj2 = new RDFResource("http://subj2/");
             RDFResource pred2 = new RDFResource("http://pred2/");
-            RDFTriple triple2 = new RDFTriple(subj2, pred2, obj);
+            RDFTriple triple2 = new RDFTriple(subj2, pred2, obj1);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2).RemoveIndex(triple2).RemoveIndex(triple2).RemoveIndex(triple1);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 0);
-            Assert.IsTrue(graphIndex.Predicates.Count == 0);
-            Assert.IsTrue(graphIndex.Objects.Count == 0);
-            Assert.IsTrue(graphIndex.Literals.Count == 0);
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 0);
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
@@ -352,16 +421,21 @@ namespace RDFSharp.Test.Model
             RDFTriple triple2 = new RDFTriple(subj2, pred2, lit);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2).RemoveIndex(triple2);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 1);
-            Assert.IsTrue(graphIndex.Subjects[subj1.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsFalse(graphIndex.Subjects.ContainsKey(subj2.PatternMemberID));
-            Assert.IsTrue(graphIndex.Predicates.Count == 1);
-            Assert.IsTrue(graphIndex.Predicates[pred1.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsFalse(graphIndex.Predicates.ContainsKey(pred2.PatternMemberID));
-            Assert.IsTrue(graphIndex.Objects.Count == 0);
-            Assert.IsTrue(graphIndex.Literals.Count == 1);
-            Assert.IsTrue(graphIndex.Literals[lit.PatternMemberID].Contains(triple1.TripleID));
-            Assert.IsFalse(graphIndex.Literals[lit.PatternMemberID].Contains(triple2.TripleID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 2);
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
+            Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(pred1.PatternMemberID));
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 1);
+            Assert.IsTrue(graphIndex.LiteralsRegister.ContainsKey(lit.PatternMemberID));
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 1);
+            Assert.IsTrue(graphIndex.SubjectsIndex[subj1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsFalse(graphIndex.SubjectsIndex.ContainsKey(subj2.PatternMemberID));
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 1);
+            Assert.IsTrue(graphIndex.PredicatesIndex[pred1.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsFalse(graphIndex.PredicatesIndex.ContainsKey(pred2.PatternMemberID));
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 1);
+            Assert.IsTrue(graphIndex.LiteralsIndex[lit.PatternMemberID].Contains(triple1.TripleID));
+            Assert.IsFalse(graphIndex.LiteralsIndex[lit.PatternMemberID].Contains(triple2.TripleID));
         }
 
         [TestMethod]
@@ -376,10 +450,12 @@ namespace RDFSharp.Test.Model
             RDFTriple triple2 = new RDFTriple(subj2, pred2, lit);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2).RemoveIndex(triple2).RemoveIndex(triple2).RemoveIndex(triple1);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 0);
-            Assert.IsTrue(graphIndex.Predicates.Count == 0);
-            Assert.IsTrue(graphIndex.Objects.Count == 0);
-            Assert.IsTrue(graphIndex.Literals.Count == 0);
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 0);
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
@@ -387,10 +463,12 @@ namespace RDFSharp.Test.Model
         {
             RDFGraphIndex graphIndex = new RDFGraphIndex().RemoveIndex(null);
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 0);
-            Assert.IsTrue(graphIndex.Predicates.Count == 0);
-            Assert.IsTrue(graphIndex.Objects.Count == 0);
-            Assert.IsTrue(graphIndex.Literals.Count == 0);
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 0);
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
@@ -405,10 +483,12 @@ namespace RDFSharp.Test.Model
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2);
             graphIndex.ClearIndex();
 
-            Assert.IsTrue(graphIndex.Subjects.Count == 0);
-            Assert.IsTrue(graphIndex.Predicates.Count == 0);
-            Assert.IsTrue(graphIndex.Objects.Count == 0);
-            Assert.IsTrue(graphIndex.Literals.Count == 0);
+            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
+            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 0);
+            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 0);
+            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]

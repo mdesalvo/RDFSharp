@@ -966,116 +966,116 @@ namespace RDFSharp.Query
                     matchingQuadruples = store.SelectQuadruples(null, null, (RDFResource)pattern.Predicate, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
                     //In case of same C and S variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Subject))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Subject)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Subject)).ToList());
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CS, patternResultTable);
                     break;
                 case "CP":
                     matchingQuadruples = store.SelectQuadruples(null, (RDFResource)pattern.Subject, null, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
                     //In case of same C and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Predicate))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Predicate)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Predicate)).ToList());
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CP, patternResultTable);
                     break;
                 case "CO":
                     matchingQuadruples = store.SelectQuadruples(null, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, null, null);
                     //In case of same C and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Object)).ToList());
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CO, patternResultTable);
                     break;
                 case "SP":
                     matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, null, null, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
                     //In case of same S and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Predicate))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Predicate)).ToList());
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.SP, patternResultTable);
                     break;
                 case "SO":
                     matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, null, (RDFResource)pattern.Predicate, null, null);
                     //In case of same S and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Object)).ToList());
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.SO, patternResultTable);
                     break;
                 case "PO":
                     matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, (RDFResource)pattern.Subject, null, null, null);
                     //In case of same P and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Predicate.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Predicate.Equals(mq.Object)).ToList());
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.PO, patternResultTable);
                     break;
                 case "CSP":
                     matchingQuadruples = store.SelectQuadruples(null, null, null, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
                     //In case of same C and S variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Subject))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Subject)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Subject)).ToList());
                     //In case of same C and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Predicate))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Predicate)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Predicate)).ToList());
                     //In case of same S and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Predicate))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Predicate)).ToList());
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CSP, patternResultTable);
                     break;
                 case "CSO":
                     matchingQuadruples = store.SelectQuadruples(null, null, (RDFResource)pattern.Predicate, null, null);
                     //In case of same C and S variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Subject))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Subject)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Subject)).ToList());
                     //In case of same C and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Object)).ToList());
                     //In case of same S and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Object)).ToList());
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CSO, patternResultTable);
                     break;
                 case "CPO":
                     matchingQuadruples = store.SelectQuadruples(null, (RDFResource)pattern.Subject, null, null, null);
                     //In case of same C and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Predicate))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Predicate)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Predicate)).ToList());
                     //In case of same C and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Object)).ToList());
                     //In case of same P and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Predicate.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Predicate.Equals(mq.Object)).ToList());
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CPO, patternResultTable);
                     break;
                 case "SPO":
                     matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, null, null, null, null);
                     //In case of same S and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Predicate))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Predicate)).ToList());
                     //In case of same S and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Object)).ToList());
                     //In case of same P and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Predicate.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Predicate.Equals(mq.Object)).ToList());
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.SPO, patternResultTable);
                     break;
                 case "CSPO":
                     matchingQuadruples = store.SelectQuadruples(null, null, null, null, null);
                     //In case of same C and S variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Subject))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Subject)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Subject)).ToList());
                     //In case of same C and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Predicate))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Predicate)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Predicate)).ToList());
                     //In case of same C and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Object)).ToList());
                     //In case of same S and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Predicate))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Predicate)).ToList());
                     //In case of same S and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Object)).ToList());
                     //In case of same P and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Predicate.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Predicate.Equals(mq.Object)).ToList());
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CSPO, patternResultTable);
                     break;
             }

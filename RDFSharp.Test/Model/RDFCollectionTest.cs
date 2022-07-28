@@ -17,9 +17,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace RDFSharp.Test.Model
 {
@@ -240,18 +238,18 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 3);
-            Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST).TripleID));
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST).TripleID));
             
             switch (itemType)
             {
                 case RDFModelEnums.RDFItemTypes.Literal:
-                    Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.FIRST, new RDFPlainLiteral("lit1")).TripleID));
+                    Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.FIRST, new RDFPlainLiteral("lit1")).TripleID));
                     break;
                 case RDFModelEnums.RDFItemTypes.Resource:
-                    Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.FIRST, new RDFResource("http://item1/")).TripleID));
+                    Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.FIRST, new RDFResource("http://item1/")).TripleID));
                     break;
             }
-            Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.REST, RDFVocabulary.RDF.NIL).TripleID));
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.REST, RDFVocabulary.RDF.NIL).TripleID));
         }
 
         [DataTestMethod]
