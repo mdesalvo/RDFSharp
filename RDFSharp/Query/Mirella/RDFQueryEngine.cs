@@ -1417,261 +1417,241 @@ namespace RDFSharp.Query
         /// <summary>
         /// Joins two datatables WITHOUT support for OPTIONAL data
         /// </summary>
-        internal static DataTable InnerJoinTables(DataTable dt1, DataTable dt2)
+        internal static DataTable InnerJoinTables(DataTable leftTable, DataTable rightTable)
         {
-            DataTable result = new DataTable();
-            DataColumn[] dt1Columns = dt1.Columns.OfType<DataColumn>().ToArray();
-            DataColumn[] dt2Columns = dt2.Columns.OfType<DataColumn>().ToArray();
+            DataTable innerJoinTable = new DataTable();
 
             //Determine common columns
-            DataColumn[] commonColumns = dt1Columns.Intersect(dt2Columns, dtComparer)
-                                                   .Select(c => new DataColumn(c.ColumnName, c.DataType))
-                                                   .ToArray();
+            DataColumn[] leftColumns = leftTable.Columns.OfType<DataColumn>().ToArray();
+            DataColumn[] rightColumns = rightTable.Columns.OfType<DataColumn>().ToArray();
+            DataColumn[] commonColumns = leftColumns.Intersect(rightColumns, dtComparer)
+                                                    .Select(c => new DataColumn(c.ColumnName, c.DataType))
+                                                    .ToArray();
 
             //PRODUCT-JOIN
             if (commonColumns.Length == 0)
             {
                 //Create the structure of the product table
-                result.Columns.AddRange(dt1Columns.Union(dt2Columns, dtComparer)
-                              .Select(c => new DataColumn(c.ColumnName, c.DataType))
-                              .ToArray());
+                innerJoinTable.Columns.AddRange(leftColumns.Union(rightColumns, dtComparer)
+                                                           .Select(c => new DataColumn(c.ColumnName, c.DataType))
+                                                           .ToArray());
 
-                //Loop dt1 table
-                result.AcceptChanges();
-                result.BeginLoadData();
-                foreach (DataRow parentRow in dt1.Rows)
+                //Loop left table
+                innerJoinTable.AcceptChanges();
+                innerJoinTable.BeginLoadData();
+                foreach (DataRow leftRow in leftTable.Rows)
                 {
-                    object[] parentArray = parentRow.ItemArray;
+                    object[] leftArray = leftRow.ItemArray;
 
-                    //Loop dt2 table
-                    foreach (DataRow childRow in dt2.Rows)
+                    //Loop right table
+                    foreach (DataRow rightRow in rightTable.Rows)
                     {
-                        object[] childArray = childRow.ItemArray;
+                        object[] rightArray = rightRow.ItemArray;
 
-                        //Product-Join parent array with child array into result array
-                        object[] resultArray = new object[parentArray.Length + childArray.Length];
-                        Array.Copy(parentArray, 0, resultArray, 0, parentArray.Length);
-                        Array.Copy(childArray, 0, resultArray, parentArray.Length, childArray.Length);
-                        result.LoadDataRow(resultArray, true);
+                        //Join left array with right array
+                        object[] innerJoinArray = new object[leftArray.Length + rightArray.Length];
+                        Array.Copy(leftArray, 0, innerJoinArray, 0, leftArray.Length);
+                        Array.Copy(rightArray, 0, innerJoinArray, leftArray.Length, rightArray.Length);
+                        innerJoinTable.LoadDataRow(innerJoinArray, true);
                     }
                 }
-                result.EndLoadData();
+                innerJoinTable.EndLoadData();
             }
 
             //INNER-JOIN
             else
             {
-                using (DataSet ds = new DataSet())
+                using (DataSet dataSet = new DataSet())
                 {
                     //Add tables to the dataset
-                    ds.Tables.Add(dt1);
-                    ds.Tables.Add(dt2);
+                    dataSet.Tables.Add(leftTable);
+                    dataSet.Tables.Add(rightTable);
 
                     //Create the relation linking the common columns
-                    DataColumn[] parentColumns = new DataColumn[commonColumns.Length];
-                    DataColumn[] childColumns = new DataColumn[commonColumns.Length];
+                    DataColumn[] leftRelationColumns = new DataColumn[commonColumns.Length];
+                    DataColumn[] rightRelationColumns = new DataColumn[commonColumns.Length];
                     for (int i = 0; i < commonColumns.Length; i++)
                     {
-                        parentColumns[i] = ds.Tables[0].Columns[commonColumns[i].ColumnName];
-                        childColumns[i] = ds.Tables[1].Columns[commonColumns[i].ColumnName];
+                        leftRelationColumns[i] = dataSet.Tables[0].Columns[commonColumns[i].ColumnName];
+                        rightRelationColumns[i] = dataSet.Tables[1].Columns[commonColumns[i].ColumnName];
                     }
-                    DataRelation r = new DataRelation("JoinRelation", parentColumns, childColumns, false);
-                    ds.Relations.Add(r);
+                    DataRelation dataRelation = new DataRelation("JoinRelation", leftRelationColumns, rightRelationColumns, false);
+                    dataSet.Relations.Add(dataRelation);
 
                     //Create the structure of the join table
-                    List<string> duplicateCols = new List<string>();
-                    for (int i = 0; i < ds.Tables[0].Columns.Count; i++)
-                        result.Columns.Add(ds.Tables[0].Columns[i].ColumnName, ds.Tables[0].Columns[i].DataType);
-                    for (int i = 0; i < ds.Tables[1].Columns.Count; i++)
+                    List<string> duplicateColumns = new List<string>();
+                    for (int i = 0; i < dataSet.Tables[0].Columns.Count; i++)
+                        innerJoinTable.Columns.Add(dataSet.Tables[0].Columns[i].ColumnName, dataSet.Tables[0].Columns[i].DataType);
+                    for (int i = 0; i < dataSet.Tables[1].Columns.Count; i++)
                     {
-                        if (!result.Columns.Contains(ds.Tables[1].Columns[i].ColumnName))
-                            result.Columns.Add(ds.Tables[1].Columns[i].ColumnName, ds.Tables[1].Columns[i].DataType);
+                        if (!innerJoinTable.Columns.Contains(dataSet.Tables[1].Columns[i].ColumnName))
+                            innerJoinTable.Columns.Add(dataSet.Tables[1].Columns[i].ColumnName, dataSet.Tables[1].Columns[i].DataType);
                         else
                         {
                             //Keep track of duplicate columns by appending a known identifier to their name
-                            string duplicateColKey = string.Concat(ds.Tables[1].Columns[i].ColumnName, "_DUPLICATE_");
-                            result.Columns.Add(duplicateColKey, ds.Tables[1].Columns[i].DataType);
-                            duplicateCols.Add(duplicateColKey);
+                            string duplicateColKey = string.Concat(dataSet.Tables[1].Columns[i].ColumnName, "_DUPLICATE_");
+                            innerJoinTable.Columns.Add(duplicateColKey, dataSet.Tables[1].Columns[i].DataType);
+                            duplicateColumns.Add(duplicateColKey);
                         }
                     }
 
-                    //Loop dt1 table
-                    result.AcceptChanges();
-                    result.BeginLoadData();
-                    foreach (DataRow parentRow in ds.Tables[0].Rows)
+                    //Loop left table
+                    innerJoinTable.AcceptChanges();
+                    innerJoinTable.BeginLoadData();
+                    foreach (DataRow leftRow in dataSet.Tables[0].Rows)
                     {
-                        DataRow[] childRows = parentRow.GetChildRows(r);
-                        if (childRows.Length > 0)
+                        DataRow[] relatedRows = leftRow.GetChildRows(dataRelation);
+                        if (relatedRows.Length > 0)
                         {
-                            object[] parentArray = parentRow.ItemArray;
+                            object[] leftArray = leftRow.ItemArray;
 
-                            //Loop dt2 table (only rows from relation)
-                            foreach (DataRow childRow in childRows)
+                            //Loop right table (only rows from relation)
+                            foreach (DataRow relatedRow in relatedRows)
                             {
-                                object[] childArray = childRow.ItemArray;
+                                object[] childArray = relatedRow.ItemArray;
 
-                                //Inner-Join parent array with child array into result array
-                                object[] resultArray = new object[parentArray.Length + childArray.Length];
-                                Array.Copy(parentArray, 0, resultArray, 0, parentArray.Length);
-                                Array.Copy(childArray, 0, resultArray, parentArray.Length, childArray.Length);
-                                result.LoadDataRow(resultArray, true);
+                                //Join left array with related array
+                                object[] joinArray = new object[leftArray.Length + childArray.Length];
+                                Array.Copy(leftArray, 0, joinArray, 0, leftArray.Length);
+                                Array.Copy(childArray, 0, joinArray, leftArray.Length, childArray.Length);
+                                innerJoinTable.LoadDataRow(joinArray, true);
                             }
                         }
                     }
-                    result.EndLoadData();
+                    innerJoinTable.EndLoadData();
 
-                    //Eliminate the duplicated columns from the result table
-                    duplicateCols.ForEach(c => result.Columns.Remove(c));
+                    //Eliminate the duplicated columns from the inner-join table
+                    duplicateColumns.ForEach(dc => innerJoinTable.Columns.Remove(dc));
                 }
             }
 
-            return result;
+            return innerJoinTable;
         }
 
         /// <summary>
         /// Joins two datatables WITH support for OPTIONAL data
         /// </summary>
-        internal static DataTable OuterJoinTables(DataTable dt1, DataTable dt2)
+        internal static DataTable OuterJoinTables(DataTable leftTable, DataTable rightTable)
         {
-            DataTable result = new DataTable();
-            DataColumn[] dt1Columns = dt1.Columns.OfType<DataColumn>().ToArray();
-            DataColumn[] dt2Columns = dt2.Columns.OfType<DataColumn>().ToArray();
+            #region Utilities
+            bool CheckJoin(DataRow leftRow, DataRow rightRow, string commonColumn)
+                => leftRow.IsNull(commonColumn)
+                     || rightRow.IsNull(commonColumn)
+                       || string.Equals(leftRow[commonColumn]?.ToString(), rightRow[commonColumn]?.ToString(), StringComparison.Ordinal);
+            #endregion
 
-            bool dt2IsOptionalTable = (dt2.ExtendedProperties.ContainsKey(IsOptional) && dt2.ExtendedProperties[IsOptional].Equals(true));
-            bool joinInvalidationFlag = false;
-            bool foundResults = false;
+            DataTable outerJoinTable = new DataTable();
 
             //Determine common columns
-            DataColumn[] commonColumns = dt1Columns.Intersect(dt2Columns, dtComparer)
-                                                   .Select(c => new DataColumn(c.ColumnName, c.DataType))
-                                                   .ToArray();
+            bool rightIsOptionalTable = (rightTable.ExtendedProperties.ContainsKey(IsOptional) && rightTable.ExtendedProperties[IsOptional].Equals(true));
+            DataColumn[] leftColumns = leftTable.Columns.OfType<DataColumn>().ToArray();
+            DataColumn[] rightColumns = rightTable.Columns.OfType<DataColumn>().ToArray();
+            DataColumn[] commonColumns = leftColumns.Intersect(rightColumns, dtComparer)
+                                                    .Select(c => new DataColumn(c.ColumnName, c.DataType))
+                                                    .ToArray();
 
-            //Create structure of result table
-            result.Columns.AddRange(dt1Columns.Union(dt2Columns.Except(commonColumns), dtComparer)
+            //Create structure of outer-join table
+            outerJoinTable.Columns.AddRange(leftColumns.Union(rightColumns.Except(commonColumns), dtComparer)
                           .Select(c => new DataColumn(c.ColumnName, c.DataType))
                           .ToArray());
 
-            //Calculate result columns attribution
-            Dictionary<string, (bool,string)> resultColumnsAttribution = new Dictionary<string, (bool,string)>();
-            foreach (DataColumn resultColumn in result.Columns)
+            //Calculate outer-join column's attribution
+            Dictionary<string, (bool,string)> outerJoinColumnsAttribution = new Dictionary<string, (bool,string)>();
+            foreach (DataColumn outerJoinColumn in outerJoinTable.Columns)
             {
                 //COMMON attribution
-                bool commonAttribution = false;
-                if (commonColumns.Contains(resultColumn, dtComparer))
-                    commonAttribution = true;
+                bool commonAttribution = commonColumns.Contains(outerJoinColumn, dtComparer);
 
-                //DT attribution
-                string dtAttribution = "DT2";
-                if (dt1Columns.Contains(resultColumn, dtComparer))
-                    dtAttribution = "DT1";
+                //DT1/DT2 attribution
+                string dtAttribution = leftColumns.Contains(outerJoinColumn, dtComparer) ? "DT1" : "DT2";
 
-                resultColumnsAttribution.Add(resultColumn.ColumnName, (commonAttribution, dtAttribution));
+                outerJoinColumnsAttribution.Add(outerJoinColumn.ColumnName, (commonAttribution, dtAttribution));
             }
 
-            //Loop dt1 table
-            result.AcceptChanges();
-            result.BeginLoadData();
-            foreach (DataRow leftRow in dt1.Rows)
+            //Loop left table
+            outerJoinTable.AcceptChanges();
+            outerJoinTable.BeginLoadData();
+            foreach (DataRow leftRow in leftTable.Rows)
             {
-                foundResults = false;
-
-                //Loop dt2 table
-                foreach (DataRow rightRow in dt2.Rows)
+                //Leverage a relation between left row and right table based on common columns.
+                //(this helps at slightly reducing O(N^2) complexity to O(N*K) where K << N)
+                EnumerableRowCollection<DataRow> relatedRows = rightTable.AsEnumerable();
+                foreach (DataColumn commonColumn in commonColumns)
+                    relatedRows = relatedRows.Where(relatedRow => CheckJoin(leftRow, relatedRow, commonColumn.ColumnName));
+                List<DataRow> relatedRowsList = relatedRows.ToList();
+                
+                //Relation HAS found data => proceed with outer-join
+                if (relatedRowsList.Any())
                 {
-                    joinInvalidationFlag = false;
-
-                    //Create a temporary row
-                    DataRow resultRow = result.NewRow();
-                    foreach (DataColumn resultColumn in result.Columns)
+                    foreach (DataRow relatedRow in relatedRowsList)
                     {
-                        //NON-COMMON column
-                        if (!resultColumnsAttribution[resultColumn.ColumnName].Item1)
+                        //Create the candidate outer-join row
+                        DataRow outerJoinRow = outerJoinTable.NewRow();
+                        foreach (DataColumn outerJoinColumn in outerJoinTable.Columns)
                         {
-                            //Take value from left
-                            if (string.Equals(resultColumnsAttribution[resultColumn.ColumnName].Item2, "DT1", StringComparison.Ordinal))
-                                resultRow[resultColumn.ColumnName] = leftRow[resultColumn.ColumnName];
-
-                            //Take value from right
-                            else
-                                resultRow[resultColumn.ColumnName] = rightRow[resultColumn.ColumnName];
-                        }
-
-                        //COMMON column
-                        else
-                        {
-                            //Left value is NULL
-                            if (leftRow.IsNull(resultColumn.ColumnName))
+                            //NON-COMMON column
+                            if (!outerJoinColumnsAttribution[outerJoinColumn.ColumnName].Item1)
                             {
-                                //Right value is NULL
-                                if (rightRow.IsNull(resultColumn.ColumnName))
-                                {
-                                    //Take NULL value
-                                    resultRow[resultColumn.ColumnName] = DBNull.Value;
-                                }
+                                //Take value from left
+                                if (string.Equals(outerJoinColumnsAttribution[outerJoinColumn.ColumnName].Item2, "DT1", StringComparison.Ordinal))
+                                    outerJoinRow[outerJoinColumn.ColumnName] = leftRow[outerJoinColumn.ColumnName];
 
-                                //Right value is NOT NULL
+                                //Take value from related
                                 else
-                                {
-                                    //Take value from right
-                                    resultRow[resultColumn.ColumnName] = rightRow[resultColumn.ColumnName];
-                                }
+                                    outerJoinRow[outerJoinColumn.ColumnName] = relatedRow[outerJoinColumn.ColumnName];
                             }
 
-                            //Left value is NOT NULL
+                            //COMMON column
                             else
                             {
-                                //Right value is NULL
-                                if (rightRow.IsNull(resultColumn.ColumnName))
+                                //Left value is NULL
+                                if (leftRow.IsNull(outerJoinColumn.ColumnName))
                                 {
-                                    //Take value from left
-                                    resultRow[resultColumn.ColumnName] = leftRow[resultColumn.ColumnName];
-                                }
-
-                                //Right value is NOT NULL
-                                else
-                                {
-                                    //Left value is EQUAL TO right value
-                                    if (string.Equals(leftRow[resultColumn.ColumnName].ToString(), rightRow[resultColumn.ColumnName].ToString(), StringComparison.Ordinal))
+                                    //Right value is NULL
+                                    if (relatedRow.IsNull(outerJoinColumn.ColumnName))
                                     {
-                                        //Take value from left (it's the same as right)
-                                        resultRow[resultColumn.ColumnName] = leftRow[resultColumn.ColumnName];
+                                        //Take NULL value
+                                        outerJoinRow[outerJoinColumn.ColumnName] = DBNull.Value;
                                     }
 
-                                    //Left value is NOT EQUAL TO right value
+                                    //Right value is NOT NULL
                                     else
                                     {
-                                        //Raise the join invalidation flag
-                                        joinInvalidationFlag = true;
-                                        resultRow.RejectChanges();
-                                        break;
+                                        //Take value from related
+                                        outerJoinRow[outerJoinColumn.ColumnName] = relatedRow[outerJoinColumn.ColumnName];
                                     }
+                                }
+
+                                //Left value is NOT NULL
+                                else
+                                {
+                                    //Take value from left
+                                    outerJoinRow[outerJoinColumn.ColumnName] = leftRow[outerJoinColumn.ColumnName];
                                 }
                             }
                         }
-                    }
 
-                    //Add row to result table
-                    if (!joinInvalidationFlag)
-                    {
-                        resultRow.AcceptChanges();
-                        result.Rows.Add(resultRow);
-                        foundResults = true;
+                        //Add the join row to the outer-join table
+                        outerJoinRow.AcceptChanges();
+                        outerJoinTable.Rows.Add(outerJoinRow);
                     }
                 }
 
-                //Manage presence of "OPTIONAL" pattern to the right
-                if (!foundResults && dt2IsOptionalTable)
+                //Relation HASN'T found data => check for OPTIONAL presence
+                else
                 {
-                    //In this case, left row must be kept anyway and other columns from right are NULL
-                    DataRow optionalRow = result.NewRow();
-                    optionalRow.ItemArray = leftRow.ItemArray;
-                    optionalRow.AcceptChanges();
-                    result.Rows.Add(optionalRow);
+                    //If OPTIONAL is required by right table, left row must be kept anyway and other columns from right are NULL
+                    if (rightIsOptionalTable)
+                    {
+                        DataRow optionalRow = outerJoinTable.NewRow();
+                        optionalRow.ItemArray = leftRow.ItemArray;
+                        outerJoinTable.Rows.Add(optionalRow);
+                    }
                 }
             }
-            result.EndLoadData();
+            outerJoinTable.EndLoadData();
 
-            return result;
+            return outerJoinTable;
         }
 
         /// <summary>
@@ -1719,7 +1699,7 @@ namespace RDFSharp.Query
                 {
                     //Set automatic switch to OuterJoin in case of "Optional" detected
                     bool currentTableRequiresOptional = dataTables[i].ExtendedProperties.ContainsKey(IsOptional) && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
-                    switchToOuterJoin = (switchToOuterJoin || currentTableRequiresOptional);
+                    switchToOuterJoin |= currentTableRequiresOptional;
 
                     //Support OPTIONAL data
                     if (switchToOuterJoin)
