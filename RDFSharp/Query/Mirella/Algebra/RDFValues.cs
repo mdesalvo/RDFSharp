@@ -100,7 +100,6 @@ namespace RDFSharp.Query
             //Create the columns of the SPARQL values
             this.Bindings.ToList()
                          .ForEach(b => RDFQueryEngine.AddColumn(result, b.Key));
-            result.AcceptChanges();
 
             //Create the rows of the SPARQL values
             result.BeginLoadData();

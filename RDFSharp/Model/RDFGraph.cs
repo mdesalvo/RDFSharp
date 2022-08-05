@@ -605,7 +605,6 @@ namespace RDFSharp.Model
             result.Columns.Add("?SUBJECT", RDFQueryEngine.SystemString);
             result.Columns.Add("?PREDICATE", RDFQueryEngine.SystemString);
             result.Columns.Add("?OBJECT", RDFQueryEngine.SystemString);
-            result.AcceptChanges();
 
             //Iterate the triples of the graph to populate the result datatable
             result.BeginLoadData();
@@ -615,7 +614,6 @@ namespace RDFSharp.Model
                 newRow["?SUBJECT"] = t.Subject.ToString();
                 newRow["?PREDICATE"] = t.Predicate.ToString();
                 newRow["?OBJECT"] = t.Object.ToString();
-                newRow.AcceptChanges();
                 result.Rows.Add(newRow);
             }
             result.EndLoadData();

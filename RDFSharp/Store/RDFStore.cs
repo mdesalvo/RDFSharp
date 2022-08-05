@@ -389,7 +389,6 @@ namespace RDFSharp.Store
             result.Columns.Add("?SUBJECT", RDFQueryEngine.SystemString);
             result.Columns.Add("?PREDICATE", RDFQueryEngine.SystemString);
             result.Columns.Add("?OBJECT", RDFQueryEngine.SystemString);
-            result.AcceptChanges();
 
             //Iterate the quadruples of the store to populate the result datatable
             result.BeginLoadData();
@@ -400,7 +399,6 @@ namespace RDFSharp.Store
                 newRow["?SUBJECT"] = q.Subject.ToString();
                 newRow["?PREDICATE"] = q.Predicate.ToString();
                 newRow["?OBJECT"] = q.Object.ToString();
-                newRow.AcceptChanges();
                 result.Rows.Add(newRow);
             }
             result.EndLoadData();

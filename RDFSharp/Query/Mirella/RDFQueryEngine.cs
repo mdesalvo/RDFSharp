@@ -1437,7 +1437,6 @@ namespace RDFSharp.Query
                                                       .ToArray());
 
                 //Loop left table
-                joinTable.AcceptChanges();
                 joinTable.BeginLoadData();
                 foreach (DataRow leftRow in leftTable.Rows)
                 {
@@ -1492,7 +1491,6 @@ namespace RDFSharp.Query
                     }
 
                     //Loop left table
-                    joinTable.AcceptChanges();
                     joinTable.BeginLoadData();
                     foreach (DataRow leftRow in dataSet.Tables[0].Rows)
                     {
@@ -1561,7 +1559,6 @@ namespace RDFSharp.Query
             }
 
             //Loop left table
-            joinTable.AcceptChanges();
             joinTable.BeginLoadData();
             foreach (DataRow leftRow in leftTable.Rows)
             {
