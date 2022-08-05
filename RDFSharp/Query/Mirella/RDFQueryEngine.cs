@@ -1419,7 +1419,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static DataTable InnerJoinTables(DataTable leftTable, DataTable rightTable)
         {
-            DataTable innerJoinTable = new DataTable();
+            DataTable joinTable = new DataTable();
 
             //Determine common columns
             DataColumn[] leftColumns = leftTable.Columns.OfType<DataColumn>().ToArray();
@@ -1432,30 +1432,26 @@ namespace RDFSharp.Query
             if (commonColumns.Length == 0)
             {
                 //Create the structure of the product table
-                innerJoinTable.Columns.AddRange(leftColumns.Union(rightColumns, dtComparer)
-                                                           .Select(c => new DataColumn(c.ColumnName, c.DataType))
-                                                           .ToArray());
+                joinTable.Columns.AddRange(leftColumns.Union(rightColumns, dtComparer)
+                                                      .Select(c => new DataColumn(c.ColumnName, c.DataType))
+                                                      .ToArray());
 
                 //Loop left table
-                innerJoinTable.AcceptChanges();
-                innerJoinTable.BeginLoadData();
+                joinTable.AcceptChanges();
+                joinTable.BeginLoadData();
                 foreach (DataRow leftRow in leftTable.Rows)
                 {
-                    object[] leftArray = leftRow.ItemArray;
-
                     //Loop right table
                     foreach (DataRow rightRow in rightTable.Rows)
                     {
-                        object[] rightArray = rightRow.ItemArray;
-
                         //Join left array with right array
-                        object[] innerJoinArray = new object[leftArray.Length + rightArray.Length];
-                        Array.Copy(leftArray, 0, innerJoinArray, 0, leftArray.Length);
-                        Array.Copy(rightArray, 0, innerJoinArray, leftArray.Length, rightArray.Length);
-                        innerJoinTable.LoadDataRow(innerJoinArray, true);
+                        object[] joinArray = new object[leftRow.ItemArray.Length + rightRow.ItemArray.Length];
+                        Array.Copy(leftRow.ItemArray, 0, joinArray, 0, leftRow.ItemArray.Length);
+                        Array.Copy(rightRow.ItemArray, 0, joinArray, leftRow.ItemArray.Length, rightRow.ItemArray.Length);
+                        joinTable.LoadDataRow(joinArray, true);
                     }
                 }
-                innerJoinTable.EndLoadData();
+                joinTable.EndLoadData();
             }
 
             //INNER-JOIN
@@ -1481,51 +1477,47 @@ namespace RDFSharp.Query
                     //Create the structure of the join table
                     List<string> duplicateColumns = new List<string>();
                     for (int i = 0; i < dataSet.Tables[0].Columns.Count; i++)
-                        innerJoinTable.Columns.Add(dataSet.Tables[0].Columns[i].ColumnName, dataSet.Tables[0].Columns[i].DataType);
+                        joinTable.Columns.Add(dataSet.Tables[0].Columns[i].ColumnName, dataSet.Tables[0].Columns[i].DataType);
                     for (int i = 0; i < dataSet.Tables[1].Columns.Count; i++)
                     {
-                        if (!innerJoinTable.Columns.Contains(dataSet.Tables[1].Columns[i].ColumnName))
-                            innerJoinTable.Columns.Add(dataSet.Tables[1].Columns[i].ColumnName, dataSet.Tables[1].Columns[i].DataType);
+                        if (!joinTable.Columns.Contains(dataSet.Tables[1].Columns[i].ColumnName))
+                            joinTable.Columns.Add(dataSet.Tables[1].Columns[i].ColumnName, dataSet.Tables[1].Columns[i].DataType);
                         else
                         {
                             //Keep track of duplicate columns by appending a known identifier to their name
                             string duplicateColKey = string.Concat(dataSet.Tables[1].Columns[i].ColumnName, "_DUPLICATE_");
-                            innerJoinTable.Columns.Add(duplicateColKey, dataSet.Tables[1].Columns[i].DataType);
+                            joinTable.Columns.Add(duplicateColKey, dataSet.Tables[1].Columns[i].DataType);
                             duplicateColumns.Add(duplicateColKey);
                         }
                     }
 
                     //Loop left table
-                    innerJoinTable.AcceptChanges();
-                    innerJoinTable.BeginLoadData();
+                    joinTable.AcceptChanges();
+                    joinTable.BeginLoadData();
                     foreach (DataRow leftRow in dataSet.Tables[0].Rows)
                     {
                         DataRow[] relatedRows = leftRow.GetChildRows(dataRelation);
                         if (relatedRows.Length > 0)
                         {
-                            object[] leftArray = leftRow.ItemArray;
-
                             //Loop right table (only rows from relation)
                             foreach (DataRow relatedRow in relatedRows)
                             {
-                                object[] childArray = relatedRow.ItemArray;
-
                                 //Join left array with related array
-                                object[] joinArray = new object[leftArray.Length + childArray.Length];
-                                Array.Copy(leftArray, 0, joinArray, 0, leftArray.Length);
-                                Array.Copy(childArray, 0, joinArray, leftArray.Length, childArray.Length);
-                                innerJoinTable.LoadDataRow(joinArray, true);
+                                object[] joinArray = new object[leftRow.ItemArray.Length + relatedRow.ItemArray.Length];
+                                Array.Copy(leftRow.ItemArray, 0, joinArray, 0, leftRow.ItemArray.Length);
+                                Array.Copy(relatedRow.ItemArray, 0, joinArray, leftRow.ItemArray.Length, relatedRow.ItemArray.Length);
+                                joinTable.LoadDataRow(joinArray, true);
                             }
                         }
                     }
-                    innerJoinTable.EndLoadData();
+                    joinTable.EndLoadData();
 
                     //Eliminate the duplicated columns from the inner-join table
-                    duplicateColumns.ForEach(dc => innerJoinTable.Columns.Remove(dc));
+                    duplicateColumns.ForEach(dc => joinTable.Columns.Remove(dc));
                 }
             }
 
-            return innerJoinTable;
+            return joinTable;
         }
 
         /// <summary>
@@ -1540,7 +1532,7 @@ namespace RDFSharp.Query
                        || string.Equals(leftRow[commonColumn]?.ToString(), rightRow[commonColumn]?.ToString(), StringComparison.Ordinal);
             #endregion
 
-            DataTable outerJoinTable = new DataTable();
+            DataTable joinTable = new DataTable();
 
             //Determine common columns
             bool rightIsOptionalTable = (rightTable.ExtendedProperties.ContainsKey(IsOptional) && rightTable.ExtendedProperties[IsOptional].Equals(true));
@@ -1551,26 +1543,26 @@ namespace RDFSharp.Query
                                                     .ToArray();
 
             //Create structure of outer-join table
-            outerJoinTable.Columns.AddRange(leftColumns.Union(rightColumns.Except(commonColumns), dtComparer)
-                          .Select(c => new DataColumn(c.ColumnName, c.DataType))
-                          .ToArray());
+            joinTable.Columns.AddRange(leftColumns.Union(rightColumns.Except(commonColumns), dtComparer)
+                                                  .Select(c => new DataColumn(c.ColumnName, c.DataType))
+                                                  .ToArray());
 
             //Calculate outer-join column's attribution
-            Dictionary<string, (bool,string)> outerJoinColumnsAttribution = new Dictionary<string, (bool,string)>();
-            foreach (DataColumn outerJoinColumn in outerJoinTable.Columns)
+            Dictionary<string, (bool,string)> joinColumnsAttribution = new Dictionary<string, (bool,string)>();
+            foreach (DataColumn joinColumn in joinTable.Columns)
             {
                 //COMMON attribution
-                bool commonAttribution = commonColumns.Contains(outerJoinColumn, dtComparer);
+                bool commonAttribution = commonColumns.Contains(joinColumn, dtComparer);
 
                 //DT1/DT2 attribution
-                string dtAttribution = leftColumns.Contains(outerJoinColumn, dtComparer) ? "DT1" : "DT2";
+                string dtAttribution = leftColumns.Contains(joinColumn, dtComparer) ? "DT1" : "DT2";
 
-                outerJoinColumnsAttribution.Add(outerJoinColumn.ColumnName, (commonAttribution, dtAttribution));
+                joinColumnsAttribution.Add(joinColumn.ColumnName, (commonAttribution, dtAttribution));
             }
 
             //Loop left table
-            outerJoinTable.AcceptChanges();
-            outerJoinTable.BeginLoadData();
+            joinTable.AcceptChanges();
+            joinTable.BeginLoadData();
             foreach (DataRow leftRow in leftTable.Rows)
             {
                 //Leverage a relation between left row and right table based on common columns.
@@ -1586,39 +1578,39 @@ namespace RDFSharp.Query
                     foreach (DataRow relatedRow in relatedRowsList)
                     {
                         //Create the candidate outer-join row
-                        DataRow outerJoinRow = outerJoinTable.NewRow();
-                        foreach (DataColumn outerJoinColumn in outerJoinTable.Columns)
+                        DataRow joinRow = joinTable.NewRow();
+                        foreach (DataColumn joinColumn in joinTable.Columns)
                         {
                             //NON-COMMON column
-                            if (!outerJoinColumnsAttribution[outerJoinColumn.ColumnName].Item1)
+                            if (!joinColumnsAttribution[joinColumn.ColumnName].Item1)
                             {
                                 //Take value from left
-                                if (string.Equals(outerJoinColumnsAttribution[outerJoinColumn.ColumnName].Item2, "DT1", StringComparison.Ordinal))
-                                    outerJoinRow[outerJoinColumn.ColumnName] = leftRow[outerJoinColumn.ColumnName];
+                                if (string.Equals(joinColumnsAttribution[joinColumn.ColumnName].Item2, "DT1", StringComparison.Ordinal))
+                                    joinRow[joinColumn.ColumnName] = leftRow[joinColumn.ColumnName];
 
                                 //Take value from related
                                 else
-                                    outerJoinRow[outerJoinColumn.ColumnName] = relatedRow[outerJoinColumn.ColumnName];
+                                    joinRow[joinColumn.ColumnName] = relatedRow[joinColumn.ColumnName];
                             }
 
                             //COMMON column
                             else
                             {
                                 //Left value is NULL
-                                if (leftRow.IsNull(outerJoinColumn.ColumnName))
+                                if (leftRow.IsNull(joinColumn.ColumnName))
                                 {
                                     //Right value is NULL
-                                    if (relatedRow.IsNull(outerJoinColumn.ColumnName))
+                                    if (relatedRow.IsNull(joinColumn.ColumnName))
                                     {
                                         //Take NULL value
-                                        outerJoinRow[outerJoinColumn.ColumnName] = DBNull.Value;
+                                        joinRow[joinColumn.ColumnName] = DBNull.Value;
                                     }
 
                                     //Right value is NOT NULL
                                     else
                                     {
                                         //Take value from related
-                                        outerJoinRow[outerJoinColumn.ColumnName] = relatedRow[outerJoinColumn.ColumnName];
+                                        joinRow[joinColumn.ColumnName] = relatedRow[joinColumn.ColumnName];
                                     }
                                 }
 
@@ -1626,14 +1618,13 @@ namespace RDFSharp.Query
                                 else
                                 {
                                     //Take value from left
-                                    outerJoinRow[outerJoinColumn.ColumnName] = leftRow[outerJoinColumn.ColumnName];
+                                    joinRow[joinColumn.ColumnName] = leftRow[joinColumn.ColumnName];
                                 }
                             }
                         }
 
                         //Add the join row to the outer-join table
-                        outerJoinRow.AcceptChanges();
-                        outerJoinTable.Rows.Add(outerJoinRow);
+                        joinTable.Rows.Add(joinRow);
                     }
                 }
 
@@ -1643,15 +1634,15 @@ namespace RDFSharp.Query
                     //If OPTIONAL is required by right table, left row must be kept anyway and other columns from right are NULL
                     if (rightIsOptionalTable)
                     {
-                        DataRow optionalRow = outerJoinTable.NewRow();
-                        optionalRow.ItemArray = leftRow.ItemArray;
-                        outerJoinTable.Rows.Add(optionalRow);
+                        DataRow joinRow = joinTable.NewRow();
+                        joinRow.ItemArray = leftRow.ItemArray;
+                        joinTable.Rows.Add(joinRow);
                     }
                 }
             }
-            outerJoinTable.EndLoadData();
+            joinTable.EndLoadData();
 
-            return outerJoinTable;
+            return joinTable;
         }
 
         /// <summary>
