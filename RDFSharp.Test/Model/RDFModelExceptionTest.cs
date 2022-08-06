@@ -73,19 +73,17 @@ namespace RDFSharp.Test.Model
         {
             byte[] SerializeToBytes(RDFModelException e)
             {
-                using MemoryStream stream = new MemoryStream();
-#pragma warning disable SYSLIB0011
-                new BinaryFormatter().Serialize(stream, e);
-#pragma warning restore SYSLIB0011
-                return stream.GetBuffer();
+                using (MemoryStream stream = new MemoryStream())
+                { 
+                    new BinaryFormatter().Serialize(stream, e);
+                    return stream.GetBuffer();
+                }
             }
 
-            RDFModelException DeserializeFromBytes(byte[] bytes)
+            RDFModelException DeserializeFromBytes(byte[] data)
             {
-                using MemoryStream stream = new MemoryStream(bytes);
-#pragma warning disable SYSLIB0011
-                return (RDFModelException)new BinaryFormatter().Deserialize(stream);
-#pragma warning restore SYSLIB0011
+                using (MemoryStream stream = new MemoryStream(data))
+                    return (RDFModelException)new BinaryFormatter().Deserialize(stream);
             }
 
             RDFModelException mex = new RDFModelException("RDFModelException is serializable");

@@ -73,19 +73,17 @@ namespace RDFSharp.Test.Store
         {
             byte[] SerializeToBytes(RDFStoreException e)
             {
-                using MemoryStream stream = new MemoryStream();
-#pragma warning disable SYSLIB0011
-                new BinaryFormatter().Serialize(stream, e);
-#pragma warning restore SYSLIB0011
-                return stream.GetBuffer();
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    new BinaryFormatter().Serialize(stream, e);
+                    return stream.GetBuffer();
+                }   
             }
 
-            RDFStoreException DeserializeFromBytes(byte[] bytes)
+            RDFStoreException DeserializeFromBytes(byte[] data)
             {
-                using MemoryStream stream = new MemoryStream(bytes);
-#pragma warning disable SYSLIB0011
-                return (RDFStoreException)new BinaryFormatter().Deserialize(stream);
-#pragma warning restore SYSLIB0011
+                using (MemoryStream stream = new MemoryStream(data))
+                    return (RDFStoreException)new BinaryFormatter().Deserialize(stream);
             }
 
             RDFStoreException mex = new RDFStoreException("RDFStoreException is serializable");

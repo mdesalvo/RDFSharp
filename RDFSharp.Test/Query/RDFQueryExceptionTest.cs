@@ -73,19 +73,17 @@ namespace RDFSharp.Test.Query
         {
             byte[] SerializeToBytes(RDFQueryException e)
             {
-                using MemoryStream stream = new MemoryStream();
-#pragma warning disable SYSLIB0011
-                new BinaryFormatter().Serialize(stream, e);
-#pragma warning restore SYSLIB0011
-                return stream.GetBuffer();
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    new BinaryFormatter().Serialize(stream, e);
+                    return stream.GetBuffer();
+                }   
             }
 
-            RDFQueryException DeserializeFromBytes(byte[] bytes)
+            RDFQueryException DeserializeFromBytes(byte[] data)
             {
-                using MemoryStream stream = new MemoryStream(bytes);
-#pragma warning disable SYSLIB0011
-                return (RDFQueryException)new BinaryFormatter().Deserialize(stream);
-#pragma warning restore SYSLIB0011
+                using (MemoryStream stream = new MemoryStream(data))
+                    return (RDFQueryException)new BinaryFormatter().Deserialize(stream);
             }
 
             RDFQueryException mex = new RDFQueryException("RDFQueryException is serializable");

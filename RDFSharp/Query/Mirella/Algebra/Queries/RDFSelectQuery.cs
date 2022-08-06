@@ -192,7 +192,7 @@ namespace RDFSharp.Query
                     sparqlEndpoint.FillWebClientAuthorization(webClient);
 
                     //Send querystring to SPARQL endpoint
-                    byte[] sparqlResponse = default;
+                    byte[] sparqlResponse = null;
                     try
                     {
                         sparqlResponse = webClient.DownloadData(sparqlEndpoint.BaseAddress);

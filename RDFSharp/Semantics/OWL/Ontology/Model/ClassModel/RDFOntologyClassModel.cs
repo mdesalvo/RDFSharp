@@ -509,7 +509,7 @@ namespace RDFSharp.Semantics.OWL
             #region DetectTargetTaxonomy
             RDFOntologyTaxonomy DetectTargetTaxonomy()
             {
-                RDFOntologyTaxonomy targetTaxonomy = default;
+                RDFOntologyTaxonomy targetTaxonomy = null;
                 switch (targetTaxonomyName)
                 {
                     case nameof(RDFOntologyClassModelMetadata.SubClassOf):

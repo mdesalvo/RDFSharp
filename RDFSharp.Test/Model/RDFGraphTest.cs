@@ -1938,10 +1938,10 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldImportFromUri()
         {
-            RDFGraph graph = RDFGraph.FromUri(new Uri(RDFVocabulary.RDF.BASE_URI));
+            RDFGraph graph = RDFGraph.FromUri(new Uri(RDFVocabulary.RDFS.BASE_URI));
 
             Assert.IsNotNull(graph);
-            Assert.IsTrue(graph.Context.Equals(new Uri(RDFVocabulary.RDF.BASE_URI)));
+            Assert.IsTrue(graph.Context.Equals(new Uri(RDFVocabulary.RDFS.BASE_URI)));
             Assert.IsTrue(graph.TriplesCount > 0);
         }
 

@@ -340,7 +340,7 @@ namespace RDFSharp.Query
                 sparqlUpdateEndpoint.FillWebClientAuthorization(webClient);
 
                 //Send operation to SPARQL UPDATE endpoint
-                string sparqlUpdateResponse = default;
+                string sparqlUpdateResponse = null;
                 try
                 {
                     sparqlUpdateResponse = webClient.UploadString(sparqlUpdateEndpoint.BaseAddress, operationString);
