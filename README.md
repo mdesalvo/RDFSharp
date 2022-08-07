@@ -21,10 +21,5 @@ RDFSharp has a modular API made up of 4 layers:
     <li>Create and execute <b>SPARQL operations</b> on graphs, stores and <i>SPARQL UPDATE endpoints</i></li>
 </ul>
 
-<b><a href="https://github.com/mdesalvo/RDFSharp/releases/download/v2.27.0/RDFSharp.Semantics-2.27.0.pdf">RDFSharp.Semantics</a></b>
-<ul>
-    <li>Create and manage <b>OWL-DL ontologies</b> (classes, restrictions, properties, facts, assertions, annotations, ...)</li>
-    <li>Validate them against a wide set of intelligent semantic rules analyzing <b>T-BOX</b> and <b>A-BOX</b></li>
-    <li>Create and execute <b>SWRL reasoners</b> with forward-chaining materialization of ontology inferences</li>
-    <li>Create and manage <b>SKOS schemes</b> (concepts, collections, relations, annotations, labels, ...)</li>
-</ul>
+
+An additional <a href="https://github.com/mdesalvo/RDFSharp.Semantics">project</a> is also available for working in a powerful and practical way with <b>OWL-DL ontologies</b> and <b>SKOS dictionaries</b>.
