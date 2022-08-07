@@ -1,6 +1,6 @@
 # RDFSharp [![NuGet Badge](https://buildstats.info/nuget/RDFSharp)](https://www.nuget.org/packages/RDFSharp) [![codecov](https://codecov.io/gh/mdesalvo/RDFSharp/branch/master/graph/badge.svg?token=wtP1B77d3e)](https://codecov.io/gh/mdesalvo/RDFSharp)
 
-RDFSharp has a modular API made up of 4 layers: 
+RDFSharp has a modular API made up of 3 layers: 
 
 <b><a href="https://github.com/mdesalvo/RDFSharp/releases/download/v2.27.0/RDFSharp.Model-2.27.0.pdf">RDFSharp.Model</a></b>
 <ul>
@@ -22,4 +22,4 @@ RDFSharp has a modular API made up of 4 layers:
 </ul>
 
 
-An additional <a href="https://github.com/mdesalvo/RDFSharp.Semantics">project</a> is also available for working in a powerful and practical way with <b>OWL-DL ontologies</b> and <b>SKOS dictionaries</b>.
+An additional <a href="https://github.com/mdesalvo/RDFSharp.Semantics">project</a> is also available for working in a powerful and practical way with <b>OWL-DL ontologies</b>.
