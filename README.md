@@ -24,5 +24,5 @@ RDFSharp has a modular API made up of 3 layers:
     <li>Create and execute <b>SPARQL operations</b> on graphs, stores and <i>SPARQL UPDATE endpoints</i></li>
 </ul>
 
-
-An additional <a href="https://github.com/mdesalvo/RDFSharp.Semantics">project</a> is also available for working in a powerful and practical way with <b>OWL-DL ontologies</b>.
+<hr/>
+An additional <a href="https://github.com/mdesalvo/RDFSharp.Semantics">project</a> is also available for working in a powerful and practical way with <b>OWL-DL ontologies</b>
