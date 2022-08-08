@@ -15,7 +15,7 @@ RDFSharp has a modular API made up of 3 layers:
 <b><a href="https://github.com/mdesalvo/RDFSharp/releases/download/v2.27.0/RDFSharp.Store-2.27.0.pdf">RDFSharp.Store</a></b>
 <ul>
     <li>Create and manage <b>RDF stores</b> for context-aware modeling of RDF data (contexts, quadruples, ...)</li>
-    <li>Exchange them using standard <b>RDF formats</b> (N-Quads, TriX)</li>
+    <li>Exchange them using standard <b>RDF formats</b> (N-Quads, TriX, TriG)</li>
     <li>Use a supported <a href="https://github.com/mdesalvo/RDFSharp.Extensions">extension</a> to store RDF data on many providers</li>
 </ul>
 
