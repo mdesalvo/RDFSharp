@@ -25,4 +25,4 @@ RDFSharp has a modular API made up of 3 layers:
 </ul>
 
 <hr/>
-An additional <a href="https://github.com/mdesalvo/RDFSharp.Semantics">project</a> is also available for working in a powerful and practical way with <b>OWL-DL ontologies</b>
+An additional <a href="https://github.com/mdesalvo/RDFSharp.Semantics">layer</a> is also available for working in a powerful and practical way with <b>OWL-DL ontologies</b>
