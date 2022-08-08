@@ -659,9 +659,10 @@ namespace RDFSharp.Store
                     return RDFNQuads.Deserialize(filepath);
                 case RDFStoreEnums.RDFFormats.TriX:
                     return RDFTriX.Deserialize(filepath);
-                default:
-                    throw new RDFStoreException("Cannot read RDF memory store from file because given \"rdfFormat\" parameter is not supported.");
+                case RDFStoreEnums.RDFFormats.TriG:
+                    return RDFTriG.Deserialize(filepath);
             }
+            throw new RDFStoreException("Cannot read RDF memory store from file because given \"rdfFormat\" parameter is not supported.");
         }
 
         /// <summary>
@@ -684,9 +685,10 @@ namespace RDFSharp.Store
                     return RDFNQuads.Deserialize(inputStream);
                 case RDFStoreEnums.RDFFormats.TriX:
                     return RDFTriX.Deserialize(inputStream);
-                default:
-                    throw new RDFStoreException("Cannot read RDF memory store from stream because given \"rdfFormat\" parameter is not supported.");
+                case RDFStoreEnums.RDFFormats.TriG:
+                    return RDFTriG.Deserialize(inputStream);                    
             }
+            throw new RDFStoreException("Cannot read RDF memory store from stream because given \"rdfFormat\" parameter is not supported.");
         }
 
         /// <summary>
@@ -789,6 +791,8 @@ namespace RDFSharp.Store
                 webRequest.Headers.Add(HttpRequestHeader.Accept, "application/n-quads");
                 //TRIX
                 webRequest.Headers.Add(HttpRequestHeader.Accept, "application/trix");
+                //TRIG
+                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/trig");
 
                 HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
                 if (webRequest.HaveResponse)
@@ -809,6 +813,10 @@ namespace RDFSharp.Store
                     //TRIX
                     else if (responseContentType.Contains("application/trix"))
                         result = FromStream(RDFStoreEnums.RDFFormats.TriX, webResponse.GetResponseStream());
+
+                    //TRIG
+                    else if (responseContentType.Contains("application/trig"))
+                        result = FromStream(RDFStoreEnums.RDFFormats.TriG, webResponse.GetResponseStream());
                 }
             }
             catch (Exception ex)

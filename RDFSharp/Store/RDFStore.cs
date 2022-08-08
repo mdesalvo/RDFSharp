@@ -344,6 +344,9 @@ namespace RDFSharp.Store
                 case RDFStoreEnums.RDFFormats.TriX:
                     RDFTriX.Serialize(this, filepath);
                     break;
+                case RDFStoreEnums.RDFFormats.TriG:
+                    RDFTriG.Serialize(this, filepath);
+                    break;
             }
         }
 
@@ -368,6 +371,9 @@ namespace RDFSharp.Store
                     break;
                 case RDFStoreEnums.RDFFormats.TriX:
                     RDFTriX.Serialize(this, outputStream);
+                    break;
+                case RDFStoreEnums.RDFFormats.TriG:
+                    RDFTriG.Serialize(this, outputStream);
                     break;
             }
         }

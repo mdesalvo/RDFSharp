@@ -391,12 +391,12 @@ namespace RDFSharp.Model
         internal static List<RDFNamespace> GetGraphNamespaces(RDFGraph graph)
         {
             List<RDFNamespace> result = new List<RDFNamespace>();
-            foreach (RDFTriple t in graph)
+            foreach (RDFTriple triple in graph)
             {
-                string subj = t.Subject.ToString();
-                string pred = t.Predicate.ToString();
-                string obj = t.Object is RDFResource ? t.Object.ToString() :
-                                (t.Object is RDFTypedLiteral ? GetDatatypeFromEnum(((RDFTypedLiteral)t.Object).Datatype) : string.Empty);
+                string subj = triple.Subject.ToString();
+                string pred = triple.Predicate.ToString();
+                string obj = triple.Object is RDFResource ? triple.Object.ToString() :
+                                (triple.Object is RDFTypedLiteral ? GetDatatypeFromEnum(((RDFTypedLiteral)triple.Object).Datatype) : string.Empty);
 
                 //Resolve subject Uri
                 IEnumerable<RDFNamespace> subjNS = RDFNamespaceRegister.Instance.Register.Where(ns => subj.StartsWith(ns.ToString()));

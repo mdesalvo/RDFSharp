@@ -52,7 +52,11 @@ namespace RDFSharp.Store
             /// <summary>
             /// TriX serialization
             /// </summary>
-            TriX = 2
+            TriX = 2,
+            /// <summary>
+            /// TriG serialization
+            /// </summary>
+            TriG = 3
         };
     }
 }
