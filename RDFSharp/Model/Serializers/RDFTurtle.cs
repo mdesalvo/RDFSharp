@@ -56,144 +56,16 @@ namespace RDFSharp.Model
                 #region serialize
                 using (StreamWriter sw = new StreamWriter(outputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
-                    #region prefixes
-                    //Write the namespaces collected by the graph
+                    //Collect namespaces
                     List<RDFNamespace> prefixes = RDFModelUtilities.GetGraphNamespaces(graph);
+
+                    //Write namespaces
                     foreach (RDFNamespace ns in prefixes.OrderBy(n => n.NamespacePrefix))
                         sw.WriteLine(string.Concat("@prefix ", ns.NamespacePrefix, ": <", ns.NamespaceUri, ">."));
                     sw.WriteLine(string.Concat("@base <", graph.Context, $">.{Environment.NewLine}"));
-                    #endregion
 
-                    #region linq
-                    //Group the graph's triples by subject and predicate
-                    var triplesGroupedBySubjectAndPredicate = 
-                        (from triple in graph
-                         orderby triple.Subject.ToString(), triple.Predicate.ToString()
-                         group triple by new
-                         {
-                             subj = triple.Subject.ToString(),
-                             pred = triple.Predicate.ToString()
-                         });
-                    var lastGroupOfTriples = triplesGroupedBySubjectAndPredicate.LastOrDefault();
-                    #endregion
-
-                    #region triples
-                    string actualSubject = string.Empty;
-                    string abbreviatedSubject = string.Empty;
-                    string actualPredicate = string.Empty;
-                    string abbreviatedPredicate = string.Empty;
-                    const string spaceConst = " ";
-                    StringBuilder result = new StringBuilder();
-
-                    //Iterate over the calculated groups
-                    foreach (var triplesGroup in triplesGroupedBySubjectAndPredicate)
-                    {
-                        RDFTriple lastTripleOfGroup = triplesGroup.Last();
-
-                        #region subj
-                        //Reset the flag of subj printing for the new iteration
-                        bool subjectHasBeenPrinted = false;
-
-                        //New subject found
-                        if (!actualSubject.Equals(triplesGroup.Key.subj, StringComparison.Ordinal))
-                        {
-                            //Write the subject's Turtle token
-                            if (result.Length > 0)
-                            {
-                                result.Replace(";", ".", result.Length - (2 + Environment.NewLine.Length), 1);
-                                sw.Write(result.ToString());
-                                result.Clear();
-                            }
-
-                            //Start collecting the new subject's one
-                            actualSubject = triplesGroup.Key.subj;
-                            actualPredicate = string.Empty;
-                            abbreviatedSubject = RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(actualSubject), prefixes);
-                            result.Append(string.Concat(abbreviatedSubject, spaceConst));
-                            subjectHasBeenPrinted = true;
-                        }
-                        #endregion
-
-                        #region predObjList
-                        //Iterate over the triples of the current group
-                        foreach (RDFTriple triple in triplesGroup)
-                        {
-                            #region pred
-                            //New predicate found
-                            if (!actualPredicate.Equals(triple.Predicate.ToString(), StringComparison.Ordinal))
-                            {
-                                //Write the predicate's Turtle token
-                                if (!subjectHasBeenPrinted)
-                                    result.Append(spaceConst.PadRight(abbreviatedSubject.Length + 1)); //pretty-printing spaces to align the predList
-                                actualPredicate = triple.Predicate.ToString();
-                                abbreviatedPredicate = RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(actualPredicate), prefixes);
-
-                                //Turtle goody for "rdf:type" shortcutting to "a"
-                                if (abbreviatedPredicate.Equals("rdf:type", StringComparison.Ordinal))
-                                    abbreviatedPredicate = "a";
-
-                                result.Append(string.Concat(abbreviatedPredicate, spaceConst));
-                            }
-                            #endregion
-
-                            #region object
-                            //Collect the object to the Turtle token
-                            if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                            {
-                                //Write the object's Turtle token
-                                string currentObject = triple.Object.ToString();
-                                result.Append(RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(currentObject), prefixes));
-                            }
-                            #endregion
-
-                            #region literal
-                            //Collect the literal to the Turtle token
-                            else
-                            {
-                                //Detect presence of long-literals in order to write proper delimiter
-                                string litValDelim = "\"";
-                                if (regexTTL.Value.Match(triple.Object.ToString()).Success)
-                                    litValDelim = "\"\"\"";
-
-                                //Write the literal's Turtle token
-                                if (triple.Object is RDFTypedLiteral)
-                                {
-                                    string dtype = RDFQueryPrinter.PrintPatternMember(
-                                                    RDFQueryUtilities.ParseRDFPatternMember(
-                                                     RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)triple.Object).Datatype)), prefixes);
-                                    string tLit = string.Concat(litValDelim, ((RDFTypedLiteral)triple.Object).Value.Replace("\\", "\\\\"), litValDelim, "^^", dtype);
-                                    result.Append(tLit);
-                                }
-                                else
-                                {
-                                    string pLit = string.Concat(litValDelim, ((RDFPlainLiteral)triple.Object).Value.Replace("\\", "\\\\"), litValDelim);
-                                    if (((RDFPlainLiteral)triple.Object).HasLanguage())
-                                        pLit = string.Concat(pLit, "@", ((RDFPlainLiteral)triple.Object).Language);
-                                    result.Append(pLit);
-                                }
-                            }
-                            #endregion
-
-                            #region continuation goody
-                            //Then append appropriate Turtle continuation goody ("," or ";")
-                            if (!triple.Equals(lastTripleOfGroup))
-                                result.Append(", ");
-                            else
-                                result.AppendLine("; ");
-                            #endregion
-                        }
-                        #endregion
-
-                        #region last group
-                        //This is only for the last group, which is not written into the cycle as the others
-                        if (triplesGroup.Key.Equals(lastGroupOfTriples.Key))
-                        {
-                            result.Replace(";", ".", result.Length - (2 + Environment.NewLine.Length), 1);
-                            sw.Write(result.ToString());
-                        }
-                        #endregion
-                    }
-                    #endregion
+                    //Write graph
+                    WriteTurtleGraph(sw, graph, prefixes, false);
                 }
                 #endregion
             }
@@ -1637,6 +1509,160 @@ namespace RDFSharp.Model
                 || codePoint >= 0xF900 && codePoint <= 0xFDCF
                 || codePoint >= 0xFDF0 && codePoint <= 0xFFFD
                 || codePoint >= 0x10000 && codePoint <= 0xEFFFF;
+        #endregion
+
+        #region Write.Graph
+        /// <summary>
+        /// Writes the given graph into the given stream writer in Turtle format (eventually wrapped by TriG decorators)
+        /// </summary>
+        internal static void WriteTurtleGraph(StreamWriter sw, RDFGraph graph, List<RDFNamespace> prefixes, bool isTriG)
+        {
+            #region linq
+            //Group the graph's triples by subject and predicate
+            var triplesGroupedBySubjectAndPredicate =
+                (from triple in graph
+                 orderby triple.Subject.ToString(), triple.Predicate.ToString()
+                 group triple by new
+                 {
+                     subj = triple.Subject.ToString(),
+                     pred = triple.Predicate.ToString()
+                 });
+            var lastGroupOfTriples = triplesGroupedBySubjectAndPredicate.LastOrDefault();
+            #endregion
+
+            #region graph
+            //TriG requires opening decorators
+            if (isTriG)
+            {
+                //If the graph is not anonymous, its context must be wrapped into a GRAPH decorator
+                if (!graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri))
+                    sw.WriteLine($"GRAPH <{graph.Context}>");
+                sw.WriteLine("{");
+            }
+
+            #region triples
+            string actualSubject = string.Empty;
+            string abbreviatedSubject = string.Empty;
+            string actualPredicate = string.Empty;
+            string abbreviatedPredicate = string.Empty;
+            const string spaceConst = " ";
+            StringBuilder result = new StringBuilder();
+
+            //Iterate over the calculated groups
+            foreach (var triplesGroup in triplesGroupedBySubjectAndPredicate)
+            {
+                RDFTriple lastTripleOfGroup = triplesGroup.Last();
+
+                #region subj
+                //Reset the flag of subj printing for the new iteration
+                bool subjectHasBeenPrinted = false;
+
+                //New subject found
+                if (!actualSubject.Equals(triplesGroup.Key.subj, StringComparison.Ordinal))
+                {
+                    //Write the subject's Turtle token
+                    if (result.Length > 0)
+                    {
+                        result.Replace(";", ".", result.Length - (2 + Environment.NewLine.Length), 1);
+                        sw.Write(result.ToString());
+                        result.Clear();
+                    }
+
+                    //Start collecting the new subject's one
+                    actualSubject = triplesGroup.Key.subj;
+                    actualPredicate = string.Empty;
+                    abbreviatedSubject = RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(actualSubject), prefixes);
+                    result.Append(string.Concat(abbreviatedSubject, spaceConst));
+                    subjectHasBeenPrinted = true;
+                }
+                #endregion
+
+                #region predObjList
+                //Iterate over the triples of the current group
+                foreach (RDFTriple triple in triplesGroup)
+                {
+                    #region pred
+                    //New predicate found
+                    if (!actualPredicate.Equals(triple.Predicate.ToString(), StringComparison.Ordinal))
+                    {
+                        //Write the predicate's Turtle token
+                        if (!subjectHasBeenPrinted)
+                            result.Append(spaceConst.PadRight(abbreviatedSubject.Length + 1)); //pretty-printing spaces to align the predList
+                        actualPredicate = triple.Predicate.ToString();
+                        abbreviatedPredicate = RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(actualPredicate), prefixes);
+
+                        //Turtle goody for "rdf:type" shortcutting to "a"
+                        if (abbreviatedPredicate.Equals("rdf:type", StringComparison.Ordinal))
+                            abbreviatedPredicate = "a";
+
+                        result.Append(string.Concat(abbreviatedPredicate, spaceConst));
+                    }
+                    #endregion
+
+                    #region object
+                    //Collect the object to the Turtle token
+                    if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                    {
+                        //Write the object's Turtle token
+                        string currentObject = triple.Object.ToString();
+                        result.Append(RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(currentObject), prefixes));
+                    }
+                    #endregion
+
+                    #region literal
+                    //Collect the literal to the Turtle token
+                    else
+                    {
+                        //Detect presence of long-literals in order to write proper delimiter
+                        string litValDelim = "\"";
+                        if (regexTTL.Value.Match(triple.Object.ToString()).Success)
+                            litValDelim = "\"\"\"";
+
+                        //Write the literal's Turtle token
+                        if (triple.Object is RDFTypedLiteral)
+                        {
+                            string dtype = RDFQueryPrinter.PrintPatternMember(
+                                            RDFQueryUtilities.ParseRDFPatternMember(
+                                             RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)triple.Object).Datatype)), prefixes);
+                            string tLit = string.Concat(litValDelim, ((RDFTypedLiteral)triple.Object).Value.Replace("\\", "\\\\"), litValDelim, "^^", dtype);
+                            result.Append(tLit);
+                        }
+                        else
+                        {
+                            string pLit = string.Concat(litValDelim, ((RDFPlainLiteral)triple.Object).Value.Replace("\\", "\\\\"), litValDelim);
+                            if (((RDFPlainLiteral)triple.Object).HasLanguage())
+                                pLit = string.Concat(pLit, "@", ((RDFPlainLiteral)triple.Object).Language);
+                            result.Append(pLit);
+                        }
+                    }
+                    #endregion
+
+                    #region continuation goody
+                    //Then append appropriate Turtle continuation goody ("," or ";")
+                    if (!triple.Equals(lastTripleOfGroup))
+                        result.Append(", ");
+                    else
+                        result.AppendLine("; ");
+                    #endregion
+                }
+                #endregion
+
+                #region last group
+                //This is only for the last group, which is not written into the cycle as the others
+                if (triplesGroup.Key.Equals(lastGroupOfTriples.Key))
+                {
+                    result.Replace(";", ".", result.Length - (2 + Environment.NewLine.Length), 1);
+                    sw.Write(result.ToString());
+                }
+                #endregion
+            }
+            #endregion
+
+            //TriG requires closing decorators
+            if (isTriG)
+                sw.WriteLine("}");
+            #endregion
+        }
         #endregion
 
         #endregion
