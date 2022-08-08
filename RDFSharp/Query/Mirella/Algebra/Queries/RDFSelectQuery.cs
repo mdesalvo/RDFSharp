@@ -162,15 +162,27 @@ namespace RDFSharp.Query
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
         public RDFSelectQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
-            => this.ApplyToSPARQLEndpoint(sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+            => ApplyRawToSPARQLEndpoint(this.ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+
+        /// <summary>
+        /// Applies the given raw string SELECT query to the given SPARQL endpoint
+        /// </summary>
+        public static RDFSelectQueryResult ApplyRawToSPARQLEndpoint(string selectQuery, RDFSPARQLEndpoint sparqlEndpoint)
+            => ApplyRawToSPARQLEndpoint(selectQuery, sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
 
         /// <summary>
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
         public RDFSelectQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
+            => ApplyRawToSPARQLEndpoint(this.ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
+
+        /// <summary>
+        /// Applies the given raw string SELECT query to the given SPARQL endpoint
+        /// </summary>
+        public static RDFSelectQueryResult ApplyRawToSPARQLEndpoint(string selectQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
         {
             RDFSelectQueryResult selResult = new RDFSelectQueryResult();
-            if (sparqlEndpoint != null)
+            if (!string.IsNullOrWhiteSpace(selectQuery) && sparqlEndpoint != null)
             {
                 if (sparqlEndpointQueryOptions == null)
                     sparqlEndpointQueryOptions = new RDFSPARQLEndpointQueryOptions();
@@ -179,8 +191,7 @@ namespace RDFSharp.Query
                 using (RDFWebClient webClient = new RDFWebClient(sparqlEndpointQueryOptions.TimeoutMilliseconds))
                 {
                     //Insert reserved "query" parameter
-                    string sparqlQuery = this.ToString();
-                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(sparqlQuery));
+                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(selectQuery));
 
                     //Insert user-provided parameters
                     webClient.QueryString.Add(sparqlEndpoint.QueryParams);
@@ -226,13 +237,25 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given SPARQL endpoint
         /// </summary>
         public Task<RDFSelectQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
-            => this.ApplyToSPARQLEndpointAsync(sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+            => ApplyRawToSPARQLEndpointAsync(this.ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+
+        /// <summary>
+        /// Asynchronously applies the given raw string SELECT query to the given SPARQL endpoint
+        /// </summary>
+        public static Task<RDFSelectQueryResult> ApplyRawToSPARQLEndpointAsync(string selectQuery, RDFSPARQLEndpoint sparqlEndpoint)
+            => ApplyRawToSPARQLEndpointAsync(selectQuery, sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
 
         /// <summary>
         /// Asynchronously applies the query to the given SPARQL endpoint
         /// </summary>
         public Task<RDFSelectQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-            => Task.Run(() => this.ApplyToSPARQLEndpoint(sparqlEndpoint, sparqlEndpointQueryOptions));
+            => ApplyRawToSPARQLEndpointAsync(this.ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
+
+        /// <summary>
+        /// Asynchronously applies the given raw string SELECT query to the given SPARQL endpoint
+        /// </summary>
+        public static Task<RDFSelectQueryResult> ApplyRawToSPARQLEndpointAsync(string selectQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
+            => Task.Run(() => ApplyRawToSPARQLEndpoint(selectQuery, sparqlEndpoint, sparqlEndpointQueryOptions));
 
         /// <summary>
         /// Applies the query to the given data source

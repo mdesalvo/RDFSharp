@@ -108,15 +108,27 @@ namespace RDFSharp.Query
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
         public RDFAskQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
-            => this.ApplyToSPARQLEndpoint(sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+            => ApplyRawToSPARQLEndpoint(this.ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+
+        /// <summary>
+        /// Applies the given raw string ASK query to the given SPARQL endpoint
+        /// </summary>
+        public static RDFAskQueryResult ApplyRawToSPARQLEndpoint(string askQuery, RDFSPARQLEndpoint sparqlEndpoint)
+            => ApplyRawToSPARQLEndpoint(askQuery, sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
 
         /// <summary>
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
         public RDFAskQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
+            => ApplyRawToSPARQLEndpoint(this.ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
+
+        /// <summary>
+        /// Applies the given raw string ASK query to the given SPARQL endpoint
+        /// </summary>
+        public static RDFAskQueryResult ApplyRawToSPARQLEndpoint(string askQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
         {
             RDFAskQueryResult askResult = new RDFAskQueryResult();
-            if (sparqlEndpoint != null)
+            if (!string.IsNullOrWhiteSpace(askQuery) && sparqlEndpoint != null)
             {
                 if (sparqlEndpointQueryOptions == null)
                     sparqlEndpointQueryOptions = new RDFSPARQLEndpointQueryOptions();
@@ -125,7 +137,7 @@ namespace RDFSharp.Query
                 using (RDFWebClient webClient = new RDFWebClient(sparqlEndpointQueryOptions.TimeoutMilliseconds))
                 {
                     //Insert reserved "query" parameter
-                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(this.ToString()));
+                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(askQuery));
 
                     //Insert user-provided parameters
                     webClient.QueryString.Add(sparqlEndpoint.QueryParams);
@@ -163,13 +175,25 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given SPARQL endpoint
         /// </summary>
         public Task<RDFAskQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
-            => this.ApplyToSPARQLEndpointAsync(sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+            => ApplyRawToSPARQLEndpointAsync(this.ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+
+        /// <summary>
+        /// Asynchronously applies the given raw string ASK query to the given SPARQL endpoint
+        /// </summary>
+        public static Task<RDFAskQueryResult> ApplyRawToSPARQLEndpointAsync(string askQuery, RDFSPARQLEndpoint sparqlEndpoint)
+            => ApplyRawToSPARQLEndpointAsync(askQuery, sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
 
         /// <summary>
         /// Asynchronously applies the query to the given SPARQL endpoint
         /// </summary>
         public Task<RDFAskQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-            => Task.Run(() => this.ApplyToSPARQLEndpoint(sparqlEndpoint, sparqlEndpointQueryOptions));
+            => ApplyRawToSPARQLEndpointAsync(this.ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
+
+        /// <summary>
+        /// Asynchronously applies the given raw string ASK query to the given SPARQL endpoint
+        /// </summary>
+        public static Task<RDFAskQueryResult> ApplyRawToSPARQLEndpointAsync(string askQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
+            => Task.Run(() => ApplyRawToSPARQLEndpoint(askQuery, sparqlEndpoint, sparqlEndpointQueryOptions));
         #endregion
     }
 }
