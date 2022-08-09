@@ -181,6 +181,203 @@ namespace RDFSharp.Test.Store
             Assert.IsTrue(fileContent.Equals("@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>."+ Environment.NewLine + "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>." + Environment.NewLine + Environment.NewLine + "GRAPH <http://ctx1/>" + Environment.NewLine + "{" + Environment.NewLine + "<http://subj1/> a <http://obj1/>. " + Environment.NewLine + "}" + Environment.NewLine + "GRAPH <http://ctx2/>" + Environment.NewLine + "{" + Environment.NewLine + "<http://subj2/> rdfs:seeAlso <http://obj2/>. " + Environment.NewLine + "}" + Environment.NewLine));
         }
 
+        //DESERIALIZE
+
+        [TestMethod]
+        public void ShouldDeserializeEmptyStore()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeEmptyStoreBecauseOnlyComments()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}#This is a comment!");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeEmptyStoreBecauseOnlyCommentsEndingWithCarriageReturn()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.Write("#This is a comment! \r");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeDefaultGraphWithSPOTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> <http://pred/> <http://obj/>.");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeDefaultGraphWithSPOTripleEvenOnMissingBaseDeclaration()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> <http://obj/>.");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeDefaultGraphWithSPOTripleEvenOnEmptyBaseDeclaration()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <>.{Environment.NewLine}<http://subj/> <http://pred/> <http://obj/>.");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeDefaultGraphByParenthesisWithSPOTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}{{<http://subj/> <http://pred/> <http://obj/>.}}");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeDefaultGraphByParenthesisWithSPOTripleHavingCustomBase()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <ex:org>.{Environment.NewLine}{{<http://subj/> <http://pred/> <http://obj/>.}}");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeDefaultGraphByParenthesisWithMultipleSPOTriplesHavingCustomBase()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <ex:org>.{Environment.NewLine}{{<http://subj/> <http://pred/> <http://obj/>; <http://pred2/> <http://obj2/>, <http://obj3/>.}}");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 3);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj3/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeNamedGraphWithMultipleSPOTriples()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"GRAPH <ex:org>{{<http://subj/> <http://pred/> <http://obj/>; <http://pred2/> <http://obj2/>, <http://obj3/>.}}");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 3);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj3/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeNamedPrefixedGraphWithMultipleSPOTriples()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.{Environment.NewLine}GRAPH rdf:example{{<http://subj/> <http://pred/> <http://obj/>; <http://pred2/> <http://obj2/>, <http://obj3/>.}}");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 3);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://www.w3.org/1999/02/22-rdf-syntax-ns#example"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://www.w3.org/1999/02/22-rdf-syntax-ns#example"), new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://www.w3.org/1999/02/22-rdf-syntax-ns#example"), new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj3/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeNamedBaseGraphWithMultipleSPOTriples()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <http://example.org/>.{Environment.NewLine}GRAPH :example{{<http://subj/> <http://pred/> <http://obj/>; <http://pred2/> <http://obj2/>, <http://obj3/>.}}");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 3);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://example.org/example"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://example.org/example"), new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://example.org/example"), new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj3/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeUnnamedBaseGraphWithMultipleSPOTriples()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <http://example.org/>.{Environment.NewLine}:example{{<http://subj/> <http://pred/> <http://obj/>; <http://pred2/> <http://obj2/>, <http://obj3/>.}}");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 3);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://example.org/example"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://example.org/example"), new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://example.org/example"), new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj3/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeMultipleGraphsTryingAllSyntaxCombinations()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <http://example.org/>.{Environment.NewLine}:graph1{{<http://subj/> <http://pred/> <http://obj/>; <http://pred2/> <http://obj2/>, <http://obj3/>.}}{Environment.NewLine}GRAPH :graph2{{<http://subj> <http://pred> <http://obj>.}}{Environment.NewLine}GRAPH <http://ctx3/>{{_:12345 <http://pred/> \"hello\"@EN-US.}}{Environment.NewLine}GRAPH <http://ctx3/>{{<http://subj/> <http://pred/> <http://obj/>.}}{Environment.NewLine}<http://subjAlone/> <http://predAlone/> <http://objAlone/>.");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 7);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://example.org/graph1"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://example.org/graph1"), new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://example.org/graph1"), new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj3/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://example.org/graph2"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx3/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello","EN-US"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx3/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://example.org/"), new RDFResource("http://subjAlone/"), new RDFResource("http://predAlone/"), new RDFResource("http://objAlone/"))));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {

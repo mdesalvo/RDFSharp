@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Model;
+using static RDFSharp.Model.RDFTurtle;
 using RDFSharp.Query;
 using System;
 using System.Collections;
@@ -99,12 +100,26 @@ namespace RDFSharp.Store
             {
                 #region deserialize
 
-                RDFMemoryStore result = new RDFMemoryStore();
-                
-                //TODO
+                //Initialize TriG context
+                RDFTriGContext trigContext = new RDFTriGContext();
 
+                //Fetch TriG data
+                string trigData = string.Empty;
+                using (StreamReader sReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
+                    trigData = sReader.ReadToEnd();
 
-                return result;
+                //Parse TriG data
+                int bufferChar = SkipWhitespace(trigData, trigContext);
+                while (bufferChar != -1)
+                {
+                    ParseStatement(trigData, trigContext);
+                    //After parsing of a statement we discard spaces and comments
+                    //and seek for the next eventual statement, until finally EOL
+                    bufferChar = SkipWhitespace(trigData, trigContext);
+                }
+                RDFNamespaceRegister.RemoveTemporaryNamespaces();
+
+                return trigContext.Store;
 
                 #endregion deserialize
             }
@@ -112,6 +127,256 @@ namespace RDFSharp.Store
             {
                 throw new RDFStoreException("Cannot deserialize TriG because: " + ex.Message, ex);
             }
+        }
+        #endregion
+
+        #region Utilities
+
+        #region Declarations
+        /// <summary>
+        /// Represents the context of the TriG parser
+        /// </summary>
+        internal class RDFTriGContext : RDFTurtleContext
+        {
+            /// <summary>
+            /// Indicates the current TriG context
+            /// </summary>
+            internal RDFResource Context { get; set; }
+
+            /// <summary>
+            /// Indicates the current TriG graph
+            /// </summary>
+            internal RDFGraph Graph { get; set; } = new RDFGraph();
+
+            /// <summary>
+            /// Indicates the result TriG store
+            /// </summary>
+            internal RDFMemoryStore Store { get; set; } = new RDFMemoryStore();
+        }
+        #endregion
+
+        /// <summary>
+        /// Parses the TriG data in order to detect a valid directive or statement
+        /// </summary>
+        internal static void ParseStatement(string trigData, RDFTriGContext trigContext)
+        {
+            StringBuilder sb = new StringBuilder(8);
+            int codePoint;
+
+            // longest valid directive @prefix
+            do
+            {
+                codePoint = ReadCodePoint(trigData, trigContext);
+                if (codePoint == -1 || IsWhitespace(codePoint))
+                {
+                    UnreadCodePoint(trigData, trigContext, codePoint);
+                    break;
+                }
+                sb.Append(char.ConvertFromUtf32(codePoint));
+            } while (sb.Length < 8);
+
+            string directive = sb.ToString();
+            if (directive.StartsWith("@")
+                    || directive.Equals("prefix", StringComparison.InvariantCultureIgnoreCase)
+                        || directive.Equals("base", StringComparison.InvariantCultureIgnoreCase))
+            {
+                ParseDirective(trigData, trigContext, trigContext.Graph, directive);
+                SkipWhitespace(trigData, trigContext);
+                // Turtle @base and @prefix directives MUST end with "."
+                if (directive.StartsWith("@"))
+                {
+                    VerifyCharacterOrFail(trigData, trigContext, ReadCodePoint(trigData, trigContext), ".");
+                }
+                // SPARQL BASE and PREFIX directives MUST NOT end with "."
+                else
+                {
+                    if (PeekCodePoint(trigData, trigContext) == '.')
+                        throw new RDFModelException("SPARQL directive '" + directive + "' must not end with '.'" + GetTurtleContextCoordinates(trigContext));
+                }
+            }
+            else if (directive.StartsWith("graph:", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // If there was a colon immediately after the graph keyword then
+                // assume it was a pname and not the SPARQL GRAPH keyword
+                UnreadCodePoint(trigData, trigContext, directive);
+                ParseGraph(trigData, trigContext);
+            }
+            else if (directive.StartsWith("graph", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // Do not unread the directive if it was SPARQL GRAPH
+                // Just continue with TriG parsing at this point
+                SkipWhitespace(trigData, trigContext);
+
+                //Clear context in preparation of next graph's parsing
+                trigContext.Context = null;
+
+                ParseGraph(trigData, trigContext);
+                if (trigContext.Context == null)
+                    throw new RDFStoreException("Missing GRAPH label or subject");
+            }
+            else
+            {
+                UnreadCodePoint(trigData, trigContext, directive);
+                ParseGraph(trigData, trigContext);
+            }
+        }
+
+        /// <summary>
+        /// Parses the TriG data in order to detect a valid graph
+        /// </summary>
+        internal static void ParseGraph(string trigData, RDFTriGContext trigContext)
+        { 
+	        RDFResource contextOrSubject = null;
+	        bool foundContextOrSubject = false;
+            int c = ReadCodePoint(trigData, trigContext);
+            int c2 = PeekCodePoint(trigData, trigContext);
+
+            if (c == '[')
+            {
+		        SkipWhitespace(trigData, trigContext);
+		        c2 = ReadCodePoint(trigData, trigContext);
+                if (c2 == ']')
+                {
+                    contextOrSubject = new RDFResource(); //createNode()
+			        foundContextOrSubject = true;
+                    SkipWhitespace(trigData, trigContext);
+                }
+                else
+                {
+			        UnreadCodePoint(trigData, trigContext, c2);
+                    UnreadCodePoint(trigData, trigContext, c);
+                }
+		        c = ReadCodePoint(trigData, trigContext);
+            }
+            else if (c == '<' || IsPrefixStartChar(c) || (c == ':' && c2 != '-') || (c == '_' && c2 == ':'))
+            {
+                UnreadCodePoint(trigData, trigContext, c);
+
+                object value = ParseValue(trigData, trigContext, trigContext.Graph);
+
+		        if (value is Uri || value is RDFResource)
+                {
+			        contextOrSubject = new RDFResource(value.ToString());
+			        foundContextOrSubject = true;
+		        }
+                else
+                {
+			        // NOTE: If a user parses Turtle using TriG, then the following
+			        // could actually be "Illegal subject name", but it should still hold
+			        throw new RDFStoreException("Illegal graph name: " + value);
+		        }
+
+                SkipWhitespace(trigData, trigContext);
+                c = ReadCodePoint(trigData, trigContext);
+            }
+            else
+                trigContext.Context = null;
+
+            if (c == '{')
+            {
+                trigContext.Context = contextOrSubject;
+
+		        c = SkipWhitespace(trigData, trigContext);
+		        if (c != '}')
+                {
+			        ParseTriples(trigData, trigContext);
+			        c = SkipWhitespace(trigData, trigContext);
+
+                    while (c == '.')
+                    {
+                        ReadCodePoint(trigData, trigContext);
+                        c = SkipWhitespace(trigData, trigContext);
+                        if (c == '}')
+					        break;
+
+                        ParseTriples(trigData, trigContext);
+                        c = SkipWhitespace(trigData, trigContext);
+                    }
+                }
+
+			    VerifyCharacterOrFail(trigData, trigContext, c, "}");
+            }
+	        else
+            {
+                trigContext.Context = null;
+
+		        // Did not turn out to be a graph, so assign it to subject instead
+		        // and parse from here to triples
+		        if (foundContextOrSubject)
+                {
+			        trigContext.Subject = contextOrSubject;
+			        UnreadCodePoint(trigData, trigContext, c);
+			        ParsePredicateObjectList(trigData, trigContext, trigContext.Graph);
+		        }
+		        // Or if we didn't recognise anything, just parse as Turtle
+		        else
+                {
+                    UnreadCodePoint(trigData, trigContext, c);
+                    ParseTriples(trigData, trigContext);
+		        }
+            }
+
+            //Finalize collection of the current graph into the TriG store
+            Uri backupGraphContext = trigContext.Graph.Context;
+            trigContext.Graph.SetContext(trigContext.Context?.URI);
+            trigContext.Store.MergeGraph(trigContext.Graph);
+            trigContext.Graph.SetContext(backupGraphContext);
+            trigContext.Graph.ClearTriples();
+
+            ReadCodePoint(trigData, trigContext);
+        }
+
+        /// <summary>
+        /// Parses the TriG data in order to detect a valid statement
+        /// </summary>
+        internal static void ParseTriples(string trigData, RDFTriGContext trigContext)
+        {
+            int bufChar = PeekCodePoint(trigData, trigContext);
+
+            // If the first character is an open bracket we need to decide which of
+            // the two parsing methods for blank nodes to use
+            if (bufChar == '[')
+            {
+                bufChar = ReadCodePoint(trigData, trigContext);
+                SkipWhitespace(trigData, trigContext);
+                bufChar = PeekCodePoint(trigData, trigContext);
+                if (bufChar == ']')
+                {
+                    bufChar = ReadCodePoint(trigData, trigContext);
+                    trigContext.Subject = new RDFResource();
+                    SkipWhitespace(trigData, trigContext);
+                    ParsePredicateObjectList(trigData, trigContext, trigContext.Graph);
+                }
+                else
+                {
+                    //We have to parse an implicit blank, so we must rewind to the
+                    //initial '[' character in order for the method to work
+                    while (bufChar != '[')
+                    {
+                        UnreadCodePoint(trigData, trigContext, bufChar);
+                        bufChar = PeekCodePoint(trigData, trigContext);
+                    }
+                    trigContext.Subject = ParseImplicitBlank(trigData, trigContext, trigContext.Graph);
+                }
+                SkipWhitespace(trigData, trigContext);
+                bufChar = PeekCodePoint(trigData, trigContext);
+
+                // if this is not the end of the statement, recurse into the list of
+                // predicate and objects, using the subject parsed above as the subject
+                // of the statement.
+                if (bufChar != '.' && bufChar != '}')
+                    ParsePredicateObjectList(trigData, trigContext, trigContext.Graph);
+            }
+            else
+            {
+                ParseSubject(trigData, trigContext, trigContext.Graph);
+                SkipWhitespace(trigData, trigContext);
+                ParsePredicateObjectList(trigData, trigContext, trigContext.Graph);
+            }
+
+            trigContext.Subject = null;
+            trigContext.Predicate = null;
+            trigContext.Object = null;
         }
         #endregion
 
