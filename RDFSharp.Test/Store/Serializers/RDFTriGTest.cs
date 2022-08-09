@@ -260,6 +260,19 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
+        public void ShouldDeserializeTrickyDefaultPrefixedGraphWithSPOTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"PREFIX graph: <>{Environment.NewLine}graph:pippo <http://pred/> <http://obj/>.");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource(RDFNamespaceRegister.DefaultNamespace.ToString()+"pippo"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeDefaultGraphByParenthesisWithSPOTriple()
         {
             MemoryStream stream = new MemoryStream();
@@ -512,6 +525,15 @@ namespace RDFSharp.Test.Store
                                             && q.Subject is RDFResource subject && subject.IsBlank
                                                 && q.Predicate.Equals(new RDFResource("http://pred/"))
                                                     && q.Object.Equals(new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingNamedGraphBecauseBadFormedSPARQLPrefix()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"PREFIX pf: <ex:pf>.{Environment.NewLine}GRAPH <ex:org>{{<http://subj/> <http://pred/> <http://obj/> .}}");
+            Assert.ThrowsException<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
         }
 
         [TestMethod]
