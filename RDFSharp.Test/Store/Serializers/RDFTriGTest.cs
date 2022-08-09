@@ -19,6 +19,7 @@ using RDFSharp.Model;
 using RDFSharp.Store;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace RDFSharp.Test.Store
 {
@@ -463,6 +464,54 @@ namespace RDFSharp.Test.Store
             Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx3/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "EN-US"))));
             Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx3/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
             Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://example.org/"), new RDFResource("http://subjAlone/"), new RDFResource("http://predAlone/"), new RDFResource("http://objAlone/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeDefaultGraphByParenthesisWithBPOAnonymousInlineTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}{{[<http://pred/> <http://obj/>].}}");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.Any(q => q.Context.Equals(new RDFContext())
+                                            && q.Subject is RDFResource subject && subject.IsBlank
+                                                && q.Predicate.Equals(new RDFResource("http://pred/"))
+                                                    && q.Object.Equals(new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeDefaultGraphByParenthesisWithBPOAnonymousTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}{{[] <http://pred/> <http://obj/> .}}");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.Any(q => q.Context.Equals(new RDFContext())
+                                            && q.Subject is RDFResource subject && subject.IsBlank
+                                                && q.Predicate.Equals(new RDFResource("http://pred/"))
+                                                    && q.Object.Equals(new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeDefaultGraphWithBPOAnonymousTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"[] <http://pred/> <http://obj/> .");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.Any(q => q.Context.Equals(new RDFContext())
+                                            && q.Subject is RDFResource subject && subject.IsBlank
+                                                && q.Predicate.Equals(new RDFResource("http://pred/"))
+                                                    && q.Object.Equals(new RDFResource("http://obj/"))));
         }
 
         [TestMethod]
