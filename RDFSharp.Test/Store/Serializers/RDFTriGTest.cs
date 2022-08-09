@@ -515,6 +515,15 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBnodeNamedGraph()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"GRAPH _:12345{{<http://subj/> <http://pred/> <http://obj/> .}}");
+            Assert.ThrowsException<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
         public void ShouldThrowExceptionOnDeserializingNamedGraphBecauseMissingParenthesis()
         {
             MemoryStream stream = new MemoryStream();

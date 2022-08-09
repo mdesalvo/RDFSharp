@@ -254,7 +254,7 @@ namespace RDFSharp.Store
 
                 object value = ParseValue(trigData, trigContext, trigContext.Graph);
 
-		        if (value is Uri || value is RDFResource)
+		        if (value is Uri || (value is RDFResource resValue && !resValue.IsBlank)) //We don't accept blank contexts
                 {
 			        contextOrSubject = new RDFResource(value.ToString());
 			        foundContextOrSubject = true;
@@ -263,7 +263,7 @@ namespace RDFSharp.Store
                 {
 			        // NOTE: If a user parses Turtle using TriG, then the following
 			        // could actually be "Illegal subject name", but it should still hold
-			        throw new RDFStoreException("Illegal graph name: " + value);
+			        throw new RDFStoreException("Illegal (or blank-node) graph name: " + value);
 		        }
 
                 SkipWhitespace(trigData, trigContext);
