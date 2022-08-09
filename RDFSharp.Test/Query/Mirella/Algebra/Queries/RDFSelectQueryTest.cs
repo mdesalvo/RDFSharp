@@ -401,6 +401,49 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldApplyRawSelectQueryToSPARQLEndpoint()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFSelectQueryTest/ShouldApplyRawSelectQueryToSPARQLEndpoint/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?S"">
+        <uri>ex:flower</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>", encoding: Encoding.UTF8)
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplyRawSelectQueryToSPARQLEndpoint/sparql"));
+            RDFSelectQueryResult result = RDFSelectQuery.ApplyRawToSPARQLEndpoint(query.ToString(), endpoint);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
+        }
+
+        [TestMethod]
         public void ShouldApplySelectQueryToSPARQLEndpointAndHaveResultsWithBasicAuthorizationHeader()
         {
             string authHeaderValue = Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes("user:pwd"));
@@ -1101,6 +1144,49 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResultsCount == 0);
             Assert.IsTrue(result.SelectResults.Columns.Count == 1);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyRawSelectQueryToSPARQLEndpointAsync()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFSelectQueryTest/ShouldApplyRawSelectQueryToSPARQLEndpointAsync/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?S"">
+        <uri>ex:flower</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>", encoding: Encoding.UTF8)
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplyRawSelectQueryToSPARQLEndpointAsync/sparql"));
+            RDFSelectQueryResult result = await RDFSelectQuery.ApplyRawToSPARQLEndpointAsync(query.ToString(), endpoint);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
         [TestMethod]

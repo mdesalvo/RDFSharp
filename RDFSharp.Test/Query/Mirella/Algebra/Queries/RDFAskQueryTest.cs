@@ -288,6 +288,37 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldApplyRawAskQueryToSPARQLEndpoint()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFAskQueryTest/ShouldApplyRawAskQueryToSPARQLEndpoint/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody(
+@"<?xml version=""1.0""?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+    <head />
+    <boolean>true</boolean>
+</sparql>", encoding: Encoding.UTF8)
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldApplyRawAskQueryToSPARQLEndpoint/sparql"));
+            RDFAskQueryResult result = RDFAskQuery.ApplyRawToSPARQLEndpoint(query.ToString(), endpoint);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.AskResult);
+        }
+
+        [TestMethod]
         public void ShouldApplyAskQueryToNullSPARQLEndpointAndHaveFalseResult()
         {
             RDFAskQuery query = new RDFAskQuery()
@@ -605,6 +636,37 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsFalse(result.AskResult);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyRawAskQueryToSPARQLEndpointAsync()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFAskQueryTest/ShouldApplyRawAskQueryToSPARQLEndpointAsync/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody(
+@"<?xml version=""1.0""?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+    <head />
+    <boolean>true</boolean>
+</sparql>", encoding: Encoding.UTF8)
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldApplyRawAskQueryToSPARQLEndpointAsync/sparql"));
+            RDFAskQueryResult result = await RDFAskQuery.ApplyRawToSPARQLEndpointAsync(query.ToString(), endpoint);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.AskResult);
         }
 
         [TestMethod]

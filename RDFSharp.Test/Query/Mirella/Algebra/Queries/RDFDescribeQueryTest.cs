@@ -1174,6 +1174,38 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldApplyRawDescribeQueryToSPARQLEndpoint()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFDescribeQueryTest/ShouldApplyRawDescribeQueryToSPARQLEndpoint/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.@base <{RDFNamespaceRegister.DefaultNamespace}>.<ex:flower> a <ex:plant>.", encoding: Encoding.UTF8)
+                            .WithHeader("Content-Type", "application/turtle")
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldApplyRawDescribeQueryToSPARQLEndpoint/sparql"));
+            RDFDescribeQueryResult result = RDFDescribeQuery.ApplyRawToSPARQLEndpoint(query.ToString(), endpoint);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 1);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 3);
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals("ex:plant"));
+        }
+
+        [TestMethod]
         public void ShouldApplyDescribeQueryToNullSPARQLEndpointAndNotHaveResults()
         {
             RDFDescribeQuery query = new RDFDescribeQuery()
@@ -1601,6 +1633,38 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(result.DescribeResults);
             Assert.IsTrue(result.DescribeResultsCount == 0);
             Assert.IsTrue(result.DescribeResults.Columns.Count == 3);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyRawDescribeQueryToSPARQLEndpointAsync()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFDescribeQueryTest/ShouldApplyRawDescribeQueryToSPARQLEndpointAsync/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.@base <{RDFNamespaceRegister.DefaultNamespace}>.<ex:flower> a <ex:plant>.", encoding: Encoding.UTF8)
+                            .WithHeader("Content-Type", "application/turtle")
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFDescribeQuery query = new RDFDescribeQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddDescribeTerm(new RDFVariable("?S"))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDescribeQueryTest/ShouldApplyRawDescribeQueryToSPARQLEndpointAsync/sparql"));
+            RDFDescribeQueryResult result = await RDFDescribeQuery.ApplyRawToSPARQLEndpointAsync(query.ToString(), endpoint);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.DescribeResults);
+            Assert.IsTrue(result.DescribeResultsCount == 1);
+            Assert.IsTrue(result.DescribeResults.Columns.Count == 3);
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals("ex:plant"));
         }
 
         [TestMethod]
