@@ -1935,8 +1935,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(graph2.Context.Equals(new Uri("http://context/")));
         }
 
-        //TODO: Restore when test suite will be again on .NET 6
-        //[TestMethod]
+        [TestMethod]
         public void ShouldImportFromUri()
         {
             RDFGraph graph = RDFGraph.FromUri(new Uri(RDFVocabulary.RDFS.BASE_URI));
@@ -1954,8 +1953,7 @@ namespace RDFSharp.Test.Model
         public void ShouldRaiseExceptionOnImportingFromRelativeUri()
             => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromUri(new Uri("/file/system", UriKind.Relative)));
 
-        //TODO: Restore when test suite will be again on .NET 6
-        //[TestMethod]
+        [TestMethod]
         public async Task ShouldImportFromUriAsync()
         {
             RDFGraph graph = await RDFGraph.FromUriAsync(new Uri(RDFVocabulary.RDFS.BASE_URI));

@@ -6,7 +6,7 @@
 		<Version>3.0.0</Version>
 		<Authors>Marco De Salvo</Authors>
 		<Copyright>Marco De Salvo</Copyright>
-		<TargetFramework>netcoreapp2.1</TargetFramework>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<Product>RDFSharp</Product>
 	</PropertyGroup>
