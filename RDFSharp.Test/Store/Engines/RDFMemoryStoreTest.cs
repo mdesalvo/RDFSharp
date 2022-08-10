@@ -840,6 +840,7 @@ namespace RDFSharp.Test.Store
         [DataTestMethod]
         [DataRow(".nq",RDFStoreEnums.RDFFormats.NQuads)]
         [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
+        [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
         public void ShouldExportToFile(string fileExtension, RDFStoreEnums.RDFFormats format)
         {
             RDFMemoryStore store = new RDFMemoryStore();
@@ -849,7 +850,7 @@ namespace RDFSharp.Test.Store
             store.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFile{fileExtension}"));
 
             Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFile{fileExtension}")));
-            Assert.IsTrue(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFile{fileExtension}")).Length > 100);
+            Assert.IsTrue(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFile{fileExtension}")).Length > 90);
         }
 
         [TestMethod]
@@ -859,6 +860,7 @@ namespace RDFSharp.Test.Store
         [DataTestMethod]
         [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
         [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
+        [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
         public async Task ShouldExportToFileAsync(string fileExtension, RDFStoreEnums.RDFFormats format)
         {
             RDFMemoryStore store = new RDFMemoryStore();
@@ -868,7 +870,7 @@ namespace RDFSharp.Test.Store
             await store.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}"));
 
             Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}")));
-            Assert.IsTrue(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}")).Length > 100);
+            Assert.IsTrue(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}")).Length > 90);
         }
 
         [TestMethod]
@@ -878,6 +880,7 @@ namespace RDFSharp.Test.Store
         [DataTestMethod]
         [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
         [DataRow(RDFStoreEnums.RDFFormats.TriX)]
+        [DataRow(RDFStoreEnums.RDFFormats.TriG)]
         public void ShouldExportToStream(RDFStoreEnums.RDFFormats format)
         {
             MemoryStream stream = new MemoryStream();
@@ -887,7 +890,7 @@ namespace RDFSharp.Test.Store
             store.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
             store.ToStream(format, stream);
 
-            Assert.IsTrue(stream.ToArray().Length > 100);
+            Assert.IsTrue(stream.ToArray().Length > 90);
         }
 
         [TestMethod]
@@ -897,6 +900,7 @@ namespace RDFSharp.Test.Store
         [DataTestMethod]
         [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
         [DataRow(RDFStoreEnums.RDFFormats.TriX)]
+        [DataRow(RDFStoreEnums.RDFFormats.TriG)]
         public async Task ShouldExportToStreamAsync(RDFStoreEnums.RDFFormats format)
         {
             MemoryStream stream = new MemoryStream();
@@ -906,7 +910,7 @@ namespace RDFSharp.Test.Store
             store.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
             await store.ToStreamAsync(format, stream);
 
-            Assert.IsTrue(stream.ToArray().Length > 100);
+            Assert.IsTrue(stream.ToArray().Length > 90);
         }
 
         [TestMethod]
@@ -998,6 +1002,7 @@ namespace RDFSharp.Test.Store
         [DataTestMethod]
         [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
         [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
+        [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
         public void ShouldImportFromFile(string fileExtension, RDFStoreEnums.RDFFormats format)
         {
             RDFMemoryStore store1 = new RDFMemoryStore();
@@ -1015,6 +1020,7 @@ namespace RDFSharp.Test.Store
         [DataTestMethod]
         [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
         [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
+        [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
         public void ShouldImportEmptyFromFile(string fileExtension, RDFStoreEnums.RDFFormats format)
         {
             RDFMemoryStore store1 = new RDFMemoryStore();
@@ -1037,6 +1043,7 @@ namespace RDFSharp.Test.Store
         [DataTestMethod]
         [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
         [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
+        [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
         public async Task ShouldImportFromFileAsync(string fileExtension, RDFStoreEnums.RDFFormats format)
         {
             RDFMemoryStore store1 = new RDFMemoryStore();
@@ -1054,6 +1061,7 @@ namespace RDFSharp.Test.Store
         [DataTestMethod]
         [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
         [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
+        [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
         public async Task ShouldImportEmptyFromFileAsync(string fileExtension, RDFStoreEnums.RDFFormats format)
         {
             RDFMemoryStore store1 = new RDFMemoryStore();
@@ -1073,9 +1081,10 @@ namespace RDFSharp.Test.Store
         public void ShouldRaiseExceptionOnImportingFromUnexistingFilepathAsync()
             => Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.NQuads, "blablabla"));
 
-                [DataTestMethod]
+        [DataTestMethod]
         [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
         [DataRow(RDFStoreEnums.RDFFormats.TriX)]
+        [DataRow(RDFStoreEnums.RDFFormats.TriG)]
         public void ShouldImportFromStream(RDFStoreEnums.RDFFormats format)
         {
             MemoryStream stream = new MemoryStream();
@@ -1094,6 +1103,7 @@ namespace RDFSharp.Test.Store
         [DataTestMethod]
         [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
         [DataRow(RDFStoreEnums.RDFFormats.TriX)]
+        [DataRow(RDFStoreEnums.RDFFormats.TriG)]
         public void ShouldImportFromEmptyStream(RDFStoreEnums.RDFFormats format)
         {
             MemoryStream stream = new MemoryStream();
@@ -1112,6 +1122,7 @@ namespace RDFSharp.Test.Store
         [DataTestMethod]
         [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
         [DataRow(RDFStoreEnums.RDFFormats.TriX)]
+        [DataRow(RDFStoreEnums.RDFFormats.TriG)]
         public async Task ShouldImportFromStreamAsync(RDFStoreEnums.RDFFormats format)
         {
             MemoryStream stream = new MemoryStream();
@@ -1130,6 +1141,7 @@ namespace RDFSharp.Test.Store
         [DataTestMethod]
         [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
         [DataRow(RDFStoreEnums.RDFFormats.TriX)]
+        [DataRow(RDFStoreEnums.RDFFormats.TriG)]
         public async Task ShouldImportFromEmptyStreamAsync(RDFStoreEnums.RDFFormats format)
         {
             MemoryStream stream = new MemoryStream();
