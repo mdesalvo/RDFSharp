@@ -221,6 +221,21 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
+        public void ShouldDeserializeStoreWithMultipleGraphsFromFile()
+        {
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            store1.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+            store1.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+            RDFTriG.Serialize(store1, Path.Combine(Environment.CurrentDirectory, $"RDFTriGTest_ShouldDeserializeStoreWithMultipleGraphsFromFile.trig"));
+            RDFMemoryStore store2 = RDFTriG.Deserialize(Path.Combine(Environment.CurrentDirectory, $"RDFTriGTest_ShouldDeserializeStoreWithMultipleGraphsFromFile.trig"));
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 2);
+            Assert.IsTrue(store2.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store2.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeDefaultGraphWithSPOTriple()
         {
             MemoryStream stream = new MemoryStream();

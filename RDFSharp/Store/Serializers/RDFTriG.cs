@@ -73,7 +73,7 @@ namespace RDFSharp.Store
 
                     //Write graphs
                     foreach (RDFGraph graph in graphs)
-                        RDFTurtle.WriteTurtleGraph(sw, graph, prefixes, true);
+                        WriteTurtleGraph(sw, graph, prefixes, true);
                 }
                 #endregion
             }
