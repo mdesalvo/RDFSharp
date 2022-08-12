@@ -216,6 +216,61 @@ WHERE {
             => Assert.ThrowsException<RDFQueryException>(() => new RDFInsertWhereOperation().AddSubQuery(null));
 
         [TestMethod]
+        public void ShouldPrintComplexOperation()
+        {
+            RDFInsertWhereOperation operation = new RDFInsertWhereOperation()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
+                .AddInsertTemplate(new RDFPattern(new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .UnionWithNext()
+                )
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X")))
+                )
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?X"))
+                            .AddAlternativeSteps(new List<RDFPropertyPathStep>() { 
+                                new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
+                                new RDFPropertyPathStep(RDFVocabulary.RDFS.COMMENT)}
+                            )
+                        )
+                    )
+                    .Optional()
+                    .AddProjectionVariable(new RDFVariable("?Y"))
+                )
+                .AddModifier(new RDFDistinctModifier());
+            string operationString = operation.ToString();
+
+            Assert.IsTrue(string.Equals(operationString,
+@"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+INSERT {
+  ?Y rdf:type <ex:dog> .
+}
+WHERE {
+  {
+    {
+      ?Y <ex:dogOf> ?X .
+    }
+    UNION
+    {
+      ?Y <ex:isDogOf> ?X .
+    }
+  }
+  OPTIONAL {
+    SELECT ?Y
+    WHERE {
+      {
+        ?Y (<http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment>) ?X .
+      }
+    }
+  }
+}"));
+        }
+
+        [TestMethod]
         public void ShouldApplyToNullGraph()
         {
             RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
