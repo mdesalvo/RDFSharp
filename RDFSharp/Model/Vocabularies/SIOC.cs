@@ -27,7 +27,6 @@ namespace RDFSharp.Model
         /// </summary>
         public static class SIOC
         {
-
             #region Properties
             /// <summary>
             /// sioc
@@ -499,7 +498,6 @@ namespace RDFSharp.Model
             /// </summary>
             public static readonly RDFResource SUBJECT = new RDFResource(string.Concat(SIOC.BASE_URI,"subject"));
             #endregion
-
         }
         #endregion
     }

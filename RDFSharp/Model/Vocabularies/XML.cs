@@ -27,7 +27,6 @@ namespace RDFSharp.Model
         /// </summary>
         public static class XML
         {
-
             #region Properties
             /// <summary>
             /// xml
@@ -54,7 +53,6 @@ namespace RDFSharp.Model
             /// </summary>
             public static readonly RDFResource BASE = new RDFResource(string.Concat(XML.BASE_URI, "#base"));
             #endregion
-
         }
         #endregion
     }

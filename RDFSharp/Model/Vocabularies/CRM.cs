@@ -27,7 +27,6 @@ namespace RDFSharp.Model
         /// </summary>
         public static class CRM
         {
-
             #region Properties
             /// <summary>
             /// crm
@@ -1764,7 +1763,6 @@ namespace RDFSharp.Model
             /// </summary>
             public static readonly RDFResource P149I_IDENTIFIES = new RDFResource(string.Concat(CRM.BASE_URI, "P149i_identifies"));
             #endregion
-
         }
         #endregion
     }

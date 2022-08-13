@@ -27,7 +27,6 @@ namespace RDFSharp.Model
         /// </summary>
         public static class RDFSHARP
         {
-
             #region Properties
             /// <summary>
             /// rdfsharp
@@ -44,7 +43,6 @@ namespace RDFSharp.Model
             /// </summary>
             public static readonly string DEREFERENCE_URI = "https://rdfsharp.codeplex.com/";
             #endregion
-
         }
         #endregion
     }

@@ -27,7 +27,6 @@ namespace RDFSharp.Model
         /// </summary>
         public static class SWRL
         {
-
             #region Properties
             /// <summary>
             /// swrl
@@ -71,7 +70,6 @@ namespace RDFSharp.Model
 
             }
             #endregion
-
         }
         #endregion
     }

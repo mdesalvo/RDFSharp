@@ -27,7 +27,6 @@ namespace RDFSharp.Model
         /// </summary>
         public static class DOAP
         {
-
             #region Properties
             /// <summary>
             /// doap
@@ -309,7 +308,6 @@ namespace RDFSharp.Model
             /// </summary>
             public static readonly RDFResource BLOG = new RDFResource(string.Concat(DOAP.BASE_URI, "blog"));
             #endregion
-
         }
         #endregion
     }

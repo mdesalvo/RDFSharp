@@ -27,7 +27,6 @@ namespace RDFSharp.Model
         /// </summary>
         public static class DC
         {
-
             #region Properties
             /// <summary>
             /// dc
@@ -128,7 +127,6 @@ namespace RDFSharp.Model
             /// </summary>
             public static class DCAM
             {
-
                 #region Properties
                 /// <summary>
                 /// dcam
@@ -155,7 +153,6 @@ namespace RDFSharp.Model
                 /// </summary>
                 public static readonly RDFResource VOCABULARY_ENCODING_SCHEME = new RDFResource(string.Concat(DCAM.BASE_URI, "VocabularyEncodingScheme"));
                 #endregion
-
             }
             #endregion
 
@@ -165,7 +162,6 @@ namespace RDFSharp.Model
             /// </summary>
             public static class DCTERMS
             {
-
                 #region Properties
                 /// <summary>
                 /// dcterms
@@ -677,7 +673,6 @@ namespace RDFSharp.Model
                 #endregion
 
                 #endregion
-
             }
             #endregion
 
@@ -687,7 +682,6 @@ namespace RDFSharp.Model
             /// </summary>
             public static class DCTYPE
             {
-
                 #region Properties
                 /// <summary>
                 /// dctype
@@ -764,12 +758,10 @@ namespace RDFSharp.Model
                 /// </summary>
                 public static readonly RDFResource TEXT = new RDFResource(string.Concat(DCTYPE.BASE_URI, "Text"));
                 #endregion
-
             }
             #endregion
 
             #endregion
-
         }
         #endregion
     }

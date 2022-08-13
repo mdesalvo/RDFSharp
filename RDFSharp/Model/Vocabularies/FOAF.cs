@@ -27,7 +27,6 @@ namespace RDFSharp.Model
         /// </summary>
         public static class FOAF
         {
-
             #region Properties
             /// <summary>
             /// foaf
@@ -399,7 +398,6 @@ namespace RDFSharp.Model
             /// </summary>
             public static readonly RDFResource BIRTHDAY = new RDFResource(string.Concat(FOAF.BASE_URI, "birthday"));
             #endregion
-
         }
         #endregion
     }

@@ -27,7 +27,6 @@ namespace RDFSharp.Model
         /// </summary>
         public static class EARL
         {
-
             #region Properties
             /// <summary>
             /// earl
@@ -215,7 +214,6 @@ namespace RDFSharp.Model
             public static readonly RDFResource UNTESTED = new RDFResource(string.Concat(EARL.BASE_URI, "untested"));
 
             #endregion
-
         }
         #endregion
     }

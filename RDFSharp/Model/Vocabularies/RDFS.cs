@@ -23,11 +23,10 @@ namespace RDFSharp.Model
     {
         #region RDFS
         /// <summary>
-        /// RDFS represents the RDFS vocabulary.
+        /// RDFS represents the W3C RDF Schema vocabulary.
         /// </summary>
         public static class RDFS
         {
-
             #region Properties
             /// <summary>
             /// rdfs
@@ -119,7 +118,6 @@ namespace RDFSharp.Model
             /// </summary>
             public static readonly RDFResource IS_DEFINED_BY = new RDFResource(string.Concat(RDFS.BASE_URI,"isDefinedBy"));
             #endregion
-
         }
         #endregion
     }

@@ -23,11 +23,10 @@ namespace RDFSharp.Model
     {
         #region RDF
         /// <summary>
-        /// RDF represents the RDF vocabulary.
+        /// RDF represents the W3C RDF vocabulary.
         /// </summary>
         public static class RDF
         {
-
             #region Properties
             /// <summary>
             /// rdf
@@ -134,7 +133,6 @@ namespace RDFSharp.Model
             /// </summary>
             public static readonly RDFResource REST = new RDFResource(string.Concat(RDF.BASE_URI,"rest"));
             #endregion
-
         }
         #endregion
     }

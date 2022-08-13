@@ -23,11 +23,10 @@ namespace RDFSharp.Model
     {
         #region XSD
         /// <summary>
-        /// XSD represents the XSD vocabulary.
+        /// XSD represents the W3C XML Schema vocabulary.
         /// </summary>
         public static class XSD
         {
-
             #region Properties
             /// <summary>
             /// xsd
@@ -244,7 +243,6 @@ namespace RDFSharp.Model
             /// </summary>
             public static readonly RDFResource ID = new RDFResource(string.Concat(XSD.BASE_URI,"ID"));
             #endregion
-
         }
         #endregion
     }

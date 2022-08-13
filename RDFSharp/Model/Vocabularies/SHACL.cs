@@ -27,7 +27,6 @@ namespace RDFSharp.Model
         /// </summary>
         public static class SHACL
         {
-
             #region Properties
             /// <summary>
             /// sh
@@ -929,7 +928,6 @@ namespace RDFSharp.Model
             /// </summary>
             public static readonly RDFResource SPARQL_CONSTRAINT = new RDFResource(string.Concat(SHACL.BASE_URI,"SPARQLConstraint"));
             #endregion
-
         }
         #endregion
     }

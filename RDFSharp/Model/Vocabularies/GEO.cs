@@ -27,7 +27,6 @@ namespace RDFSharp.Model
         /// </summary>
         public static class GEO
         {
-
             #region Properties
             /// <summary>
             /// geo
@@ -79,7 +78,6 @@ namespace RDFSharp.Model
             /// </summary>
             public static readonly RDFResource LOCATION = new RDFResource(string.Concat(GEO.BASE_URI, "location"));
             #endregion
-
         }
         #endregion
     }

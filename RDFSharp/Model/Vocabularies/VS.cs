@@ -27,7 +27,6 @@ namespace RDFSharp.Model
         /// </summary>
         public static class VS
         {
-
             #region Properties
             /// <summary>
             /// vs
@@ -64,7 +63,6 @@ namespace RDFSharp.Model
             /// </summary>
             public static readonly RDFResource UNSTABLE = new RDFResource(string.Concat(VS.BASE_URI, "unstable"));
             #endregion
-
         }
         #endregion
     }

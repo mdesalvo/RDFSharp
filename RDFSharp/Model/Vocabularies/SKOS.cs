@@ -27,7 +27,6 @@ namespace RDFSharp.Model
         /// </summary>
         public static class SKOS
         {
-
             #region Properties
             /// <summary>
             /// skos
@@ -266,7 +265,6 @@ namespace RDFSharp.Model
 
             }
             #endregion
-
         }
         #endregion
     }
