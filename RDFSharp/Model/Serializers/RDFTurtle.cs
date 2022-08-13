@@ -1513,9 +1513,9 @@ namespace RDFSharp.Model
 
         #region Write.Graph
         /// <summary>
-        /// Writes the given graph into the given stream writer in Turtle format (eventually wrapped by TriG decorators)
+        /// Writes the given graph into the given stream writer in Turtle format
         /// </summary>
-        internal static void WriteTurtleGraph(StreamWriter sw, RDFGraph graph, List<RDFNamespace> prefixes, bool isTriG)
+        internal static void WriteTurtleGraph(StreamWriter sw, RDFGraph graph, List<RDFNamespace> prefixes, bool needsTrigIndentation)
         {
             #region linq
             //Group the graph's triples by subject and predicate
@@ -1529,16 +1529,6 @@ namespace RDFSharp.Model
                  });
             var lastGroupOfTriples = triplesGroupedBySubjectAndPredicate.LastOrDefault();
             #endregion
-
-            #region graph
-            //TriG requires opening decorators
-            if (isTriG)
-            {
-                //If the graph is not anonymous, its context must be wrapped into a GRAPH decorator
-                if (!graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri))
-                    sw.WriteLine($"GRAPH <{graph.Context}>");
-                sw.WriteLine("{");
-            }
 
             #region triples
             string actualSubject = string.Empty;
@@ -1572,7 +1562,8 @@ namespace RDFSharp.Model
                     actualSubject = triplesGroup.Key.subj;
                     actualPredicate = string.Empty;
                     abbreviatedSubject = RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(actualSubject), prefixes);
-                    result.Append(string.Concat(abbreviatedSubject, spaceConst));
+                    result.Append(needsTrigIndentation ? string.Concat(spaceConst, spaceConst, abbreviatedSubject, spaceConst)
+                                                       : string.Concat(abbreviatedSubject, spaceConst));
                     subjectHasBeenPrinted = true;
                 }
                 #endregion
@@ -1587,7 +1578,8 @@ namespace RDFSharp.Model
                     {
                         //Write the predicate's Turtle token
                         if (!subjectHasBeenPrinted)
-                            result.Append(spaceConst.PadRight(abbreviatedSubject.Length + 1)); //pretty-printing spaces to align the predList
+                            result.Append(needsTrigIndentation ? spaceConst.PadRight(abbreviatedSubject.Length + 3)
+                                                               : spaceConst.PadRight(abbreviatedSubject.Length + 1));
                         actualPredicate = triple.Predicate.ToString();
                         abbreviatedPredicate = RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(actualPredicate), prefixes);
 
@@ -1656,11 +1648,6 @@ namespace RDFSharp.Model
                 }
                 #endregion
             }
-            #endregion
-
-            //TriG requires closing decorators
-            if (isTriG)
-                sw.WriteLine("}");
             #endregion
         }
         #endregion

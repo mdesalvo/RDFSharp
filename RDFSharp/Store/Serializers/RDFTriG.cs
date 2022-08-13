@@ -61,19 +61,32 @@ namespace RDFSharp.Store
                     //Write namespaces (avoid duplicates)
                     HashSet<string> printedNamespaces = new HashSet<string>();
                     foreach (RDFNamespace ns in prefixes.OrderBy(n => n.NamespacePrefix))
-                    {
                         if (!printedNamespaces.Contains(ns.NamespacePrefix))
                         {
                             printedNamespaces.Add(ns.NamespacePrefix);
                             sw.WriteLine(string.Concat("@prefix ", ns.NamespacePrefix, ": <", ns.NamespaceUri, ">."));
                         }
-                    }
                     if (printedNamespaces.Count > 0)
                         sw.WriteLine();
 
                     //Write graphs
-                    foreach (RDFGraph graph in graphs)
-                        WriteTurtleGraph(sw, graph, prefixes, true);
+                    for (int i = 0; i < graphs.Count; i++)
+                    {
+                        //Opening decorators
+                        if (i > 0) 
+                            sw.WriteLine();
+                        if (!graphs[i].Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri))
+                            sw.WriteLine($"GRAPH <{graphs[i].Context}>");
+                        sw.WriteLine("{");
+
+                        WriteTurtleGraph(sw, graphs[i], prefixes, true);
+
+                        //Closing decorators
+                        if (i == graphs.Count-1)
+                            sw.Write("}");
+                        else
+                            sw.WriteLine("}");
+                    }                        
                 }
                 #endregion
             }
