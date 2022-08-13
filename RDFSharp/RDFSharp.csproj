@@ -11,7 +11,7 @@
     <SignAssembly>false</SignAssembly>
     <Product>RDFSharp</Product>
     <PackageId>RDFSharp</PackageId>
-    <PackageVersion>3.0.0-preview5</PackageVersion>
+    <PackageVersion>$(Version)</PackageVersion>
     <PackageTags>rdf sparql sparql-update shacl semantic-web linked-data</PackageTags>
     <PackageProjectUrl>https://github.com/mdesalvo/RDFSharp</PackageProjectUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -41,6 +41,10 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
+	  <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
 	  <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
 </Project>
