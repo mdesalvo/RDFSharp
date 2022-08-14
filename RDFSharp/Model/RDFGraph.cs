@@ -462,6 +462,20 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph SelectTriplesByLiteral(RDFLiteral objectLiteral)
             => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, null, null, objectLiteral));
+
+        /// <summary>
+        /// Gets the subgraph containing triples with the specified combination of SPOL accessors<br/>
+        /// (null values are threated as * selectors. Ensure to keep object and literal mutually exclusive!)
+        /// </summary>
+        public RDFGraph this[RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
+        {
+            get
+            {
+                if (obj != null && lit != null)
+                    throw new RDFModelException("Cannot access a graph when both object and literals are given: they have to be mutually exclusive!");
+                return new RDFGraph(RDFModelUtilities.SelectTriples(this, subj, pred, obj, lit));
+            }
+        }
         #endregion
 
         #region Set
