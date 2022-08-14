@@ -11,7 +11,7 @@
     <SignAssembly>false</SignAssembly>
     <Product>RDFSharp</Product>
     <PackageId>RDFSharp</PackageId>
-    <PackageVersion>$(Version)-preview5</PackageVersion>
+    <PackageVersion>$(Version)</PackageVersion>
     <PackageTags>rdf sparql sparql-update shacl semantic-web linked-data</PackageTags>
     <PackageProjectUrl>https://github.com/mdesalvo/RDFSharp</PackageProjectUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
