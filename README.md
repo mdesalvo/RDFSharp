@@ -1,7 +1,4 @@
-# RDFSharp [![NuGet Badge](https://buildstats.info/nuget/RDFSharp?includePreReleases=true)](https://www.nuget.org/packages/RDFSharp) [![codecov](https://codecov.io/gh/mdesalvo/RDFSharp/branch/master/graph/badge.svg?token=wtP1B77d3e)](https://codecov.io/gh/mdesalvo/RDFSharp)
-
-<b>Are you looking for the <a href="https://github.com/mdesalvo/RDFSharp/tree/legacy-v2">legacy version (v2.x)</a>?</b>
-<hr/>
+# RDFSharp [![NuGet Badge](https://buildstats.info/nuget/RDFSharp)](https://www.nuget.org/packages/RDFSharp) [![codecov](https://codecov.io/gh/mdesalvo/RDFSharp/branch/master/graph/badge.svg?token=wtP1B77d3e)](https://codecov.io/gh/mdesalvo/RDFSharp)
 
 RDFSharp has a modular API made up of 3 layers: 
 
