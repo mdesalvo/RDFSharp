@@ -16,7 +16,6 @@
 
 using RDFSharp.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace RDFSharp.Test.Model
@@ -213,19 +212,6 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(graphIndex.LiteralsIndex.Count == 1);
             Assert.IsTrue(graphIndex.LiteralsIndex[lit.PatternMemberID].Contains(triple1.TripleID));
             Assert.IsTrue(graphIndex.LiteralsIndex[lit.PatternMemberID].Contains(triple2.TripleID));
-        }
-
-        [TestMethod]
-        public void ShouldNotAddNullIndex()
-        {
-            RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(null);
-
-            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 0);
-            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
-            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 0);
-            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 0);
-            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 0);
-            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
         }
 
         [TestMethod]
@@ -459,19 +445,6 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldNotRemoveNullIndex()
-        {
-            RDFGraphIndex graphIndex = new RDFGraphIndex().RemoveIndex(null);
-
-            Assert.IsTrue(graphIndex.ResourcesRegister.Count == 0);
-            Assert.IsTrue(graphIndex.LiteralsRegister.Count == 0);
-            Assert.IsTrue(graphIndex.SubjectsIndex.Count == 0);
-            Assert.IsTrue(graphIndex.PredicatesIndex.Count == 0);
-            Assert.IsTrue(graphIndex.ObjectsIndex.Count == 0);
-            Assert.IsTrue(graphIndex.LiteralsIndex.Count == 0);
-        }
-
-        [TestMethod]
         public void ShouldClearIndex()
         {
             RDFResource subj = new RDFResource("http://subj/");
@@ -520,20 +493,6 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldSelectEmptyIndexByNullSubject()
-        {
-            RDFResource subj = new RDFResource("http://subj/");
-            RDFResource pred = new RDFResource("http://pred/");
-            RDFResource obj = new RDFResource("http://obj/");
-            RDFTriple triple = new RDFTriple(subj, pred, obj);
-            RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
-            HashSet<long> triplesWithGivenSubject = graphIndex.SelectIndexBySubject(null);
-
-            Assert.IsNotNull(triplesWithGivenSubject);
-            Assert.IsTrue(triplesWithGivenSubject.Count == 0);
-        }
-
-        [TestMethod]
         public void ShouldSelectIndexByPredicate()
         {
             RDFResource subj = new RDFResource("http://subj/");
@@ -556,20 +515,6 @@ namespace RDFSharp.Test.Model
             RDFTriple triple = new RDFTriple(subj, pred, obj);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
             HashSet<long> triplesWithGivenPredicate = graphIndex.SelectIndexByPredicate(new RDFResource("http://pred2/"));
-
-            Assert.IsNotNull(triplesWithGivenPredicate);
-            Assert.IsTrue(triplesWithGivenPredicate.Count == 0);
-        }
-
-        [TestMethod]
-        public void ShouldSelectEmptyIndexByNullPredicate()
-        {
-            RDFResource subj = new RDFResource("http://subj/");
-            RDFResource pred = new RDFResource("http://pred/");
-            RDFResource obj = new RDFResource("http://obj/");
-            RDFTriple triple = new RDFTriple(subj, pred, obj);
-            RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
-            HashSet<long> triplesWithGivenPredicate = graphIndex.SelectIndexByPredicate(null);
 
             Assert.IsNotNull(triplesWithGivenPredicate);
             Assert.IsTrue(triplesWithGivenPredicate.Count == 0);
@@ -604,20 +549,6 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldSelectEmptyIndexByNullObject()
-        {
-            RDFResource subj = new RDFResource("http://subj/");
-            RDFResource pred = new RDFResource("http://pred/");
-            RDFResource obj = new RDFResource("http://obj/");
-            RDFTriple triple = new RDFTriple(subj, pred, obj);
-            RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
-            HashSet<long> triplesWithGivenObject = graphIndex.SelectIndexByObject(null);
-
-            Assert.IsNotNull(triplesWithGivenObject);
-            Assert.IsTrue(triplesWithGivenObject.Count == 0);
-        }
-
-        [TestMethod]
         public void ShouldSelectIndexByLiteral()
         {
             RDFResource subj = new RDFResource("http://subj/");
@@ -640,20 +571,6 @@ namespace RDFSharp.Test.Model
             RDFTriple triple = new RDFTriple(subj, pred, lit);
             RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
             HashSet<long> triplesWithGivenLiteral = graphIndex.SelectIndexByLiteral(new RDFPlainLiteral("lit2", "en-US"));
-
-            Assert.IsNotNull(triplesWithGivenLiteral);
-            Assert.IsTrue(triplesWithGivenLiteral.Count == 0);
-        }
-
-        [TestMethod]
-        public void ShouldSelectEmptyIndexByNullLiteral()
-        {
-            RDFResource subj = new RDFResource("http://subj/");
-            RDFResource pred = new RDFResource("http://pred/");
-            RDFPlainLiteral lit = new RDFPlainLiteral("lit", "en-US");
-            RDFTriple triple = new RDFTriple(subj, pred, lit);
-            RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
-            HashSet<long> triplesWithGivenLiteral = graphIndex.SelectIndexByLiteral(null);
 
             Assert.IsNotNull(triplesWithGivenLiteral);
             Assert.IsTrue(triplesWithGivenLiteral.Count == 0);

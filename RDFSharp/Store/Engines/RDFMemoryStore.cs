@@ -169,7 +169,7 @@ namespace RDFSharp.Store
         /// </summary>
         public override RDFStore RemoveQuadruple(RDFQuadruple quadruple)
         {
-            if (this.ContainsQuadruple(quadruple))
+            if (quadruple != null)
             {
                 //Remove quadruple
                 this.IndexedQuadruples.Remove(quadruple.QuadrupleID);

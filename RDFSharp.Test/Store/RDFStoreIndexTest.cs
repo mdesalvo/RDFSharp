@@ -302,21 +302,6 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public void ShouldNotAddNullIndex()
-        {
-            RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(null);
-
-            Assert.IsTrue(storeIndex.ContextsRegister.Count == 0);
-            Assert.IsTrue(storeIndex.ResourcesRegister.Count == 0);
-            Assert.IsTrue(storeIndex.LiteralsRegister.Count == 0);
-            Assert.IsTrue(storeIndex.ContextsIndex.Count == 0);
-            Assert.IsTrue(storeIndex.SubjectsIndex.Count == 0);
-            Assert.IsTrue(storeIndex.PredicatesIndex.Count == 0);
-            Assert.IsTrue(storeIndex.ObjectsIndex.Count == 0);
-            Assert.IsTrue(storeIndex.LiteralsIndex.Count == 0);
-        }
-
-        [TestMethod]
         public void ShouldRemoveCSPOIndex()
         {
             RDFContext ctx = new RDFContext("http://ctx/");
@@ -633,21 +618,6 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public void ShouldNotRemoveNullIndex()
-        {
-            RDFStoreIndex storeIndex = new RDFStoreIndex().RemoveIndex(null);
-
-            Assert.IsTrue(storeIndex.ContextsRegister.Count == 0);
-            Assert.IsTrue(storeIndex.ResourcesRegister.Count == 0);
-            Assert.IsTrue(storeIndex.LiteralsRegister.Count == 0);
-            Assert.IsTrue(storeIndex.ContextsIndex.Count == 0);
-            Assert.IsTrue(storeIndex.SubjectsIndex.Count == 0);
-            Assert.IsTrue(storeIndex.PredicatesIndex.Count == 0);
-            Assert.IsTrue(storeIndex.ObjectsIndex.Count == 0);
-            Assert.IsTrue(storeIndex.LiteralsIndex.Count == 0);
-        }
-
-        [TestMethod]
         public void ShouldClearIndex()
         {
             RDFContext ctx = new RDFContext();
@@ -701,21 +671,6 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public void ShouldSelectEmptyIndexByNullContext()
-        {
-            RDFContext ctx = new RDFContext("http://ctx/");
-            RDFResource subj = new RDFResource("http://subj/");
-            RDFResource pred = new RDFResource("http://pred/");
-            RDFResource obj = new RDFResource("http://obj/");
-            RDFQuadruple quadruple = new RDFQuadruple(ctx, subj, pred, obj);
-            RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple);
-            HashSet<long> quadruplesWithGivenContext = storeIndex.SelectIndexByContext(null);
-
-            Assert.IsNotNull(quadruplesWithGivenContext);
-            Assert.IsTrue(quadruplesWithGivenContext.Count == 0);
-        }
-
-        [TestMethod]
         public void ShouldSelectIndexBySubject()
         {
             RDFContext ctx = new RDFContext("http://ctx/");
@@ -740,21 +695,6 @@ namespace RDFSharp.Test.Store
             RDFQuadruple quadruple = new RDFQuadruple(ctx, subj, pred, obj);
             RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple);
             HashSet<long> quadruplesWithGivenSubject = storeIndex.SelectIndexBySubject(new RDFResource("http://subj2/"));
-
-            Assert.IsNotNull(quadruplesWithGivenSubject);
-            Assert.IsTrue(quadruplesWithGivenSubject.Count == 0);
-        }
-
-        [TestMethod]
-        public void ShouldSelectEmptyIndexByNullSubject()
-        {
-            RDFContext ctx = new RDFContext("http://ctx/");
-            RDFResource subj = new RDFResource("http://subj/");
-            RDFResource pred = new RDFResource("http://pred/");
-            RDFResource obj = new RDFResource("http://obj/");
-            RDFQuadruple quadruple = new RDFQuadruple(ctx, subj, pred, obj);
-            RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple);
-            HashSet<long> quadruplesWithGivenSubject = storeIndex.SelectIndexBySubject(null);
 
             Assert.IsNotNull(quadruplesWithGivenSubject);
             Assert.IsTrue(quadruplesWithGivenSubject.Count == 0);
@@ -791,21 +731,6 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public void ShouldSelectEmptyIndexByNullPredicate()
-        {
-            RDFContext ctx = new RDFContext("http://ctx/");
-            RDFResource subj = new RDFResource("http://subj/");
-            RDFResource pred = new RDFResource("http://pred/");
-            RDFResource obj = new RDFResource("http://obj/");
-            RDFQuadruple quadruple = new RDFQuadruple(ctx, subj, pred, obj);
-            RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple);
-            HashSet<long> quadruplesWithGivenPredicate = storeIndex.SelectIndexByPredicate(null);
-
-            Assert.IsNotNull(quadruplesWithGivenPredicate);
-            Assert.IsTrue(quadruplesWithGivenPredicate.Count == 0);
-        }
-
-        [TestMethod]
         public void ShouldSelectIndexByObject()
         {
             RDFContext ctx = new RDFContext("http://ctx/");
@@ -836,21 +761,6 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public void ShouldSelectEmptyIndexByNullObject()
-        {
-            RDFContext ctx = new RDFContext("http://ctx/");
-            RDFResource subj = new RDFResource("http://subj/");
-            RDFResource pred = new RDFResource("http://pred/");
-            RDFResource obj = new RDFResource("http://obj/");
-            RDFQuadruple quadruple = new RDFQuadruple(ctx, subj, pred, obj);
-            RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple);
-            HashSet<long> quadruplesWithGivenObject = storeIndex.SelectIndexByObject(null);
-
-            Assert.IsNotNull(quadruplesWithGivenObject);
-            Assert.IsTrue(quadruplesWithGivenObject.Count == 0);
-        }
-
-        [TestMethod]
         public void ShouldSelectIndexByLiteral()
         {
             RDFContext ctx = new RDFContext("http://ctx/");
@@ -875,21 +785,6 @@ namespace RDFSharp.Test.Store
             RDFQuadruple quadruple = new RDFQuadruple(ctx, subj, pred, lit);
             RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple);
             HashSet<long> quadruplesWithGivenLiteral = storeIndex.SelectIndexByLiteral(new RDFPlainLiteral("lit2", "en-US"));
-
-            Assert.IsNotNull(quadruplesWithGivenLiteral);
-            Assert.IsTrue(quadruplesWithGivenLiteral.Count == 0);
-        }
-
-        [TestMethod]
-        public void ShouldSelectEmptyIndexByNullLiteral()
-        {
-            RDFContext ctx = new RDFContext("http://ctx/");
-            RDFResource subj = new RDFResource("http://subj/");
-            RDFResource pred = new RDFResource("http://pred/");
-            RDFPlainLiteral lit = new RDFPlainLiteral("lit", "en-US");
-            RDFQuadruple quadruple = new RDFQuadruple(ctx, subj, pred, lit);
-            RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple);
-            HashSet<long> quadruplesWithGivenLiteral = storeIndex.SelectIndexByLiteral(null);
 
             Assert.IsNotNull(quadruplesWithGivenLiteral);
             Assert.IsTrue(quadruplesWithGivenLiteral.Count == 0);

@@ -98,61 +98,59 @@ namespace RDFSharp.Store
         /// </summary>
         internal RDFStoreIndex AddIndex(RDFQuadruple quadruple)
         {
-            if (quadruple != null)
+            //Context (Register)
+            if (!this.ContextsRegister.ContainsKey(quadruple.Context.PatternMemberID))
+                this.ContextsRegister.Add(quadruple.Context.PatternMemberID, (RDFContext)quadruple.Context);
+            //Context (Index)
+            if (!this.ContextsIndex.ContainsKey(quadruple.Context.PatternMemberID))
+                this.ContextsIndex.Add(quadruple.Context.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
+            else if (!this.ContextsIndex[quadruple.Context.PatternMemberID].Contains(quadruple.QuadrupleID))
+                this.ContextsIndex[quadruple.Context.PatternMemberID].Add(quadruple.QuadrupleID);
+
+            //Subject (Register)
+            if (!this.ResourcesRegister.ContainsKey(quadruple.Subject.PatternMemberID))
+                this.ResourcesRegister.Add(quadruple.Subject.PatternMemberID, (RDFResource)quadruple.Subject);
+            //Subject (Index)
+            if (!this.SubjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID))
+                this.SubjectsIndex.Add(quadruple.Subject.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
+            else if (!this.SubjectsIndex[quadruple.Subject.PatternMemberID].Contains(quadruple.QuadrupleID))
+                this.SubjectsIndex[quadruple.Subject.PatternMemberID].Add(quadruple.QuadrupleID);
+
+            //Predicate (Register)
+            if (!this.ResourcesRegister.ContainsKey(quadruple.Predicate.PatternMemberID))
+                this.ResourcesRegister.Add(quadruple.Predicate.PatternMemberID, (RDFResource)quadruple.Predicate);
+            //Predicate (Index)
+            if (!this.PredicatesIndex.ContainsKey(quadruple.Predicate.PatternMemberID))
+                this.PredicatesIndex.Add(quadruple.Predicate.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
+            else if (!this.PredicatesIndex[quadruple.Predicate.PatternMemberID].Contains(quadruple.QuadrupleID))
+                this.PredicatesIndex[quadruple.Predicate.PatternMemberID].Add(quadruple.QuadrupleID);
+
+            //Object
+            if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
             {
-                //Context (Register)
-                if (!this.ContextsRegister.ContainsKey(quadruple.Context.PatternMemberID))
-                    this.ContextsRegister.Add(quadruple.Context.PatternMemberID, (RDFContext)quadruple.Context);
-                //Context (Index)
-                if (!this.ContextsIndex.ContainsKey(quadruple.Context.PatternMemberID))
-                    this.ContextsIndex.Add(quadruple.Context.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-                else if (!this.ContextsIndex[quadruple.Context.PatternMemberID].Contains(quadruple.QuadrupleID))
-                    this.ContextsIndex[quadruple.Context.PatternMemberID].Add(quadruple.QuadrupleID);
-
-                //Subject (Register)
-                if (!this.ResourcesRegister.ContainsKey(quadruple.Subject.PatternMemberID))
-                    this.ResourcesRegister.Add(quadruple.Subject.PatternMemberID, (RDFResource)quadruple.Subject);
-                //Subject (Index)
-                if (!this.SubjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID))
-                    this.SubjectsIndex.Add(quadruple.Subject.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-                else if (!this.SubjectsIndex[quadruple.Subject.PatternMemberID].Contains(quadruple.QuadrupleID))
-                    this.SubjectsIndex[quadruple.Subject.PatternMemberID].Add(quadruple.QuadrupleID);
-
-                //Predicate (Register)
-                if (!this.ResourcesRegister.ContainsKey(quadruple.Predicate.PatternMemberID))
-                    this.ResourcesRegister.Add(quadruple.Predicate.PatternMemberID, (RDFResource)quadruple.Predicate);
-                //Predicate (Index)
-                if (!this.PredicatesIndex.ContainsKey(quadruple.Predicate.PatternMemberID))
-                    this.PredicatesIndex.Add(quadruple.Predicate.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-                else if (!this.PredicatesIndex[quadruple.Predicate.PatternMemberID].Contains(quadruple.QuadrupleID))
-                    this.PredicatesIndex[quadruple.Predicate.PatternMemberID].Add(quadruple.QuadrupleID);
-
-                //Object
-                if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                {
-                    //Register
-                    if (!this.ResourcesRegister.ContainsKey(quadruple.Object.PatternMemberID))
-                        this.ResourcesRegister.Add(quadruple.Object.PatternMemberID, (RDFResource)quadruple.Object);
-                    //Index
-                    if (!this.ObjectsIndex.ContainsKey(quadruple.Object.PatternMemberID))
-                        this.ObjectsIndex.Add(quadruple.Object.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-                    else if (!this.ObjectsIndex[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
-                        this.ObjectsIndex[quadruple.Object.PatternMemberID].Add(quadruple.QuadrupleID);
-                }
-
-                //Literal
-                else
-                {
-                    //Register
-                    if (!this.LiteralsRegister.ContainsKey(quadruple.Object.PatternMemberID))
-                        this.LiteralsRegister.Add(quadruple.Object.PatternMemberID, (RDFLiteral)quadruple.Object);
-                    //Index
-                    if (!this.LiteralsIndex.ContainsKey(quadruple.Object.PatternMemberID))
-                        this.LiteralsIndex.Add(quadruple.Object.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-                    else if (!this.LiteralsIndex[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
-                        this.LiteralsIndex[quadruple.Object.PatternMemberID].Add(quadruple.QuadrupleID);
-                }
+                //Register
+                if (!this.ResourcesRegister.ContainsKey(quadruple.Object.PatternMemberID))
+                    this.ResourcesRegister.Add(quadruple.Object.PatternMemberID, (RDFResource)quadruple.Object);
+                //Index
+                if (!this.ObjectsIndex.ContainsKey(quadruple.Object.PatternMemberID))
+                    this.ObjectsIndex.Add(quadruple.Object.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
+                else if (!this.ObjectsIndex[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
+                    this.ObjectsIndex[quadruple.Object.PatternMemberID].Add(quadruple.QuadrupleID);
             }
+
+            //Literal
+            else
+            {
+                //Register
+                if (!this.LiteralsRegister.ContainsKey(quadruple.Object.PatternMemberID))
+                    this.LiteralsRegister.Add(quadruple.Object.PatternMemberID, (RDFLiteral)quadruple.Object);
+                //Index
+                if (!this.LiteralsIndex.ContainsKey(quadruple.Object.PatternMemberID))
+                    this.LiteralsIndex.Add(quadruple.Object.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
+                else if (!this.LiteralsIndex[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
+                    this.LiteralsIndex[quadruple.Object.PatternMemberID].Add(quadruple.QuadrupleID);
+            }
+
             return this;
         }
         #endregion
@@ -163,103 +161,91 @@ namespace RDFSharp.Store
         /// </summary>
         internal RDFStoreIndex RemoveIndex(RDFQuadruple quadruple)
         {
-            if (quadruple != null)
+            //Context
+            if (this.ContextsIndex.ContainsKey(quadruple.Context.PatternMemberID)
+                 && this.ContextsIndex[quadruple.Context.PatternMemberID].Contains(quadruple.QuadrupleID))
             {
-                //Context
-                if (this.ContextsIndex.ContainsKey(quadruple.Context.PatternMemberID))
+                this.ContextsIndex[quadruple.Context.PatternMemberID].Remove(quadruple.QuadrupleID);
+                if (this.ContextsIndex[quadruple.Context.PatternMemberID].Count == 0)
+                    this.ContextsIndex.Remove(quadruple.Context.PatternMemberID);
+            }
+
+            //Subject
+            if (this.SubjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID)
+                 && this.SubjectsIndex[quadruple.Subject.PatternMemberID].Contains(quadruple.QuadrupleID))
+            {
+                this.SubjectsIndex[quadruple.Subject.PatternMemberID].Remove(quadruple.QuadrupleID);
+                if (this.SubjectsIndex[quadruple.Subject.PatternMemberID].Count == 0)
+                    this.SubjectsIndex.Remove(quadruple.Subject.PatternMemberID);
+            }
+
+            //Predicate
+            if (this.PredicatesIndex.ContainsKey(quadruple.Predicate.PatternMemberID)
+                 && this.PredicatesIndex[quadruple.Predicate.PatternMemberID].Contains(quadruple.QuadrupleID))
+            {
+                this.PredicatesIndex[quadruple.Predicate.PatternMemberID].Remove(quadruple.QuadrupleID);
+                if (this.PredicatesIndex[quadruple.Predicate.PatternMemberID].Count == 0)
+                    this.PredicatesIndex.Remove(quadruple.Predicate.PatternMemberID);
+            }
+
+            //Object
+            if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+            {
+                if (this.ObjectsIndex.ContainsKey(quadruple.Object.PatternMemberID)
+                     && this.ObjectsIndex[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
                 {
-                    if (this.ContextsIndex[quadruple.Context.PatternMemberID].Contains(quadruple.QuadrupleID))
-                    {
-                        this.ContextsIndex[quadruple.Context.PatternMemberID].Remove(quadruple.QuadrupleID);
-                        if (this.ContextsIndex[quadruple.Context.PatternMemberID].Count == 0)
-                            this.ContextsIndex.Remove(quadruple.Context.PatternMemberID);
-                    }
-                }
-
-                //Subject
-                if (this.SubjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID))
-                {
-                    if (this.SubjectsIndex[quadruple.Subject.PatternMemberID].Contains(quadruple.QuadrupleID))
-                    {
-                        this.SubjectsIndex[quadruple.Subject.PatternMemberID].Remove(quadruple.QuadrupleID);
-                        if (this.SubjectsIndex[quadruple.Subject.PatternMemberID].Count == 0)
-                            this.SubjectsIndex.Remove(quadruple.Subject.PatternMemberID);
-                    }
-                }
-
-                //Predicate
-                if (this.PredicatesIndex.ContainsKey(quadruple.Predicate.PatternMemberID))
-                {
-                    if (this.PredicatesIndex[quadruple.Predicate.PatternMemberID].Contains(quadruple.QuadrupleID))
-                    {
-                        this.PredicatesIndex[quadruple.Predicate.PatternMemberID].Remove(quadruple.QuadrupleID);
-                        if (this.PredicatesIndex[quadruple.Predicate.PatternMemberID].Count == 0)
-                            this.PredicatesIndex.Remove(quadruple.Predicate.PatternMemberID);
-                    }
-                }
-
-                //Object
-                if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                {
-                    if (this.ObjectsIndex.ContainsKey(quadruple.Object.PatternMemberID))
-                    {
-                        if (this.ObjectsIndex[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
-                        {
-                            this.ObjectsIndex[quadruple.Object.PatternMemberID].Remove(quadruple.QuadrupleID);
-                            if (this.ObjectsIndex[quadruple.Object.PatternMemberID].Count == 0)
-                                this.ObjectsIndex.Remove(quadruple.Object.PatternMemberID);
-                        }
-                    }
-                }
-
-                //Literal
-                else
-                {
-                    if (this.LiteralsIndex.ContainsKey(quadruple.Object.PatternMemberID))
-                    {
-                        if (this.LiteralsIndex[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
-                        {
-                            this.LiteralsIndex[quadruple.Object.PatternMemberID].Remove(quadruple.QuadrupleID);
-                            if (this.LiteralsIndex[quadruple.Object.PatternMemberID].Count == 0)
-                                this.LiteralsIndex.Remove(quadruple.Object.PatternMemberID);
-                        }
-                    }
-                }
-
-                //Context (Register)
-                if (!this.ContextsIndex.ContainsKey(quadruple.Context.PatternMemberID))
-                    this.ContextsRegister.Remove(quadruple.Context.PatternMemberID);
-
-                //Subject (Register)
-                if (!this.SubjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID)
-                      && !this.PredicatesIndex.ContainsKey(quadruple.Subject.PatternMemberID)
-                        && !this.ObjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID))
-                    this.ResourcesRegister.Remove(quadruple.Subject.PatternMemberID);
-
-                //Predicate (Register)
-                if (!this.SubjectsIndex.ContainsKey(quadruple.Predicate.PatternMemberID)
-                      && !this.PredicatesIndex.ContainsKey(quadruple.Predicate.PatternMemberID)
-                        && !this.ObjectsIndex.ContainsKey(quadruple.Predicate.PatternMemberID))
-                    this.ResourcesRegister.Remove(quadruple.Predicate.PatternMemberID);
-
-                //Object (Register)
-                if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                {
-                    if (!this.SubjectsIndex.ContainsKey(quadruple.Object.PatternMemberID)
-                          && !this.PredicatesIndex.ContainsKey(quadruple.Object.PatternMemberID)
-                            && !this.ObjectsIndex.ContainsKey(quadruple.Object.PatternMemberID))
-                        this.ResourcesRegister.Remove(quadruple.Object.PatternMemberID);
-                }
-
-                //Literal (Register)
-                else
-                {
-                    if (!this.SubjectsIndex.ContainsKey(quadruple.Object.PatternMemberID)
-                          && !this.PredicatesIndex.ContainsKey(quadruple.Object.PatternMemberID)
-                            && !this.LiteralsIndex.ContainsKey(quadruple.Object.PatternMemberID))
-                        this.LiteralsRegister.Remove(quadruple.Object.PatternMemberID);
+                    this.ObjectsIndex[quadruple.Object.PatternMemberID].Remove(quadruple.QuadrupleID);
+                    if (this.ObjectsIndex[quadruple.Object.PatternMemberID].Count == 0)
+                        this.ObjectsIndex.Remove(quadruple.Object.PatternMemberID);
                 }
             }
+
+            //Literal
+            else
+            {
+                if (this.LiteralsIndex.ContainsKey(quadruple.Object.PatternMemberID)
+                     && this.LiteralsIndex[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
+                {
+                    this.LiteralsIndex[quadruple.Object.PatternMemberID].Remove(quadruple.QuadrupleID);
+                    if (this.LiteralsIndex[quadruple.Object.PatternMemberID].Count == 0)
+                        this.LiteralsIndex.Remove(quadruple.Object.PatternMemberID);
+                }
+            }
+
+            //Context (Register)
+            if (!this.ContextsIndex.ContainsKey(quadruple.Context.PatternMemberID))
+                this.ContextsRegister.Remove(quadruple.Context.PatternMemberID);
+
+            //Subject (Register)
+            if (!this.SubjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID)
+                  && !this.PredicatesIndex.ContainsKey(quadruple.Subject.PatternMemberID)
+                    && !this.ObjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID))
+                this.ResourcesRegister.Remove(quadruple.Subject.PatternMemberID);
+
+            //Predicate (Register)
+            if (!this.SubjectsIndex.ContainsKey(quadruple.Predicate.PatternMemberID)
+                  && !this.PredicatesIndex.ContainsKey(quadruple.Predicate.PatternMemberID)
+                    && !this.ObjectsIndex.ContainsKey(quadruple.Predicate.PatternMemberID))
+                this.ResourcesRegister.Remove(quadruple.Predicate.PatternMemberID);
+
+            //Object (Register)
+            if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+            {
+                if (!this.SubjectsIndex.ContainsKey(quadruple.Object.PatternMemberID)
+                      && !this.PredicatesIndex.ContainsKey(quadruple.Object.PatternMemberID)
+                        && !this.ObjectsIndex.ContainsKey(quadruple.Object.PatternMemberID))
+                    this.ResourcesRegister.Remove(quadruple.Object.PatternMemberID);
+            }
+
+            //Literal (Register)
+            else
+            {
+                if (!this.SubjectsIndex.ContainsKey(quadruple.Object.PatternMemberID)
+                      && !this.PredicatesIndex.ContainsKey(quadruple.Object.PatternMemberID)
+                        && !this.LiteralsIndex.ContainsKey(quadruple.Object.PatternMemberID))
+                    this.LiteralsRegister.Remove(quadruple.Object.PatternMemberID);
+            }
+
             return this;
         }
 
@@ -286,35 +272,35 @@ namespace RDFSharp.Store
         /// Selects the quadruples indexed by the given context
         /// </summary>
         internal HashSet<long> SelectIndexByContext(RDFContext contextResource)
-            => contextResource != null && this.ContextsIndex.ContainsKey(contextResource.PatternMemberID)
+            => this.ContextsIndex.ContainsKey(contextResource.PatternMemberID)
                 ? this.ContextsIndex[contextResource.PatternMemberID] : EmptyHashSet;
 
         /// <summary>
         /// Selects the quadruples indexed by the given subject
         /// </summary>
         internal HashSet<long> SelectIndexBySubject(RDFResource subjectResource)
-            => subjectResource != null && this.SubjectsIndex.ContainsKey(subjectResource.PatternMemberID)
+            => this.SubjectsIndex.ContainsKey(subjectResource.PatternMemberID)
                 ? this.SubjectsIndex[subjectResource.PatternMemberID] : EmptyHashSet;
 
         /// <summary>
         /// Selects the quadruples indexed by the given predicate
         /// </summary>
         internal HashSet<long> SelectIndexByPredicate(RDFResource predicateResource)
-            => predicateResource != null && this.PredicatesIndex.ContainsKey(predicateResource.PatternMemberID)
+            => this.PredicatesIndex.ContainsKey(predicateResource.PatternMemberID)
                 ? this.PredicatesIndex[predicateResource.PatternMemberID] : EmptyHashSet;
 
         /// <summary>
         /// Selects the quadruples indexed by the given object
         /// </summary>
         internal HashSet<long> SelectIndexByObject(RDFResource objectResource)
-            => objectResource != null && this.ObjectsIndex.ContainsKey(objectResource.PatternMemberID)
+            => this.ObjectsIndex.ContainsKey(objectResource.PatternMemberID)
                 ? this.ObjectsIndex[objectResource.PatternMemberID] : EmptyHashSet;
 
         /// <summary>
         /// Selects the quadruples indexed by the given literal
         /// </summary>
         internal HashSet<long> SelectIndexByLiteral(RDFLiteral objectLiteral)
-            => objectLiteral != null && this.LiteralsIndex.ContainsKey(objectLiteral.PatternMemberID)
+            => this.LiteralsIndex.ContainsKey(objectLiteral.PatternMemberID)
                 ? this.LiteralsIndex[objectLiteral.PatternMemberID] : EmptyHashSet;
         #endregion
 
