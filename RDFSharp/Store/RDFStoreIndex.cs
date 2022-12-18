@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Model;
+using System;
 using System.Collections.Generic;
 
 namespace RDFSharp.Store
@@ -22,7 +23,7 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFStoreIndex represents an automatically managed in-memory index structure for the quadruples of a store.
     /// </summary>
-    internal class RDFStoreIndex
+    internal class RDFStoreIndex : IDisposable
     {
         #region Properties
         /// <summary>
@@ -66,6 +67,11 @@ namespace RDFSharp.Store
         internal Dictionary<long, HashSet<long>> LiteralsIndex { get; set; }
 
         /// <summary>
+        /// Flag indicating that the store index has already been disposed
+        /// </summary>
+        internal bool Disposed { get; set; }
+
+        /// <summary>
         /// Empty hashset to be returned in case of index miss
         /// </summary>
         private static readonly HashSet<long> EmptyHashSet = new HashSet<long>();
@@ -88,6 +94,49 @@ namespace RDFSharp.Store
             this.ObjectsIndex = new Dictionary<long, HashSet<long>>();
             this.LiteralsIndex = new Dictionary<long, HashSet<long>>();
         }
+
+        /// <summary>
+        /// Destroys the store index instance
+        /// </summary>
+        ~RDFStoreIndex() => Dispose(false);
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Disposes the store index (IDisposable)
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the store index 
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (Disposed)
+                return;
+
+            if (disposing)
+            {
+                ClearIndex();
+
+                //Registers
+                ContextsRegister = null;
+                ResourcesRegister = null;
+                LiteralsRegister = null;
+                //Indexes
+                ContextsIndex = null;
+                SubjectsIndex = null;
+                PredicatesIndex = null;
+                ObjectsIndex = null;
+                LiteralsIndex = null;
+            }
+
+            Disposed = true;
+        }
         #endregion
 
         #region Methods
@@ -99,56 +148,56 @@ namespace RDFSharp.Store
         internal RDFStoreIndex AddIndex(RDFQuadruple quadruple)
         {
             //Context (Register)
-            if (!this.ContextsRegister.ContainsKey(quadruple.Context.PatternMemberID))
-                this.ContextsRegister.Add(quadruple.Context.PatternMemberID, (RDFContext)quadruple.Context);
+            if (!ContextsRegister.ContainsKey(quadruple.Context.PatternMemberID))
+                ContextsRegister.Add(quadruple.Context.PatternMemberID, (RDFContext)quadruple.Context);
             //Context (Index)
-            if (!this.ContextsIndex.ContainsKey(quadruple.Context.PatternMemberID))
-                this.ContextsIndex.Add(quadruple.Context.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-            else if (!this.ContextsIndex[quadruple.Context.PatternMemberID].Contains(quadruple.QuadrupleID))
-                this.ContextsIndex[quadruple.Context.PatternMemberID].Add(quadruple.QuadrupleID);
+            if (!ContextsIndex.ContainsKey(quadruple.Context.PatternMemberID))
+                ContextsIndex.Add(quadruple.Context.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
+            else if (!ContextsIndex[quadruple.Context.PatternMemberID].Contains(quadruple.QuadrupleID))
+                ContextsIndex[quadruple.Context.PatternMemberID].Add(quadruple.QuadrupleID);
 
             //Subject (Register)
-            if (!this.ResourcesRegister.ContainsKey(quadruple.Subject.PatternMemberID))
-                this.ResourcesRegister.Add(quadruple.Subject.PatternMemberID, (RDFResource)quadruple.Subject);
+            if (!ResourcesRegister.ContainsKey(quadruple.Subject.PatternMemberID))
+                ResourcesRegister.Add(quadruple.Subject.PatternMemberID, (RDFResource)quadruple.Subject);
             //Subject (Index)
-            if (!this.SubjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID))
-                this.SubjectsIndex.Add(quadruple.Subject.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-            else if (!this.SubjectsIndex[quadruple.Subject.PatternMemberID].Contains(quadruple.QuadrupleID))
-                this.SubjectsIndex[quadruple.Subject.PatternMemberID].Add(quadruple.QuadrupleID);
+            if (!SubjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID))
+                SubjectsIndex.Add(quadruple.Subject.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
+            else if (!SubjectsIndex[quadruple.Subject.PatternMemberID].Contains(quadruple.QuadrupleID))
+                SubjectsIndex[quadruple.Subject.PatternMemberID].Add(quadruple.QuadrupleID);
 
             //Predicate (Register)
-            if (!this.ResourcesRegister.ContainsKey(quadruple.Predicate.PatternMemberID))
-                this.ResourcesRegister.Add(quadruple.Predicate.PatternMemberID, (RDFResource)quadruple.Predicate);
+            if (!ResourcesRegister.ContainsKey(quadruple.Predicate.PatternMemberID))
+                ResourcesRegister.Add(quadruple.Predicate.PatternMemberID, (RDFResource)quadruple.Predicate);
             //Predicate (Index)
-            if (!this.PredicatesIndex.ContainsKey(quadruple.Predicate.PatternMemberID))
-                this.PredicatesIndex.Add(quadruple.Predicate.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-            else if (!this.PredicatesIndex[quadruple.Predicate.PatternMemberID].Contains(quadruple.QuadrupleID))
-                this.PredicatesIndex[quadruple.Predicate.PatternMemberID].Add(quadruple.QuadrupleID);
+            if (!PredicatesIndex.ContainsKey(quadruple.Predicate.PatternMemberID))
+                PredicatesIndex.Add(quadruple.Predicate.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
+            else if (!PredicatesIndex[quadruple.Predicate.PatternMemberID].Contains(quadruple.QuadrupleID))
+                PredicatesIndex[quadruple.Predicate.PatternMemberID].Add(quadruple.QuadrupleID);
 
             //Object
             if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
             {
                 //Register
-                if (!this.ResourcesRegister.ContainsKey(quadruple.Object.PatternMemberID))
-                    this.ResourcesRegister.Add(quadruple.Object.PatternMemberID, (RDFResource)quadruple.Object);
+                if (!ResourcesRegister.ContainsKey(quadruple.Object.PatternMemberID))
+                    ResourcesRegister.Add(quadruple.Object.PatternMemberID, (RDFResource)quadruple.Object);
                 //Index
-                if (!this.ObjectsIndex.ContainsKey(quadruple.Object.PatternMemberID))
-                    this.ObjectsIndex.Add(quadruple.Object.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-                else if (!this.ObjectsIndex[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
-                    this.ObjectsIndex[quadruple.Object.PatternMemberID].Add(quadruple.QuadrupleID);
+                if (!ObjectsIndex.ContainsKey(quadruple.Object.PatternMemberID))
+                    ObjectsIndex.Add(quadruple.Object.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
+                else if (!ObjectsIndex[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
+                    ObjectsIndex[quadruple.Object.PatternMemberID].Add(quadruple.QuadrupleID);
             }
 
             //Literal
             else
             {
                 //Register
-                if (!this.LiteralsRegister.ContainsKey(quadruple.Object.PatternMemberID))
-                    this.LiteralsRegister.Add(quadruple.Object.PatternMemberID, (RDFLiteral)quadruple.Object);
+                if (!LiteralsRegister.ContainsKey(quadruple.Object.PatternMemberID))
+                    LiteralsRegister.Add(quadruple.Object.PatternMemberID, (RDFLiteral)quadruple.Object);
                 //Index
-                if (!this.LiteralsIndex.ContainsKey(quadruple.Object.PatternMemberID))
-                    this.LiteralsIndex.Add(quadruple.Object.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-                else if (!this.LiteralsIndex[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
-                    this.LiteralsIndex[quadruple.Object.PatternMemberID].Add(quadruple.QuadrupleID);
+                if (!LiteralsIndex.ContainsKey(quadruple.Object.PatternMemberID))
+                    LiteralsIndex.Add(quadruple.Object.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
+                else if (!LiteralsIndex[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
+                    LiteralsIndex[quadruple.Object.PatternMemberID].Add(quadruple.QuadrupleID);
             }
 
             return this;
@@ -162,88 +211,88 @@ namespace RDFSharp.Store
         internal RDFStoreIndex RemoveIndex(RDFQuadruple quadruple)
         {
             //Context
-            if (this.ContextsIndex.ContainsKey(quadruple.Context.PatternMemberID)
-                 && this.ContextsIndex[quadruple.Context.PatternMemberID].Contains(quadruple.QuadrupleID))
+            if (ContextsIndex.ContainsKey(quadruple.Context.PatternMemberID)
+                 && ContextsIndex[quadruple.Context.PatternMemberID].Contains(quadruple.QuadrupleID))
             {
-                this.ContextsIndex[quadruple.Context.PatternMemberID].Remove(quadruple.QuadrupleID);
-                if (this.ContextsIndex[quadruple.Context.PatternMemberID].Count == 0)
-                    this.ContextsIndex.Remove(quadruple.Context.PatternMemberID);
+                ContextsIndex[quadruple.Context.PatternMemberID].Remove(quadruple.QuadrupleID);
+                if (ContextsIndex[quadruple.Context.PatternMemberID].Count == 0)
+                    ContextsIndex.Remove(quadruple.Context.PatternMemberID);
             }
 
             //Subject
-            if (this.SubjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID)
-                 && this.SubjectsIndex[quadruple.Subject.PatternMemberID].Contains(quadruple.QuadrupleID))
+            if (SubjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID)
+                 && SubjectsIndex[quadruple.Subject.PatternMemberID].Contains(quadruple.QuadrupleID))
             {
-                this.SubjectsIndex[quadruple.Subject.PatternMemberID].Remove(quadruple.QuadrupleID);
-                if (this.SubjectsIndex[quadruple.Subject.PatternMemberID].Count == 0)
-                    this.SubjectsIndex.Remove(quadruple.Subject.PatternMemberID);
+                SubjectsIndex[quadruple.Subject.PatternMemberID].Remove(quadruple.QuadrupleID);
+                if (SubjectsIndex[quadruple.Subject.PatternMemberID].Count == 0)
+                    SubjectsIndex.Remove(quadruple.Subject.PatternMemberID);
             }
 
             //Predicate
-            if (this.PredicatesIndex.ContainsKey(quadruple.Predicate.PatternMemberID)
-                 && this.PredicatesIndex[quadruple.Predicate.PatternMemberID].Contains(quadruple.QuadrupleID))
+            if (PredicatesIndex.ContainsKey(quadruple.Predicate.PatternMemberID)
+                 && PredicatesIndex[quadruple.Predicate.PatternMemberID].Contains(quadruple.QuadrupleID))
             {
-                this.PredicatesIndex[quadruple.Predicate.PatternMemberID].Remove(quadruple.QuadrupleID);
-                if (this.PredicatesIndex[quadruple.Predicate.PatternMemberID].Count == 0)
-                    this.PredicatesIndex.Remove(quadruple.Predicate.PatternMemberID);
+                PredicatesIndex[quadruple.Predicate.PatternMemberID].Remove(quadruple.QuadrupleID);
+                if (PredicatesIndex[quadruple.Predicate.PatternMemberID].Count == 0)
+                    PredicatesIndex.Remove(quadruple.Predicate.PatternMemberID);
             }
 
             //Object
             if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
             {
-                if (this.ObjectsIndex.ContainsKey(quadruple.Object.PatternMemberID)
-                     && this.ObjectsIndex[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
+                if (ObjectsIndex.ContainsKey(quadruple.Object.PatternMemberID)
+                     && ObjectsIndex[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
                 {
-                    this.ObjectsIndex[quadruple.Object.PatternMemberID].Remove(quadruple.QuadrupleID);
-                    if (this.ObjectsIndex[quadruple.Object.PatternMemberID].Count == 0)
-                        this.ObjectsIndex.Remove(quadruple.Object.PatternMemberID);
+                    ObjectsIndex[quadruple.Object.PatternMemberID].Remove(quadruple.QuadrupleID);
+                    if (ObjectsIndex[quadruple.Object.PatternMemberID].Count == 0)
+                        ObjectsIndex.Remove(quadruple.Object.PatternMemberID);
                 }
             }
 
             //Literal
             else
             {
-                if (this.LiteralsIndex.ContainsKey(quadruple.Object.PatternMemberID)
-                     && this.LiteralsIndex[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
+                if (LiteralsIndex.ContainsKey(quadruple.Object.PatternMemberID)
+                     && LiteralsIndex[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
                 {
-                    this.LiteralsIndex[quadruple.Object.PatternMemberID].Remove(quadruple.QuadrupleID);
-                    if (this.LiteralsIndex[quadruple.Object.PatternMemberID].Count == 0)
-                        this.LiteralsIndex.Remove(quadruple.Object.PatternMemberID);
+                    LiteralsIndex[quadruple.Object.PatternMemberID].Remove(quadruple.QuadrupleID);
+                    if (LiteralsIndex[quadruple.Object.PatternMemberID].Count == 0)
+                        LiteralsIndex.Remove(quadruple.Object.PatternMemberID);
                 }
             }
 
             //Context (Register)
-            if (!this.ContextsIndex.ContainsKey(quadruple.Context.PatternMemberID))
-                this.ContextsRegister.Remove(quadruple.Context.PatternMemberID);
+            if (!ContextsIndex.ContainsKey(quadruple.Context.PatternMemberID))
+                ContextsRegister.Remove(quadruple.Context.PatternMemberID);
 
             //Subject (Register)
-            if (!this.SubjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID)
-                  && !this.PredicatesIndex.ContainsKey(quadruple.Subject.PatternMemberID)
-                    && !this.ObjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID))
-                this.ResourcesRegister.Remove(quadruple.Subject.PatternMemberID);
+            if (!SubjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID)
+                  && !PredicatesIndex.ContainsKey(quadruple.Subject.PatternMemberID)
+                    && !ObjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID))
+                ResourcesRegister.Remove(quadruple.Subject.PatternMemberID);
 
             //Predicate (Register)
-            if (!this.SubjectsIndex.ContainsKey(quadruple.Predicate.PatternMemberID)
-                  && !this.PredicatesIndex.ContainsKey(quadruple.Predicate.PatternMemberID)
-                    && !this.ObjectsIndex.ContainsKey(quadruple.Predicate.PatternMemberID))
-                this.ResourcesRegister.Remove(quadruple.Predicate.PatternMemberID);
+            if (!SubjectsIndex.ContainsKey(quadruple.Predicate.PatternMemberID)
+                  && !PredicatesIndex.ContainsKey(quadruple.Predicate.PatternMemberID)
+                    && !ObjectsIndex.ContainsKey(quadruple.Predicate.PatternMemberID))
+                ResourcesRegister.Remove(quadruple.Predicate.PatternMemberID);
 
             //Object (Register)
             if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
             {
-                if (!this.SubjectsIndex.ContainsKey(quadruple.Object.PatternMemberID)
-                      && !this.PredicatesIndex.ContainsKey(quadruple.Object.PatternMemberID)
-                        && !this.ObjectsIndex.ContainsKey(quadruple.Object.PatternMemberID))
-                    this.ResourcesRegister.Remove(quadruple.Object.PatternMemberID);
+                if (!SubjectsIndex.ContainsKey(quadruple.Object.PatternMemberID)
+                      && !PredicatesIndex.ContainsKey(quadruple.Object.PatternMemberID)
+                        && !ObjectsIndex.ContainsKey(quadruple.Object.PatternMemberID))
+                    ResourcesRegister.Remove(quadruple.Object.PatternMemberID);
             }
 
             //Literal (Register)
             else
             {
-                if (!this.SubjectsIndex.ContainsKey(quadruple.Object.PatternMemberID)
-                      && !this.PredicatesIndex.ContainsKey(quadruple.Object.PatternMemberID)
-                        && !this.LiteralsIndex.ContainsKey(quadruple.Object.PatternMemberID))
-                    this.LiteralsRegister.Remove(quadruple.Object.PatternMemberID);
+                if (!SubjectsIndex.ContainsKey(quadruple.Object.PatternMemberID)
+                      && !PredicatesIndex.ContainsKey(quadruple.Object.PatternMemberID)
+                        && !LiteralsIndex.ContainsKey(quadruple.Object.PatternMemberID))
+                    LiteralsRegister.Remove(quadruple.Object.PatternMemberID);
             }
 
             return this;
@@ -255,15 +304,15 @@ namespace RDFSharp.Store
         internal void ClearIndex()
         {
             //Registers
-            this.ContextsRegister.Clear();
-            this.ResourcesRegister.Clear();
-            this.LiteralsRegister.Clear();
+            ContextsRegister.Clear();
+            ResourcesRegister.Clear();
+            LiteralsRegister.Clear();
             //Indexes
-            this.ContextsIndex.Clear();
-            this.SubjectsIndex.Clear();
-            this.PredicatesIndex.Clear();
-            this.ObjectsIndex.Clear();
-            this.LiteralsIndex.Clear();
+            ContextsIndex.Clear();
+            SubjectsIndex.Clear();
+            PredicatesIndex.Clear();
+            ObjectsIndex.Clear();
+            LiteralsIndex.Clear();
         }
         #endregion
 
@@ -272,36 +321,31 @@ namespace RDFSharp.Store
         /// Selects the quadruples indexed by the given context
         /// </summary>
         internal HashSet<long> SelectIndexByContext(RDFContext contextResource)
-            => this.ContextsIndex.ContainsKey(contextResource.PatternMemberID)
-                ? this.ContextsIndex[contextResource.PatternMemberID] : EmptyHashSet;
+            => ContextsIndex.TryGetValue(contextResource.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
 
         /// <summary>
         /// Selects the quadruples indexed by the given subject
         /// </summary>
         internal HashSet<long> SelectIndexBySubject(RDFResource subjectResource)
-            => this.SubjectsIndex.ContainsKey(subjectResource.PatternMemberID)
-                ? this.SubjectsIndex[subjectResource.PatternMemberID] : EmptyHashSet;
+            => SubjectsIndex.TryGetValue(subjectResource.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
 
         /// <summary>
         /// Selects the quadruples indexed by the given predicate
         /// </summary>
         internal HashSet<long> SelectIndexByPredicate(RDFResource predicateResource)
-            => this.PredicatesIndex.ContainsKey(predicateResource.PatternMemberID)
-                ? this.PredicatesIndex[predicateResource.PatternMemberID] : EmptyHashSet;
+            => PredicatesIndex.TryGetValue(predicateResource.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
 
         /// <summary>
         /// Selects the quadruples indexed by the given object
         /// </summary>
         internal HashSet<long> SelectIndexByObject(RDFResource objectResource)
-            => this.ObjectsIndex.ContainsKey(objectResource.PatternMemberID)
-                ? this.ObjectsIndex[objectResource.PatternMemberID] : EmptyHashSet;
+            => ObjectsIndex.TryGetValue(objectResource.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
 
         /// <summary>
         /// Selects the quadruples indexed by the given literal
         /// </summary>
         internal HashSet<long> SelectIndexByLiteral(RDFLiteral objectLiteral)
-            => this.LiteralsIndex.ContainsKey(objectLiteral.PatternMemberID)
-                ? this.LiteralsIndex[objectLiteral.PatternMemberID] : EmptyHashSet;
+            => LiteralsIndex.TryGetValue(objectLiteral.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
         #endregion
 
         #endregion

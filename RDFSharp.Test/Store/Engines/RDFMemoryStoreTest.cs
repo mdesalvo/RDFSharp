@@ -71,6 +71,22 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
+        public void ShouldDisposeMemoryStoreWithUsing()
+        {
+            RDFMemoryStore store;
+            using (store = new RDFMemoryStore(new List<RDFQuadruple>() {
+                    new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFResource("ex:o")) }))
+            {
+                Assert.IsFalse(store.Disposed);
+                Assert.IsNotNull(store.IndexedQuadruples);
+                Assert.IsNotNull(store.StoreIndex);
+            };
+            Assert.IsTrue(store.Disposed);
+            Assert.IsNull(store.IndexedQuadruples);
+            Assert.IsNull(store.StoreIndex);
+        }
+
+        [TestMethod]
         public void ShouldEqualsMemoryStores()
         {
             RDFMemoryStore store1 = new RDFMemoryStore();

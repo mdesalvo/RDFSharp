@@ -107,6 +107,41 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
+        public void ShouldDisposeStoreIndexWithUsing()
+        {
+            RDFContext ctx = new RDFContext("http://ctx/");
+            RDFResource subj = new RDFResource("http://subj/");
+            RDFResource pred = new RDFResource("http://pred/");
+            RDFResource obj = new RDFResource("http://obj/");
+            RDFTypedLiteral lit = new RDFTypedLiteral("lit", RDFModelEnums.RDFDatatypes.XSD_STRING);
+            RDFQuadruple quadruple1 = new RDFQuadruple(ctx, subj, pred, obj);
+            RDFQuadruple quadruple2 = new RDFQuadruple(ctx, subj, pred, lit);
+            RDFStoreIndex storeIndex;
+
+            using (storeIndex = new RDFStoreIndex().AddIndex(quadruple1).AddIndex(quadruple2))
+            {
+                Assert.IsFalse(storeIndex.Disposed);
+                Assert.IsNotNull(storeIndex.ContextsRegister);
+                Assert.IsNotNull(storeIndex.ResourcesRegister);
+                Assert.IsNotNull(storeIndex.LiteralsRegister);
+                Assert.IsNotNull(storeIndex.ContextsIndex);
+                Assert.IsNotNull(storeIndex.SubjectsIndex);
+                Assert.IsNotNull(storeIndex.PredicatesIndex);
+                Assert.IsNotNull(storeIndex.ObjectsIndex);
+                Assert.IsNotNull(storeIndex.LiteralsIndex);
+            };
+            Assert.IsTrue(storeIndex.Disposed);
+            Assert.IsNull(storeIndex.ContextsRegister);
+            Assert.IsNull(storeIndex.ResourcesRegister);
+            Assert.IsNull(storeIndex.LiteralsRegister);
+            Assert.IsNull(storeIndex.ContextsIndex);
+            Assert.IsNull(storeIndex.SubjectsIndex);
+            Assert.IsNull(storeIndex.PredicatesIndex);
+            Assert.IsNull(storeIndex.ObjectsIndex);
+            Assert.IsNull(storeIndex.LiteralsIndex);
+        }
+
+        [TestMethod]
         public void ShouldAddSameContextMultipleTimes()
         {
             RDFContext ctx = new RDFContext("http://ctx/");

@@ -29,13 +29,13 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFMemoryStore represents an in-memory RDF store engine.
     /// </summary>
-    public class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>
+    public class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDisposable
     {
         #region Properties
         /// <summary>
         /// Count of the store's quadruples
         /// </summary>
-        public long QuadruplesCount => this.IndexedQuadruples.Count;
+        public long QuadruplesCount => IndexedQuadruples.Count;
 
         /// <summary>
         /// Gets the enumerator on the store's quadruples for iteration
@@ -44,11 +44,11 @@ namespace RDFSharp.Store
         {
             get
             {
-                foreach (RDFIndexedQuadruple indexedQuadruple in this.IndexedQuadruples.Values)
+                foreach (RDFIndexedQuadruple indexedQuadruple in IndexedQuadruples.Values)
                 {
                     yield return indexedQuadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
-                        ? new RDFQuadruple(this.StoreIndex.ContextsRegister[indexedQuadruple.ContextID], this.StoreIndex.ResourcesRegister[indexedQuadruple.SubjectID], this.StoreIndex.ResourcesRegister[indexedQuadruple.PredicateID], this.StoreIndex.ResourcesRegister[indexedQuadruple.ObjectID])
-                        : new RDFQuadruple(this.StoreIndex.ContextsRegister[indexedQuadruple.ContextID], this.StoreIndex.ResourcesRegister[indexedQuadruple.SubjectID], this.StoreIndex.ResourcesRegister[indexedQuadruple.PredicateID], this.StoreIndex.LiteralsRegister[indexedQuadruple.ObjectID]);
+                        ? new RDFQuadruple(StoreIndex.ContextsRegister[indexedQuadruple.ContextID], StoreIndex.ResourcesRegister[indexedQuadruple.SubjectID], StoreIndex.ResourcesRegister[indexedQuadruple.PredicateID], StoreIndex.ResourcesRegister[indexedQuadruple.ObjectID])
+                        : new RDFQuadruple(StoreIndex.ContextsRegister[indexedQuadruple.ContextID], StoreIndex.ResourcesRegister[indexedQuadruple.SubjectID], StoreIndex.ResourcesRegister[indexedQuadruple.PredicateID], StoreIndex.LiteralsRegister[indexedQuadruple.ObjectID]);
                 }
             }
         }
@@ -67,6 +67,11 @@ namespace RDFSharp.Store
         /// Indexed quadruples embedded into the store
         /// </summary>
         internal Dictionary<long, RDFIndexedQuadruple> IndexedQuadruples { get; set; }
+
+        /// <summary>
+        /// Flag indicating that the store has already been disposed
+        /// </summary>
+        internal bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -75,18 +80,23 @@ namespace RDFSharp.Store
         /// </summary>
         public RDFMemoryStore()
         {
-            this.StoreType = "MEMORY";
-            this.StoreGUID = Guid.NewGuid().ToString("N");
-            this.StoreIndex = new RDFStoreIndex();
-            this.StoreID = RDFModelUtilities.CreateHash(this.ToString());
-            this.IndexedQuadruples = new Dictionary<long, RDFIndexedQuadruple>();
+            StoreType = "MEMORY";
+            StoreGUID = Guid.NewGuid().ToString("N");
+            StoreIndex = new RDFStoreIndex();
+            StoreID = RDFModelUtilities.CreateHash(ToString());
+            IndexedQuadruples = new Dictionary<long, RDFIndexedQuadruple>();
         }
 
         /// <summary>
         /// List-based ctor to build a memory store with the given list of quadruples
         /// </summary>
         public RDFMemoryStore(List<RDFQuadruple> quadruples) : this()
-            => quadruples?.ForEach(q => this.AddQuadruple(q));
+            => quadruples?.ForEach(q => AddQuadruple(q));
+
+        /// <summary>
+        /// Destroys the memory store instance
+        /// </summary>
+        ~RDFMemoryStore() => Dispose(false);
         #endregion
 
         #region Interfaces
@@ -94,14 +104,14 @@ namespace RDFSharp.Store
         /// Gives the string representation of the Memory store
         /// </summary>
         public override string ToString()
-            => string.Concat(base.ToString(), "|ID=", this.StoreGUID);
+            => string.Concat(base.ToString(), "|ID=", StoreGUID);
 
         /// <summary>
         /// Performs the equality comparison between two memory stores
         /// </summary>
         public bool Equals(RDFMemoryStore other)
         {
-            if (other == null || this.QuadruplesCount != other.QuadruplesCount)
+            if (other == null || QuadruplesCount != other.QuadruplesCount)
                 return false;
             if (base.Equals(other))
                 return true;
@@ -117,12 +127,41 @@ namespace RDFSharp.Store
         /// <summary>
         /// Exposes a typed enumerator on the store's quadruples
         /// </summary>
-        IEnumerator<RDFQuadruple> IEnumerable<RDFQuadruple>.GetEnumerator() => this.QuadruplesEnumerator;
+        IEnumerator<RDFQuadruple> IEnumerable<RDFQuadruple>.GetEnumerator() => QuadruplesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the store's quadruples
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() => this.QuadruplesEnumerator;
+        IEnumerator IEnumerable.GetEnumerator() => QuadruplesEnumerator;
+
+        /// <summary>
+        /// Disposes the memory store (IDisposable)
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the memory store
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (Disposed)
+                return;
+
+            if (disposing)
+            {
+                StoreIndex.Dispose();
+                StoreIndex = null;
+
+                IndexedQuadruples.Clear();
+                IndexedQuadruples = null;
+            }
+
+            Disposed = true;
+        }
         #endregion
 
         #region Methods
@@ -139,9 +178,9 @@ namespace RDFSharp.Store
                 foreach (RDFTriple t in graph)
                 {
                     if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                        this.AddQuadruple(new RDFQuadruple(graphCtx, (RDFResource)t.Subject, (RDFResource)t.Predicate, (RDFResource)t.Object));
+                        AddQuadruple(new RDFQuadruple(graphCtx, (RDFResource)t.Subject, (RDFResource)t.Predicate, (RDFResource)t.Object));
                     else
-                        this.AddQuadruple(new RDFQuadruple(graphCtx, (RDFResource)t.Subject, (RDFResource)t.Predicate, (RDFLiteral)t.Object));
+                        AddQuadruple(new RDFQuadruple(graphCtx, (RDFResource)t.Subject, (RDFResource)t.Predicate, (RDFLiteral)t.Object));
                 }
             }
             return this;
@@ -152,12 +191,12 @@ namespace RDFSharp.Store
         /// </summary>
         public override RDFStore AddQuadruple(RDFQuadruple quadruple)
         {
-            if (quadruple != null && !this.IndexedQuadruples.ContainsKey(quadruple.QuadrupleID))
+            if (quadruple != null && !IndexedQuadruples.ContainsKey(quadruple.QuadrupleID))
             {
                 //Add quadruple
-                this.IndexedQuadruples.Add(quadruple.QuadrupleID, new RDFIndexedQuadruple(quadruple));
+                IndexedQuadruples.Add(quadruple.QuadrupleID, new RDFIndexedQuadruple(quadruple));
                 //Add index
-                this.StoreIndex.AddIndex(quadruple);
+                StoreIndex.AddIndex(quadruple);
             }
             return this;
         }
@@ -172,9 +211,9 @@ namespace RDFSharp.Store
             if (quadruple != null)
             {
                 //Remove quadruple
-                this.IndexedQuadruples.Remove(quadruple.QuadrupleID);
+                IndexedQuadruples.Remove(quadruple.QuadrupleID);
                 //Remove index
-                this.StoreIndex.RemoveIndex(quadruple);
+                StoreIndex.RemoveIndex(quadruple);
             }
             return this;
         }
@@ -186,12 +225,12 @@ namespace RDFSharp.Store
         {
             if (contextResource != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesByContext(contextResource))
+                foreach (RDFQuadruple quad in SelectQuadruplesByContext(contextResource))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -204,12 +243,12 @@ namespace RDFSharp.Store
         {
             if (subjectResource != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesBySubject(subjectResource))
+                foreach (RDFQuadruple quad in SelectQuadruplesBySubject(subjectResource))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -222,12 +261,12 @@ namespace RDFSharp.Store
         {
             if (predicateResource != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesByPredicate(predicateResource))
+                foreach (RDFQuadruple quad in SelectQuadruplesByPredicate(predicateResource))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -240,12 +279,12 @@ namespace RDFSharp.Store
         {
             if (objectResource != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesByObject(objectResource))
+                foreach (RDFQuadruple quad in SelectQuadruplesByObject(objectResource))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -258,12 +297,12 @@ namespace RDFSharp.Store
         {
             if (literalObject != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesByLiteral(literalObject))
+                foreach (RDFQuadruple quad in SelectQuadruplesByLiteral(literalObject))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -276,13 +315,13 @@ namespace RDFSharp.Store
         {
             if (contextResource != null && subjectResource != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesByContext(contextResource)
-                                                  .SelectQuadruplesBySubject(subjectResource))
+                foreach (RDFQuadruple quad in SelectQuadruplesByContext(contextResource)
+                                                .SelectQuadruplesBySubject(subjectResource))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -295,13 +334,13 @@ namespace RDFSharp.Store
         {
             if (contextResource != null && predicateResource != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesByContext(contextResource)
-                                                  .SelectQuadruplesByPredicate(predicateResource))
+                foreach (RDFQuadruple quad in SelectQuadruplesByContext(contextResource)
+                                                .SelectQuadruplesByPredicate(predicateResource))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -314,13 +353,13 @@ namespace RDFSharp.Store
         {
             if (contextResource != null && objectResource != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesByContext(contextResource)
-                                                  .SelectQuadruplesByObject(objectResource))
+                foreach (RDFQuadruple quad in SelectQuadruplesByContext(contextResource)
+                                                .SelectQuadruplesByObject(objectResource))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -333,13 +372,13 @@ namespace RDFSharp.Store
         {
             if (contextResource != null && objectLiteral != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesByContext(contextResource)
-                                                  .SelectQuadruplesByLiteral(objectLiteral))
+                foreach (RDFQuadruple quad in SelectQuadruplesByContext(contextResource)
+                                                .SelectQuadruplesByLiteral(objectLiteral))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -352,14 +391,14 @@ namespace RDFSharp.Store
         {
             if (contextResource != null && subjectResource != null && predicateResource != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesByContext(contextResource)
-                                                  .SelectQuadruplesBySubject(subjectResource)
+                foreach (RDFQuadruple quad in SelectQuadruplesByContext(contextResource)
+                                                .SelectQuadruplesBySubject(subjectResource)
                                                   .SelectQuadruplesByPredicate(predicateResource))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -372,14 +411,14 @@ namespace RDFSharp.Store
         {
             if (contextResource != null && subjectResource != null && objectResource != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesByContext(contextResource)
-                                                  .SelectQuadruplesBySubject(subjectResource)
+                foreach (RDFQuadruple quad in SelectQuadruplesByContext(contextResource)
+                                                .SelectQuadruplesBySubject(subjectResource)
                                                   .SelectQuadruplesByObject(objectResource))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -392,14 +431,14 @@ namespace RDFSharp.Store
         {
             if (contextResource != null && subjectResource != null && objectLiteral != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesByContext(contextResource)
-                                                  .SelectQuadruplesBySubject(subjectResource)
+                foreach (RDFQuadruple quad in SelectQuadruplesByContext(contextResource)
+                                                .SelectQuadruplesBySubject(subjectResource)
                                                   .SelectQuadruplesByLiteral(objectLiteral))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -412,14 +451,14 @@ namespace RDFSharp.Store
         {
             if (contextResource != null && predicateResource != null && objectResource != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesByContext(contextResource)
-                                                  .SelectQuadruplesByPredicate(predicateResource)
+                foreach (RDFQuadruple quad in SelectQuadruplesByContext(contextResource)
+                                                .SelectQuadruplesByPredicate(predicateResource)
                                                   .SelectQuadruplesByObject(objectResource))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -432,14 +471,14 @@ namespace RDFSharp.Store
         {
             if (contextResource != null && predicateResource != null && objectLiteral != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesByContext(contextResource)
-                                                  .SelectQuadruplesByPredicate(predicateResource)
+                foreach (RDFQuadruple quad in SelectQuadruplesByContext(contextResource)
+                                                .SelectQuadruplesByPredicate(predicateResource)
                                                   .SelectQuadruplesByLiteral(objectLiteral))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -452,13 +491,13 @@ namespace RDFSharp.Store
         {
             if (subjectResource != null && predicateResource != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesBySubject(subjectResource)
-                                                  .SelectQuadruplesByPredicate(predicateResource))
+                foreach (RDFQuadruple quad in SelectQuadruplesBySubject(subjectResource)
+                                                .SelectQuadruplesByPredicate(predicateResource))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -471,13 +510,13 @@ namespace RDFSharp.Store
         {
             if (subjectResource != null && objectResource != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesBySubject(subjectResource)
-                                                  .SelectQuadruplesByObject(objectResource))
+                foreach (RDFQuadruple quad in SelectQuadruplesBySubject(subjectResource)
+                                                .SelectQuadruplesByObject(objectResource))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -490,13 +529,13 @@ namespace RDFSharp.Store
         {
             if (subjectResource != null && objectLiteral != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesBySubject(subjectResource)
-                                                  .SelectQuadruplesByLiteral(objectLiteral))
+                foreach (RDFQuadruple quad in SelectQuadruplesBySubject(subjectResource)
+                                                .SelectQuadruplesByLiteral(objectLiteral))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -509,13 +548,13 @@ namespace RDFSharp.Store
         {
             if (predicateResource != null && objectResource != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesByPredicate(predicateResource)
-                                                  .SelectQuadruplesByObject(objectResource))
+                foreach (RDFQuadruple quad in SelectQuadruplesByPredicate(predicateResource)
+                                                .SelectQuadruplesByObject(objectResource))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -528,13 +567,13 @@ namespace RDFSharp.Store
         {
             if (predicateResource != null && objectLiteral != null)
             {
-                foreach (RDFQuadruple quad in this.SelectQuadruplesByPredicate(predicateResource)
-                                                  .SelectQuadruplesByLiteral(objectLiteral))
+                foreach (RDFQuadruple quad in SelectQuadruplesByPredicate(predicateResource)
+                                                .SelectQuadruplesByLiteral(objectLiteral))
                 {
                     //Remove quadruple
-                    this.IndexedQuadruples.Remove(quad.QuadrupleID);
+                    IndexedQuadruples.Remove(quad.QuadrupleID);
                     //Remove index
-                    this.StoreIndex.RemoveIndex(quad);
+                    StoreIndex.RemoveIndex(quad);
                 }
             }
             return this;
@@ -546,9 +585,9 @@ namespace RDFSharp.Store
         public override void ClearQuadruples()
         {
             //Clear quadruples
-            this.IndexedQuadruples.Clear();
+            IndexedQuadruples.Clear();
             //Clear index
-            this.StoreIndex.ClearIndex();
+            StoreIndex.ClearIndex();
         }
         #endregion
 
@@ -557,7 +596,7 @@ namespace RDFSharp.Store
         /// Checks if the store contains the given quadruple
         /// </summary>
         public override bool ContainsQuadruple(RDFQuadruple quadruple)
-            => quadruple != null && this.IndexedQuadruples.ContainsKey(quadruple.QuadrupleID);
+            => quadruple != null && IndexedQuadruples.ContainsKey(quadruple.QuadrupleID);
 
         /// <summary>
         /// Gets a store containing quadruples with the specified combination of CSPOL accessors<br/>
