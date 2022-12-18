@@ -91,6 +91,36 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDisposeGraphIndexWithUsing()
+        {
+            RDFResource subj = new RDFResource("http://subj/");
+            RDFResource pred = new RDFResource("http://pred/");
+            RDFResource obj = new RDFResource("http://obj/");
+            RDFTypedLiteral lit = new RDFTypedLiteral("lit", RDFModelEnums.RDFDatatypes.XSD_STRING);
+            RDFTriple triple1 = new RDFTriple(subj, pred, obj);
+            RDFTriple triple2 = new RDFTriple(subj, pred, lit);
+            RDFGraphIndex graphIndex;
+
+            using (graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2))
+            {
+                Assert.IsFalse(graphIndex.Disposed);
+                Assert.IsNotNull(graphIndex.ResourcesRegister);
+                Assert.IsNotNull(graphIndex.LiteralsRegister);
+                Assert.IsNotNull(graphIndex.SubjectsIndex);
+                Assert.IsNotNull(graphIndex.PredicatesIndex);
+                Assert.IsNotNull(graphIndex.ObjectsIndex);
+                Assert.IsNotNull(graphIndex.LiteralsIndex);
+            };
+            Assert.IsTrue(graphIndex.Disposed);
+            Assert.IsNull(graphIndex.ResourcesRegister);
+            Assert.IsNull(graphIndex.LiteralsRegister);
+            Assert.IsNull(graphIndex.SubjectsIndex);
+            Assert.IsNull(graphIndex.PredicatesIndex);
+            Assert.IsNull(graphIndex.ObjectsIndex);
+            Assert.IsNull(graphIndex.LiteralsIndex);
+        }
+
+        [TestMethod]
         public void ShouldAddSameSubjectMultipleTimes()
         {
             RDFResource subj = new RDFResource("http://subj/");

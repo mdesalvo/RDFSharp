@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFGraphIndex represents an automatically managed in-memory index structure for the triples of a graph.
     /// </summary>
-    internal class RDFGraphIndex
+    internal class RDFGraphIndex: IDisposable
     {
         #region Properties
         /// <summary>
@@ -56,6 +56,11 @@ namespace RDFSharp.Model
         internal Dictionary<long, HashSet<long>> LiteralsIndex { get; set; }
 
         /// <summary>
+        /// Flag indicating that the graph index has already been disposed
+        /// </summary>
+        internal bool Disposed { get; set; }
+
+        /// <summary>
         /// Empty hashset to be returned in case of index miss
         /// </summary>
         private static readonly HashSet<long> EmptyHashSet = new HashSet<long>();
@@ -68,13 +73,54 @@ namespace RDFSharp.Model
         internal RDFGraphIndex()
         {
             //Registers
-            this.ResourcesRegister = new Dictionary<long, RDFResource>();
-            this.LiteralsRegister = new Dictionary<long, RDFLiteral>();
+            ResourcesRegister = new Dictionary<long, RDFResource>();
+            LiteralsRegister = new Dictionary<long, RDFLiteral>();
             //Indexes
-            this.SubjectsIndex = new Dictionary<long, HashSet<long>>();
-            this.PredicatesIndex = new Dictionary<long, HashSet<long>>();
-            this.ObjectsIndex = new Dictionary<long, HashSet<long>>();
-            this.LiteralsIndex = new Dictionary<long, HashSet<long>>();
+            SubjectsIndex = new Dictionary<long, HashSet<long>>();
+            PredicatesIndex = new Dictionary<long, HashSet<long>>();
+            ObjectsIndex = new Dictionary<long, HashSet<long>>();
+            LiteralsIndex = new Dictionary<long, HashSet<long>>();
+        }
+
+        /// <summary>
+        /// Destroys the graph index instance
+        /// </summary>
+        ~RDFGraphIndex() => Dispose(false);
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Disposes the graph index (IDisposable)
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the graph index 
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (Disposed)
+                return;
+
+            if (disposing)
+            {
+                ClearIndex();
+
+                //Registers
+                ResourcesRegister = null;
+                LiteralsRegister = null;
+                //Indexes
+                SubjectsIndex = null;
+                PredicatesIndex = null;
+                ObjectsIndex = null;
+                LiteralsIndex = null;
+            }
+
+            Disposed = true;
         }
         #endregion
 
@@ -87,47 +133,47 @@ namespace RDFSharp.Model
         internal RDFGraphIndex AddIndex(RDFTriple triple)
         {
             //Subject (Register)
-            if (!this.ResourcesRegister.ContainsKey(triple.Subject.PatternMemberID))
-                this.ResourcesRegister.Add(triple.Subject.PatternMemberID, (RDFResource)triple.Subject);
+            if (!ResourcesRegister.ContainsKey(triple.Subject.PatternMemberID))
+                ResourcesRegister.Add(triple.Subject.PatternMemberID, (RDFResource)triple.Subject);
             //Subject (Index)
-            if (!this.SubjectsIndex.ContainsKey(triple.Subject.PatternMemberID))
-                this.SubjectsIndex.Add(triple.Subject.PatternMemberID, new HashSet<long>() { triple.TripleID });
-            else if (!this.SubjectsIndex[triple.Subject.PatternMemberID].Contains(triple.TripleID))
-                this.SubjectsIndex[triple.Subject.PatternMemberID].Add(triple.TripleID);
+            if (!SubjectsIndex.ContainsKey(triple.Subject.PatternMemberID))
+                SubjectsIndex.Add(triple.Subject.PatternMemberID, new HashSet<long>() { triple.TripleID });
+            else if (!SubjectsIndex[triple.Subject.PatternMemberID].Contains(triple.TripleID))
+                SubjectsIndex[triple.Subject.PatternMemberID].Add(triple.TripleID);
 
             //Predicate (Register)
-            if (!this.ResourcesRegister.ContainsKey(triple.Predicate.PatternMemberID))
-                this.ResourcesRegister.Add(triple.Predicate.PatternMemberID, (RDFResource)triple.Predicate);
+            if (!ResourcesRegister.ContainsKey(triple.Predicate.PatternMemberID))
+                ResourcesRegister.Add(triple.Predicate.PatternMemberID, (RDFResource)triple.Predicate);
             //Predicate (Index)
-            if (!this.PredicatesIndex.ContainsKey(triple.Predicate.PatternMemberID))
-                this.PredicatesIndex.Add(triple.Predicate.PatternMemberID, new HashSet<long>() { triple.TripleID });
-            else if (!this.PredicatesIndex[triple.Predicate.PatternMemberID].Contains(triple.TripleID))
-                this.PredicatesIndex[triple.Predicate.PatternMemberID].Add(triple.TripleID);
+            if (!PredicatesIndex.ContainsKey(triple.Predicate.PatternMemberID))
+                PredicatesIndex.Add(triple.Predicate.PatternMemberID, new HashSet<long>() { triple.TripleID });
+            else if (!PredicatesIndex[triple.Predicate.PatternMemberID].Contains(triple.TripleID))
+                PredicatesIndex[triple.Predicate.PatternMemberID].Add(triple.TripleID);
 
             //Object
             if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
             {
                 //Register
-                if (!this.ResourcesRegister.ContainsKey(triple.Object.PatternMemberID))
-                    this.ResourcesRegister.Add(triple.Object.PatternMemberID, (RDFResource)triple.Object);
+                if (!ResourcesRegister.ContainsKey(triple.Object.PatternMemberID))
+                    ResourcesRegister.Add(triple.Object.PatternMemberID, (RDFResource)triple.Object);
                 //Index
-                if (!this.ObjectsIndex.ContainsKey(triple.Object.PatternMemberID))
-                    this.ObjectsIndex.Add(triple.Object.PatternMemberID, new HashSet<long>() { triple.TripleID });
-                else if (!this.ObjectsIndex[triple.Object.PatternMemberID].Contains(triple.TripleID))
-                    this.ObjectsIndex[triple.Object.PatternMemberID].Add(triple.TripleID);
+                if (!ObjectsIndex.ContainsKey(triple.Object.PatternMemberID))
+                    ObjectsIndex.Add(triple.Object.PatternMemberID, new HashSet<long>() { triple.TripleID });
+                else if (!ObjectsIndex[triple.Object.PatternMemberID].Contains(triple.TripleID))
+                    ObjectsIndex[triple.Object.PatternMemberID].Add(triple.TripleID);
             }
 
             //Literal
             else
             {
                 //Register
-                if (!this.LiteralsRegister.ContainsKey(triple.Object.PatternMemberID))
-                    this.LiteralsRegister.Add(triple.Object.PatternMemberID, (RDFLiteral)triple.Object);
+                if (!LiteralsRegister.ContainsKey(triple.Object.PatternMemberID))
+                    LiteralsRegister.Add(triple.Object.PatternMemberID, (RDFLiteral)triple.Object);
                 //Index
-                if (!this.LiteralsIndex.ContainsKey(triple.Object.PatternMemberID))
-                    this.LiteralsIndex.Add(triple.Object.PatternMemberID, new HashSet<long>() { triple.TripleID });
-                else if (!this.LiteralsIndex[triple.Object.PatternMemberID].Contains(triple.TripleID))
-                    this.LiteralsIndex[triple.Object.PatternMemberID].Add(triple.TripleID);
+                if (!LiteralsIndex.ContainsKey(triple.Object.PatternMemberID))
+                    LiteralsIndex.Add(triple.Object.PatternMemberID, new HashSet<long>() { triple.TripleID });
+                else if (!LiteralsIndex[triple.Object.PatternMemberID].Contains(triple.TripleID))
+                    LiteralsIndex[triple.Object.PatternMemberID].Add(triple.TripleID);
             }
 
             return this;
@@ -141,75 +187,75 @@ namespace RDFSharp.Model
         internal RDFGraphIndex RemoveIndex(RDFTriple triple)
         {
             //Subject (Index)
-            if (this.SubjectsIndex.ContainsKey(triple.Subject.PatternMemberID)
-                 && this.SubjectsIndex[triple.Subject.PatternMemberID].Contains(triple.TripleID))
+            if (SubjectsIndex.ContainsKey(triple.Subject.PatternMemberID)
+                 && SubjectsIndex[triple.Subject.PatternMemberID].Contains(triple.TripleID))
             {
-                this.SubjectsIndex[triple.Subject.PatternMemberID].Remove(triple.TripleID);
-                if (this.SubjectsIndex[triple.Subject.PatternMemberID].Count == 0)
-                    this.SubjectsIndex.Remove(triple.Subject.PatternMemberID);
+                SubjectsIndex[triple.Subject.PatternMemberID].Remove(triple.TripleID);
+                if (SubjectsIndex[triple.Subject.PatternMemberID].Count == 0)
+                    SubjectsIndex.Remove(triple.Subject.PatternMemberID);
             }
 
             //Predicate (Index)
-            if (this.PredicatesIndex.ContainsKey(triple.Predicate.PatternMemberID)
-                 && this.PredicatesIndex[triple.Predicate.PatternMemberID].Contains(triple.TripleID))
+            if (PredicatesIndex.ContainsKey(triple.Predicate.PatternMemberID)
+                 && PredicatesIndex[triple.Predicate.PatternMemberID].Contains(triple.TripleID))
             {
-                this.PredicatesIndex[triple.Predicate.PatternMemberID].Remove(triple.TripleID);
-                if (this.PredicatesIndex[triple.Predicate.PatternMemberID].Count == 0)
-                    this.PredicatesIndex.Remove(triple.Predicate.PatternMemberID);
+                PredicatesIndex[triple.Predicate.PatternMemberID].Remove(triple.TripleID);
+                if (PredicatesIndex[triple.Predicate.PatternMemberID].Count == 0)
+                    PredicatesIndex.Remove(triple.Predicate.PatternMemberID);
             }
 
             //Object (Index)
             if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
             {
-                if (this.ObjectsIndex.ContainsKey(triple.Object.PatternMemberID)
-                     && this.ObjectsIndex[triple.Object.PatternMemberID].Contains(triple.TripleID))
+                if (ObjectsIndex.ContainsKey(triple.Object.PatternMemberID)
+                     && ObjectsIndex[triple.Object.PatternMemberID].Contains(triple.TripleID))
                 {
-                    this.ObjectsIndex[triple.Object.PatternMemberID].Remove(triple.TripleID);
-                    if (this.ObjectsIndex[triple.Object.PatternMemberID].Count == 0)
-                        this.ObjectsIndex.Remove(triple.Object.PatternMemberID);
+                    ObjectsIndex[triple.Object.PatternMemberID].Remove(triple.TripleID);
+                    if (ObjectsIndex[triple.Object.PatternMemberID].Count == 0)
+                        ObjectsIndex.Remove(triple.Object.PatternMemberID);
                 }
             }
 
             //Literal (Index)
             else
             {
-                if (this.LiteralsIndex.ContainsKey(triple.Object.PatternMemberID)
-                     && this.LiteralsIndex[triple.Object.PatternMemberID].Contains(triple.TripleID))
+                if (LiteralsIndex.ContainsKey(triple.Object.PatternMemberID)
+                     && LiteralsIndex[triple.Object.PatternMemberID].Contains(triple.TripleID))
                 {
-                    this.LiteralsIndex[triple.Object.PatternMemberID].Remove(triple.TripleID);
-                    if (this.LiteralsIndex[triple.Object.PatternMemberID].Count == 0)
-                        this.LiteralsIndex.Remove(triple.Object.PatternMemberID);
+                    LiteralsIndex[triple.Object.PatternMemberID].Remove(triple.TripleID);
+                    if (LiteralsIndex[triple.Object.PatternMemberID].Count == 0)
+                        LiteralsIndex.Remove(triple.Object.PatternMemberID);
                 }
             }
 
             //Subject (Register)
-            if (!this.SubjectsIndex.ContainsKey(triple.Subject.PatternMemberID)
-                  && !this.PredicatesIndex.ContainsKey(triple.Subject.PatternMemberID)
-                    && !this.ObjectsIndex.ContainsKey(triple.Subject.PatternMemberID))
-                this.ResourcesRegister.Remove(triple.Subject.PatternMemberID);
+            if (!SubjectsIndex.ContainsKey(triple.Subject.PatternMemberID)
+                  && !PredicatesIndex.ContainsKey(triple.Subject.PatternMemberID)
+                    && !ObjectsIndex.ContainsKey(triple.Subject.PatternMemberID))
+                ResourcesRegister.Remove(triple.Subject.PatternMemberID);
 
             //Predicate (Register)
-            if (!this.SubjectsIndex.ContainsKey(triple.Predicate.PatternMemberID)
-                  && !this.PredicatesIndex.ContainsKey(triple.Predicate.PatternMemberID)
-                    && !this.ObjectsIndex.ContainsKey(triple.Predicate.PatternMemberID))
-                this.ResourcesRegister.Remove(triple.Predicate.PatternMemberID);
+            if (!SubjectsIndex.ContainsKey(triple.Predicate.PatternMemberID)
+                  && !PredicatesIndex.ContainsKey(triple.Predicate.PatternMemberID)
+                    && !ObjectsIndex.ContainsKey(triple.Predicate.PatternMemberID))
+                ResourcesRegister.Remove(triple.Predicate.PatternMemberID);
 
             //Object (Register)
             if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
             {
-                if (!this.SubjectsIndex.ContainsKey(triple.Object.PatternMemberID)
-                      && !this.PredicatesIndex.ContainsKey(triple.Object.PatternMemberID)
-                        && !this.ObjectsIndex.ContainsKey(triple.Object.PatternMemberID))
-                this.ResourcesRegister.Remove(triple.Object.PatternMemberID);
+                if (!SubjectsIndex.ContainsKey(triple.Object.PatternMemberID)
+                      && !PredicatesIndex.ContainsKey(triple.Object.PatternMemberID)
+                        && !ObjectsIndex.ContainsKey(triple.Object.PatternMemberID))
+                ResourcesRegister.Remove(triple.Object.PatternMemberID);
             }
 
             //Literal (Register)
             else
             {
-                if (!this.SubjectsIndex.ContainsKey(triple.Object.PatternMemberID)
-                      && !this.PredicatesIndex.ContainsKey(triple.Object.PatternMemberID)
-                        && !this.LiteralsIndex.ContainsKey(triple.Object.PatternMemberID))
-                    this.LiteralsRegister.Remove(triple.Object.PatternMemberID);
+                if (!SubjectsIndex.ContainsKey(triple.Object.PatternMemberID)
+                      && !PredicatesIndex.ContainsKey(triple.Object.PatternMemberID)
+                        && !LiteralsIndex.ContainsKey(triple.Object.PatternMemberID))
+                    LiteralsRegister.Remove(triple.Object.PatternMemberID);
             }
 
             return this;
@@ -221,13 +267,13 @@ namespace RDFSharp.Model
         internal void ClearIndex()
         {
             //Registers
-            this.ResourcesRegister.Clear();
-            this.LiteralsRegister.Clear();
+            ResourcesRegister.Clear();
+            LiteralsRegister.Clear();
             //Indexes
-            this.SubjectsIndex.Clear();
-            this.PredicatesIndex.Clear();
-            this.ObjectsIndex.Clear();
-            this.LiteralsIndex.Clear();
+            SubjectsIndex.Clear();
+            PredicatesIndex.Clear();
+            ObjectsIndex.Clear();
+            LiteralsIndex.Clear();
         }
         #endregion
 
@@ -236,29 +282,25 @@ namespace RDFSharp.Model
         /// Selects the triples indexed by the given subject
         /// </summary>
         internal HashSet<long> SelectIndexBySubject(RDFResource subjectResource)
-            => this.SubjectsIndex.ContainsKey(subjectResource.PatternMemberID)
-                ? this.SubjectsIndex[subjectResource.PatternMemberID] : EmptyHashSet;
+            => SubjectsIndex.TryGetValue(subjectResource.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
 
         /// <summary>
         /// Selects the triples indexed by the given predicate
         /// </summary>
         internal HashSet<long> SelectIndexByPredicate(RDFResource predicateResource)
-            => this.PredicatesIndex.ContainsKey(predicateResource.PatternMemberID)
-                ? this.PredicatesIndex[predicateResource.PatternMemberID] : EmptyHashSet;
+            => PredicatesIndex.TryGetValue(predicateResource.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
 
         /// <summary>
         /// Selects the triples indexed by the given object
         /// </summary>
         internal HashSet<long> SelectIndexByObject(RDFResource objectResource)
-            => this.ObjectsIndex.ContainsKey(objectResource.PatternMemberID)
-                ? this.ObjectsIndex[objectResource.PatternMemberID] : EmptyHashSet;
+            => ObjectsIndex.TryGetValue(objectResource.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
 
         /// <summary>
         /// Selects the triples indexed by the given literal
         /// </summary>
         internal HashSet<long> SelectIndexByLiteral(RDFLiteral objectLiteral)
-            => this.LiteralsIndex.ContainsKey(objectLiteral.PatternMemberID)
-                ? this.LiteralsIndex[objectLiteral.PatternMemberID] : EmptyHashSet;
+            => LiteralsIndex.TryGetValue(objectLiteral.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
         #endregion
 
         #endregion

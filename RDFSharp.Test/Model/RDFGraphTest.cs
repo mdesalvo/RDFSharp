@@ -79,6 +79,23 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
         }
 
+        [TestMethod]
+        public void ShouldDisposeGraphWithUsing()
+        {
+            RDFGraph graph;
+            using (graph = new RDFGraph(new List<RDFTriple>() {
+                new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFResource("http://obj/")),
+                new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit")) })) 
+            {
+                Assert.IsFalse(graph.Disposed);
+                Assert.IsNotNull(graph.IndexedTriples);
+                Assert.IsNotNull(graph.GraphIndex);
+            };
+            Assert.IsTrue(graph.Disposed);
+            Assert.IsNull(graph.IndexedTriples);
+            Assert.IsNull(graph.GraphIndex);
+        }
+
         [DataTestMethod]
         [DataRow("http://example.org/")]
         public void ShouldSetContext(string input)

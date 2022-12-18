@@ -26,9 +26,9 @@ using System.Threading.Tasks;
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFGraph represents a graph in the RDF model.
+    /// RDFGraph represents an Uri-named collection of triples in the RDF model
     /// </summary>
-    public class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple>
+    public class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple>, IDisposable
     {
         #region Properties
         /// <summary>
@@ -39,7 +39,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the graph's triples
         /// </summary>
-        public long TriplesCount => this.IndexedTriples.Count;
+        public long TriplesCount => IndexedTriples.Count;
 
         /// <summary>
         /// Gets the enumerator on the graph's triples for iteration
@@ -48,11 +48,11 @@ namespace RDFSharp.Model
         { 
             get 
             {
-                foreach (RDFIndexedTriple indexedTriple in this.IndexedTriples.Values)
+                foreach (RDFIndexedTriple indexedTriple in IndexedTriples.Values)
                 {
                     yield return indexedTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
-                        ? new RDFTriple(this.GraphIndex.ResourcesRegister[indexedTriple.SubjectID], this.GraphIndex.ResourcesRegister[indexedTriple.PredicateID], this.GraphIndex.ResourcesRegister[indexedTriple.ObjectID])
-                        : new RDFTriple(this.GraphIndex.ResourcesRegister[indexedTriple.SubjectID], this.GraphIndex.ResourcesRegister[indexedTriple.PredicateID], this.GraphIndex.LiteralsRegister[indexedTriple.ObjectID]);
+                        ? new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.ResourcesRegister[indexedTriple.ObjectID])
+                        : new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.LiteralsRegister[indexedTriple.ObjectID]);
                 }
             } 
         }
@@ -66,6 +66,11 @@ namespace RDFSharp.Model
         /// Indexed triples embedded into the graph
         /// </summary>
         internal Dictionary<long, RDFIndexedTriple> IndexedTriples { get; set; }
+
+        /// <summary>
+        /// Flag indicating that the graph has already been disposed
+        /// </summary>
+        internal bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -74,30 +79,35 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph()
         {
-            this.Context = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
-            this.GraphIndex = new RDFGraphIndex();
-            this.IndexedTriples = new Dictionary<long, RDFIndexedTriple>();
+            Context = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
+            GraphIndex = new RDFGraphIndex();
+            IndexedTriples = new Dictionary<long, RDFIndexedTriple>();
         }
 
         /// <summary>
         /// Builds a graph with the given list of triples
         /// </summary>
         public RDFGraph(List<RDFTriple> triples) : this()
-            => triples?.ForEach(t => this.AddTriple(t));
+            => triples?.ForEach(t => AddTriple(t));
+
+        /// <summary>
+        /// Destroys the graph instance
+        /// </summary>
+        ~RDFGraph() => Dispose(false);
         #endregion
 
         #region Interfaces
         /// <summary>
         /// Gives the string representation of the graph
         /// </summary>
-        public override string ToString() => this.Context.ToString();
+        public override string ToString() => Context.ToString();
 
         /// <summary>
         /// Performs the equality comparison between two graphs
         /// </summary>
         public bool Equals(RDFGraph other)
         {
-            if (other == null || this.TriplesCount != other.TriplesCount)
+            if (other == null || TriplesCount != other.TriplesCount)
                 return false;
 
             foreach (RDFTriple t in this)
@@ -111,12 +121,41 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the graph's triples
         /// </summary>
-        IEnumerator<RDFTriple> IEnumerable<RDFTriple>.GetEnumerator() => this.TriplesEnumerator;
+        IEnumerator<RDFTriple> IEnumerable<RDFTriple>.GetEnumerator() => TriplesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the graph's triples
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() => this.TriplesEnumerator;
+        IEnumerator IEnumerable.GetEnumerator() => TriplesEnumerator;
+
+        /// <summary>
+        /// Disposes the graph (IDisposable)
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the graph
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (Disposed)
+                return;
+
+            if (disposing)
+            {
+                GraphIndex.Dispose();
+                GraphIndex = null;
+
+                IndexedTriples.Clear();
+                IndexedTriples = null;
+            }
+
+            Disposed = true;
+        }
         #endregion
 
         #region Methods
@@ -128,10 +167,10 @@ namespace RDFSharp.Model
         public RDFGraph SetContext(Uri contextUri)
         {
             if (contextUri != null
-                    && contextUri.IsAbsoluteUri
-                        && !contextUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
-                            && !contextUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
-                this.Context = contextUri;
+                  && contextUri.IsAbsoluteUri
+                    && !contextUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
+                      && !contextUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
+                Context = contextUri;
             return this;
         }
 
@@ -140,12 +179,12 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph AddTriple(RDFTriple triple)
         {
-            if (triple != null && !this.IndexedTriples.ContainsKey(triple.TripleID))
+            if (triple != null && !IndexedTriples.ContainsKey(triple.TripleID))
             {
                 //Add triple
-                this.IndexedTriples.Add(triple.TripleID, new RDFIndexedTriple(triple));
+                IndexedTriples.Add(triple.TripleID, new RDFIndexedTriple(triple));
                 //Add index
-                this.GraphIndex.AddIndex(triple);
+                GraphIndex.AddIndex(triple);
             }
             return this;
         }
@@ -161,7 +200,7 @@ namespace RDFSharp.Model
                 RDFGraph reifCont = container.ReifyContainer();
                 //Iterate on the constructed triples
                 foreach (RDFTriple t in reifCont)
-                    this.AddTriple(t);
+                    AddTriple(t);
             }
             return this;
         }
@@ -177,7 +216,7 @@ namespace RDFSharp.Model
                 RDFGraph reifColl = collection.ReifyCollection();
                 //Iterate on the constructed triples
                 foreach (RDFTriple t in reifColl)
-                    this.AddTriple(t);
+                    AddTriple(t);
             }
             return this;
         }
@@ -192,9 +231,9 @@ namespace RDFSharp.Model
             if (triple != null)
             {
                 //Remove triple
-                this.IndexedTriples.Remove(triple.TripleID);
+                IndexedTriples.Remove(triple.TripleID);
                 //Remove index
-                this.GraphIndex.RemoveIndex(triple);
+                GraphIndex.RemoveIndex(triple);
             }
             return this;
         }
@@ -206,12 +245,12 @@ namespace RDFSharp.Model
         {
             if (subjectResource != null)
             {
-                foreach (RDFTriple triple in this.SelectTriplesBySubject(subjectResource))
+                foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource))
                 {
                     //Remove triple
-                    this.IndexedTriples.Remove(triple.TripleID);
+                    IndexedTriples.Remove(triple.TripleID);
                     //Remove index
-                    this.GraphIndex.RemoveIndex(triple);
+                    GraphIndex.RemoveIndex(triple);
                 }
             }
             return this;
@@ -224,12 +263,12 @@ namespace RDFSharp.Model
         {
             if (predicateResource != null)
             {
-                foreach (RDFTriple triple in this.SelectTriplesByPredicate(predicateResource))
+                foreach (RDFTriple triple in SelectTriplesByPredicate(predicateResource))
                 {
                     //Remove triple
-                    this.IndexedTriples.Remove(triple.TripleID);
+                    IndexedTriples.Remove(triple.TripleID);
                     //Remove index
-                    this.GraphIndex.RemoveIndex(triple);
+                    GraphIndex.RemoveIndex(triple);
                 }
             }
             return this;
@@ -242,12 +281,12 @@ namespace RDFSharp.Model
         {
             if (objectResource != null)
             {
-                foreach (RDFTriple triple in this.SelectTriplesByObject(objectResource))
+                foreach (RDFTriple triple in SelectTriplesByObject(objectResource))
                 {
                     //Remove triple
-                    this.IndexedTriples.Remove(triple.TripleID);
+                    IndexedTriples.Remove(triple.TripleID);
                     //Remove index
-                    this.GraphIndex.RemoveIndex(triple);
+                    GraphIndex.RemoveIndex(triple);
                 }
             }
             return this;
@@ -260,12 +299,12 @@ namespace RDFSharp.Model
         {
             if (objectLiteral != null)
             {
-                foreach (RDFTriple triple in this.SelectTriplesByLiteral(objectLiteral))
+                foreach (RDFTriple triple in SelectTriplesByLiteral(objectLiteral))
                 {
                     //Remove triple
-                    this.IndexedTriples.Remove(triple.TripleID);
+                    IndexedTriples.Remove(triple.TripleID);
                     //Remove index
-                    this.GraphIndex.RemoveIndex(triple);
+                    GraphIndex.RemoveIndex(triple);
                 }
             }
             return this;
@@ -278,13 +317,13 @@ namespace RDFSharp.Model
         {
             if (subjectResource != null && predicateResource != null)
             {
-                foreach (RDFTriple triple in this.SelectTriplesBySubject(subjectResource)
-                                                 .SelectTriplesByPredicate(predicateResource))
+                foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource)
+                                               .SelectTriplesByPredicate(predicateResource))
                 {
                     //Remove triple
-                    this.IndexedTriples.Remove(triple.TripleID);
+                    IndexedTriples.Remove(triple.TripleID);
                     //Remove index
-                    this.GraphIndex.RemoveIndex(triple);
+                    GraphIndex.RemoveIndex(triple);
                 }
             }
             return this;
@@ -297,13 +336,13 @@ namespace RDFSharp.Model
         {
             if (subjectResource != null && objectResource != null)
             {
-                foreach (RDFTriple triple in this.SelectTriplesBySubject(subjectResource)
-                                                 .SelectTriplesByObject(objectResource))
+                foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource)
+                                               .SelectTriplesByObject(objectResource))
                 {
                     //Remove triple
-                    this.IndexedTriples.Remove(triple.TripleID);
+                    IndexedTriples.Remove(triple.TripleID);
                     //Remove index
-                    this.GraphIndex.RemoveIndex(triple);
+                    GraphIndex.RemoveIndex(triple);
                 }
             }
             return this;
@@ -316,13 +355,13 @@ namespace RDFSharp.Model
         {
             if (subjectResource != null && objectLiteral != null)
             {
-                foreach (RDFTriple triple in this.SelectTriplesBySubject(subjectResource)
-                                                 .SelectTriplesByLiteral(objectLiteral))
+                foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource)
+                                               .SelectTriplesByLiteral(objectLiteral))
                 {
                     //Remove triple
-                    this.IndexedTriples.Remove(triple.TripleID);
+                    IndexedTriples.Remove(triple.TripleID);
                     //Remove index
-                    this.GraphIndex.RemoveIndex(triple);
+                    GraphIndex.RemoveIndex(triple);
                 }
             }
             return this;
@@ -335,13 +374,13 @@ namespace RDFSharp.Model
         {
             if (predicateResource != null && objectResource != null)
             {
-                foreach (RDFTriple triple in this.SelectTriplesByPredicate(predicateResource)
-                                                 .SelectTriplesByObject(objectResource))
+                foreach (RDFTriple triple in SelectTriplesByPredicate(predicateResource)
+                                               .SelectTriplesByObject(objectResource))
                 {
                     //Remove triple
-                    this.IndexedTriples.Remove(triple.TripleID);
+                    IndexedTriples.Remove(triple.TripleID);
                     //Remove index
-                    this.GraphIndex.RemoveIndex(triple);
+                    GraphIndex.RemoveIndex(triple);
                 }
             }
             return this;
@@ -354,13 +393,13 @@ namespace RDFSharp.Model
         {
             if (predicateResource != null && objectLiteral != null)
             {
-                foreach (RDFTriple triple in this.SelectTriplesByPredicate(predicateResource)
-                                                 .SelectTriplesByLiteral(objectLiteral))
+                foreach (RDFTriple triple in SelectTriplesByPredicate(predicateResource)
+                                               .SelectTriplesByLiteral(objectLiteral))
                 {
                     //Remove triple
-                    this.IndexedTriples.Remove(triple.TripleID);
+                    IndexedTriples.Remove(triple.TripleID);
                     //Remove index
-                    this.GraphIndex.RemoveIndex(triple);
+                    GraphIndex.RemoveIndex(triple);
                 }
             }
             return this;
@@ -372,9 +411,9 @@ namespace RDFSharp.Model
         public void ClearTriples()
         {
             //Clear triples
-            this.IndexedTriples.Clear();
+            IndexedTriples.Clear();
             //Clear index
-            this.GraphIndex.ClearIndex();
+            GraphIndex.ClearIndex();
         }
 
         /// <summary>
@@ -414,19 +453,19 @@ namespace RDFSharp.Model
                 //Cleanup graph from detected reifications
                 if (tObject is RDFResource)
                 {
-                    this.AddTriple(new RDFTriple((RDFResource)tSubject, (RDFResource)tPredicate, (RDFResource)tObject));
-                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
-                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT, (RDFResource)tSubject));
-                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
-                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, (RDFResource)tObject));
+                    AddTriple(new RDFTriple((RDFResource)tSubject, (RDFResource)tPredicate, (RDFResource)tObject));
+                    RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
+                    RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT, (RDFResource)tSubject));
+                    RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
+                    RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, (RDFResource)tObject));
                 }
                 else
                 {
-                    this.AddTriple(new RDFTriple((RDFResource)tSubject, (RDFResource)tPredicate, (RDFLiteral)tObject));
-                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
-                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT, (RDFResource)tSubject));
-                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
-                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, (RDFLiteral)tObject));
+                    AddTriple(new RDFTriple((RDFResource)tSubject, (RDFResource)tPredicate, (RDFLiteral)tObject));
+                    RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
+                    RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT, (RDFResource)tSubject));
+                    RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
+                    RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, (RDFLiteral)tObject));
                 }
             }
         }
@@ -437,7 +476,7 @@ namespace RDFSharp.Model
         /// Checks if the graph contains the given triple
         /// </summary>
         public bool ContainsTriple(RDFTriple triple)
-            => triple != null && this.IndexedTriples.ContainsKey(triple.TripleID);
+            => triple != null && IndexedTriples.ContainsKey(triple.TripleID);
 
         /// <summary>
         /// Gets the subgraph containing triples with the specified resource as subject
@@ -615,7 +654,7 @@ namespace RDFSharp.Model
         public DataTable ToDataTable()
         {
             //Create the structure of the result datatable
-            DataTable result = new DataTable(this.ToString());
+            DataTable result = new DataTable(ToString());
             result.Columns.Add("?SUBJECT", RDFQueryEngine.SystemString);
             result.Columns.Add("?PREDICATE", RDFQueryEngine.SystemString);
             result.Columns.Add("?OBJECT", RDFQueryEngine.SystemString);
