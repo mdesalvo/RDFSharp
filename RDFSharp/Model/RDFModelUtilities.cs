@@ -77,6 +77,57 @@ namespace RDFSharp.Model
         internal static readonly string[] AlternativesBoolFalse = new string[] { "0", "zero", "no", "n", "off", "ko" };
 
         /// <summary>
+        /// Dictionay of known datatypes for supporting direct lookup by string
+        /// </summary>
+        internal static Dictionary<string, RDFModelEnums.RDFDatatypes> KnownDatatypes = new Dictionary<string, RDFModelEnums.RDFDatatypes>()
+        {
+            { RDFVocabulary.RDF.HTML.ToString(), RDFModelEnums.RDFDatatypes.RDF_HTML },
+            { RDFVocabulary.RDF.JSON.ToString(), RDFModelEnums.RDFDatatypes.RDF_JSON },
+            { RDFVocabulary.RDF.XML_LITERAL.ToString(), RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL },
+            { RDFVocabulary.RDFS.LITERAL.ToString(), RDFModelEnums.RDFDatatypes.RDFS_LITERAL },
+            { RDFVocabulary.XSD.ANY_URI.ToString(), RDFModelEnums.RDFDatatypes.XSD_ANYURI },
+            { RDFVocabulary.XSD.BASE64_BINARY.ToString(), RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY },
+            { RDFVocabulary.XSD.BOOLEAN.ToString(), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN },
+            { RDFVocabulary.XSD.BYTE.ToString(), RDFModelEnums.RDFDatatypes.XSD_BYTE },
+            { RDFVocabulary.XSD.DATE.ToString(), RDFModelEnums.RDFDatatypes.XSD_DATE },
+            { RDFVocabulary.XSD.DATETIME.ToString(), RDFModelEnums.RDFDatatypes.XSD_DATETIME },
+            { RDFVocabulary.XSD.DATETIMESTAMP.ToString(), RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP },
+            { RDFVocabulary.XSD.DECIMAL.ToString(), RDFModelEnums.RDFDatatypes.XSD_DECIMAL },
+            { RDFVocabulary.XSD.DOUBLE.ToString(), RDFModelEnums.RDFDatatypes.XSD_DOUBLE },
+            { RDFVocabulary.XSD.DURATION.ToString(), RDFModelEnums.RDFDatatypes.XSD_DURATION },
+            { RDFVocabulary.XSD.FLOAT.ToString(), RDFModelEnums.RDFDatatypes.XSD_FLOAT },
+            { RDFVocabulary.XSD.G_DAY.ToString(), RDFModelEnums.RDFDatatypes.XSD_GDAY },
+            { RDFVocabulary.XSD.G_MONTH.ToString(), RDFModelEnums.RDFDatatypes.XSD_GMONTH },
+            { RDFVocabulary.XSD.G_MONTH_DAY.ToString(), RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY },
+            { RDFVocabulary.XSD.G_YEAR.ToString(), RDFModelEnums.RDFDatatypes.XSD_GYEAR },
+            { RDFVocabulary.XSD.G_YEAR_MONTH.ToString(), RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH },
+            { RDFVocabulary.XSD.HEX_BINARY.ToString(), RDFModelEnums.RDFDatatypes.XSD_HEXBINARY },
+            { RDFVocabulary.XSD.ID.ToString(), RDFModelEnums.RDFDatatypes.XSD_ID },
+            { RDFVocabulary.XSD.INT.ToString(), RDFModelEnums.RDFDatatypes.XSD_INT },
+            { RDFVocabulary.XSD.INTEGER.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER },
+            { RDFVocabulary.XSD.LANGUAGE.ToString(), RDFModelEnums.RDFDatatypes.XSD_LANGUAGE },
+            { RDFVocabulary.XSD.LONG.ToString(), RDFModelEnums.RDFDatatypes.XSD_LONG },
+            { RDFVocabulary.XSD.NAME.ToString(), RDFModelEnums.RDFDatatypes.XSD_NAME },
+            { RDFVocabulary.XSD.NCNAME.ToString(), RDFModelEnums.RDFDatatypes.XSD_NCNAME },
+            { RDFVocabulary.XSD.NEGATIVE_INTEGER.ToString(), RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER },
+            { RDFVocabulary.XSD.NMTOKEN.ToString(), RDFModelEnums.RDFDatatypes.XSD_NMTOKEN },
+            { RDFVocabulary.XSD.NON_NEGATIVE_INTEGER.ToString(), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER },
+            { RDFVocabulary.XSD.NON_POSITIVE_INTEGER.ToString(), RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER },
+            { RDFVocabulary.XSD.NORMALIZED_STRING.ToString(), RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING },
+            { RDFVocabulary.XSD.NOTATION.ToString(), RDFModelEnums.RDFDatatypes.XSD_NOTATION },
+            { RDFVocabulary.XSD.POSITIVE_INTEGER.ToString(), RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER },
+            { RDFVocabulary.XSD.QNAME.ToString(), RDFModelEnums.RDFDatatypes.XSD_QNAME },
+            { RDFVocabulary.XSD.SHORT.ToString(), RDFModelEnums.RDFDatatypes.XSD_SHORT },
+            { RDFVocabulary.XSD.STRING.ToString(), RDFModelEnums.RDFDatatypes.XSD_STRING },
+            { RDFVocabulary.XSD.TIME.ToString(), RDFModelEnums.RDFDatatypes.XSD_TIME },
+            { RDFVocabulary.XSD.TOKEN.ToString(), RDFModelEnums.RDFDatatypes.XSD_TOKEN },
+            { RDFVocabulary.XSD.UNSIGNED_BYTE.ToString(), RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE },
+            { RDFVocabulary.XSD.UNSIGNED_INT.ToString(), RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT },
+            { RDFVocabulary.XSD.UNSIGNED_LONG.ToString(), RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG },
+            { RDFVocabulary.XSD.UNSIGNED_SHORT.ToString(), RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT }
+        };
+
+        /// <summary>
         /// Gets the Uri corresponding to the given string
         /// </summary>
         internal static Uri GetUriFromString(string uriString)
@@ -422,107 +473,13 @@ namespace RDFSharp.Model
         {
             #region Guards
             if (string.IsNullOrEmpty(datatypeString))
-                throw new RDFModelException("Cannot recognize datatype representation of given \"datatypeString\" parameter because it is null or empty.");
+                throw new RDFModelException("Cannot recognize datatype representation of given \"datatypeString\" parameter because it is null or empty");
             if (!Uri.TryCreate(datatypeString, UriKind.Absolute, out Uri datatypeUri))
-                throw new RDFModelException("Cannot recognize datatype representation of given \"datatypeString\" parameter because it is not a valid absolute Uri.");
+                throw new RDFModelException("Cannot recognize datatype representation of given \"datatypeString\" parameter because it is not a valid absolute Uri");
             #endregion
 
-            //Identification of specific RDF/RDFS/XSD datatypes
-            datatypeString = datatypeUri.ToString();
-            if (datatypeString.Equals(RDFVocabulary.RDFS.LITERAL.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.RDFS_LITERAL;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.STRING.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_STRING;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.BOOLEAN.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_BOOLEAN;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.DECIMAL.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_DECIMAL;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.DOUBLE.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_DOUBLE;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.FLOAT.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_FLOAT;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.INTEGER.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_INTEGER;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.LONG.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_LONG;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.INT.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_INT;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.SHORT.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_SHORT;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.BYTE.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_BYTE;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.UNSIGNED_LONG.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.UNSIGNED_INT.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.UNSIGNED_SHORT.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.UNSIGNED_BYTE.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.NEGATIVE_INTEGER.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.NON_NEGATIVE_INTEGER.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.NON_POSITIVE_INTEGER.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.POSITIVE_INTEGER.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.DATE.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_DATE;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.DATETIME.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_DATETIME;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.DATETIMESTAMP.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.TIME.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_TIME;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.G_DAY.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_GDAY;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.G_MONTH.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_GMONTH;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.G_MONTH_DAY.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.G_YEAR.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_GYEAR;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.G_YEAR_MONTH.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.DURATION.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_DURATION;
-
-            //Less-common datatypes
-            else if (datatypeString.Equals(RDFVocabulary.RDF.XML_LITERAL.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL;
-            else if (datatypeString.Equals(RDFVocabulary.RDF.HTML.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.RDF_HTML;
-            else if (datatypeString.Equals(RDFVocabulary.RDF.JSON.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.RDF_JSON;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.ANY_URI.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_ANYURI;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.BASE64_BINARY.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.HEX_BINARY.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_HEXBINARY;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.ID.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_ID;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.LANGUAGE.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_LANGUAGE;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.NAME.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_NAME;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.NCNAME.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_NCNAME;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.QNAME.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_QNAME;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.TOKEN.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_TOKEN;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.NMTOKEN.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_NMTOKEN;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.NORMALIZED_STRING.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.NOTATION.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_NOTATION;
-
-            else
-                //Fallback to rdfs:Literal
-                return RDFModelEnums.RDFDatatypes.RDFS_LITERAL;
+            return KnownDatatypes.TryGetValue(datatypeUri.ToString(), out RDFModelEnums.RDFDatatypes datatype) 
+                ? datatype : RDFModelEnums.RDFDatatypes.RDFS_LITERAL;
         }
 
         /// <summary>
