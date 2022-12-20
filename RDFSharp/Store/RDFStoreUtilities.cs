@@ -130,13 +130,12 @@ namespace RDFSharp.Store
                 if (lit != null)
                 {
                     queryFilters.Append('L');
-                    foreach (var q in store.StoreIndex.SelectIndexByLiteral(lit))
+                    foreach (long q in store.StoreIndex.SelectIndexByLiteral(lit))
                         L.Add(store.IndexedQuadruples[q]);
                 }
 
                 //Intersect the filters
-                string queryFilter = queryFilters.ToString();
-                switch (queryFilter)
+                switch (queryFilters.ToString())
                 {
                     case "C":
                         matchResultIndexedQuadruples = C;
