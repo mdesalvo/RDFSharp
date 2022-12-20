@@ -42,7 +42,7 @@ namespace RDFSharp.Model
 
             using (MD5CryptoServiceProvider md5Encryptor = new MD5CryptoServiceProvider())
             {
-                byte[] hashBytes = md5Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(input));
+                byte[] hashBytes = md5Encryptor.ComputeHash(UTF8_NoBOM.GetBytes(input));
                 return BitConverter.ToInt64(hashBytes, 0);
             }
         }
@@ -70,11 +70,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Alternative representations of boolean True
         /// </summary>
-        internal static readonly string[] AlternativesBoolTrue = new string[] { "1", "one", "yes", "y", "on", "ok" };
+        internal static readonly string[] AlternativesBoolTrue  = new string[] { "1", "one", "yes", "y", "t", "on", "ok" };
         /// <summary>
         /// Alternative representations of boolean False
         /// </summary>
-        internal static readonly string[] AlternativesBoolFalse = new string[] { "0", "zero", "no", "n", "off", "ko" };
+        internal static readonly string[] AlternativesBoolFalse = new string[] { "0", "zero", "no", "n", "f", "off", "ko" };
 
         /// <summary>
         /// Dictionay of known datatypes for supporting direct lookup by string
@@ -309,8 +309,7 @@ namespace RDFSharp.Model
                 }
 
                 //Intersect the filters
-                string queryFilter = queryFilters.ToString();
-                switch (queryFilter)
+                switch (queryFilters.ToString())
                 {
                     case "S":
                         matchResultIndexedTriples = S;
@@ -361,14 +360,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Rebuilds the collection represented by the given resource within the given graph
         /// </summary>
-        internal static RDFCollection DeserializeCollectionFromGraph(RDFGraph graph,
-                                                                     RDFResource collRepresentative,
-                                                                     RDFModelEnums.RDFTripleFlavors expectedFlavor)
+        internal static RDFCollection DeserializeCollectionFromGraph(RDFGraph graph, RDFResource collRepresentative, RDFModelEnums.RDFTripleFlavors expectedFlavor)
         {
-            RDFCollection collection = new RDFCollection(expectedFlavor == RDFModelEnums.RDFTripleFlavors.SPO ? RDFModelEnums.RDFItemTypes.Resource :
-                                                                                                                RDFModelEnums.RDFItemTypes.Literal);
-            RDFGraph rdfFirst = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST);
-            RDFGraph rdfRest = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST);
+            RDFCollection collection = new RDFCollection(expectedFlavor == RDFModelEnums.RDFTripleFlavors.SPO ? RDFModelEnums.RDFItemTypes.Resource : RDFModelEnums.RDFItemTypes.Literal);
+            RDFGraph rdfFirst = graph[null, RDFVocabulary.RDF.FIRST, null, null];
+            RDFGraph rdfRest = graph[null, RDFVocabulary.RDF.REST, null, null];
 
             #region Deserialization
             bool nilFound = false;
@@ -377,7 +373,7 @@ namespace RDFSharp.Model
             while (!nilFound)
             {
                 #region rdf:first
-                RDFTriple first = rdfFirst.SelectTriplesBySubject(itemRest).FirstOrDefault();
+                RDFTriple first = rdfFirst[itemRest, null, null, null].FirstOrDefault();
                 if (first != null && first.TripleFlavor == expectedFlavor)
                 {
                     if (expectedFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
@@ -386,9 +382,7 @@ namespace RDFSharp.Model
                         collection.AddItem((RDFLiteral)first.Object);
                 }
                 else
-                {
                     nilFound = true;
-                }
                 #endregion
 
                 #region rdf:rest
@@ -411,9 +405,7 @@ namespace RDFSharp.Model
                         }
                     }
                     else
-                    {
                         nilFound = true;
-                    }
                 }
                 #endregion
             }
@@ -425,14 +417,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Detects the flavor (SPO/SPL) of the collection represented by the given resource within the given graph
         /// </summary>
-        internal static RDFModelEnums.RDFTripleFlavors DetectCollectionFlavorFromGraph(RDFGraph graph,
-                                                                                       RDFResource collRepresentative)
-        {
-            return graph.SelectTriplesBySubject(collRepresentative)
-                        .SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST)
-                        .FirstOrDefault()
-                       ?.TripleFlavor ?? RDFModelEnums.RDFTripleFlavors.SPO;
-        }
+        internal static RDFModelEnums.RDFTripleFlavors DetectCollectionFlavorFromGraph(RDFGraph graph, RDFResource collRepresentative)
+            => graph[collRepresentative, RDFVocabulary.RDF.FIRST, null, null].FirstOrDefault()?.TripleFlavor ?? RDFModelEnums.RDFTripleFlavors.SPO;
         #endregion
 
         #region Namespaces
@@ -478,6 +464,7 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot recognize datatype representation of given \"datatypeString\" parameter because it is not a valid absolute Uri");
             #endregion
 
+            //Lookup known datatypes (fallback to rdfs:Literal)
             return KnownDatatypes.TryGetValue(datatypeUri.ToString(), out RDFModelEnums.RDFDatatypes datatype) 
                 ? datatype : RDFModelEnums.RDFDatatypes.RDFS_LITERAL;
         }
