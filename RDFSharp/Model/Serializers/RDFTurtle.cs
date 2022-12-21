@@ -131,6 +131,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal class RDFTurtleContext
         {
+            #region Properties
             /// <summary>
             /// Indicates the current subject
             /// </summary>
@@ -147,6 +148,16 @@ namespace RDFSharp.Model
             /// Indicates the current position in the input string
             /// </summary>
             internal int Position { get; set; }
+            /// <summary>
+            /// Context for Uri hashing
+            /// </summary>
+            internal Dictionary<string, long> HashContext { get; set; }
+            #endregion
+
+            #region Ctors
+            internal RDFTurtleContext()
+                => HashContext = new Dictionary<string, long>();
+            #endregion
         }
         #endregion
 
@@ -383,7 +394,7 @@ namespace RDFSharp.Model
             {
                 object value = ParseValue(turtleData, turtleContext, result);
                 if (value is Uri)
-                    turtleContext.Subject = new RDFResource(value.ToString());
+                    turtleContext.Subject = new RDFResource(value.ToString(), turtleContext.HashContext);
                 else if (value is RDFResource valueResource)
                     turtleContext.Subject = valueResource;
                 else if (value != null)
@@ -416,7 +427,7 @@ namespace RDFSharp.Model
             // Predicate is a normal resource
             object predicate = ParseValue(turtleData, turtleContext, result);
             if (predicate is Uri)
-                return new RDFResource(predicate.ToString());
+                return new RDFResource(predicate.ToString(), turtleContext.HashContext);
             else if (predicate is RDFResource)
                 return (RDFResource)predicate;
             else
@@ -489,7 +500,7 @@ namespace RDFSharp.Model
                 default:
                     object value = ParseValue(turtleData, turtleContext, result); //Uri or RDFPatternMember
                     if (value is Uri)
-                        turtleContext.Object = new RDFResource(value.ToString());
+                        turtleContext.Object = new RDFResource(value.ToString(), turtleContext.HashContext);
                     else if (value is RDFPatternMember pmemberValue)
                         turtleContext.Object = pmemberValue;
                     break;

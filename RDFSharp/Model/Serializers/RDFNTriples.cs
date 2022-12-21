@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -200,6 +201,7 @@ namespace RDFSharp.Model
                     RDFResource P = null;
                     RDFResource O = null;
                     RDFLiteral L = null;
+                    Dictionary<string, long> hashContext = new Dictionary<string, long>();
                     char[] openingBrackets = new char[] { '<' };
                     char[] closingBrackets = new char[] { '>' };
                     char[] trimmableChars  = new char[] { ' ', '\t', '\r', '\n' };
@@ -229,13 +231,15 @@ namespace RDFSharp.Model
                         string subj = tokens[0].TrimStart(openingBrackets)
                                                .TrimEnd(closingBrackets)
                                                .Replace("_:", "bnode:");
-                        S = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(subj));
+                        string finalSubj = RDFModelUtilities.ASCII_To_Unicode(subj);
+                        S = new RDFResource(finalSubj, hashContext);
                         #endregion
 
                         #region pred
                         string pred = tokens[1].TrimStart(openingBrackets)
                                                .TrimEnd(closingBrackets);
-                        P = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(pred));
+                        string finalPred = RDFModelUtilities.ASCII_To_Unicode(pred);
+                        P = new RDFResource(finalPred, hashContext);
                         #endregion
 
                         #region object
@@ -247,7 +251,8 @@ namespace RDFSharp.Model
                                                   .TrimEnd(closingBrackets)
                                                   .Replace("_:", "bnode:")
                                                   .Trim(trimmableChars);
-                            O = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(obj));
+                            string finalObj = RDFModelUtilities.ASCII_To_Unicode(obj);
+                            O = new RDFResource(finalObj, hashContext);
                         }
                         #endregion
 
