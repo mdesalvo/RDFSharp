@@ -16,6 +16,7 @@
 
 using RDFSharp.Query;
 using System;
+using System.Collections.Generic;
 
 namespace RDFSharp.Model
 {
@@ -45,10 +46,34 @@ namespace RDFSharp.Model
         /// <summary>
         /// Builds a non-blank resource (if starting with "_:" or "bnode:", it builds a blank resource)
         /// </summary>
-        public RDFResource(string uriString)
+        public RDFResource(string uriString) : this(uriString, null) { }
+
+        /// <summary>
+        /// Builds a non-blank resource (internal high-performance version)
+        /// </summary>
+        internal RDFResource(string uriString, Dictionary<string, long> hashContext)
         {
             Uri tempUri = RDFModelUtilities.GetUriFromString(uriString);
             this.URI = tempUri ?? throw new RDFModelException("Cannot create RDFResource because given \"uriString\" parameter is null or cannot be converted to a valid Uri");
+
+            if (hashContext != null)
+            {
+                uriString = this.URI.ToString();
+                this.LazyPatternMemberID = new Lazy<long>(() => 
+                {
+                    //Cache-Hit
+                    if (hashContext.TryGetValue(uriString, out long hashValue))
+                        return hashValue;
+
+                    //Cache-Miss
+                    else
+                    {
+                        hashValue = RDFModelUtilities.CreateHash(this.ToString());
+                        hashContext.Add(uriString, hashValue);
+                        return hashValue;
+                    }    
+                });
+            }
         }
         #endregion
 

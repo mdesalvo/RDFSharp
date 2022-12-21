@@ -269,7 +269,7 @@ namespace RDFSharp.Store
 
 		        if (value is Uri || (value is RDFResource resValue && !resValue.IsBlank)) //We don't accept blank contexts
                 {
-			        contextOrSubject = new RDFResource(value.ToString());
+			        contextOrSubject = new RDFResource(value.ToString(), trigContext.HashContext);
 			        foundContextOrSubject = true;
 		        }
                 else

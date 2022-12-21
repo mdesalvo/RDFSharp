@@ -16,6 +16,7 @@
 
 using RDFSharp.Model;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -204,6 +205,7 @@ namespace RDFSharp.Store
                     RDFResource O = null;
                     RDFLiteral L = null;
                     RDFContext C = new RDFContext();
+                    Dictionary<string, long> hashContext = new Dictionary<string, long>();
                     while ((nquad = sr.ReadLine()) != null)
                     {
                         nquadIndex++;
@@ -235,13 +237,13 @@ namespace RDFSharp.Store
                         string subj = tokens[0].TrimStart(new char[] { '<' })
                                                .TrimEnd(new char[] { '>' })
                                                .Replace("_:", "bnode:");
-                        S = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(subj));
+                        S = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(subj), hashContext);
                         #endregion
 
                         #region pred
                         string pred = tokens[1].TrimStart(new char[] { '<' })
                                                .TrimEnd(new char[] { '>' });
-                        P = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(pred));
+                        P = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(pred), hashContext);
                         #endregion
 
                         #region object
@@ -253,7 +255,7 @@ namespace RDFSharp.Store
                                                   .TrimEnd(new char[] { '>' })
                                                   .Replace("_:", "bnode:")
                                                   .Trim(new char[] { ' ', '\n', '\t', '\r' });
-                            O = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(obj));
+                            O = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(obj), hashContext);
                         }
                         #endregion
 

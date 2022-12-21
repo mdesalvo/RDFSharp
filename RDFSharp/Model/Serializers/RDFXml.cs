@@ -415,8 +415,9 @@ namespace RDFSharp.Model
 
                         #region elements
                         //Parse children of root node
+                        Dictionary<string, long> hashContext = new Dictionary<string, long>();
                         if (rdfRDF.HasChildNodes)
-                            ParseNodeList(rdfRDF.ChildNodes, result, xmlBase, GetXmlLangAttribute(rdfRDF));
+                            ParseNodeList(rdfRDF.ChildNodes, result, xmlBase, GetXmlLangAttribute(rdfRDF), hashContext);
                         #endregion
                     }
                 }
@@ -435,7 +436,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parses the given list of nodes
         /// </summary>
-        private static List<RDFResource> ParseNodeList(XmlNodeList nodeList, RDFGraph result, Uri xmlBase, XmlAttribute xmlLangParent, RDFResource subjectParent = null)
+        private static List<RDFResource> ParseNodeList(XmlNodeList nodeList, RDFGraph result, Uri xmlBase, XmlAttribute xmlLangParent,
+            Dictionary<string, long> hashContext, RDFResource subjectParent = null)
         {
             List<RDFResource> subjects = new List<RDFResource>();
             IEnumerator subjNodesEnum = nodeList.GetEnumerator();
@@ -451,7 +453,7 @@ namespace RDFSharp.Model
 
                 //Assert resource as subject
                 XmlAttribute xmlLangSubj = GetXmlLangAttribute(subjNode) ?? xmlLangParent;
-                RDFResource subj = subjectParent ?? GetSubjectNode(subjNode, xmlBase, result);
+                RDFResource subj = subjectParent ?? GetSubjectNode(subjNode, xmlBase, result, hashContext);
                 if (subj == null)
                     subj = new RDFResource();
                 subjects.Add(subj);
@@ -480,15 +482,15 @@ namespace RDFSharp.Model
                                 Uri rdfTypeValue = RDFModelUtilities.GetUriFromString(subjAttr.Value);
                                 if (rdfTypeValue != null)
                                 {
-                                    RDFResource obj = new RDFResource(rdfTypeValue.ToString());
+                                    RDFResource obj = new RDFResource(rdfTypeValue.ToString(), hashContext);
                                     result.AddTriple(new RDFTriple(subj, RDFVocabulary.RDF.TYPE, obj));
                                 }
                                 break;
 
                             //Threat other attributes as SPL
                             default:
-                                RDFResource subjAttrPred = string.IsNullOrEmpty(subjAttr.NamespaceURI) ? new RDFResource(string.Concat(xmlBase, subjAttr.LocalName))
-                                                                                                       : new RDFResource(string.Concat(subjAttr.NamespaceURI, subjAttr.LocalName));
+                                RDFResource subjAttrPred = string.IsNullOrEmpty(subjAttr.NamespaceURI) ? new RDFResource(string.Concat(xmlBase, subjAttr.LocalName), hashContext)
+                                                                                                       : new RDFResource(string.Concat(subjAttr.NamespaceURI, subjAttr.LocalName), hashContext);
                                 RDFPlainLiteral plit = new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(subjAttr.Value)), xmlLangSubj?.Value);
                                 result.AddTriple(new RDFTriple(subj, subjAttrPred, plit));
                                 break;
@@ -502,7 +504,6 @@ namespace RDFSharp.Model
                     IEnumerator predNodesEnum = subjNode.ChildNodes.GetEnumerator();
                     while (predNodesEnum != null && predNodesEnum.MoveNext())
                     {
-
                         #region predicate
                         //Get the current pred node
                         RDFResource pred = null;
@@ -515,10 +516,10 @@ namespace RDFSharp.Model
                         //Get the predicate
                         XmlAttribute xmlLangPred = GetXmlLangAttribute(predNode) ?? xmlLangSubj;
                         if (predNode.NamespaceURI == string.Empty)
-                            pred = new RDFResource(string.Concat(xmlBase, predNode.LocalName));
+                            pred = new RDFResource(string.Concat(xmlBase, predNode.LocalName), hashContext);
                         else
-                            pred = (predNode.LocalName.StartsWith("autoNS") ? new RDFResource(predNode.NamespaceURI)
-                                                                            : new RDFResource(string.Concat(predNode.NamespaceURI, predNode.LocalName)));
+                            pred = predNode.LocalName.StartsWith("autoNS") ? new RDFResource(predNode.NamespaceURI, hashContext)
+                                                                           : new RDFResource(string.Concat(predNode.NamespaceURI, predNode.LocalName), hashContext);
                         #endregion
 
                         #region objList
@@ -528,7 +529,7 @@ namespace RDFSharp.Model
                         XmlAttribute rdfCollect = GetParseTypeCollectionAttribute(predNode);
                         if (rdfCollect != null)
                         {
-                            ParseCollectionElements(xmlBase, predNode, subj, pred, result, xmlLangPred);
+                            ParseCollectionElements(xmlBase, predNode, subj, pred, result, xmlLangPred, hashContext);
                             continue;
                         }
                         #endregion
@@ -543,13 +544,13 @@ namespace RDFSharp.Model
                             //Distinguish the right type of RDF container to build
                             if (containerNode.LocalName.Equals("rdf:Bag", StringComparison.OrdinalIgnoreCase)
                                     || containerNode.LocalName.Equals("Bag", StringComparison.OrdinalIgnoreCase))
-                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Bag, containerNode, subj, pred, result, xmlLangCont);
+                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Bag, containerNode, subj, pred, result, xmlLangCont, hashContext);
                             else if (containerNode.LocalName.Equals("rdf:Seq", StringComparison.OrdinalIgnoreCase)
                                     || containerNode.LocalName.Equals("Seq", StringComparison.OrdinalIgnoreCase))
-                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Seq, containerNode, subj, pred, result, xmlLangCont);
+                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Seq, containerNode, subj, pred, result, xmlLangCont, hashContext);
                             else if (containerNode.LocalName.Equals("rdf:Alt", StringComparison.OrdinalIgnoreCase)
                                     || containerNode.LocalName.Equals("Alt", StringComparison.OrdinalIgnoreCase))
-                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Alt, containerNode, subj, pred, result, xmlLangCont);
+                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Alt, containerNode, subj, pred, result, xmlLangCont, hashContext);
                             continue;
                         }
                         #endregion
@@ -574,7 +575,7 @@ namespace RDFSharp.Model
 
                                 //Check if predicate has children (nested resource descriptions)
                                 if (predNode.HasChildNodes)
-                                    ParseNodeList(predNode.SelectNodes("."), result, xmlBase, xmlLangPred, parsetypeResource);
+                                    ParseNodeList(predNode.SelectNodes("."), result, xmlBase, xmlLangPred, hashContext, parsetypeResource);
                             }
                             #endregion
 
@@ -586,11 +587,11 @@ namespace RDFSharp.Model
                                 {
                                     //"rdf:ID" at predicate level appends the parsed triple and also its reification statements;
                                     //The subject of reification is the value of "rdf:ID" attribute resolved against xmlBase
-                                    RDFTriple rdfIdTriple = GetRdfIdTriple(predNode, subj, pred, xmlBase, xmlLangPred);
+                                    RDFTriple rdfIdTriple = GetRdfIdTriple(predNode, subj, pred, xmlBase, xmlLangPred, hashContext);
                                     if (rdfIdTriple != null)
                                     {
                                         result.AddTriple(rdfIdTriple);
-                                        RDFResource rdfIdReificationSubject = new RDFResource(string.Concat(xmlBase, rdfId.Value));
+                                        RDFResource rdfIdReificationSubject = new RDFResource(string.Concat(xmlBase, rdfId.Value), hashContext);
                                         foreach (RDFTriple reifRDFIdTriple in ReifyRdfIdPredicateTriple(rdfIdReificationSubject, rdfIdTriple))
                                             result.AddTriple(reifRDFIdTriple);
                                     }
@@ -603,7 +604,7 @@ namespace RDFSharp.Model
                                 else
                                 {
                                     string objValue = ResolveRelativeNode(rdfObject, xmlBase);
-                                    RDFResource obj = new RDFResource(objValue);
+                                    RDFResource obj = new RDFResource(objValue, hashContext);
                                     RDFTriple objTriple = new RDFTriple(subj, pred, obj);
                                     result.AddTriple(objTriple);
                                 }
@@ -651,14 +652,13 @@ namespace RDFSharp.Model
                         //At last, check if predicate has children (nested resource descriptions)
                         if (predNode.HasChildNodes)
                         {
-                            List<RDFResource> nestedResources = ParseNodeList(predNode.ChildNodes, result, xmlBase, xmlLangPred);
+                            List<RDFResource> nestedResources = ParseNodeList(predNode.ChildNodes, result, xmlBase, xmlLangPred, hashContext);
                             foreach (RDFResource nestedResource in nestedResources)
                                 result.AddTriple(new RDFTriple(subj, pred, nestedResource));
                         }
                         #endregion
 
                         #endregion
-
                     }
                 }
                 #endregion
@@ -778,7 +778,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the subj node extracted from the attribute list of the current element
         /// </summary>
-        private static RDFResource GetSubjectNode(XmlNode subjNode, Uri xmlBase, RDFGraph result)
+        private static RDFResource GetSubjectNode(XmlNode subjNode, Uri xmlBase, RDFGraph result, Dictionary<string, long> hashContext)
         {
             RDFResource subj = null;
 
@@ -792,7 +792,7 @@ namespace RDFSharp.Model
                     //Attribute found, but we must check if it is "rdf:ID", "rdf:nodeID" or a relative Uri:
                     //in this case it must be resolved against the xmlBase namespace, or else it remains the same
                     string rdfAboutValue = ResolveRelativeNode(rdfAbout, xmlBase);
-                    subj = new RDFResource(rdfAboutValue);
+                    subj = new RDFResource(rdfAboutValue, hashContext);
                 }
             }
             if (subj == null)
@@ -804,9 +804,9 @@ namespace RDFSharp.Model
             {
                 RDFResource obj = null;
                 if (subjNode.NamespaceURI == string.Empty)
-                    obj = new RDFResource(string.Concat(xmlBase, subjNode.LocalName));
+                    obj = new RDFResource(string.Concat(xmlBase, subjNode.LocalName), hashContext);
                 else
-                    obj = new RDFResource(string.Concat(subjNode.NamespaceURI, subjNode.LocalName));
+                    obj = new RDFResource(string.Concat(subjNode.NamespaceURI, subjNode.LocalName), hashContext);
                 result.AddTriple(new RDFTriple(subj, RDFVocabulary.RDF.TYPE, obj));
             }
 
@@ -920,12 +920,13 @@ namespace RDFSharp.Model
         /// <summary>
         /// Given an element, return the triple corresponding to the RDF ID
         /// </summary>
-        private static RDFTriple GetRdfIdTriple(XmlNode predNode, RDFResource subject, RDFResource predicate, Uri xmlBase, XmlAttribute xmlLangPred)
+        private static RDFTriple GetRdfIdTriple(XmlNode predNode, RDFResource subject, RDFResource predicate, Uri xmlBase, 
+            XmlAttribute xmlLangPred, Dictionary<string, long> hashContext)
         {
             //Try to resolve SPO triple by "rdf:Resource" or "rdf:nodeID" attributes
             XmlAttribute resOrNodeIdAttr = GetRdfResourceAttribute(predNode);
             if (resOrNodeIdAttr != null)
-                return new RDFTriple(subject, predicate, new RDFResource(ResolveRelativeNode(resOrNodeIdAttr, xmlBase)));
+                return new RDFTriple(subject, predicate, new RDFResource(ResolveRelativeNode(resOrNodeIdAttr, xmlBase), hashContext));
 
             //Try to resolve SPLT triple by "rdf:datatype" or "rdf:parseType=Literal" attributes
             XmlAttribute rdfDatatypeAttr = GetRdfDatatypeAttribute(predNode);
@@ -976,8 +977,8 @@ namespace RDFSharp.Model
         /// Given an attribute representing a RDF collection, iterates on its constituent elements
         /// to build its standard reification triples.
         /// </summary>
-        private static void ParseCollectionElements(Uri xmlBase, XmlNode predNode, RDFResource subj,
-                                                    RDFResource pred, RDFGraph result, XmlAttribute xmlLangSubj)
+        private static void ParseCollectionElements(Uri xmlBase, XmlNode predNode, RDFResource subj, RDFResource pred, 
+            RDFGraph result, XmlAttribute xmlLangSubj, Dictionary<string, long> hashContext)
         {
             //Attach the collection as the blank object of the current predicate
             RDFResource obj = new RDFResource();
@@ -989,7 +990,7 @@ namespace RDFSharp.Model
             if (predNode.HasChildNodes)
             {
                 XmlAttribute xmlLangPred = GetXmlLangAttribute(predNode) ?? xmlLangSubj;
-                List<RDFResource> elems = ParseNodeList(predNode.ChildNodes, result, xmlBase, xmlLangPred);
+                List<RDFResource> elems = ParseNodeList(predNode.ChildNodes, result, xmlBase, xmlLangPred, hashContext);
                 foreach (RDFResource elem in elems)
                 {
                     // obj -> rdf:type -> rdf:list
@@ -1048,8 +1049,8 @@ namespace RDFSharp.Model
         /// Given an element representing a RDF container, iterates on its constituent elements
         /// to build its standard reification triples.
         /// </summary>
-        private static void ParseContainerElements(RDFModelEnums.RDFContainerTypes contType, XmlNode container,
-                                                   RDFResource subj, RDFResource pred, RDFGraph result, XmlAttribute xmlLangPred)
+        private static void ParseContainerElements(RDFModelEnums.RDFContainerTypes contType, XmlNode container, RDFResource subj, RDFResource pred, 
+            RDFGraph result, XmlAttribute xmlLangPred, Dictionary<string, long> hashContext)
         {
             //Attach the container as the blank object of the current pred
             RDFResource obj = new RDFResource();
@@ -1101,12 +1102,12 @@ namespace RDFSharp.Model
                             if (!elemVals.Contains(elemUri.Value))
                             {
                                 elemVals.Add(elemUri.Value);
-                                result.AddTriple(new RDFTriple(obj, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, elem.LocalName)), new RDFResource(elemUri.Value)));
+                                result.AddTriple(new RDFTriple(obj, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, elem.LocalName), hashContext), new RDFResource(elemUri.Value, hashContext)));
                             }
                         }
                         else
                         {
-                            result.AddTriple(new RDFTriple(obj, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, elem.LocalName)), new RDFResource(elemUri.Value)));
+                            result.AddTriple(new RDFTriple(obj, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, elem.LocalName), hashContext), new RDFResource(elemUri.Value, hashContext)));
                         }
                     }
                     #endregion
@@ -1134,12 +1135,12 @@ namespace RDFSharp.Model
                             if (!elemVals.Contains(literal.ToString()))
                             {
                                 elemVals.Add(literal.ToString());
-                                result.AddTriple(new RDFTriple(obj, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, elem.LocalName)), literal));
+                                result.AddTriple(new RDFTriple(obj, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, elem.LocalName), hashContext), literal));
                             }
                         }
                         else
                         {
-                            result.AddTriple(new RDFTriple(obj, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, elem.LocalName)), literal));
+                            result.AddTriple(new RDFTriple(obj, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, elem.LocalName), hashContext), literal));
                         }
                     }
                     #endregion

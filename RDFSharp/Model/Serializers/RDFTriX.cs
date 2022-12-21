@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Web;
 using System.Xml;
@@ -221,6 +222,7 @@ namespace RDFSharp.Model
 
                             #endregion Guards
 
+                            Dictionary<string, long> hashContext = new Dictionary<string, long>();
                             IEnumerator graphEnum = trixDoc.DocumentElement.ChildNodes.GetEnumerator();
                             while (graphEnum != null && graphEnum.MoveNext())
                             {
@@ -255,7 +257,7 @@ namespace RDFSharp.Model
 
                                     //<triple> gives a triple of the graph
                                     else if (graphChild.Name.Equals("triple", StringComparison.Ordinal) && graphChild.ChildNodes.Count == 3)
-                                        ParseTriXTriple(result, graphChild);
+                                        ParseTriXTriple(result, graphChild, hashContext);
 
                                     //Neither <uri> or a well-formed <triple>: exception must be raised
                                     else
@@ -284,7 +286,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Deserializes the TriX structure corresponding to the given triple node, appending the RDFTriple into the given graph.
         /// </summary>
-        internal static void ParseTriXTriple(RDFGraph result, XmlNode graphChild)
+        internal static void ParseTriXTriple(RDFGraph result, XmlNode graphChild, Dictionary<string, long> hashContext)
         {
             //Subject is a resource ("<uri>") or a blank node ("<id>")
             if (graphChild.ChildNodes[0].Name.Equals("uri", StringComparison.Ordinal)
@@ -331,9 +333,9 @@ namespace RDFSharp.Model
                         graphChild.ChildNodes[2].InnerText = string.Concat("bnode:", graphChild.ChildNodes[2].InnerText.Replace("_:", string.Empty));
                 }
 
-                result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText),
-                                                new RDFResource(graphChild.ChildNodes[1].InnerText),
-                                                new RDFResource(graphChild.ChildNodes[2].InnerText)));
+                result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText, hashContext),
+                                               new RDFResource(graphChild.ChildNodes[1].InnerText, hashContext),
+                                               new RDFResource(graphChild.ChildNodes[2].InnerText, hashContext)));
             }
 
             //Object is a plain literal ("<plainLiteral>")
@@ -343,15 +345,15 @@ namespace RDFSharp.Model
 
                 //Plain literal has language
                 if (xmlLang != null)
-                    result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText),
-                                                    new RDFResource(graphChild.ChildNodes[1].InnerText),
-                                                    new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)), xmlLang.Value)));
+                    result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText, hashContext),
+                                                   new RDFResource(graphChild.ChildNodes[1].InnerText, hashContext),
+                                                   new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)), xmlLang.Value)));
                 
                 //Plain literal has not language
                 else
-                    result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText),
-                                                    new RDFResource(graphChild.ChildNodes[1].InnerText),
-                                                    new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)))));
+                    result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText, hashContext),
+                                                   new RDFResource(graphChild.ChildNodes[1].InnerText, hashContext),
+                                                   new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)))));
             }
 
             //Object is a typed literal ("<typedLiteral>")
@@ -361,9 +363,9 @@ namespace RDFSharp.Model
 
                 //Typed literal has datatype
                 if (datatype != null)
-                    result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText),
-                                                    new RDFResource(graphChild.ChildNodes[1].InnerText),
-                                                    new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)), RDFModelUtilities.GetDatatypeFromString(datatype.Value))));
+                    result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText, hashContext),
+                                                   new RDFResource(graphChild.ChildNodes[1].InnerText, hashContext),
+                                                   new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)), RDFModelUtilities.GetDatatypeFromString(datatype.Value))));
 
                 //Typed literal has not datatype: exception must be raised
                 else

@@ -118,6 +118,7 @@ namespace RDFSharp.Store
 
                             #endregion Guards
 
+                            Dictionary<string, long> hashContext = new Dictionary<string, long>();
                             IEnumerator graphEnum = trixDoc.DocumentElement.ChildNodes.GetEnumerator();
                             while (graphEnum != null && graphEnum.MoveNext())
                             {
@@ -161,7 +162,7 @@ namespace RDFSharp.Store
 
                                     //<triple> gives a triple of the graph
                                     else if (graphChild.Name.Equals("triple", StringComparison.Ordinal) && graphChild.ChildNodes.Count == 3)
-                                        RDFSharp.Model.RDFTriX.ParseTriXTriple(graphs[graphID], graphChild);
+                                        RDFSharp.Model.RDFTriX.ParseTriXTriple(graphs[graphID], graphChild, hashContext);
                                     
                                     //Neither <uri> or a well-formed <triple>: exception must be raised
                                     else
