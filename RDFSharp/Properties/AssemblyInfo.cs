@@ -25,5 +25,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("RDFSharp.Extensions.MySQL")]
 [assembly: InternalsVisibleTo("RDFSharp.Extensions.PostgreSQL")]
 [assembly: InternalsVisibleTo("RDFSharp.Extensions.Oracle")]
+[assembly: InternalsVisibleTo("RDFSharp.Extensions.AzureTable")]
 [assembly: InternalsVisibleTo("RDFSharp.Semantics")]
 [assembly: InternalsVisibleTo("RDFSharp.Test")]
