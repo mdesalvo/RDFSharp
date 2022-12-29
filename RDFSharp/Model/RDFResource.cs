@@ -68,7 +68,7 @@ namespace RDFSharp.Model
                     //Cache-Miss
                     else
                     {
-                        hashValue = RDFModelUtilities.CreateHash(this.ToString());
+                        hashValue = RDFModelUtilities.CreateHash(uriString);
                         hashContext.Add(uriString, hashValue);
                         return hashValue;
                     }    
