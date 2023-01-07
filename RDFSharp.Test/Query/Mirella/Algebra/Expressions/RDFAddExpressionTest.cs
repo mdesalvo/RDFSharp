@@ -15,7 +15,6 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using RDFSharp.Model;
@@ -34,13 +33,12 @@ namespace RDFSharp.Test.Query
             RDFAddExpression expression = new RDFAddExpression(new RDFVariable("?L"), new RDFVariable("?R"));
 
             Assert.IsNotNull(expression);
-            Assert.IsFalse(expression.IsUnary);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsTrue(expression.LeftArgument.Equals(new RDFVariable("?L")));
             Assert.IsNotNull(expression.RightArgument);
             Assert.IsTrue(expression.RightArgument.Equals(new RDFVariable("?R")));
-            Assert.IsTrue(expression.ToString().Equals($"(?L + ?R)"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals($"(?L + ?R)"));
+            Assert.IsTrue(expression.ToString().Equals("(?L + ?R)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(?L + ?R)"));
         }
 
         [TestMethod]
@@ -49,7 +47,6 @@ namespace RDFSharp.Test.Query
             RDFAddExpression expression = new RDFAddExpression(new RDFVariable("?L"), new RDFTypedLiteral("25.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE));
 
             Assert.IsNotNull(expression);
-            Assert.IsFalse(expression.IsUnary);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsTrue(expression.LeftArgument.Equals(new RDFVariable("?L")));
             Assert.IsNotNull(expression.RightArgument);

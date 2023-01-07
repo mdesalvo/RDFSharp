@@ -56,7 +56,7 @@ namespace RDFSharp.Query
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-            => RightArgument is RDFTypedLiteral tlitRightArgument ? $"({LeftArgument} + {tlitRightArgument.Value})"
+            => RightArgument is RDFTypedLiteral tlitRightArgument ? $"({LeftArgument} + {tlitRightArgument.Value.ToString(CultureInfo.InvariantCulture)})"
                                                                   : $"({LeftArgument} + {RightArgument})";
         #endregion
 

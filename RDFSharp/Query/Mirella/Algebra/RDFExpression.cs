@@ -27,11 +27,6 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Checks if the expression has a single argument
-        /// </summary>
-        public bool IsUnary => RightArgument == null;
-
-        /// <summary>
         /// Represents the left argument given to the expression
         /// </summary>
         public RDFPatternMember LeftArgument { get; internal set; }
