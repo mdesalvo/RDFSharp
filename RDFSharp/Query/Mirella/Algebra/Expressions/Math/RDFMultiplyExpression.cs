@@ -21,31 +21,31 @@ using System.Globalization;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFAddExpression represents an arithmetical addition expression to be applied on a query results table.
+    /// RDFMultiplyExpression represents an arithmetical multiply expression to be applied on a query results table.
     /// </summary>
-    public class RDFAddExpression : RDFMathExpression
+    public class RDFMultiplyExpression : RDFMathExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an arithmetical addition expression with given arguments
+        /// Default-ctor to build an arithmetical multiply expression with given arguments
         /// </summary>
-        public RDFAddExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFMultiplyExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical addition expression with given arguments
+        /// Default-ctor to build an arithmetical multiply expression with given arguments
         /// </summary>
-        public RDFAddExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFMultiplyExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the arithmetical addition expression
+        /// Gives the string representation of the arithmetical multiply expression
         /// </summary>
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-            => RightArgument is RDFTypedLiteral tlitRightArgument ? $"({LeftArgument} + {tlitRightArgument.Value.ToString(CultureInfo.InvariantCulture)})"
-                                                                  : $"({LeftArgument} + {RightArgument})";
+            => RightArgument is RDFTypedLiteral tlitRightArgument ? $"({LeftArgument} * {tlitRightArgument.Value.ToString(CultureInfo.InvariantCulture)})"
+                                                                  : $"({LeftArgument} * {RightArgument})";
         #endregion
     }
 }
