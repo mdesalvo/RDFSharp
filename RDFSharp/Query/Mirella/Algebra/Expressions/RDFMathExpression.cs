@@ -84,6 +84,8 @@ namespace RDFSharp.Query
                         //Execute the arithmetical expression's comparison logics
                         if (this is RDFAddExpression)
                             expressionResult = new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue + rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                        else if (this is RDFSubtractExpression)
+                            expressionResult = new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue - rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
                     }
                 }
             }
