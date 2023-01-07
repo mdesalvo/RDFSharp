@@ -16,31 +16,30 @@
 
 using RDFSharp.Model;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFAddExpression represents an arithmetical addition expression to be applied on a query results table.
+    /// RDFMathExpression represents an arithmetical expression to be applied on a query results table.
     /// </summary>
-    public class RDFAddExpression : RDFExpression
+    public abstract class RDFMathExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an arithmetical addition expression with given arguments
+        /// Default-ctor to build an arithmetical expression with given arguments
         /// </summary>
-        public RDFAddExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
+        public RDFMathExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
         }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical addition expression with given arguments
+        /// Default-ctor to build an arithmetical expression with given arguments
         /// </summary>
-        public RDFAddExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
+        public RDFMathExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
@@ -49,20 +48,9 @@ namespace RDFSharp.Query
         }
         #endregion
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the arithmetical addition expression
-        /// </summary>
-        public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
-        internal override string ToString(List<RDFNamespace> prefixes)
-            => RightArgument is RDFTypedLiteral tlitRightArgument ? $"({LeftArgument} + {tlitRightArgument.Value.ToString(CultureInfo.InvariantCulture)})"
-                                                                  : $"({LeftArgument} + {RightArgument})";
-        #endregion
-
         #region Methods
         /// <summary>
-        /// Applies the expression on the given datarow
+        /// Applies the arithmetical expression on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {
@@ -80,11 +68,11 @@ namespace RDFSharp.Query
 
             try
             {
-                //Fetch data corresponding to the arithmetical addition expression arguments and transform them into pattern members
+                //Fetch data corresponding to the arithmetical expression arguments and transform them into pattern members
                 RDFPatternMember leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[leftArgumentString].ToString());
                 RDFPatternMember rightArgumentPMember = RightArgument is RDFVariable ? RDFQueryUtilities.ParseRDFPatternMember(row[rightArgumentString].ToString()) : RightArgument;
 
-                //Check compatibility of pattern members with the arithmetical addition expression (requires numeric typed literals)
+                //Check compatibility of pattern members with the arithmetical expression (requires numeric typed literals)
                 if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
                      && leftArgumentTypedLiteral.HasDecimalDatatype()
                       && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
@@ -92,7 +80,11 @@ namespace RDFSharp.Query
                 {
                     if (double.TryParse(leftArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double leftArgumentNumericValue)
                           && double.TryParse(rightArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double rightArgumentNumericValue))
-                        expressionResult = new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue + rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                    {
+                        //Execute the arithmetical expression's comparison logics
+                        if (this is RDFAddExpression)
+                            expressionResult = new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue + rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                    }
                 }
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
