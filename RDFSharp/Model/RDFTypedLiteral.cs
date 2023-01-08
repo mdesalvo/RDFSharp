@@ -16,7 +16,6 @@
 
 namespace RDFSharp.Model
 {
-
     /// <summary>
     /// RDFTypedLiteral represents a literal decorated with an XML Schema datatype.
     /// </summary>
@@ -161,5 +160,4 @@ namespace RDFSharp.Model
         }
         #endregion
     }
-
 }
