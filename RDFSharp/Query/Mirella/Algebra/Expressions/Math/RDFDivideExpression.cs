@@ -68,6 +68,7 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
+            //(L / R)
             sb.Append('(');
             sb.Append(LeftArgument.ToString());
             sb.Append(" / ");
