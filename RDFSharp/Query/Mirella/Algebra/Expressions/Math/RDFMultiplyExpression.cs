@@ -17,35 +17,65 @@
 using RDFSharp.Model;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFMultiplyExpression represents an arithmetical multiply expression to be applied on a query results table.
+    /// RDFMultiplyExpression represents an arithmetical multiplication expression to be applied on a query results table.
     /// </summary>
     public class RDFMultiplyExpression : RDFMathExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an arithmetical multiply expression with given arguments
+        /// Default-ctor to build an arithmetical multiplication expression with given arguments
+        /// </summary>
+        public RDFMultiplyExpression(RDFMathExpression leftArgument, RDFMathExpression rightArgument) : base(leftArgument, rightArgument) { }
+
+        /// <summary>
+        /// Default-ctor to build an arithmetical multiplication expression with given arguments
+        /// </summary>
+        public RDFMultiplyExpression(RDFMathExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+
+        /// <summary>
+        /// Default-ctor to build an arithmetical multiplication expression with given arguments
+        /// </summary>
+        public RDFMultiplyExpression(RDFMathExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
+
+        /// <summary>
+        /// Default-ctor to build an arithmetical multiplication expression with given arguments
+        /// </summary>
+        public RDFMultiplyExpression(RDFVariable leftArgument, RDFMathExpression rightArgument) : base(leftArgument, rightArgument) { }
+
+        /// <summary>
+        /// Default-ctor to build an arithmetical multiplication expression with given arguments
         /// </summary>
         public RDFMultiplyExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical multiply expression with given arguments
+        /// Default-ctor to build an arithmetical multiplication expression with given arguments
         /// </summary>
         public RDFMultiplyExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the arithmetical multiply expression
+        /// Gives the string representation of the arithmetical multiplication expression
         /// </summary>
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-            => RightArgument is RDFTypedLiteral tlitRightArgument ? $"({LeftArgument} * {tlitRightArgument.Value.ToString(CultureInfo.InvariantCulture)})"
-                                                                  : $"({LeftArgument} * {RightArgument})";
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append('(');
+            sb.Append(LeftArgument.ToString());
+            sb.Append(" * ");
+            sb.Append(RightArgument is RDFTypedLiteral tlRightArgument ? tlRightArgument.Value.ToString(CultureInfo.InvariantCulture) : RightArgument.ToString());
+            sb.Append(')');
+
+            return sb.ToString();
+        }
         #endregion
     }
 }

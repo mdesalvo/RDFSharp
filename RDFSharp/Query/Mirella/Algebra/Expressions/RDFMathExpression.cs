@@ -16,8 +16,10 @@
 
 using RDFSharp.Model;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.Text;
 
 namespace RDFSharp.Query
 {
@@ -30,7 +32,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an arithmetical expression with given arguments
         /// </summary>
-        public RDFMathExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
+        public RDFMathExpression(RDFMathExpression leftArgument, RDFMathExpression rightArgument) 
+            : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
@@ -39,7 +42,50 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an arithmetical expression with given arguments
         /// </summary>
-        public RDFMathExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
+        public RDFMathExpression(RDFMathExpression leftArgument, RDFVariable rightArgument) 
+            : base(leftArgument, rightArgument)
+        {
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+        }
+
+        /// <summary>
+        /// Default-ctor to build an arithmetical expression with given arguments
+        /// </summary>
+        public RDFMathExpression(RDFMathExpression leftArgument, RDFTypedLiteral rightArgument) 
+            : base(leftArgument, rightArgument)
+        {
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            if (!rightArgument.HasDecimalDatatype())
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is not a numeric typed literal");
+        }
+
+        /// <summary>
+        /// Default-ctor to build an arithmetical expression with given arguments
+        /// </summary>
+        public RDFMathExpression(RDFVariable leftArgument, RDFMathExpression rightArgument) 
+            : base(leftArgument, rightArgument)
+        {
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+        }
+
+        /// <summary>
+        /// Default-ctor to build an arithmetical expression with given arguments
+        /// </summary>
+        public RDFMathExpression(RDFVariable leftArgument, RDFVariable rightArgument) 
+            : base(leftArgument, rightArgument)
+        {
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+        }
+
+        /// <summary>
+        /// Default-ctor to build an arithmetical expression with given arguments
+        /// </summary>
+        public RDFMathExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) 
+            : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
@@ -57,22 +103,34 @@ namespace RDFSharp.Query
             RDFTypedLiteral expressionResult = null;
 
             #region Guards
-            string leftArgumentString = LeftArgument.ToString();
-            if (!row.Table.Columns.Contains(leftArgumentString))
+            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
                 return expressionResult;
 
-            string rightArgumentString = RightArgument.ToString();
-            if (RightArgument is RDFVariable && !row.Table.Columns.Contains(rightArgumentString))
+            if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
                 return expressionResult;
             #endregion
 
             try
             {
-                //Fetch data corresponding to the arithmetical expression arguments and transform them into pattern members
-                RDFPatternMember leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[leftArgumentString].ToString());
-                RDFPatternMember rightArgumentPMember = RightArgument is RDFVariable ? RDFQueryUtilities.ParseRDFPatternMember(row[rightArgumentString].ToString()) : RightArgument;
+                #region Evaluate Arguments
+                //Evaluate left argument (Expression VS Variable)
+                RDFPatternMember leftArgumentPMember = null;
+                if (LeftArgument is RDFExpression leftArgumentExpression)
+                    leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
+                else
+                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
 
-                //Check compatibility of pattern members with the arithmetical expression (requires numeric typed literals)
+                //Evaluate right argument (Expression VS Variable VS TypedLiteral)
+                RDFPatternMember rightArgumentPMember = null;
+                if (RightArgument is RDFExpression rightArgumentExpression)
+                    rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
+                else if (RightArgument is RDFVariable rightArgumentVariable)
+                    rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
+                else
+                    rightArgumentPMember = (RDFTypedLiteral)RightArgument;
+                #endregion
+
+                #region Calculate Result
                 if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
                      && leftArgumentTypedLiteral.HasDecimalDatatype()
                       && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
@@ -92,6 +150,7 @@ namespace RDFSharp.Query
                             expressionResult = new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue / rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
                     }
                 }
+                #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
 

@@ -23,25 +23,49 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFExpression represents an expression to be applied on a query results table.
     /// </summary>
-    public abstract class RDFExpression
+    public abstract class RDFExpression : RDFExpressionArgument
     {
         #region Properties
         /// <summary>
         /// Represents the left argument given to the expression
         /// </summary>
-        public RDFPatternMember LeftArgument { get; internal set; }
+        public RDFExpressionArgument LeftArgument { get; internal set; }
 
         /// <summary>
         /// Represents the right argument given to the expression
         /// </summary>
-        public RDFPatternMember RightArgument { get; internal set; }
+        public RDFExpressionArgument RightArgument { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an expression with given arguments
+        /// Default-ctor to build an expression with given expression arguments
+        /// </summary>
+        public RDFExpression(RDFExpression leftArgument, RDFExpression rightArgument)
+            : this(leftArgument as RDFExpressionArgument, rightArgument as RDFExpressionArgument) { }
+
+        /// <summary>
+        /// Default-ctor to build an expression with given mixed arguments
+        /// </summary>
+        public RDFExpression(RDFExpression leftArgument, RDFPatternMember rightArgument)
+            : this(leftArgument as RDFExpressionArgument, rightArgument as RDFExpressionArgument) { }
+
+        /// <summary>
+        /// Default-ctor to build an expression with given mixed arguments
+        /// </summary>
+        public RDFExpression(RDFPatternMember leftArgument, RDFExpression rightArgument)
+            : this(leftArgument as RDFExpressionArgument, rightArgument as RDFExpressionArgument) { }
+
+        /// <summary>
+        /// Default-ctor to build an expression with given pattern member arguments
         /// </summary>
         public RDFExpression(RDFPatternMember leftArgument, RDFPatternMember rightArgument)
+            : this(leftArgument as RDFExpressionArgument, rightArgument as RDFExpressionArgument) { }
+
+        /// <summary>
+        /// Internal-ctor to build an expression with given expression arguments
+        /// </summary>
+        internal RDFExpression(RDFExpressionArgument leftArgument, RDFExpressionArgument rightArgument)
         {
             if (leftArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"leftArgument\" parameter is null");
@@ -67,4 +91,9 @@ namespace RDFSharp.Query
         internal abstract RDFPatternMember ApplyExpression(DataRow row);
         #endregion
     }
+
+    /// <summary>
+    /// RDFExpressionArgument represents an argument given to an expression
+    /// </summary>
+    public class RDFExpressionArgument { }
 }

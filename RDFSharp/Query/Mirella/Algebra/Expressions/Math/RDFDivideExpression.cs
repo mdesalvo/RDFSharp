@@ -17,35 +17,65 @@
 using RDFSharp.Model;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFDivideExpression represents an arithmetical divide expression to be applied on a query results table.
+    /// RDFDivideExpression represents an arithmetical division expression to be applied on a query results table.
     /// </summary>
     public class RDFDivideExpression : RDFMathExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an arithmetical divide expression with given arguments
+        /// Default-ctor to build an arithmetical division expression with given arguments
+        /// </summary>
+        public RDFDivideExpression(RDFMathExpression leftArgument, RDFMathExpression rightArgument) : base(leftArgument, rightArgument) { }
+
+        /// <summary>
+        /// Default-ctor to build an arithmetical division expression with given arguments
+        /// </summary>
+        public RDFDivideExpression(RDFMathExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+
+        /// <summary>
+        /// Default-ctor to build an arithmetical division expression with given arguments
+        /// </summary>
+        public RDFDivideExpression(RDFMathExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
+
+        /// <summary>
+        /// Default-ctor to build an arithmetical division expression with given arguments
+        /// </summary>
+        public RDFDivideExpression(RDFVariable leftArgument, RDFMathExpression rightArgument) : base(leftArgument, rightArgument) { }
+
+        /// <summary>
+        /// Default-ctor to build an arithmetical division expression with given arguments
         /// </summary>
         public RDFDivideExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical divide expression with given arguments
+        /// Default-ctor to build an arithmetical division expression with given arguments
         /// </summary>
         public RDFDivideExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the arithmetical divide expression
+        /// Gives the string representation of the arithmetical division expression
         /// </summary>
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-            => RightArgument is RDFTypedLiteral tlitRightArgument ? $"({LeftArgument} / {tlitRightArgument.Value.ToString(CultureInfo.InvariantCulture)})"
-                                                                  : $"({LeftArgument} / {RightArgument})";
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append('(');
+            sb.Append(LeftArgument.ToString());
+            sb.Append(" / ");
+            sb.Append(RightArgument is RDFTypedLiteral tlRightArgument ? tlRightArgument.Value.ToString(CultureInfo.InvariantCulture) : RightArgument.ToString());
+            sb.Append(')');
+
+            return sb.ToString();
+        }
         #endregion
     }
 }

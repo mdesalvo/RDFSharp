@@ -17,6 +17,7 @@
 using RDFSharp.Model;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 
 namespace RDFSharp.Query
 {
@@ -26,6 +27,26 @@ namespace RDFSharp.Query
     public class RDFAddExpression : RDFMathExpression
     {
         #region Ctors
+        /// <summary>
+        /// Default-ctor to build an arithmetical addition expression with given arguments
+        /// </summary>
+        public RDFAddExpression(RDFMathExpression leftArgument, RDFMathExpression rightArgument) : base(leftArgument, rightArgument) { }
+
+        /// <summary>
+        /// Default-ctor to build an arithmetical addition expression with given arguments
+        /// </summary>
+        public RDFAddExpression(RDFMathExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+
+        /// <summary>
+        /// Default-ctor to build an arithmetical addition expression with given arguments
+        /// </summary>
+        public RDFAddExpression(RDFMathExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
+
+        /// <summary>
+        /// Default-ctor to build an arithmetical addition expression with given arguments
+        /// </summary>
+        public RDFAddExpression(RDFVariable leftArgument, RDFMathExpression rightArgument) : base(leftArgument, rightArgument) { }
+
         /// <summary>
         /// Default-ctor to build an arithmetical addition expression with given arguments
         /// </summary>
@@ -44,8 +65,17 @@ namespace RDFSharp.Query
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-            => RightArgument is RDFTypedLiteral tlitRightArgument ? $"({LeftArgument} + {tlitRightArgument.Value.ToString(CultureInfo.InvariantCulture)})"
-                                                                  : $"({LeftArgument} + {RightArgument})";
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append('(');
+            sb.Append(LeftArgument.ToString());
+            sb.Append(" + ");
+            sb.Append(RightArgument is RDFTypedLiteral tlRightArgument ? tlRightArgument.Value.ToString(CultureInfo.InvariantCulture) : RightArgument.ToString());
+            sb.Append(')');
+
+            return sb.ToString();
+        }
         #endregion
     }
 }

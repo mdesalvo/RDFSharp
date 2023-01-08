@@ -16,14 +16,13 @@
 
 using RDFSharp.Model;
 using System;
-using System.Collections.Generic;
 
 namespace RDFSharp.Query
 {
     /// <summary>
     /// RDFPatternMember defines an object which can be member of a pattern
     /// </summary>
-    public class RDFPatternMember : IEquatable<RDFPatternMember>
+    public class RDFPatternMember : RDFExpressionArgument, IEquatable<RDFPatternMember>
     {
         #region Properties
         /// <summary>

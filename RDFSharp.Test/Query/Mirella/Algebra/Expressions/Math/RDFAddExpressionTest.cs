@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Data;
 using RDFSharp.Model;
 using RDFSharp.Query;
-using System.Globalization;
 
 namespace RDFSharp.Test.Query
 {
@@ -28,55 +27,223 @@ namespace RDFSharp.Test.Query
     {
         #region Tests
         [TestMethod]
-        public void ShouldCreateAddExpressionWithVariables()
+        public void ShouldCreateAddExpressionWithExpressions()
         {
-            RDFAddExpression expression = new RDFAddExpression(new RDFVariable("?L"), new RDFVariable("?R"));
+            RDFAddExpression expression = new RDFAddExpression(
+                new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), 
+                new RDFAddExpression(new RDFVariable("?V3"), new RDFVariable("?V4")));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
-            Assert.IsTrue(expression.LeftArgument.Equals(new RDFVariable("?L")));
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.RightArgument.Equals(new RDFVariable("?R")));
-            Assert.IsTrue(expression.ToString().Equals("(?L + ?R)"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(?L + ?R)"));
+            Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) + (?V3 + ?V4))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("((?V1 + ?V2) + (?V3 + ?V4))"));
+        }
+
+        [TestMethod]
+        public void ShouldCreateAddExpressionWithExpressionAndVariable()
+        {
+            RDFAddExpression expression = new RDFAddExpression(
+                new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")),
+                new RDFVariable("?V3"));
+
+            Assert.IsNotNull(expression);
+            Assert.IsNotNull(expression.LeftArgument);
+            Assert.IsNotNull(expression.RightArgument);
+            Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) + ?V3)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("((?V1 + ?V2) + ?V3)"));
+        }
+
+        [TestMethod]
+        public void ShouldCreateAddExpressionWithExpressionAndTypedLiteral()
+        {
+            RDFAddExpression expression = new RDFAddExpression(
+                new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")),
+                new RDFTypedLiteral("25.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE));
+
+            Assert.IsNotNull(expression);
+            Assert.IsNotNull(expression.LeftArgument);
+            Assert.IsNotNull(expression.RightArgument);
+            Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) + 25.1)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("((?V1 + ?V2) + 25.1)"));
+        }
+
+        [TestMethod]
+        public void ShouldCreateAddExpressionWithVariableAndExpression()
+        {
+            RDFAddExpression expression = new RDFAddExpression(
+                new RDFVariable("?V1"),
+                new RDFAddExpression(new RDFVariable("?V2"), new RDFVariable("?V3")));
+
+            Assert.IsNotNull(expression);
+            Assert.IsNotNull(expression.LeftArgument);
+            Assert.IsNotNull(expression.RightArgument);
+            Assert.IsTrue(expression.ToString().Equals("(?V1 + (?V2 + ?V3))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(?V1 + (?V2 + ?V3))"));
+        }
+
+        [TestMethod]
+        public void ShouldCreateAddExpressionWithVariables()
+        {
+            RDFAddExpression expression = new RDFAddExpression(
+                new RDFVariable("?V1"), 
+                new RDFVariable("?V2"));
+
+            Assert.IsNotNull(expression);
+            Assert.IsNotNull(expression.LeftArgument);
+            Assert.IsNotNull(expression.RightArgument);
+            Assert.IsTrue(expression.ToString().Equals("(?V1 + ?V2)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(?V1 + ?V2)"));
         }
 
         [TestMethod]
         public void ShouldCreateAddExpressionWithVariableAndTypedLiteral()
         {
-            RDFAddExpression expression = new RDFAddExpression(new RDFVariable("?L"), new RDFTypedLiteral("25.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE));
+            RDFAddExpression expression = new RDFAddExpression(
+                new RDFVariable("?V"), 
+                new RDFTypedLiteral("25.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
-            Assert.IsTrue(expression.LeftArgument.Equals(new RDFVariable("?L")));
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.RightArgument.Equals(new RDFTypedLiteral("25.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
-            Assert.IsTrue(expression.ToString().Equals($"(?L + {25.1d.ToString(CultureInfo.InvariantCulture)})"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals($"(?L + {25.1d.ToString(CultureInfo.InvariantCulture)})"));
+            Assert.IsTrue(expression.ToString().Equals("(?V + 25.1)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(?V + 25.1)"));
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingAddExpressionWithVariablesBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(null, new RDFVariable("?R")));
+        public void ShouldThrowExceptionOnCreatingAddExpressionWithEEBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(null as RDFMathExpression, new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2"))));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingAddExpressionWithVariableAndTypedLiteralBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(null, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        public void ShouldThrowExceptionOnCreatingAddExpressionWithEVBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(null as RDFMathExpression, new RDFVariable("?V")));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingAddExpressionWithVariablesBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(new RDFVariable("?L"), null as RDFVariable));
+        public void ShouldThrowExceptionOnCreatingAddExpressionWithETBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(null as RDFMathExpression, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingAddExpressionWithVariableandTypedLiteralBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(new RDFVariable("?L"), null as RDFTypedLiteral));
+        public void ShouldThrowExceptionOnCreatingAddExpressionWithVEBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(null as RDFVariable, new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2"))));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingAddExpressionWithVariableandTypedLiteralBecauseNonNumericRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(new RDFVariable("?L"), new RDFTypedLiteral("23", RDFModelEnums.RDFDatatypes.XSD_GDAY)));
+        public void ShouldThrowExceptionOnCreatingAddExpressionWithVVBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(null as RDFVariable, new RDFVariable("?V")));
 
         [TestMethod]
-        public void ShouldApplyExpressionWithVariablesAndCalculateResult()
+        public void ShouldThrowExceptionOnCreatingAddExpressionWithVTBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(null as RDFVariable, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingAddExpressionWithEEBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFMathExpression));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingAddExpressionWithEVBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFVariable));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingAddExpressionWithETBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFTypedLiteral));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingAddExpressionWithVEBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(new RDFVariable("?V2"), null as RDFMathExpression));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingAddExpressionWithVVBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(new RDFVariable("?V"), null as RDFVariable));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingAddExpressionWithVTBecauseNullRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithEEAndCalculateResult()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFAddExpression expression = new RDFAddExpression(
+                new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")),
+                new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNotNull(expressionResult);
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("60.2", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithEVAndCalculateResult()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFAddExpression expression = new RDFAddExpression(
+                new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")),
+                new RDFVariable("?A"));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNotNull(expressionResult);
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("35.2", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithETAndCalculateResult()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFAddExpression expression = new RDFAddExpression(
+                new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")),
+                new RDFTypedLiteral("8.24", RDFModelEnums.RDFDatatypes.XSD_DOUBLE));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNotNull(expressionResult);
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("38.34", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithVEAndCalculateResult()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFAddExpression expression = new RDFAddExpression(
+                new RDFVariable("?A"),
+                new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNotNull(expressionResult);
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("35.2", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithVVAndCalculateResult()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
@@ -95,7 +262,128 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldApplyExpressionWithVariablesAndNotCalculateResultBecauseUnknownLeftColumn()
+        public void ShouldApplyExpressionWithVTAndCalculateResult()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFAddExpression expression = new RDFAddExpression(
+                new RDFVariable("?A"),
+                new RDFTypedLiteral("8.24", RDFModelEnums.RDFDatatypes.XSD_DOUBLE));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNotNull(expressionResult);
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("13.34", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseUnknownLeftExpression()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFAddExpression expression = new RDFAddExpression(
+                new RDFAddExpression(new RDFVariable("?Z"), new RDFVariable("?B")),
+                new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNull(expressionResult);
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseUnknownRightExpression()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFAddExpression expression = new RDFAddExpression(
+                new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")),
+                new RDFAddExpression(new RDFVariable("?Z"), new RDFVariable("?B")));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNull(expressionResult);
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithEVAndNotCalculateResultBecauseUnknownLeftExpression()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFAddExpression expression = new RDFAddExpression(
+                new RDFAddExpression(new RDFVariable("?Z"), new RDFVariable("?B")),
+                new RDFVariable("?A"));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNull(expressionResult);
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithEVAndNotCalculateResultBecauseUnknownRightExpression()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFAddExpression expression = new RDFAddExpression(
+                new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")),
+                new RDFVariable("?Z"));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNull(expressionResult);
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithETAndNotCalculateResultBecauseUnknownExpression()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFAddExpression expression = new RDFAddExpression(
+                new RDFAddExpression(new RDFVariable("?Z"), new RDFVariable("?B")),
+                new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNull(expressionResult);
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseUnknownLeftColumn()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
@@ -113,7 +401,7 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldApplyExpressionWithVariablesAndNotCalculateResultBecauseUnknownRightColumn()
+        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseUnknownRightColumn()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
@@ -131,7 +419,7 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldApplyExpressionWithVariablesAndNotCalculateResultBecauseResourceLeftColumn()
+        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseResourceLeftColumn()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
@@ -149,7 +437,7 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldApplyExpressionWithVariablesAndNotCalculateResultBecausePlainLiteralLeftColumn()
+        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecausePlainLiteralLeftColumn()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
@@ -167,7 +455,7 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldApplyExpressionWithVariablesAndNotCalculateResultBecauseTypedLiteralNotNumericLeftColumn()
+        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseTypedLiteralNotNumericLeftColumn()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
@@ -185,7 +473,7 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldApplyExpressionWithVariablesAndNotCalculateResultBecauseResourceRightColumn()
+        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseResourceRightColumn()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
@@ -203,7 +491,7 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldApplyExpressionWithVariablesAndNotCalculateResultBecausePlainLiteralRightColumn()
+        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecausePlainLiteralRightColumn()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
@@ -221,7 +509,7 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldApplyExpressionWithVariablesAndNotCalculateResultBecauseTypedLiteralNotNumericRightColumn()
+        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseTypedLiteralNotNumericRightColumn()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
@@ -239,7 +527,7 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldApplyExpressionWithVariablesAndNotCalculateResultBecauseNullLeftColumn()
+        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseNullLeftColumn()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
@@ -257,7 +545,7 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldApplyExpressionWithVariablesAndNotCalculateResultBecauseNullRightColumn()
+        public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseNullRightColumn()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
