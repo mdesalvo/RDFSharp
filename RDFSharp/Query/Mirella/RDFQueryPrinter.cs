@@ -75,7 +75,8 @@ namespace RDFSharp.Query
 
             #region VARIABLES/AGGREGATORS
             List<RDFModifier> modifiers = selectQuery.GetModifiers().ToList();
-            //Query has groupby modifier
+
+            //Query has GroupBy modifier => reset given projections, modifier takes control
             if (modifiers.Any(m => m is RDFGroupByModifier))
             {
                 modifiers.OfType<RDFGroupByModifier>()
@@ -88,16 +89,26 @@ namespace RDFSharp.Query
                              sb.Append(string.Join(" ", gm.Aggregators.Where(ag => !(ag is RDFPartitionAggregator))));
                          });
             }
-            //Query hasn't groupby modifier
+
+            //Query hasn't GroupBy modifier => respect given projections
             else
             {
-                if (selectQuery.ProjectionVars.Any())
-                    selectQuery.ProjectionVars.OrderBy(x => x.Value)
-                                              .ToList()
-                                              .ForEach(v => sb.Append(string.Concat(" ", v.Key)));
-                else
+                if (!selectQuery.ProjectionVars.Any())
                     sb.Append(" *");
+                else
+                {
+                    foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionElement in selectQuery.ProjectionVars.OrderBy(pv => pv.Value.Item1))
+                    {
+                        //Projection Variable
+                        if (projectionElement.Value.Item2 == null)
+                            sb.Append($" {projectionElement.Key}");
+                        //Projection Expression
+                        else
+                            sb.Append($" ({projectionElement.Value.Item2} AS {projectionElement.Key})");
+                    }
+                }
             }
+
             sb.AppendLine();
             #endregion
 

@@ -36,7 +36,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Dictionary of projection variables and associated ordinals
         /// </summary>
-        internal Dictionary<RDFVariable, int> ProjectionVars { get; set; }
+        internal Dictionary<RDFVariable, (int, RDFExpression)> ProjectionVars { get; set; }
         #endregion
 
         #region Ctors
@@ -44,7 +44,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an empty SELECT query
         /// </summary>
         public RDFSelectQuery()
-            => this.ProjectionVars = new Dictionary<RDFVariable, int>();
+            => this.ProjectionVars = new Dictionary<RDFVariable, (int, RDFExpression)>();
         #endregion
 
         #region Interfaces
@@ -69,8 +69,21 @@ namespace RDFSharp.Query
         {
             if (projectionVariable != null)
             {
-                if (!this.ProjectionVars.Any(pv => string.Equals(pv.Key.ToString(), projectionVariable.ToString(), StringComparison.OrdinalIgnoreCase)))
-                    this.ProjectionVars.Add(projectionVariable, this.ProjectionVars.Count);
+                if (!this.ProjectionVars.Any(pv => pv.Key.Equals(projectionVariable)))
+                    this.ProjectionVars.Add(projectionVariable, (this.ProjectionVars.Count, null));
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given expression, named as the given variable, to the results of the query
+        /// </summary>
+        public RDFSelectQuery AddProjectionExpression(RDFExpression projectionExpression, RDFVariable projectionVariable)
+        {
+            if (projectionExpression != null && projectionVariable != null)
+            {
+                if (!this.ProjectionVars.Any(pv => pv.Key.Equals(projectionVariable)))
+                    this.ProjectionVars.Add(projectionVariable, (this.ProjectionVars.Count, projectionExpression));
             }
             return this;
         }

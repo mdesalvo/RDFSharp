@@ -1709,6 +1709,9 @@ namespace RDFSharp.Query
         {
             if (query.ProjectionVars.Any())
             {
+                //Calculate projection expressions
+                ProjectExpressions(query, ref table);
+
                 //Remove non-projection variables
                 DataColumn[] tableColumns = table.Columns.OfType<DataColumn>().ToArray();
                 foreach (DataColumn tableColumn in tableColumns)
@@ -1718,14 +1721,35 @@ namespace RDFSharp.Query
                 }
 
                 //Adjust projection ordinals
-                foreach (var projVar in query.ProjectionVars)
+                foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionVar in query.ProjectionVars)
                 {
-                    string projVarString = projVar.Key.ToString();
+                    string projVarString = projectionVar.Key.ToString();
                     AddColumn(table, projVarString);
-                    table.Columns[projVarString].SetOrdinal(projVar.Value);
+                    table.Columns[projVarString].SetOrdinal(projectionVar.Value.Item1);
                 }
             }
             return table;
+        }
+
+        /// <summary>
+        /// Fills the given table with data from the given query's projection expressions
+        /// </summary>
+        internal static void ProjectExpressions(RDFSelectQuery query, ref DataTable table)
+        {
+            table.BeginLoadData();
+            foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionExpression in query.ProjectionVars.OrderBy(pv => pv.Value.Item1)
+                                                                                                                 .Where(pv => pv.Value.Item2 != null))
+            {
+                //Project expression column
+                string projectionExpressionVariable = projectionExpression.Key.ToString();
+                AddColumn(table, projectionExpressionVariable);
+                
+                //Valorize expression column
+                foreach (DataRow row in table.AsEnumerable())
+                    row[projectionExpressionVariable] = projectionExpression.Value.Item2.ApplyExpression(row)?.ToString();
+            }
+            table.EndLoadData();
+            table.AcceptChanges();
         }
         #endregion
 
