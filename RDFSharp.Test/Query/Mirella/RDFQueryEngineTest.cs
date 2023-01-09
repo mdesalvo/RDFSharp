@@ -5656,6 +5656,72 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldProjectTableAlsoWithSubsequentExpressions()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("85", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("83.0", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasAge"), new RDFVariable("?A")).Optional()))
+                .AddProjectionVariable(new RDFVariable("?X"))
+                .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?AGEX2"))
+                .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?AGEX2"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?AGEX4"));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 3);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?X"));
+            Assert.IsTrue(result.SelectResults.Columns["?X"].Ordinal == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?AGEX2"));
+            Assert.IsTrue(result.SelectResults.Columns["?AGEX2"].Ordinal == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?AGEX4"));
+            Assert.IsTrue(result.SelectResults.Columns["?AGEX4"].Ordinal == 2);
+            Assert.IsTrue(result.SelectResults.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4"].ToString(), "340^^http://www.w3.org/2001/XMLSchema#double"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX4"].ToString(), "332^^http://www.w3.org/2001/XMLSchema#double"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX4"].ToString(), DBNull.Value.ToString()));
+        }
+
+        [TestMethod]
+        public void ShouldProjectTableAlsoWithSubsequentExpressionsWorkingOnValues()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?X"), new List<RDFPatternMember>() { new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER) })))
+                .AddProjectionVariable(new RDFVariable("?X"))
+                .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?X"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?AGEX2"))
+                .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?AGEX2"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?AGEX4"));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, new RDFGraph());
+
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 3);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?X"));
+            Assert.IsTrue(result.SelectResults.Columns["?X"].Ordinal == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?AGEX2"));
+            Assert.IsTrue(result.SelectResults.Columns["?AGEX2"].Ordinal == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?AGEX4"));
+            Assert.IsTrue(result.SelectResults.Columns["?AGEX4"].Ordinal == 2);
+            Assert.IsTrue(result.SelectResults.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "2^^http://www.w3.org/2001/XMLSchema#integer"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "4^^http://www.w3.org/2001/XMLSchema#double"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4"].ToString(), "8^^http://www.w3.org/2001/XMLSchema#double"));
+        }
+
+        [TestMethod]
         public void ShouldProjectTableAlsoWithExpressionsFromSubQuery()
         {
             RDFGraph graph = new RDFGraph(new List<RDFTriple>()
