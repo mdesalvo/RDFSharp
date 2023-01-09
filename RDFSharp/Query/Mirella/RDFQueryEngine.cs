@@ -1710,7 +1710,7 @@ namespace RDFSharp.Query
             if (query.ProjectionVars.Any())
             {
                 //Calculate projection expressions
-                ProjectExpressions(query, ref table);
+                table = ProjectExpressions(query, table);
 
                 //Remove non-projection variables
                 DataColumn[] tableColumns = table.Columns.OfType<DataColumn>().ToArray();
@@ -1734,7 +1734,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Fills the given table with data from the given query's projection expressions
         /// </summary>
-        internal static void ProjectExpressions(RDFSelectQuery query, ref DataTable table)
+        internal static DataTable ProjectExpressions(RDFSelectQuery query, DataTable table)
         {
             table.BeginLoadData();
             foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionExpression in query.ProjectionVars.OrderBy(pv => pv.Value.Item1)
@@ -1750,6 +1750,7 @@ namespace RDFSharp.Query
             }
             table.EndLoadData();
             table.AcceptChanges();
+            return table;
         }
         #endregion
 
