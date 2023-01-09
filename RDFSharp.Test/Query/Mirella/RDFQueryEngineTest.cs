@@ -5258,26 +5258,24 @@ namespace RDFSharp.Test.Query
                     .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional()));
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
-            DataTable projTable = RDFQueryEngine.ProjectTable(query, result.SelectResults);
-
-            Assert.IsNotNull(projTable);
-            Assert.IsTrue(projTable.Columns.Count == 3);
-            Assert.IsTrue(projTable.Columns.Contains("?Y"));
-            Assert.IsTrue(projTable.Columns["?Y"].Ordinal == 0);
-            Assert.IsTrue(projTable.Columns.Contains("?X"));
-            Assert.IsTrue(projTable.Columns["?X"].Ordinal == 1);
-            Assert.IsTrue(projTable.Columns.Contains("?N"));
-            Assert.IsTrue(projTable.Columns["?N"].Ordinal == 2);
-            Assert.IsTrue(projTable.Rows.Count == 3);
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?X"].ToString(), "ex:topolino"));
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?Y"].ToString(), "ex:fido"));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?X"].ToString(), "ex:paperino"));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?Y"].ToString(), "ex:balto"));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?X"].ToString(), "ex:whoever"));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 3);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?Y"));
+            Assert.IsTrue(result.SelectResults.Columns["?Y"].Ordinal == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?X"));
+            Assert.IsTrue(result.SelectResults.Columns["?X"].Ordinal == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?N"));
+            Assert.IsTrue(result.SelectResults.Columns["?N"].Ordinal == 2);
+            Assert.IsTrue(result.SelectResults.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), DBNull.Value.ToString()));
         }
 
         [TestMethod]
@@ -5299,16 +5297,14 @@ namespace RDFSharp.Test.Query
                 .AddProjectionVariable(new RDFVariable("?X"));
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
-            DataTable projTable = RDFQueryEngine.ProjectTable(query, result.SelectResults);
-
-            Assert.IsNotNull(projTable);
-            Assert.IsTrue(projTable.Columns.Count == 1);
-            Assert.IsTrue(projTable.Columns.Contains("?X"));
-            Assert.IsTrue(projTable.Columns["?X"].Ordinal == 0);
-            Assert.IsTrue(projTable.Rows.Count == 3);
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?X"].ToString(), "ex:topolino"));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?X"].ToString(), "ex:paperino"));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?X"].ToString(), "ex:whoever"));
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?X"));
+            Assert.IsTrue(result.SelectResults.Columns["?X"].Ordinal == 0);
+            Assert.IsTrue(result.SelectResults.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
         }
 
         [TestMethod]
@@ -5330,16 +5326,14 @@ namespace RDFSharp.Test.Query
                 .AddProjectionVariable(new RDFVariable("?Q"));
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
-            DataTable projTable = RDFQueryEngine.ProjectTable(query, result.SelectResults);
-
-            Assert.IsNotNull(projTable);
-            Assert.IsTrue(projTable.Columns.Count == 1);
-            Assert.IsTrue(projTable.Columns.Contains("?Q"));
-            Assert.IsTrue(projTable.Columns["?Q"].Ordinal == 0);
-            Assert.IsTrue(projTable.Rows.Count == 3);
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?Q"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?Q"));
+            Assert.IsTrue(result.SelectResults.Columns["?Q"].Ordinal == 0);
+            Assert.IsTrue(result.SelectResults.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Q"].ToString(), DBNull.Value.ToString()));
         }
 
         [TestMethod]
@@ -5362,21 +5356,19 @@ namespace RDFSharp.Test.Query
                 .AddProjectionVariable(new RDFVariable("?Q"));
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
-            DataTable projTable = RDFQueryEngine.ProjectTable(query, result.SelectResults);
-
-            Assert.IsNotNull(projTable);
-            Assert.IsTrue(projTable.Columns.Count == 2);
-            Assert.IsTrue(projTable.Columns.Contains("?Y"));
-            Assert.IsTrue(projTable.Columns["?Y"].Ordinal == 0);
-            Assert.IsTrue(projTable.Columns.Contains("?Q"));
-            Assert.IsTrue(projTable.Columns["?Q"].Ordinal == 1);
-            Assert.IsTrue(projTable.Rows.Count == 3);
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?Y"].ToString(), "ex:fido"));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?Q"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?Y"].ToString(), "ex:balto"));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 2);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?Y"));
+            Assert.IsTrue(result.SelectResults.Columns["?Y"].Ordinal == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?Q"));
+            Assert.IsTrue(result.SelectResults.Columns["?Q"].Ordinal == 1);
+            Assert.IsTrue(result.SelectResults.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Q"].ToString(), DBNull.Value.ToString()));
         }
 
         [TestMethod]
@@ -5403,21 +5395,19 @@ namespace RDFSharp.Test.Query
                 .AddProjectionVariable(new RDFVariable("?X"));
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
-            DataTable projTable = RDFQueryEngine.ProjectTable(query, result.SelectResults);
-
-            Assert.IsNotNull(projTable);
-            Assert.IsTrue(projTable.Columns.Count == 2);
-            Assert.IsTrue(projTable.Columns.Contains("?Y"));
-            Assert.IsTrue(projTable.Columns["?Y"].Ordinal == 0);
-            Assert.IsTrue(projTable.Columns.Contains("?X"));
-            Assert.IsTrue(projTable.Columns["?X"].Ordinal == 1);
-            Assert.IsTrue(projTable.Rows.Count == 3);
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?X"].ToString(), "ex:topolino"));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?Y"].ToString(), "ex:fido"));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?X"].ToString(), "ex:paperino"));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?Y"].ToString(), "ex:balto"));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?X"].ToString(), "ex:whoever"));
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 2);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?Y"));
+            Assert.IsTrue(result.SelectResults.Columns["?Y"].Ordinal == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?X"));
+            Assert.IsTrue(result.SelectResults.Columns["?X"].Ordinal == 1);
+            Assert.IsTrue(result.SelectResults.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
         }
 
         [TestMethod]
@@ -5445,21 +5435,19 @@ namespace RDFSharp.Test.Query
                 .AddProjectionVariable(new RDFVariable("?X"));
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
-            DataTable projTable = RDFQueryEngine.ProjectTable(query, result.SelectResults);
-
-            Assert.IsNotNull(projTable);
-            Assert.IsTrue(projTable.Columns.Count == 2);
-            Assert.IsTrue(projTable.Columns.Contains("?Y"));
-            Assert.IsTrue(projTable.Columns["?Y"].Ordinal == 0);
-            Assert.IsTrue(projTable.Columns.Contains("?X"));
-            Assert.IsTrue(projTable.Columns["?X"].Ordinal == 1);
-            Assert.IsTrue(projTable.Rows.Count == 3);
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?X"].ToString(), "ex:topolino"));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?Y"].ToString(), "ex:fido"));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?X"].ToString(), "ex:paperino"));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?Y"].ToString(), "ex:balto"));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?X"].ToString(), "ex:whoever"));
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 2);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?Y"));
+            Assert.IsTrue(result.SelectResults.Columns["?Y"].Ordinal == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?X"));
+            Assert.IsTrue(result.SelectResults.Columns["?X"].Ordinal == 1);
+            Assert.IsTrue(result.SelectResults.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
         }
 
         [TestMethod]
@@ -5484,16 +5472,14 @@ namespace RDFSharp.Test.Query
                 .AddProjectionVariable(new RDFVariable("?N"));
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
-            DataTable projTable = RDFQueryEngine.ProjectTable(query, result.SelectResults);
-
-            Assert.IsNotNull(projTable);
-            Assert.IsTrue(projTable.Columns.Count == 1);
-            Assert.IsTrue(projTable.Columns.Contains("?N"));
-            Assert.IsTrue(projTable.Columns["?N"].Ordinal == 0);
-            Assert.IsTrue(projTable.Rows.Count == 3);
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?N"));
+            Assert.IsTrue(result.SelectResults.Columns["?N"].Ordinal == 0);
+            Assert.IsTrue(result.SelectResults.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), DBNull.Value.ToString()));
         }
 
         [TestMethod]
@@ -5654,21 +5640,19 @@ namespace RDFSharp.Test.Query
                 .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?AGEX2"));
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
-            DataTable projTable = RDFQueryEngine.ProjectTable(query, result.SelectResults);
-
-            Assert.IsNotNull(projTable);
-            Assert.IsTrue(projTable.Columns.Count == 2);
-            Assert.IsTrue(projTable.Columns.Contains("?X"));
-            Assert.IsTrue(projTable.Columns["?X"].Ordinal == 0);
-            Assert.IsTrue(projTable.Columns.Contains("?AGEX2"));
-            Assert.IsTrue(projTable.Columns["?AGEX2"].Ordinal == 1);
-            Assert.IsTrue(projTable.Rows.Count == 3);
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?X"].ToString(), "ex:topolino"));
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double"));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?X"].ToString(), "ex:paperino"));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double"));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?X"].ToString(), "ex:whoever"));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString()));
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 2);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?X"));
+            Assert.IsTrue(result.SelectResults.Columns["?X"].Ordinal == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?AGEX2"));
+            Assert.IsTrue(result.SelectResults.Columns["?AGEX2"].Ordinal == 1);
+            Assert.IsTrue(result.SelectResults.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString()));
         }
 
         [TestMethod]
@@ -5697,26 +5681,24 @@ namespace RDFSharp.Test.Query
                 .AddProjectionVariable(new RDFVariable("?X"));
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
-            DataTable projTable = RDFQueryEngine.ProjectTable(query, result.SelectResults);
-
-            Assert.IsNotNull(projTable);
-            Assert.IsTrue(projTable.Columns.Count == 3);
-            Assert.IsTrue(projTable.Columns.Contains("?Y"));
-            Assert.IsTrue(projTable.Columns["?Y"].Ordinal == 0);
-            Assert.IsTrue(projTable.Columns.Contains("?AGEX2"));
-            Assert.IsTrue(projTable.Columns["?AGEX2"].Ordinal == 1);
-            Assert.IsTrue(projTable.Columns.Contains("?X"));
-            Assert.IsTrue(projTable.Columns["?X"].Ordinal == 2);
-            Assert.IsTrue(projTable.Rows.Count == 3);
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double"));
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?X"].ToString(), "ex:topolino"));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?Y"].ToString(), "ex:fido"));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double"));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?X"].ToString(), "ex:paperino"));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?Y"].ToString(), "ex:balto"));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?X"].ToString(), "ex:whoever"));
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 3);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?Y"));
+            Assert.IsTrue(result.SelectResults.Columns["?Y"].Ordinal == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?AGEX2"));
+            Assert.IsTrue(result.SelectResults.Columns["?AGEX2"].Ordinal == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?X"));
+            Assert.IsTrue(result.SelectResults.Columns["?X"].Ordinal == 2);
+            Assert.IsTrue(result.SelectResults.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
         }
         #endregion
     }

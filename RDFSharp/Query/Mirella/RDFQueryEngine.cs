@@ -399,7 +399,7 @@ namespace RDFSharp.Query
                 {
                     table = groupbyModifier.ApplyModifier(table);
 
-                    #region PROJECTION
+                    #region PROJECTION (MODIFIER TAKES CONTROL)
                     selectQuery.ProjectionVars.Clear();
                     groupbyModifier.PartitionVariables.ForEach(pv => selectQuery.AddProjectionVariable(pv));
                     groupbyModifier.Aggregators.ForEach(ag => selectQuery.AddProjectionVariable(ag.ProjectionVariable));
@@ -417,7 +417,7 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region PROJECTION
-                table = ProjectTable(selectQuery, table);
+                ProjectTable(selectQuery, table);
                 #endregion
             }
             #endregion
@@ -1703,7 +1703,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the projection operator on the given table, based on the given query's projection variables
         /// </summary>
-        internal static DataTable ProjectTable(RDFSelectQuery query, DataTable table)
+        internal static void ProjectTable(RDFSelectQuery query, DataTable table)
         {
             if (query.ProjectionVars.Any())
             {
@@ -1725,8 +1725,8 @@ namespace RDFSharp.Query
                     AddColumn(table, projVarString);
                     table.Columns[projVarString].SetOrdinal(projectionVar.Value.Item1);
                 }
+                table.AcceptChanges();
             }
-            return table;
         }
 
         /// <summary>
