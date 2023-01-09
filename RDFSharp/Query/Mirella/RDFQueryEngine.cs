@@ -1730,7 +1730,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Fills the given table with data from the given query's projection expressions
+        /// Fills the given table with new columns from the given query's projection expressions
         /// </summary>
         internal static void ProjectExpressions(RDFSelectQuery query, DataTable table)
         {
