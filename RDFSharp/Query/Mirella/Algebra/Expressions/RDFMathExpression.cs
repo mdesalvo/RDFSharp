@@ -103,7 +103,6 @@ namespace RDFSharp.Query
             #region Guards
             if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
                 return expressionResult;
-
             if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
                 return expressionResult;
             #endregion
