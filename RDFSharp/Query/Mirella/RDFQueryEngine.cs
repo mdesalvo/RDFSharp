@@ -1678,6 +1678,8 @@ namespace RDFSharp.Query
                         switchToOuterJoin = true;
                     }
                 }
+
+                //Remove logically deleted tables from the pool
                 if (switchToOuterJoin)
                     dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
 
@@ -1686,16 +1688,12 @@ namespace RDFSharp.Query
                 for (int i = 1; i < dataTables.Count; i++)
                 {
                     //Set automatic switch to OuterJoin in case of "Optional" detected
-                    bool currentTableRequiresOptional = dataTables[i].ExtendedProperties.ContainsKey(IsOptional) && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
-                    switchToOuterJoin |= currentTableRequiresOptional;
+                    switchToOuterJoin |= dataTables[i].ExtendedProperties.ContainsKey(IsOptional) 
+                                           && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
 
-                    //Support OPTIONAL data
-                    if (switchToOuterJoin)
-                        finalTable = OuterJoinTables(finalTable, dataTables[i]);
-
-                    //Do not support OPTIONAL data
-                    else
-                        finalTable = InnerJoinTables(finalTable, dataTables[i]);
+                    //Proceed with most proper join strategy for current table
+                    finalTable = switchToOuterJoin ? OuterJoinTables(finalTable, dataTables[i]) 
+                                                   : InnerJoinTables(finalTable, dataTables[i]);
                 }
             }
 
