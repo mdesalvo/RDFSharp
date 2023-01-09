@@ -104,7 +104,7 @@ namespace RDFSharp.Query
                             sb.Append($" {projectionElement.Key}");
                         //Projection Expression
                         else
-                            sb.Append($" ({projectionElement.Value.Item2} AS {projectionElement.Key})");
+                            sb.Append($" ({projectionElement.Value.Item2.ToString(prefixes)} AS {projectionElement.Key})");
                     }
                 }
             }
