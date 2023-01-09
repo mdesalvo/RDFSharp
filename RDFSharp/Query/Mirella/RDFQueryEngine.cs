@@ -399,11 +399,10 @@ namespace RDFSharp.Query
                 {
                     table = groupbyModifier.ApplyModifier(table);
 
-                    #region PROJECTION (MODIFIER TAKES CONTROL)
+                    //Adjust projection to work only with partition variables and aggregator variables
                     selectQuery.ProjectionVars.Clear();
                     groupbyModifier.PartitionVariables.ForEach(pv => selectQuery.AddProjectionVariable(pv));
                     groupbyModifier.Aggregators.ForEach(ag => selectQuery.AddProjectionVariable(ag.ProjectionVariable));
-                    #endregion
                 }
                 #endregion
 
