@@ -5532,15 +5532,15 @@ namespace RDFSharp.Test.Query
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?AGEX2"));
             
-            DataTable projTable = RDFQueryEngine.ProjectExpressions(query, table);
+            RDFQueryEngine.ProjectExpressions(query, table);
 
-            Assert.IsNotNull(projTable);
-            Assert.IsTrue(projTable.Columns.Count == 5);
-            Assert.IsTrue(projTable.Columns.Contains("?AGEX2"));
-            Assert.IsTrue(projTable.Rows.Count == 3);
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?AGEX2"].ToString(), $"170^^{RDFVocabulary.XSD.DOUBLE}"));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?AGEX2"].ToString(), $"166^^{RDFVocabulary.XSD.DOUBLE}"));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?AGEX2"].ToString(), string.Empty));
+            Assert.IsNotNull(table);
+            Assert.IsTrue(table.Columns.Count == 5);
+            Assert.IsTrue(table.Columns.Contains("?AGEX2"));
+            Assert.IsTrue(table.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?AGEX2"].ToString(), $"170^^{RDFVocabulary.XSD.DOUBLE}"));
+            Assert.IsTrue(string.Equals(table.Rows[1]["?AGEX2"].ToString(), $"166^^{RDFVocabulary.XSD.DOUBLE}"));
+            Assert.IsTrue(string.Equals(table.Rows[2]["?AGEX2"].ToString(), string.Empty));
         }
 
         [TestMethod]
@@ -5579,15 +5579,15 @@ namespace RDFSharp.Test.Query
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?Q"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?AGEX2"));
 
-            DataTable projTable = RDFQueryEngine.ProjectExpressions(query, table);
+            RDFQueryEngine.ProjectExpressions(query, table);
 
-            Assert.IsNotNull(projTable);
-            Assert.IsTrue(projTable.Columns.Count == 5);
-            Assert.IsTrue(projTable.Columns.Contains("?AGEX2"));
-            Assert.IsTrue(projTable.Rows.Count == 3);
-            Assert.IsTrue(string.Equals(projTable.Rows[0]["?AGEX2"].ToString(), string.Empty));
-            Assert.IsTrue(string.Equals(projTable.Rows[1]["?AGEX2"].ToString(), string.Empty));
-            Assert.IsTrue(string.Equals(projTable.Rows[2]["?AGEX2"].ToString(), string.Empty));
+            Assert.IsNotNull(table);
+            Assert.IsTrue(table.Columns.Count == 5);
+            Assert.IsTrue(table.Columns.Contains("?AGEX2"));
+            Assert.IsTrue(table.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(table.Rows[0]["?AGEX2"].ToString(), string.Empty));
+            Assert.IsTrue(string.Equals(table.Rows[1]["?AGEX2"].ToString(), string.Empty));
+            Assert.IsTrue(string.Equals(table.Rows[2]["?AGEX2"].ToString(), string.Empty));
         }
         #endregion
     }

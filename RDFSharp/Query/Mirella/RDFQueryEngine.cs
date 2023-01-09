@@ -1710,7 +1710,7 @@ namespace RDFSharp.Query
             if (query.ProjectionVars.Any())
             {
                 //Calculate projection expressions
-                table = ProjectExpressions(query, table);
+                ProjectExpressions(query, table);
 
                 //Remove non-projection variables
                 DataColumn[] tableColumns = table.Columns.OfType<DataColumn>().ToArray();
@@ -1734,23 +1734,25 @@ namespace RDFSharp.Query
         /// <summary>
         /// Fills the given table with data from the given query's projection expressions
         /// </summary>
-        internal static DataTable ProjectExpressions(RDFSelectQuery query, DataTable table)
+        internal static void ProjectExpressions(RDFSelectQuery query, DataTable table)
         {
             table.BeginLoadData();
             foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionExpression in query.ProjectionVars.OrderBy(pv => pv.Value.Item1)
                                                                                                                  .Where(pv => pv.Value.Item2 != null))
             {
-                //Project expression column
                 string projectionExpressionVariable = projectionExpression.Key.ToString();
-                AddColumn(table, projectionExpressionVariable);
-                
-                //Valorize expression column
-                foreach (DataRow row in table.AsEnumerable())
-                    row[projectionExpressionVariable] = projectionExpression.Value.Item2.ApplyExpression(row)?.ToString();
+                if (!table.Columns.Contains(projectionExpressionVariable))
+                {
+                    //Project expression column
+                    AddColumn(table, projectionExpressionVariable);
+
+                    //Valorize expression column
+                    foreach (DataRow row in table.AsEnumerable())
+                        row[projectionExpressionVariable] = projectionExpression.Value.Item2.ApplyExpression(row)?.ToString();
+                }
             }
             table.EndLoadData();
             table.AcceptChanges();
-            return table;
         }
         #endregion
 
