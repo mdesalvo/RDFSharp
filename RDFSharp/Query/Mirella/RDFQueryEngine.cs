@@ -399,11 +399,10 @@ namespace RDFSharp.Query
                 {
                     table = groupbyModifier.ApplyModifier(table);
 
-                    #region PROJECTION
+                    //Adjust projection to work only with partition variables and aggregator variables
                     selectQuery.ProjectionVars.Clear();
                     groupbyModifier.PartitionVariables.ForEach(pv => selectQuery.AddProjectionVariable(pv));
                     groupbyModifier.Aggregators.ForEach(ag => selectQuery.AddProjectionVariable(ag.ProjectionVariable));
-                    #endregion
                 }
                 #endregion
 
@@ -417,7 +416,7 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region PROJECTION
-                table = ProjectTable(selectQuery, table);
+                ProjectTable(selectQuery, table);
                 #endregion
             }
             #endregion
@@ -1678,6 +1677,8 @@ namespace RDFSharp.Query
                         switchToOuterJoin = true;
                     }
                 }
+
+                //Remove logically deleted tables from the pool
                 if (switchToOuterJoin)
                     dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
 
@@ -1686,16 +1687,12 @@ namespace RDFSharp.Query
                 for (int i = 1; i < dataTables.Count; i++)
                 {
                     //Set automatic switch to OuterJoin in case of "Optional" detected
-                    bool currentTableRequiresOptional = dataTables[i].ExtendedProperties.ContainsKey(IsOptional) && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
-                    switchToOuterJoin |= currentTableRequiresOptional;
+                    switchToOuterJoin |= dataTables[i].ExtendedProperties.ContainsKey(IsOptional) 
+                                           && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
 
-                    //Support OPTIONAL data
-                    if (switchToOuterJoin)
-                        finalTable = OuterJoinTables(finalTable, dataTables[i]);
-
-                    //Do not support OPTIONAL data
-                    else
-                        finalTable = InnerJoinTables(finalTable, dataTables[i]);
+                    //Proceed with most proper join strategy for current table
+                    finalTable = switchToOuterJoin ? OuterJoinTables(finalTable, dataTables[i]) 
+                                                   : InnerJoinTables(finalTable, dataTables[i]);
                 }
             }
 
@@ -1705,10 +1702,13 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the projection operator on the given table, based on the given query's projection variables
         /// </summary>
-        internal static DataTable ProjectTable(RDFSelectQuery query, DataTable table)
+        internal static void ProjectTable(RDFSelectQuery query, DataTable table)
         {
             if (query.ProjectionVars.Any())
             {
+                //Calculate projection expressions
+                ProjectExpressions(query, table);
+
                 //Remove non-projection variables
                 DataColumn[] tableColumns = table.Columns.OfType<DataColumn>().ToArray();
                 foreach (DataColumn tableColumn in tableColumns)
@@ -1718,14 +1718,38 @@ namespace RDFSharp.Query
                 }
 
                 //Adjust projection ordinals
-                foreach (var projVar in query.ProjectionVars)
+                foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionVar in query.ProjectionVars)
                 {
-                    string projVarString = projVar.Key.ToString();
+                    string projVarString = projectionVar.Key.ToString();
                     AddColumn(table, projVarString);
-                    table.Columns[projVarString].SetOrdinal(projVar.Value);
+                    table.Columns[projVarString].SetOrdinal(projectionVar.Value.Item1);
+                }
+                table.AcceptChanges();
+            }
+        }
+
+        /// <summary>
+        /// Fills the given table with new columns from the given query's projection expressions
+        /// </summary>
+        internal static void ProjectExpressions(RDFSelectQuery query, DataTable table)
+        {
+            table.BeginLoadData();
+            foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionExpression in query.ProjectionVars.OrderBy(pv => pv.Value.Item1)
+                                                                                                                 .Where(pv => pv.Value.Item2 != null))
+            {
+                string projectionExpressionVariable = projectionExpression.Key.ToString();
+                if (!table.Columns.Contains(projectionExpressionVariable))
+                {
+                    //Project expression column
+                    AddColumn(table, projectionExpressionVariable);
+
+                    //Valorize expression column
+                    foreach (DataRow row in table.AsEnumerable())
+                        row[projectionExpressionVariable] = projectionExpression.Value.Item2.ApplyExpression(row)?.ToString();
                 }
             }
-            return table;
+            table.EndLoadData();
+            table.AcceptChanges();
         }
         #endregion
 

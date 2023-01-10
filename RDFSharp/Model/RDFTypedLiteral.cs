@@ -16,7 +16,6 @@
 
 namespace RDFSharp.Model
 {
-
     /// <summary>
     /// RDFTypedLiteral represents a literal decorated with an XML Schema datatype.
     /// </summary>
@@ -75,7 +74,6 @@ namespace RDFSharp.Model
         /// </summary>
         internal bool HasDatetimeDatatype()
         {
-            bool hasDatetimeDatatype = false;
             switch (this.Datatype)
             {
                 case RDFModelEnums.RDFDatatypes.XSD_DATE:
@@ -87,10 +85,9 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_GYEAR:
                 case RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH:
                 case RDFModelEnums.RDFDatatypes.XSD_TIME:
-                    hasDatetimeDatatype = true;
-                    break;
+                    return true;
+                default: return false;
             }
-            return hasDatetimeDatatype;
         }
 
         /// <summary>
@@ -104,7 +101,6 @@ namespace RDFSharp.Model
         /// </summary>
         internal bool HasStringDatatype()
         {
-            bool hasStringDatatype = false;
             switch (this.Datatype)
             {
                 case RDFModelEnums.RDFDatatypes.RDFS_LITERAL:
@@ -124,10 +120,9 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_TOKEN:
                 case RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY:
                 case RDFModelEnums.RDFDatatypes.XSD_HEXBINARY:
-                    hasStringDatatype = true;
-                    break;
+                    return true;
+                default: return false;
             }
-            return hasStringDatatype;
         }
 
         /// <summary>
@@ -135,7 +130,6 @@ namespace RDFSharp.Model
         /// </summary>
         internal bool HasDecimalDatatype()
         {
-            bool hasDecimalDatatype = false;
             switch (this.Datatype)
             {
                 case RDFModelEnums.RDFDatatypes.XSD_DECIMAL:
@@ -154,12 +148,10 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER:
                 case RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER:
                 case RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER:
-                    hasDecimalDatatype = true;
-                    break;
+                    return true;
+                default: return false;
             }
-            return hasDecimalDatatype;
         }
         #endregion
     }
-
 }

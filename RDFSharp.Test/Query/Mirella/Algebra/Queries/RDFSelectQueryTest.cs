@@ -188,6 +188,119 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldCreateSelectQueryWithProjectionExpression()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddProjectionVariable(new RDFVariable("?SUM"), new RDFAddExpression(new RDFVariable("?V"),new RDFTypedLiteral("2",RDFModelEnums.RDFDatatypes.XSD_INT)));
+
+            Assert.IsNotNull(query);
+            Assert.IsNotNull(query.QueryMembers);
+            Assert.IsTrue(query.QueryMembers.Count == 0);
+            Assert.IsNotNull(query.Prefixes);
+            Assert.IsTrue(query.Prefixes.Count == 0);
+            Assert.IsNotNull(query.ProjectionVars);
+            Assert.IsTrue(query.ProjectionVars.Count == 1);
+            Assert.IsTrue(query.IsEvaluable);
+            Assert.IsFalse(query.IsOptional);
+            Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.IsSubQuery);
+            Assert.IsTrue(query.ToString().Equals("SELECT ((?V + 2) AS ?SUM)" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
+            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
+            Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
+            Assert.IsTrue(query.GetPatternGroups().Count() == 0);
+            Assert.IsTrue(query.GetSubQueries().Count() == 0);
+            Assert.IsTrue(query.GetValues().Count() == 0);
+            Assert.IsTrue(query.GetModifiers().Count() == 0);
+            Assert.IsTrue(query.GetPrefixes().Count() == 0);
+        }
+
+        [TestMethod]
+        public void ShouldCreateSelectQueryWithProjectionVariablesAndExpressions()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddProjectionVariable(new RDFVariable("?V1"))
+                .AddProjectionVariable(new RDFVariable("?SUM"), new RDFAddExpression(new RDFVariable("?V"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)))
+                .AddProjectionVariable(new RDFVariable("?V2"));
+
+            Assert.IsNotNull(query);
+            Assert.IsNotNull(query.QueryMembers);
+            Assert.IsTrue(query.QueryMembers.Count == 0);
+            Assert.IsNotNull(query.Prefixes);
+            Assert.IsTrue(query.Prefixes.Count == 0);
+            Assert.IsNotNull(query.ProjectionVars);
+            Assert.IsTrue(query.ProjectionVars.Count == 3);
+            Assert.IsTrue(query.IsEvaluable);
+            Assert.IsFalse(query.IsOptional);
+            Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.IsSubQuery);
+            Assert.IsTrue(query.ToString().Equals("SELECT ?V1 ((?V + 2) AS ?SUM) ?V2" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
+            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
+            Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
+            Assert.IsTrue(query.GetPatternGroups().Count() == 0);
+            Assert.IsTrue(query.GetSubQueries().Count() == 0);
+            Assert.IsTrue(query.GetValues().Count() == 0);
+            Assert.IsTrue(query.GetModifiers().Count() == 0);
+            Assert.IsTrue(query.GetPrefixes().Count() == 0);
+        }
+
+        [TestMethod]
+        public void ShouldCreateSelectQueryWithMultipleProjectionExpressions()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddProjectionVariable(new RDFVariable("?SUM"), new RDFAddExpression(new RDFVariable("?V"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)))
+                .AddProjectionVariable(new RDFVariable("?MULTIPLY"), new RDFMultiplyExpression(new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), new RDFVariable("?V3")));
+
+            Assert.IsNotNull(query);
+            Assert.IsNotNull(query.QueryMembers);
+            Assert.IsTrue(query.QueryMembers.Count == 0);
+            Assert.IsNotNull(query.Prefixes);
+            Assert.IsTrue(query.Prefixes.Count == 0);
+            Assert.IsNotNull(query.ProjectionVars);
+            Assert.IsTrue(query.ProjectionVars.Count == 2);
+            Assert.IsTrue(query.IsEvaluable);
+            Assert.IsFalse(query.IsOptional);
+            Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.IsSubQuery);
+            Assert.IsTrue(query.ToString().Equals("SELECT ((?V + 2) AS ?SUM) (((?V1 + ?V2) * ?V3) AS ?MULTIPLY)" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
+            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
+            Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
+            Assert.IsTrue(query.GetPatternGroups().Count() == 0);
+            Assert.IsTrue(query.GetSubQueries().Count() == 0);
+            Assert.IsTrue(query.GetValues().Count() == 0);
+            Assert.IsTrue(query.GetModifiers().Count() == 0);
+            Assert.IsTrue(query.GetPrefixes().Count() == 0);
+        }
+
+        [TestMethod]
+        public void ShouldCreateSelectQueryWithProjectionVariablesAndRejectExpressionBecauseNameCollision()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddProjectionVariable(new RDFVariable("?V1"))
+                .AddProjectionVariable(new RDFVariable("?V1"), new RDFAddExpression(new RDFVariable("?V"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT))) //?V1 collision
+                .AddProjectionVariable(new RDFVariable("?V2"));
+
+            Assert.IsNotNull(query);
+            Assert.IsNotNull(query.QueryMembers);
+            Assert.IsTrue(query.QueryMembers.Count == 0);
+            Assert.IsNotNull(query.Prefixes);
+            Assert.IsTrue(query.Prefixes.Count == 0);
+            Assert.IsNotNull(query.ProjectionVars);
+            Assert.IsTrue(query.ProjectionVars.Count == 2);
+            Assert.IsTrue(query.IsEvaluable);
+            Assert.IsFalse(query.IsOptional);
+            Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.IsSubQuery);
+            Assert.IsTrue(query.ToString().Equals("SELECT ?V1 ?V2" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
+            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
+            Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
+            Assert.IsTrue(query.GetPatternGroups().Count() == 0);
+            Assert.IsTrue(query.GetSubQueries().Count() == 0);
+            Assert.IsTrue(query.GetValues().Count() == 0);
+            Assert.IsTrue(query.GetModifiers().Count() == 0);
+            Assert.IsTrue(query.GetPrefixes().Count() == 0);
+        }
+
+        [TestMethod]
         public void ShouldApplySelectQueryToGraphAndHaveResults()
         {
             RDFGraph graph = new RDFGraph();
