@@ -5517,7 +5517,7 @@ namespace RDFSharp.Test.Query
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddProjectionVariable(new RDFVariable("?A"))
-                .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?AGEX2"));
+                .AddProjectionVariable(new RDFVariable("?AGEX2"), new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)));
             
             RDFQueryEngine.ProjectExpressions(query, table);
 
@@ -5564,7 +5564,7 @@ namespace RDFSharp.Test.Query
             RDFQueryEngine.AddRow(table, tableBindings3);
 
             RDFSelectQuery query = new RDFSelectQuery()
-                .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?Q"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?AGEX2"));
+                .AddProjectionVariable(new RDFVariable("?AGEX2"), new RDFMultiplyExpression(new RDFVariable("?Q"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)));
 
             RDFQueryEngine.ProjectExpressions(query, table);
 
@@ -5637,7 +5637,7 @@ namespace RDFSharp.Test.Query
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                     .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasAge"), new RDFVariable("?A")).Optional()))
                 .AddProjectionVariable(new RDFVariable("?X"))
-                .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?AGEX2"));
+                .AddProjectionVariable(new RDFVariable("?AGEX2"), new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)));
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
             Assert.IsNotNull(result.SelectResults);
@@ -5672,8 +5672,8 @@ namespace RDFSharp.Test.Query
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                     .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasAge"), new RDFVariable("?A")).Optional()))
                 .AddProjectionVariable(new RDFVariable("?X"))
-                .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?AGEX2"))
-                .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?AGEX2"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?AGEX4"));
+                .AddProjectionVariable(new RDFVariable("?AGEX2"), new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)))
+                .AddProjectionVariable(new RDFVariable("?AGEX4"), new RDFMultiplyExpression(new RDFVariable("?AGEX2"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)));
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
             Assert.IsNotNull(result.SelectResults);
@@ -5703,8 +5703,8 @@ namespace RDFSharp.Test.Query
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddValues(new RDFValues().AddColumn(new RDFVariable("?X"), new List<RDFPatternMember>() { new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER) })))
                 .AddProjectionVariable(new RDFVariable("?X"))
-                .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?X"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?AGEX2"))
-                .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?AGEX2"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?AGEX4"));
+                .AddProjectionVariable(new RDFVariable("?AGEX2"), new RDFMultiplyExpression(new RDFVariable("?X"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)))
+                .AddProjectionVariable(new RDFVariable("?AGEX4"), new RDFMultiplyExpression(new RDFVariable("?AGEX2"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)));
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, new RDFGraph());
 
             Assert.IsNotNull(result.SelectResults);
@@ -5741,7 +5741,7 @@ namespace RDFSharp.Test.Query
                         .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasAge"), new RDFVariable("?A"))))
                     .Optional()
                     .AddProjectionVariable(new RDFVariable("?X"))
-                    .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?AGEX2")))
+                    .AddProjectionVariable(new RDFVariable("?AGEX2"), new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT))))
                 .AddProjectionVariable(new RDFVariable("?Y"))
                 .AddProjectionVariable(new RDFVariable("?AGEX2"))
                 .AddProjectionVariable(new RDFVariable("?X"));
@@ -5787,10 +5787,10 @@ namespace RDFSharp.Test.Query
                         .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasAge"), new RDFVariable("?A"))))
                     .Optional()
                     .AddProjectionVariable(new RDFVariable("?X"))
-                    .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?AGEX2")))
+                    .AddProjectionVariable(new RDFVariable("?AGEX2"), new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT))))
                 .AddProjectionVariable(new RDFVariable("?Y"))
                 .AddProjectionVariable(new RDFVariable("?AGEX2"))
-                .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?AGEX2"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?AGEX4"))
+                .AddProjectionVariable(new RDFVariable("?AGEX4"), new RDFMultiplyExpression(new RDFVariable("?AGEX2"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)))
                 .AddProjectionVariable(new RDFVariable("?X"));
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 

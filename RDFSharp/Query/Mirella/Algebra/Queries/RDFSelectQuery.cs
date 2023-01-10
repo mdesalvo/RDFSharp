@@ -63,24 +63,11 @@ namespace RDFSharp.Query
             => AddPatternGroup<RDFSelectQuery>(patternGroup);
 
         /// <summary>
-        /// Adds the given variable to the results of the query
+        /// Adds the given variable to the results of the query (it may come from evaluation of an expression, if specified)
         /// </summary>
-        public RDFSelectQuery AddProjectionVariable(RDFVariable projectionVariable)
+        public RDFSelectQuery AddProjectionVariable(RDFVariable projectionVariable, RDFExpression projectionExpression=null)
         {
             if (projectionVariable != null)
-            {
-                if (!this.ProjectionVars.Any(pv => pv.Key.Equals(projectionVariable)))
-                    this.ProjectionVars.Add(projectionVariable, (this.ProjectionVars.Count, null));
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Adds the given expression, named as the given variable, to the results of the query
-        /// </summary>
-        public RDFSelectQuery AddProjectionExpression(RDFExpression projectionExpression, RDFVariable projectionVariable)
-        {
-            if (projectionExpression != null && projectionVariable != null)
             {
                 if (!this.ProjectionVars.Any(pv => pv.Key.Equals(projectionVariable)))
                     this.ProjectionVars.Add(projectionVariable, (this.ProjectionVars.Count, projectionExpression));

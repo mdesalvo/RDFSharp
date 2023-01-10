@@ -241,7 +241,7 @@ WHERE {
                         .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasDog"), new RDFVariable("?Y"))))
                     .AddProjectionVariable(new RDFVariable("?Y"))
                     .AddProjectionVariable(new RDFVariable("?X"))
-                    .AddProjectionExpression(new RDFAddExpression(new RDFVariable("?X"),new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?XADD1"))
+                    .AddProjectionVariable(new RDFVariable("?XADD1"), new RDFAddExpression(new RDFVariable("?X"),new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INT)))
                     .AddModifier(new RDFOrderByModifier(new RDFVariable("?X"), RDFQueryEnums.RDFOrderByFlavors.DESC)))
                 .AddModifier(new RDFDistinctModifier());
             string operationString = operation.ToString();
@@ -369,7 +369,7 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasAge"), new RDFVariable("?A"))))
                 .Optional()
                 .AddProjectionVariable(new RDFVariable("?X"))
-                .AddProjectionExpression(new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)), new RDFVariable("?AGEX2")));
+                .AddProjectionVariable(new RDFVariable("?AGEX2"), new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
             RDFOperationResult result = operation.ApplyToGraph(graph);
 
             Assert.IsNotNull(result);

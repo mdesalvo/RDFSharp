@@ -191,7 +191,7 @@ namespace RDFSharp.Test.Query
         public void ShouldCreateSelectQueryWithProjectionExpression()
         {
             RDFSelectQuery query = new RDFSelectQuery()
-                .AddProjectionExpression(new RDFAddExpression(new RDFVariable("?V"),new RDFTypedLiteral("2",RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?SUM"));
+                .AddProjectionVariable(new RDFVariable("?SUM"), new RDFAddExpression(new RDFVariable("?V"),new RDFTypedLiteral("2",RDFModelEnums.RDFDatatypes.XSD_INT)));
 
             Assert.IsNotNull(query);
             Assert.IsNotNull(query.QueryMembers);
@@ -219,7 +219,7 @@ namespace RDFSharp.Test.Query
         {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddProjectionVariable(new RDFVariable("?V1"))
-                .AddProjectionExpression(new RDFAddExpression(new RDFVariable("?V"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?SUM"))
+                .AddProjectionVariable(new RDFVariable("?SUM"), new RDFAddExpression(new RDFVariable("?V"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)))
                 .AddProjectionVariable(new RDFVariable("?V2"));
 
             Assert.IsNotNull(query);
@@ -247,8 +247,8 @@ namespace RDFSharp.Test.Query
         public void ShouldCreateSelectQueryWithMultipleProjectionExpressions()
         {
             RDFSelectQuery query = new RDFSelectQuery()
-                .AddProjectionExpression(new RDFAddExpression(new RDFVariable("?V"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?SUM"))
-                .AddProjectionExpression(new RDFMultiplyExpression(new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), new RDFVariable("?V3")), new RDFVariable("?MULTIPLY"));
+                .AddProjectionVariable(new RDFVariable("?SUM"), new RDFAddExpression(new RDFVariable("?V"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)))
+                .AddProjectionVariable(new RDFVariable("?MULTIPLY"), new RDFMultiplyExpression(new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), new RDFVariable("?V3")));
 
             Assert.IsNotNull(query);
             Assert.IsNotNull(query.QueryMembers);
@@ -276,7 +276,7 @@ namespace RDFSharp.Test.Query
         {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddProjectionVariable(new RDFVariable("?V1"))
-                .AddProjectionExpression(new RDFAddExpression(new RDFVariable("?V"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)), new RDFVariable("?V1")) //?V1 collision
+                .AddProjectionVariable(new RDFVariable("?V1"), new RDFAddExpression(new RDFVariable("?V"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT))) //?V1 collision
                 .AddProjectionVariable(new RDFVariable("?V2"));
 
             Assert.IsNotNull(query);
