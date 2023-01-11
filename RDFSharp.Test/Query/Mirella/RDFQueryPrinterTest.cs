@@ -264,7 +264,6 @@ WHERE {
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
 
-
         [TestMethod]
         public void ShouldPrintSelectQueryStarWithSingleUnionPatternAndSingleUnionPatternGroup()
         {
