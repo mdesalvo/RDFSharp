@@ -5674,7 +5674,7 @@ namespace RDFSharp.Test.Query
                 .AddProjectionVariable(new RDFVariable("?X"))
                 .AddProjectionVariable(new RDFVariable("?AGEX2"), new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)))
                 .AddProjectionVariable(new RDFVariable("?AGEX4"), new RDFMultiplyExpression(new RDFVariable("?AGEX2"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)))
-                .AddProjectionVariable(new RDFVariable("?COPYAGEX4"), new RDFUnaryExpression(new RDFVariable("?AGEX4")));
+                .AddProjectionVariable(new RDFVariable("?AGEX4PLUS1"), new RDFUnaryExpression(new RDFAddExpression(new RDFVariable("?AGEX4"), new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
             Assert.IsNotNull(result.SelectResults);
@@ -5685,21 +5685,21 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResults.Columns["?AGEX2"].Ordinal == 1);
             Assert.IsTrue(result.SelectResults.Columns.Contains("?AGEX4"));
             Assert.IsTrue(result.SelectResults.Columns["?AGEX4"].Ordinal == 2);
-            Assert.IsTrue(result.SelectResults.Columns.Contains("?COPYAGEX4"));
-            Assert.IsTrue(result.SelectResults.Columns["?COPYAGEX4"].Ordinal == 3);
+            Assert.IsTrue(result.SelectResults.Columns.Contains("?AGEX4PLUS1"));
+            Assert.IsTrue(result.SelectResults.Columns["?AGEX4PLUS1"].Ordinal == 3);
             Assert.IsTrue(result.SelectResults.Rows.Count == 3);
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4"].ToString(), "340^^http://www.w3.org/2001/XMLSchema#double"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?COPYAGEX4"].ToString(), "340^^http://www.w3.org/2001/XMLSchema#double"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4PLUS1"].ToString(), "341^^http://www.w3.org/2001/XMLSchema#double"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX4"].ToString(), "332^^http://www.w3.org/2001/XMLSchema#double"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?COPYAGEX4"].ToString(), "332^^http://www.w3.org/2001/XMLSchema#double"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX4PLUS1"].ToString(), "333^^http://www.w3.org/2001/XMLSchema#double"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString()));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX4"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?COPYAGEX4"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX4PLUS1"].ToString(), DBNull.Value.ToString()));
         }
 
         [TestMethod]
