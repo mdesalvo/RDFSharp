@@ -121,7 +121,7 @@ namespace RDFSharp.Query
                 RDFPatternMember rightArgumentPMember = null;
                 if (RightArgument is RDFExpression rightArgumentExpression)
                     rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
-                else if (RightArgument is RDFVariable rightArgumentVariable)
+                else if (RightArgument is RDFVariable)
                     rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
                 else
                     rightArgumentPMember = (RDFTypedLiteral)RightArgument;

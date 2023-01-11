@@ -72,7 +72,8 @@ namespace RDFSharp.Query
             sb.Append('(');
             sb.Append(LeftArgument.ToString());
             sb.Append(" / ");
-            sb.Append(RightArgument is RDFTypedLiteral tlRightArgument ? tlRightArgument.Value.ToString(CultureInfo.InvariantCulture) : RightArgument.ToString());
+            sb.Append(RightArgument is RDFTypedLiteral tlRightArgument ? tlRightArgument.Value.ToString(CultureInfo.InvariantCulture) 
+                                                                       : RightArgument.ToString());
             sb.Append(')');
 
             return sb.ToString();
