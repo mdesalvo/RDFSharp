@@ -91,16 +91,29 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldCreateUnaryExpressionWithTypedLiteral()
+        public void ShouldCreateUnaryExpressionWithNumericTypedLiteral()
         {
             RDFUnaryExpression expression = new RDFUnaryExpression(new RDFTypedLiteral("25.04", RDFModelEnums.RDFDatatypes.XSD_FLOAT));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("(\"25.04\"^^<http://www.w3.org/2001/XMLSchema#float>)"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(\"25.04\"^^<http://www.w3.org/2001/XMLSchema#float>)"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals("(\"25.04\"^^xsd:float)"));
+            Assert.IsTrue(expression.ToString().Equals("(25.04)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(25.04)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals("(25.04)"));
+        }
+
+        [TestMethod]
+        public void ShouldCreateUnaryExpressionWithNotNumericTypedLiteral()
+        {
+            RDFUnaryExpression expression = new RDFUnaryExpression(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_GDAY));
+
+            Assert.IsNotNull(expression);
+            Assert.IsNotNull(expression.LeftArgument);
+            Assert.IsNull(expression.RightArgument);
+            Assert.IsTrue(expression.ToString().Equals($"(\"25Z\"^^<{RDFVocabulary.XSD.G_DAY}>)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals($"(\"25Z\"^^<{RDFVocabulary.XSD.G_DAY}>)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals($"(\"25Z\"^^xsd:gDay)"));
         }
         #endregion
     }

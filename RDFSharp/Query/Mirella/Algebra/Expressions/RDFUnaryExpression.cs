@@ -23,31 +23,31 @@ using System.Text;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFMathExpression represents an arithmetical expression to be applied on a query results table.
+    /// RDFUnaryExpression represents a single-argument expression to be applied on a query results table.
     /// </summary>
     public class RDFUnaryExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an unary expression with given arguments
+        /// Default-ctor to build an unary expression with given argument
         /// </summary>
         public RDFUnaryExpression(RDFExpression leftArgument) 
             : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build an unary expression with given arguments
+        /// Default-ctor to build an unary expression with given argument
         /// </summary>
         public RDFUnaryExpression(RDFVariable leftArgument)
             : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build an unary expression with given arguments
+        /// Default-ctor to build an unary expression with given argument
         /// </summary>
         public RDFUnaryExpression(RDFResource leftArgument)
             : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build an unary expression with given arguments
+        /// Default-ctor to build an unary expression with given argument
         /// </summary>
         public RDFUnaryExpression(RDFLiteral leftArgument)
             : base(leftArgument, null as RDFExpression) { }
@@ -55,7 +55,7 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the unary addition expression
+        /// Gives the string representation of the unary expression
         /// </summary>
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
@@ -66,7 +66,8 @@ namespace RDFSharp.Query
             //(L)
             sb.Append('(');
             sb.Append(LeftArgument is RDFExpression expLeftArgument ? expLeftArgument.ToString(prefixes)
-                                                                    : RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+                       : LeftArgument is RDFTypedLiteral tlLeftArgument && tlLeftArgument.HasDecimalDatatype() ? tlLeftArgument.Value.ToString(CultureInfo.InvariantCulture)
+                        : RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
             sb.Append(')');
 
             return sb.ToString();
