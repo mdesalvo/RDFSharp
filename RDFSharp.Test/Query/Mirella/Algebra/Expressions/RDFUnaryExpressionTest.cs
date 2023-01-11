@@ -115,6 +115,160 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals($"(\"25Z\"^^<{RDFVocabulary.XSD.G_DAY}>)"));
             Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals($"(\"25Z\"^^xsd:gDay)"));
         }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingUnaryExpressionWithExpressionBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFUnaryExpression(null as RDFMathExpression));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingUnaryExpressionWithVariableBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFUnaryExpression(null as RDFVariable));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingUnaryExpressionWithResourceBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFUnaryExpression(null as RDFResource));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingUnaryExpressionWithLiteralBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFUnaryExpression(null as RDFLiteral));
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithExpressionAndCalculateResult()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFUnaryExpression expression = new RDFUnaryExpression(
+                new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNotNull(expressionResult);
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("30.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithBindingErrorExpressionAndCalculateResult()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFPlainLiteral("hello").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFUnaryExpression expression = new RDFUnaryExpression(
+                new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNull(expressionResult);
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithVariableAndCalculateResult()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFUnaryExpression expression = new RDFUnaryExpression(
+                new RDFVariable("?A"));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNotNull(expressionResult);
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithResourceAndCalculateResult()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFUnaryExpression expression = new RDFUnaryExpression(
+                RDFVocabulary.FOAF.AGE);
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNotNull(expressionResult);
+            Assert.IsTrue(expressionResult.Equals(RDFVocabulary.FOAF.AGE));
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithPlainLiteralAndCalculateResult()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFUnaryExpression expression = new RDFUnaryExpression(
+                new RDFPlainLiteral("hello","en-US"));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNotNull(expressionResult);
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("hello", "en-US")));
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithTypedLiteralAndCalculateResult()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFUnaryExpression expression = new RDFUnaryExpression(
+                new RDFTypedLiteral("{\"key\":\"val\"}", RDFModelEnums.RDFDatatypes.RDF_JSON));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNotNull(expressionResult);
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("{\"key\":\"val\"}", RDFModelEnums.RDFDatatypes.RDF_JSON)));
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithVariableAndNotCalculateResultBecauseUnknownVariable()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFUnaryExpression expression = new RDFUnaryExpression(
+                new RDFVariable("?Q"));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNull(expressionResult);
+        }
         #endregion
     }
 }
