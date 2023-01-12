@@ -17,45 +17,32 @@
 using RDFSharp.Model;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.Text;
 
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFUnaryExpression represents a single-argument expression to be applied on a query results table.
+    /// RDFDynamicExpression represents a single-argument dynamic expression to be applied on a query results table.
     /// </summary>
-    public class RDFUnaryExpression : RDFExpression
+    public class RDFDynamicExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an unary expression with given argument
+        /// Default-ctor to build a dynamic expression with given argument
         /// </summary>
-        public RDFUnaryExpression(RDFExpression leftArgument) 
+        public RDFDynamicExpression(RDFExpression leftArgument) 
             : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build an unary expression with given argument
+        /// Default-ctor to build a dynamic expression with given argument
         /// </summary>
-        public RDFUnaryExpression(RDFVariable leftArgument)
-            : base(leftArgument, null as RDFExpression) { }
-
-        /// <summary>
-        /// Default-ctor to build an unary expression with given argument
-        /// </summary>
-        public RDFUnaryExpression(RDFResource leftArgument)
-            : base(leftArgument, null as RDFExpression) { }
-
-        /// <summary>
-        /// Default-ctor to build an unary expression with given argument
-        /// </summary>
-        public RDFUnaryExpression(RDFLiteral leftArgument)
+        public RDFDynamicExpression(RDFVariable leftArgument)
             : base(leftArgument, null as RDFExpression) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the unary expression
+        /// Gives the string representation of the dynamic expression
         /// </summary>
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
@@ -66,8 +53,7 @@ namespace RDFSharp.Query
             //(L)
             sb.Append('(');
             sb.Append(LeftArgument is RDFExpression expLeftArgument ? expLeftArgument.ToString(prefixes)
-                       : LeftArgument is RDFTypedLiteral tlLeftArgument && tlLeftArgument.HasDecimalDatatype() ? tlLeftArgument.Value.ToString(CultureInfo.InvariantCulture)
-                        : RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+                       : RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
             sb.Append(')');
 
             return sb.ToString();
@@ -76,7 +62,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the unary expression on the given datarow
+        /// Applies the dynamic expression on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {
@@ -90,14 +76,12 @@ namespace RDFSharp.Query
             try
             {
                 #region Evaluate Arguments
-                //Evaluate left argument (Expression VS Variable VS Resource/Literal)
+                //Evaluate left argument (Expression VS Variable)
                 RDFPatternMember leftArgumentPMember = null;
                 if (LeftArgument is RDFExpression leftArgumentExpression)
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
-                else if (LeftArgument is RDFVariable)
+                else 
                     leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
-                else
-                    leftArgumentPMember = (RDFPatternMember)LeftArgument;
                 #endregion
 
                 #region Calculate Result
