@@ -15,22 +15,20 @@
 */
 
 using RDFSharp.Model;
-using System.Collections.Generic;
 using System.Data;
-using System.Text;
 
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFBooleanOrExpression represents a boolean "OR" expression to be applied on a query results table.
+    /// RDFBooleanExpression represents a boolean expression to be applied on a query results table.
     /// </summary>
-    public class RDFBooleanOrExpression : RDFExpression
+    public abstract class RDFBooleanExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a boolean "OR" expression with given arguments
+        /// Default-ctor to build a boolean expression with given arguments
         /// </summary>
-        public RDFBooleanOrExpression(RDFExpression leftArgument, RDFExpression rightArgument) 
+        public RDFBooleanExpression(RDFExpression leftArgument, RDFExpression rightArgument)
             : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
@@ -38,30 +36,9 @@ namespace RDFSharp.Query
         }
         #endregion
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the boolean "OR" expression
-        /// </summary>
-        public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
-        internal override string ToString(List<RDFNamespace> prefixes)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            //(L || R)
-            sb.Append('(');
-            sb.Append(((RDFExpression)LeftArgument).ToString(prefixes));
-            sb.Append(" || ");
-            sb.Append(((RDFExpression)RightArgument).ToString(prefixes));
-            sb.Append(')');
-
-            return sb.ToString();
-        }
-        #endregion
-
         #region Methods
         /// <summary>
-        /// Applies the boolean "OR" expression on the given datarow
+        /// Applies the boolean "AND" expression on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {
@@ -83,9 +60,15 @@ namespace RDFSharp.Query
                       && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
                        && rightArgumentTypedLiteral.HasBooleanDatatype())
                 {
-                    if (bool.TryParse(leftArgumentTypedLiteral.Value,out bool leftArgumentBooleanValue)
+                    if (bool.TryParse(leftArgumentTypedLiteral.Value, out bool leftArgumentBooleanValue)
                           && bool.TryParse(rightArgumentTypedLiteral.Value, out bool rightArgumentBooleanValue))
-                    expressionResult = (leftArgumentBooleanValue || rightArgumentBooleanValue) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    {
+                        //Execute the boolean expression's comparison logics
+                        if (this is RDFBooleanAndExpression)
+                            expressionResult = leftArgumentBooleanValue && rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        else if (this is RDFBooleanOrExpression)
+                            expressionResult = leftArgumentBooleanValue || rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    }
                 }
                 #endregion
             }
