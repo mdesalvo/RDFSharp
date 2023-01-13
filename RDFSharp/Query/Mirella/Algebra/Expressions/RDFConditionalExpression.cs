@@ -30,14 +30,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Represents the condition argument given to the conditional expression
         /// </summary>
-        public RDFBooleanExpression ConditionArgument { get; internal set; }
+        public RDFExpression ConditionArgument { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build a conditional expression with given arguments
         /// </summary>
-        public RDFConditionalExpression(RDFBooleanExpression conditionArgument, RDFExpression leftArgument, RDFExpression rightArgument) 
+        public RDFConditionalExpression(RDFExpression conditionArgument, RDFExpression leftArgument, RDFExpression rightArgument) 
             : base(leftArgument, rightArgument) 
         {
             if (conditionArgument == null)

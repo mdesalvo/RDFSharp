@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Data;
 using RDFSharp.Model;
 using RDFSharp.Query;
-using System.Runtime.Serialization;
 
 namespace RDFSharp.Test.Query
 {
