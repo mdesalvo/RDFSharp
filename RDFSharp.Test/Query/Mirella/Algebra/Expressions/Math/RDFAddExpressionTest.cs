@@ -147,6 +147,10 @@ namespace RDFSharp.Test.Query
             => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFTypedLiteral));
 
         [TestMethod]
+        public void ShouldThrowExceptionOnCreatingAddExpressionWithETBecauseNotNumericRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
+
+        [TestMethod]
         public void ShouldThrowExceptionOnCreatingAddExpressionWithVEBecauseNullRightArgument()
             => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(new RDFVariable("?V2"), null as RDFMathExpression));
 
@@ -157,6 +161,10 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingAddExpressionWithVTBecauseNullRightArgument()
             => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingAddExpressionWithVTBecauseNotNumericRightArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFAddExpression(new RDFVariable("?V"), new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
 
         [TestMethod]
         public void ShouldApplyExpressionWithEEAndCalculateResult()
