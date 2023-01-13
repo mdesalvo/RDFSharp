@@ -34,7 +34,7 @@ namespace RDFSharp.Test.Query
                     new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")),
                     new RDFConstantExpression(new RDFTypedLiteral("24.08", RDFModelEnums.RDFDatatypes.XSD_FLOAT))),
                 new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
-                    new RDFDynamicExpression(new RDFVariable("?V1")),
+                    new RDFVariableExpression(new RDFVariable("?V1")),
                     new RDFConstantExpression(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING))));
 
             Assert.IsNotNull(expression);
@@ -47,11 +47,11 @@ namespace RDFSharp.Test.Query
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingBooleanAndExpressionBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFBooleanAndExpression(null, new RDFDynamicExpression(new RDFVariable("?V"))));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFBooleanAndExpression(null, new RDFVariableExpression(new RDFVariable("?V"))));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingBooleanAndExpressionBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFBooleanAndExpression(new RDFDynamicExpression(new RDFVariable("?V")), null));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFBooleanAndExpression(new RDFVariableExpression(new RDFVariable("?V")), null));
 
         [TestMethod]
         public void ShouldApplyExpressionAndCalculateResultTrue()
@@ -94,7 +94,7 @@ namespace RDFSharp.Test.Query
                 new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
                     new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")),
                     new RDFConstantExpression(new RDFTypedLiteral("30.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))),
-                new RDFDynamicExpression(new RDFVariable("?C")));
+                new RDFVariableExpression(new RDFVariable("?C")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
@@ -142,7 +142,7 @@ namespace RDFSharp.Test.Query
                 new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
                     new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")),
                     new RDFConstantExpression(new RDFTypedLiteral("30.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))),
-                new RDFDynamicExpression(new RDFVariable("?C")));
+                new RDFVariableExpression(new RDFVariable("?C")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
@@ -187,7 +187,7 @@ namespace RDFSharp.Test.Query
                 new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
                     new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")),
                     new RDFConstantExpression(new RDFTypedLiteral("30.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))),
-                new RDFDynamicExpression(new RDFVariable("?Q")));
+                new RDFVariableExpression(new RDFVariable("?Q")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNull(expressionResult);

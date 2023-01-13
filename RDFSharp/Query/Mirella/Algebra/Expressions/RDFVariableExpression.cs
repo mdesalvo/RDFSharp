@@ -22,27 +22,27 @@ using System.Text;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFDynamicExpression represents a single-argument dynamic expression to be applied on a query results table.
+    /// RDFVariableExpression represents a single-argument variable expression to be applied on a query results table.
     /// </summary>
-    public class RDFDynamicExpression : RDFExpression
+    public class RDFVariableExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a dynamic expression with given argument
+        /// Default-ctor to build a variable expression with given argument
         /// </summary>
-        public RDFDynamicExpression(RDFExpression leftArgument) 
+        public RDFVariableExpression(RDFExpression leftArgument) 
             : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a dynamic expression with given argument
+        /// Default-ctor to build a variable expression with given argument
         /// </summary>
-        public RDFDynamicExpression(RDFVariable leftArgument)
+        public RDFVariableExpression(RDFVariable leftArgument)
             : base(leftArgument, null as RDFExpression) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the dynamic expression
+        /// Gives the string representation of the variable expression
         /// </summary>
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
@@ -62,7 +62,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the dynamic expression on the given datarow
+        /// Applies the variable expression on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {

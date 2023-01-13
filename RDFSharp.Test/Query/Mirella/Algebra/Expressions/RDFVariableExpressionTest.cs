@@ -19,17 +19,18 @@ using System.Collections.Generic;
 using System.Data;
 using RDFSharp.Model;
 using RDFSharp.Query;
+using System.Runtime.Serialization;
 
 namespace RDFSharp.Test.Query
 {
     [TestClass]
-    public class RDFDynamicExpressionTest
+    public class RDFVariableExpressionTest
     {
         #region Tests
         [TestMethod]
-        public void ShouldCreateDynamicExpressionWithExpression()
+        public void ShouldCreateVariableExpressionWithExpression()
         {
-            RDFDynamicExpression expression = new RDFDynamicExpression(
+            RDFVariableExpression expression = new RDFVariableExpression(
                 new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")));
 
             Assert.IsNotNull(expression);
@@ -40,9 +41,9 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldCreateDynamicExpressionWithDynamicExpression()
+        public void ShouldCreateVariableExpressionWithVariableExpression()
         {
-            RDFDynamicExpression expression = new RDFDynamicExpression(new RDFDynamicExpression(
+            RDFVariableExpression expression = new RDFVariableExpression(new RDFVariableExpression(
                 new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2"))));
 
             Assert.IsNotNull(expression);
@@ -53,9 +54,9 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldCreateDynamicExpressionWithVariable()
+        public void ShouldCreateVariableExpressionWithVariable()
         {
-            RDFDynamicExpression expression = new RDFDynamicExpression(new RDFVariable("?V"));
+            RDFVariableExpression expression = new RDFVariableExpression(new RDFVariable("?V"));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
@@ -65,12 +66,12 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingDynamicExpressionWithExpressionBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFDynamicExpression(null as RDFMathExpression));
+        public void ShouldThrowExceptionOnCreatingVariableExpressionWithExpressionBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFVariableExpression(null as RDFMathExpression));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingDynamicExpressionWithVariableBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFDynamicExpression(null as RDFVariable));
+        public void ShouldThrowExceptionOnCreatingVariableExpressionWithVariableBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFVariableExpression(null as RDFVariable));
 
         [TestMethod]
         public void ShouldApplyExpressionWithExpressionAndCalculateResult()
@@ -84,7 +85,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFDynamicExpression expression = new RDFDynamicExpression(
+            RDFVariableExpression expression = new RDFVariableExpression(
                 new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -104,7 +105,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFDynamicExpression expression = new RDFDynamicExpression(
+            RDFVariableExpression expression = new RDFVariableExpression(
                 new RDFConstantExpression(new RDFResource("ex:subj")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -124,7 +125,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFDynamicExpression expression = new RDFDynamicExpression(
+            RDFVariableExpression expression = new RDFVariableExpression(
                 new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -143,7 +144,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFDynamicExpression expression = new RDFDynamicExpression(
+            RDFVariableExpression expression = new RDFVariableExpression(
                 new RDFVariable("?A"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -163,7 +164,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFDynamicExpression expression = new RDFDynamicExpression(
+            RDFVariableExpression expression = new RDFVariableExpression(
                 new RDFVariable("?Q"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 

@@ -45,7 +45,7 @@ namespace RDFSharp.Test.Query
         {
             RDFComparisonExpression expression = new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan,
                 new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")),
-                new RDFDynamicExpression(new RDFVariable("?V3")));
+                new RDFVariableExpression(new RDFVariable("?V3")));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
@@ -58,8 +58,8 @@ namespace RDFSharp.Test.Query
         public void ShouldCreateEEComparisonExpressionEqual()
         {
             RDFComparisonExpression expression = new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
-                new RDFDynamicExpression(new RDFVariable("?V1")),
-                new RDFDynamicExpression(new RDFVariable("?V2")));
+                new RDFVariableExpression(new RDFVariable("?V1")),
+                new RDFVariableExpression(new RDFVariable("?V2")));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
@@ -72,8 +72,8 @@ namespace RDFSharp.Test.Query
         public void ShouldCreateEEComparisonExpressionNotEqual()
         {
             RDFComparisonExpression expression = new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.NotEqualTo,
-                new RDFDynamicExpression(new RDFVariable("?V1")),
-                new RDFDynamicExpression(new RDFVariable("?V2")));
+                new RDFVariableExpression(new RDFVariable("?V1")),
+                new RDFVariableExpression(new RDFVariable("?V2")));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
@@ -101,7 +101,7 @@ namespace RDFSharp.Test.Query
         {
             RDFComparisonExpression expression = new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterThan,
                 new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")),
-                new RDFDynamicExpression(new RDFVariable("?V3")));
+                new RDFVariableExpression(new RDFVariable("?V3")));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
@@ -142,7 +142,7 @@ namespace RDFSharp.Test.Query
         public void ShouldCreateEVComparisonExpressionEqual()
         {
             RDFComparisonExpression expression = new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
-                new RDFDynamicExpression(new RDFVariable("?V1")),
+                new RDFVariableExpression(new RDFVariable("?V1")),
                 new RDFVariable("?V2"));
 
             Assert.IsNotNull(expression);
@@ -156,7 +156,7 @@ namespace RDFSharp.Test.Query
         public void ShouldCreateEVComparisonExpressionNotEqual()
         {
             RDFComparisonExpression expression = new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.NotEqualTo,
-                new RDFDynamicExpression(new RDFVariable("?V1")),
+                new RDFVariableExpression(new RDFVariable("?V1")),
                 new RDFVariable("?V2"));
 
             Assert.IsNotNull(expression);
@@ -227,7 +227,7 @@ namespace RDFSharp.Test.Query
         {
             RDFComparisonExpression expression = new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
                 new RDFVariable("?V2"),
-                new RDFDynamicExpression(new RDFVariable("?V1")));
+                new RDFVariableExpression(new RDFVariable("?V1")));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
@@ -241,7 +241,7 @@ namespace RDFSharp.Test.Query
         {
             RDFComparisonExpression expression = new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.NotEqualTo,
                 new RDFVariable("?V2"),
-                new RDFDynamicExpression(new RDFVariable("?V1")));
+                new RDFVariableExpression(new RDFVariable("?V1")));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
@@ -364,7 +364,7 @@ namespace RDFSharp.Test.Query
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingEEComparisonExpressionBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, null as RDFMathExpression, new RDFDynamicExpression(new RDFVariable("?V"))));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, null as RDFMathExpression, new RDFVariableExpression(new RDFVariable("?V"))));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingEVComparisonExpressionBecauseNullLeftArgument()
@@ -372,7 +372,7 @@ namespace RDFSharp.Test.Query
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingVEComparisonExpressionBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, null as RDFVariable, new RDFDynamicExpression(new RDFVariable("?V"))));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingVVComparisonExpressionBecauseNullLeftArgument()
@@ -380,7 +380,7 @@ namespace RDFSharp.Test.Query
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingEEComparisonExpressionBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFDynamicExpression(new RDFVariable("?V")), null as RDFMathExpression));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFVariableExpression(new RDFVariable("?V")), null as RDFMathExpression));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingEVComparisonExpressionBecauseNullRightArgument()
@@ -388,7 +388,7 @@ namespace RDFSharp.Test.Query
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingVEComparisonExpressionBecauseNullRightArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFDynamicExpression(new RDFVariable("?V")), null as RDFVariable));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingVVComparisonExpressionBecauseNullRightArgument()
@@ -408,7 +408,7 @@ namespace RDFSharp.Test.Query
 
             RDFComparisonExpression expression = new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterThan,
                 new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")),
-                new RDFDynamicExpression(new RDFVariable("?B")));
+                new RDFVariableExpression(new RDFVariable("?B")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
@@ -429,7 +429,7 @@ namespace RDFSharp.Test.Query
 
             RDFComparisonExpression expression = new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.LessThan,
                 new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")),
-                new RDFDynamicExpression(new RDFVariable("?B")));
+                new RDFVariableExpression(new RDFVariable("?B")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
