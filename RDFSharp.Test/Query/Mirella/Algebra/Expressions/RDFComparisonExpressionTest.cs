@@ -522,6 +522,28 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldApplyExpressionAndNotCalculateResultBecauseTypeError()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            row["?C"] = new RDFResource("ex:subj").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFComparisonExpression expression = new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
+                new RDFVariable("?C"),
+                new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNull(expressionResult);
+        }
+
+        [TestMethod]
         public void ShouldApplyExpressionAndNotCalculateResultBecauseBindingErrorOnExpression()
         {
             DataTable table = new DataTable();
