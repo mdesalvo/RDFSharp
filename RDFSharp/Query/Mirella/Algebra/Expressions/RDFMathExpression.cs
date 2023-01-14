@@ -16,8 +16,10 @@
 
 using RDFSharp.Model;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.Text;
 
 namespace RDFSharp.Query
 {
@@ -30,7 +32,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an arithmetical expression with given arguments
         /// </summary>
-        public RDFMathExpression(RDFMathExpression leftArgument, RDFMathExpression rightArgument) 
+        public RDFMathExpression(RDFExpression leftArgument, RDFExpression rightArgument) 
             : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
@@ -40,7 +42,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an arithmetical expression with given arguments
         /// </summary>
-        public RDFMathExpression(RDFMathExpression leftArgument, RDFVariable rightArgument) 
+        public RDFMathExpression(RDFExpression leftArgument, RDFVariable rightArgument) 
             : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
@@ -50,7 +52,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an arithmetical expression with given arguments
         /// </summary>
-        public RDFMathExpression(RDFMathExpression leftArgument, RDFTypedLiteral rightArgument) 
+        public RDFMathExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) 
             : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
@@ -62,7 +64,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an arithmetical expression with given arguments
         /// </summary>
-        public RDFMathExpression(RDFVariable leftArgument, RDFMathExpression rightArgument) 
+        public RDFMathExpression(RDFVariable leftArgument, RDFExpression rightArgument) 
             : base(leftArgument, rightArgument)
         {
             if (rightArgument == null)
@@ -89,6 +91,42 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
             if (!rightArgument.HasDecimalDatatype())
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is not a numeric typed literal");
+        }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the arithmetical addition expression
+        /// </summary>
+        public override string ToString()
+            => this.ToString(new List<RDFNamespace>());
+        internal override string ToString(List<RDFNamespace> prefixes)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            //(L MATHOP R)
+            sb.Append('(');
+            if (LeftArgument is RDFExpression expLeftArgument)
+                sb.Append(expLeftArgument.ToString(prefixes));
+            else
+                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+            if (this is RDFAddExpression)
+                sb.Append(" + ");
+            else if (this is RDFSubtractExpression)
+                sb.Append(" - ");
+            else if (this is RDFMultiplyExpression)
+                sb.Append(" * ");
+            else if (this is RDFDivideExpression)
+                sb.Append(" / ");
+            if (RightArgument is RDFExpression expRightArgument)
+                sb.Append(expRightArgument.ToString(prefixes));
+            else if (RightArgument is RDFTypedLiteral tlRightArgument)
+                sb.Append(tlRightArgument.Value.ToString(CultureInfo.InvariantCulture));
+            else
+                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
+            sb.Append(')');
+
+            return sb.ToString();
         }
         #endregion
 
