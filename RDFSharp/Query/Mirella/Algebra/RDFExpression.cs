@@ -67,12 +67,17 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFExpression(RDFExpressionArgument leftArgument, RDFExpressionArgument rightArgument)
         {
-            if (leftArgument == null)
+            if ((!(this is RDFRandExpression)) && leftArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"leftArgument\" parameter is null");
 
             LeftArgument = leftArgument;
             RightArgument = rightArgument;
         }
+
+        /// <summary>
+        /// Internal-ctor to build an expression without arguments (e.g: RAND)
+        /// </summary>
+        internal RDFExpression() { }
         #endregion
 
         #region Interfaces
