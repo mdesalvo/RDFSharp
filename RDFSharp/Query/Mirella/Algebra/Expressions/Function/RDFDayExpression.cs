@@ -24,25 +24,25 @@ using System.Text;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFMonthExpression represents a datetime month function to be applied on a query results table.
+    /// RDFDayExpression represents a datetime day function to be applied on a query results table.
     /// </summary>
-    public class RDFMonthExpression : RDFExpression
+    public class RDFDayExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a datetime month function with given arguments
+        /// Default-ctor to build a datetime day function with given arguments
         /// </summary>
-        public RDFMonthExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFDayExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a datetime month function with given arguments
+        /// Default-ctor to build a datetime day function with given arguments
         /// </summary>
-        public RDFMonthExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFDayExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the datetime month function
+        /// Gives the string representation of the datetime day function
         /// </summary>
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
@@ -50,8 +50,8 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(MONTH(L))
-            sb.Append("(MONTH(");
+            //(DAY(L))
+            sb.Append("(DAY(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
@@ -64,7 +64,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the datetime month function on the given datarow
+        /// Applies the datetime day function on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {
@@ -95,7 +95,7 @@ namespace RDFSharp.Query
                      && leftArgumentTypedLiteral.HasDatetimeDatatype())
                 {
                     if (DateTime.TryParse(leftArgumentTypedLiteral.Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out DateTime leftArgumentDateTimeValue))
-                        expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Month.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                        expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Day.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
                 }
                 #endregion
             }
