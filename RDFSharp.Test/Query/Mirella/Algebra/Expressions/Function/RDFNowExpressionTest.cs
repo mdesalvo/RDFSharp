@@ -56,6 +56,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expressionResult);
             Assert.IsTrue(expressionResult is RDFTypedLiteral tlitExprRes && tlitExprRes.HasDatetimeDatatype());
 
+            System.Threading.Thread.Sleep(5);
+
             RDFPatternMember expressionResult2 = expression.ApplyExpression(table.Rows[0]);
             Assert.IsTrue(expressionResult2 is RDFTypedLiteral tlitExprRes2 && tlitExprRes2.HasDatetimeDatatype());
             Assert.IsFalse(expressionResult.Equals(expressionResult2));
