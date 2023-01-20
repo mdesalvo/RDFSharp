@@ -23,42 +23,42 @@ using RDFSharp.Query;
 namespace RDFSharp.Test.Query
 {
     [TestClass]
-    public class RDFUCaseExpressionTest
+    public class RDFLowerCaseExpressionTest
     {
         #region Tests
         [TestMethod]
-        public void ShouldCreateUCaseExpressionWithExpression()
+        public void ShouldCreateLCaseExpressionWithExpression()
         {
-            RDFUCaseExpression expression = new RDFUCaseExpression(
+            RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
                 new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("(UCASE((?V1 + ?V2)))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(UCASE((?V1 + ?V2)))"));
+            Assert.IsTrue(expression.ToString().Equals("(LCASE((?V1 + ?V2)))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(LCASE((?V1 + ?V2)))"));
         }
 
         [TestMethod]
-        public void ShouldCreateUCaseExpressionWithVariable()
+        public void ShouldCreateLCaseExpressionWithVariable()
         {
-            RDFUCaseExpression expression = new RDFUCaseExpression(
+            RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
                 new RDFVariable("?V1"));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("(UCASE(?V1))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(UCASE(?V1))"));
+            Assert.IsTrue(expression.ToString().Equals("(LCASE(?V1))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(LCASE(?V1))"));
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingUCaseExpressionWithExpressionBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFUCaseExpression(null as RDFExpression));
+        public void ShouldThrowExceptionOnCreatingLCaseExpressionWithExpressionBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFLowerCaseExpression(null as RDFExpression));
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingUCaseExpressionWithVariableBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFUCaseExpression(null as RDFVariable));
+        public void ShouldThrowExceptionOnCreatingLCaseExpressionWithVariableBecauseNullLeftArgument()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFLowerCaseExpression(null as RDFVariable));
 
         [TestMethod]
         public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNull()
@@ -70,7 +70,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFUCaseExpression expression = new RDFUCaseExpression(
+            RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
                 new RDFVariableExpression(new RDFVariable("?A")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -84,16 +84,16 @@ namespace RDFSharp.Test.Query
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFPlainLiteral("hello").ToString();
+            row["?A"] = new RDFPlainLiteral("heLLo").ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFUCaseExpression expression = new RDFUCaseExpression(
+            RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
                 new RDFVariableExpression(new RDFVariable("?A")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("HELLO")));
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("hello")));
         }
 
         [TestMethod]
@@ -102,16 +102,16 @@ namespace RDFSharp.Test.Query
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFPlainLiteral("hello","en-US").ToString();
+            row["?A"] = new RDFPlainLiteral("heLLo","en-US").ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFUCaseExpression expression = new RDFUCaseExpression(
+            RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
                 new RDFVariableExpression(new RDFVariable("?A")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("HELLO", "en-US")));
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("hello", "en-US")));
         }
 
         [TestMethod]
@@ -120,16 +120,16 @@ namespace RDFSharp.Test.Query
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString();
+            row["?A"] = new RDFTypedLiteral("hEllo", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFUCaseExpression expression = new RDFUCaseExpression(
+            RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
                 new RDFVariableExpression(new RDFVariable("?A")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("HELLO", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
         }
 
         [TestMethod]
@@ -142,7 +142,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFUCaseExpression expression = new RDFUCaseExpression(
+            RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
                 new RDFVariableExpression(new RDFVariable("?A")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -159,7 +159,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFUCaseExpression expression = new RDFUCaseExpression(
+            RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
                 new RDFVariableExpression(new RDFVariable("?A")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -176,7 +176,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFUCaseExpression expression = new RDFUCaseExpression(
+            RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
                 new RDFVariableExpression(new RDFVariable("?Q")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -189,16 +189,16 @@ namespace RDFSharp.Test.Query
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFPlainLiteral("hello").ToString();
+            row["?A"] = new RDFPlainLiteral("hEllo").ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFUCaseExpression expression = new RDFUCaseExpression(
+            RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
                 new RDFVariable("?A"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("HELLO")));
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("hello")));
         }
 
         [TestMethod]
@@ -207,16 +207,16 @@ namespace RDFSharp.Test.Query
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            row["?A"] = new RDFPlainLiteral("hELlo", "en-US").ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFUCaseExpression expression = new RDFUCaseExpression(
+            RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
                 new RDFVariable("?A"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("HELLO", "en-US")));
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("hello", "en-US")));
         }
 
         [TestMethod]
@@ -225,16 +225,16 @@ namespace RDFSharp.Test.Query
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString();
+            row["?A"] = new RDFTypedLiteral("heLlo", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFUCaseExpression expression = new RDFUCaseExpression(
+            RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
                 new RDFVariable("?A"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("HELLO", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)));
         }
 
         [TestMethod]
@@ -247,7 +247,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFUCaseExpression expression = new RDFUCaseExpression(
+            RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
                 new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?A")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -264,7 +264,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFUCaseExpression expression = new RDFUCaseExpression(
+            RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
                 new RDFVariable("?A"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -281,7 +281,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFUCaseExpression expression = new RDFUCaseExpression(
+            RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
                 new RDFVariable("?A"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -298,7 +298,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFUCaseExpression expression = new RDFUCaseExpression(
+            RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
                 new RDFVariable("?Q"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 

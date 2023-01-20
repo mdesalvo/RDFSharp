@@ -22,25 +22,25 @@ using System.Text;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFUCaseExpression represents a string uppercase function to be applied on a query results table.
+    /// RDFUpperCaseExpression represents a string uppercase function to be applied on a query results table.
     /// </summary>
-    public class RDFUCaseExpression : RDFExpression
+    public class RDFUpperCaseExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
         /// Default-ctor to build a string uppercase function with given arguments
         /// </summary>
-        public RDFUCaseExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFUpperCaseExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
         /// Default-ctor to build a a string uppercase function with given arguments
         /// </summary>
-        public RDFUCaseExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFUpperCaseExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the a string uppercase function
+        /// Gives the string representation of the string uppercase function
         /// </summary>
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
@@ -62,7 +62,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the a string uppercase function on the given datarow
+        /// Applies the string uppercase function on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {
