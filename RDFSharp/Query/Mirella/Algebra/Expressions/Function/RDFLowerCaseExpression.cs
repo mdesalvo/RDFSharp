@@ -82,10 +82,6 @@ namespace RDFSharp.Query
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else
                     leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
-
-                //Binding error from arguments
-                if (leftArgumentPMember == null)
-                    return expressionResult;
                 #endregion
 
                 #region Calculate Result

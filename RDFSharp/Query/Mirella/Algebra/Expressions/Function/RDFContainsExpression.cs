@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Model;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -22,35 +23,35 @@ using System.Text;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFConcatExpression represents a string concat function to be applied on a query results table.
+    /// RDFContainsExpression represents a string contains function to be applied on a query results table.
     /// </summary>
-    public class RDFConcatExpression : RDFExpression
+    public class RDFContainsExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a string concat function with given arguments
+        /// Default-ctor to build a string contains function with given arguments
         /// </summary>
-        public RDFConcatExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFContainsExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string concat function with given arguments
+        /// Default-ctor to build a string contains function with given arguments
         /// </summary>
-        public RDFConcatExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFContainsExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string concat function with given arguments
+        /// Default-ctor to build a string contains function with given arguments
         /// </summary>
-        public RDFConcatExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFContainsExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a a string concat function with given arguments
+        /// Default-ctor to build a a string contains function with given arguments
         /// </summary>
-        public RDFConcatExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFContainsExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the string concat function
+        /// Gives the string representation of the string contains function
         /// </summary>
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
@@ -58,8 +59,8 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(CONCAT(L,R))
-            sb.Append("(CONCAT(");
+            //(CONTAINS(L,R))
+            sb.Append("(CONTAINS(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
@@ -77,11 +78,11 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the string concat function on the given datarow
+        /// Applies the string contains function on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {
-            RDFPlainLiteral expressionResult = null;
+            RDFTypedLiteral expressionResult = null;
 
             #region Guards
             if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
@@ -110,18 +111,27 @@ namespace RDFSharp.Query
 
                 #region Calculate Result
                 //Transform left argument result into a plain literal
-                if (leftArgumentPMember is RDFLiteral leftArgumentPMemberLiteral)
-                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberLiteral.Value);
-                else if (leftArgumentPMember is RDFResource leftArgumentPMemberResource)
-                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberResource.ToString());
+                if (leftArgumentPMember is RDFResource)
+                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMember.ToString());
+                else if (leftArgumentPMember is RDFPlainLiteral plitLeftArgumentPMember)
+                    leftArgumentPMember = new RDFPlainLiteral(plitLeftArgumentPMember.Value);
+                else if (leftArgumentPMember is RDFTypedLiteral tlitLeftArgumentPMember && tlitLeftArgumentPMember.HasStringDatatype())
+                    leftArgumentPMember = new RDFPlainLiteral(tlitLeftArgumentPMember.Value);
+                else
+                    leftArgumentPMember = null; //binding error => cleanup
 
                 //Transform right argument result into a plain literal
-                if (rightArgumentPMember is RDFLiteral rightArgumentPMemberLiteral)
-                    rightArgumentPMember = new RDFPlainLiteral(rightArgumentPMemberLiteral.Value);
-                else if (rightArgumentPMember is RDFResource rightArgumentPMemberResource)
-                    rightArgumentPMember = new RDFPlainLiteral(rightArgumentPMemberResource.ToString());
+                if (rightArgumentPMember is RDFResource)
+                    rightArgumentPMember = new RDFPlainLiteral(rightArgumentPMember.ToString());
+                else if (rightArgumentPMember is RDFPlainLiteral plitRightArgumentPMember)
+                    rightArgumentPMember = new RDFPlainLiteral(plitRightArgumentPMember.Value);
+                else if (rightArgumentPMember is RDFTypedLiteral tlitRightArgumentPMember && tlitRightArgumentPMember.HasStringDatatype())
+                    rightArgumentPMember = new RDFPlainLiteral(tlitRightArgumentPMember.Value);
+                else
+                    rightArgumentPMember = null; //binding error => cleanup
 
-                expressionResult = new RDFPlainLiteral(string.Concat(leftArgumentPMember?.ToString(), rightArgumentPMember?.ToString()));
+                if (leftArgumentPMember != null && rightArgumentPMember != null)
+                    expressionResult = new RDFTypedLiteral(Convert.ToString(leftArgumentPMember.ToString().Contains(rightArgumentPMember.ToString())), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
