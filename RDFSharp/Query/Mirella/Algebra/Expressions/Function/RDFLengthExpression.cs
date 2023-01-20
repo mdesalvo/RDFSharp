@@ -22,25 +22,25 @@ using System.Text;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFStrLenExpression represents a string length function to be applied on a query results table.
+    /// RDFLengthExpression represents a string length function to be applied on a query results table.
     /// </summary>
-    public class RDFStrLenExpression : RDFExpression
+    public class RDFLengthExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
         /// Default-ctor to build a string length function with given arguments
         /// </summary>
-        public RDFStrLenExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFLengthExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
         /// Default-ctor to build a a string length function with given arguments
         /// </summary>
-        public RDFStrLenExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFLengthExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the a string length function
+        /// Gives the string representation of the string length function
         /// </summary>
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
@@ -62,7 +62,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the a string length function on the given datarow
+        /// Applies the string length function on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {

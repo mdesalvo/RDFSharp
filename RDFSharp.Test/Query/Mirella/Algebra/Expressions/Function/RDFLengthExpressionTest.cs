@@ -23,13 +23,13 @@ using RDFSharp.Query;
 namespace RDFSharp.Test.Query
 {
     [TestClass]
-    public class RDFStrLenExpressionTest
+    public class RDFLengthExpressionTest
     {
         #region Tests
         [TestMethod]
         public void ShouldCreateStrLenExpressionWithExpression()
         {
-            RDFStrLenExpression expression = new RDFStrLenExpression(
+            RDFLengthExpression expression = new RDFLengthExpression(
                 new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")));
 
             Assert.IsNotNull(expression);
@@ -42,7 +42,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldCreateStrLenExpressionWithVariable()
         {
-            RDFStrLenExpression expression = new RDFStrLenExpression(
+            RDFLengthExpression expression = new RDFLengthExpression(
                 new RDFVariable("?V1"));
 
             Assert.IsNotNull(expression);
@@ -54,11 +54,11 @@ namespace RDFSharp.Test.Query
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingStrLenExpressionWithExpressionBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFStrLenExpression(null as RDFExpression));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFLengthExpression(null as RDFExpression));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingStrLenExpressionWithVariableBecauseNullLeftArgument()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFStrLenExpression(null as RDFVariable));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFLengthExpression(null as RDFVariable));
 
         [TestMethod]
         public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNull()
@@ -70,7 +70,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFStrLenExpression expression = new RDFStrLenExpression(
+            RDFLengthExpression expression = new RDFLengthExpression(
                 new RDFVariableExpression(new RDFVariable("?A")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -88,7 +88,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFStrLenExpression expression = new RDFStrLenExpression(
+            RDFLengthExpression expression = new RDFLengthExpression(
                 new RDFVariableExpression(new RDFVariable("?A")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -106,7 +106,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFStrLenExpression expression = new RDFStrLenExpression(
+            RDFLengthExpression expression = new RDFLengthExpression(
                 new RDFVariableExpression(new RDFVariable("?A")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -124,7 +124,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFStrLenExpression expression = new RDFStrLenExpression(
+            RDFLengthExpression expression = new RDFLengthExpression(
                 new RDFVariableExpression(new RDFVariable("?A")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -142,7 +142,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFStrLenExpression expression = new RDFStrLenExpression(
+            RDFLengthExpression expression = new RDFLengthExpression(
                 new RDFVariableExpression(new RDFVariable("?A")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -160,7 +160,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFStrLenExpression expression = new RDFStrLenExpression(
+            RDFLengthExpression expression = new RDFLengthExpression(
                 new RDFVariableExpression(new RDFVariable("?A")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -177,7 +177,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFStrLenExpression expression = new RDFStrLenExpression(
+            RDFLengthExpression expression = new RDFLengthExpression(
                 new RDFVariableExpression(new RDFVariable("?Q")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -194,7 +194,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFStrLenExpression expression = new RDFStrLenExpression(
+            RDFLengthExpression expression = new RDFLengthExpression(
                 new RDFVariable("?A"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -212,7 +212,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFStrLenExpression expression = new RDFStrLenExpression(
+            RDFLengthExpression expression = new RDFLengthExpression(
                 new RDFVariable("?A"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -230,7 +230,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFStrLenExpression expression = new RDFStrLenExpression(
+            RDFLengthExpression expression = new RDFLengthExpression(
                 new RDFVariable("?A"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -248,7 +248,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFStrLenExpression expression = new RDFStrLenExpression(
+            RDFLengthExpression expression = new RDFLengthExpression(
                 new RDFVariable("?A"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -266,7 +266,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFStrLenExpression expression = new RDFStrLenExpression(
+            RDFLengthExpression expression = new RDFLengthExpression(
                 new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?A")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -283,7 +283,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFStrLenExpression expression = new RDFStrLenExpression(
+            RDFLengthExpression expression = new RDFLengthExpression(
                 new RDFVariable("?A"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -300,7 +300,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFStrLenExpression expression = new RDFStrLenExpression(
+            RDFLengthExpression expression = new RDFLengthExpression(
                 new RDFVariable("?Q"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 

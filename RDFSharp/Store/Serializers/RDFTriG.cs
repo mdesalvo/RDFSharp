@@ -207,14 +207,14 @@ namespace RDFSharp.Store
                         throw new RDFModelException("SPARQL directive '" + directive + "' must not end with '.'" + GetTurtleContextCoordinates(trigContext));
                 }
             }
-            else if (directive.StartsWith("graph:", StringComparison.InvariantCultureIgnoreCase))
+            else if (directive.StartsWith("graph:", StringComparison.OrdinalIgnoreCase))
             {
                 // If there was a colon immediately after the graph keyword then
                 // assume it was a pname and not the SPARQL GRAPH keyword
                 UnreadCodePoint(trigData, trigContext, directive);
                 ParseGraph(trigData, trigContext);
             }
-            else if (directive.StartsWith("graph", StringComparison.InvariantCultureIgnoreCase))
+            else if (directive.StartsWith("graph", StringComparison.OrdinalIgnoreCase))
             {
                 // Do not unread the directive if it was SPARQL GRAPH
                 // Just continue with TriG parsing at this point

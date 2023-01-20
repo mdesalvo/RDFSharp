@@ -23,35 +23,35 @@ using System.Text;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFContainsExpression represents a string contains function to be applied on a query results table.
+    /// RDFStartsExpression represents a string starts function to be applied on a query results table.
     /// </summary>
-    public class RDFContainsExpression : RDFExpression
+    public class RDFStartsExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a string contains function with given arguments
+        /// Default-ctor to build a string starts function with given arguments
         /// </summary>
-        public RDFContainsExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFStartsExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string contains function with given arguments
+        /// Default-ctor to build a string starts function with given arguments
         /// </summary>
-        public RDFContainsExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFStartsExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string contains function with given arguments
+        /// Default-ctor to build a string starts function with given arguments
         /// </summary>
-        public RDFContainsExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFStartsExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a a string contains function with given arguments
+        /// Default-ctor to build a a string starts function with given arguments
         /// </summary>
-        public RDFContainsExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFStartsExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the string contains function
+        /// Gives the string representation of the string starts function
         /// </summary>
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
@@ -59,8 +59,8 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(CONTAINS(L,R))
-            sb.Append("(CONTAINS(");
+            //(STRSTARTS(L,R))
+            sb.Append("(STRSTARTS(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
@@ -78,7 +78,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the string contains function on the given datarow
+        /// Applies the string starts function on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {
@@ -131,7 +131,7 @@ namespace RDFSharp.Query
                     rightArgumentPMember = null; //binding error => cleanup
 
                 if (leftArgumentPMember != null && rightArgumentPMember != null)
-                    expressionResult = leftArgumentPMember.ToString().Contains(rightArgumentPMember.ToString()) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    expressionResult = leftArgumentPMember.ToString().StartsWith(rightArgumentPMember.ToString(), StringComparison.Ordinal) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
