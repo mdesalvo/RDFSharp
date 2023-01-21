@@ -75,7 +75,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("D41D8CD98F00B204E9800998ECF8427E")));
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("d41d8cd98f00b204e9800998ecf8427e")));
         }
 
         [TestMethod]
@@ -93,7 +93,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("5D41402ABC4B2A76B9719D911017C592")));
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("5d41402abc4b2a76b9719d911017c592")));
         }
 
         [TestMethod]
@@ -111,7 +111,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("5D41402ABC4B2A76B9719D911017C592")));
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("5d41402abc4b2a76b9719d911017c592")));
         }
 
         [TestMethod]
@@ -129,7 +129,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("5D41402ABC4B2A76B9719D911017C592")));
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("5d41402abc4b2a76b9719d911017c592")));
         }
 
         [TestMethod]
@@ -147,7 +147,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("DBE47558B50DDCD9F7154489062911A5")));
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("dbe47558b50ddcd9f7154489062911a5")));
         }
 
         [TestMethod]
@@ -199,7 +199,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("D41D8CD98F00B204E9800998ECF8427E")));
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("d41d8cd98f00b204e9800998ecf8427e")));
         }
 
         [TestMethod]
@@ -217,7 +217,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("5D41402ABC4B2A76B9719D911017C592")));
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("5d41402abc4b2a76b9719d911017c592")));
         }
 
         [TestMethod]
@@ -235,7 +235,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("5D41402ABC4B2A76B9719D911017C592")));
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("5d41402abc4b2a76b9719d911017c592")));
         }
 
         [TestMethod]
@@ -253,7 +253,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("5D41402ABC4B2A76B9719D911017C592")));
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("5d41402abc4b2a76b9719d911017c592")));
         }
 
         [TestMethod]
@@ -271,7 +271,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("DBE47558B50DDCD9F7154489062911A5")));
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("dbe47558b50ddcd9f7154489062911a5")));
         }
 
         [TestMethod]

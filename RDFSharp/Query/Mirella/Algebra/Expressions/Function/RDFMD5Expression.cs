@@ -99,7 +99,7 @@ namespace RDFSharp.Query
                     byte[] hashBytes = md5Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(expressionResult.ToString()));
                     StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < hashBytes.Length; i++)
-                        sb.Append(hashBytes[i].ToString("X2"));
+                        sb.Append(hashBytes[i].ToString("x2"));
                     expressionResult = new RDFPlainLiteral(sb.ToString());
                 }
                 #endregion
