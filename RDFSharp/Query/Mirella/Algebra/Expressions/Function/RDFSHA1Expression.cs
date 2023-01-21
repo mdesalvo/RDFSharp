@@ -23,25 +23,25 @@ using System.Text;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFMD5Expression represents a MD5 hash function to be applied on a query results table.
+    /// RDFSHA1Expression represents a SHA1 hash function to be applied on a query results table.
     /// </summary>
-    public class RDFMD5Expression : RDFExpression
+    public class RDFSHA1Expression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a MD5 hash function with given arguments
+        /// Default-ctor to build a SHA1 hash function with given arguments
         /// </summary>
-        public RDFMD5Expression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFSHA1Expression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a MD5 hash function with given arguments
+        /// Default-ctor to build a SHA1 hash function with given arguments
         /// </summary>
-        public RDFMD5Expression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFSHA1Expression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the MD5 hash function
+        /// Gives the string representation of the SHA1 hash function
         /// </summary>
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
@@ -49,8 +49,8 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(MD5(L))
-            sb.Append("(MD5(");
+            //(SHA1(L))
+            sb.Append("(SHA1(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
@@ -63,7 +63,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the string MD5 function on the given datarow
+        /// Applies the string SHA1 function on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {
@@ -93,9 +93,9 @@ namespace RDFSharp.Query
 
                 if (leftArgumentPMember == null)
                     return expressionResult;
-                using (MD5CryptoServiceProvider md5Encryptor = new MD5CryptoServiceProvider())
+                using (SHA1CryptoServiceProvider SHA1Encryptor = new SHA1CryptoServiceProvider())
                 {
-                    byte[] hashBytes = md5Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(expressionResult.ToString()));
+                    byte[] hashBytes = SHA1Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(expressionResult.ToString()));
                     StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < hashBytes.Length; i++)
                         sb.Append(hashBytes[i].ToString("x2"));
