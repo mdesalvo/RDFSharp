@@ -87,15 +87,15 @@ namespace RDFSharp.Query
 
                 #region Calculate Result
                 if (leftArgumentPMember is RDFLiteral leftArgumentPMemberLiteral)
-                    expressionResult = new RDFPlainLiteral(leftArgumentPMemberLiteral.Value);
+                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberLiteral.Value);
                 else if (leftArgumentPMember is RDFResource leftArgumentPMemberResource)
-                    expressionResult = new RDFPlainLiteral(leftArgumentPMemberResource.ToString());
+                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberResource.ToString());
 
                 if (leftArgumentPMember == null)
                     return expressionResult;
                 using (MD5CryptoServiceProvider md5Encryptor = new MD5CryptoServiceProvider())
                 {
-                    byte[] hashBytes = md5Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(expressionResult.ToString()));
+                    byte[] hashBytes = md5Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(leftArgumentPMember.ToString()));
                     StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < hashBytes.Length; i++)
                         sb.Append(hashBytes[i].ToString("x2"));

@@ -15,33 +15,34 @@
 */
 
 using RDFSharp.Model;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFSHA1Expression represents a SHA1 hash function to be applied on a query results table.
+    /// RDFEncodeForURIExpression represents a string encoding function to be applied on a query results table.
     /// </summary>
-    public class RDFSHA1Expression : RDFExpression
+    public class RDFEncodeForURIExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a SHA1 hash function with given arguments
+        /// Default-ctor to build a string encoding function with given arguments
         /// </summary>
-        public RDFSHA1Expression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFEncodeForURIExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a SHA1 hash function with given arguments
+        /// Default-ctor to build a string encoding function with given arguments
         /// </summary>
-        public RDFSHA1Expression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFEncodeForURIExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the SHA1 hash function
+        /// Gives the string representation of the string encoding function
         /// </summary>
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
@@ -49,8 +50,8 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(SHA1(L))
-            sb.Append("(SHA1(");
+            //(ENCODE_FOR_URI(L))
+            sb.Append("(ENCODE_FOR_URI(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
@@ -63,7 +64,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the string SHA1 function on the given datarow
+        /// Applies the string encoding function on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {
@@ -86,21 +87,18 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                if (leftArgumentPMember is RDFLiteral leftArgumentPMemberLiteral)
-                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberLiteral.Value);
-                else if (leftArgumentPMember is RDFResource leftArgumentPMemberResource)
+                if (leftArgumentPMember is RDFResource leftArgumentPMemberResource)
                     leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberResource.ToString());
+                else if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLiteral)
+                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberPLiteral.Value);
+                else if (leftArgumentPMember is RDFTypedLiteral leftArgumentPMemberTLiteral && leftArgumentPMemberTLiteral.HasStringDatatype())
+                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberTLiteral.Value);
+                else
+                    leftArgumentPMember = null; //binding error => cleanup
 
                 if (leftArgumentPMember == null)
                     return expressionResult;
-                using (SHA1CryptoServiceProvider SHA1Encryptor = new SHA1CryptoServiceProvider())
-                {
-                    byte[] hashBytes = SHA1Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(leftArgumentPMember.ToString()));
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < hashBytes.Length; i++)
-                        sb.Append(hashBytes[i].ToString("x2"));
-                    expressionResult = new RDFPlainLiteral(sb.ToString());
-                }
+                expressionResult = new RDFPlainLiteral(Uri.EscapeDataString(leftArgumentPMember.ToString()));
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
