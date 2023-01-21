@@ -244,6 +244,59 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNull(expressionResult);
         }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithNestedCoalesce()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFResource("http://example.org/");
+            row["?B"] = new RDFPlainLiteral("hello");
+            row["?C"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFCoalesceExpression expression = new RDFCoalesceExpression(
+                new RDFCoalesceExpression(
+                    new RDFSubstringExpression(new RDFVariable("?C"), 1),
+                    new RDFAddExpression(new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)), new RDFVariable("?B"))),
+                new RDFCoalesceExpression(
+                    new RDFVariableExpression(new RDFVariable("?A")),
+                    new RDFAddExpression(new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)), new RDFVariable("?B"))));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNotNull(expressionResult);
+            Assert.IsTrue(expressionResult.Equals(new RDFResource("http://example.org/")));
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithNestedCoalesceNull()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFResource("http://example.org/");
+            row["?B"] = new RDFPlainLiteral("hello");
+            row["?C"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFCoalesceExpression expression = new RDFCoalesceExpression(
+                new RDFCoalesceExpression(
+                    new RDFSubstringExpression(new RDFVariable("?C"), 1),
+                    new RDFAddExpression(new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)), new RDFVariable("?B"))),
+                new RDFCoalesceExpression(
+                    new RDFVariableExpression(new RDFVariable("?Q")),
+                    new RDFVariable("?Y")));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNull(expressionResult);
+        }
         #endregion
     }
 }
