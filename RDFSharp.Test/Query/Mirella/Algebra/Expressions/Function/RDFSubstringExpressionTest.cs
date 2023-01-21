@@ -257,6 +257,60 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldApplyExpressionWithExpressionAndExceedingStartAndLengthAndCalculateResultOnResource()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFResource("http://example.org/").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFSubstringExpression expression = new RDFSubstringExpression(
+                new RDFVariableExpression(new RDFVariable("?A")), 20, 4);
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNotNull(expressionResult);
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithExpressionAndExceedingStartAndExceedingLengthAndCalculateResultOnResource()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFResource("http://example.org/").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFSubstringExpression expression = new RDFSubstringExpression(
+                new RDFVariableExpression(new RDFVariable("?A")), 20, 44);
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNotNull(expressionResult);
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithExpressionAndExceedingStartAndNegativeLengthAndCalculateResultOnResource()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFResource("http://example.org/").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFSubstringExpression expression = new RDFSubstringExpression(
+                new RDFVariableExpression(new RDFVariable("?A")), 20, -4);
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNotNull(expressionResult);
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+        }
+
+        [TestMethod]
         public void ShouldApplyExpressionWithExpressionAndExactEndingLengthAndCalculateResultOnResource()
         {
             DataTable table = new DataTable();

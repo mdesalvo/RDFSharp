@@ -127,7 +127,7 @@ namespace RDFSharp.Query
                 if (Length.HasValue)
                 {
                     int length = Length.Value < 0 ? 0 : Length.Value;
-                    if (length == 0 || start > workingPLit.Value.Length)
+                    if (length == 0 || start >= workingPLit.Value.Length)
                         expressionResult = new RDFPlainLiteral(string.Empty, workingPLit.Language);
                     else if (length >= workingPLit.Value.Length)
                         expressionResult = workingPLit;
@@ -136,7 +136,7 @@ namespace RDFSharp.Query
                 }
                 else
                 {
-                    if (start > workingPLit.Value.Length)
+                    if (start >= workingPLit.Value.Length)
                         expressionResult = new RDFPlainLiteral(string.Empty, workingPLit.Language);
                     else
                         expressionResult = new RDFPlainLiteral(workingPLit.Value.Substring(start), workingPLit.Language);
