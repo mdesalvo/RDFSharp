@@ -22,35 +22,45 @@ using System.Text;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFContainsExpression represents a string contains function to be applied on a query results table.
+    /// RDFSubstringExpression represents a substring function to be applied on a query results table.
     /// </summary>
-    public class RDFContainsExpression : RDFExpression
+    public class RDFSubstringExpression : RDFExpression
     {
+        #region Properties
+        /// <summary>
+        /// Start position of the substring search (1 => first char)
+        /// </summary>
+        public int Start { get; internal set; }
+
+        /// <summary>
+        /// Eventual length of the substring search
+        /// </summary>
+        public int? Length { get; internal set; }
+        #endregion
+
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a string contains function with given arguments
+        /// Default-ctor to build a substring function with given arguments
         /// </summary>
-        public RDFContainsExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFSubstringExpression(RDFExpression leftArgument, int start, int? length=null) : base(leftArgument, null as RDFExpression)
+        {
+            Start = start;
+            Length = length;
+        }
 
         /// <summary>
-        /// Default-ctor to build a string contains function with given arguments
+        /// Default-ctor to build a substring function with given arguments
         /// </summary>
-        public RDFContainsExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
-
-        /// <summary>
-        /// Default-ctor to build a string contains function with given arguments
-        /// </summary>
-        public RDFContainsExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
-
-        /// <summary>
-        /// Default-ctor to build a string contains function with given arguments
-        /// </summary>
-        public RDFContainsExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFSubstringExpression(RDFVariable leftArgument, int start, int? length=null) : base(leftArgument, null as RDFExpression)
+        {
+            Start = start;
+            Length = length;
+        }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the string contains function
+        /// Gives the string representation of the substring function
         /// </summary>
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
@@ -58,17 +68,15 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(CONTAINS(L,R))
-            sb.Append("(CONTAINS(");
+            //(SUBSTRING(L,START[,LENGTH]))
+            sb.Append("(SUBSTRING(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
                 sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            sb.Append(", ");
-            if (RightArgument is RDFExpression expRightArgument)
-                sb.Append(expRightArgument.ToString(prefixes));
-            else
-                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
+            sb.Append($", {Start}");
+            if (Length.HasValue)
+                sb.Append($", {Length}");
             sb.Append("))");
 
             return sb.ToString();
@@ -77,16 +85,14 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the string contains function on the given datarow
+        /// Applies the substring function on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {
-            RDFTypedLiteral expressionResult = null;
+            RDFPlainLiteral expressionResult = null;
 
             #region Guards
             if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return expressionResult;
-            if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
                 return expressionResult;
             #endregion
 
@@ -99,13 +105,6 @@ namespace RDFSharp.Query
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else
                     leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
-
-                //Evaluate right argument (Expression VS Variable)
-                RDFPatternMember rightArgumentPMember = null;
-                if (RightArgument is RDFExpression rightArgumentExpression)
-                    rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
-                else
-                    rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
                 #endregion
 
                 #region Calculate Result
@@ -113,24 +112,35 @@ namespace RDFSharp.Query
                 if (leftArgumentPMember is RDFResource)
                     leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMember.ToString());
                 else if (leftArgumentPMember is RDFPlainLiteral plitLeftArgumentPMember)
-                    leftArgumentPMember = new RDFPlainLiteral(plitLeftArgumentPMember.Value);
+                    leftArgumentPMember = new RDFPlainLiteral(plitLeftArgumentPMember.Value, plitLeftArgumentPMember.Language);
                 else if (leftArgumentPMember is RDFTypedLiteral tlitLeftArgumentPMember && tlitLeftArgumentPMember.HasStringDatatype())
                     leftArgumentPMember = new RDFPlainLiteral(tlitLeftArgumentPMember.Value);
                 else
                     leftArgumentPMember = null; //binding error => cleanup
 
-                //Transform right argument result into a plain literal
-                if (rightArgumentPMember is RDFResource)
-                    rightArgumentPMember = new RDFPlainLiteral(rightArgumentPMember.ToString());
-                else if (rightArgumentPMember is RDFPlainLiteral plitRightArgumentPMember)
-                    rightArgumentPMember = new RDFPlainLiteral(plitRightArgumentPMember.Value);
-                else if (rightArgumentPMember is RDFTypedLiteral tlitRightArgumentPMember && tlitRightArgumentPMember.HasStringDatatype())
-                    rightArgumentPMember = new RDFPlainLiteral(tlitRightArgumentPMember.Value);
-                else
-                    rightArgumentPMember = null; //binding error => cleanup
+                if (leftArgumentPMember == null)
+                    return expressionResult;
 
-                if (leftArgumentPMember != null && rightArgumentPMember != null)
-                    expressionResult = leftArgumentPMember.ToString().Contains(rightArgumentPMember.ToString()) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                //Calculate substring on the working plain literal
+                RDFPlainLiteral workingPLit = (RDFPlainLiteral)leftArgumentPMember;
+                int start = Start <= 1 ? 0 : Start-1;
+                if (Length.HasValue)
+                {
+                    int length = Length.Value < 0 ? 0 : Length.Value;
+                    if (length == 0 || start > workingPLit.Value.Length)
+                        expressionResult = new RDFPlainLiteral(string.Empty, workingPLit.Language);
+                    else if (length >= workingPLit.Value.Length)
+                        expressionResult = workingPLit;
+                    else
+                        expressionResult = new RDFPlainLiteral(workingPLit.Value.Substring(start, length), workingPLit.Language);
+                }
+                else
+                {
+                    if (start > workingPLit.Value.Length)
+                        expressionResult = new RDFPlainLiteral(string.Empty, workingPLit.Language);
+                    else
+                        expressionResult = new RDFPlainLiteral(workingPLit.Value.Substring(start), workingPLit.Language);
+                }
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
