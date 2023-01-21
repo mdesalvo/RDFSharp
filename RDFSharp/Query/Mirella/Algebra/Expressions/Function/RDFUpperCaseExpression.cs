@@ -33,7 +33,7 @@ namespace RDFSharp.Query
         public RDFUpperCaseExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a a string uppercase function with given arguments
+        /// Default-ctor to build a string uppercase function with given arguments
         /// </summary>
         public RDFUpperCaseExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

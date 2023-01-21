@@ -15,32 +15,34 @@
 */
 
 using RDFSharp.Model;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFLowerCaseExpression represents a string lowercase function to be applied on a query results table.
+    /// RDFMD5Expression represents a MD5 hash function to be applied on a query results table.
     /// </summary>
-    public class RDFLowerCaseExpression : RDFExpression
+    public class RDFMD5Expression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a string lowercase function with given arguments
+        /// Default-ctor to build a MD5 hash function with given arguments
         /// </summary>
-        public RDFLowerCaseExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFMD5Expression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a string lowercase function with given arguments
+        /// Default-ctor to build a MD5 hash function with given arguments
         /// </summary>
-        public RDFLowerCaseExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFMD5Expression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the string lowercase function
+        /// Gives the string representation of the MD5 hash function
         /// </summary>
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
@@ -48,8 +50,8 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(LCASE(L))
-            sb.Append("(LCASE(");
+            //(MD5(L))
+            sb.Append("(MD5(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
@@ -62,11 +64,11 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the string lowercase function on the given datarow
+        /// Applies the string MD5 function on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {
-            RDFLiteral expressionResult = null;
+            RDFPlainLiteral expressionResult = null;
 
             #region Guards
             if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
@@ -85,10 +87,21 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLiteral)
-                    expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLiteral.Value.ToLowerInvariant(), leftArgumentPMemberPLiteral.Language);
-                else if (leftArgumentPMember is RDFTypedLiteral leftArgumentPMemberTLiteral && leftArgumentPMemberTLiteral.HasStringDatatype())
-                    expressionResult = new RDFTypedLiteral(leftArgumentPMemberTLiteral.Value.ToLowerInvariant(), leftArgumentPMemberTLiteral.Datatype);
+                if (leftArgumentPMember is RDFLiteral leftArgumentPMemberLiteral)
+                    expressionResult = new RDFPlainLiteral(leftArgumentPMemberLiteral.Value);
+                else if (leftArgumentPMember is RDFResource leftArgumentPMemberResource)
+                    expressionResult = new RDFPlainLiteral(leftArgumentPMemberResource.ToString());
+
+                if (leftArgumentPMember == null)
+                    return expressionResult;
+                using (MD5CryptoServiceProvider md5Encryptor = new MD5CryptoServiceProvider())
+                {
+                    byte[] hashBytes = md5Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(expressionResult.ToString()));
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < hashBytes.Length; i++)
+                        sb.Append(hashBytes[i].ToString("X2"));
+                    expressionResult = new RDFPlainLiteral(sb.ToString());
+                }
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
