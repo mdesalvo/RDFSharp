@@ -302,6 +302,26 @@ namespace RDFSharp.Query
                 }
                 #endregion
 
+                #region Bind
+                else if (evaluablePGMember is RDFBind bind)
+                {
+                    //Bind operator is evaluated like an artificial ending of the pattern group:
+                    // first we combine the tables collected until this moment
+                    // then we evaluate the bind expression and project the bind variable, producing the comprehensive bind table
+                    // finally we drop all tables collected until this moment, except the comprehensive bind table
+
+                    //Populate current patternGroup result table
+                    DataTable currentPatternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID], false);
+
+                    //Evaluate bind operator on the current patternGroup result table
+                    ProjectBind(bind, currentPatternGroupResultTable);
+
+                    //Delete previous patternGroup result tables and replace them with bind operator's one
+                    PatternGroupMemberResultTables[patternGroup.QueryMemberID].Clear();
+                    PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(currentPatternGroupResultTable);
+                }
+                #endregion
+
                 #region Filter (Exists/Not Exists)
                 else if (evaluablePGMember is RDFExistsFilter existsFilter)
                 {
@@ -1733,21 +1753,34 @@ namespace RDFSharp.Query
         /// </summary>
         internal static void ProjectExpressions(RDFSelectQuery query, DataTable table)
         {
-            table.BeginLoadData();
-            foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionExpression in query.ProjectionVars.OrderBy(pv => pv.Value.Item1)
-                                                                                                                 .Where(pv => pv.Value.Item2 != null))
-            {
-                string projectionExpressionVariable = projectionExpression.Key.ToString();
-                if (!table.Columns.Contains(projectionExpressionVariable))
-                {
-                    //Project expression column
-                    AddColumn(table, projectionExpressionVariable);
+            foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionExpression in query.ProjectionVars.OrderBy(pv => pv.Value.Item1).Where(pv => pv.Value.Item2 != null))
+                EvaluateExpression(projectionExpression.Value.Item2, projectionExpression.Key, table);
+        }
 
-                    //Valorize expression column
-                    foreach (DataRow row in table.AsEnumerable())
-                        row[projectionExpressionVariable] = projectionExpression.Value.Item2.ApplyExpression(row)?.ToString();
-                }
+        /// <summary>
+        /// Fills the given table with new column from the given bind's variable
+        /// </summary>
+        internal static void ProjectBind(RDFBind bind, DataTable table)
+            => EvaluateExpression(bind.Expression, bind.Variable, table);
+
+        /// <summary>
+        /// Evaluates the given expression on the given table and projects the given variable
+        /// </summary>
+        internal static void EvaluateExpression(RDFExpression expression, RDFVariable variable, DataTable table)
+        {
+            table.BeginLoadData();
+
+            string bindVariable = variable.ToString();
+            if (!table.Columns.Contains(bindVariable))
+            {
+                //Project bind column
+                AddColumn(table, bindVariable);
+
+                //Valorize bind column
+                foreach (DataRow row in table.AsEnumerable())
+                    row[bindVariable] = expression.ApplyExpression(row)?.ToString();
             }
+
             table.EndLoadData();
             table.AcceptChanges();
         }

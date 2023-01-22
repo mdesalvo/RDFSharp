@@ -22,7 +22,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFBind represents an operator which binds a new variable to results of an expression.
     /// </summary>
-    public class RDFBind
+    public class RDFBind : RDFPatternGroupMember
     {
         #region Properties
         /// <summary>
@@ -49,6 +49,7 @@ namespace RDFSharp.Query
 
             Expression = expression;
             Variable = variable;
+            IsEvaluable = true;
         }
         #endregion
 
@@ -59,7 +60,7 @@ namespace RDFSharp.Query
         public override string ToString()
             => ToString(new List<RDFNamespace>());
         internal string ToString(List<RDFNamespace> prefixes)
-            => $"BIND({Expression.ToString(prefixes)} AS {Variable})";
+            => RDFQueryPrinter.PrintBind(this, prefixes);
         #endregion
     }
 }

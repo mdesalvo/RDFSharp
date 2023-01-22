@@ -517,6 +517,20 @@ namespace RDFSharp.Query
                         result.AppendLine(string.Concat(spaces, "    ", PrintValues(vlPgMember, prefixes, spaces), " ."));
                 }
                 #endregion
+
+                #region BINDS
+                else if (pgMember is RDFBind bdPgMember)
+                {
+                    //End the Union block
+                    if (printingUnion)
+                    {
+                        printingUnion = false;
+                        result.AppendLine(string.Concat(spaces, "    { ", PrintBind(bdPgMember, prefixes), " }"));
+                    }
+                    else
+                        result.AppendLine(string.Concat(spaces, "    ", PrintBind(bdPgMember, prefixes), " ."));
+                }
+                #endregion
             }
             #endregion
 
@@ -694,6 +708,12 @@ namespace RDFSharp.Query
 
             return result.ToString();
         }
+
+        /// <summary>
+        /// Prints the string representation of a bind operator
+        /// </summary>
+        internal static string PrintBind(RDFBind bind, List<RDFNamespace> prefixes)
+            => $"BIND({bind.Expression.ToString(prefixes)} AS {bind.Variable})";
 
         /// <summary>
         /// Prints the string representation of a pattern member

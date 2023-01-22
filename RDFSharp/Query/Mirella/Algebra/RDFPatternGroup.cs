@@ -161,6 +161,19 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Adds the given bind operator to the pattern group
+        /// </summary>
+        public RDFPatternGroup AddBind(RDFBind bind)
+        {
+            if (bind != null)
+            {
+                if (!GetBinds().Any(b => b.Equals(bind)))
+                    GroupMembers.Add(bind);
+            }
+            return this;
+        }
+
+        /// <summary>
         /// Adds the given filter to the pattern group
         /// </summary>
         public RDFPatternGroup AddFilter(RDFFilter filter)
@@ -209,6 +222,12 @@ namespace RDFSharp.Query
         /// </summary>
         internal IEnumerable<RDFValues> GetValues()
             => GroupMembers.OfType<RDFValues>();
+
+        /// <summary>
+        /// Gets the group members of type: bind
+        /// </summary>
+        internal IEnumerable<RDFBind> GetBinds()
+            => GroupMembers.OfType<RDFBind>();
 
         /// <summary>
         /// Gets the group members of type: filter
