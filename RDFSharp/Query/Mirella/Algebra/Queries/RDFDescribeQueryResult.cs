@@ -37,7 +37,7 @@ namespace RDFSharp.Query
         /// Gets the number of results produced by the query
         /// </summary>
         public long DescribeResultsCount
-            => this.DescribeResults.Rows.Count;
+            => DescribeResults.Rows.Count;
         #endregion
 
         #region Ctors
@@ -45,7 +45,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an empty DESCRIBE result
         /// </summary>
         internal RDFDescribeQueryResult()
-            => this.DescribeResults = new DataTable();
+            => DescribeResults = new DataTable();
         #endregion
 
         #region Methods
@@ -60,7 +60,7 @@ namespace RDFSharp.Query
             RDFPatternMember obj = null;
 
             //Iterate the datatable rows and generate the corresponding triples to be added to the result graph
-            IEnumerator resultRows = this.DescribeResults.Rows.GetEnumerator();
+            IEnumerator resultRows = DescribeResults.Rows.GetEnumerator();
             while (resultRows.MoveNext())
             {
                 subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?SUBJECT"].ToString());
@@ -93,11 +93,11 @@ namespace RDFSharp.Query
             RDFPatternMember obj = null;
 
             //Prepare context data
-            bool hasCtx = this.DescribeResults.Columns.Contains("?CONTEXT");
+            bool hasCtx = DescribeResults.Columns.Contains("?CONTEXT");
             RDFContext defCtx = new RDFContext();
 
             //Iterate the datatable rows and generate the corresponding triples to be added to the result memory store
-            IEnumerator resultRows = this.DescribeResults.Rows.GetEnumerator();
+            IEnumerator resultRows = DescribeResults.Rows.GetEnumerator();
             while (resultRows.MoveNext())
             {
                 //In case the context column is unbound, we can safely apply default context

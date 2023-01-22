@@ -49,7 +49,7 @@ namespace RDFSharp.Query
             if (fromContext == null)
                 throw new RDFQueryException("Cannot create RDFLoadOperation because given \"fromContext\" parameter is null.");
 
-            this.FromContext = fromContext;
+            FromContext = fromContext;
         }
         #endregion
 
@@ -67,7 +67,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFLoadOperation SetContext(Uri toContext)
         {
-            this.ToContext = toContext;
+            ToContext = toContext;
             return this;
         }
 
@@ -76,7 +76,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFLoadOperation Silent()
         {
-            this.IsSilent = true;
+            IsSilent = true;
             return this;
         }
         #endregion

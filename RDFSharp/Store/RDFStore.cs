@@ -48,13 +48,13 @@ namespace RDFSharp.Store
         /// Gives the string representation of the store
         /// </summary>
         public override string ToString()
-            => this.StoreType;
+            => StoreType;
 
         /// <summary>
         /// Performs the equality comparison between two stores
         /// </summary>
         public bool Equals(RDFStore other)
-            => other != null && this.StoreID.Equals(other.StoreID);
+            => other != null && StoreID.Equals(other.StoreID);
         #endregion
 
         #region Methods
@@ -217,19 +217,19 @@ namespace RDFSharp.Store
                 //Cleanup store from detected reifications
                 if (tObject is RDFResource)
                 {
-                    this.AddQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tSubject, (RDFResource)tPredicate, (RDFResource)tObject));
-                    this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
-                    this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT, (RDFResource)tSubject));
-                    this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
-                    this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, (RDFResource)tObject));
+                    AddQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tSubject, (RDFResource)tPredicate, (RDFResource)tObject));
+                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
+                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT, (RDFResource)tSubject));
+                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
+                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, (RDFResource)tObject));
                 }
                 else
                 {
-                    this.AddQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tSubject, (RDFResource)tPredicate, (RDFLiteral)tObject));
-                    this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
-                    this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT, (RDFResource)tSubject));
-                    this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
-                    this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, (RDFLiteral)tObject));
+                    AddQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tSubject, (RDFResource)tPredicate, (RDFLiteral)tObject));
+                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
+                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT, (RDFResource)tSubject));
+                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
+                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, (RDFLiteral)tObject));
                 }
             }
         }
@@ -245,37 +245,37 @@ namespace RDFSharp.Store
         /// Gets a store containing all quadruples
         /// </summary>
         public RDFMemoryStore SelectAllQuadruples()
-            => this.SelectQuadruples(null, null, null, null, null);
+            => SelectQuadruples(null, null, null, null, null);
 
         /// <summary>
         /// Gets a memory store containing quadruples with the specified context
         /// </summary>
         public RDFMemoryStore SelectQuadruplesByContext(RDFContext contextResource)
-            => this.SelectQuadruples(contextResource, null, null, null, null);
+            => SelectQuadruples(contextResource, null, null, null, null);
 
         /// <summary>
         /// Gets a memory store containing quadruples with the specified subject
         /// </summary>
         public RDFMemoryStore SelectQuadruplesBySubject(RDFResource subjectResource)
-            => this.SelectQuadruples(null, subjectResource, null, null, null);
+            => SelectQuadruples(null, subjectResource, null, null, null);
 
         /// <summary>
         /// Gets a memory store containing quadruples with the specified predicate
         /// </summary>
         public RDFMemoryStore SelectQuadruplesByPredicate(RDFResource predicateResource)
-            => this.SelectQuadruples(null, null, predicateResource, null, null);
+            => SelectQuadruples(null, null, predicateResource, null, null);
 
         /// <summary>
         /// Gets a memory store containing quadruples with the specified object
         /// </summary>
         public RDFMemoryStore SelectQuadruplesByObject(RDFResource objectResource)
-            => this.SelectQuadruples(null, null, null, objectResource, null);
+            => SelectQuadruples(null, null, null, objectResource, null);
 
         /// <summary>
         /// Gets a memory store containing quadruples with the specified literal
         /// </summary>
         public RDFMemoryStore SelectQuadruplesByLiteral(RDFLiteral objectLiteral)
-            => this.SelectQuadruples(null, null, null, null, objectLiteral);
+            => SelectQuadruples(null, null, null, null, objectLiteral);
 
         /// <summary>
         /// Gets a store containing quadruples satisfying the given pattern
@@ -292,7 +292,7 @@ namespace RDFSharp.Store
         public List<RDFGraph> ExtractGraphs()
         {
             Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>();
-            foreach (RDFQuadruple q in (this is RDFMemoryStore ? (RDFMemoryStore)this : this.SelectAllQuadruples()))
+            foreach (RDFQuadruple q in (this is RDFMemoryStore ? (RDFMemoryStore)this : SelectAllQuadruples()))
             {
                 // Step 1: Cache-Update
                 if (!graphs.ContainsKey(q.Context.PatternMemberID))
@@ -316,7 +316,7 @@ namespace RDFSharp.Store
         public List<RDFContext> ExtractContexts()
         {
             Dictionary<long, RDFPatternMember> contexts = new Dictionary<long, RDFPatternMember>();
-            foreach (RDFQuadruple q in (this is RDFMemoryStore ? (RDFMemoryStore)this : this.SelectAllQuadruples()))
+            foreach (RDFQuadruple q in (this is RDFMemoryStore ? (RDFMemoryStore)this : SelectAllQuadruples()))
             {
                 if (!contexts.ContainsKey(q.Context.PatternMemberID))
                     contexts.Add(q.Context.PatternMemberID, q.Context);
@@ -390,7 +390,7 @@ namespace RDFSharp.Store
         public DataTable ToDataTable()
         {
             //Create the structure of the result datatable
-            DataTable result = new DataTable(this.ToString());
+            DataTable result = new DataTable(ToString());
             result.Columns.Add("?CONTEXT", RDFQueryEngine.SystemString);
             result.Columns.Add("?SUBJECT", RDFQueryEngine.SystemString);
             result.Columns.Add("?PREDICATE", RDFQueryEngine.SystemString);
@@ -398,7 +398,7 @@ namespace RDFSharp.Store
 
             //Iterate the quadruples of the store to populate the result datatable
             result.BeginLoadData();
-            foreach (RDFQuadruple q in this.SelectAllQuadruples())
+            foreach (RDFQuadruple q in SelectAllQuadruples())
             {
                 DataRow newRow = result.NewRow();
                 newRow["?CONTEXT"] = q.Context.ToString();

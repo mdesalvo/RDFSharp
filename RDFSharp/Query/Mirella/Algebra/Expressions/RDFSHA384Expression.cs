@@ -44,7 +44,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the SHA384 hash function
         /// </summary>
         public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
         {
             StringBuilder sb = new StringBuilder();

@@ -41,7 +41,7 @@ namespace RDFSharp.Query
         /// Gets the number of results produced by the query
         /// </summary>
         public long SelectResultsCount
-            => this.SelectResults.Rows.Count;
+            => SelectResults.Rows.Count;
         #endregion
 
         #region Ctors
@@ -49,7 +49,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an empty SELECT result
         /// </summary>
         internal RDFSelectQueryResult()
-            => this.SelectResults = new DataTable();
+            => SelectResults = new DataTable();
         #endregion
 
         #region Methods
@@ -81,7 +81,7 @@ namespace RDFSharp.Query
 
                     #region sparqlHead
                     XmlNode sparqlHeadElement = sparqlDoc.CreateNode(XmlNodeType.Element, "head", null);
-                    IEnumerator resultColumns = this.SelectResults.Columns.GetEnumerator();
+                    IEnumerator resultColumns = SelectResults.Columns.GetEnumerator();
                     while (resultColumns.MoveNext())
                     {
                         XmlNode variableElement = sparqlDoc.CreateNode(XmlNodeType.Element, "variable", null);
@@ -96,7 +96,7 @@ namespace RDFSharp.Query
 
                     #region sparqlResults
                     XmlNode sparqlResultsElement = sparqlDoc.CreateNode(XmlNodeType.Element, "results", null);
-                    IEnumerator resultRows = this.SelectResults.Rows.GetEnumerator();
+                    IEnumerator resultRows = SelectResults.Rows.GetEnumerator();
                     while (resultRows.MoveNext())
                     {
                         resultColumns.Reset();

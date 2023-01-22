@@ -38,32 +38,32 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the human-readable messages of this shape
         /// </summary>
-        public long MessagesCount => this.Messages.Count;
+        public long MessagesCount => Messages.Count;
 
         /// <summary>
         /// Gets the enumerator on human-readable messages of this shape for iteration
         /// </summary>
-        public IEnumerator<RDFLiteral> MessagesEnumerator => this.Messages.GetEnumerator();
+        public IEnumerator<RDFLiteral> MessagesEnumerator => Messages.GetEnumerator();
 
         /// <summary>
         /// Count of the targets of this shape
         /// </summary>
-        public long TargetsCount => this.Targets.Count;
+        public long TargetsCount => Targets.Count;
 
         /// <summary>
         /// Gets the enumerator on the targets of this shape for iteration
         /// </summary>
-        public IEnumerator<RDFTarget> TargetsEnumerator => this.Targets.GetEnumerator();
+        public IEnumerator<RDFTarget> TargetsEnumerator => Targets.GetEnumerator();
 
         /// <summary>
         /// Count of the constraints of this shape
         /// </summary>
-        public long ConstraintsCount => this.Constraints.Count;
+        public long ConstraintsCount => Constraints.Count;
 
         /// <summary>
         /// Gets the enumerator on the constraints of this shape for iteration
         /// </summary>
-        public IEnumerator<RDFConstraint> ConstraintsEnumerator => this.Constraints.GetEnumerator();
+        public IEnumerator<RDFConstraint> ConstraintsEnumerator => Constraints.GetEnumerator();
 
         /// <summary>
         /// Indicates the human-readable messages of this shape (sh:message)
@@ -87,11 +87,11 @@ namespace RDFSharp.Model
         /// </summary>
         internal RDFShape(RDFResource shapeName) : base(shapeName.ToString())
         {
-            this.Deactivated = false;
-            this.Severity = RDFValidationEnums.RDFShapeSeverity.Violation;
-            this.Messages = new List<RDFLiteral>();
-            this.Targets = new List<RDFTarget>();
-            this.Constraints = new List<RDFConstraint>();
+            Deactivated = false;
+            Severity = RDFValidationEnums.RDFShapeSeverity.Violation;
+            Messages = new List<RDFLiteral>();
+            Targets = new List<RDFTarget>();
+            Constraints = new List<RDFConstraint>();
         }
         #endregion
 
@@ -99,12 +99,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on this shape's constraints
         /// </summary>
-        IEnumerator<RDFConstraint> IEnumerable<RDFConstraint>.GetEnumerator() => this.ConstraintsEnumerator;
+        IEnumerator<RDFConstraint> IEnumerable<RDFConstraint>.GetEnumerator() => ConstraintsEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on this shape's constraints
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() => this.ConstraintsEnumerator;
+        IEnumerator IEnumerable.GetEnumerator() => ConstraintsEnumerator;
         #endregion
 
         #region Methods
@@ -113,7 +113,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFShape Activate()
         {
-            this.Deactivated = false;
+            Deactivated = false;
             return this;
         }
 
@@ -122,7 +122,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFShape Deactivate()
         {
-            this.Deactivated = true;
+            Deactivated = true;
             return this;
         }
 
@@ -131,7 +131,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFShape SetSeverity(RDFValidationEnums.RDFShapeSeverity shapeSeverity)
         {
-            this.Severity = shapeSeverity;
+            Severity = shapeSeverity;
             return this;
         }
 
@@ -144,12 +144,12 @@ namespace RDFSharp.Model
             {
                 //Plain Literal
                 if (message is RDFPlainLiteral)
-                    this.Messages.Add(message);
+                    Messages.Add(message);
 
                 //Typed Literal
                 else
                     if (((RDFTypedLiteral)message).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
-                        this.Messages.Add(message);
+                        Messages.Add(message);
             }
             return this;
         }
@@ -160,7 +160,7 @@ namespace RDFSharp.Model
         public RDFShape AddTarget(RDFTarget target)
         {
             if (target != null)
-                this.Targets.Add(target);
+                Targets.Add(target);
 
             return this;
         }
@@ -171,7 +171,7 @@ namespace RDFSharp.Model
         public RDFShape AddConstraint(RDFConstraint constraint)
         {
             if (constraint != null)
-                this.Constraints.Add(constraint);
+                Constraints.Add(constraint);
 
             return this;
         }
@@ -184,7 +184,7 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
 
             //Severity
-            switch (this.Severity)
+            switch (Severity)
             {
                 case RDFValidationEnums.RDFShapeSeverity.Info:
                     result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.SEVERITY_PROPERTY, RDFVocabulary.SHACL.INFO));
@@ -198,18 +198,18 @@ namespace RDFSharp.Model
             }
 
             //Deactivated
-            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DEACTIVATED, this.Deactivated ? RDFTypedLiteral.True : RDFTypedLiteral.False));
+            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DEACTIVATED, Deactivated ? RDFTypedLiteral.True : RDFTypedLiteral.False));
 
             //Messages
-            this.Messages.ForEach(message => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.MESSAGE, message)));
+            Messages.ForEach(message => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.MESSAGE, message)));
 
             //Targets
-            this.Targets.ForEach(target => result = result.UnionWith(target.ToRDFGraph(this)));
+            Targets.ForEach(target => result = result.UnionWith(target.ToRDFGraph(this)));
 
             //Constraints
-            this.Constraints.ForEach(constraint => result = result.UnionWith(constraint.ToRDFGraph(this)));
+            Constraints.ForEach(constraint => result = result.UnionWith(constraint.ToRDFGraph(this)));
 
-            result.SetContext(this.URI);
+            result.SetContext(URI);
             return result;
         }
         #endregion

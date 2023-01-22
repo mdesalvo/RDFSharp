@@ -53,8 +53,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFPatternGroupMember()
         {
-            this.PatternGroupMemberStringID = Guid.NewGuid().ToString("N");
-            this.LazyPatternGroupMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.PatternGroupMemberStringID));
+            PatternGroupMemberStringID = Guid.NewGuid().ToString("N");
+            LazyPatternGroupMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(PatternGroupMemberStringID));
         }
         #endregion
 
@@ -69,7 +69,7 @@ namespace RDFSharp.Query
         /// Performs the equality comparison between two pattern group members
         /// </summary>
         public bool Equals(RDFPatternGroupMember other)
-            => other != null && this.PatternGroupMemberID.Equals(other.PatternGroupMemberID);
+            => other != null && PatternGroupMemberID.Equals(other.PatternGroupMemberID);
         #endregion
     }
 }

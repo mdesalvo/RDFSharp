@@ -42,8 +42,8 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFPlainLiteral(string value)
         {
-            this.Value = value ?? string.Empty;
-            this.Language = string.Empty;
+            Value = value ?? string.Empty;
+            Language = string.Empty;
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace RDFSharp.Model
         public RDFPlainLiteral(string value, string language) : this(value)
         {
             if (language != null && LangTag.Value.Match(language).Success)
-                this.Language = language.ToUpperInvariant();
+                Language = language.ToUpperInvariant();
         }
         #endregion
 
@@ -61,7 +61,7 @@ namespace RDFSharp.Model
         /// Gives the string representation of the plain literal
         /// </summary>
         public override string ToString()
-            => HasLanguage() ? string.Concat(base.ToString(), "@", this.Language) : base.ToString();
+            => HasLanguage() ? string.Concat(base.ToString(), "@", Language) : base.ToString();
         #endregion
 
         #region Methods
@@ -69,7 +69,7 @@ namespace RDFSharp.Model
         /// Checks if the plain literal has a language tag
         /// </summary>
         public bool HasLanguage()
-            => !string.IsNullOrEmpty(this.Language);
+            => !string.IsNullOrEmpty(Language);
         #endregion
     }
 }

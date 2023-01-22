@@ -46,16 +46,16 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFValuesFilter(RDFValues values)
         {
-            this.Values = values;
-            this.ValuesTable = values.GetDataTable();
+            Values = values;
+            ValuesTable = values.GetDataTable();
         }
         #endregion
 
         #region Interfaces
         public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-            => RDFQueryPrinter.PrintValues(this.Values, prefixes, string.Empty);
+            => RDFQueryPrinter.PrintValues(Values, prefixes, string.Empty);
         #endregion
 
         #region Methods
@@ -67,11 +67,11 @@ namespace RDFSharp.Query
             bool keepRow = true;
 
             //Check is performed only on columns found as bindings in the filter
-            List<string> filterColumns = this.Values.Bindings.Keys.Where(k => row.Table.Columns.Contains(k)).ToList();
+            List<string> filterColumns = Values.Bindings.Keys.Where(k => row.Table.Columns.Contains(k)).ToList();
             if (filterColumns.Any())
             {
                 //Get the enumerable representation of the filter table
-                EnumerableRowCollection<DataRow> valuesTableEnumerable = this.ValuesTable.AsEnumerable();
+                EnumerableRowCollection<DataRow> valuesTableEnumerable = ValuesTable.AsEnumerable();
 
                 //Perform the iterative check on the filter columns
                 filterColumns.ForEach(filterColumn =>

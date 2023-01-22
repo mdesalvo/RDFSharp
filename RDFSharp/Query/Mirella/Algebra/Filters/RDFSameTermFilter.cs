@@ -50,9 +50,9 @@ namespace RDFSharp.Query
             if (rdfTerm == null)
                 throw new RDFQueryException("Cannot create RDFSameTermFilter because given \"rdfTerm\" parameter is null.");
 
-            this.VariableName = variable.ToString();
-            this.RDFTerm = rdfTerm;
-            this.RDFTermString = rdfTerm.ToString();
+            VariableName = variable.ToString();
+            RDFTerm = rdfTerm;
+            RDFTermString = rdfTerm.ToString();
         }
         #endregion
 
@@ -61,9 +61,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-            => string.Concat("FILTER ( SAMETERM(", this.VariableName, ", ", RDFQueryPrinter.PrintPatternMember(this.RDFTerm, prefixes), ") )");
+            => string.Concat("FILTER ( SAMETERM(", VariableName, ", ", RDFQueryPrinter.PrintPatternMember(RDFTerm, prefixes), ") )");
         #endregion
 
         #region Methods
@@ -75,24 +75,24 @@ namespace RDFSharp.Query
             bool keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
-            if (row.Table.Columns.Contains(this.VariableName))
+            if (row.Table.Columns.Contains(VariableName))
             {
-                string variableValue = row[this.VariableName].ToString();
+                string variableValue = row[VariableName].ToString();
 
                 //Equality comparison with a RDFTerm being RDFVariable
-                if (this.RDFTerm is RDFVariable)
+                if (RDFTerm is RDFVariable)
                 {
                     //Check is performed only if the row contains a column named like the filter's RDFTerm
-                    if (row.Table.Columns.Contains(this.RDFTermString))
+                    if (row.Table.Columns.Contains(RDFTermString))
                     {
-                        string rdfTermValue = row[this.RDFTermString].ToString();
+                        string rdfTermValue = row[RDFTermString].ToString();
                         keepRow = string.Equals(variableValue, rdfTermValue, StringComparison.Ordinal);
                     }
                 }
 
                 //Equality comparison with a RDFTerm being RDFResource/RDFLiteral
                 else
-                    keepRow = string.Equals(variableValue, this.RDFTermString, StringComparison.Ordinal);
+                    keepRow = string.Equals(variableValue, RDFTermString, StringComparison.Ordinal);
 
                 //Apply the eventual negation
                 if (applyNegation)

@@ -50,8 +50,8 @@ namespace RDFSharp.Query
             if (regex == null)
                 throw new RDFQueryException("Cannot create RDFRegexFilter because given \"regex\" parameter is null.");
 
-            this.VariableName = variable.ToString();
-            this.RegEx = regex;
+            VariableName = variable.ToString();
+            RegEx = regex;
         }
         #endregion
 
@@ -60,23 +60,23 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
         {
             StringBuilder regexFlags = new StringBuilder();
-            if (this.RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
+            if (RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
                 regexFlags.Append('i');
-            if (this.RegEx.Options.HasFlag(RegexOptions.Singleline))
+            if (RegEx.Options.HasFlag(RegexOptions.Singleline))
                 regexFlags.Append('s');
-            if (this.RegEx.Options.HasFlag(RegexOptions.Multiline))
+            if (RegEx.Options.HasFlag(RegexOptions.Multiline))
                 regexFlags.Append('m');
-            if (this.RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
+            if (RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
                 regexFlags.Append('x');
 
             if (!string.IsNullOrEmpty(regexFlags.ToString()))
-                return string.Concat("FILTER ( REGEX(STR(", this.VariableName, "), \"", this.RegEx, "\", \"", regexFlags, "\") )");
+                return string.Concat("FILTER ( REGEX(STR(", VariableName, "), \"", RegEx, "\", \"", regexFlags, "\") )");
             else
-                return string.Concat("FILTER ( REGEX(STR(", this.VariableName, "), \"", this.RegEx, "\") )");
+                return string.Concat("FILTER ( REGEX(STR(", VariableName, "), \"", RegEx, "\") )");
         }
         #endregion
 
@@ -89,12 +89,12 @@ namespace RDFSharp.Query
             bool keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
-            if (row.Table.Columns.Contains(this.VariableName))
+            if (row.Table.Columns.Contains(VariableName))
             {
-                string variableValue = row[this.VariableName].ToString();
+                string variableValue = row[VariableName].ToString();
 
                 //Successfull match if the regular expression is satisfied by the variable
-                keepRow = this.RegEx.IsMatch(variableValue);
+                keepRow = RegEx.IsMatch(variableValue);
 
                 //Apply the eventual negation
                 if (applyNegation)

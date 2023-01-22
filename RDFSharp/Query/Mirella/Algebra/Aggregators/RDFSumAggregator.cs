@@ -40,8 +40,8 @@ namespace RDFSharp.Query
         /// Gets the string representation of the SUM aggregator
         /// </summary>
         public override string ToString()
-            => this.IsDistinct ? string.Format("(SUM(DISTINCT {0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable)
-                               : string.Format("(SUM({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable);
+            => IsDistinct ? string.Format("(SUM(DISTINCT {0}) AS {1})", AggregatorVariable, ProjectionVariable)
+                               : string.Format("(SUM({0}) AS {1})", AggregatorVariable, ProjectionVariable);
         #endregion
 
         #region Methods
@@ -52,23 +52,23 @@ namespace RDFSharp.Query
         {
             //Get row value
             double rowValue = GetRowValueAsNumber(tableRow);
-            if (this.IsDistinct)
+            if (IsDistinct)
             {
                 //Cache-Hit: distinctness failed
-                if (this.AggregatorContext.CheckPartitionKeyRowValueCache<double>(partitionKey, rowValue))
+                if (AggregatorContext.CheckPartitionKeyRowValueCache<double>(partitionKey, rowValue))
                     return;
                 //Cache-Miss: distinctness passed
                 else
-                    this.AggregatorContext.UpdatePartitionKeyRowValueCache<double>(partitionKey, rowValue);
+                    AggregatorContext.UpdatePartitionKeyRowValueCache<double>(partitionKey, rowValue);
             }
             //Get aggregator value
-            double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<double>(partitionKey, 0d);
+            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<double>(partitionKey, 0d);
             //In case of non-numeric values, consider partitioning failed
             double newAggregatorValue = double.NaN;
             if (!aggregatorValue.Equals(double.NaN) && !rowValue.Equals(double.NaN))
                 newAggregatorValue = rowValue + aggregatorValue;
             //Update aggregator context (sum)
-            this.AggregatorContext.UpdatePartitionKeyExecutionResult<double>(partitionKey, newAggregatorValue);
+            AggregatorContext.UpdatePartitionKeyExecutionResult<double>(partitionKey, newAggregatorValue);
         }
 
         /// <summary>
@@ -81,13 +81,13 @@ namespace RDFSharp.Query
             //Initialization
             partitionVariables.ForEach(pv =>
                 RDFQueryEngine.AddColumn(projFuncTable, pv.VariableName));
-            RDFQueryEngine.AddColumn(projFuncTable, this.ProjectionVariable.VariableName);
+            RDFQueryEngine.AddColumn(projFuncTable, ProjectionVariable.VariableName);
 
             //Finalization
-            foreach (string partitionKey in this.AggregatorContext.ExecutionRegistry.Keys)
+            foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
             {
                 //Update result's table
-                this.UpdateProjectionTable(partitionKey, projFuncTable);
+                UpdateProjectionTable(partitionKey, projFuncTable);
             }
 
             return projFuncTable;
@@ -107,11 +107,11 @@ namespace RDFSharp.Query
             }
 
             //Add aggregator value to bindings
-            double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<double>(partitionKey, 0d);
+            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<double>(partitionKey, 0d);
             if (aggregatorValue.Equals(double.NaN))
-                bindings.Add(this.ProjectionVariable.VariableName, string.Empty);
+                bindings.Add(ProjectionVariable.VariableName, string.Empty);
             else
-                bindings.Add(this.ProjectionVariable.VariableName, new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString());
+                bindings.Add(ProjectionVariable.VariableName, new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString());
 
             //Add bindings to result's table
             RDFQueryEngine.AddRow(projFuncTable, bindings);

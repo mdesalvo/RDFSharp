@@ -50,9 +50,9 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFOperation()
         {
-            this.DeleteTemplates = new List<RDFPattern>();
-            this.InsertTemplates = new List<RDFPattern>();
-            this.Variables = new List<RDFVariable>();
+            DeleteTemplates = new List<RDFPattern>();
+            InsertTemplates = new List<RDFPattern>();
+            Variables = new List<RDFVariable>();
         }
         #endregion
 
@@ -120,8 +120,8 @@ namespace RDFSharp.Query
             if (template.Variables.Count > 0)
                 throw new RDFQueryException($"Cannot add DELETE template '{template}' to operation because it is not ground: please ensure it does not contain variables.");
 
-            if (!this.DeleteTemplates.Any(tp => tp.Equals(template)))
-                this.DeleteTemplates.Add(template);
+            if (!DeleteTemplates.Any(tp => tp.Equals(template)))
+                DeleteTemplates.Add(template);
 
             return (T)this;
         }
@@ -134,10 +134,10 @@ namespace RDFSharp.Query
             if (template == null)
                 throw new RDFQueryException($"Cannot add DELETE template to operation because it is null.");
 
-            if (!this.DeleteTemplates.Any(tp => tp.Equals(template)))
+            if (!DeleteTemplates.Any(tp => tp.Equals(template)))
             {
-                this.DeleteTemplates.Add(template);
-                this.CollectVariables(template);
+                DeleteTemplates.Add(template);
+                CollectVariables(template);
             }
 
             return (T)this;
@@ -153,8 +153,8 @@ namespace RDFSharp.Query
             if (template.Variables.Count > 0)
                 throw new RDFQueryException($"Cannot add INSERT template '{template}' to operation because it is not ground: please ensure it does not contain variables.");
 
-            if (!this.InsertTemplates.Any(tp => tp.Equals(template)))
-                this.InsertTemplates.Add(template);
+            if (!InsertTemplates.Any(tp => tp.Equals(template)))
+                InsertTemplates.Add(template);
 
             return (T)this;
         }
@@ -167,10 +167,10 @@ namespace RDFSharp.Query
             if (template == null)
                 throw new RDFQueryException($"Cannot add INSERT template to operation because it is null.");
 
-            if (!this.InsertTemplates.Any(tp => tp.Equals(template)))
+            if (!InsertTemplates.Any(tp => tp.Equals(template)))
             {
-                this.InsertTemplates.Add(template);
-                this.CollectVariables(template);
+                InsertTemplates.Add(template);
+                CollectVariables(template);
             }
 
             return (T)this;
@@ -184,8 +184,8 @@ namespace RDFSharp.Query
             if (prefix == null)
                 throw new RDFQueryException($"Cannot add prefix to operation because it is null.");
 
-            if (!this.Prefixes.Any(p => p.Equals(prefix)))
-                this.Prefixes.Add(prefix);
+            if (!Prefixes.Any(p => p.Equals(prefix)))
+                Prefixes.Add(prefix);
 
             return (T)this;
         }
@@ -198,8 +198,8 @@ namespace RDFSharp.Query
             if (patternGroup == null)
                 throw new RDFQueryException($"Cannot add pattern group to operation because it is null.");
 
-            if (!this.GetPatternGroups().Any(q => q.Equals(patternGroup)))
-                this.QueryMembers.Add(patternGroup);
+            if (!GetPatternGroups().Any(q => q.Equals(patternGroup)))
+                QueryMembers.Add(patternGroup);
 
             return (T)this;
         }
@@ -212,8 +212,8 @@ namespace RDFSharp.Query
             if (modifier == null)
                 throw new RDFQueryException($"Cannot add modifier to operation because it is null.");
 
-            if (!this.GetModifiers().Any(m => m is RDFDistinctModifier))
-                this.QueryMembers.Add(modifier);
+            if (!GetModifiers().Any(m => m is RDFDistinctModifier))
+                QueryMembers.Add(modifier);
 
             return (T)this;
         }
@@ -226,8 +226,8 @@ namespace RDFSharp.Query
             if (subQuery == null)
                 throw new RDFQueryException($"Cannot add sub query to operation because it is null.");
 
-            if (!this.GetSubQueries().Any(q => q.Equals(subQuery)))
-                this.QueryMembers.Add(subQuery.SubQuery());
+            if (!GetSubQueries().Any(q => q.Equals(subQuery)))
+                QueryMembers.Add(subQuery.SubQuery());
 
             return (T)this;
         }
@@ -240,29 +240,29 @@ namespace RDFSharp.Query
             //Context
             if (template.Context != null && template.Context is RDFVariable)
             {
-                if (!this.Variables.Any(v => v.Equals(template.Context)))
-                    this.Variables.Add((RDFVariable)template.Context);
+                if (!Variables.Any(v => v.Equals(template.Context)))
+                    Variables.Add((RDFVariable)template.Context);
             }
 
             //Subject
             if (template.Subject is RDFVariable)
             {
-                if (!this.Variables.Any(v => v.Equals(template.Subject)))
-                    this.Variables.Add((RDFVariable)template.Subject);
+                if (!Variables.Any(v => v.Equals(template.Subject)))
+                    Variables.Add((RDFVariable)template.Subject);
             }
 
             //Predicate
             if (template.Predicate is RDFVariable)
             {
-                if (!this.Variables.Any(v => v.Equals(template.Predicate)))
-                    this.Variables.Add((RDFVariable)template.Predicate);
+                if (!Variables.Any(v => v.Equals(template.Predicate)))
+                    Variables.Add((RDFVariable)template.Predicate);
             }
 
             //Object
             if (template.Object is RDFVariable)
             {
-                if (!this.Variables.Any(v => v.Equals(template.Object)))
-                    this.Variables.Add((RDFVariable)template.Object);
+                if (!Variables.Any(v => v.Equals(template.Object)))
+                    Variables.Add((RDFVariable)template.Object);
             }
         }
         #endregion

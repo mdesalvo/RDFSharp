@@ -50,11 +50,11 @@ namespace RDFSharp.Model
             if (qualifiedValueShapeUri == null)
                 throw new RDFModelException("Cannot create RDFQualifiedValueShapeConstraint because given \"qualifiedValueShapeUri\" parameter is null.");
             
-            this.QualifiedValueShapeUri = qualifiedValueShapeUri;
+            QualifiedValueShapeUri = qualifiedValueShapeUri;
             if (qualifiedValueMinCount.HasValue)
-                this.QualifiedValueMinCount = qualifiedValueMinCount < 0 ? 0 : qualifiedValueMinCount;
+                QualifiedValueMinCount = qualifiedValueMinCount < 0 ? 0 : qualifiedValueMinCount;
             if (qualifiedValueMaxCount.HasValue)
-                this.QualifiedValueMaxCount = qualifiedValueMaxCount < 0 ? 0 : qualifiedValueMaxCount;
+                QualifiedValueMaxCount = qualifiedValueMaxCount < 0 ? 0 : qualifiedValueMaxCount;
         }
         #endregion
 
@@ -67,7 +67,7 @@ namespace RDFSharp.Model
             RDFValidationReport report = new RDFValidationReport();
 
             //Search for given qualified value shape
-            RDFShape qualifiedValueShape = shapesGraph.SelectShape(this.QualifiedValueShapeUri.ToString());
+            RDFShape qualifiedValueShape = shapesGraph.SelectShape(QualifiedValueShapeUri.ToString());
             if (qualifiedValueShape == null)
                 return report;
 
@@ -75,16 +75,16 @@ namespace RDFSharp.Model
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
             {
-                if (this.QualifiedValueMinCount.HasValue && this.QualifiedValueMaxCount.HasValue)
-                    shapeMessages.Add(new RDFPlainLiteral($"Must have a minimum of {this.QualifiedValueMinCount} and a maximum of {this.QualifiedValueMaxCount} conforming values for the shape <{this.QualifiedValueShapeUri}>"));
-                else if (this.QualifiedValueMinCount.HasValue)
-                    shapeMessages.Add(new RDFPlainLiteral($"Must have a minimum of {this.QualifiedValueMinCount} conforming values for the shape <{this.QualifiedValueShapeUri}>"));
-                else if (this.QualifiedValueMaxCount.HasValue)
-                    shapeMessages.Add(new RDFPlainLiteral($"Must have a maximum of {this.QualifiedValueMaxCount} conforming values for the shape <{this.QualifiedValueShapeUri}>"));
+                if (QualifiedValueMinCount.HasValue && QualifiedValueMaxCount.HasValue)
+                    shapeMessages.Add(new RDFPlainLiteral($"Must have a minimum of {QualifiedValueMinCount} and a maximum of {QualifiedValueMaxCount} conforming values for the shape <{QualifiedValueShapeUri}>"));
+                else if (QualifiedValueMinCount.HasValue)
+                    shapeMessages.Add(new RDFPlainLiteral($"Must have a minimum of {QualifiedValueMinCount} conforming values for the shape <{QualifiedValueShapeUri}>"));
+                else if (QualifiedValueMaxCount.HasValue)
+                    shapeMessages.Add(new RDFPlainLiteral($"Must have a maximum of {QualifiedValueMaxCount} conforming values for the shape <{QualifiedValueShapeUri}>"));
             }
 
             #region Evaluation
-            if (this.QualifiedValueMinCount.HasValue || this.QualifiedValueMaxCount.HasValue)
+            if (QualifiedValueMinCount.HasValue || QualifiedValueMaxCount.HasValue)
             {
                 int conformingValues = 0;
                 foreach (RDFPatternMember valueNode in valueNodes)
@@ -94,7 +94,7 @@ namespace RDFSharp.Model
                         conformingValues++;
                 }
 
-                if (this.QualifiedValueMinCount.HasValue && conformingValues < this.QualifiedValueMinCount)
+                if (QualifiedValueMinCount.HasValue && conformingValues < QualifiedValueMinCount)
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT_CONSTRAINT_COMPONENT,
                                                              focusNode,
@@ -103,7 +103,7 @@ namespace RDFSharp.Model
                                                              shapeMessages,
                                                              shape.Severity));
 
-                if (this.QualifiedValueMaxCount.HasValue && conformingValues > this.QualifiedValueMaxCount)
+                if (QualifiedValueMaxCount.HasValue && conformingValues > QualifiedValueMaxCount)
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT_CONSTRAINT_COMPONENT,
                                                              focusNode,
@@ -126,15 +126,15 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:qualifiedValueShape
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.QUALIFIED_VALUE_SHAPE, this.QualifiedValueShapeUri));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.QUALIFIED_VALUE_SHAPE, QualifiedValueShapeUri));
 
                 //sh:qualifiedMinCount
-                if (this.QualifiedValueMinCount.HasValue)
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT, new RDFTypedLiteral(this.QualifiedValueMinCount.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+                if (QualifiedValueMinCount.HasValue)
+                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT, new RDFTypedLiteral(QualifiedValueMinCount.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
 
                 //sh:qualifiedMaxCount
-                if (this.QualifiedValueMaxCount.HasValue)
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT, new RDFTypedLiteral(this.QualifiedValueMaxCount.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+                if (QualifiedValueMaxCount.HasValue)
+                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT, new RDFTypedLiteral(QualifiedValueMaxCount.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
             }
             return result;
         }

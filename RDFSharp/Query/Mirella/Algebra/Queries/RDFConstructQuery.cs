@@ -50,8 +50,8 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFConstructQuery()
         {
-            this.Templates = new List<RDFPattern>();
-            this.Variables = new List<RDFVariable>();
+            Templates = new List<RDFPattern>();
+            Variables = new List<RDFVariable>();
         }
         #endregion
 
@@ -69,36 +69,36 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFConstructQuery AddTemplate(RDFPattern template)
         {
-            if (template != null && !this.Templates.Any(tp => tp.ToString().Equals(template.ToString())))
+            if (template != null && !Templates.Any(tp => tp.ToString().Equals(template.ToString())))
             {
-                this.Templates.Add(template);
+                Templates.Add(template);
 
                 //Context
                 if (template.Context != null && template.Context is RDFVariable)
                 {
-                    if (!this.Variables.Any(v => v.Equals(template.Context)))
-                        this.Variables.Add((RDFVariable)template.Context);
+                    if (!Variables.Any(v => v.Equals(template.Context)))
+                        Variables.Add((RDFVariable)template.Context);
                 }
 
                 //Subject
                 if (template.Subject is RDFVariable)
                 {
-                    if (!this.Variables.Any(v => v.Equals(template.Subject)))
-                        this.Variables.Add((RDFVariable)template.Subject);
+                    if (!Variables.Any(v => v.Equals(template.Subject)))
+                        Variables.Add((RDFVariable)template.Subject);
                 }
 
                 //Predicate
                 if (template.Predicate is RDFVariable)
                 {
-                    if (!this.Variables.Any(v => v.Equals(template.Predicate)))
-                        this.Variables.Add((RDFVariable)template.Predicate);
+                    if (!Variables.Any(v => v.Equals(template.Predicate)))
+                        Variables.Add((RDFVariable)template.Predicate);
                 }
 
                 //Object
                 if (template.Object is RDFVariable)
                 {
-                    if (!this.Variables.Any(v => v.Equals(template.Object)))
-                        this.Variables.Add((RDFVariable)template.Object);
+                    if (!Variables.Any(v => v.Equals(template.Object)))
+                        Variables.Add((RDFVariable)template.Object);
                 }
             }
             return this;
@@ -151,7 +151,7 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given graph
         /// </summary>
         public Task<RDFConstructQueryResult> ApplyToGraphAsync(RDFGraph graph)
-            => Task.Run(() => this.ApplyToGraph(graph));
+            => Task.Run(() => ApplyToGraph(graph));
 
         /// <summary>
         /// Applies the query to the given store
@@ -164,7 +164,7 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given store
         /// </summary>
         public Task<RDFConstructQueryResult> ApplyToStoreAsync(RDFStore store)
-            => Task.Run(() => this.ApplyToStore(store));
+            => Task.Run(() => ApplyToStore(store));
 
         /// <summary>
         /// Applies the query to the given federation
@@ -177,13 +177,13 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given federation
         /// </summary>
         public Task<RDFConstructQueryResult> ApplyToFederationAsync(RDFFederation federation)
-            => Task.Run(() => this.ApplyToFederation(federation));
+            => Task.Run(() => ApplyToFederation(federation));
 
         /// <summary>
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
         public RDFConstructQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
-            => ApplyRawToSPARQLEndpoint(this.ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+            => ApplyRawToSPARQLEndpoint(ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
 
         /// <summary>
         /// Applies the given raw string CONSTRUCT query to the given SPARQL endpoint
@@ -195,7 +195,7 @@ namespace RDFSharp.Query
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
         public RDFConstructQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-            => ApplyRawToSPARQLEndpoint(this.ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
+            => ApplyRawToSPARQLEndpoint(ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
 
         /// <summary>
         /// Applies the given raw string CONSTRUCT query to the given SPARQL endpoint
@@ -259,7 +259,7 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given SPARQL endpoint
         /// </summary>
         public Task<RDFConstructQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
-            => ApplyRawToSPARQLEndpointAsync(this.ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+            => ApplyRawToSPARQLEndpointAsync(ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
 
         /// <summary>
         /// Asynchronously applies the given raw string CONSTRUCT query to the given SPARQL endpoint
@@ -271,7 +271,7 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given SPARQL endpoint
         /// </summary>
         public Task<RDFConstructQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-            => ApplyRawToSPARQLEndpointAsync(this.ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
+            => ApplyRawToSPARQLEndpointAsync(ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
 
         /// <summary>
         /// Asynchronously applies the given raw string CONSTRUCT query to the given SPARQL endpoint

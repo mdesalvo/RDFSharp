@@ -38,7 +38,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the datetime now function
         /// </summary>
         public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
             => "(NOW())";
         #endregion

@@ -40,7 +40,7 @@ namespace RDFSharp.Query
             if (limit < 0)
                 throw new RDFQueryException("Cannot create RDFLimitModifier because given \"limit\" parameter (" + limit + ") is negative.");
             
-            this.Limit = limit;
+            Limit = limit;
         }
         #endregion
 
@@ -49,7 +49,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the modifier
         /// </summary>
         public override string ToString()
-            => string.Concat("LIMIT ", this.Limit.ToString());
+            => string.Concat("LIMIT ", Limit.ToString());
         #endregion
 
         #region Methods
@@ -59,10 +59,10 @@ namespace RDFSharp.Query
         internal override DataTable ApplyModifier(DataTable table)
         {
             string tableSort = table.DefaultView.Sort;
-            if (table.Rows.Count == 0 || this.Limit == 0)
+            if (table.Rows.Count == 0 || Limit == 0)
                 table = table.Clone();
             else
-                table = table.AsEnumerable().Take(this.Limit).CopyToDataTable();
+                table = table.AsEnumerable().Take(Limit).CopyToDataTable();
             table.DefaultView.Sort = tableSort;
             return table;
         }

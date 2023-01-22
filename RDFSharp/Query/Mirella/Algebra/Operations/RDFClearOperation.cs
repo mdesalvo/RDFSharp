@@ -50,14 +50,14 @@ namespace RDFSharp.Query
             if (fromContext == null)
                 throw new RDFQueryException("Cannot create RDFClearOperation because given \"fromContext\" parameter is null.");
 
-            this.FromContext = fromContext;
+            FromContext = fromContext;
         }
 
         /// <summary>
         /// Default-ctor to build an implicit CLEAR operation with the given flavor
         /// </summary>
         public RDFClearOperation(RDFClearOperationFlavor operationFlavor)
-            => this.OperationFlavor = operationFlavor;
+            => OperationFlavor = operationFlavor;
         #endregion
 
         #region Interfaces
@@ -74,7 +74,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFClearOperation Silent()
         {
-            this.IsSilent = true;
+            IsSilent = true;
             return this;
         }
         #endregion

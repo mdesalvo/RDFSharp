@@ -52,8 +52,8 @@ namespace RDFSharp.Query
             if (rightFilter is RDFExistsFilter)
                 throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"rightFilter\" parameter is of type RDFExistsFilter: this is not allowed.");
                 
-            this.LeftFilter = leftFilter;
-            this.RightFilter = rightFilter;
+            LeftFilter = leftFilter;
+            RightFilter = rightFilter;
         }
         #endregion
 
@@ -62,12 +62,12 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
             => string.Concat(
                 "FILTER ( ",
-                this.LeftFilter.ToString(prefixes).Replace("FILTER ", string.Empty).Trim(), " || ",
-                this.RightFilter.ToString(prefixes).Replace("FILTER ", string.Empty).Trim(), " )");
+                LeftFilter.ToString(prefixes).Replace("FILTER ", string.Empty).Trim(), " || ",
+                RightFilter.ToString(prefixes).Replace("FILTER ", string.Empty).Trim(), " )");
         #endregion
 
         #region Methods
@@ -76,7 +76,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal override bool ApplyFilter(DataRow row, bool applyNegation)
         {
-            bool keepRow = this.LeftFilter.ApplyFilter(row, false) || this.RightFilter.ApplyFilter(row, false);
+            bool keepRow = LeftFilter.ApplyFilter(row, false) || RightFilter.ApplyFilter(row, false);
 
             //Apply the eventual negation
             if (applyNegation)

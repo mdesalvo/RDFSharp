@@ -59,9 +59,9 @@ namespace RDFSharp.Model
             if (path == null)
                 throw new RDFModelException("Cannot create RDFPropertyShape because given \"path\" parameter is null.");
             
-            this.Path = path;
-            this.Descriptions = new List<RDFLiteral>();
-            this.Names = new List<RDFLiteral>();
+            Path = path;
+            Descriptions = new List<RDFLiteral>();
+            Names = new List<RDFLiteral>();
         }
 
         /// <summary>
@@ -80,12 +80,12 @@ namespace RDFSharp.Model
             {
                 //Plain Literal
                 if (description is RDFPlainLiteral)
-                    this.Descriptions.Add(description);
+                    Descriptions.Add(description);
 
                 //Typed Literal
                 else
                     if (((RDFTypedLiteral)description).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
-                    this.Descriptions.Add(description);
+                    Descriptions.Add(description);
             }
             return this;
         }
@@ -99,12 +99,12 @@ namespace RDFSharp.Model
             {
                 //Plain Literal
                 if (name is RDFPlainLiteral)
-                    this.Names.Add(name);
+                    Names.Add(name);
 
                 //Typed Literal
                 else
                     if (((RDFTypedLiteral)name).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
-                    this.Names.Add(name);
+                    Names.Add(name);
             }
             return this;
         }
@@ -114,7 +114,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFPropertyShape SetOrder(int order)
         {
-            this.Order = new RDFTypedLiteral(order.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+            Order = new RDFTypedLiteral(order.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
             return this;
         }
 
@@ -123,7 +123,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFPropertyShape SetGroup(RDFResource group)
         {
-            this.Group = group;
+            Group = group;
             return this;
         }
 
@@ -138,21 +138,21 @@ namespace RDFSharp.Model
             result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE));
 
             //Path
-            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, this.Path));
+            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, Path));
 
             //Descriptions
-            this.Descriptions.ForEach(description => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DESCRIPTION, description)));
+            Descriptions.ForEach(description => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DESCRIPTION, description)));
 
             //Names
-            this.Names.ForEach(name => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.NAME, name)));
+            Names.ForEach(name => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.NAME, name)));
 
             //Order
-            if (this.Order != null)
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.ORDER, this.Order));
+            if (Order != null)
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.ORDER, Order));
 
             //Group
-            if (this.Group != null)
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.GROUP, this.Group));
+            if (Group != null)
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.GROUP, Group));
 
             return result;
         }

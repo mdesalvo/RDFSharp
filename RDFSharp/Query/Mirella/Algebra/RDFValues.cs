@@ -44,9 +44,9 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFValues()
         {
-            this.Bindings = new Dictionary<string, List<RDFPatternMember>>();
-            this.IsEvaluable = false;
-            this.IsInjected = false;
+            Bindings = new Dictionary<string, List<RDFPatternMember>>();
+            IsEvaluable = false;
+            IsInjected = false;
         }
         #endregion
 
@@ -55,7 +55,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the SPARQL values
         /// </summary>
         public override string ToString()
-            => this.ToString(new List<RDFNamespace>(), string.Empty);
+            => ToString(new List<RDFNamespace>(), string.Empty);
         internal string ToString(List<RDFNamespace> prefixes, string spaces)
             => RDFQueryPrinter.PrintValues(this, prefixes, spaces);
         #endregion
@@ -71,18 +71,18 @@ namespace RDFSharp.Query
                 string variableString = variable.ToString();
 
                 //Initialize bindings of the given variable
-                if (!this.Bindings.ContainsKey(variableString))
-                    this.Bindings.Add(variableString, new List<RDFPatternMember>());
+                if (!Bindings.ContainsKey(variableString))
+                    Bindings.Add(variableString, new List<RDFPatternMember>());
 
                 //Populate bindings of the given variable
                 //(null indicates the special UNDEF binding)
                 if (bindings?.Any() ?? false)
-                    bindings.ForEach(b => this.Bindings[variableString].Add((b is RDFResource || b is RDFLiteral) ? b : null));
+                    bindings.ForEach(b => Bindings[variableString].Add((b is RDFResource || b is RDFLiteral) ? b : null));
                 else
-                    this.Bindings[variableString].Add(null);
+                    Bindings[variableString].Add(null);
 
                 //Mark the SPARQL values as evaluable
-                this.IsEvaluable = true;
+                IsEvaluable = true;
             }
             return this;
         }
@@ -97,15 +97,15 @@ namespace RDFSharp.Query
             result.ExtendedProperties.Add(RDFQueryEngine.JoinAsUnion, false);
 
             //Create the columns of the SPARQL values
-            this.Bindings.ToList()
+            Bindings.ToList()
                          .ForEach(b => RDFQueryEngine.AddColumn(result, b.Key));
 
             //Create the rows of the SPARQL values
             result.BeginLoadData();
-            for (int i = 0; i < this.MaxBindingsLength(); i++)
+            for (int i = 0; i < MaxBindingsLength(); i++)
             {
                 Dictionary<string, string> bindings = new Dictionary<string, string>();
-                this.Bindings.ToList()
+                Bindings.ToList()
                              .ForEach(b =>
                              {
                                  RDFPatternMember bindingValue = b.Value.ElementAtOrDefault(i);
@@ -125,8 +125,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal int MaxBindingsLength()
         {
-            if (this.Bindings?.Count > 0)
-                return this.Bindings.Select(x => x.Value.Count).Max();
+            if (Bindings?.Count > 0)
+                return Bindings.Select(x => x.Value.Count).Max();
             else
                 return 0;
         }

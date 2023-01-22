@@ -30,17 +30,17 @@ namespace RDFSharp.Model
         /// <summary>
         /// Indicates that the validation was successful (sh:conforms)
         /// </summary>
-        public bool Conforms => this.ResultsCount == 0;
+        public bool Conforms => ResultsCount == 0;
 
         /// <summary>
         /// Counter of the validator results
         /// </summary>
-        public int ResultsCount => this.Results.Count;
+        public int ResultsCount => Results.Count;
 
         /// <summary>
         /// Gets an enumerator on the validator results for iteration
         /// </summary>
-        public IEnumerator<RDFValidationResult> ResultsEnumerator => this.Results.GetEnumerator();
+        public IEnumerator<RDFValidationResult> ResultsEnumerator => Results.GetEnumerator();
 
         /// <summary>
         /// List of validator results (sh:result)
@@ -53,7 +53,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a named validation report
         /// </summary>
         internal RDFValidationReport(RDFResource reportName) : base(reportName.ToString())
-            => this.Results = new List<RDFValidationResult>();
+            => Results = new List<RDFValidationResult>();
 
         /// <summary>
         /// Default-ctor to build a blank validation report
@@ -65,12 +65,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the validation report's results
         /// </summary>
-        IEnumerator<RDFValidationResult> IEnumerable<RDFValidationResult>.GetEnumerator() => this.ResultsEnumerator;
+        IEnumerator<RDFValidationResult> IEnumerable<RDFValidationResult>.GetEnumerator() => ResultsEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the validation report's results
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() => this.ResultsEnumerator;
+        IEnumerator IEnumerable.GetEnumerator() => ResultsEnumerator;
         #endregion
 
         #region Methods
@@ -82,7 +82,7 @@ namespace RDFSharp.Model
         internal void AddResult(RDFValidationResult result)
         {
             if (result != null)
-                this.Results.Add(result);
+                Results.Add(result);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace RDFSharp.Model
         internal void MergeResults(RDFValidationReport report)
         {
             if (report != null && report.Results != null)
-                this.Results.AddRange(report.Results);
+                Results.AddRange(report.Results);
         }
         #endregion
 
@@ -107,19 +107,19 @@ namespace RDFSharp.Model
             result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.VALIDATION_REPORT));
 
             //Conforms
-            if (this.Conforms)
+            if (Conforms)
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.CONFORMS, RDFTypedLiteral.True));
             else
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.CONFORMS, RDFTypedLiteral.False));
 
             //Results
-            this.Results.ForEach(res =>
+            Results.ForEach(res =>
             {
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT, res));
                 result = result.UnionWith(res.ToRDFGraph());
             });
 
-            result.SetContext(this.URI);
+            result.SetContext(URI);
             return result;
         }
 

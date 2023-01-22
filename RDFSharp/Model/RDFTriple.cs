@@ -69,12 +69,12 @@ namespace RDFSharp.Model
             if (pred.IsBlank)
                 throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is a blank resource");
 
-            this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
-            this.Subject = subj ?? new RDFResource();
-            this.Predicate = pred;
-            this.Object = obj ?? new RDFResource();
-            this.LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
-            this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.TripleID.ToString())));
+            TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
+            Subject = subj ?? new RDFResource();
+            Predicate = pred;
+            Object = obj ?? new RDFResource();
+            LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
+            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", TripleID.ToString())));
         }
 
         /// <summary>
@@ -87,12 +87,12 @@ namespace RDFSharp.Model
             if (pred.IsBlank)
                 throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is a blank resource");
 
-            this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
-            this.Subject = subj ?? new RDFResource();
-            this.Predicate = pred;
-            this.Object = lit ?? new RDFPlainLiteral(string.Empty);
-            this.LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
-            this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.TripleID.ToString())));
+            TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
+            Subject = subj ?? new RDFResource();
+            Predicate = pred;
+            Object = lit ?? new RDFPlainLiteral(string.Empty);
+            LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
+            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", TripleID.ToString())));
         }
 
         /// <summary>
@@ -100,15 +100,15 @@ namespace RDFSharp.Model
         /// </summary>
         internal RDFTriple(RDFIndexedTriple indexedTriple, RDFGraphIndex graphIndex)
         {
-            this.TripleFlavor = indexedTriple.TripleFlavor;
-            this.Subject = graphIndex.ResourcesRegister[indexedTriple.SubjectID];
-            this.Predicate = graphIndex.ResourcesRegister[indexedTriple.PredicateID];
+            TripleFlavor = indexedTriple.TripleFlavor;
+            Subject = graphIndex.ResourcesRegister[indexedTriple.SubjectID];
+            Predicate = graphIndex.ResourcesRegister[indexedTriple.PredicateID];
             if (indexedTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                this.Object = graphIndex.ResourcesRegister[indexedTriple.ObjectID];
+                Object = graphIndex.ResourcesRegister[indexedTriple.ObjectID];
             else
-                this.Object = graphIndex.LiteralsRegister[indexedTriple.ObjectID];
-            this.LazyTripleID = new Lazy<long>(() => indexedTriple.TripleID);
-            this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.TripleID.ToString())));
+                Object = graphIndex.LiteralsRegister[indexedTriple.ObjectID];
+            LazyTripleID = new Lazy<long>(() => indexedTriple.TripleID);
+            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", TripleID.ToString())));
         }
         #endregion
 
@@ -117,13 +117,13 @@ namespace RDFSharp.Model
         /// Gives the string representation of the triple
         /// </summary>
         public override string ToString()
-            => string.Concat(this.Subject.ToString(), " ", this.Predicate.ToString(), " ", this.Object.ToString());
+            => string.Concat(Subject.ToString(), " ", Predicate.ToString(), " ", Object.ToString());
 
         /// <summary>
         /// Performs the equality comparison between two triples
         /// </summary>
         public bool Equals(RDFTriple other)
-            => other != null && this.TripleID.Equals(other.TripleID);
+            => other != null && TripleID.Equals(other.TripleID);
         #endregion
 
         #region Methods
@@ -134,13 +134,13 @@ namespace RDFSharp.Model
         {
             RDFGraph reifGraph = new RDFGraph();
 
-            reifGraph.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
-            reifGraph.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)this.Subject));
-            reifGraph.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)this.Predicate));
-            if (this.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                reifGraph.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)this.Object));
+            reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
+            reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)Subject));
+            reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)Predicate));
+            if (TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)Object));
             else
-                reifGraph.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)this.Object));
+                reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)Object));
 
             return reifGraph;
         }
@@ -185,11 +185,11 @@ namespace RDFSharp.Model
         /// </summary>
         internal RDFIndexedTriple(RDFTriple triple)
         {
-            this.TripleFlavor = triple.TripleFlavor;
-            this.TripleID = triple.TripleID;
-            this.SubjectID = triple.Subject.PatternMemberID;
-            this.PredicateID = triple.Predicate.PatternMemberID;
-            this.ObjectID = triple.Object.PatternMemberID;            
+            TripleFlavor = triple.TripleFlavor;
+            TripleID = triple.TripleID;
+            SubjectID = triple.Subject.PatternMemberID;
+            PredicateID = triple.Predicate.PatternMemberID;
+            ObjectID = triple.Object.PatternMemberID;            
         }
         #endregion
 
@@ -198,7 +198,7 @@ namespace RDFSharp.Model
         /// Performs the equality comparison between two indexed triples
         /// </summary>
         public bool Equals(RDFIndexedTriple other)
-            => other != null && this.TripleID.Equals(other.TripleID);
+            => other != null && TripleID.Equals(other.TripleID);
         #endregion
     }
 }

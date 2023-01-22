@@ -40,7 +40,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an empty ASK result
         /// </summary>
         internal RDFAskQueryResult()
-            => this.AskResult = false;
+            => AskResult = false;
         #endregion
 
         #region Methods
@@ -77,7 +77,7 @@ namespace RDFSharp.Query
 
                     #region sparqlResults
                     XmlNode sparqlResultsElement = sparqlDoc.CreateNode(XmlNodeType.Element, "boolean", null);
-                    XmlText askResultText = sparqlDoc.CreateTextNode(this.AskResult.ToString().ToUpperInvariant());
+                    XmlText askResultText = sparqlDoc.CreateTextNode(AskResult.ToString().ToUpperInvariant());
                     sparqlResultsElement.AppendChild(askResultText);
                     sparqlRoot.AppendChild(sparqlResultsElement);
                     #endregion

@@ -59,12 +59,12 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFQuery()
         {
-            this.QueryMembers = new List<RDFQueryMember>();
-            this.Prefixes = new List<RDFNamespace>();
-            this.IsEvaluable = true;
-            this.IsOptional = false;
-            this.JoinAsUnion = false;
-            this.IsSubQuery = false;
+            QueryMembers = new List<RDFQueryMember>();
+            Prefixes = new List<RDFNamespace>();
+            IsEvaluable = true;
+            IsOptional = false;
+            JoinAsUnion = false;
+            IsSubQuery = false;
         }
         #endregion
 
@@ -76,8 +76,8 @@ namespace RDFSharp.Query
         {
             if (patternGroup != null)
             {
-                if (!this.GetPatternGroups().Any(q => q.Equals(patternGroup)))
-                    this.QueryMembers.Add(patternGroup);
+                if (!GetPatternGroups().Any(q => q.Equals(patternGroup)))
+                    QueryMembers.Add(patternGroup);
             }
             return (T)this;
         }
@@ -89,8 +89,8 @@ namespace RDFSharp.Query
         {
             if (modifier != null)
             {
-                if (!this.GetModifiers().Any(m => m is RDFDistinctModifier))
-                    this.QueryMembers.Add(modifier);
+                if (!GetModifiers().Any(m => m is RDFDistinctModifier))
+                    QueryMembers.Add(modifier);
             }
             return (T)this;
         }
@@ -102,8 +102,8 @@ namespace RDFSharp.Query
         {
             if (modifier != null)
             {
-                if (!this.GetModifiers().Any(m => m is RDFLimitModifier))
-                    this.QueryMembers.Add(modifier);
+                if (!GetModifiers().Any(m => m is RDFLimitModifier))
+                    QueryMembers.Add(modifier);
             }
             return (T)this;
         }
@@ -115,8 +115,8 @@ namespace RDFSharp.Query
         {
             if (modifier != null)
             {
-                if (!this.GetModifiers().Any(m => m is RDFOffsetModifier))
-                    this.QueryMembers.Add(modifier);
+                if (!GetModifiers().Any(m => m is RDFOffsetModifier))
+                    QueryMembers.Add(modifier);
             }
             return (T)this;
         }
@@ -128,8 +128,8 @@ namespace RDFSharp.Query
         {
             if (prefix != null)
             {
-                if (!this.Prefixes.Any(p => p.Equals(prefix)))
-                    this.Prefixes.Add(prefix);
+                if (!Prefixes.Any(p => p.Equals(prefix)))
+                    Prefixes.Add(prefix);
             }
             return (T)this;
         }
@@ -141,8 +141,8 @@ namespace RDFSharp.Query
         {
             if (subQuery != null)
             {
-                if (!this.GetSubQueries().Any(q => q.Equals(subQuery)))
-                    this.QueryMembers.Add(subQuery.SubQuery());
+                if (!GetSubQueries().Any(q => q.Equals(subQuery)))
+                    QueryMembers.Add(subQuery.SubQuery());
             }
             return (T)this;
         }
@@ -151,19 +151,19 @@ namespace RDFSharp.Query
         /// Gets the query members of type: pattern group
         /// </summary>
         internal IEnumerable<RDFPatternGroup> GetPatternGroups()
-            => this.QueryMembers.OfType<RDFPatternGroup>();
+            => QueryMembers.OfType<RDFPatternGroup>();
 
         /// <summary>
         /// Gets the query members of type: modifier
         /// </summary>
         internal IEnumerable<RDFModifier> GetModifiers()
-            => this.QueryMembers.OfType<RDFModifier>();
+            => QueryMembers.OfType<RDFModifier>();
 
         /// <summary>
         /// Gets the query members of type: query
         /// </summary>
         internal IEnumerable<RDFQuery> GetSubQueries()
-            => this.QueryMembers.OfType<RDFQuery>();
+            => QueryMembers.OfType<RDFQuery>();
 
         /// <summary>
         /// Gets the SPARQL values of the query, including those from patterngroups and subqueries
@@ -173,11 +173,11 @@ namespace RDFSharp.Query
             List<RDFValues> result = new List<RDFValues>();
 
             //Add SPARQL values from pattern groups
-            foreach (RDFPatternGroup patternGroup in this.GetPatternGroups())
+            foreach (RDFPatternGroup patternGroup in GetPatternGroups())
                 result.AddRange(patternGroup.GetValues());
 
             //Add SPARQL values from subqueries
-            foreach (RDFQuery subQuery in this.GetSubQueries())
+            foreach (RDFQuery subQuery in GetSubQueries())
                 result.AddRange(subQuery.GetValues());
 
             return result.Distinct().ToList();
@@ -189,11 +189,11 @@ namespace RDFSharp.Query
         internal RDFQuery InjectValues(List<RDFValues> values)
         {
             //Inject SPARQL values into pattern groups
-            foreach (RDFPatternGroup patternGroup in this.GetPatternGroups())
+            foreach (RDFPatternGroup patternGroup in GetPatternGroups())
                 values?.ForEach(v => patternGroup.AddInjectedValues(v));
 
             //Inject SPARQL values into subqueries
-            foreach (RDFQuery subQuery in this.GetSubQueries())
+            foreach (RDFQuery subQuery in GetSubQueries())
                 subQuery.InjectValues(values);
 
             return this;
@@ -204,8 +204,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal List<RDFNamespace> GetPrefixes()
         {
-            List<RDFNamespace> result = new List<RDFNamespace>(this.Prefixes);
-            foreach (RDFQuery subQuery in this.GetSubQueries())
+            List<RDFNamespace> result = new List<RDFNamespace>(Prefixes);
+            foreach (RDFQuery subQuery in GetSubQueries())
                 result.AddRange(subQuery.GetPrefixes());
             return result.Distinct().ToList();
         }
@@ -214,14 +214,14 @@ namespace RDFSharp.Query
         /// Gets the query members which can be evaluated
         /// </summary>
         internal IEnumerable<RDFQueryMember> GetEvaluableQueryMembers()
-            => this.QueryMembers.Where(q => q.IsEvaluable);
+            => QueryMembers.Where(q => q.IsEvaluable);
 
         /// <summary>
         /// Sets the query as a subquery
         /// </summary>
         internal RDFQuery SubQuery()
         {
-            this.IsSubQuery = true;
+            IsSubQuery = true;
             return this;
         }
         #endregion

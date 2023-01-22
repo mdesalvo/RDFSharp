@@ -47,10 +47,10 @@ namespace RDFSharp.Query
             if (termToSearch == null)
                 throw new RDFQueryException("Cannot create RDFInFilter because given \"termToSearch\" parameter is null.");
 
-            this.TermToSearch = termToSearch;
-            this.InTerms = inTerms ?? new List<RDFPatternMember>();
+            TermToSearch = termToSearch;
+            InTerms = inTerms ?? new List<RDFPatternMember>();
             //Do not accept null values in input list
-            this.InTerms.RemoveAll(t => t == null);
+            InTerms.RemoveAll(t => t == null);
         }
         #endregion
 
@@ -59,13 +59,13 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
             => string.Concat(
                 "FILTER ( ",
-                RDFQueryPrinter.PrintPatternMember(this.TermToSearch, prefixes),
+                RDFQueryPrinter.PrintPatternMember(TermToSearch, prefixes),
                 " IN (",
-                string.Join(", ", this.InTerms.Select(t => RDFQueryPrinter.PrintPatternMember(t, prefixes))),
+                string.Join(", ", InTerms.Select(t => RDFQueryPrinter.PrintPatternMember(t, prefixes))),
                 ") )");
         #endregion
 
@@ -78,10 +78,10 @@ namespace RDFSharp.Query
             bool keepRow = false;
 
             //IN filter is equivalent to an OR-chain of equality comparison filters
-            IEnumerator<RDFPatternMember> inTermsEnumerator = this.InTerms.GetEnumerator();
+            IEnumerator<RDFPatternMember> inTermsEnumerator = InTerms.GetEnumerator();
             while (inTermsEnumerator.MoveNext())
             {
-                RDFComparisonFilter compFilter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.EqualTo, this.TermToSearch, inTermsEnumerator.Current);
+                RDFComparisonFilter compFilter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.EqualTo, TermToSearch, inTermsEnumerator.Current);
                 keepRow = compFilter.ApplyFilter(row, false);
                 if (keepRow)
                     break;

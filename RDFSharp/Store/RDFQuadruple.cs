@@ -75,13 +75,13 @@ namespace RDFSharp.Store
             if (pred.IsBlank)
                 throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is a blank resource");
 
-            this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
-            this.Context = context ?? new RDFContext();
-            this.Subject = subj ?? new RDFResource();
-            this.Predicate = pred;
-            this.Object = obj ?? new RDFResource();
-            this.LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
-            this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.QuadrupleID.ToString())));
+            TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
+            Context = context ?? new RDFContext();
+            Subject = subj ?? new RDFResource();
+            Predicate = pred;
+            Object = obj ?? new RDFResource();
+            LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
+            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", QuadrupleID.ToString())));
         }
 
         /// <summary>
@@ -94,13 +94,13 @@ namespace RDFSharp.Store
             if (pred.IsBlank)
                 throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is a blank resource");
 
-            this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
-            this.Context = context ?? new RDFContext();
-            this.Subject = subj ?? new RDFResource();
-            this.Predicate = pred;
-            this.Object = lit ?? new RDFPlainLiteral(string.Empty);
-            this.LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
-            this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.QuadrupleID.ToString())));
+            TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
+            Context = context ?? new RDFContext();
+            Subject = subj ?? new RDFResource();
+            Predicate = pred;
+            Object = lit ?? new RDFPlainLiteral(string.Empty);
+            LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
+            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", QuadrupleID.ToString())));
         }
 
         /// <summary>
@@ -108,16 +108,16 @@ namespace RDFSharp.Store
         /// </summary>
         internal RDFQuadruple(RDFIndexedQuadruple indexedQuadruple, RDFStoreIndex storeIndex)
         {
-            this.TripleFlavor = indexedQuadruple.TripleFlavor;
-            this.Context = storeIndex.ContextsRegister[indexedQuadruple.ContextID];
-            this.Subject = storeIndex.ResourcesRegister[indexedQuadruple.SubjectID];
-            this.Predicate = storeIndex.ResourcesRegister[indexedQuadruple.PredicateID];
+            TripleFlavor = indexedQuadruple.TripleFlavor;
+            Context = storeIndex.ContextsRegister[indexedQuadruple.ContextID];
+            Subject = storeIndex.ResourcesRegister[indexedQuadruple.SubjectID];
+            Predicate = storeIndex.ResourcesRegister[indexedQuadruple.PredicateID];
             if (indexedQuadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                this.Object = storeIndex.ResourcesRegister[indexedQuadruple.ObjectID];
+                Object = storeIndex.ResourcesRegister[indexedQuadruple.ObjectID];
             else
-                this.Object = storeIndex.LiteralsRegister[indexedQuadruple.ObjectID];
-            this.LazyQuadrupleID = new Lazy<long>(() => indexedQuadruple.QuadrupleID);
-            this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.QuadrupleID.ToString())));
+                Object = storeIndex.LiteralsRegister[indexedQuadruple.ObjectID];
+            LazyQuadrupleID = new Lazy<long>(() => indexedQuadruple.QuadrupleID);
+            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", QuadrupleID.ToString())));
         }
         #endregion
 
@@ -126,13 +126,13 @@ namespace RDFSharp.Store
         /// Gives the string representation of the quadruple
         /// </summary>
         public override string ToString()
-            => string.Concat(this.Context.ToString(), " ", this.Subject.ToString(), " ", this.Predicate.ToString(), " ", this.Object.ToString());
+            => string.Concat(Context.ToString(), " ", Subject.ToString(), " ", Predicate.ToString(), " ", Object.ToString());
 
         /// <summary>
         /// Performs the equality comparison between two quadruples
         /// </summary>
         public bool Equals(RDFQuadruple other)
-            => other != null && this.QuadrupleID.Equals(other.QuadrupleID);
+            => other != null && QuadrupleID.Equals(other.QuadrupleID);
         #endregion
 
         #region Methods
@@ -143,13 +143,13 @@ namespace RDFSharp.Store
         {
             RDFMemoryStore reifStore = new RDFMemoryStore();
             
-            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
-            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)this.Subject));
-            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)this.Predicate));
-            if (this.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)this.Object));
+            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
+            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)Subject));
+            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)Predicate));
+            if (TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)Object));
             else
-                reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)this.Object));
+                reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)Object));
 
             return reifStore;
         }
@@ -199,12 +199,12 @@ namespace RDFSharp.Store
         /// </summary>
         internal RDFIndexedQuadruple(RDFQuadruple quadruple)
         {
-            this.TripleFlavor = quadruple.TripleFlavor;
-            this.QuadrupleID = quadruple.QuadrupleID;
-            this.ContextID = quadruple.Context.PatternMemberID;
-            this.SubjectID = quadruple.Subject.PatternMemberID;
-            this.PredicateID = quadruple.Predicate.PatternMemberID;
-            this.ObjectID = quadruple.Object.PatternMemberID;
+            TripleFlavor = quadruple.TripleFlavor;
+            QuadrupleID = quadruple.QuadrupleID;
+            ContextID = quadruple.Context.PatternMemberID;
+            SubjectID = quadruple.Subject.PatternMemberID;
+            PredicateID = quadruple.Predicate.PatternMemberID;
+            ObjectID = quadruple.Object.PatternMemberID;
         }
         #endregion
 
@@ -213,7 +213,7 @@ namespace RDFSharp.Store
         /// Performs the equality comparison between two indexed quadruples
         /// </summary>
         public bool Equals(RDFIndexedQuadruple other)
-            => other != null && this.QuadrupleID.Equals(other.QuadrupleID);
+            => other != null && QuadrupleID.Equals(other.QuadrupleID);
         #endregion
     }
 }

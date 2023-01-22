@@ -68,8 +68,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFQueryEngine()
         {
-            this.PatternGroupMemberResultTables = new Dictionary<long, List<DataTable>>();
-            this.QueryMemberResultTables = new Dictionary<long, DataTable>();
+            PatternGroupMemberResultTables = new Dictionary<long, List<DataTable>>();
+            QueryMemberResultTables = new Dictionary<long, DataTable>();
         }
         #endregion
 
@@ -138,7 +138,7 @@ namespace RDFSharp.Query
                 EvaluateQueryMembers(describeQuery, evaluableQueryMembers, datasource);
 
                 //Get the result table of the query
-                queryResultTable = CombineTables(this.QueryMemberResultTables.Values.ToList(), false);
+                queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList(), false);
             }
 
             //Describe the terms from the result table

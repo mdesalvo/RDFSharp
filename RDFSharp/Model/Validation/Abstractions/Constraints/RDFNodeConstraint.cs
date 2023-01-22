@@ -40,7 +40,7 @@ namespace RDFSharp.Model
             if (nodeShapeUri == null)
                 throw new RDFModelException("Cannot create RDFNodeConstraint because given \"nodeShapeUri\" parameter is null.");
             
-            this.NodeShapeUri = nodeShapeUri;
+            NodeShapeUri = nodeShapeUri;
         }
         #endregion
 
@@ -53,14 +53,14 @@ namespace RDFSharp.Model
             RDFValidationReport report = new RDFValidationReport();
 
             //Search for given node shape
-            RDFNodeShape nodeShape = shapesGraph.SelectShape(this.NodeShapeUri.ToString()) as RDFNodeShape;
+            RDFNodeShape nodeShape = shapesGraph.SelectShape(NodeShapeUri.ToString()) as RDFNodeShape;
             if (nodeShape == null)
                 return report;
 
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Value does not have shape <{this.NodeShapeUri}>"));
+                shapeMessages.Add(new RDFPlainLiteral($"Value does not have shape <{NodeShapeUri}>"));
 
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
@@ -95,7 +95,7 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:node
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NODE, this.NodeShapeUri));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NODE, NodeShapeUri));
             }
             return result;
         }

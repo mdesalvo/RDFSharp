@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a minCount constraint with the given minCount
         /// </summary>
         public RDFMinCountConstraint(int minCount)
-            => this.MinCount = minCount < 0 ? 0 : minCount;
+            => MinCount = minCount < 0 ? 0 : minCount;
         #endregion
 
         #region Methods
@@ -50,10 +50,10 @@ namespace RDFSharp.Model
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Must have a minimum of {this.MinCount} occurrences"));
+                shapeMessages.Add(new RDFPlainLiteral($"Must have a minimum of {MinCount} occurrences"));
 
             #region Evaluation
-            if (valueNodes.Count < this.MinCount)
+            if (valueNodes.Count < MinCount)
                 report.AddResult(new RDFValidationResult(shape,
                                                          RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT,
                                                          focusNode,
@@ -75,7 +75,7 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:minCount
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_COUNT, new RDFTypedLiteral(this.MinCount.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_COUNT, new RDFTypedLiteral(MinCount.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
             }
             return result;
         }

@@ -40,7 +40,7 @@ namespace RDFSharp.Model
             if (notShape == null)
                 throw new RDFModelException("Cannot create RDFNotConstraint because given \"notShape\" parameter is null.");
             
-            this.NotShape = notShape;
+            NotShape = notShape;
         }
         #endregion
 
@@ -53,14 +53,14 @@ namespace RDFSharp.Model
             RDFValidationReport report = new RDFValidationReport();
 
             //Search for given not shape
-            RDFShape notShape = shapesGraph.SelectShape(this.NotShape.ToString());
+            RDFShape notShape = shapesGraph.SelectShape(NotShape.ToString());
             if (notShape == null)
                 return report;
 
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Value does have shape <{this.NotShape}>"));
+                shapeMessages.Add(new RDFPlainLiteral($"Value does have shape <{NotShape}>"));
 
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
@@ -89,7 +89,7 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:not
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NOT, this.NotShape));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NOT, NotShape));
             }
             return result;
         }

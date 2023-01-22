@@ -40,7 +40,7 @@ namespace RDFSharp.Model
             if (value == null)
                 throw new RDFModelException("Cannot create RDFMaxInclusiveConstraint because given \"value\" parameter is null.");
             
-            this.Value = value;
+            Value = value;
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace RDFSharp.Model
             if (value == null)
                 throw new RDFModelException("Cannot create RDFMaxInclusiveConstraint because given \"value\" parameter is null.");
             
-            this.Value = value;
+            Value = value;
         }
         #endregion
 
@@ -66,12 +66,12 @@ namespace RDFSharp.Model
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Must have values lower or equal than <{this.Value}>"));
+                shapeMessages.Add(new RDFPlainLiteral($"Must have values lower or equal than <{Value}>"));
 
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
             {
-                int comparison = RDFQueryUtilities.CompareRDFPatternMembers(this.Value, valueNode);
+                int comparison = RDFQueryUtilities.CompareRDFPatternMembers(Value, valueNode);
                 if (comparison == -99 || comparison < 0)
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.MAX_INCLUSIVE_CONSTRAINT_COMPONENT,
@@ -95,10 +95,10 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:maxInclusive
-                if (this.Value is RDFResource)
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MAX_INCLUSIVE, (RDFResource)this.Value));
+                if (Value is RDFResource)
+                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MAX_INCLUSIVE, (RDFResource)Value));
                 else
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MAX_INCLUSIVE, (RDFLiteral)this.Value));
+                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MAX_INCLUSIVE, (RDFLiteral)Value));
             }
             return result;
         }

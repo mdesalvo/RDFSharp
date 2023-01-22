@@ -42,7 +42,7 @@ namespace RDFSharp.Model
             if (regex == null)
                 throw new RDFModelException("Cannot create RDFPatternConstraint because given \"regex\" parameter is null.");
             
-            this.RegEx = regex;
+            RegEx = regex;
         }
         #endregion
 
@@ -57,7 +57,7 @@ namespace RDFSharp.Model
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Must match expression {this.RegEx} and can't be a blank node"));
+                shapeMessages.Add(new RDFPlainLiteral($"Must match expression {RegEx} and can't be a blank node"));
 
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
@@ -66,7 +66,7 @@ namespace RDFSharp.Model
                 {
                     //Resource
                     case RDFResource valueNodeResource:
-                        if (valueNodeResource.IsBlank || !this.RegEx.IsMatch(valueNodeResource.ToString()))
+                        if (valueNodeResource.IsBlank || !RegEx.IsMatch(valueNodeResource.ToString()))
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -78,7 +78,7 @@ namespace RDFSharp.Model
 
                     //Literal
                     case RDFLiteral valueNodeLiteral:
-                        if (!this.RegEx.IsMatch(valueNodeLiteral.Value))
+                        if (!RegEx.IsMatch(valueNodeLiteral.Value))
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -103,17 +103,17 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:pattern
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.PATTERN, new RDFTypedLiteral(this.RegEx.ToString(), RDFModelEnums.RDFDatatypes.XSD_STRING)));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.PATTERN, new RDFTypedLiteral(RegEx.ToString(), RDFModelEnums.RDFDatatypes.XSD_STRING)));
 
                 //sh:flags
                 StringBuilder regexFlags = new StringBuilder();
-                if (this.RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
+                if (RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
                     regexFlags.Append('i');
-                if (this.RegEx.Options.HasFlag(RegexOptions.Singleline))
+                if (RegEx.Options.HasFlag(RegexOptions.Singleline))
                     regexFlags.Append('s');
-                if (this.RegEx.Options.HasFlag(RegexOptions.Multiline))
+                if (RegEx.Options.HasFlag(RegexOptions.Multiline))
                     regexFlags.Append('m');
-                if (this.RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
+                if (RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
                     regexFlags.Append('x');
                 if (regexFlags.ToString() != string.Empty)
                     result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.FLAGS, new RDFTypedLiteral(regexFlags.ToString(), RDFModelEnums.RDFDatatypes.XSD_STRING)));

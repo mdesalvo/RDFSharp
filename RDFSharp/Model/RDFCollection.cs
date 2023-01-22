@@ -45,13 +45,13 @@ namespace RDFSharp.Model
         /// Count of the collection's items
         /// </summary>
         public int ItemsCount
-            => this.Items.Count;
+            => Items.Count;
 
         /// <summary>
         /// Gets the enumerator on the collection's items for iteration
         /// </summary>
         public IEnumerator<RDFPatternMember> ItemsEnumerator
-            => this.Items.GetEnumerator();
+            => Items.GetEnumerator();
 
         /// <summary>
         /// Flag indicating that this collection exceptionally accepts duplicates
@@ -72,11 +72,11 @@ namespace RDFSharp.Model
         public RDFCollection(RDFModelEnums.RDFItemTypes itemType) : this(itemType, false) { }
         internal RDFCollection(RDFModelEnums.RDFItemTypes itemType, bool acceptDuplicates)
         {
-            this.ItemType = itemType;
-            this.ReificationSubject = RDFVocabulary.RDF.NIL;
-            this.InternalReificationSubject = new RDFResource();
-            this.AcceptDuplicates = acceptDuplicates;
-            this.Items = new List<RDFPatternMember>();
+            ItemType = itemType;
+            ReificationSubject = RDFVocabulary.RDF.NIL;
+            InternalReificationSubject = new RDFResource();
+            AcceptDuplicates = acceptDuplicates;
+            Items = new List<RDFPatternMember>();
         }
         #endregion
 
@@ -85,13 +85,13 @@ namespace RDFSharp.Model
         /// Exposes a typed enumerator on the collection's items
         /// </summary>
         IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator()
-            => this.ItemsEnumerator;
+            => ItemsEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the collection's items
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator()
-            => this.ItemsEnumerator;
+            => ItemsEnumerator;
         #endregion
 
         #region Methods
@@ -102,8 +102,8 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFCollection AddItem(RDFResource item)
         {
-            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
-                this.AddItemInternal(item);
+            if (item != null && ItemType == RDFModelEnums.RDFItemTypes.Resource)
+                AddItemInternal(item);
             return this;
         }
 
@@ -112,8 +112,8 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFCollection AddItem(RDFLiteral item)
         {
-            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
-                this.AddItemInternal(item);
+            if (item != null && ItemType == RDFModelEnums.RDFItemTypes.Literal)
+                AddItemInternal(item);
             return this;
         }
 
@@ -122,13 +122,13 @@ namespace RDFSharp.Model
         /// </summary>
         internal void AddItemInternal(RDFPatternMember item)
         {
-            if (this.AcceptDuplicates || this.Items.Find(x => x.Equals(item)) == null)
+            if (AcceptDuplicates || Items.Find(x => x.Equals(item)) == null)
             {
                 //Add item to collection
-                this.Items.Add(item);
+                Items.Add(item);
                 //Update ReificationSubject (if collection has left "rdf:nil" configuration)
-                if (this.ItemsCount == 1)
-                    this.ReificationSubject = this.InternalReificationSubject;
+                if (ItemsCount == 1)
+                    ReificationSubject = InternalReificationSubject;
             }
         }
         #endregion
@@ -139,8 +139,8 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFCollection RemoveItem(RDFResource item)
         {
-            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
-                this.RemoveItemInternal(item);
+            if (item != null && ItemType == RDFModelEnums.RDFItemTypes.Resource)
+                RemoveItemInternal(item);
             return this;
         }
 
@@ -149,8 +149,8 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFCollection RemoveItem(RDFLiteral item)
         {
-            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
-                this.RemoveItemInternal(item);
+            if (item != null && ItemType == RDFModelEnums.RDFItemTypes.Literal)
+                RemoveItemInternal(item);
             return this;
         }
 
@@ -160,10 +160,10 @@ namespace RDFSharp.Model
         internal void RemoveItemInternal(RDFPatternMember item)
         {
             //Remove item from collection
-            this.Items.RemoveAll(x => x.Equals(item));
+            Items.RemoveAll(x => x.Equals(item));
             //Update ReificationSubject (if collection has turned back into "rdf:Nil" configuration)
-            if (this.ItemsCount == 0)
-                this.ReificationSubject = RDFVocabulary.RDF.NIL;
+            if (ItemsCount == 0)
+                ReificationSubject = RDFVocabulary.RDF.NIL;
         }
 
         /// <summary>
@@ -172,9 +172,9 @@ namespace RDFSharp.Model
         public void ClearItems()
         {
             //Clear items of collection
-            this.Items.Clear();
+            Items.Clear();
             //Turn back the collection into "rdf:Nil" configuration
-            this.ReificationSubject = RDFVocabulary.RDF.NIL;
+            ReificationSubject = RDFVocabulary.RDF.NIL;
         }
         #endregion
 
@@ -185,7 +185,7 @@ namespace RDFSharp.Model
         public RDFGraph ReifyCollection()
         {
             RDFGraph reifColl = new RDFGraph();
-            RDFResource reifSubj = this.ReificationSubject;
+            RDFResource reifSubj = ReificationSubject;
             int itemCount = 0;
 
             //Collection can be reified only if it has at least one item
@@ -198,13 +198,13 @@ namespace RDFSharp.Model
                 reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
 
                 //  Subject -> rdf:first -> RDFCollection.ITEM[i]
-                if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
+                if (ItemType == RDFModelEnums.RDFItemTypes.Resource)
                     reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.FIRST, (RDFResource)listEnum));
                 else
                     reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.FIRST, (RDFLiteral)listEnum));
 
                 //Not the last one: Subject -> rdf:rest  -> NEWBLANK
-                if (itemCount < this.ItemsCount)
+                if (itemCount < ItemsCount)
                 {
                     RDFResource newSub = new RDFResource();
                     reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.REST, newSub));

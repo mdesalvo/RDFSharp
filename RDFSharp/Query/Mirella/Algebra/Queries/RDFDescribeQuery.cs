@@ -50,8 +50,8 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFDescribeQuery()
         {
-            this.DescribeTerms = new List<RDFPatternMember>();
-            this.Variables = new List<RDFVariable>();
+            DescribeTerms = new List<RDFPatternMember>();
+            Variables = new List<RDFVariable>();
         }
         #endregion
 
@@ -71,8 +71,8 @@ namespace RDFSharp.Query
         {
             if (describeTerm != null)
             {
-                if (!this.DescribeTerms.Any(dt => dt.Equals(describeTerm)))
-                    this.DescribeTerms.Add(describeTerm);
+                if (!DescribeTerms.Any(dt => dt.Equals(describeTerm)))
+                    DescribeTerms.Add(describeTerm);
             }
             return this;
         }
@@ -84,13 +84,13 @@ namespace RDFSharp.Query
         {
             if (describeVar != null)
             {
-                if (!this.DescribeTerms.Any(dt => dt.Equals(describeVar)))
+                if (!DescribeTerms.Any(dt => dt.Equals(describeVar)))
                 {
-                    this.DescribeTerms.Add(describeVar);
+                    DescribeTerms.Add(describeVar);
 
                     //Collect the variable
-                    if (!this.Variables.Any(v => v.Equals(describeVar)))
-                        this.Variables.Add(describeVar);
+                    if (!Variables.Any(v => v.Equals(describeVar)))
+                        Variables.Add(describeVar);
                 }
             }
             return this;
@@ -143,7 +143,7 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given graph
         /// </summary>
         public Task<RDFDescribeQueryResult> ApplyToGraphAsync(RDFGraph graph)
-            => Task.Run(() => this.ApplyToGraph(graph));
+            => Task.Run(() => ApplyToGraph(graph));
 
         /// <summary>
         /// Applies the query to the given store
@@ -156,7 +156,7 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given store
         /// </summary>
         public Task<RDFDescribeQueryResult> ApplyToStoreAsync(RDFStore store)
-            => Task.Run(() => this.ApplyToStore(store));
+            => Task.Run(() => ApplyToStore(store));
 
         /// <summary>
         /// Applies the query to the given federation
@@ -169,13 +169,13 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given federation
         /// </summary>
         public Task<RDFDescribeQueryResult> ApplyToFederationAsync(RDFFederation federation)
-            => Task.Run(() => this.ApplyToFederation(federation));
+            => Task.Run(() => ApplyToFederation(federation));
 
         /// <summary>
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
         public RDFDescribeQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
-            => ApplyRawToSPARQLEndpoint(this.ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+            => ApplyRawToSPARQLEndpoint(ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
 
         /// <summary>
         /// Applies the given raw string DESCRIBE query to the given SPARQL endpoint
@@ -187,7 +187,7 @@ namespace RDFSharp.Query
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
         public RDFDescribeQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-            => ApplyRawToSPARQLEndpoint(this.ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
+            => ApplyRawToSPARQLEndpoint(ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
 
         /// <summary>
         /// Applies the given raw string DESCRIBE query to the given SPARQL endpoint
@@ -251,7 +251,7 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given SPARQL endpoint
         /// </summary>
         public Task<RDFDescribeQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
-            => ApplyRawToSPARQLEndpointAsync(this.ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+            => ApplyRawToSPARQLEndpointAsync(ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
 
         /// <summary>
         /// Asynchronously applies the given raw string DESCRIBE query to the given SPARQL endpoint
@@ -263,7 +263,7 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given SPARQL endpoint
         /// </summary>
         public Task<RDFDescribeQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-            => ApplyRawToSPARQLEndpointAsync(this.ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
+            => ApplyRawToSPARQLEndpointAsync(ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
 
         /// <summary>
         /// Asynchronously applies the given raw string DESCRIBE query to the given SPARQL endpoint

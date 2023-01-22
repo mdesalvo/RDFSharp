@@ -84,15 +84,15 @@ namespace RDFSharp.Store
         internal RDFStoreIndex()
         {
             //Registers
-            this.ContextsRegister = new Dictionary<long, RDFContext>();
-            this.ResourcesRegister = new Dictionary<long, RDFResource>();
-            this.LiteralsRegister = new Dictionary<long, RDFLiteral>();
+            ContextsRegister = new Dictionary<long, RDFContext>();
+            ResourcesRegister = new Dictionary<long, RDFResource>();
+            LiteralsRegister = new Dictionary<long, RDFLiteral>();
             //Indexes
-            this.ContextsIndex = new Dictionary<long, HashSet<long>>();
-            this.SubjectsIndex = new Dictionary<long, HashSet<long>>();
-            this.PredicatesIndex = new Dictionary<long, HashSet<long>>();
-            this.ObjectsIndex = new Dictionary<long, HashSet<long>>();
-            this.LiteralsIndex = new Dictionary<long, HashSet<long>>();
+            ContextsIndex = new Dictionary<long, HashSet<long>>();
+            SubjectsIndex = new Dictionary<long, HashSet<long>>();
+            PredicatesIndex = new Dictionary<long, HashSet<long>>();
+            ObjectsIndex = new Dictionary<long, HashSet<long>>();
+            LiteralsIndex = new Dictionary<long, HashSet<long>>();
         }
 
         /// <summary>

@@ -53,8 +53,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFQueryMember()
         {
-            this.QueryMemberStringID = Guid.NewGuid().ToString("N");
-            this.LazyQueryMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.QueryMemberStringID));
+            QueryMemberStringID = Guid.NewGuid().ToString("N");
+            LazyQueryMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(QueryMemberStringID));
         }
         #endregion
 
@@ -69,7 +69,7 @@ namespace RDFSharp.Query
         /// Performs the equality comparison between two query members
         /// </summary>
         public bool Equals(RDFQueryMember other)
-            => other != null && this.QueryMemberID.Equals(other.QueryMemberID);
+            => other != null && QueryMemberID.Equals(other.QueryMemberID);
         #endregion
     }
 }

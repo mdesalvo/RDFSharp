@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a datatype constraint with the given datatype
         /// </summary>
         public RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes datatype)
-			=> this.Datatype = datatype;
+			=> Datatype = datatype;
         #endregion
 
         #region Methods
@@ -50,7 +50,7 @@ namespace RDFSharp.Model
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Value must be a valid literal of type <{RDFModelUtilities.GetDatatypeFromEnum(this.Datatype)}>"));
+                shapeMessages.Add(new RDFPlainLiteral($"Value must be a valid literal of type <{RDFModelUtilities.GetDatatypeFromEnum(Datatype)}>"));
 
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
@@ -70,7 +70,7 @@ namespace RDFSharp.Model
 
                     //PlainLiteral
                     case RDFPlainLiteral valueNodePlainLiteral:
-                        if (this.Datatype != RDFModelEnums.RDFDatatypes.XSD_STRING || valueNodePlainLiteral.HasLanguage())
+                        if (Datatype != RDFModelEnums.RDFDatatypes.XSD_STRING || valueNodePlainLiteral.HasLanguage())
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.DATATYPE_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -82,7 +82,7 @@ namespace RDFSharp.Model
 
                     //TypedLiteral
                     case RDFTypedLiteral valueNodeTypedLiteral:
-                        if (this.Datatype != valueNodeTypedLiteral.Datatype)
+                        if (Datatype != valueNodeTypedLiteral.Datatype)
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.DATATYPE_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -107,7 +107,7 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:datatype
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.DATATYPE, new RDFResource(RDFModelUtilities.GetDatatypeFromEnum(this.Datatype))));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.DATATYPE, new RDFResource(RDFModelUtilities.GetDatatypeFromEnum(Datatype))));
             }
             return result;
         }

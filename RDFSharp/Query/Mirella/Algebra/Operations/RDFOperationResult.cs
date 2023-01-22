@@ -38,13 +38,13 @@ namespace RDFSharp.Query
         /// Gets the number of results produced by the SPARQL DELETE operation
         /// </summary>
         public long DeleteResultsCount
-            => this.DeleteResults.Rows.Count;
+            => DeleteResults.Rows.Count;
 
         /// <summary>
         /// Gets the number of results produced by the SPARQL INSERT operation
         /// </summary>
         public long InsertResultsCount
-            => this.InsertResults.Rows.Count;
+            => InsertResults.Rows.Count;
         #endregion
 
         #region Ctors
@@ -54,10 +54,10 @@ namespace RDFSharp.Query
         internal RDFOperationResult()
         {
             //Initialize DELETE templates
-            this.DeleteResults = new DataTable("DELETE_RESULTS");
+            DeleteResults = new DataTable("DELETE_RESULTS");
 
             //Initialize INSERT templates
-            this.InsertResults = new DataTable("INSERT_RESULTS");
+            InsertResults = new DataTable("INSERT_RESULTS");
         }
         #endregion
     }

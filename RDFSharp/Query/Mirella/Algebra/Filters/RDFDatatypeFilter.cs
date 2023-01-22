@@ -52,9 +52,9 @@ namespace RDFSharp.Query
             if (variable == null)
                 throw new RDFQueryException("Cannot create RDFDatatypeFilter because given \"variable\" parameter is null.");
 
-            this.VariableName = variable.ToString();
-            this.Datatype = datatype;
-            this.DatatypeRegex = new Regex($"\\^\\^{RDFModelUtilities.GetDatatypeFromEnum(this.Datatype)}$", RegexOptions.Compiled);
+            VariableName = variable.ToString();
+            Datatype = datatype;
+            DatatypeRegex = new Regex($"\\^\\^{RDFModelUtilities.GetDatatypeFromEnum(Datatype)}$", RegexOptions.Compiled);
         }
         #endregion
 
@@ -63,11 +63,11 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
             => string.Concat(
-                "FILTER ( DATATYPE(", this.VariableName, ") = ",
-                RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(RDFModelUtilities.GetDatatypeFromEnum(this.Datatype)), prefixes), " )");
+                "FILTER ( DATATYPE(", VariableName, ") = ",
+                RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(RDFModelUtilities.GetDatatypeFromEnum(Datatype)), prefixes), " )");
         #endregion
 
         #region Methods
@@ -79,12 +79,12 @@ namespace RDFSharp.Query
             bool keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
-            if (row.Table.Columns.Contains(this.VariableName))
+            if (row.Table.Columns.Contains(VariableName))
             {
-                string variableValue = row[this.VariableName].ToString();
+                string variableValue = row[VariableName].ToString();
 
                 //Successfull match if given datatype is found in the variable
-                keepRow = this.DatatypeRegex.IsMatch(variableValue);
+                keepRow = DatatypeRegex.IsMatch(variableValue);
 
                 //Apply the eventual negation
                 if (applyNegation)

@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build an or constraint
         /// </summary>
         public RDFOrConstraint()
-            => this.OrShapes = new Dictionary<long, RDFResource>();
+            => OrShapes = new Dictionary<long, RDFResource>();
         #endregion
 
         #region Methods
@@ -45,8 +45,8 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFOrConstraint AddShape(RDFResource shapeUri)
         {
-            if (shapeUri != null && !this.OrShapes.ContainsKey(shapeUri.PatternMemberID))
-                this.OrShapes.Add(shapeUri.PatternMemberID, shapeUri);
+            if (shapeUri != null && !OrShapes.ContainsKey(shapeUri.PatternMemberID))
+                OrShapes.Add(shapeUri.PatternMemberID, shapeUri);
             return this;
         }
 
@@ -59,7 +59,7 @@ namespace RDFSharp.Model
 
             //Search for given or shapes
             List<RDFShape> orShapes = new List<RDFShape>();
-            foreach (RDFResource orShapeUri in this.OrShapes.Values)
+            foreach (RDFResource orShapeUri in OrShapes.Values)
             {
                 RDFShape orShape = shapesGraph.SelectShape(orShapeUri.ToString());
                 if (orShape != null)
@@ -110,7 +110,7 @@ namespace RDFSharp.Model
             {
                 //Get collection from OrShapes
                 RDFCollection orShapes = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource) { InternalReificationSubject = this };
-                foreach (RDFResource orShape in this.OrShapes.Values)
+                foreach (RDFResource orShape in OrShapes.Values)
                     orShapes.AddItem(orShape);
                 result.AddCollection(orShapes);
 

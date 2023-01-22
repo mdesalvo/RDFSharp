@@ -41,7 +41,7 @@ namespace RDFSharp.Model
             if (disjointPredicate == null)
                 throw new RDFModelException("Cannot create RDFDisjointConstraint because given \"disjointPredicate\" parameter is null.");
             
-            this.DisjointPredicate = disjointPredicate;
+            DisjointPredicate = disjointPredicate;
         }
         #endregion
 
@@ -56,13 +56,13 @@ namespace RDFSharp.Model
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Must not have common values with property <{this.DisjointPredicate}>"));
+                shapeMessages.Add(new RDFPlainLiteral($"Must not have common values with property <{DisjointPredicate}>"));
 
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
             {
                 if (dataGraph.Any(t => t.Subject.Equals(focusNode)
-                                           && t.Predicate.Equals(this.DisjointPredicate)
+                                           && t.Predicate.Equals(DisjointPredicate)
                                                && t.Object.Equals(valueNode)))
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.DISJOINT_CONSTRAINT_COMPONENT,
@@ -86,7 +86,7 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:disjoint
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.DISJOINT, this.DisjointPredicate));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.DISJOINT, DisjointPredicate));
             }
             return result;
         }

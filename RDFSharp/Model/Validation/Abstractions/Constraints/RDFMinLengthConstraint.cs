@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a minLength constraint with the given minLength
         /// </summary>
         public RDFMinLengthConstraint(int minLength)
-            => this.MinLength = minLength < 0 ? 0 : minLength;
+            => MinLength = minLength < 0 ? 0 : minLength;
         #endregion
 
         #region Methods
@@ -50,7 +50,7 @@ namespace RDFSharp.Model
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Must have a minimum length of {this.MinLength} characters and can't be a blank node"));
+                shapeMessages.Add(new RDFPlainLiteral($"Must have a minimum length of {MinLength} characters and can't be a blank node"));
 
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
@@ -60,7 +60,7 @@ namespace RDFSharp.Model
                     //Resource
                     case RDFResource valueNodeResource:
                         if (valueNodeResource.IsBlank
-                                || (this.MinLength > 0 && valueNodeResource.ToString().Length < this.MinLength))
+                                || (MinLength > 0 && valueNodeResource.ToString().Length < MinLength))
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -72,7 +72,7 @@ namespace RDFSharp.Model
 
                     //Literal
                     case RDFLiteral valueNodeLiteral:
-                        if (this.MinLength > 0 && valueNodeLiteral.Value.Length < this.MinLength)
+                        if (MinLength > 0 && valueNodeLiteral.Value.Length < MinLength)
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -97,7 +97,7 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:minLength
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_LENGTH, new RDFTypedLiteral(this.MinLength.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_LENGTH, new RDFTypedLiteral(MinLength.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
             }
             return result;
         }

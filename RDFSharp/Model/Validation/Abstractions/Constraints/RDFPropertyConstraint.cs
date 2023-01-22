@@ -40,7 +40,7 @@ namespace RDFSharp.Model
             if (propertyShapeUri == null)
                 throw new RDFModelException("Cannot create RDFPropertyConstraint because given \"propertyShapeUri\" parameter is null.");
             
-            this.PropertyShapeUri = propertyShapeUri;
+            PropertyShapeUri = propertyShapeUri;
         }
         #endregion
 
@@ -53,7 +53,7 @@ namespace RDFSharp.Model
             RDFValidationReport report = new RDFValidationReport();
 
             //Search for given property shape
-            RDFPropertyShape propertyShape = shapesGraph.SelectShape(this.PropertyShapeUri.ToString()) as RDFPropertyShape;
+            RDFPropertyShape propertyShape = shapesGraph.SelectShape(PropertyShapeUri.ToString()) as RDFPropertyShape;
             if (propertyShape == null)
                 return report;
 
@@ -75,7 +75,7 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:property
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.PROPERTY, this.PropertyShapeUri));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.PROPERTY, PropertyShapeUri));
             }
             return result;
         }

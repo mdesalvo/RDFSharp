@@ -85,7 +85,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the expression
         /// </summary>
         public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>());
         internal abstract string ToString(List<RDFNamespace> prefixes);
         #endregion
 

@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a maxCount constraint with the given maxCount
         /// </summary>
         public RDFMaxCountConstraint(int maxCount)
-            => this.MaxCount = maxCount < 0 ? 0 : maxCount;
+            => MaxCount = maxCount < 0 ? 0 : maxCount;
         #endregion
 
         #region Methods
@@ -50,10 +50,10 @@ namespace RDFSharp.Model
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Must have a maximum of {this.MaxCount} occurrences"));
+                shapeMessages.Add(new RDFPlainLiteral($"Must have a maximum of {MaxCount} occurrences"));
 
             #region Evaluation
-            if (valueNodes.Count > this.MaxCount)
+            if (valueNodes.Count > MaxCount)
                 report.AddResult(new RDFValidationResult(shape,
                                                          RDFVocabulary.SHACL.MAX_COUNT_CONSTRAINT_COMPONENT,
                                                          focusNode,
@@ -75,7 +75,7 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:maxCount
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MAX_COUNT, new RDFTypedLiteral(this.MaxCount.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MAX_COUNT, new RDFTypedLiteral(MaxCount.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
             }
             return result;
         }

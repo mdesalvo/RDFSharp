@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build an and constraint
         /// </summary>
         public RDFAndConstraint()
-            => this.AndShapes = new Dictionary<long, RDFResource>();
+            => AndShapes = new Dictionary<long, RDFResource>();
         #endregion
 
         #region Methods
@@ -45,8 +45,8 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFAndConstraint AddShape(RDFResource shapeUri)
         {
-            if (shapeUri != null && !this.AndShapes.ContainsKey(shapeUri.PatternMemberID))
-                this.AndShapes.Add(shapeUri.PatternMemberID, shapeUri);
+            if (shapeUri != null && !AndShapes.ContainsKey(shapeUri.PatternMemberID))
+                AndShapes.Add(shapeUri.PatternMemberID, shapeUri);
             return this;
         }
 
@@ -59,7 +59,7 @@ namespace RDFSharp.Model
 
             //Search for given and shapes
             List<RDFShape> andShapes = new List<RDFShape>();
-            foreach (RDFResource andShapeUri in this.AndShapes.Values)
+            foreach (RDFResource andShapeUri in AndShapes.Values)
             {
                 RDFShape andShape = shapesGraph.SelectShape(andShapeUri.ToString());
                 if (andShape != null)
@@ -112,7 +112,7 @@ namespace RDFSharp.Model
             {
                 //Get collection from andShapes
                 RDFCollection andShapes = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource) { InternalReificationSubject = this };
-                foreach (RDFResource andShape in this.AndShapes.Values)
+                foreach (RDFResource andShape in AndShapes.Values)
                     andShapes.AddItem(andShape);
                 result.AddCollection(andShapes);
 

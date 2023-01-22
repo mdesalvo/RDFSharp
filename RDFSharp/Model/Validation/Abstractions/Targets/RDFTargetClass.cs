@@ -30,7 +30,7 @@ namespace RDFSharp.Model
             if (targetClass == null)
                 throw new RDFModelException("Cannot create RDFTargetClass because given \"targetClass\" parameter is null.");
             
-            this.TargetValue = targetClass;
+            TargetValue = targetClass;
         }
         #endregion
 
@@ -44,7 +44,7 @@ namespace RDFSharp.Model
 
             //sh:targetClass
             if (shape != null)
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.TARGET_CLASS, this.TargetValue));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.TARGET_CLASS, TargetValue));
 
             return result;
         }

@@ -37,7 +37,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a uniqueLang constraint with the given behavior
         /// </summary>
         public RDFUniqueLangConstraint(bool uniqueLang)
-            => this.UniqueLang = uniqueLang;
+            => UniqueLang = uniqueLang;
         #endregion
 
         #region Methods
@@ -54,7 +54,7 @@ namespace RDFSharp.Model
                 shapeMessages.Add(new RDFPlainLiteral($"Must not have the same language tag more than one time per value"));
 
             #region Evaluation
-            if (this.UniqueLang)
+            if (UniqueLang)
             {
                 HashSet<string> reportedLangs = new HashSet<string>();
                 List<RDFPlainLiteral> langlitValueNodes = valueNodes.OfType<RDFPlainLiteral>()
@@ -98,7 +98,7 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:uniqueLang
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.UNIQUE_LANG, this.UniqueLang ? RDFTypedLiteral.True : RDFTypedLiteral.False));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.UNIQUE_LANG, UniqueLang ? RDFTypedLiteral.True : RDFTypedLiteral.False));
             }
             return result;
         }

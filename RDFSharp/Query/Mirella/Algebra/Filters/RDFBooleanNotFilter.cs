@@ -43,7 +43,7 @@ namespace RDFSharp.Query
             if (filter is RDFExistsFilter)
                 throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is of type RDFExistsFilter: this is not allowed.");
 
-            this.Filter = filter;
+            Filter = filter;
         }
         #endregion
 
@@ -52,9 +52,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-            => string.Concat("FILTER ( !", this.Filter.ToString(prefixes).Replace("FILTER ", string.Empty).Trim(), " )");
+            => string.Concat("FILTER ( !", Filter.ToString(prefixes).Replace("FILTER ", string.Empty).Trim(), " )");
         #endregion
 
         #region Methods
@@ -64,7 +64,7 @@ namespace RDFSharp.Query
         internal override bool ApplyFilter(DataRow row, bool applyNegation)
         {
             //Negation logic is applied on the given filter result
-            bool keepRow = this.Filter.ApplyFilter(row, true);
+            bool keepRow = Filter.ApplyFilter(row, true);
 
             //Apply the eventual negation
             if (applyNegation)

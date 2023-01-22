@@ -39,8 +39,8 @@ namespace RDFSharp.Query
         /// Gets the string representation of the COUNT aggregator
         /// </summary>
         public override string ToString()
-            => this.IsDistinct ? string.Format("(COUNT(DISTINCT {0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable)
-                               : string.Format("(COUNT({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable);
+            => IsDistinct ? string.Format("(COUNT(DISTINCT {0}) AS {1})", AggregatorVariable, ProjectionVariable)
+                               : string.Format("(COUNT({0}) AS {1})", AggregatorVariable, ProjectionVariable);
         #endregion
 
         #region Methods
@@ -51,20 +51,20 @@ namespace RDFSharp.Query
         {
             //Get row value
             string rowValue = GetRowValueAsString(tableRow);
-            if (this.IsDistinct)
+            if (IsDistinct)
             {
                 //Cache-Hit: distinctness failed
-                if (this.AggregatorContext.CheckPartitionKeyRowValueCache<string>(partitionKey, rowValue))
+                if (AggregatorContext.CheckPartitionKeyRowValueCache<string>(partitionKey, rowValue))
                     return;
                 //Cache-Miss: distinctness passed
                 else
-                    this.AggregatorContext.UpdatePartitionKeyRowValueCache<string>(partitionKey, rowValue);
+                    AggregatorContext.UpdatePartitionKeyRowValueCache<string>(partitionKey, rowValue);
             }
             //Get aggregator value
-            double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<double>(partitionKey, 0d);
+            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<double>(partitionKey, 0d);
             //Update aggregator context (count)
             if (!string.IsNullOrEmpty(rowValue))
-                this.AggregatorContext.UpdatePartitionKeyExecutionResult<double>(partitionKey, aggregatorValue + 1d);
+                AggregatorContext.UpdatePartitionKeyExecutionResult<double>(partitionKey, aggregatorValue + 1d);
         }
 
         /// <summary>
@@ -77,13 +77,13 @@ namespace RDFSharp.Query
             //Initialization
             partitionVariables.ForEach(pv =>
                 RDFQueryEngine.AddColumn(projFuncTable, pv.VariableName));
-            RDFQueryEngine.AddColumn(projFuncTable, this.ProjectionVariable.VariableName);
+            RDFQueryEngine.AddColumn(projFuncTable, ProjectionVariable.VariableName);
 
             //Finalization
-            foreach (string partitionKey in this.AggregatorContext.ExecutionRegistry.Keys)
+            foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
             {
                 //Update result's table
-                this.UpdateProjectionTable(partitionKey, projFuncTable);
+                UpdateProjectionTable(partitionKey, projFuncTable);
             }
 
             return projFuncTable;
@@ -103,8 +103,8 @@ namespace RDFSharp.Query
             }
 
             //Add aggregator value to bindings
-            double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<double>(partitionKey, 0d);
-            bindings.Add(this.ProjectionVariable.VariableName, new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString());
+            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<double>(partitionKey, 0d);
+            bindings.Add(ProjectionVariable.VariableName, new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString());
 
             //Add bindings to result's table
             RDFQueryEngine.AddRow(projFuncTable, bindings);

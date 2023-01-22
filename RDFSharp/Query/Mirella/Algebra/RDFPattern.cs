@@ -84,33 +84,33 @@ namespace RDFSharp.Query
             if (!(objLit is RDFResource || objLit is RDFLiteral || objLit is RDFVariable))
                 throw new RDFQueryException("Cannot create RDFPattern because given \"objLit\" parameter (" + objLit + ") is neither a resource, or a literal or a variable");
 
-            this.Variables = new List<RDFVariable>();
-            this.IsEvaluable = true;
-            this.IsOptional = false;
-            this.JoinAsUnion = false;
+            Variables = new List<RDFVariable>();
+            IsEvaluable = true;
+            IsOptional = false;
+            JoinAsUnion = false;
             
             //Subject
-            this.Subject = subject;
+            Subject = subject;
             if (subject is RDFVariable)
             {
-                if (!this.Variables.Any(v => v.Equals(subject)))
-                    this.Variables.Add((RDFVariable)subject);
+                if (!Variables.Any(v => v.Equals(subject)))
+                    Variables.Add((RDFVariable)subject);
             }
 
             //Predicate
-            this.Predicate = predicate;
+            Predicate = predicate;
             if (predicate is RDFVariable)
             {
-                if (!this.Variables.Any(v => v.Equals(predicate)))
-                    this.Variables.Add((RDFVariable)predicate);
+                if (!Variables.Any(v => v.Equals(predicate)))
+                    Variables.Add((RDFVariable)predicate);
             }
 
             //Object/Literal
-            this.Object = objLit;
+            Object = objLit;
             if (objLit is RDFVariable)
             {
-                if (!this.Variables.Any(v => v.Equals(objLit)))
-                    this.Variables.Add((RDFVariable)objLit);
+                if (!Variables.Any(v => v.Equals(objLit)))
+                    Variables.Add((RDFVariable)objLit);
             }
         }
 
@@ -125,11 +125,11 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create RDFPattern because given \"context\" parameter (" + context + ") is neither a context or a variable");
 
             //Context
-            this.Context = context;
+            Context = context;
             if (context is RDFVariable)
             {
-                if (!this.Variables.Any(v => v.Equals(context)))
-                    this.Variables.Add((RDFVariable)context);
+                if (!Variables.Any(v => v.Equals(context)))
+                    Variables.Add((RDFVariable)context);
             }
         }
         #endregion
@@ -139,7 +139,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the pattern
         /// </summary>
         public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>());
         internal string ToString(List<RDFNamespace> prefixes)
             => RDFQueryPrinter.PrintPattern(this, prefixes);
         #endregion
@@ -150,7 +150,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPattern Optional()
         {
-            this.IsOptional = true;
+            IsOptional = true;
             return this;
         }
 
@@ -159,7 +159,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPattern UnionWithNext()
         {
-            this.JoinAsUnion = true;
+            JoinAsUnion = true;
             return this;
         }
         #endregion

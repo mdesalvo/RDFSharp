@@ -41,7 +41,7 @@ namespace RDFSharp.Model
             if (equalsPredicate == null)
                 throw new RDFModelException("Cannot create RDFEqualsConstraint because given \"equalsPredicate\" parameter is null.");
             
-            this.EqualsPredicate = equalsPredicate;
+            EqualsPredicate = equalsPredicate;
         }
         #endregion
 
@@ -56,11 +56,11 @@ namespace RDFSharp.Model
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Must have same values as property <{this.EqualsPredicate}>"));
+                shapeMessages.Add(new RDFPlainLiteral($"Must have same values as property <{EqualsPredicate}>"));
 
             #region Evaluation
             List<RDFPatternMember> predicateNodes = dataGraph.Where(t => t.Subject.Equals(focusNode)
-                                                                            && t.Predicate.Equals(this.EqualsPredicate))
+                                                                            && t.Predicate.Equals(EqualsPredicate))
                                                              .Select(x => x.Object)
                                                              .ToList();
 
@@ -101,7 +101,7 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:equals
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.EQUALS, this.EqualsPredicate));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.EQUALS, EqualsPredicate));
             }
             return result;
         }

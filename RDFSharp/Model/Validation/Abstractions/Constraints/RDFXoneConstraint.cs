@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a xone constraint
         /// </summary>
         public RDFXoneConstraint()
-            => this.XoneShapes = new Dictionary<long, RDFResource>();
+            => XoneShapes = new Dictionary<long, RDFResource>();
         #endregion
 
         #region Methods
@@ -45,8 +45,8 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFXoneConstraint AddShape(RDFResource shapeUri)
         {
-            if (shapeUri != null && !this.XoneShapes.ContainsKey(shapeUri.PatternMemberID))
-                this.XoneShapes.Add(shapeUri.PatternMemberID, shapeUri);
+            if (shapeUri != null && !XoneShapes.ContainsKey(shapeUri.PatternMemberID))
+                XoneShapes.Add(shapeUri.PatternMemberID, shapeUri);
             return this;
         }
 
@@ -59,7 +59,7 @@ namespace RDFSharp.Model
 
             //Search for given xone shapes
             List<RDFShape> xoneShapes = new List<RDFShape>();
-            foreach (RDFResource xoneShapeUri in this.XoneShapes.Values)
+            foreach (RDFResource xoneShapeUri in XoneShapes.Values)
             {
                 RDFShape xoneShape = shapesGraph.SelectShape(xoneShapeUri.ToString());
                 if (xoneShape != null)
@@ -111,7 +111,7 @@ namespace RDFSharp.Model
             {
                 //Get collection from xoneShapes
                 RDFCollection xoneShapes = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource) { InternalReificationSubject = this };
-                foreach (RDFResource xoneShape in this.XoneShapes.Values)
+                foreach (RDFResource xoneShape in XoneShapes.Values)
                     xoneShapes.AddItem(xoneShape);
                 result.AddCollection(xoneShapes);
 

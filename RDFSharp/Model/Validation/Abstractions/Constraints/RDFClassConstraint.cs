@@ -41,7 +41,7 @@ namespace RDFSharp.Model
             if (classType == null)
                 throw new RDFModelException("Cannot create RDFClassConstraint because given \"classType\" parameter is null.");
             
-            this.ClassType = classType;
+            ClassType = classType;
         }
         #endregion
 
@@ -52,12 +52,12 @@ namespace RDFSharp.Model
         internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
         {
             RDFValidationReport report = new RDFValidationReport();
-            List<RDFPatternMember> classInstances = dataGraph.GetInstancesOfClass(this.ClassType);
+            List<RDFPatternMember> classInstances = dataGraph.GetInstancesOfClass(ClassType);
 
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Value does not have class <{this.ClassType}>"));
+                shapeMessages.Add(new RDFPlainLiteral($"Value does not have class <{ClassType}>"));
 
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
@@ -102,7 +102,7 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:class
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLASS, this.ClassType));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLASS, ClassType));
             }
             return result;
         }

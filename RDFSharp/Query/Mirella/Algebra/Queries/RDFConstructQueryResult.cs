@@ -36,7 +36,7 @@ namespace RDFSharp.Query
         /// Gets the number of results produced by the query
         /// </summary>
         public long ConstructResultsCount
-            => this.ConstructResults.Rows.Count;
+            => ConstructResults.Rows.Count;
         #endregion
 
         #region Ctors
@@ -44,7 +44,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an empty CONSTRUCT result
         /// </summary>
         internal RDFConstructQueryResult()
-            => this.ConstructResults = new DataTable();
+            => ConstructResults = new DataTable();
         #endregion
 
         #region Methods
@@ -59,7 +59,7 @@ namespace RDFSharp.Query
             RDFPatternMember obj = null;
 
             //Iterate the datatable rows and generate the corresponding triples to be added to the result graph
-            IEnumerator resultRows = this.ConstructResults.Rows.GetEnumerator();
+            IEnumerator resultRows = ConstructResults.Rows.GetEnumerator();
             while (resultRows.MoveNext())
             {
                 subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?SUBJECT"].ToString());

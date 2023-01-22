@@ -288,14 +288,14 @@ namespace RDFSharp.Query
 
             #region Ctors
             internal RDFWebClient(int timeoutMilliseconds)
-                => this.TimeOut = timeoutMilliseconds < -1 ? -1 : timeoutMilliseconds;
+                => TimeOut = timeoutMilliseconds < -1 ? -1 : timeoutMilliseconds;
             #endregion
 
             #region Methods
             protected override WebRequest GetWebRequest(Uri address)
             {
                 WebRequest webRequest = base.GetWebRequest(address);
-                webRequest.Timeout = this.TimeOut;
+                webRequest.Timeout = TimeOut;
                 return webRequest;
             }
             #endregion

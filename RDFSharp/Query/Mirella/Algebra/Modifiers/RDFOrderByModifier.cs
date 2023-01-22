@@ -44,8 +44,8 @@ namespace RDFSharp.Query
             if (variable == null)
                 throw new RDFQueryException("Cannot create RDFOrderByModifier because given \"variable\" parameter is null.");
             
-            this.OrderByFlavor = orderbyFlavor;
-            this.Variable = variable;
+            OrderByFlavor = orderbyFlavor;
+            Variable = variable;
         }
         #endregion
 
@@ -54,7 +54,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the modifier
         /// </summary>
         public override string ToString()
-            => string.Concat(this.OrderByFlavor, "(", this.Variable, ")");
+            => string.Concat(OrderByFlavor, "(", Variable, ")");
         #endregion
 
         #region Methods
@@ -63,12 +63,12 @@ namespace RDFSharp.Query
         /// </summary>
         internal override DataTable ApplyModifier(DataTable table)
         {
-            if (table.Columns.Contains(this.Variable.ToString()))
+            if (table.Columns.Contains(Variable.ToString()))
             {
                 if (!string.IsNullOrEmpty(table.DefaultView.Sort))
-                    table.DefaultView.Sort = string.Concat(table.DefaultView.Sort, ", ", this.Variable, " ", this.OrderByFlavor);
+                    table.DefaultView.Sort = string.Concat(table.DefaultView.Sort, ", ", Variable, " ", OrderByFlavor);
                 else
-                    table.DefaultView.Sort = string.Concat(this.Variable, " ", this.OrderByFlavor);
+                    table.DefaultView.Sort = string.Concat(Variable, " ", OrderByFlavor);
             }
             return table;
         }

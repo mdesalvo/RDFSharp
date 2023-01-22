@@ -50,7 +50,7 @@ namespace RDFSharp.Store
             if (tempUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase) || tempUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
                 throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter represents a blank node Uri.");
             
-            this.Context = tempUri;
+            Context = tempUri;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace RDFSharp.Store
             if (tempUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase) || tempUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
                 throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter represents a blank node Uri.");
             
-            this.Context = tempUri;
+            Context = tempUri;
         }
         #endregion
 
@@ -76,7 +76,7 @@ namespace RDFSharp.Store
         /// Gives the string representation of the store context
         /// </summary>
         public override string ToString()
-            => this.Context.ToString();
+            => Context.ToString();
         #endregion
     }
 }

@@ -49,8 +49,8 @@ namespace RDFSharp.Query
             if (pattern.Variables.Count == 0)
                 throw new RDFQueryException("Cannot create RDFExistsFilter because given \"pattern\" parameter is a ground pattern.");
 
-            this.Pattern = pattern;
-            this.IsEvaluable = true;
+            Pattern = pattern;
+            IsEvaluable = true;
         }
         #endregion
 
@@ -59,9 +59,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-            => string.Concat("FILTER ( EXISTS { ", this.Pattern.ToString(prefixes), " } )");
+            => string.Concat("FILTER ( EXISTS { ", Pattern.ToString(prefixes), " } )");
         #endregion
 
         #region Methods
@@ -71,15 +71,15 @@ namespace RDFSharp.Query
         internal override bool ApplyFilter(DataRow row, bool applyNegation)
         {
             bool keepRow = false;
-            string subjectString = this.Pattern.Subject.ToString();
-            string predicateString = this.Pattern.Predicate.ToString();
-            string objectString = this.Pattern.Object.ToString();
+            string subjectString = Pattern.Subject.ToString();
+            string predicateString = Pattern.Predicate.ToString();
+            string objectString = Pattern.Object.ToString();
 
             #region Disjoint Evaluation
             //In case of disjointess between the query and the filter's pattern, all solutions are compatible
-            bool disjointSubject = this.Pattern.Subject is RDFVariable ? !row.Table.Columns.Contains(subjectString) : true;
-            bool disjointPredicate = this.Pattern.Predicate is RDFVariable ? !row.Table.Columns.Contains(predicateString) : true;
-            bool disjointObject = this.Pattern.Object is RDFVariable ? !row.Table.Columns.Contains(objectString) : true;
+            bool disjointSubject = Pattern.Subject is RDFVariable ? !row.Table.Columns.Contains(subjectString) : true;
+            bool disjointPredicate = Pattern.Predicate is RDFVariable ? !row.Table.Columns.Contains(predicateString) : true;
+            bool disjointObject = Pattern.Object is RDFVariable ? !row.Table.Columns.Contains(objectString) : true;
             if (disjointSubject && disjointPredicate && disjointObject)
                 keepRow = true;
             #endregion
@@ -87,13 +87,13 @@ namespace RDFSharp.Query
             #region Non-Disjoint Evaluation
             else
             {
-                EnumerableRowCollection<DataRow> patternResultsEnumerable = this.PatternResults?.AsEnumerable();
+                EnumerableRowCollection<DataRow> patternResultsEnumerable = PatternResults?.AsEnumerable();
                 if (patternResultsEnumerable?.Any() ?? false)
                 {
                     #region Subject
                     bool subjectCompared = false;                    
-                    if (this.Pattern.Subject is RDFVariable
-                            && this.PatternResults.Columns.Contains(subjectString)
+                    if (Pattern.Subject is RDFVariable
+                            && PatternResults.Columns.Contains(subjectString)
                                 && row.Table.Columns.Contains(subjectString))
                     {
                         //In case of emptiness the solution is compatible, otherwise proceed with comparison
@@ -111,8 +111,8 @@ namespace RDFSharp.Query
 
                     #region Predicate
                     bool predicateCompared = false;
-                    if (this.Pattern.Predicate is RDFVariable
-                            && this.PatternResults.Columns.Contains(predicateString)
+                    if (Pattern.Predicate is RDFVariable
+                            && PatternResults.Columns.Contains(predicateString)
                                 && row.Table.Columns.Contains(predicateString))
                     {
                         //In case of emptiness the solution is compatible, otherwise proceed with comparison
@@ -130,8 +130,8 @@ namespace RDFSharp.Query
 
                     #region Object
                     bool objectCompared = false;
-                    if (this.Pattern.Object is RDFVariable
-                            && this.PatternResults.Columns.Contains(objectString)
+                    if (Pattern.Object is RDFVariable
+                            && PatternResults.Columns.Contains(objectString)
                                 && row.Table.Columns.Contains(objectString))
                     {
                         //In case of emptiness the solution is compatible, otherwise proceed with comparison

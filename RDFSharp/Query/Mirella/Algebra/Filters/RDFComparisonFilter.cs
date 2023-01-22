@@ -55,11 +55,11 @@ namespace RDFSharp.Query
             if (rightMember == null)
                 throw new RDFQueryException("Cannot create RDFComparisonFilter because given \"rightMember\" parameter is null.");
 
-            this.ComparisonFlavor = comparisonFlavor;
-            this.LeftMember = leftMember;
-            this.LeftMemberString = leftMember.ToString();
-            this.RightMember = rightMember;
-            this.RightMemberString = rightMember.ToString();
+            ComparisonFlavor = comparisonFlavor;
+            LeftMember = leftMember;
+            LeftMemberString = leftMember.ToString();
+            RightMember = rightMember;
+            RightMemberString = rightMember.ToString();
         }
         #endregion
 
@@ -68,12 +68,12 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
         {
-            string leftValue = RDFQueryPrinter.PrintPatternMember(this.LeftMember, prefixes);
-            string rightValue = RDFQueryPrinter.PrintPatternMember(this.RightMember, prefixes);
-            switch (this.ComparisonFlavor)
+            string leftValue = RDFQueryPrinter.PrintPatternMember(LeftMember, prefixes);
+            string rightValue = RDFQueryPrinter.PrintPatternMember(RightMember, prefixes);
+            switch (ComparisonFlavor)
             {
                 case RDFQueryEnums.RDFComparisonFlavors.LessThan:
                     return string.Concat("FILTER ( ", leftValue, " < ",  rightValue, " )");
@@ -87,7 +87,7 @@ namespace RDFSharp.Query
                     return string.Concat("FILTER ( ", leftValue, " >= ", rightValue, " )");
                 case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
                     return string.Concat("FILTER ( ", leftValue, " > ",  rightValue, " )");
-                default: throw new RDFQueryException("Cannot get string representation of unknown '" + this.ComparisonFlavor + "' RDFComparisonFilter.");
+                default: throw new RDFQueryException("Cannot get string representation of unknown '" + ComparisonFlavor + "' RDFComparisonFilter.");
             }
         }
         #endregion
@@ -101,21 +101,21 @@ namespace RDFSharp.Query
             bool keepRow = true;
 
             //In case LeftMember is a variable, try to get the value corresponding to its column; if column not found, the filter fails
-            RDFPatternMember leftValue = this.LeftMember;
-            if (this.LeftMember is RDFVariable)
+            RDFPatternMember leftValue = LeftMember;
+            if (LeftMember is RDFVariable)
             {
-                if (row.Table.Columns.Contains(this.LeftMemberString))
-                    leftValue = RDFQueryUtilities.ParseRDFPatternMember(row[this.LeftMemberString].ToString());
+                if (row.Table.Columns.Contains(LeftMemberString))
+                    leftValue = RDFQueryUtilities.ParseRDFPatternMember(row[LeftMemberString].ToString());
                 else
                     keepRow = false;
             }
 
             //In case RightMember is a variable, try to get the value corresponding to its column; if column not found, the filter fails
-            RDFPatternMember rightValue = this.RightMember;
-            if (keepRow && this.RightMember is RDFVariable)
+            RDFPatternMember rightValue = RightMember;
+            if (keepRow && RightMember is RDFVariable)
             {
-                if (row.Table.Columns.Contains(this.RightMemberString))
-                    rightValue = RDFQueryUtilities.ParseRDFPatternMember(row[this.RightMemberString].ToString());
+                if (row.Table.Columns.Contains(RightMemberString))
+                    rightValue = RDFQueryUtilities.ParseRDFPatternMember(row[RightMemberString].ToString());
                 else
                     keepRow = false;
             }
@@ -132,7 +132,7 @@ namespace RDFSharp.Query
                 //Type Correct
                 else
                 {
-                    switch (this.ComparisonFlavor)
+                    switch (ComparisonFlavor)
                     {
                         case RDFQueryEnums.RDFComparisonFlavors.LessThan:
                             keepRow = (comparison  < 0);

@@ -36,12 +36,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Count of the federation's data sources
         /// </summary>
-        public int DataSourcesCount => this.DataSources.Count;
+        public int DataSourcesCount => DataSources.Count;
 
         /// <summary>
         /// Gets the enumerator on the federation's data sources for iteration
         /// </summary>
-        public IEnumerator<RDFDataSource> DataSourcesEnumerator => this.DataSources.GetEnumerator();
+        public IEnumerator<RDFDataSource> DataSourcesEnumerator => DataSources.GetEnumerator();
 
         /// <summary>
         /// List of data sources of the federation
@@ -55,8 +55,8 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFFederation()
         {
-            this.FederationName = string.Concat("FEDERATION|ID=", Guid.NewGuid().ToString("N"));
-            this.DataSources = new List<RDFDataSource>();
+            FederationName = string.Concat("FEDERATION|ID=", Guid.NewGuid().ToString("N"));
+            DataSources = new List<RDFDataSource>();
         }
         #endregion
 
@@ -64,17 +64,17 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the federation
         /// </summary>
-        public override string ToString() => this.FederationName;
+        public override string ToString() => FederationName;
 
         /// <summary>
         /// Exposes a typed enumerator on the federation's data sources
         /// </summary>
-        IEnumerator<RDFDataSource> IEnumerable<RDFDataSource>.GetEnumerator() => this.DataSourcesEnumerator;
+        IEnumerator<RDFDataSource> IEnumerable<RDFDataSource>.GetEnumerator() => DataSourcesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the federation's data sources
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() => this.DataSourcesEnumerator;
+        IEnumerator IEnumerable.GetEnumerator() => DataSourcesEnumerator;
         #endregion
 
         #region Methods
@@ -86,7 +86,7 @@ namespace RDFSharp.Query
         public RDFFederation AddGraph(RDFGraph graph)
         {
             if (graph != null)
-                this.DataSources.Add(graph);
+                DataSources.Add(graph);
             return this;
         }
 
@@ -96,7 +96,7 @@ namespace RDFSharp.Query
         public RDFFederation AddStore(RDFStore store)
         {
             if (store != null)
-                this.DataSources.Add(store);
+                DataSources.Add(store);
             return this;
         }
 
@@ -106,7 +106,7 @@ namespace RDFSharp.Query
         public RDFFederation AddFederation(RDFFederation federation)
         {
             if (federation != null && !federation.Equals(this))
-                this.DataSources.Add(federation);
+                DataSources.Add(federation);
             return this;
         }
 
@@ -116,7 +116,7 @@ namespace RDFSharp.Query
         public RDFFederation AddSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
         {
             if (sparqlEndpoint != null)
-                this.DataSources.Add(sparqlEndpoint);
+                DataSources.Add(sparqlEndpoint);
             return this;
         }
         #endregion
@@ -125,7 +125,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Clears the data sources of the federation
         /// </summary>
-        public void ClearDataSources() => this.DataSources.Clear();
+        public void ClearDataSources() => DataSources.Clear();
         #endregion
 
         #endregion

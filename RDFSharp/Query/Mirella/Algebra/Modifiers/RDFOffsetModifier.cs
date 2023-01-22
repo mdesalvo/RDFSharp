@@ -40,7 +40,7 @@ namespace RDFSharp.Query
             if (offset < 0)
                 throw new RDFQueryException("Cannot create RDFOffsetModifier because given \"offset\" parameter (" + offset + ") is negative.");
 
-            this.Offset = offset;
+            Offset = offset;
         }
         #endregion
 
@@ -49,7 +49,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the modifier
         /// </summary>
         public override string ToString()
-            => string.Concat("OFFSET ", this.Offset.ToString());
+            => string.Concat("OFFSET ", Offset.ToString());
         #endregion
 
         #region Methods
@@ -59,10 +59,10 @@ namespace RDFSharp.Query
         internal override DataTable ApplyModifier(DataTable table)
         {
             string tableSort = table.DefaultView.Sort;
-            if (table.Rows.Count == 0 || this.Offset >= table.Rows.Count)
+            if (table.Rows.Count == 0 || Offset >= table.Rows.Count)
                 table = table.Clone();
             else
-                table = table.AsEnumerable().Skip(this.Offset).CopyToDataTable();
+                table = table.AsEnumerable().Skip(Offset).CopyToDataTable();
             table.DefaultView.Sort = tableSort;
             return table;
         }

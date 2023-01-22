@@ -81,10 +81,10 @@ namespace RDFSharp.Model
             if (finalUri.ToString().StartsWith("bnode", StringComparison.OrdinalIgnoreCase) || finalUri.ToString().StartsWith("xmlns", StringComparison.OrdinalIgnoreCase))
                 throw new RDFModelException("Cannot create RDFNamespace because \"uri\" parameter cannot start with \"bnode:\" or \"xmlns:\"");
             
-            this.NamespacePrefix = finalPrefix;
-            this.NamespaceUri = finalUri;
-            this.DereferenceUri = finalUri;
-            this.NamespaceID = RDFModelUtilities.CreateHash(this.ToString());
+            NamespacePrefix = finalPrefix;
+            NamespaceUri = finalUri;
+            DereferenceUri = finalUri;
+            NamespaceID = RDFModelUtilities.CreateHash(ToString());
         }
         #endregion
 
@@ -93,13 +93,13 @@ namespace RDFSharp.Model
         /// Gives the string representation of the namespace
         /// </summary>
         public override string ToString()
-            => this.NamespaceUri.ToString();
+            => NamespaceUri.ToString();
 
         /// <summary>
         /// Performs the equality comparison between two namespaces
         /// </summary>
         public bool Equals(RDFNamespace other)
-            => other != null && this.NamespaceID.Equals(other.NamespaceID);
+            => other != null && NamespaceID.Equals(other.NamespaceID);
         #endregion
 
         #region Methods
@@ -113,7 +113,7 @@ namespace RDFSharp.Model
                     !dereferenceUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase) &&
                       !dereferenceUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
             {
-                this.DereferenceUri = dereferenceUri;
+                DereferenceUri = dereferenceUri;
             }
             return this;
         }
@@ -123,7 +123,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal RDFNamespace SetTemporary(bool temporary)
         {
-            this.IsTemporary = temporary;
+            IsTemporary = temporary;
             return this;
         }
         #endregion

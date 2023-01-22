@@ -44,7 +44,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an empty SELECT query
         /// </summary>
         public RDFSelectQuery()
-            => this.ProjectionVars = new Dictionary<RDFVariable, (int, RDFExpression)>();
+            => ProjectionVars = new Dictionary<RDFVariable, (int, RDFExpression)>();
         #endregion
 
         #region Interfaces
@@ -69,8 +69,8 @@ namespace RDFSharp.Query
         {
             if (projectionVariable != null)
             {
-                if (!this.ProjectionVars.Any(pv => pv.Key.Equals(projectionVariable)))
-                    this.ProjectionVars.Add(projectionVariable, (this.ProjectionVars.Count, projectionExpression));
+                if (!ProjectionVars.Any(pv => pv.Key.Equals(projectionVariable)))
+                    ProjectionVars.Add(projectionVariable, (ProjectionVars.Count, projectionExpression));
             }
             return this;
         }
@@ -83,26 +83,26 @@ namespace RDFSharp.Query
             if (modifier != null)
             {
                 //Ensure to have only one groupby modifier in the query
-                if (modifier is RDFGroupByModifier && this.GetModifiers().Any(m => m is RDFGroupByModifier))
+                if (modifier is RDFGroupByModifier && GetModifiers().Any(m => m is RDFGroupByModifier))
                     return this;
 
                 //Ensure to have only one distinct modifier in the query
-                if (modifier is RDFDistinctModifier && this.GetModifiers().Any(m => m is RDFDistinctModifier))
+                if (modifier is RDFDistinctModifier && GetModifiers().Any(m => m is RDFDistinctModifier))
                     return this;
 
                 //Ensure to have only one limit modifier in the query
-                if (modifier is RDFLimitModifier && this.GetModifiers().Any(m => m is RDFLimitModifier))
+                if (modifier is RDFLimitModifier && GetModifiers().Any(m => m is RDFLimitModifier))
                     return this;
 
                 //Ensure to have only one offset modifier in the query
-                if (modifier is RDFOffsetModifier && this.GetModifiers().Any(m => m is RDFOffsetModifier))
+                if (modifier is RDFOffsetModifier && GetModifiers().Any(m => m is RDFOffsetModifier))
                     return this;
 
                 //Ensure to have only one orderby modifier per variable in the query
-                if (modifier is RDFOrderByModifier && this.GetModifiers().Any(m => m is RDFOrderByModifier && ((RDFOrderByModifier)m).Variable.Equals(((RDFOrderByModifier)modifier).Variable)))
+                if (modifier is RDFOrderByModifier && GetModifiers().Any(m => m is RDFOrderByModifier && ((RDFOrderByModifier)m).Variable.Equals(((RDFOrderByModifier)modifier).Variable)))
                     return this;
 
-                this.QueryMembers.Add(modifier);
+                QueryMembers.Add(modifier);
             }
             return this;
         }
@@ -130,7 +130,7 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given graph
         /// </summary>
         public Task<RDFSelectQueryResult> ApplyToGraphAsync(RDFGraph graph)
-            => Task.Run(() => this.ApplyToGraph(graph));
+            => Task.Run(() => ApplyToGraph(graph));
 
         /// <summary>
         /// Applies the query to the given store
@@ -143,7 +143,7 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given store
         /// </summary>
         public Task<RDFSelectQueryResult> ApplyToStoreAsync(RDFStore store)
-            => Task.Run(() => this.ApplyToStore(store));
+            => Task.Run(() => ApplyToStore(store));
 
         /// <summary>
         /// Applies the query to the given federation
@@ -156,13 +156,13 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given federation
         /// </summary>
         public Task<RDFSelectQueryResult> ApplyToFederationAsync(RDFFederation federation)
-            => Task.Run(() => this.ApplyToFederation(federation));
+            => Task.Run(() => ApplyToFederation(federation));
 
         /// <summary>
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
         public RDFSelectQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
-            => ApplyRawToSPARQLEndpoint(this.ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+            => ApplyRawToSPARQLEndpoint(ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
 
         /// <summary>
         /// Applies the given raw string SELECT query to the given SPARQL endpoint
@@ -174,7 +174,7 @@ namespace RDFSharp.Query
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
         public RDFSelectQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-            => ApplyRawToSPARQLEndpoint(this.ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
+            => ApplyRawToSPARQLEndpoint(ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
 
         /// <summary>
         /// Applies the given raw string SELECT query to the given SPARQL endpoint
@@ -237,7 +237,7 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given SPARQL endpoint
         /// </summary>
         public Task<RDFSelectQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
-            => ApplyRawToSPARQLEndpointAsync(this.ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+            => ApplyRawToSPARQLEndpointAsync(ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
 
         /// <summary>
         /// Asynchronously applies the given raw string SELECT query to the given SPARQL endpoint
@@ -249,7 +249,7 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given SPARQL endpoint
         /// </summary>
         public Task<RDFSelectQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-            => ApplyRawToSPARQLEndpointAsync(this.ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
+            => ApplyRawToSPARQLEndpointAsync(ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
 
         /// <summary>
         /// Asynchronously applies the given raw string SELECT query to the given SPARQL endpoint
@@ -267,13 +267,13 @@ namespace RDFSharp.Query
                 switch (dataSource)
                 {
                     case RDFGraph graph:
-                        return this.ApplyToGraph(graph);
+                        return ApplyToGraph(graph);
                     case RDFStore store:
-                        return this.ApplyToStore(store);
+                        return ApplyToStore(store);
                     case RDFFederation federation:
-                        return this.ApplyToFederation(federation);
+                        return ApplyToFederation(federation);
                     case RDFSPARQLEndpoint sparqlEndpoint:
-                        return this.ApplyToSPARQLEndpoint(sparqlEndpoint);
+                        return ApplyToSPARQLEndpoint(sparqlEndpoint);
                 }
             }
             return new RDFSelectQueryResult();
@@ -283,14 +283,14 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given data source
         /// </summary>
         internal Task<RDFSelectQueryResult> ApplyToDataSourceAsync(RDFDataSource dataSource)
-            => Task.Run(() => this.ApplyToDataSource(dataSource));
+            => Task.Run(() => ApplyToDataSource(dataSource));
 
         /// <summary>
         /// Sets the query to be joined as optional with the previous query member
         /// </summary>
         public RDFSelectQuery Optional()
         {
-            this.IsOptional = true;
+            IsOptional = true;
             return this;
         }
 
@@ -299,7 +299,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFSelectQuery UnionWithNext()
         {
-            this.JoinAsUnion = true;
+            JoinAsUnion = true;
             return this;
         }
         #endregion

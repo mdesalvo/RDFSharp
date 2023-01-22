@@ -34,7 +34,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Flag indicating the resource is blank or not
         /// </summary>
-        public bool IsBlank => string.Equals(this.URI.Scheme, "bnode");
+        public bool IsBlank => string.Equals(URI.Scheme, "bnode");
         #endregion
 
         #region Ctors
@@ -54,12 +54,12 @@ namespace RDFSharp.Model
         internal RDFResource(string uriString, Dictionary<string, long> hashContext)
         {
             Uri tempUri = RDFModelUtilities.GetUriFromString(uriString);
-            this.URI = tempUri ?? throw new RDFModelException("Cannot create RDFResource because given \"uriString\" parameter is null or cannot be converted to a valid Uri");
+            URI = tempUri ?? throw new RDFModelException("Cannot create RDFResource because given \"uriString\" parameter is null or cannot be converted to a valid Uri");
 
             if (hashContext != null)
             {
-                uriString = this.URI.ToString();
-                this.LazyPatternMemberID = new Lazy<long>(() => 
+                uriString = URI.ToString();
+                LazyPatternMemberID = new Lazy<long>(() => 
                 {
                     //Cache-Hit
                     if (hashContext.TryGetValue(uriString, out long hashValue))
@@ -81,7 +81,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the resource
         /// </summary>
-        public override string ToString() => this.URI.ToString();
+        public override string ToString() => URI.ToString();
         #endregion
     }
 }

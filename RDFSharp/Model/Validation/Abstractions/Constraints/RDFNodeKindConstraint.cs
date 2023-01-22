@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a nodeKind constraint of the given kind
         /// </summary>
         public RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds nodeKind)
-            => this.NodeKind = nodeKind;
+            => NodeKind = nodeKind;
         #endregion
 
         #region Methods
@@ -50,7 +50,7 @@ namespace RDFSharp.Model
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Value is not of required kind <{this.NodeKind}>"));
+                shapeMessages.Add(new RDFPlainLiteral($"Value is not of required kind <{NodeKind}>"));
 
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
@@ -61,9 +61,9 @@ namespace RDFSharp.Model
                     case RDFResource valueNodeResource:
                         if (valueNodeResource.IsBlank)
                         {
-                            if (this.NodeKind == RDFValidationEnums.RDFNodeKinds.IRI
-                                    || this.NodeKind == RDFValidationEnums.RDFNodeKinds.IRIOrLiteral
-                                        || this.NodeKind == RDFValidationEnums.RDFNodeKinds.Literal)
+                            if (NodeKind == RDFValidationEnums.RDFNodeKinds.IRI
+                                    || NodeKind == RDFValidationEnums.RDFNodeKinds.IRIOrLiteral
+                                        || NodeKind == RDFValidationEnums.RDFNodeKinds.Literal)
                             {
                                 report.AddResult(new RDFValidationResult(shape,
                                                                          RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
@@ -76,9 +76,9 @@ namespace RDFSharp.Model
                         }
                         else
                         {
-                            if (this.NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNode
-                                    || this.NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral
-                                        || this.NodeKind == RDFValidationEnums.RDFNodeKinds.Literal)
+                            if (NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNode
+                                    || NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral
+                                        || NodeKind == RDFValidationEnums.RDFNodeKinds.Literal)
                             {
                                 report.AddResult(new RDFValidationResult(shape,
                                                                          RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
@@ -93,9 +93,9 @@ namespace RDFSharp.Model
 
                     //Literal
                     case RDFLiteral valueNodeLiteral:
-                        if (this.NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNode
-                                || this.NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI
-                                    || this.NodeKind == RDFValidationEnums.RDFNodeKinds.IRI)
+                        if (NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNode
+                                || NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI
+                                    || NodeKind == RDFValidationEnums.RDFNodeKinds.IRI)
                         {
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
@@ -122,7 +122,7 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:nodeKind
-                switch (this.NodeKind)
+                switch (NodeKind)
                 {
                     case RDFValidationEnums.RDFNodeKinds.BlankNode:
                         result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NODE_KIND, RDFVocabulary.SHACL.BLANK_NODE));

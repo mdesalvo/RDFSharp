@@ -45,13 +45,13 @@ namespace RDFSharp.Model
         /// Count of the container's items
         /// </summary>
         public int ItemsCount
-            => this.Items.Count;
+            => Items.Count;
 
         /// <summary>
         /// Gets the enumerator on the container's items for iteration
         /// </summary>
         public IEnumerator<RDFPatternMember> ItemsEnumerator
-            => this.Items.GetEnumerator();
+            => Items.GetEnumerator();
 
         /// <summary>
         /// List of the items contained in the container
@@ -65,10 +65,10 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFContainer(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType)
         {
-            this.ContainerType = containerType;
-            this.ItemType = itemType;
-            this.ReificationSubject = new RDFResource();
-            this.Items = new List<RDFPatternMember>();
+            ContainerType = containerType;
+            ItemType = itemType;
+            ReificationSubject = new RDFResource();
+            Items = new List<RDFPatternMember>();
         }
         #endregion
 
@@ -77,13 +77,13 @@ namespace RDFSharp.Model
         /// Exposes a typed enumerator on the container's items
         /// </summary>
         IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator()
-            => this.ItemsEnumerator;
+            => ItemsEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the container's items
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator()
-            => this.ItemsEnumerator;
+            => ItemsEnumerator;
         #endregion
 
         #region Methods
@@ -94,8 +94,8 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFContainer AddItem(RDFResource item)
         {
-            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
-                this.AddItemInternal(item);
+            if (item != null && ItemType == RDFModelEnums.RDFItemTypes.Resource)
+                AddItemInternal(item);
             return this;
         }
 
@@ -104,8 +104,8 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFContainer AddItem(RDFLiteral item)
         {
-            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
-                this.AddItemInternal(item);
+            if (item != null && ItemType == RDFModelEnums.RDFItemTypes.Literal)
+                AddItemInternal(item);
             return this;
         }
 
@@ -114,16 +114,16 @@ namespace RDFSharp.Model
         /// </summary>
         internal void AddItemInternal(RDFPatternMember item)
         {
-            switch (this.ContainerType)
+            switch (ContainerType)
             {
                 case RDFModelEnums.RDFContainerTypes.Alt:
                     //Avoid duplicates in case of "rdf:Alt" container
-                    if (this.Items.Find(x => x.Equals(item)) == null)
-                        this.Items.Add(item);
+                    if (Items.Find(x => x.Equals(item)) == null)
+                        Items.Add(item);
                     break;
                 case RDFModelEnums.RDFContainerTypes.Bag:
                 case RDFModelEnums.RDFContainerTypes.Seq:
-                    this.Items.Add(item);
+                    Items.Add(item);
                     break;
             }
         }
@@ -135,8 +135,8 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFContainer RemoveItem(RDFResource item)
         {
-            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
-                this.Items.RemoveAll(x => x.Equals(item));
+            if (item != null && ItemType == RDFModelEnums.RDFItemTypes.Resource)
+                Items.RemoveAll(x => x.Equals(item));
             return this;
         }
 
@@ -145,8 +145,8 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFContainer RemoveItem(RDFLiteral item)
         {
-            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
-                this.Items.RemoveAll(x => x.Equals(item));
+            if (item != null && ItemType == RDFModelEnums.RDFItemTypes.Literal)
+                Items.RemoveAll(x => x.Equals(item));
             return this;
         }
 
@@ -154,7 +154,7 @@ namespace RDFSharp.Model
         /// Removes all the items from the container
         /// </summary>
         public void ClearItems()
-            => this.Items.Clear();
+            => Items.Clear();
         #endregion
 
         #region Reify
@@ -168,16 +168,16 @@ namespace RDFSharp.Model
             RDFGraph reifCont = new RDFGraph();
 
             //  Subject -> rdf:type -> [rdf:Bag|rdf:Seq|rdf:Alt]
-            switch (this.ContainerType)
+            switch (ContainerType)
             {
                 case RDFModelEnums.RDFContainerTypes.Bag:
-                    reifCont.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.BAG));
+                    reifCont.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.BAG));
                     break;
                 case RDFModelEnums.RDFContainerTypes.Seq:
-                    reifCont.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.SEQ));
+                    reifCont.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.SEQ));
                     break;
                 case RDFModelEnums.RDFContainerTypes.Alt:
-                    reifCont.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT));
+                    reifCont.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT));
                     break;
             }
 
@@ -186,10 +186,10 @@ namespace RDFSharp.Model
             foreach (RDFPatternMember item in this)
             {
                 RDFResource ordPred = new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, "_", (++index).ToString()));
-                if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
-                    reifCont.AddTriple(new RDFTriple(this.ReificationSubject, ordPred, (RDFResource)item));
+                if (ItemType == RDFModelEnums.RDFItemTypes.Resource)
+                    reifCont.AddTriple(new RDFTriple(ReificationSubject, ordPred, (RDFResource)item));
                 else
-                    reifCont.AddTriple(new RDFTriple(this.ReificationSubject, ordPred, (RDFLiteral)item));
+                    reifCont.AddTriple(new RDFTriple(ReificationSubject, ordPred, (RDFLiteral)item));
             }
 
             return reifCont;

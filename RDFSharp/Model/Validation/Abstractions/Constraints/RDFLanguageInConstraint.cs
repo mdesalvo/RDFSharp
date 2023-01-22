@@ -38,14 +38,14 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFLanguageInConstraint(List<string> languageTags)
         {
-            this.LanguageTags = new HashSet<string>();
+            LanguageTags = new HashSet<string>();
 
             //Accept only language tags compatible with langMatches filter
             languageTags?.ForEach(lt =>
             {
                 string languageTag = lt?.Trim() ?? string.Empty;
                 if (languageTag == string.Empty || languageTag == "*" || RDFPlainLiteral.LangTag.Value.Match(languageTag).Success)
-                    this.LanguageTags.Add(languageTag.ToUpperInvariant());
+                    LanguageTags.Add(languageTag.ToUpperInvariant());
             });
         }
         #endregion
@@ -71,7 +71,7 @@ namespace RDFSharp.Model
                     //PlainLiteral
                     case RDFPlainLiteral valueNodePlainLiteral:
                         bool langMatches = false;
-                        var langTagsEnumerator = this.LanguageTags.GetEnumerator();
+                        var langTagsEnumerator = LanguageTags.GetEnumerator();
                         while (langTagsEnumerator.MoveNext() && !langMatches)
                         {
                             //NO language is found in the variable
@@ -125,7 +125,7 @@ namespace RDFSharp.Model
             {
                 //Get collection from language tags
                 RDFCollection languageTags = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal) { InternalReificationSubject = this };
-                foreach (string languageTag in this.LanguageTags)
+                foreach (string languageTag in LanguageTags)
                     languageTags.AddItem(new RDFPlainLiteral(languageTag));
                 result.AddCollection(languageTags);
 

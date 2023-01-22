@@ -42,7 +42,7 @@ namespace RDFSharp.Query
             if (variable == null)
                 throw new RDFQueryException("Cannot create RDFIsUriFilter because given \"variable\" parameter is null.");
 
-            this.VariableName = variable.ToString();
+            VariableName = variable.ToString();
         }
         #endregion
 
@@ -51,9 +51,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-            => $"FILTER ( ISURI({this.VariableName}) )";
+            => $"FILTER ( ISURI({VariableName}) )";
         #endregion
 
         #region Methods
@@ -65,9 +65,9 @@ namespace RDFSharp.Query
             bool keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
-            if (row.Table.Columns.Contains(this.VariableName))
+            if (row.Table.Columns.Contains(VariableName))
             {
-                string variableValue = row[this.VariableName].ToString();
+                string variableValue = row[VariableName].ToString();
 
                 //Successful match if an absolute Uri can be created with the variable value
                 if (!Uri.TryCreate(variableValue, UriKind.Absolute, out _))

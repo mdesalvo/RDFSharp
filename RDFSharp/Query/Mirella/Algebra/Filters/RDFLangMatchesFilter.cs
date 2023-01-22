@@ -61,10 +61,10 @@ namespace RDFSharp.Query
             bool acceptsNoneOrAnyLanguageTag = (string.IsNullOrEmpty(language) || language == "*");
             if (acceptsNoneOrAnyLanguageTag || RDFPlainLiteral.LangTag.Value.Match(language).Success)
             {
-                this.VariableName = variable.ToString();
-                this.Language = language?.ToUpperInvariant() ?? string.Empty;
+                VariableName = variable.ToString();
+                Language = language?.ToUpperInvariant() ?? string.Empty;
                 if (!acceptsNoneOrAnyLanguageTag)
-                    this.ExactLanguageRegex = new Regex($"@{this.Language}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    ExactLanguageRegex = new Regex($"@{Language}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             }
             else
                 throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"language\" parameter (" + language + ") does not represent an acceptable language.");
@@ -76,9 +76,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-            => string.Concat("FILTER ( LANGMATCHES(LANG(", this.VariableName, "), \"", this.Language, "\") )");
+            => string.Concat("FILTER ( LANGMATCHES(LANG(", VariableName, "), \"", Language, "\") )");
         #endregion
 
         #region Methods
@@ -90,11 +90,11 @@ namespace RDFSharp.Query
             bool keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
-            if (row.Table.Columns.Contains(this.VariableName))
+            if (row.Table.Columns.Contains(VariableName))
             {
-                string variableValue = row[this.VariableName].ToString();
+                string variableValue = row[VariableName].ToString();
 
-                switch (this.Language)
+                switch (Language)
                 {
                     //NO language is acceptable in the variable
                     case "":
@@ -108,7 +108,7 @@ namespace RDFSharp.Query
 
                     //GIVEN language is acceptable in the variable
                     default:
-                        keepRow = this.ExactLanguageRegex.IsMatch(variableValue);
+                        keepRow = ExactLanguageRegex.IsMatch(variableValue);
                         break;
                 }
 

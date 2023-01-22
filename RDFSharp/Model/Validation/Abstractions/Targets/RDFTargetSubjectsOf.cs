@@ -30,7 +30,7 @@ namespace RDFSharp.Model
             if (targetProperty == null)
                 throw new RDFModelException("Cannot create RDFTargetSubjectsOf because given \"targetProperty\" parameter is null.");
             
-            this.TargetValue = targetProperty;
+            TargetValue = targetProperty;
         }
         #endregion
 
@@ -44,7 +44,7 @@ namespace RDFSharp.Model
 
             //sh:targetSubjectsOf
             if (shape != null)
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.TARGET_SUBJECTS_OF, this.TargetValue));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.TARGET_SUBJECTS_OF, TargetValue));
 
             return result;
         }

@@ -47,10 +47,10 @@ namespace RDFSharp.Query
         internal override void ExecutePartition(string partitionKey, DataRow tableRow)
         {
             //Get aggregator value
-            string aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, string.Empty) ?? string.Empty;
+            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, string.Empty) ?? string.Empty;
             //Update aggregator context (partition)
             if (string.IsNullOrEmpty(aggregatorValue))
-                this.AggregatorContext.UpdatePartitionKeyExecutionResult<string>(partitionKey, partitionKey);
+                AggregatorContext.UpdatePartitionKeyExecutionResult<string>(partitionKey, partitionKey);
         }
 
         /// <summary>
@@ -63,13 +63,13 @@ namespace RDFSharp.Query
             //Initialization
             partitionVariables.ForEach(pv =>
                 RDFQueryEngine.AddColumn(projFuncTable, pv.VariableName));
-            RDFQueryEngine.AddColumn(projFuncTable, this.ProjectionVariable.VariableName);
+            RDFQueryEngine.AddColumn(projFuncTable, ProjectionVariable.VariableName);
 
             //Finalization
-            foreach (string partitionKey in this.AggregatorContext.ExecutionRegistry.Keys)
+            foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
             {
                 //Update result's table
-                this.UpdateProjectionTable(partitionKey, projFuncTable);
+                UpdateProjectionTable(partitionKey, projFuncTable);
             }
 
             return projFuncTable;
@@ -89,9 +89,9 @@ namespace RDFSharp.Query
             }
 
             //Add aggregator value to bindings
-            string aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, string.Empty);
-            if (!bindings.ContainsKey(this.ProjectionVariable.VariableName))
-                bindings.Add(this.ProjectionVariable.VariableName, aggregatorValue);
+            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, string.Empty);
+            if (!bindings.ContainsKey(ProjectionVariable.VariableName))
+                bindings.Add(ProjectionVariable.VariableName, aggregatorValue);
 
             //Add bindings to result's table
             RDFQueryEngine.AddRow(projFuncTable, bindings);

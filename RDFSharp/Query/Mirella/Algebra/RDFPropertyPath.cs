@@ -62,10 +62,10 @@ namespace RDFSharp.Query
             if (!(end is RDFResource || end is RDFVariable))
                 throw new RDFQueryException("Cannot create RDFPropertyPath because given \"end\" parameter is neither a resource or a variable.");
 
-            this.Start = start;
-            this.End = end;
-            this.Steps = new List<RDFPropertyPathStep>();
-            this.Depth = 0;
+            Start = start;
+            End = end;
+            Steps = new List<RDFPropertyPathStep>();
+            Depth = 0;
         }
         #endregion
 
@@ -74,7 +74,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the path
         /// </summary>
         public override string ToString()
-            => this.ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>());
         internal string ToString(List<RDFNamespace> prefixes)
             => RDFQueryPrinter.PrintPropertyPath(this, prefixes);
         #endregion
@@ -91,33 +91,33 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot add alternative steps because the given list contains a null element.");
 
             #region Depth Guard
-            if (this.Steps.Count == 0
+            if (Steps.Count == 0
                     || alternativeSteps.Count == 1
-                        || this.Steps.LastOrDefault()?.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence)
+                        || Steps.LastOrDefault()?.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence)
             {
-                this.Depth++;
+                Depth++;
             }
             #endregion
 
             #region Steps Update
             if (alternativeSteps.Count == 1)
             {
-                this.Steps.Add(alternativeSteps[0].SetOrdinal(this.Steps.Count)
+                Steps.Add(alternativeSteps[0].SetOrdinal(Steps.Count)
                                                   .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
             }
             else
             {
                 alternativeSteps.ForEach(alternativeStep =>
                 {
-                    this.Steps.Add(alternativeStep.SetOrdinal(this.Steps.Count)
+                    Steps.Add(alternativeStep.SetOrdinal(Steps.Count)
                                                   .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative));
                 });
             }
             #endregion
 
             #region Evaluability Guard
-            if (this.Start is RDFVariable || this.End is RDFVariable || this.Depth > 1)
-                this.IsEvaluable = true;
+            if (Start is RDFVariable || End is RDFVariable || Depth > 1)
+                IsEvaluable = true;
             #endregion
             
             return this;
@@ -132,14 +132,14 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot add sequence step because it is null.");
 
             #region Steps Update
-            this.Depth++;
-            this.Steps.Add(sequenceStep.SetOrdinal(this.Steps.Count)
+            Depth++;
+            Steps.Add(sequenceStep.SetOrdinal(Steps.Count)
                                        .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
             #endregion
 
             #region Evaluability Guard
-            if (this.Start is RDFVariable || this.End is RDFVariable || this.Depth > 1)
-                this.IsEvaluable = true;
+            if (Start is RDFVariable || End is RDFVariable || Depth > 1)
+                IsEvaluable = true;
             #endregion
 
             return this;
@@ -153,57 +153,57 @@ namespace RDFSharp.Query
             List<RDFPattern> patterns = new List<RDFPattern>();
 
             #region Single Property
-            if (this.Steps.Count == 1)
+            if (Steps.Count == 1)
             {
                 //InversePath (swap start/end)
-                if (this.Steps[0].IsInverseStep)
-                    patterns.Add(new RDFPattern(this.End, this.Steps[0].StepProperty, this.Start));
+                if (Steps[0].IsInverseStep)
+                    patterns.Add(new RDFPattern(End, Steps[0].StepProperty, Start));
                 //Path
                 else
-                    patterns.Add(new RDFPattern(this.Start, this.Steps[0].StepProperty, this.End));
+                    patterns.Add(new RDFPattern(Start, Steps[0].StepProperty, End));
             }
             #endregion
 
             #region Multiple Properties
             else
             {
-                RDFPatternMember currStart = this.Start;
+                RDFPatternMember currStart = Start;
                 RDFPatternMember currEnd = new RDFVariable("__PP0");
-                for (int i = 0; i < this.Steps.Count; i++)
+                for (int i = 0; i < Steps.Count; i++)
                 {
                     #region Alternative
-                    if (this.Steps[i].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
+                    if (Steps[i].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
                     {
                         //Translate to union (item is not the last alternative)
-                        if (i < this.Steps.Count - 1 && this.Steps[i + 1].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
+                        if (i < Steps.Count - 1 && Steps[i + 1].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
                         {
                             //Adjust start/end
-                            if (!this.Steps.Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence && p.StepOrdinal > i))
-                                currEnd = this.End;
+                            if (!Steps.Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence && p.StepOrdinal > i))
+                                currEnd = End;
 
                             //InversePath (swap start/end)
-                            if (this.Steps[i].IsInverseStep)
-                                patterns.Add(new RDFPattern(currEnd, this.Steps[i].StepProperty, currStart).UnionWithNext());
+                            if (Steps[i].IsInverseStep)
+                                patterns.Add(new RDFPattern(currEnd, Steps[i].StepProperty, currStart).UnionWithNext());
                             //Path
                             else
-                                patterns.Add(new RDFPattern(currStart, this.Steps[i].StepProperty, currEnd).UnionWithNext());
+                                patterns.Add(new RDFPattern(currStart, Steps[i].StepProperty, currEnd).UnionWithNext());
                         }
                         //Translate to pattern (item is the last alternative)
                         else
                         {
                             //InversePath (swap start/end)
-                            if (this.Steps[i].IsInverseStep)
-                                patterns.Add(new RDFPattern(currEnd, this.Steps[i].StepProperty, currStart));
+                            if (Steps[i].IsInverseStep)
+                                patterns.Add(new RDFPattern(currEnd, Steps[i].StepProperty, currStart));
                             //Path
                             else
-                                patterns.Add(new RDFPattern(currStart, this.Steps[i].StepProperty, currEnd));
+                                patterns.Add(new RDFPattern(currStart, Steps[i].StepProperty, currEnd));
 
                             //Adjust start/end
-                            if (i < this.Steps.Count - 1)
+                            if (i < Steps.Count - 1)
                             {
                                 currStart = currEnd;
-                                if (i == this.Steps.Count - 2 || !this.Steps.Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence && p.StepOrdinal > i))
-                                    currEnd = this.End;
+                                if (i == Steps.Count - 2 || !Steps.Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence && p.StepOrdinal > i))
+                                    currEnd = End;
                                 else
                                     currEnd = new RDFVariable($"__PP{i+1}");
                             }
@@ -215,18 +215,18 @@ namespace RDFSharp.Query
                     else
                     {
                         //InversePath (swap start/end)
-                        if (this.Steps[i].IsInverseStep)
-                            patterns.Add(new RDFPattern(currEnd, this.Steps[i].StepProperty, currStart));
+                        if (Steps[i].IsInverseStep)
+                            patterns.Add(new RDFPattern(currEnd, Steps[i].StepProperty, currStart));
                         //Path
                         else
-                            patterns.Add(new RDFPattern(currStart, this.Steps[i].StepProperty, currEnd));
+                            patterns.Add(new RDFPattern(currStart, Steps[i].StepProperty, currEnd));
 
                         //Adjust start/end
-                        if (i < this.Steps.Count - 1)
+                        if (i < Steps.Count - 1)
                         {
                             currStart = currEnd;
-                            if (i == this.Steps.Count - 2)
-                                currEnd = this.End;
+                            if (i == Steps.Count - 2)
+                                currEnd = End;
                             else
                                 currEnd = new RDFVariable($"__PP{i+1}");
                         }
@@ -277,7 +277,7 @@ namespace RDFSharp.Query
             if (stepProperty == null)
                 throw new RDFQueryException("Cannot create RDFPropertyPathStep because given \"stepProperty\" parameter is null.");
             
-            this.StepProperty = stepProperty;
+            StepProperty = stepProperty;
         }
         #endregion
 
@@ -287,7 +287,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFPropertyPathStep SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors stepFlavor)
         {
-            this.StepFlavor = stepFlavor;
+            StepFlavor = stepFlavor;
             return this;
         }
 
@@ -296,7 +296,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFPropertyPathStep SetOrdinal(int stepOrdinal)
         {
-            this.StepOrdinal = stepOrdinal;
+            StepOrdinal = stepOrdinal;
             return this;
         }
 
@@ -305,7 +305,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPropertyPathStep Inverse()
         {
-            this.IsInverseStep = true;
+            IsInverseStep = true;
             return this;
         }
         #endregion

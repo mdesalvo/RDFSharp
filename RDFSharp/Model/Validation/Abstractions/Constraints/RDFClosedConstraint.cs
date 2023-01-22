@@ -43,8 +43,8 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFClosedConstraint(bool closed)
         {
-            this.Closed = closed;
-            this.IgnoredProperties = new Dictionary<long, RDFResource>();
+            Closed = closed;
+            IgnoredProperties = new Dictionary<long, RDFResource>();
         }
         #endregion
 
@@ -54,8 +54,8 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFClosedConstraint AddIgnoredProperty(RDFResource ignoredProperty)
         {
-            if (ignoredProperty != null && !this.IgnoredProperties.ContainsKey(ignoredProperty.PatternMemberID))
-                this.IgnoredProperties.Add(ignoredProperty.PatternMemberID, ignoredProperty);
+            if (ignoredProperty != null && !IgnoredProperties.ContainsKey(ignoredProperty.PatternMemberID))
+                IgnoredProperties.Add(ignoredProperty.PatternMemberID, ignoredProperty);
 
             return this;
         }
@@ -68,10 +68,10 @@ namespace RDFSharp.Model
             RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
-            if (this.Closed)
+            if (Closed)
             {
                 //Extend ignored properties with paths of property constraints
-                List<RDFResource> allowedProperties = new List<RDFResource>(this.IgnoredProperties.Values);
+                List<RDFResource> allowedProperties = new List<RDFResource>(IgnoredProperties.Values);
                 IEnumerable<RDFPropertyConstraint> propertyConstraints = shape.Constraints.OfType<RDFPropertyConstraint>();
                 foreach (RDFPropertyConstraint propertyConstraint in propertyConstraints)
                 {
@@ -117,11 +117,11 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:closed
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLOSED, this.Closed ? RDFTypedLiteral.True : RDFTypedLiteral.False));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLOSED, Closed ? RDFTypedLiteral.True : RDFTypedLiteral.False));
 
                 //Get collection from ignored properties
                 RDFCollection ignoredProperties = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource) { InternalReificationSubject = this };
-                foreach (RDFResource ignoredProperty in this.IgnoredProperties.Values)
+                foreach (RDFResource ignoredProperty in IgnoredProperties.Values)
                     ignoredProperties.AddItem(ignoredProperty);
                 result.AddCollection(ignoredProperties);
 

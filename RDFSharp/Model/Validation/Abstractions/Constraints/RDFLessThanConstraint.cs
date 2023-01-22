@@ -41,7 +41,7 @@ namespace RDFSharp.Model
             if (lessThanPredicate == null)
                 throw new RDFModelException("Cannot create RDFLessThanConstraint because given \"lessThanPredicate\" parameter is null.");
             
-            this.LessThanPredicate = lessThanPredicate;
+            LessThanPredicate = lessThanPredicate;
         }
         #endregion
 
@@ -56,11 +56,11 @@ namespace RDFSharp.Model
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Must have values less than values of property <{this.LessThanPredicate}>"));
+                shapeMessages.Add(new RDFPlainLiteral($"Must have values less than values of property <{LessThanPredicate}>"));
 
             #region Evaluation
             List<RDFPatternMember> predicateNodes = dataGraph.Where(t => t.Subject.Equals(focusNode)
-                                                                            && t.Predicate.Equals(this.LessThanPredicate))
+                                                                            && t.Predicate.Equals(LessThanPredicate))
                                                              .Select(x => x.Object)
                                                              .ToList();
             foreach (RDFPatternMember valueNode in valueNodes)
@@ -92,7 +92,7 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:lessThan
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.LESS_THAN, this.LessThanPredicate));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.LESS_THAN, LessThanPredicate));
             }
             return result;
         }

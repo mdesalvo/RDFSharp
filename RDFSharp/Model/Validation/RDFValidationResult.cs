@@ -73,13 +73,13 @@ namespace RDFSharp.Model
                                      List<RDFLiteral> resultMessages,
                                      RDFValidationEnums.RDFShapeSeverity severity = RDFValidationEnums.RDFShapeSeverity.Violation)
         {
-            this.SourceShape = sourceShape;
-            this.SourceConstraintComponent = sourceConstraintComponent;
-            this.FocusNode = focusNode;
-            this.ResultPath = resultPath;
-            this.ResultValue = resultValue;
-            this.ResultMessages = resultMessages ?? new List<RDFLiteral>();
-            this.Severity = severity;
+            SourceShape = sourceShape;
+            SourceConstraintComponent = sourceConstraintComponent;
+            FocusNode = focusNode;
+            ResultPath = resultPath;
+            ResultValue = resultValue;
+            ResultMessages = resultMessages ?? new List<RDFLiteral>();
+            Severity = severity;
         }
         #endregion
 
@@ -95,7 +95,7 @@ namespace RDFSharp.Model
             result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.VALIDATION_RESULT));
 
             //Severity
-            switch (this.Severity)
+            switch (Severity)
             {
                 case RDFValidationEnums.RDFShapeSeverity.Info:
                     result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_SEVERITY, RDFVocabulary.SHACL.INFO));
@@ -109,34 +109,34 @@ namespace RDFSharp.Model
             }
 
             //SourceShape
-            if (this.SourceShape != null)
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.SOURCE_SHAPE, this.SourceShape));
+            if (SourceShape != null)
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.SOURCE_SHAPE, SourceShape));
 
             //SourceConstraintComponent
-            if (this.SourceConstraintComponent != null)
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.SOURCE_CONSTRAINT_COMPONENT, this.SourceConstraintComponent));
+            if (SourceConstraintComponent != null)
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.SOURCE_CONSTRAINT_COMPONENT, SourceConstraintComponent));
 
             //FocusNode
-            if (this.FocusNode != null && this.FocusNode is RDFResource)
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.FOCUS_NODE, (RDFResource)this.FocusNode));
+            if (FocusNode != null && FocusNode is RDFResource)
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.FOCUS_NODE, (RDFResource)FocusNode));
 
             //ResultPath
-            if (this.ResultPath != null)
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_PATH, this.ResultPath));
+            if (ResultPath != null)
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_PATH, ResultPath));
 
             //Value
-            if (this.ResultValue != null)
+            if (ResultValue != null)
             {
-                if (this.ResultValue is RDFLiteral)
-                    result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.VALUE, (RDFLiteral)this.ResultValue));
+                if (ResultValue is RDFLiteral)
+                    result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.VALUE, (RDFLiteral)ResultValue));
                 else
-                    result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.VALUE, (RDFResource)this.ResultValue));
+                    result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.VALUE, (RDFResource)ResultValue));
             }
 
             //Messages
-            this.ResultMessages.ForEach(message => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_MESSAGE, message)));
+            ResultMessages.ForEach(message => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_MESSAGE, message)));
 
-            result.SetContext(this.URI);
+            result.SetContext(URI);
             return result;
         }
         #endregion

@@ -41,7 +41,7 @@ namespace RDFSharp.Model
             if (value == null)
                 throw new RDFModelException("Cannot create RDFHasValueConstraint because given \"value\" parameter is null.");
             
-            this.Value = value;
+            Value = value;
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace RDFSharp.Model
             if (value == null)
                 throw new RDFModelException("Cannot create RDFHasValueConstraint because given \"value\" parameter is null.");
             
-            this.Value = value;
+            Value = value;
         }
         #endregion
 
@@ -67,10 +67,10 @@ namespace RDFSharp.Model
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Does not have value <{this.Value}>"));
+                shapeMessages.Add(new RDFPlainLiteral($"Does not have value <{Value}>"));
 
             #region Evaluation
-            if (!valueNodes.Any(v => v.Equals(this.Value)))
+            if (!valueNodes.Any(v => v.Equals(Value)))
                 report.AddResult(new RDFValidationResult(shape,
                                                          RDFVocabulary.SHACL.HAS_VALUE_CONSTRAINT_COMPONENT,
                                                          focusNode,
@@ -92,10 +92,10 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:hasValue
-                if (this.Value is RDFResource)
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.HAS_VALUE, (RDFResource)this.Value));
+                if (Value is RDFResource)
+                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.HAS_VALUE, (RDFResource)Value));
                 else
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.HAS_VALUE, (RDFLiteral)this.Value));
+                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.HAS_VALUE, (RDFLiteral)Value));
             }
             return result;
         }

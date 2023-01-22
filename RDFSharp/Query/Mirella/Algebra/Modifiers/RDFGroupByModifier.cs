@@ -49,17 +49,17 @@ namespace RDFSharp.Query
             if (partitionVariables.Any(pv => pv == null))
                 throw new RDFQueryException("Cannot create RDFGroupByModifier because given \"partitionVariables\" parameter contains null elements.");
 
-            this.PartitionVariables = new List<RDFVariable>();
-            this.Aggregators = new List<RDFAggregator>();
+            PartitionVariables = new List<RDFVariable>();
+            Aggregators = new List<RDFAggregator>();
             partitionVariables.ForEach(pv1 =>
             {
-                if (!this.PartitionVariables.Any(pv2 => pv2.Equals(pv1)))
+                if (!PartitionVariables.Any(pv2 => pv2.Equals(pv1)))
                 {
-                    this.PartitionVariables.Add(pv1);
-                    this.IsEvaluable = true;
+                    PartitionVariables.Add(pv1);
+                    IsEvaluable = true;
 
                     //At every partition variable must correspond a partition aggregator
-                    this.Aggregators.Add(new RDFPartitionAggregator(pv1, pv1));
+                    Aggregators.Add(new RDFPartitionAggregator(pv1, pv1));
                 }
             });
         }
@@ -70,7 +70,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the modifier
         /// </summary>
         public override string ToString()
-            => string.Format("GROUP BY {0}", string.Join(" ", this.PartitionVariables));
+            => string.Format("GROUP BY {0}", string.Join(" ", PartitionVariables));
         #endregion
 
         #region Methods
@@ -82,10 +82,10 @@ namespace RDFSharp.Query
             if (aggregator != null)
             {
                 //There cannot exist two aggregators projecting the same variable (exclude automatic partition aggregators from the check)
-                if (this.Aggregators.Any(ag => (!(ag is RDFPartitionAggregator)) && ag.ProjectionVariable.Equals(aggregator.ProjectionVariable)))
+                if (Aggregators.Any(ag => (!(ag is RDFPartitionAggregator)) && ag.ProjectionVariable.Equals(aggregator.ProjectionVariable)))
                     throw new RDFQueryException(string.Format("Cannot add aggregator to GroupBy modifier because the given projection variable '{0}' is already used by another aggregator.", aggregator.ProjectionVariable));
 
-                this.Aggregators.Add(aggregator);
+                Aggregators.Add(aggregator);
             }
             return this;
         }
@@ -115,19 +115,19 @@ namespace RDFSharp.Query
         private void ConsistencyChecks(DataTable table)
         {
             //Every partition variable must be found in the working table as a column
-            IEnumerable<string> unavailablePartitionVariables = this.PartitionVariables.Where(pv => !table.Columns.Contains(pv.ToString()))
+            IEnumerable<string> unavailablePartitionVariables = PartitionVariables.Where(pv => !table.Columns.Contains(pv.ToString()))
                                                                                        .Select(pv => pv.ToString());
             if (unavailablePartitionVariables.Any())
                 throw new RDFQueryException(string.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: {0}", string.Join(",", unavailablePartitionVariables.Distinct())));
             
             //Every aggregator variable must be found in the working table as a column
-            IEnumerable<string> unavailableAggregatorVariables = this.Aggregators.Where(ag => !table.Columns.Contains(ag.AggregatorVariable.ToString()))
+            IEnumerable<string> unavailableAggregatorVariables = Aggregators.Where(ag => !table.Columns.Contains(ag.AggregatorVariable.ToString()))
                                                                                  .Select(ag => ag.AggregatorVariable.ToString());
             if (unavailableAggregatorVariables.Any())
                 throw new RDFQueryException(string.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: {0}", string.Join(",", unavailableAggregatorVariables.Distinct())));
             
             //There should NOT be intersection between partition variables (GroupBy) and projection variables (Aggregators)
-            IEnumerable<string> commonPartitionProjectionVariables = this.PartitionVariables.Where(pv => this.Aggregators.Any(ag => (!(ag is RDFPartitionAggregator)) && pv.Equals(ag.ProjectionVariable)))
+            IEnumerable<string> commonPartitionProjectionVariables = PartitionVariables.Where(pv => Aggregators.Any(ag => (!(ag is RDFPartitionAggregator)) && pv.Equals(ag.ProjectionVariable)))
                                                                                             .Select(pav => pav.ToString());
             if (commonPartitionProjectionVariables.Any())
                 throw new RDFQueryException(string.Format("Cannot apply GroupBy modifier because the following variables have been specified both for partitioning (in GroupBy) and projection (in Aggregator): {0}", string.Join(",", commonPartitionProjectionVariables.Distinct())));
@@ -141,7 +141,7 @@ namespace RDFSharp.Query
             foreach (DataRow tableRow in table.Rows)
             {
                 string partitionKey = GetPartitionKey(tableRow);
-                this.Aggregators.ForEach(ag =>
+                Aggregators.ForEach(ag =>
                     ag.ExecutePartition(partitionKey, tableRow));
             }
         }
@@ -152,8 +152,8 @@ namespace RDFSharp.Query
         private DataTable ExecuteProjectionAlgorythm()
         {
             List<DataTable> projFuncTables = new List<DataTable>();
-            this.Aggregators.ForEach(ag =>
-                projFuncTables.Add(ag.ExecuteProjection(this.PartitionVariables)));
+            Aggregators.ForEach(ag =>
+                projFuncTables.Add(ag.ExecuteProjection(PartitionVariables)));
             projFuncTables.RemoveAll(pft => pft == null);
 
             DataTable resultTable = RDFQueryEngine.CombineTables(projFuncTables, false);
@@ -165,11 +165,11 @@ namespace RDFSharp.Query
         /// </summary>
         private DataTable ExecuteFilterAlgorythm(DataTable resultTable)
         {
-            if (this.Aggregators.Any(ag => ag.HavingClause.Item1))
+            if (Aggregators.Any(ag => ag.HavingClause.Item1))
             {
                 DataTable filteredTable = resultTable.Clone();
                 IEnumerator rowsEnum = resultTable.Rows.GetEnumerator();
-                IEnumerable<RDFComparisonFilter> havingFilters = this.Aggregators.Where(ag => ag.HavingClause.Item1)
+                IEnumerable<RDFComparisonFilter> havingFilters = Aggregators.Where(ag => ag.HavingClause.Item1)
                                                                                  .Select(ag => new RDFComparisonFilter(ag.HavingClause.Item2,
                                                                                                                        ag.ProjectionVariable,
                                                                                                                        ag.HavingClause.Item3));
@@ -205,7 +205,7 @@ namespace RDFSharp.Query
         private string GetPartitionKey(DataRow tableRow)
         {
             List<string> partitionKey = new List<string>();
-            this.PartitionVariables.ForEach(pv =>
+            PartitionVariables.ForEach(pv =>
             {
                 if (tableRow.IsNull(pv.VariableName))
                     partitionKey.Add(string.Concat(pv.VariableName, "§PV§", string.Empty));

@@ -43,8 +43,8 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFInConstraint(RDFModelEnums.RDFItemTypes itemType)
         {
-            this.InValues = new Dictionary<long, RDFPatternMember>();
-            this.ItemType = itemType;
+            InValues = new Dictionary<long, RDFPatternMember>();
+            ItemType = itemType;
         }
         #endregion
 
@@ -54,10 +54,10 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFInConstraint AddValue(RDFResource resource)
         {
-            if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
+            if (ItemType == RDFModelEnums.RDFItemTypes.Resource)
             {
-                if (resource != null && !this.InValues.ContainsKey(resource.PatternMemberID))
-                    this.InValues.Add(resource.PatternMemberID, resource);
+                if (resource != null && !InValues.ContainsKey(resource.PatternMemberID))
+                    InValues.Add(resource.PatternMemberID, resource);
             }
             return this;
         }
@@ -67,10 +67,10 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFInConstraint AddValue(RDFLiteral literal)
         {
-            if (this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
+            if (ItemType == RDFModelEnums.RDFItemTypes.Literal)
             {
-                if (literal != null && !this.InValues.ContainsKey(literal.PatternMemberID))
-                    this.InValues.Add(literal.PatternMemberID, literal);
+                if (literal != null && !InValues.ContainsKey(literal.PatternMemberID))
+                    InValues.Add(literal.PatternMemberID, literal);
             }
             return this;
         }
@@ -90,7 +90,7 @@ namespace RDFSharp.Model
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
             {
-                if (!this.InValues.Any(v => v.Value.Equals(valueNode)))
+                if (!InValues.Any(v => v.Value.Equals(valueNode)))
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.IN_CONSTRAINT_COMPONENT,
                                                              focusNode,
@@ -113,10 +113,10 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //Get collection from inValues
-                RDFCollection inValues = new RDFCollection(this.ItemType) { InternalReificationSubject = this };
-                foreach (RDFPatternMember inValue in this.InValues.Values)
+                RDFCollection inValues = new RDFCollection(ItemType) { InternalReificationSubject = this };
+                foreach (RDFPatternMember inValue in InValues.Values)
                 {
-                    if (this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
+                    if (ItemType == RDFModelEnums.RDFItemTypes.Literal)
                         inValues.AddItem((RDFLiteral)inValue);
                     else
                         inValues.AddItem((RDFResource)inValue);

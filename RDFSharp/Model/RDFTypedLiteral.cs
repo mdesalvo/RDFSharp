@@ -45,8 +45,8 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFTypedLiteral(string value, RDFModelEnums.RDFDatatypes datatype)
         {
-            this.Value = value ?? string.Empty;
-            this.Datatype = datatype;
+            Value = value ?? string.Empty;
+            Datatype = datatype;
 
             //Validation against semantic of given datatype
             if (!RDFModelUtilities.ValidateTypedLiteral(this))
@@ -59,7 +59,7 @@ namespace RDFSharp.Model
         /// Gives the string representation of the typed literal
         /// </summary>
         public override string ToString()
-            => string.Concat(base.ToString(), "^^", RDFModelUtilities.GetDatatypeFromEnum(this.Datatype));
+            => string.Concat(base.ToString(), "^^", RDFModelUtilities.GetDatatypeFromEnum(Datatype));
         #endregion
 
         #region Methods
@@ -67,14 +67,14 @@ namespace RDFSharp.Model
         /// Checks if the datatype of this typed literal is compatible with boolean
         /// </summary>
         internal bool HasBooleanDatatype()
-            => this.Datatype == RDFModelEnums.RDFDatatypes.XSD_BOOLEAN;
+            => Datatype == RDFModelEnums.RDFDatatypes.XSD_BOOLEAN;
 
         /// <summary>
         /// Checks if the datatype of this typed literal is compatible with datetime
         /// </summary>
         internal bool HasDatetimeDatatype()
         {
-            switch (this.Datatype)
+            switch (Datatype)
             {
                 case RDFModelEnums.RDFDatatypes.XSD_DATE:
                 case RDFModelEnums.RDFDatatypes.XSD_DATETIME:
@@ -94,14 +94,14 @@ namespace RDFSharp.Model
         /// Checks if the datatype of this typed literal is compatible with timespan
         /// </summary>
         internal bool HasTimespanDatatype()
-            => this.Datatype == RDFModelEnums.RDFDatatypes.XSD_DURATION;
+            => Datatype == RDFModelEnums.RDFDatatypes.XSD_DURATION;
 
         /// <summary>
         /// Checks if the datatype of this typed literal is compatible with string
         /// </summary>
         internal bool HasStringDatatype()
         {
-            switch (this.Datatype)
+            switch (Datatype)
             {
                 case RDFModelEnums.RDFDatatypes.RDFS_LITERAL:
                 case RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL:
@@ -130,7 +130,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal bool HasDecimalDatatype()
         {
-            switch (this.Datatype)
+            switch (Datatype)
             {
                 case RDFModelEnums.RDFDatatypes.XSD_DECIMAL:
                 case RDFModelEnums.RDFDatatypes.XSD_DOUBLE:

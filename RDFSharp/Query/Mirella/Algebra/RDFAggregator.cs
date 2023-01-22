@@ -66,10 +66,10 @@ namespace RDFSharp.Query
             if (projectionVariable == null)
                 throw new RDFQueryException("Cannot create RDFAggregator because given \"projectionVariable\" parameter is null.");
             
-            this.AggregatorVariable = aggregatorVariable;
-            this.ProjectionVariable = projectionVariable;
-            this.HavingClause = (false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null);
-            this.AggregatorContext = new RDFAggregatorContext();
+            AggregatorVariable = aggregatorVariable;
+            ProjectionVariable = projectionVariable;
+            HavingClause = (false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null);
+            AggregatorContext = new RDFAggregatorContext();
         }
         #endregion
 
@@ -104,9 +104,9 @@ namespace RDFSharp.Query
         {
             try
             {
-                if (!tableRow.IsNull(this.AggregatorVariable.VariableName))
+                if (!tableRow.IsNull(AggregatorVariable.VariableName))
                 {
-                    RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[this.AggregatorVariable.VariableName].ToString());
+                    RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[AggregatorVariable.VariableName].ToString());
                     //Only numeric typedliterals are suitable for processing
                     if (rowAggregatorValue is RDFTypedLiteral rowAggregatorValueTLit && rowAggregatorValueTLit.HasDecimalDatatype())
                     {
@@ -126,8 +126,8 @@ namespace RDFSharp.Query
         {
             try
             {
-                if (!tableRow.IsNull(this.AggregatorVariable.VariableName))
-                    return tableRow[this.AggregatorVariable.VariableName].ToString();
+                if (!tableRow.IsNull(AggregatorVariable.VariableName))
+                    return tableRow[AggregatorVariable.VariableName].ToString();
                 return string.Empty;
             }
             catch { return string.Empty; }
@@ -139,11 +139,11 @@ namespace RDFSharp.Query
         internal string PrintHavingClause(List<RDFNamespace> prefixes)
         {
             StringBuilder result = new StringBuilder();
-            if (this.HavingClause.Item1)
+            if (HavingClause.Item1)
             {
                 result.Append("(");
-                result.Append(this.ToString().Substring(1, this.ToString().LastIndexOf(" AS ?")));
-                switch (this.HavingClause.Item2)
+                result.Append(ToString().Substring(1, ToString().LastIndexOf(" AS ?")));
+                switch (HavingClause.Item2)
                 {
                     case RDFQueryEnums.RDFComparisonFlavors.LessThan:
                         result.Append("< ");
@@ -164,7 +164,7 @@ namespace RDFSharp.Query
                         result.Append("> ");
                         break;
                 }
-                result.Append(RDFQueryPrinter.PrintPatternMember(this.HavingClause.Item3, prefixes));
+                result.Append(RDFQueryPrinter.PrintPatternMember(HavingClause.Item3, prefixes));
                 result.Append(")");
             }
             return result.ToString();
@@ -175,7 +175,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFAggregator Distinct()
         {
-            this.IsDistinct = true;
+            IsDistinct = true;
             return this;
         }
 
@@ -185,7 +185,7 @@ namespace RDFSharp.Query
         public RDFAggregator SetHavingClause(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFPatternMember comparisonValue)
         {
             if (comparisonValue != null)
-                this.HavingClause = (true, comparisonFlavor, comparisonValue);
+                HavingClause = (true, comparisonFlavor, comparisonValue);
             return this;
         }
         #endregion
@@ -215,8 +215,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFAggregatorContext()
         {
-            this.ExecutionRegistry = new Dictionary<string, Dictionary<string, object>>();
-            this.ExecutionCache = new Dictionary<string, HashSet<object>>();
+            ExecutionRegistry = new Dictionary<string, Dictionary<string, object>>();
+            ExecutionCache = new Dictionary<string, HashSet<object>>();
         }
         #endregion
 
@@ -226,8 +226,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal void AddPartitionKey<T>(string partitionKey, T initValue)
         {
-            if (!this.ExecutionRegistry.ContainsKey(partitionKey))
-                this.ExecutionRegistry.Add(partitionKey, new Dictionary<string, object>()
+            if (!ExecutionRegistry.ContainsKey(partitionKey))
+                ExecutionRegistry.Add(partitionKey, new Dictionary<string, object>()
                 {
                     { "ExecutionResult", initValue },
                     { "ExecutionCounter", 0d }
@@ -239,45 +239,45 @@ namespace RDFSharp.Query
         /// </summary>
         internal T GetPartitionKeyExecutionResult<T>(string partitionKey, T initValue)
         {
-            if (!this.ExecutionRegistry.ContainsKey(partitionKey))
+            if (!ExecutionRegistry.ContainsKey(partitionKey))
                 AddPartitionKey<T>(partitionKey, initValue);
 
-            return (T)this.ExecutionRegistry[partitionKey]["ExecutionResult"];
+            return (T)ExecutionRegistry[partitionKey]["ExecutionResult"];
         }
 
         /// <summary>
         /// Gets the execution counter for the given partition key
         /// </summary>
         internal double GetPartitionKeyExecutionCounter(string partitionKey)
-            => (double)this.ExecutionRegistry[partitionKey]["ExecutionCounter"];
+            => (double)ExecutionRegistry[partitionKey]["ExecutionCounter"];
 
         /// <summary>
         /// Updates the execution result for the given partition key
         /// </summary>
         internal void UpdatePartitionKeyExecutionResult<T>(string partitionKey, T newValue)
-            => this.ExecutionRegistry[partitionKey]["ExecutionResult"] = newValue;
+            => ExecutionRegistry[partitionKey]["ExecutionResult"] = newValue;
 
         /// <summary>
         /// Updates the execution counter for the given partition key
         /// </summary>
         internal void UpdatePartitionKeyExecutionCounter(string partitionKey)
-            => this.ExecutionRegistry[partitionKey]["ExecutionCounter"] = GetPartitionKeyExecutionCounter(partitionKey) + 1d;
+            => ExecutionRegistry[partitionKey]["ExecutionCounter"] = GetPartitionKeyExecutionCounter(partitionKey) + 1d;
 
         /// <summary>
         /// Checks for presence of the given value in given partitionkey's cache
         /// </summary>
         internal bool CheckPartitionKeyRowValueCache<T>(string partitionKey, T value)
         {
-            if (!this.ExecutionCache.ContainsKey(partitionKey))
-                this.ExecutionCache.Add(partitionKey, new HashSet<object>());
-            return this.ExecutionCache[partitionKey].Any(x => ((T)x).Equals(value));
+            if (!ExecutionCache.ContainsKey(partitionKey))
+                ExecutionCache.Add(partitionKey, new HashSet<object>());
+            return ExecutionCache[partitionKey].Any(x => ((T)x).Equals(value));
         }
 
         /// <summary>
         /// Updates the given partitionKey's cache with the given value
         /// </summary>
         internal void UpdatePartitionKeyRowValueCache<T>(string partitionKey, T newValue)
-            => this.ExecutionCache[partitionKey].Add(newValue);
+            => ExecutionCache[partitionKey].Add(newValue);
         #endregion
     }
     #endregion

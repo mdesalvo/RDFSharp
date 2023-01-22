@@ -48,7 +48,7 @@ namespace RDFSharp.Query
         /// Performs the equality comparison between two pattern members
         /// </summary>
         public bool Equals(RDFPatternMember other)
-            => other != null && this.PatternMemberID.Equals(other.PatternMemberID);
+            => other != null && PatternMemberID.Equals(other.PatternMemberID);
         #endregion
 
         #region Ctors
@@ -56,7 +56,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build a pattern member
         /// </summary>
         internal RDFPatternMember()
-            => this.LazyPatternMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
+            => LazyPatternMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
         #endregion
     }
 }

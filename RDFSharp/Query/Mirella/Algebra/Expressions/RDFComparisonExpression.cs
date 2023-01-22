@@ -95,9 +95,9 @@ namespace RDFSharp.Query
 
             //(L OPERATOR R)
             sb.Append('(');
-            string leftValue = this.LeftArgument is RDFExpression leftArgumentExpression ? leftArgumentExpression.ToString(prefixes) : RDFQueryPrinter.PrintPatternMember((RDFPatternMember)this.LeftArgument, prefixes);
-            string rightValue = this.RightArgument is RDFExpression rightArgumentExpression ? rightArgumentExpression.ToString(prefixes) : RDFQueryPrinter.PrintPatternMember((RDFPatternMember)this.RightArgument, prefixes);
-            switch (this.ComparisonFlavor)
+            string leftValue = LeftArgument is RDFExpression leftArgumentExpression ? leftArgumentExpression.ToString(prefixes) : RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes);
+            string rightValue = RightArgument is RDFExpression rightArgumentExpression ? rightArgumentExpression.ToString(prefixes) : RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes);
+            switch (ComparisonFlavor)
             {
                 case RDFQueryEnums.RDFComparisonFlavors.LessThan:
                     sb.Append(string.Concat(leftValue, " < ", rightValue));
@@ -171,7 +171,7 @@ namespace RDFSharp.Query
                 //Type Correct
                 else
                 {
-                    switch (this.ComparisonFlavor)
+                    switch (ComparisonFlavor)
                     {
                         case RDFQueryEnums.RDFComparisonFlavors.LessThan:
                             expressionResult = (comparison  < 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);

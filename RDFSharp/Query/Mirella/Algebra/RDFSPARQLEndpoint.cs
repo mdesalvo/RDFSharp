@@ -58,10 +58,10 @@ namespace RDFSharp.Query
             if (baseAddress == null)
                 throw new RDFQueryException("Cannot create RDFSPARQLEndpoint because given \"baseAddress\" parameter is null.");
 
-            this.BaseAddress = baseAddress;
-            this.QueryParams = new NameValueCollection();
-            this.AuthorizationType = RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.None;
-            this.AuthorizationValue = null;
+            BaseAddress = baseAddress;
+            QueryParams = new NameValueCollection();
+            AuthorizationType = RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.None;
+            AuthorizationValue = null;
         }
         #endregion
 
@@ -70,7 +70,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the variable
         /// </summary>
         public override string ToString()
-            => this.BaseAddress.ToString();
+            => BaseAddress.ToString();
         #endregion
 
         #region Methods
@@ -81,8 +81,8 @@ namespace RDFSharp.Query
         {
             if (!string.IsNullOrEmpty(basicAuthHeaderValue))
             {
-                this.AuthorizationType = RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Basic;
-                this.AuthorizationValue = basicAuthHeaderValue;
+                AuthorizationType = RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Basic;
+                AuthorizationValue = basicAuthHeaderValue;
             }
             return this;
         }
@@ -94,8 +94,8 @@ namespace RDFSharp.Query
         {
             if (!string.IsNullOrEmpty(bearerAuthHeaderValue))
             {
-                this.AuthorizationType = RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Bearer;
-                this.AuthorizationValue = bearerAuthHeaderValue;
+                AuthorizationType = RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Bearer;
+                AuthorizationValue = bearerAuthHeaderValue;
             }
             return this;
         }
@@ -105,7 +105,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFSPARQLEndpoint AddDefaultGraphUri(string defaultGraphUri)
         {
-            this.QueryParams.Add("default-graph-uri", defaultGraphUri ?? string.Empty);
+            QueryParams.Add("default-graph-uri", defaultGraphUri ?? string.Empty);
             return this;
         }
 
@@ -114,15 +114,15 @@ namespace RDFSharp.Query
         /// </summary>
         internal void FillWebClientAuthorization(RDFWebClient webClient)
         {
-            switch (this.AuthorizationType)
+            switch (AuthorizationType)
             {
                 //Basic
                 case RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Basic:
-                    webClient.Headers.Add(HttpRequestHeader.Authorization, $"Basic {this.AuthorizationValue}");
+                    webClient.Headers.Add(HttpRequestHeader.Authorization, $"Basic {AuthorizationValue}");
                     break;
                 //Bearer
                 case RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Bearer:
-                    webClient.Headers.Add(HttpRequestHeader.Authorization, $"Bearer {this.AuthorizationValue}");
+                    webClient.Headers.Add(HttpRequestHeader.Authorization, $"Bearer {AuthorizationValue}");
                     break;
             }
         }
@@ -132,7 +132,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFSPARQLEndpoint AddNamedGraphUri(string namedGraphUri)
         {
-            this.QueryParams.Add("named-graph-uri", namedGraphUri ?? string.Empty);
+            QueryParams.Add("named-graph-uri", namedGraphUri ?? string.Empty);
             return this;
         }
         #endregion
@@ -161,21 +161,21 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFSPARQLEndpointQueryOptions()
         {
-            this.TimeoutMilliseconds = -1;
-            this.ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException;
+            TimeoutMilliseconds = -1;
+            ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException;
         }
 
         /// <summary>
         /// Custom-ctor to configure options for a SPARQL endpoint query
         /// </summary>
         public RDFSPARQLEndpointQueryOptions(int timeoutMilliseconds) : this()
-            => this.TimeoutMilliseconds = timeoutMilliseconds < -1 ? -1 : timeoutMilliseconds;
+            => TimeoutMilliseconds = timeoutMilliseconds < -1 ? -1 : timeoutMilliseconds;
 
         /// <summary>
         /// Custom-ctor to configure options for a SPARQL endpoint query
         /// </summary>
         public RDFSPARQLEndpointQueryOptions(int timeoutMilliseconds, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors errorBehavior) : this(timeoutMilliseconds)
-            => this.ErrorBehavior = errorBehavior;
+            => ErrorBehavior = errorBehavior;
         #endregion
     }
 
@@ -202,21 +202,21 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFSPARQLEndpointOperationOptions()
         {
-            this.TimeoutMilliseconds = -1;
-            this.RequestContentType = RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update;
+            TimeoutMilliseconds = -1;
+            RequestContentType = RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update;
         }
 
         /// <summary>
         /// Custom-ctor to configure options for a SPARQL UPDATE endpoint operation
         /// </summary>
         public RDFSPARQLEndpointOperationOptions(int timeoutMilliseconds) : this()
-            => this.TimeoutMilliseconds = timeoutMilliseconds < -1 ? -1 : timeoutMilliseconds;
+            => TimeoutMilliseconds = timeoutMilliseconds < -1 ? -1 : timeoutMilliseconds;
 
         /// <summary>
         /// Custom-ctor to configure options for a SPARQL UPDATE endpoint operation
         /// </summary>
         public RDFSPARQLEndpointOperationOptions(int timeoutMilliseconds, RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes requestContentType) : this(timeoutMilliseconds)
-            => this.RequestContentType = requestContentType;
+            => RequestContentType = requestContentType;
         #endregion
     }
 }
