@@ -16,7 +16,6 @@
 
 using RDFSharp.Model;
 using RDFSharp.Store;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 

@@ -16,9 +16,7 @@
 
 using RDFSharp.Model;
 using static RDFSharp.Model.RDFTurtle;
-using RDFSharp.Query;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

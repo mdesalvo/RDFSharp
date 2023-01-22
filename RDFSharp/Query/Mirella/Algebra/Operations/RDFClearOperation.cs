@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using RDFSharp.Model;
 using System;
 using static RDFSharp.Query.RDFQueryEnums;
 
