@@ -84,6 +84,7 @@ namespace RDFSharp.Query
             //Inject SPARQL values within every evaluable member
             selectQuery.InjectValues(selectQuery.GetValues());
 
+            DataTable queryResultTable = new DataTable();
             RDFSelectQueryResult queryResult = new RDFSelectQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = selectQuery.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Any())
@@ -92,11 +93,11 @@ namespace RDFSharp.Query
                 EvaluateQueryMembers(selectQuery, evaluableQueryMembers, datasource);
 
                 //Get the result table of the query
-                DataTable queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList(), false);
-
-                //Apply the modifiers of the query to the result table
-                queryResult.SelectResults = ApplyModifiers(selectQuery, queryResultTable);
+                queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList(), false);
             }
+
+            //Apply the modifiers of the query to the result table
+            queryResult.SelectResults = ApplyModifiers(selectQuery, queryResultTable);
 
             return queryResult;
         }
@@ -1776,9 +1777,16 @@ namespace RDFSharp.Query
                 //Project bind column
                 AddColumn(table, bindVariable);
 
-                //Valorize bind column
-                foreach (DataRow row in table.AsEnumerable())
-                    row[bindVariable] = expression.ApplyExpression(row)?.ToString();
+                //Valorize bind column: constant expression on empty table
+                if (table.Rows.Count == 0 && expression is RDFConstantExpression constantExpression)
+                    AddRow(table, new Dictionary<string, string>() { { bindVariable, constantExpression.LeftArgument.ToString() } });
+
+                //Valorize bind column: row-based expression evaluation
+                else
+                {
+                    foreach (DataRow row in table.AsEnumerable())
+                        row[bindVariable] = expression.ApplyExpression(row)?.ToString();
+                }
             }
 
             table.EndLoadData();

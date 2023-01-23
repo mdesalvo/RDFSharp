@@ -351,6 +351,39 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraph_EmptyTableConstantExpressionBoundValue()
+        {
+            RDFGraph graph = new RDFGraph();
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:pluto")), new RDFVariable("?Y"))));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraph_EmptyTableConstantExpressionProjectedValue()
+        {
+            RDFGraph graph = new RDFGraph();
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddProjectionVariable(new RDFVariable("?Y"), new RDFConstantExpression(new RDFResource("ex:pluto")));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        }
+
+        [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraphWithComplexQuery1()
         {
             RDFGraph graph = new RDFGraph(new List<RDFTriple>()
