@@ -410,7 +410,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal DataTable ApplyModifiers(RDFQuery query, DataTable table)
         {
-            #region GROUPBY/ORDERBY/PROJECTION
+            #region GROUPBY/PROJECTION
             List<RDFModifier> modifiers = query.GetModifiers().ToList();
             if (query is RDFSelectQuery selectQuery)
             {
@@ -427,17 +427,8 @@ namespace RDFSharp.Query
                 }
                 #endregion
 
-                #region ORDERBY
-                IEnumerable<RDFOrderByModifier> orderbyModifiers = modifiers.OfType<RDFOrderByModifier>();
-                if (orderbyModifiers.Any())
-                {
-                    table = orderbyModifiers.Aggregate(table, (current, modifier) => modifier.ApplyModifier(current));
-                    table = table.DefaultView.ToTable();
-                }
-                #endregion
-
                 #region PROJECTION
-                ProjectTable(selectQuery, table);
+                table = ProjectTable(selectQuery, table);
                 #endregion
             }
             #endregion
@@ -1723,13 +1714,22 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the projection operator on the given table, based on the given query's projection variables
         /// </summary>
-        internal static void ProjectTable(RDFSelectQuery query, DataTable table)
+        internal static DataTable ProjectTable(RDFSelectQuery query, DataTable table)
         {
+            //Projection expression variables
+            ProjectExpressions(query, table);
+
+            //Execute configured sort modifiers
+            IEnumerable<RDFOrderByModifier> orderbyModifiers = query.GetModifiers().OfType<RDFOrderByModifier>();
+            if (orderbyModifiers.Any())
+            {
+                table = orderbyModifiers.Aggregate(table, (current, modifier) => modifier.ApplyModifier(current));
+                table = table.DefaultView.ToTable();
+            }
+
+            //Execute projection algorythm
             if (query.ProjectionVars.Any())
             {
-                //Calculate projection expressions
-                ProjectExpressions(query, table);
-
                 //Remove non-projection variables
                 DataColumn[] tableColumns = table.Columns.OfType<DataColumn>().ToArray();
                 foreach (DataColumn tableColumn in tableColumns)
@@ -1747,6 +1747,7 @@ namespace RDFSharp.Query
                 }
                 table.AcceptChanges();
             }
+            return table;
         }
 
         /// <summary>
