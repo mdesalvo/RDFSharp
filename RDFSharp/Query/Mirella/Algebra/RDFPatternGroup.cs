@@ -100,31 +100,31 @@ namespace RDFSharp.Query
                 GroupMembers.Add(pattern);
 
                 //Context
-                if (pattern.Context != null && pattern.Context is RDFVariable)
+                if (pattern.Context is RDFVariable patternContext)
                 {
-                    if (!Variables.Any(v => v.Equals(pattern.Context)))
-                        Variables.Add((RDFVariable)pattern.Context);
+                    if (!Variables.Any(v => v.Equals(patternContext)))
+                        Variables.Add(patternContext);
                 }
 
                 //Subject
-                if (pattern.Subject is RDFVariable)
+                if (pattern.Subject is RDFVariable patternSubject)
                 {
-                    if (!Variables.Any(v => v.Equals(pattern.Subject)))
-                        Variables.Add((RDFVariable)pattern.Subject);
+                    if (!Variables.Any(v => v.Equals(patternSubject)))
+                        Variables.Add(patternSubject);
                 }
 
                 //Predicate
-                if (pattern.Predicate is RDFVariable)
+                if (pattern.Predicate is RDFVariable patternPredicate)
                 {
-                    if (!Variables.Any(v => v.Equals(pattern.Predicate)))
-                        Variables.Add((RDFVariable)pattern.Predicate);
+                    if (!Variables.Any(v => v.Equals(patternPredicate)))
+                        Variables.Add(patternPredicate);
                 }
 
                 //Object
-                if (pattern.Object is RDFVariable)
+                if (pattern.Object is RDFVariable patternObject)
                 {
-                    if (!Variables.Any(v => v.Equals(pattern.Object)))
-                        Variables.Add((RDFVariable)pattern.Object);
+                    if (!Variables.Any(v => v.Equals(patternObject)))
+                        Variables.Add(patternObject);
                 }
             }
             return this;
