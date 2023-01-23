@@ -447,16 +447,19 @@ namespace RDFSharp.Query
             #region MEMBERS
             bool printingUnion = false;
             List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
-            RDFPatternGroupMember lastPGMember = evaluablePGMembers.LastOrDefault();
-            foreach (RDFPatternGroupMember pgMember in evaluablePGMembers)
+            for (int i=0; i<evaluablePGMembers.Count; i++)
             {
-                #region PATTERNS
+                RDFPatternGroupMember pgMember = evaluablePGMembers[i];
+                RDFPatternGroupMember nextPgMember = (i < evaluablePGMembers.Count-1 ? evaluablePGMembers[i+1] : null);
+                bool thisIsLastPgMemberOrNextPgMemberIsBind = (nextPgMember == null || nextPgMember is RDFBind);
+
+                #region PATTERN
                 if (pgMember is RDFPattern ptPgMember)
                 {
                     //Union pattern
                     if (ptPgMember.JoinAsUnion)
                     {
-                        if (!pgMember.Equals(lastPGMember))
+                        if (!thisIsLastPgMemberOrNextPgMemberIsBind)
                         {
                             //Begin a new Union block
                             printingUnion = true;
@@ -490,7 +493,7 @@ namespace RDFSharp.Query
                 }
                 #endregion
 
-                #region PROPERTY PATHS
+                #region PROPERTY PATH
                 else if (pgMember is RDFPropertyPath ppPgMember && ppPgMember.IsEvaluable)
                 {
                     //End the Union block
@@ -515,6 +518,16 @@ namespace RDFSharp.Query
                     }
                     else
                         result.AppendLine(string.Concat(spaces, "    ", PrintValues(vlPgMember, prefixes, spaces), " ."));
+                }
+                #endregion
+
+                #region BIND
+                else if (pgMember is RDFBind bdPgMember)
+                {
+                    //End the Union block
+                    if (printingUnion)
+                        printingUnion = false;
+                    result.AppendLine(string.Concat(spaces, "    ", PrintBind(bdPgMember, prefixes), " ."));
                 }
                 #endregion
             }
@@ -694,6 +707,12 @@ namespace RDFSharp.Query
 
             return result.ToString();
         }
+
+        /// <summary>
+        /// Prints the string representation of a bind operator
+        /// </summary>
+        internal static string PrintBind(RDFBind bind, List<RDFNamespace> prefixes)
+            => $"BIND({bind.Expression.ToString(prefixes)} AS {bind.Variable})";
 
         /// <summary>
         /// Prints the string representation of a pattern member
