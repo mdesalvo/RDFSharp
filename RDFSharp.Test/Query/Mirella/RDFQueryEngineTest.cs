@@ -88,6 +88,8 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), string.Empty));
         }
 
+        //SELECT QUERY
+
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraphWithResultsHavingCommonSPVariables()
         {
@@ -257,6 +259,53 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), "Donald Duck@EN-US"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Mickey Mouse@EN-US"));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraph_BindAndProjectionExpressions()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
+                    .AddBind(new RDFBind(new RDFConcatExpression(new RDFVariableExpression(new RDFVariable("?X")), new RDFConstantExpression(new RDFPlainLiteral("BIND"))), new RDFVariable("?XBIND")))
+                    .AddBind(new RDFBind(new RDFAddExpression(new RDFVariable("?Y"), new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_FLOAT))), new RDFVariable("?NEVERBOUND"))))
+                .AddModifier(new RDFOrderByModifier(new RDFVariable("?X"), RDFQueryEnums.RDFOrderByFlavors.ASC))
+                .AddProjectionVariable(new RDFVariable("?Y"))
+                .AddProjectionVariable(new RDFVariable("?X"))
+                .AddProjectionVariable(new RDFVariable("?XBIND"))
+                .AddProjectionVariable(new RDFVariable("?XBINDLENGTH"), new RDFLengthExpression(new RDFVariable("?XBIND")))
+                .AddProjectionVariable(new RDFVariable("?NEVERBOUND"));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 5);
+            Assert.IsTrue(result.SelectResultsCount == 3);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?XBIND"].ToString(), "ex:paperinoBIND"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?XBINDLENGTH"].ToString(), $"15^^{RDFVocabulary.XSD.INTEGER}"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?NEVERBOUND"].ToString(), string.Empty));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?XBIND"].ToString(), "ex:topolinoBIND"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?XBINDLENGTH"].ToString(), $"15^^{RDFVocabulary.XSD.INTEGER}"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?NEVERBOUND"].ToString(), string.Empty));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?XBIND"].ToString(), "ex:whoeverBIND"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?XBINDLENGTH"].ToString(), $"14^^{RDFVocabulary.XSD.INTEGER}"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?NEVERBOUND"].ToString(), string.Empty));
         }
 
         [TestMethod]
@@ -791,6 +840,53 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldEvaluateSelectQueryOnStore_BindAndProjectionExpressions()
+        {
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext(), new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFQuadruple(new RDFContext(), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext(), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext(), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext(), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
+                    .AddBind(new RDFBind(new RDFConcatExpression(new RDFVariableExpression(new RDFVariable("?X")), new RDFConstantExpression(new RDFPlainLiteral("BIND"))), new RDFVariable("?XBIND")))
+                    .AddBind(new RDFBind(new RDFAddExpression(new RDFVariable("?Y"), new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_FLOAT))), new RDFVariable("?NEVERBOUND"))))
+                .AddModifier(new RDFOrderByModifier(new RDFVariable("?X"), RDFQueryEnums.RDFOrderByFlavors.ASC))
+                .AddProjectionVariable(new RDFVariable("?Y"))
+                .AddProjectionVariable(new RDFVariable("?X"))
+                .AddProjectionVariable(new RDFVariable("?XBIND"))
+                .AddProjectionVariable(new RDFVariable("?XBINDLENGTH"), new RDFLengthExpression(new RDFVariable("?XBIND")))
+                .AddProjectionVariable(new RDFVariable("?NEVERBOUND"));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 5);
+            Assert.IsTrue(result.SelectResultsCount == 3);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?XBIND"].ToString(), "ex:paperinoBIND"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?XBINDLENGTH"].ToString(), $"15^^{RDFVocabulary.XSD.INTEGER}"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?NEVERBOUND"].ToString(), string.Empty));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?XBIND"].ToString(), "ex:topolinoBIND"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?XBINDLENGTH"].ToString(), $"15^^{RDFVocabulary.XSD.INTEGER}"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?NEVERBOUND"].ToString(), string.Empty));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?XBIND"].ToString(), "ex:whoeverBIND"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?XBINDLENGTH"].ToString(), $"14^^{RDFVocabulary.XSD.INTEGER}"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?NEVERBOUND"].ToString(), string.Empty));
+        }
+
+        [TestMethod]
         public void ShouldEvaluateSelectQueryOnFederationWithResults()
         {
             RDFGraph graph = new RDFGraph(new List<RDFTriple>()
@@ -830,6 +926,59 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), DBNull.Value.ToString()));
         }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQueryOnFederation_BindAndProjectionExpressions()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+            });
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFFederation federation = new RDFFederation().AddGraph(graph).AddStore(store);
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
+                    .AddBind(new RDFBind(new RDFConcatExpression(new RDFVariableExpression(new RDFVariable("?X")), new RDFConstantExpression(new RDFPlainLiteral("BIND"))), new RDFVariable("?XBIND")))
+                    .AddBind(new RDFBind(new RDFAddExpression(new RDFVariable("?Y"), new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_FLOAT))), new RDFVariable("?NEVERBOUND"))))
+                .AddModifier(new RDFOrderByModifier(new RDFVariable("?X"), RDFQueryEnums.RDFOrderByFlavors.ASC))
+                .AddProjectionVariable(new RDFVariable("?Y"))
+                .AddProjectionVariable(new RDFVariable("?X"))
+                .AddProjectionVariable(new RDFVariable("?XBIND"))
+                .AddProjectionVariable(new RDFVariable("?XBINDLENGTH"), new RDFLengthExpression(new RDFVariable("?XBIND")))
+                .AddProjectionVariable(new RDFVariable("?NEVERBOUND"));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 5);
+            Assert.IsTrue(result.SelectResultsCount == 3);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?XBIND"].ToString(), "ex:paperinoBIND"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?XBINDLENGTH"].ToString(), $"15^^{RDFVocabulary.XSD.INTEGER}"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?NEVERBOUND"].ToString(), string.Empty));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?XBIND"].ToString(), "ex:topolinoBIND"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?XBINDLENGTH"].ToString(), $"15^^{RDFVocabulary.XSD.INTEGER}"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?NEVERBOUND"].ToString(), string.Empty));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?XBIND"].ToString(), "ex:whoeverBIND"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?XBINDLENGTH"].ToString(), $"14^^{RDFVocabulary.XSD.INTEGER}"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?NEVERBOUND"].ToString(), string.Empty));
+        }
+
+        //DESCRIBE QUERY
 
         [TestMethod]
         public void ShouldEvaluateDescribeQueryWithResults()
@@ -1149,6 +1298,8 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.DescribeResultsCount == 0);
         }
 
+        //CONSTRUCT QUERY
+
         [TestMethod]
         public void ShouldEvaluateConstructQueryWithResults()
         {
@@ -1254,6 +1405,8 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.ConstructResultsCount == 0);
         }
 
+        //ASK QUERY
+
         [TestMethod]
         public void ShouldEvaluateAskQueryTrue()
         {
@@ -1313,6 +1466,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(result);
             Assert.IsFalse(result.AskResult);
         }
+
+        //UTILITIES
 
         [TestMethod]
         public void ShouldEvaluateQueryMembersWithResults()
