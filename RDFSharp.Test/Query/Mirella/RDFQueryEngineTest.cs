@@ -620,6 +620,38 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraph_EmptyTableNowExpressionProjectedValue()
+        {
+            RDFGraph graph = new RDFGraph();
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddProjectionVariable(new RDFVariable("?Y"), new RDFNowExpression());
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.SelectResults.Rows[0]["?Y"].ToString()));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraph_EmptyTableRandExpressionProjectedValue()
+        {
+            RDFGraph graph = new RDFGraph();
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddProjectionVariable(new RDFVariable("?Y"), new RDFRandExpression());
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.SelectResults.Rows[0]["?Y"].ToString()));
+        }
+
+        [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraphWithComplexQuery1()
         {
             RDFGraph graph = new RDFGraph(new List<RDFTriple>()

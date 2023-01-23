@@ -1778,11 +1778,18 @@ namespace RDFSharp.Query
                 //Project bind column
                 AddColumn(table, bindVariable);
 
-                //Valorize bind column: constant expression on empty table
-                if (table.Rows.Count == 0 && expression is RDFConstantExpression constantExpression)
-                    AddRow(table, new Dictionary<string, string>() { { bindVariable, constantExpression.LeftArgument.ToString() } });
+                //Valorize bind column => variable-less expressions support evaluation on empty table (TODO)
+                if (table.Rows.Count == 0)
+                { 
+                    if (expression is RDFConstantExpression constantExpression)
+                        AddRow(table, new Dictionary<string, string>() { { bindVariable, constantExpression.LeftArgument.ToString() } });
+                    else if (expression is RDFNowExpression nowExpression)
+                        AddRow(table, new Dictionary<string, string>() { { bindVariable, nowExpression.ApplyExpression(null).ToString() } });
+                    else if (expression is RDFRandExpression randExpression)
+                        AddRow(table, new Dictionary<string, string>() { { bindVariable, randExpression.ApplyExpression(null).ToString() } });
+                }
 
-                //Valorize bind column: row-based expression evaluation
+                //Valorize bind column => generic expression evaluation on non-empty table
                 else
                 {
                     foreach (DataRow row in table.AsEnumerable())
