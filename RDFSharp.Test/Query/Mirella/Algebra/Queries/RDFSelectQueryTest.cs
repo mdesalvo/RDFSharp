@@ -321,6 +321,59 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldApplySelectQueryToGraphAndHaveResultsWithBindAndProjectExpressions()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?V"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
+                    .AddBind(new RDFBind(new RDFLengthExpression(new RDFVariable("?V")), new RDFVariable("?VLENGTH"))))
+                .AddProjectionVariable(new RDFVariable("?V"))
+                .AddProjectionVariable(new RDFVariable("?VLENGTH"))
+                .AddProjectionVariable(new RDFVariable("?VLENGTHISMORETHAN7"), 
+                    new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFVariable("?VLENGTH"), new RDFConstantExpression(new RDFTypedLiteral("7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
+            RDFSelectQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 3);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?V"));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?V"].Equals("ex:flower"));
+            Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?VLENGTH"));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?VLENGTH"].Equals($"9^^{RDFVocabulary.XSD.INTEGER}"));
+            Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?VLENGTHISMORETHAN7"));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?VLENGTHISMORETHAN7"].Equals(RDFTypedLiteral.True.ToString()));
+        }
+
+        [TestMethod]
+        public void ShouldApplySelectQueryToGraphAndNotHaveResultsWithBindAndProjectExpressionsBecauseBindOnTop()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddBind(new RDFBind(new RDFLengthExpression(new RDFVariable("?V")), new RDFVariable("?VLENGTH")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?V"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)))
+                .AddProjectionVariable(new RDFVariable("?V"))
+                .AddProjectionVariable(new RDFVariable("?VLENGTH"))
+                .AddProjectionVariable(new RDFVariable("?VLENGTHISMORETHAN7"),
+                    new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFVariable("?VLENGTH"), new RDFConstantExpression(new RDFTypedLiteral("7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
+            RDFSelectQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 3);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?V"));
+            Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?VLENGTH"));
+            Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?VLENGTHISMORETHAN7"));
+        }
+
+        [TestMethod]
         public void ShouldApplySelectQueryToGraphAndNotHaveResults()
         {
             RDFGraph graph = new RDFGraph();
