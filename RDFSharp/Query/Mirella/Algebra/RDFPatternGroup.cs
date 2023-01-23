@@ -136,7 +136,15 @@ namespace RDFSharp.Query
         public RDFPatternGroup AddPropertyPath(RDFPropertyPath propertyPath)
         {
             if (propertyPath != null && !GetPropertyPaths().Any(p => p.Equals(propertyPath)))
+            {
                 GroupMembers.Add(propertyPath);
+
+                //Collect variables carried by the given property path
+                if (propertyPath.Start is RDFVariable ppathStartVariable && !Variables.Any(v => v.Equals(ppathStartVariable)))
+                    Variables.Add(ppathStartVariable);
+                if (propertyPath.End is RDFVariable ppathEndVariable && !Variables.Any(v => v.Equals(ppathEndVariable)))
+                    Variables.Add(ppathEndVariable);
+            }
             return this;
         }
 
@@ -146,7 +154,17 @@ namespace RDFSharp.Query
         public RDFPatternGroup AddValues(RDFValues values)
         {
             if (values != null && !GetValues().Any(v => v.Equals(values)))
+            {
                 GroupMembers.Add(values);
+
+                //Collect variables carried by the given SPARQL values
+                foreach (string bindingKey in values.Bindings.Keys)
+                {
+                    RDFVariable valuesVariable = new RDFVariable(bindingKey);
+                    if (!Variables.Any(v => v.Equals(valuesVariable)))
+                        Variables.Add(valuesVariable);
+                }
+            }   
             return this;
         }
 
@@ -161,6 +179,8 @@ namespace RDFSharp.Query
                     throw new RDFQueryException($"Cannot add BIND to pattern group because its variable '{bind.Variable}' already exists at this moment!");
 
                 GroupMembers.Add(bind);
+
+                //Collect variables carried by the given bind operator
                 Variables.Add(bind.Variable);
             }
             return this;

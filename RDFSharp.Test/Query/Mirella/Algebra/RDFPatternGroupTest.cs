@@ -251,7 +251,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pGroup.GroupMembers);
             Assert.IsTrue(pGroup.GroupMembers.Count == 1);
             Assert.IsNotNull(pGroup.Variables);
-            Assert.IsTrue(pGroup.Variables.Count == 0);
+            Assert.IsTrue(pGroup.Variables.Count == 2);
             Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "    ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>/<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?E .", Environment.NewLine, "  }", Environment.NewLine)));
             Assert.IsTrue(pGroup.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals(string.Concat("  {", Environment.NewLine, "    ?S rdf:type/rdf:type ?E .", Environment.NewLine, "  }", Environment.NewLine)));
             Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
@@ -279,7 +279,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pGroup.GroupMembers);
             Assert.IsTrue(pGroup.GroupMembers.Count == 1);
             Assert.IsNotNull(pGroup.Variables);
-            Assert.IsTrue(pGroup.Variables.Count == 0);
+            Assert.IsTrue(pGroup.Variables.Count == 1);
             Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "    VALUES ?S { \"lit\" } .", Environment.NewLine, "  }", Environment.NewLine)));
             Assert.IsTrue(pGroup.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals(string.Concat("  {", Environment.NewLine, "    VALUES ?S { \"lit\" } .", Environment.NewLine, "  }", Environment.NewLine)));
             Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
@@ -337,7 +337,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pGroup.GroupMembers);
             Assert.IsTrue(pGroup.GroupMembers.Count == 1);
             Assert.IsNotNull(pGroup.Variables);
-            Assert.IsTrue(pGroup.Variables.Count == 0);
+            Assert.IsTrue(pGroup.Variables.Count == 1);
             Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "  }", Environment.NewLine))); //Injected values are not printed since they are hidden
             Assert.IsTrue(pGroup.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals(string.Concat("  {", Environment.NewLine, "  }", Environment.NewLine)));
             Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
@@ -346,6 +346,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pGroup.GetPropertyPaths().Count() == 0);
             Assert.IsTrue(pGroup.GetValues().Count() == 1);
             Assert.IsTrue(pGroup.GetValues().ToList().TrueForAll(v => v.IsInjected));
+            Assert.IsTrue(pGroup.GetBinds().Count() == 0);
             Assert.IsTrue(pGroup.GetEvaluablePatternGroupMembers().Count() == 1);
         }
         #endregion
