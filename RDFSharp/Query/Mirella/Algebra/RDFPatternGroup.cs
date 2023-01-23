@@ -42,7 +42,7 @@ namespace RDFSharp.Query
         internal List<RDFPatternGroupMember> GroupMembers { get; set; }
 
         /// <summary>
-        /// List of variables carried by the patterns of the pattern group
+        /// List of variables carried by the patterns (and binds) of the pattern group
         /// </summary>
         internal List<RDFVariable> Variables { get; set; }
         #endregion
@@ -91,44 +91,40 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Adds the given pattern to the pattern group
+        /// Adds the given pattern to the pattern group (only if it contains at least one variable)
         /// </summary>
         public RDFPatternGroup AddPattern(RDFPattern pattern)
         {
-            //Accept the pattern if it carries at least one variable
-            if (pattern != null && pattern.Variables.Count > 0)
+            if (pattern != null && pattern.Variables.Count > 0 && !GetPatterns().Any(p => p.Equals(pattern)))
             {
-                if (!GetPatterns().Any(p => p.Equals(pattern)))
+                GroupMembers.Add(pattern);
+
+                //Context
+                if (pattern.Context != null && pattern.Context is RDFVariable)
                 {
-                    GroupMembers.Add(pattern);
+                    if (!Variables.Any(v => v.Equals(pattern.Context)))
+                        Variables.Add((RDFVariable)pattern.Context);
+                }
 
-                    //Context
-                    if (pattern.Context != null && pattern.Context is RDFVariable)
-                    {
-                        if (!Variables.Any(v => v.Equals(pattern.Context)))
-                            Variables.Add((RDFVariable)pattern.Context);
-                    }
+                //Subject
+                if (pattern.Subject is RDFVariable)
+                {
+                    if (!Variables.Any(v => v.Equals(pattern.Subject)))
+                        Variables.Add((RDFVariable)pattern.Subject);
+                }
 
-                    //Subject
-                    if (pattern.Subject is RDFVariable)
-                    {
-                        if (!Variables.Any(v => v.Equals(pattern.Subject)))
-                            Variables.Add((RDFVariable)pattern.Subject);
-                    }
+                //Predicate
+                if (pattern.Predicate is RDFVariable)
+                {
+                    if (!Variables.Any(v => v.Equals(pattern.Predicate)))
+                        Variables.Add((RDFVariable)pattern.Predicate);
+                }
 
-                    //Predicate
-                    if (pattern.Predicate is RDFVariable)
-                    {
-                        if (!Variables.Any(v => v.Equals(pattern.Predicate)))
-                            Variables.Add((RDFVariable)pattern.Predicate);
-                    }
-
-                    //Object
-                    if (pattern.Object is RDFVariable)
-                    {
-                        if (!Variables.Any(v => v.Equals(pattern.Object)))
-                            Variables.Add((RDFVariable)pattern.Object);
-                    }
+                //Object
+                if (pattern.Object is RDFVariable)
+                {
+                    if (!Variables.Any(v => v.Equals(pattern.Object)))
+                        Variables.Add((RDFVariable)pattern.Object);
                 }
             }
             return this;
@@ -139,11 +135,8 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPatternGroup AddPropertyPath(RDFPropertyPath propertyPath)
         {
-            if (propertyPath != null)
-            {
-                if (!GetPropertyPaths().Any(p => p.Equals(propertyPath)))
-                    GroupMembers.Add(propertyPath);
-            }
+            if (propertyPath != null && !GetPropertyPaths().Any(p => p.Equals(propertyPath)))
+                GroupMembers.Add(propertyPath);
             return this;
         }
 
@@ -152,11 +145,8 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPatternGroup AddValues(RDFValues values)
         {
-            if (values != null)
-            {
-                if (!GetValues().Any(v => v.Equals(values)))
-                    GroupMembers.Add(values);
-            }
+            if (values != null && !GetValues().Any(v => v.Equals(values)))
+                GroupMembers.Add(values);
             return this;
         }
 
@@ -165,10 +155,13 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPatternGroup AddBind(RDFBind bind)
         {
-            if (bind != null)
+            if (bind != null && !GetBinds().Any(b => b.Equals(bind)))
             {
-                if (!GetBinds().Any(b => b.Equals(bind)))
-                    GroupMembers.Add(bind);
+                if (Variables.Any(v => v.Equals(bind.Variable)))
+                    throw new RDFQueryException($"Cannot add BIND to pattern group because its variable '{bind.Variable}' already exists at this moment!");
+
+                GroupMembers.Add(bind);
+                Variables.Add(bind.Variable);
             }
             return this;
         }
