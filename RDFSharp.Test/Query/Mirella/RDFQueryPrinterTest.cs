@@ -1402,6 +1402,140 @@ WHERE {
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
 
+        [TestMethod]
+        public void ShouldPrintComplexSelectQueryHavingBinds()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
+                  .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                      .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
+                      .AddFilter(new RDFBoundFilter(new RDFVariable("?S")))
+                      .AddBind(new RDFBind(new RDFAbsExpression(new RDFVariable("?T")), new RDFVariable("?ABST")))
+                    )
+                    .AddModifier(new RDFDistinctModifier())
+                    .AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC))
+                    .AddModifier(new RDFLimitModifier(5))
+                    .AddModifier(new RDFOffsetModifier(1))
+                  )
+                  .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
+                    .AddBind(new RDFBind(new RDFBooleanAndExpression(new RDFVariableExpression(new RDFVariable("?T")), new RDFVariableExpression(new RDFVariable("?Q"))), new RDFVariable("?ANDTQ")))
+                  )
+                  .UnionWithNext()
+                  .AddProjectionVariable(new RDFVariable("?Z"))
+                )
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
+                  .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+                  )
+                  .AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?S") })
+                    .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
+                      .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))
+                    )
+                  )
+                  .UnionWithNext()
+                )
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                      .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { new RDFResource("ex:org") }))
+                      .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
+                        .AddAlternativeSteps(new List<RDFPropertyPathStep>() {
+                          new RDFPropertyPathStep(RDFVocabulary.RDFS.CLASS),
+                          new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
+                          new RDFPropertyPathStep(RDFVocabulary.OWL.CLASS).Inverse()
+                        })
+                      )
+                      .AddBind(new RDFBind(new RDFAbsExpression(new RDFVariable("?T")), new RDFVariable("?ABST")))
+                    )
+                    .AddProjectionVariable(new RDFVariable("?START"))
+                    .AddProjectionVariable(new RDFVariable("?STARTLEN"), new RDFLengthExpression(new RDFVariable("?START")))
+                  )
+                )
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
+                  .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+                  )
+                  .AddProjectionVariable(new RDFVariable("?T"))
+                );
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT *
+WHERE {
+  {
+    {
+      SELECT ?Z
+      WHERE {
+        {
+          SELECT DISTINCT *
+          WHERE {
+            {
+              ?S rdfs:label _:12345 .
+              BIND((ABS(?T)) AS ?ABST) .
+              FILTER ( BOUND(?S) ) 
+            }
+          }
+          ORDER BY ASC(?S)
+          LIMIT 5
+          OFFSET 1
+        }
+        {
+          ?S rdfs:label _:12345 .
+          BIND(((?T) && (?Q)) AS ?ANDTQ) .
+        }
+      }
+    }
+    UNION
+    {
+      SELECT ?S (AVG(?S) AS ?AVG_S)
+      WHERE {
+        {
+          ?S rdfs:label ""label""@EN .
+        }
+      }
+      GROUP BY ?S
+      HAVING ((AVG(?S) >= ""11.44""^^xsd:float))
+    }
+    UNION
+    {
+      SELECT *
+      WHERE {
+        {
+          SELECT ?START ((STRLEN(?START)) AS ?STARTLEN)
+          WHERE {
+            {
+              VALUES ?S { <ex:org> } .
+              ?START (rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class>) ?END .
+              BIND((ABS(?T)) AS ?ABST) .
+            }
+          }
+        }
+      }
+    }
+  }
+  {
+    SELECT ?T
+    WHERE {
+      {
+        ?S rdfs:label ""label""@EN .
+      }
+    }
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
         //ASK
         [TestMethod]
         public void ShouldPrintAskQueryNull()
