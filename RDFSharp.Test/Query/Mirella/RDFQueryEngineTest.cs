@@ -708,6 +708,59 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraph_EmptyTableFloorExpressionProjectedValue()
+        {
+            RDFGraph graph = new RDFGraph();
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddProjectionVariable(new RDFVariable("?Y"), new RDFFloorExpression(new RDFConstantExpression(new RDFTypedLiteral("3.35", RDFModelEnums.RDFDatatypes.XSD_FLOAT))));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals($"3^^{RDFVocabulary.XSD.DOUBLE}"));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraph_EmptyTableFloorExpressionProjectedValueFromSubQuery1()
+        {
+            RDFGraph graph = new RDFGraph();
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddProjectionVariable(new RDFVariable("?Y"), new RDFFloorExpression(new RDFConstantExpression(new RDFTypedLiteral("3.35", RDFModelEnums.RDFDatatypes.XSD_FLOAT)))))
+                .AddProjectionVariable(new RDFVariable("?Z"), new RDFAddExpression(new RDFVariable("?Y"), new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Rows[0]["?Z"].ToString().Equals($"4^^{RDFVocabulary.XSD.DOUBLE}"));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraph_EmptyTableFloorExpressionProjectedValueFromSubQuery2()
+        {
+            RDFGraph graph = new RDFGraph();
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddProjectionVariable(new RDFVariable("?Y"), new RDFFloorExpression(new RDFConstantExpression(new RDFTypedLiteral("3.35", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+                    .AddProjectionVariable(new RDFVariable("?Z"), new RDFAddExpression(new RDFVariable("?Y"), new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)))));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 2);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals($"3^^{RDFVocabulary.XSD.DOUBLE}"));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?Z"].ToString().Equals($"4^^{RDFVocabulary.XSD.DOUBLE}"));
+        }
+
+        [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraphWithComplexQuery1()
         {
             RDFGraph graph = new RDFGraph(new List<RDFTriple>()
