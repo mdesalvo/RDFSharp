@@ -59,14 +59,14 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(C, L, R)
-            sb.Append("(");
+            //(IF(C, L, R))
+            sb.Append("(IF(");
             sb.Append(ConditionArgument.ToString(prefixes));
             sb.Append(", ");
             sb.Append(((RDFExpression)LeftArgument).ToString(prefixes));
             sb.Append(", ");
             sb.Append(((RDFExpression)RightArgument).ToString(prefixes));
-            sb.Append(")");
+            sb.Append("))");
 
             return sb.ToString();
         }
@@ -85,10 +85,6 @@ namespace RDFSharp.Query
                 #region Evaluate Arguments
                 //Evaluate condition argument
                 RDFPatternMember conditionArgumentPMember = ConditionArgument.ApplyExpression(row);
-
-                //Binding error from arguments
-                if (conditionArgumentPMember == null)
-                    return expressionResult;
                 #endregion
 
                 #region Calculate Result
@@ -96,8 +92,7 @@ namespace RDFSharp.Query
                      && conditionArgumentTypedLiteral.HasBooleanDatatype())
                 {
                     if (bool.TryParse(conditionArgumentTypedLiteral.Value, out bool conditionalArgumentBooleanValue))
-                        expressionResult = conditionalArgumentBooleanValue ? ((RDFExpression)LeftArgument).ApplyExpression(row)
-                                                                           : ((RDFExpression)RightArgument).ApplyExpression(row);
+                        expressionResult = conditionalArgumentBooleanValue ? ((RDFExpression)LeftArgument).ApplyExpression(row) : ((RDFExpression)RightArgument).ApplyExpression(row);
                 }
                 #endregion
             }

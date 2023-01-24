@@ -636,6 +636,62 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraph_EmptyTableComplexVariableLessExpressionProjectedValue1()
+        {
+            RDFGraph graph = new RDFGraph();
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddProjectionVariable(new RDFVariable("?Y"), new RDFLengthExpression(
+                    new RDFConcatExpression(new RDFConstantExpression(new RDFPlainLiteral("hello","en-US")),
+                    new RDFLengthExpression(new RDFMD5Expression(new RDFConstantExpression(new RDFPlainLiteral("hello","en-US")))))));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals(new RDFTypedLiteral("7", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString()));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraph_EmptyTableComplexVariableLessExpressionProjectedValue2()
+        {
+            RDFGraph graph = new RDFGraph();
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddProjectionVariable(new RDFVariable("?Y"), new RDFAddExpression(
+                    new RDFLengthExpression(new RDFConstantExpression(new RDFPlainLiteral("hello", "en-US"))),
+                    new RDFAddExpression(new RDFConstantExpression(new RDFTypedLiteral("3", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)),
+                        new RDFMultiplyExpression(new RDFConstantExpression(new RDFTypedLiteral("3", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)), new RDFTypedLiteral("4.5", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)))));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals(new RDFTypedLiteral("21.5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString()));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraph_EmptyTableComplexVariableLessExpressionProjectedValue3()
+        {
+            RDFGraph graph = new RDFGraph();
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddProjectionVariable(new RDFVariable("?Y"), new RDFConditionalExpression(
+                    new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFRandExpression(), new RDFConstantExpression(new RDFTypedLiteral("0.50", RDFModelEnums.RDFDatatypes.XSD_FLOAT))),
+                    new RDFConstantExpression(new RDFPlainLiteral(">0.50")),
+                    new RDFConstantExpression(new RDFPlainLiteral("<=0.50"))));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals(">0.50") || result.SelectResults.Rows[0]["?Y"].ToString().Equals("<=0.50"));
+        }
+
+        [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraph_EmptyTableRandExpressionProjectedValue()
         {
             RDFGraph graph = new RDFGraph();

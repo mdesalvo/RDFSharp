@@ -39,8 +39,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("(((?V1) <= (45)), (?V1), (?V2))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(((?V1) <= (45)), (?V1), (?V2))"));
+            Assert.IsTrue(expression.ToString().Equals("(IF(((?V1) <= (45)), (?V1), (?V2)))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(IF(((?V1) <= (45)), (?V1), (?V2)))"));
         }
 
         [TestMethod]
