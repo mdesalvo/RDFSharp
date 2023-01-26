@@ -216,6 +216,29 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndHaveResultsFromSubQueryProjectionExpression()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:flower")), new RDFVariable("?S"))))
+                    .AddProjectionVariable(new RDFVariable("?S"))
+                    .AddProjectionVariable(new RDFVariable("?P"), new RDFConstantExpression(RDFVocabulary.RDF.TYPE)));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
+            Assert.IsTrue(result.ConstructResultsCount == 1);
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
+        }
+
+        [TestMethod]
         public void ShouldApplyConstructQueryToGraphAndHaveResultsWithTemplateHavingFixedSubject()
         {
             RDFGraph graph = new RDFGraph();
