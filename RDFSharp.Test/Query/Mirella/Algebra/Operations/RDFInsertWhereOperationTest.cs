@@ -180,6 +180,95 @@ WHERE {
         }
 
         [TestMethod]
+        public void ShouldAddPatternGroupWithBind()
+        {
+            RDFPatternGroup patternGroup = new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND")));
+            RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
+            operation.AddPatternGroup(patternGroup);
+            operation.AddPatternGroup(patternGroup); //Will be discarded, since duplicate patternGroups are not allowed
+
+            Assert.IsTrue(operation.InsertTemplates.Count == 0);
+            Assert.IsTrue(operation.DeleteTemplates.Count == 0);
+            Assert.IsTrue(operation.Variables.Count == 0);
+            Assert.IsTrue(operation.Prefixes.Count == 0);
+            Assert.IsTrue(operation.QueryMembers.Count == 1);
+
+            string operationString = operation.ToString();
+
+            Assert.IsTrue(string.Equals(operationString,
+@"INSERT {
+}
+WHERE {
+  {
+    ?Y <ex:dogOf> ?X .
+    BIND(?Y AS ?YBIND) .
+  }
+}"));
+        }
+
+        [TestMethod]
+        public void ShouldAddPatternGroupWithBindAfterUnion()
+        {
+            RDFPatternGroup patternGroup = new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
+                .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND")));
+            RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
+            operation.AddPatternGroup(patternGroup);
+            operation.AddPatternGroup(patternGroup); //Will be discarded, since duplicate patternGroups are not allowed
+
+            Assert.IsTrue(operation.InsertTemplates.Count == 0);
+            Assert.IsTrue(operation.DeleteTemplates.Count == 0);
+            Assert.IsTrue(operation.Variables.Count == 0);
+            Assert.IsTrue(operation.Prefixes.Count == 0);
+            Assert.IsTrue(operation.QueryMembers.Count == 1);
+
+            string operationString = operation.ToString();
+
+            Assert.IsTrue(string.Equals(operationString,
+@"INSERT {
+}
+WHERE {
+  {
+    ?Y <ex:dogOf> ?X .
+    BIND(?Y AS ?YBIND) .
+  }
+}"));
+        }
+
+        [TestMethod]
+        public void ShouldAddPatternGroupWithBindAfterUnionAndThenPattern()
+        {
+            RDFPatternGroup patternGroup = new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
+                .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND")))
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X")).UnionWithNext());
+            RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
+            operation.AddPatternGroup(patternGroup);
+            operation.AddPatternGroup(patternGroup); //Will be discarded, since duplicate patternGroups are not allowed
+
+            Assert.IsTrue(operation.InsertTemplates.Count == 0);
+            Assert.IsTrue(operation.DeleteTemplates.Count == 0);
+            Assert.IsTrue(operation.Variables.Count == 0);
+            Assert.IsTrue(operation.Prefixes.Count == 0);
+            Assert.IsTrue(operation.QueryMembers.Count == 1);
+
+            string operationString = operation.ToString();
+
+            Assert.IsTrue(string.Equals(operationString,
+@"INSERT {
+}
+WHERE {
+  {
+    ?Y <ex:dogOf> ?X .
+    BIND(?Y AS ?YBIND) .
+    ?Y <ex:isDogOf> ?X .
+  }
+}"));
+        }
+
+        [TestMethod]
         public void ShouldThrowExceptionOnAddingPatternGroupBecauseNullPatternGroup()
             => Assert.ThrowsException<RDFQueryException>(() => new RDFInsertWhereOperation().AddPatternGroup(null));
 
@@ -262,6 +351,92 @@ WHERE {
     UNION
     {
       ?Y <ex:isDogOf> ?X .
+    }
+  }
+  {
+    {
+      SELECT ?Y
+      WHERE {
+        {
+          ?Y (<http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment>) ?X .
+        }
+      }
+    }
+    UNION
+    {
+      SELECT ?Y ?X ((?X + 1) AS ?XADD1)
+      WHERE {
+        {
+          ?X <ex:hasDog> ?Y .
+        }
+      }
+      ORDER BY DESC(?X)
+    }
+  }
+}"));
+        }
+
+        [TestMethod]
+        public void ShouldPrintComplexOperationWithBindAndExpressions()
+        {
+            RDFInsertWhereOperation operation = new RDFInsertWhereOperation()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
+                .AddInsertTemplate(new RDFPattern(new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")).Optional())
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND3")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))
+                        .UnionWithNext())
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X")))
+                    .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDoggyOf"), new RDFVariable("?X")))
+                    .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X")))
+                    .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND2")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))
+                        .UnionWithNext())
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDoggyOf"), new RDFVariable("?X"))))
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?X"))
+                            .AddAlternativeSteps(new List<RDFPropertyPathStep>() {
+                                new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
+                                new RDFPropertyPathStep(RDFVocabulary.RDFS.COMMENT)})))
+                    .AddProjectionVariable(new RDFVariable("?Y"))
+                    .UnionWithNext())
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasDog"), new RDFVariable("?Y"))))
+                    .AddProjectionVariable(new RDFVariable("?Y"))
+                    .AddProjectionVariable(new RDFVariable("?X"))
+                    .AddProjectionVariable(new RDFVariable("?XADD1"), new RDFAddExpression(new RDFVariable("?X"), new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INT)))
+                    .AddModifier(new RDFOrderByModifier(new RDFVariable("?X"), RDFQueryEnums.RDFOrderByFlavors.DESC)))
+                .AddModifier(new RDFDistinctModifier());
+            string operationString = operation.ToString();
+
+            Assert.IsTrue(string.Equals(operationString,
+@"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+INSERT {
+  ?Y rdf:type <ex:dog> .
+}
+WHERE {
+  {
+    {
+      BIND(?Y AS ?YBIND3) .
+      { ?Y <ex:dogOf> ?X }
+      UNION
+      { ?Y <ex:isDogOf> ?X }
+      BIND(?Y AS ?YBIND) .
+      ?Y <ex:isDoggyOf> ?X .
+    }
+    UNION
+    {
+      ?Y <ex:isDogOf> ?X .
+      BIND(?Y AS ?YBIND2) .
+      { ?Y <ex:dogOf> ?X }
+      UNION
+      { ?Y <ex:isDoggyOf> ?X }
     }
   }
   {
