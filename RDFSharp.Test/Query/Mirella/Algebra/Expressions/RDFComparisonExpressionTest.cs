@@ -36,8 +36,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) < (24.08))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("((?V1 + ?V2) < (24.08))"));
+            Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) < 24.08)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("((?V1 + ?V2) < 24.08)"));
         }
 
         [TestMethod]
@@ -50,8 +50,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) <= (?V3))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("((?V1 + ?V2) <= (?V3))"));
+            Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) <= ?V3)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("((?V1 + ?V2) <= ?V3)"));
         }
 
         [TestMethod]
@@ -64,8 +64,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("((?V1) = (?V2))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("((?V1) = (?V2))"));
+            Assert.IsTrue(expression.ToString().Equals("(?V1 = ?V2)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(?V1 = ?V2)"));
         }
 
         [TestMethod]
@@ -78,8 +78,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("((?V1) != (?V2))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("((?V1) != (?V2))"));
+            Assert.IsTrue(expression.ToString().Equals("(?V1 != ?V2)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(?V1 != ?V2)"));
         }
 
         [TestMethod]
@@ -92,8 +92,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) >= (24.08))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("((?V1 + ?V2) >= (24.08))"));
+            Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) >= 24.08)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("((?V1 + ?V2) >= 24.08)"));
         }
 
         [TestMethod]
@@ -106,8 +106,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) > (?V3))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("((?V1 + ?V2) > (?V3))"));
+            Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) > ?V3)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("((?V1 + ?V2) > ?V3)"));
         }
 
         [TestMethod]
@@ -148,8 +148,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("((?V1) = ?V2)"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("((?V1) = ?V2)"));
+            Assert.IsTrue(expression.ToString().Equals("(?V1 = ?V2)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(?V1 = ?V2)"));
         }
 
         [TestMethod]
@@ -162,8 +162,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("((?V1) != ?V2)"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("((?V1) != ?V2)"));
+            Assert.IsTrue(expression.ToString().Equals("(?V1 != ?V2)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(?V1 != ?V2)"));
         }
 
         [TestMethod]
@@ -232,8 +232,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("(?V2 = (?V1))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(?V2 = (?V1))"));
+            Assert.IsTrue(expression.ToString().Equals("(?V2 = ?V1)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(?V2 = ?V1)"));
         }
 
         [TestMethod]
@@ -246,8 +246,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("(?V2 != (?V1))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(?V2 != (?V1))"));
+            Assert.IsTrue(expression.ToString().Equals("(?V2 != ?V1)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(?V2 != ?V1)"));
         }
 
         [TestMethod]

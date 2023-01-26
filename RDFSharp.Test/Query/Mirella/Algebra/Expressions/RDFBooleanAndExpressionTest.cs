@@ -40,9 +40,9 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("(((?V1 + ?V2) = (24.08)) && ((?V1) = (\"hello\"^^<http://www.w3.org/2001/XMLSchema#string>)))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(((?V1 + ?V2) = (24.08)) && ((?V1) = (\"hello\"^^<http://www.w3.org/2001/XMLSchema#string>)))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals("(((?V1 + ?V2) = (24.08)) && ((?V1) = (\"hello\"^^xsd:string)))"));
+            Assert.IsTrue(expression.ToString().Equals("(((?V1 + ?V2) = 24.08) && (?V1 = \"hello\"^^<http://www.w3.org/2001/XMLSchema#string>))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(((?V1 + ?V2) = 24.08) && (?V1 = \"hello\"^^<http://www.w3.org/2001/XMLSchema#string>))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals("(((?V1 + ?V2) = 24.08) && (?V1 = \"hello\"^^xsd:string))"));
         }
 
         [TestMethod]

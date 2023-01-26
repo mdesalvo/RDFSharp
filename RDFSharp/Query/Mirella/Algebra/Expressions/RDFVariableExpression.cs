@@ -50,11 +50,17 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(L)
-            sb.Append('(');
-            sb.Append(LeftArgument is RDFExpression expLeftArgument ? expLeftArgument.ToString(prefixes)
-                       : RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            sb.Append(')');
+            //Variable => ?L
+            if (LeftArgument is RDFVariable)
+                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+
+            //Expression => (?L)
+            else
+            {
+                sb.Append('(');
+                sb.Append(((RDFExpression)LeftArgument).ToString(prefixes));
+                sb.Append(')');
+            }
 
             return sb.ToString();
         }

@@ -35,8 +35,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("(SUBSTRING((?V), 5))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(SUBSTRING((?V), 5))"));
+            Assert.IsTrue(expression.ToString().Equals("(SUBSTRING(?V, 5))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(SUBSTRING(?V, 5))"));
         }
 
         [TestMethod]
@@ -48,8 +48,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("(SUBSTRING((?V), 5, 2))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(SUBSTRING((?V), 5, 2))"));
+            Assert.IsTrue(expression.ToString().Equals("(SUBSTRING(?V, 5, 2))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(SUBSTRING(?V, 5, 2))"));
         }
 
         [TestMethod]
@@ -61,8 +61,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("(SUBSTRING((?V), 5))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(SUBSTRING((?V), 5))"));
+            Assert.IsTrue(expression.ToString().Equals("(SUBSTRING(?V, 5))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(SUBSTRING(?V, 5))"));
         }
 
         [TestMethod]

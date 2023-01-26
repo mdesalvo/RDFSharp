@@ -36,8 +36,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) + (2))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("((?V1 + ?V2) + (2))"));
+            Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) + 2)"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("((?V1 + ?V2) + 2)"));
         }
 
         [TestMethod]

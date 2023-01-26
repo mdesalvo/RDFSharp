@@ -311,8 +311,8 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pGroup.GroupMembers.Count == 1);
             Assert.IsNotNull(pGroup.Variables);
             Assert.IsTrue(pGroup.Variables.Count == 1);
-            Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "    BIND((?BINDEXP) AS ?BINDVAR) .", Environment.NewLine, "  }", Environment.NewLine)));
-            Assert.IsTrue(pGroup.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals(string.Concat("  {", Environment.NewLine, "    BIND((?BINDEXP) AS ?BINDVAR) .", Environment.NewLine, "  }", Environment.NewLine)));
+            Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "    BIND(?BINDEXP AS ?BINDVAR) .", Environment.NewLine, "  }", Environment.NewLine)));
+            Assert.IsTrue(pGroup.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals(string.Concat("  {", Environment.NewLine, "    BIND(?BINDEXP AS ?BINDVAR) .", Environment.NewLine, "  }", Environment.NewLine)));
             Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
             Assert.IsTrue(pGroup.GetPatterns().Count() == 0);
             Assert.IsTrue(pGroup.GetFilters().Count() == 0);

@@ -60,8 +60,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("(?V)"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(?V)"));
+            Assert.IsTrue(expression.ToString().Equals("?V"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("?V"));
         }
 
         [TestMethod]

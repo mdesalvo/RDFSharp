@@ -257,7 +257,7 @@ SELECT *
 WHERE {
   {
     ?S rdfs:label ""label""@EN .
-    BIND((?EXP) AS ?V) .
+    BIND(?EXP AS ?V) .
   }
 }
 ";
@@ -285,7 +285,7 @@ WHERE {
     { ?S1 rdfs:label ""label""@EN }
     UNION
     { ?S2 rdfs:label ""label""@EN-US }
-    BIND((rdfs:Class) AS ?V) .
+    BIND(rdfs:Class AS ?V) .
   }
 }
 ";
@@ -1490,7 +1490,7 @@ WHERE {
         }
         {
           ?S rdfs:label _:12345 .
-          BIND(((?T) && (?Q)) AS ?ANDTQ) .
+          BIND((?T && ?Q) AS ?ANDTQ) .
         }
       }
     }

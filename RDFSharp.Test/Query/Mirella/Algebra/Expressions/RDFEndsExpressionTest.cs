@@ -36,8 +36,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("(STRENDS((?V1 + ?V2), (?V3)))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(STRENDS((?V1 + ?V2), (?V3)))"));
+            Assert.IsTrue(expression.ToString().Equals("(STRENDS((?V1 + ?V2), ?V3))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(STRENDS((?V1 + ?V2), ?V3))"));
         }
 
         [TestMethod]
@@ -50,9 +50,9 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals($"(STRENDS((?V1 + ?V2), (\"hello\"^^<{RDFVocabulary.XSD.STRING}>)))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals($"(STRENDS((?V1 + ?V2), (\"hello\"^^<{RDFVocabulary.XSD.STRING}>)))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals("(STRENDS((?V1 + ?V2), (\"hello\"^^xsd:string)))"));
+            Assert.IsTrue(expression.ToString().Equals($"(STRENDS((?V1 + ?V2), \"hello\"^^<{RDFVocabulary.XSD.STRING}>))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals($"(STRENDS((?V1 + ?V2), \"hello\"^^<{RDFVocabulary.XSD.STRING}>))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals("(STRENDS((?V1 + ?V2), \"hello\"^^xsd:string))"));
         }
 
         [TestMethod]
@@ -65,8 +65,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("(STRENDS((?V1 + ?V2), (STRENDS((?V3), (\"hello\"@EN-US)))))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(STRENDS((?V1 + ?V2), (STRENDS((?V3), (\"hello\"@EN-US)))))"));
+            Assert.IsTrue(expression.ToString().Equals("(STRENDS((?V1 + ?V2), (STRENDS(?V3, \"hello\"@EN-US))))"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(STRENDS((?V1 + ?V2), (STRENDS(?V3, \"hello\"@EN-US))))"));
         }
 
         [TestMethod]

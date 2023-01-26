@@ -34,9 +34,9 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.FOAF.AGE}>)"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals($"(<{RDFVocabulary.FOAF.AGE}>)"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("foaf") }).Equals("(foaf:age)"));
+            Assert.IsTrue(expression.ToString().Equals($"<{RDFVocabulary.FOAF.AGE}>"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals($"<{RDFVocabulary.FOAF.AGE}>"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("foaf") }).Equals("foaf:age"));
         }
 
         [TestMethod]
@@ -47,8 +47,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("(\"lit\"@EN-US)"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(\"lit\"@EN-US)"));
+            Assert.IsTrue(expression.ToString().Equals("\"lit\"@EN-US"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("\"lit\"@EN-US"));
         }
 
         [TestMethod]
@@ -59,9 +59,9 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("(25.04)"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(25.04)"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals("(25.04)"));
+            Assert.IsTrue(expression.ToString().Equals("25.04"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("25.04"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals("25.04"));
         }
 
         [TestMethod]
@@ -72,9 +72,9 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals($"(\"25Z\"^^<{RDFVocabulary.XSD.G_DAY}>)"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals($"(\"25Z\"^^<{RDFVocabulary.XSD.G_DAY}>)"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals($"(\"25Z\"^^xsd:gDay)"));
+            Assert.IsTrue(expression.ToString().Equals($"\"25Z\"^^<{RDFVocabulary.XSD.G_DAY}>"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals($"\"25Z\"^^<{RDFVocabulary.XSD.G_DAY}>"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals($"\"25Z\"^^xsd:gDay"));
         }
 
         [TestMethod]
