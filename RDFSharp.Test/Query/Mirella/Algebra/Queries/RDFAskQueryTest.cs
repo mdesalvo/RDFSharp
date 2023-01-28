@@ -110,6 +110,19 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldApplyAskQueryToGraphAndHaveTrueResultFromBind()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:flower")), new RDFVariable("?V"))));
+            RDFAskQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.AskResult);
+        }
+
+        [TestMethod]
         public void ShouldApplyAskQueryToGraphAndHaveFalseResult()
         {
             RDFGraph graph = new RDFGraph();
@@ -118,6 +131,20 @@ namespace RDFSharp.Test.Query
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFAskQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.AskResult);
+        }
+
+        [TestMethod]
+        public void ShouldApplyAskQueryToGraphAndHaveFalseResultFromBind()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?V"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
+                    .AddBind(new RDFBind(new RDFAddExpression(new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)), new RDFVariable("?Z")), new RDFVariable("?SUM"))));
             RDFAskQueryResult result = query.ApplyToGraph(graph);
 
             Assert.IsNotNull(result);

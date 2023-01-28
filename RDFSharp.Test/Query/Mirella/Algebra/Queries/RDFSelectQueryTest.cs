@@ -366,14 +366,11 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.SelectResults);
-            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResultsCount == 0);
             Assert.IsTrue(result.SelectResults.Columns.Count == 3);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?V"));
             Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?VLENGTH"));
             Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?VLENGTHISMORETHAN7"));
-            Assert.IsTrue(result.SelectResults.Rows[0]["?V"].ToString().Equals("ex:flower"));
-            Assert.IsTrue(result.SelectResults.Rows[0]["?VLENGTH"].ToString().Equals(string.Empty));
-            Assert.IsTrue(result.SelectResults.Rows[0]["?VLENGTHISMORETHAN7"].ToString().Equals(string.Empty));
         }
 
         [TestMethod]

@@ -1780,7 +1780,13 @@ namespace RDFSharp.Query
 
                 //Valorize bind column
                 if (table.Rows.Count == 0)
-                    AddRow(table, new Dictionary<string, string>() { { bindVariable, expression.ApplyExpression(table.NewRow())?.ToString() } });
+                {
+                    //Ensure to add the row only in case the expression has evaluated without binding errors,
+                    //(otherwise in this scenario we would always answer true for ASK queries due to this row)
+                    RDFPatternMember bindResult = expression.ApplyExpression(table.NewRow());
+                    if (bindResult != null)
+                        AddRow(table, new Dictionary<string, string>() { { bindVariable, bindResult.ToString() } });
+                }                    
                 else
                 {
                     foreach (DataRow row in table.AsEnumerable())
