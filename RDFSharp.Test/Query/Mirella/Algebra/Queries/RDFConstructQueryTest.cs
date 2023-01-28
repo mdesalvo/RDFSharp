@@ -512,6 +512,27 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndNotHaveResultsBecauseVariableFromBindHavingErrors()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("white","en")));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.LABEL, new RDFVariable("?LDAY")))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?L")).Optional())
+                    .AddBind(new RDFBind(new RDFDayExpression(new RDFVariable("?L")), new RDFVariable("?LDAY"))));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
         public void ShouldApplyConstructQueryToNullGraphAndNotHaveResults()
         {
             RDFConstructQuery query = new RDFConstructQuery()
