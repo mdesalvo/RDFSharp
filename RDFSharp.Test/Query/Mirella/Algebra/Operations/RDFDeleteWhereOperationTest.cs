@@ -309,6 +309,79 @@ WHERE {
         }
 
         [TestMethod]
+        public void ShouldApplyToGraphWithVariableFromBind()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFDeleteWhereOperation operation = new RDFDeleteWhereOperation();
+            operation.AddDeleteTemplate(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?XBIND")));
+            operation.AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
+                .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?X")), new RDFVariable("?XBIND"))));
+            RDFOperationResult result = operation.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsTrue(result.InsertResultsCount == 0);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 3);
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
+            Assert.IsTrue(result.DeleteResultsCount == 3);
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?PREDICATE"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?OBJECT"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?PREDICATE"].ToString(), "ex:dogOf"));
+            Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?OBJECT"].ToString(), "ex:whoever"));
+            Assert.IsTrue(graph.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public void ShouldApplyToGraphWithVariableFromBindHavingErrors()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFDeleteWhereOperation operation = new RDFDeleteWhereOperation();
+            operation.AddDeleteTemplate(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?XBIND")));
+            operation.AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
+                .AddBind(new RDFBind(new RDFFloorExpression(new RDFVariable("?X")), new RDFVariable("?XBIND"))));
+            RDFOperationResult result = operation.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 0);
+            Assert.IsTrue(result.InsertResultsCount == 0);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 3);
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
+            Assert.IsTrue(result.DeleteResultsCount == 0);
+            Assert.IsTrue(graph.TriplesCount == 5);
+        }
+
+        [TestMethod]
         public async Task ShouldApplyToNullGraphAsync()
         {
             RDFDeleteWhereOperation operation = new RDFDeleteWhereOperation();

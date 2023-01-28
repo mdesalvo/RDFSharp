@@ -621,6 +621,48 @@ WHERE {
         }
 
         [TestMethod]
+        public void ShouldApplyToGraphWithExpressionsAndBindFromSubQueryHavingErrors()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("85.00", RDFModelEnums.RDFDatatypes.XSD_FLOAT)),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("83", RDFModelEnums.RDFDatatypes.XSD_BYTE)),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
+            operation.AddInsertTemplate(new RDFPattern(new RDFVariable("?X"), RDFVocabulary.FOAF.AGE, new RDFVariable("?AGEX2")));
+            operation.AddInsertTemplate(new RDFPattern(new RDFVariable("?XFLOOR"), new RDFResource("ex:derivedFrom"), new RDFVariable("?X")));
+            operation.AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional()));
+            operation.AddSubQuery(new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasAge"), new RDFVariable("?A")))
+                    .AddBind(new RDFBind(new RDFFloorExpression(new RDFVariable("?X")), new RDFVariable("?XFLOOR"))))
+                .Optional()
+                .AddProjectionVariable(new RDFVariable("?X"))
+                .AddProjectionVariable(new RDFVariable("?XFLOOR"))
+                .AddProjectionVariable(new RDFVariable("?AGEX2"), new RDFMultiplyExpression(new RDFVariable("?X"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
+            RDFOperationResult result = operation.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.InsertResults);
+            Assert.IsTrue(result.InsertResults.Columns.Count == 3);
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?SUBJECT"));
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?PREDICATE"));
+            Assert.IsTrue(result.InsertResults.Columns.Contains("?OBJECT"));
+            Assert.IsNotNull(result.InsertResultsCount == 0);
+            Assert.IsNotNull(result.DeleteResults);
+            Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
+            Assert.IsTrue(result.DeleteResultsCount == 0);
+            Assert.IsTrue(graph.TriplesCount == 7);
+        }
+
+        [TestMethod]
         public void ShouldApplyToGraphWithGroundTemplate()
         {
             RDFGraph graph = new RDFGraph(new List<RDFTriple>()
