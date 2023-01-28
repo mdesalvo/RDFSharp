@@ -89,6 +89,7 @@ namespace RDFSharp.Model
                     new RDFNamespace(RDFVocabulary.DC.DCTYPE.PREFIX, RDFVocabulary.DC.DCTYPE.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.DC.DCTYPE.DEREFERENCE_URI)),
                     new RDFNamespace(RDFVocabulary.FOAF.PREFIX, RDFVocabulary.FOAF.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.FOAF.DEREFERENCE_URI)),
                     new RDFNamespace(RDFVocabulary.GEO.PREFIX, RDFVocabulary.GEO.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.GEO.DEREFERENCE_URI)),
+                    new RDFNamespace(RDFVocabulary.GEOSPARQL.PREFIX, RDFVocabulary.GEOSPARQL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.GEOSPARQL.DEREFERENCE_URI)),
                     new RDFNamespace(RDFVocabulary.SIOC.PREFIX, RDFVocabulary.SIOC.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SIOC.DEREFERENCE_URI)),
                     new RDFNamespace(RDFVocabulary.SKOS.PREFIX, RDFVocabulary.SKOS.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SKOS.DEREFERENCE_URI)),
                     new RDFNamespace(RDFVocabulary.SKOS.SKOSXL.PREFIX, RDFVocabulary.SKOS.SKOSXL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SKOS.SKOSXL.DEREFERENCE_URI)),
