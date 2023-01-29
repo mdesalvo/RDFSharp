@@ -53,8 +53,7 @@ WHERE {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -75,8 +74,7 @@ WHERE {
         {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
 @"SELECT *
@@ -96,8 +94,7 @@ WHERE {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -120,8 +117,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -146,8 +142,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -171,8 +166,7 @@ WHERE {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext()));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -195,8 +189,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
-                    .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E")).AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL)))
-                );
+                    .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E")).AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -221,8 +214,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
-                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { RDFVocabulary.RDFS.LABEL }))
-                );
+                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { RDFVocabulary.RDFS.LABEL })));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -247,8 +239,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).UnionWithNext())
-                    .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?EXP")), new RDFVariable("?V")))
-                );
+                    .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?EXP")), new RDFVariable("?V"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -273,8 +264,7 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).UnionWithNext())
                     .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US")).UnionWithNext())
-                    .AddBind(new RDFBind(new RDFConstantExpression(RDFVocabulary.RDFS.CLASS), new RDFVariable("?V")))
-                );
+                    .AddBind(new RDFBind(new RDFConstantExpression(RDFVocabulary.RDFS.CLASS), new RDFVariable("?V"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -294,14 +284,65 @@ WHERE {
         }
 
         [TestMethod]
+        public void ShouldPrintSelectQueryStarWithMultipleUnionPatternsHavingMiddleBind()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).UnionWithNext())
+                    .AddBind(new RDFBind(new RDFConstantExpression(RDFVocabulary.RDFS.CLASS), new RDFVariable("?V")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US")).UnionWithNext()));
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT *
+WHERE {
+  {
+    ?S1 rdfs:label ""label""@EN .
+    BIND(rdfs:Class AS ?V) .
+    ?S2 rdfs:label ""label""@EN-US .
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintSelectQueryStarWithMultipleOptionalPatternsHavingMiddleBind()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Optional())
+                    .AddBind(new RDFBind(new RDFConstantExpression(RDFVocabulary.RDFS.CLASS), new RDFVariable("?V")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US")).Optional()));
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT *
+WHERE {
+  {
+    OPTIONAL { ?S1 rdfs:label ""label""@EN } .
+    BIND(rdfs:Class AS ?V) .
+    OPTIONAL { ?S2 rdfs:label ""label""@EN-US } .
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
         public void ShouldPrintSelectQueryStarWithSingleUnionPatternGroup()
         {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                );
+                    .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -324,8 +365,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
-                    .UnionWithNext()
-                );
+                    .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -400,8 +440,7 @@ WHERE {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                 .AddProjectionVariable(new RDFVariable("?S"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
@@ -423,8 +462,7 @@ WHERE {
         {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                 .AddProjectionVariable(new RDFVariable("?S"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
@@ -446,8 +484,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Optional())
-                )
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Optional()))
                 .AddProjectionVariable(new RDFVariable("?S"))
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -472,12 +509,10 @@ WHERE {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                    .Optional()
-                )
+                    .Optional())
                 .AddProjectionVariable(new RDFVariable("?S"))
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -506,13 +541,11 @@ WHERE {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj1"), new RDFResource("ex:pred1"), new RDFVariable("?T")))
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj2"), new RDFResource("ex:pred2"), new RDFVariable("?T")).Optional())
-                    .Optional()
-                )
+                    .Optional())
                 .AddProjectionVariable(new RDFVariable("?S"))
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -543,11 +576,9 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                )
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T"))))
                 .AddProjectionVariable(new RDFVariable("?S"))
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -578,16 +609,13 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                    .UnionWithNext() //Will not be printed, since this is the last evaluable query member
-                )
+                    .UnionWithNext()) //Will not be printed, since this is the last evaluable query member
                 .AddProjectionVariable(new RDFVariable("?S"))
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -622,18 +650,14 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                )
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                )
+                    .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
                 .AddProjectionVariable(new RDFVariable("?S"))
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -665,25 +689,70 @@ WHERE {
         }
 
         [TestMethod]
+        public void ShouldPrintSelectQueryProjectionPrefixedAndMultipleUnionPatternGroupAllHavingUnion()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+                    .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
+                    .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
+                    .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?T")), new RDFVariable("?TV")))
+                    .UnionWithNext())
+                .AddProjectionVariable(new RDFVariable("?S"))
+                .AddProjectionVariable(new RDFVariable("?T"))
+                .AddProjectionVariable(new RDFVariable("?TVV"), new RDFVariableExpression(new RDFVariable("?TV")));
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?S ?T (?TV AS ?TVV)
+WHERE {
+  {
+    {
+      ?S rdfs:label ""label""@EN .
+    }
+    UNION
+    {
+      <ex:subj> <ex:pred> ?T .
+    }
+    UNION
+    {
+      <ex:subj> rdfs:label ?T .
+    }
+    UNION
+    {
+      BIND(?T AS ?TV) .
+    }
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
         public void ShouldPrintSelectQueryProjectionPrefixedAndMultipleUnionPatternGroupFollowedByOptionalPatternGroup()
         {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                )
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                    .Optional()
-                )
+                    .Optional())
                 .AddProjectionVariable(new RDFVariable("?S"))
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -725,21 +794,17 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).Optional())
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFVariable("?P"), new RDFResource("bnode:12345")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)).Optional())
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                )
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                    .Optional()
-                )
+                    .Optional())
                 .AddProjectionVariable(new RDFVariable("?S"))
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -784,18 +849,15 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).UnionWithNext()) //Union will not be printed, since this is the last pattern group member
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).UnionWithNext())
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T")).UnionWithNext())
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional())
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                    .UnionWithNext() //Union will not be printed, since this is the last evaluable query member
-                )
+                    .UnionWithNext()) //Union will not be printed, since this is the last evaluable query member
                 .AddProjectionVariable(new RDFVariable("?S"))
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -836,9 +898,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                  )
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -866,10 +926,8 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                  )
-                  .AddProjectionVariable(new RDFVariable("?S"))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()))
+                  .AddProjectionVariable(new RDFVariable("?S")));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -897,9 +955,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                  )
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())))
                 .AddProjectionVariable(new RDFVariable("?S"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
@@ -929,10 +985,8 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()))
+                  .AddProjectionVariable(new RDFVariable("?T")))
                 .AddProjectionVariable(new RDFVariable("?S"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
@@ -963,11 +1017,9 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()))
                   .Optional()
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?T")))
                 .AddProjectionVariable(new RDFVariable("?S"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
@@ -998,17 +1050,13 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
+                  .AddProjectionVariable(new RDFVariable("?T")))
                 .AddProjectionVariable(new RDFVariable("?Z"))
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -1049,18 +1097,14 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                   .Optional()
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?T")))
                 .AddProjectionVariable(new RDFVariable("?Z"))
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -1101,18 +1145,14 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
                   .UnionWithNext()
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
+                  .AddProjectionVariable(new RDFVariable("?T")))
                 .AddProjectionVariable(new RDFVariable("?Z"))
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -1156,19 +1196,15 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
                   .UnionWithNext()
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                   .UnionWithNext() //This subquery will not be printed as union, since it is the last query member
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?T")))
                 .AddProjectionVariable(new RDFVariable("?Z"))
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -1212,26 +1248,20 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
                   .UnionWithNext()
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
+                  .AddProjectionVariable(new RDFVariable("?T")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                   .Optional()
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?T")))
                 .AddProjectionVariable(new RDFVariable("?Z"))
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -1285,31 +1315,23 @@ WHERE {
                   .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
                       .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                      .AddFilter(new RDFBoundFilter(new RDFVariable("?S")))
-                    )
+                      .AddFilter(new RDFBoundFilter(new RDFVariable("?S"))))
                     .AddModifier(new RDFDistinctModifier())
                     .AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC))
                     .AddModifier(new RDFLimitModifier(5))
-                    .AddModifier(new RDFOffsetModifier(1))
-                  )
+                    .AddModifier(new RDFOffsetModifier(1)))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
                   .UnionWithNext()
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                   .AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?S") })
                     .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-                      .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))
-                    )
-                  )
-                  .UnionWithNext()
-                )
+                      .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+                  .UnionWithNext())
                 .AddSubQuery(new RDFSelectQuery()
                   .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
@@ -1319,19 +1341,13 @@ WHERE {
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.CLASS),
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
                           new RDFPropertyPathStep(RDFVocabulary.OWL.CLASS).Inverse()
-                        })
-                      )
-                    )
-                    .AddProjectionVariable(new RDFVariable("?START"))
-                  )
-                )
+                        })))
+                    .AddProjectionVariable(new RDFVariable("?START"))))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -1403,7 +1419,7 @@ WHERE {
         }
 
         [TestMethod]
-        public void ShouldPrintComplexSelectQueryHavingBinds()
+        public void ShouldPrintComplexSelectQueryHavingBinds1()
         {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
@@ -1413,32 +1429,24 @@ WHERE {
                     .AddPatternGroup(new RDFPatternGroup()
                       .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
                       .AddFilter(new RDFBoundFilter(new RDFVariable("?S")))
-                      .AddBind(new RDFBind(new RDFAbsExpression(new RDFVariable("?T")), new RDFVariable("?ABST")))
-                    )
+                      .AddBind(new RDFBind(new RDFAbsExpression(new RDFVariable("?T")), new RDFVariable("?ABST"))))
                     .AddModifier(new RDFDistinctModifier())
                     .AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC))
                     .AddModifier(new RDFLimitModifier(5))
-                    .AddModifier(new RDFOffsetModifier(1))
-                  )
+                    .AddModifier(new RDFOffsetModifier(1)))
                   .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                    .AddBind(new RDFBind(new RDFBooleanAndExpression(new RDFVariableExpression(new RDFVariable("?T")), new RDFVariableExpression(new RDFVariable("?Q"))), new RDFVariable("?ANDTQ")))
-                  )
+                    .AddBind(new RDFBind(new RDFBooleanAndExpression(new RDFVariableExpression(new RDFVariable("?T")), new RDFVariableExpression(new RDFVariable("?Q"))), new RDFVariable("?ANDTQ"))))
                   .UnionWithNext()
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
                   .AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?S") })
                     .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-                      .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))
-                    )
-                  )
-                  .UnionWithNext()
-                )
+                      .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+                  .UnionWithNext())
                 .AddSubQuery(new RDFSelectQuery()
                   .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
@@ -1448,21 +1456,15 @@ WHERE {
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.CLASS),
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
                           new RDFPropertyPathStep(RDFVocabulary.OWL.CLASS).Inverse()
-                        })
-                      )
-                      .AddBind(new RDFBind(new RDFAbsExpression(new RDFVariable("?T")), new RDFVariable("?ABST")))
-                    )
+                        }))
+                      .AddBind(new RDFBind(new RDFAbsExpression(new RDFVariable("?T")), new RDFVariable("?ABST"))))
                     .AddProjectionVariable(new RDFVariable("?START"))
-                    .AddProjectionVariable(new RDFVariable("?STARTLEN"), new RDFLengthExpression(new RDFVariable("?START")))
-                  )
-                )
+                    .AddProjectionVariable(new RDFVariable("?STARTLEN"), new RDFLengthExpression(new RDFVariable("?START")))))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -1536,6 +1538,244 @@ WHERE {
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
 
+        [TestMethod]
+        public void ShouldPrintComplexSelectQueryHavingBinds2()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
+                  .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                  .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t")), new RDFVariable("?T")))
+                  .AddPattern(new RDFPattern(new RDFVariable("?T"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+                  .UnionWithNext())
+                .AddProjectionVariable(new RDFVariable("?T"));
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"SELECT ?T
+WHERE {
+  {
+    {
+      SELECT *
+      WHERE {
+        {
+          ?S <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
+        }
+      }
+    }
+    UNION
+    {
+      BIND(<ex:t> AS ?T) .
+      ?T <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
+    }
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintComplexSelectQueryHavingBinds3()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
+                  .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                  .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t")), new RDFVariable("?T")))
+                  .AddPattern(new RDFPattern(new RDFVariable("?T"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).UnionWithNext())
+                  .UnionWithNext())
+                .AddProjectionVariable(new RDFVariable("?T"));
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"SELECT ?T
+WHERE {
+  {
+    {
+      SELECT *
+      WHERE {
+        {
+          ?S <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
+        }
+      }
+    }
+    UNION
+    {
+      BIND(<ex:t> AS ?T) .
+      ?T <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
+    }
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintComplexSelectQueryHavingBinds4()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
+                  .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                  .AddPattern(new RDFPattern(new RDFVariable("?T1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label1", "en")).UnionWithNext())
+                  .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t")), new RDFVariable("?T3")))
+                  .AddPattern(new RDFPattern(new RDFVariable("?T2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label2", "en")).UnionWithNext())
+                  .UnionWithNext())
+                .AddProjectionVariable(new RDFVariable("?T3"));
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"SELECT ?T3
+WHERE {
+  {
+    {
+      SELECT *
+      WHERE {
+        {
+          ?S <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
+        }
+      }
+    }
+    UNION
+    {
+      ?T1 <http://www.w3.org/2000/01/rdf-schema#label> ""label1""@EN .
+      BIND(<ex:t> AS ?T3) .
+      ?T2 <http://www.w3.org/2000/01/rdf-schema#label> ""label2""@EN .
+    }
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintComplexSelectQueryHavingBinds5()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
+                  .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                  .AddPattern(new RDFPattern(new RDFVariable("?T1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label1", "en")).UnionWithNext())
+                  .AddPattern(new RDFPattern(new RDFVariable("?T2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label2", "en")).UnionWithNext())
+                  .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t3")), new RDFVariable("?T3")))
+                  .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                  .AddPattern(new RDFPattern(new RDFVariable("?T4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label4", "en")).UnionWithNext())
+                  .AddPattern(new RDFPattern(new RDFVariable("?T5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label5", "en")).UnionWithNext())
+                  .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t6")), new RDFVariable("?T6")))
+                  .AddPattern(new RDFPattern(new RDFVariable("?T7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label7", "en")).UnionWithNext())
+                  .AddPattern(new RDFPattern(new RDFVariable("?T8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label8", "en")).UnionWithNext())
+                  .AddPattern(new RDFPattern(new RDFVariable("?T9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label9", "en")).Optional())
+                  .UnionWithNext())
+                .AddProjectionVariable(new RDFVariable("?T3"))
+                .AddProjectionVariable(new RDFVariable("?T6"));
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"SELECT ?T3 ?T6
+WHERE {
+  {
+    {
+      SELECT *
+      WHERE {
+        {
+          ?S <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
+        }
+      }
+    }
+    UNION
+    {
+      { ?T1 <http://www.w3.org/2000/01/rdf-schema#label> ""label1""@EN }
+      UNION
+      { ?T2 <http://www.w3.org/2000/01/rdf-schema#label> ""label2""@EN }
+      BIND(<ex:t3> AS ?T3) .
+    }
+    UNION
+    {
+      { ?T4 <http://www.w3.org/2000/01/rdf-schema#label> ""label4""@EN }
+      UNION
+      { ?T5 <http://www.w3.org/2000/01/rdf-schema#label> ""label5""@EN }
+      BIND(<ex:t6> AS ?T6) .
+      { ?T7 <http://www.w3.org/2000/01/rdf-schema#label> ""label7""@EN }
+      UNION
+      { ?T8 <http://www.w3.org/2000/01/rdf-schema#label> ""label8""@EN }
+      UNION
+      { OPTIONAL { ?T9 <http://www.w3.org/2000/01/rdf-schema#label> ""label9""@EN } }
+    }
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintComplexSelectQueryHavingBinds6()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
+                  .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                  .AddPattern(new RDFPattern(new RDFVariable("?T1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label1", "en")).UnionWithNext())
+                  .AddPattern(new RDFPattern(new RDFVariable("?T2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label2", "en")).Optional())
+                  .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t3")), new RDFVariable("?T3")))
+                  .Optional())
+                .AddPatternGroup(new RDFPatternGroup()
+                  .AddPattern(new RDFPattern(new RDFVariable("?T4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label4", "en")).UnionWithNext())
+                  .AddPattern(new RDFPattern(new RDFVariable("?T5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label5", "en")).Optional())
+                  .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t6")), new RDFVariable("?T6")))
+                  .AddPattern(new RDFPattern(new RDFVariable("?T7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label7", "en")).Optional())
+                  .AddPattern(new RDFPattern(new RDFVariable("?T8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label8", "en")).UnionWithNext())
+                  .AddPattern(new RDFPattern(new RDFVariable("?T9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label9", "en")).Optional())
+                  .UnionWithNext())
+                .AddProjectionVariable(new RDFVariable("?T3"))
+                .AddProjectionVariable(new RDFVariable("?T6"));
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"SELECT ?T3 ?T6
+WHERE {
+  {
+    {
+      SELECT *
+      WHERE {
+        {
+          ?S <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
+        }
+      }
+    }
+    UNION
+    {
+      { ?T1 <http://www.w3.org/2000/01/rdf-schema#label> ""label1""@EN }
+      UNION
+      { OPTIONAL { ?T2 <http://www.w3.org/2000/01/rdf-schema#label> ""label2""@EN } }
+      BIND(<ex:t3> AS ?T3) .
+    }
+  }
+  {
+    { ?T4 <http://www.w3.org/2000/01/rdf-schema#label> ""label4""@EN }
+    UNION
+    { OPTIONAL { ?T5 <http://www.w3.org/2000/01/rdf-schema#label> ""label5""@EN } }
+    BIND(<ex:t6> AS ?T6) .
+    OPTIONAL { ?T7 <http://www.w3.org/2000/01/rdf-schema#label> ""label7""@EN } .
+    { ?T8 <http://www.w3.org/2000/01/rdf-schema#label> ""label8""@EN }
+    UNION
+    { OPTIONAL { ?T9 <http://www.w3.org/2000/01/rdf-schema#label> ""label9""@EN } }
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
         //ASK
         [TestMethod]
         public void ShouldPrintAskQueryNull()
@@ -1560,8 +1800,7 @@ WHERE {
             RDFAskQuery query = new RDFAskQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -1581,8 +1820,7 @@ WHERE {
         {
             RDFAskQuery query = new RDFAskQuery()
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString =
 @"ASK
@@ -1601,8 +1839,7 @@ WHERE {
             RDFAskQuery query = new RDFAskQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -1624,8 +1861,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -1649,8 +1885,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -1673,8 +1908,7 @@ WHERE {
             RDFAskQuery query = new RDFAskQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext()));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -1696,8 +1930,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                );
+                    .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -1720,8 +1953,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
-                    .UnionWithNext()
-                );
+                    .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -1793,8 +2025,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Optional())
-                );
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Optional()));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -1816,12 +2047,10 @@ WHERE {
             RDFAskQuery query = new RDFAskQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -1847,13 +2076,11 @@ WHERE {
             RDFAskQuery query = new RDFAskQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj1"), new RDFResource("ex:pred1"), new RDFVariable("?T")))
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj2"), new RDFResource("ex:pred2"), new RDFVariable("?T")).Optional())
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -1881,11 +2108,9 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                );
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T"))));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -1912,17 +2137,14 @@ WHERE {
             RDFAskQuery query = new RDFAskQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                    .UnionWithNext() //Will not be printed, since this is the last evaluable query member
-                );
+                    .UnionWithNext()); //Will not be printed, since this is the last evaluable query member
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -1954,18 +2176,14 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                )
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                );
+                    .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2000,19 +2218,15 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                )
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2051,21 +2265,17 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).Optional())
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFVariable("?P"), new RDFResource("bnode:12345")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)).Optional())
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                )
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2105,20 +2315,17 @@ WHERE {
             RDFAskQuery query = new RDFAskQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).UnionWithNext())
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).UnionWithNext()) //Union will not be printed, since this is the last pattern group member
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).UnionWithNext())
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T")).UnionWithNext())
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional())
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                    .UnionWithNext() //Union will not be printed, since this is the last evaluable query member
-                );
+                    .UnionWithNext()); //Union will not be printed, since this is the last evaluable query member
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2156,9 +2363,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                  )
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2185,10 +2390,8 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                  )
-                  .AddProjectionVariable(new RDFVariable("?S"))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()))
+                  .AddProjectionVariable(new RDFVariable("?S")));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2215,9 +2418,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                  )
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2245,10 +2446,8 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()))
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2277,11 +2476,9 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()))
                   .Optional()
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2310,17 +2507,13 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2358,18 +2551,14 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                   .Optional()
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2407,18 +2596,14 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
                   .UnionWithNext()
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2459,26 +2644,20 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
                   .UnionWithNext()
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
+                  .AddProjectionVariable(new RDFVariable("?T")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                   .Optional()
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2529,31 +2708,23 @@ WHERE {
                   .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
                       .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                      .AddFilter(new RDFBoundFilter(new RDFVariable("?S")))
-                    )
+                      .AddFilter(new RDFBoundFilter(new RDFVariable("?S"))))
                     .AddModifier(new RDFDistinctModifier())
                     .AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC))
                     .AddModifier(new RDFLimitModifier(5))
-                    .AddModifier(new RDFOffsetModifier(1))
-                  )
+                    .AddModifier(new RDFOffsetModifier(1)))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
                   .UnionWithNext()
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                   .AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?S") })
                     .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-                      .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))
-                    )
-                  )
-                  .UnionWithNext()
-                )
+                      .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+                  .UnionWithNext())
                 .AddSubQuery(new RDFSelectQuery()
                   .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
@@ -2563,19 +2734,13 @@ WHERE {
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.CLASS),
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
                           new RDFPropertyPathStep(RDFVocabulary.OWL.CLASS).Inverse()
-                        })
-                      )
-                    )
-                    .AddProjectionVariable(new RDFVariable("?START"))
-                  )
-                )
+                        })))
+                    .AddProjectionVariable(new RDFVariable("?START"))))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2670,8 +2835,7 @@ WHERE {
             RDFConstructQuery query = new RDFConstructQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2692,8 +2856,7 @@ WHERE {
         {
             RDFConstructQuery query = new RDFConstructQuery()
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString =
 @"CONSTRUCT {
@@ -2713,8 +2876,7 @@ WHERE {
             RDFConstructQuery query = new RDFConstructQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2737,8 +2899,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2763,8 +2924,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2788,8 +2948,7 @@ WHERE {
             RDFConstructQuery query = new RDFConstructQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext()));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2812,8 +2971,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                );
+                    .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2837,8 +2995,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
-                    .UnionWithNext()
-                );
+                    .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2915,8 +3072,7 @@ WHERE {
                 .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Optional())
-                );
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Optional()));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2941,12 +3097,10 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2975,13 +3129,11 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj1"), new RDFResource("ex:pred1"), new RDFVariable("?T")))
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj2"), new RDFResource("ex:pred2"), new RDFVariable("?T")).Optional())
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3012,11 +3164,9 @@ WHERE {
                 .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                );
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T"))));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3046,17 +3196,14 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")).Optional()) //Optional will not be printed, since it is not supported by CONSTRUCT
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                    .UnionWithNext() //Will not be printed, since this is the last evaluable query member
-                );
+                    .UnionWithNext()); //Will not be printed, since this is the last evaluable query member
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3092,18 +3239,14 @@ WHERE {
                 .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?Z")))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                )
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                );
+                    .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3142,19 +3285,15 @@ WHERE {
                 .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                )
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3196,21 +3335,17 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).Optional())
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFVariable("?P"), new RDFResource("bnode:12345")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)).Optional())
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                )
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3253,20 +3388,17 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).UnionWithNext())
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).UnionWithNext()) //Union will not be printed, since this is the last pattern group member
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).UnionWithNext())
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T")).UnionWithNext())
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional())
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                    .UnionWithNext() //Union will not be printed, since this is the last evaluable query member
-                );
+                    .UnionWithNext()); //Union will not be printed, since this is the last evaluable query member
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3307,9 +3439,7 @@ WHERE {
                 .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                  )
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3339,10 +3469,8 @@ WHERE {
                 .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                  )
-                  .AddProjectionVariable(new RDFVariable("?S"))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()))
+                  .AddProjectionVariable(new RDFVariable("?S")));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3373,11 +3501,9 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()))
                   .Optional()
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3409,17 +3535,13 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3460,18 +3582,14 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                   .Optional()
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3512,18 +3630,14 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
                   .UnionWithNext()
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3567,26 +3681,20 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
                   .UnionWithNext()
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
+                  .AddProjectionVariable(new RDFVariable("?T")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                   .Optional()
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3641,31 +3749,23 @@ WHERE {
                   .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
                       .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                      .AddFilter(new RDFBoundFilter(new RDFVariable("?S")))
-                    )
+                      .AddFilter(new RDFBoundFilter(new RDFVariable("?S"))))
                     .AddModifier(new RDFDistinctModifier())
                     .AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC))
                     .AddModifier(new RDFLimitModifier(5))
-                    .AddModifier(new RDFOffsetModifier(1))
-                  )
+                    .AddModifier(new RDFOffsetModifier(1)))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
                   .UnionWithNext()
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                   .AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?S") })
                     .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-                      .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))
-                    )
-                  )
-                  .UnionWithNext()
-                )
+                      .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+                  .UnionWithNext())
                 .AddSubQuery(new RDFSelectQuery()
                   .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
@@ -3675,19 +3775,13 @@ WHERE {
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.CLASS),
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
                           new RDFPropertyPathStep(RDFVocabulary.OWL.CLASS).Inverse()
-                        })
-                      )
-                    )
-                    .AddProjectionVariable(new RDFVariable("?START"))
-                  )
-                )
+                        })))
+                    .AddProjectionVariable(new RDFVariable("?START"))))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3784,8 +3878,7 @@ WHERE {
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3805,8 +3898,7 @@ WHERE {
         {
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString =
 @"DESCRIBE *
@@ -3825,8 +3917,7 @@ WHERE {
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3848,8 +3939,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3873,8 +3963,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3897,8 +3986,7 @@ WHERE {
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext()));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3920,8 +4008,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                );
+                    .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -3944,8 +4031,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
-                    .UnionWithNext()
-                );
+                    .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -4020,8 +4106,7 @@ WHERE {
                 .AddDescribeTerm(new RDFResource("bnode:12345"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Optional())
-                );
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Optional()));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -4046,12 +4131,10 @@ WHERE {
                 .AddDescribeTerm(RDFVocabulary.RDF.ALT)
                 .AddDescribeTerm(RDFVocabulary.RDFS.LABEL)
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -4078,13 +4161,11 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddDescribeTerm(new RDFVariable("?S"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj1"), new RDFResource("ex:pred1"), new RDFVariable("?T")))
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj2"), new RDFResource("ex:pred2"), new RDFVariable("?T")).Optional())
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -4115,11 +4196,9 @@ WHERE {
                 .AddDescribeTerm(new RDFVariable("?S"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                );
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T"))));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -4147,17 +4226,14 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddDescribeTerm(new RDFVariable("?S"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                    .UnionWithNext() //Will not be printed, since this is the last evaluable query member
-                );
+                    .UnionWithNext()); //Will not be printed, since this is the last evaluable query member
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -4190,18 +4266,14 @@ WHERE {
                 .AddDescribeTerm(new RDFVariable("?S"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                )
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                );
+                    .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -4237,19 +4309,15 @@ WHERE {
                 .AddDescribeTerm(new RDFVariable("?S"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                )
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -4289,21 +4357,17 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).Optional())
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFVariable("?P"), new RDFResource("bnode:12345")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)).Optional())
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                )
+                    .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                    .Optional()
-                );
+                    .Optional());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -4347,20 +4411,17 @@ WHERE {
                 .AddDescribeTerm(new RDFResource("bnode:12345"))
                 .AddDescribeTerm(new RDFVariable("?S"))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).UnionWithNext())
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).UnionWithNext()) //Union will not be printed, since this is the last pattern group member
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).UnionWithNext())
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T")).UnionWithNext())
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional())
-                    .UnionWithNext()
-                )
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-                    .UnionWithNext() //Union will not be printed, since this is the last evaluable query member
-                );
+                    .UnionWithNext()); //Union will not be printed, since this is the last evaluable query member
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -4399,9 +4460,7 @@ WHERE {
                 .AddDescribeTerm(new RDFVariable("?S"))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                  )
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -4429,10 +4488,8 @@ WHERE {
                 .AddDescribeTerm(new RDFVariable("?S"))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                  )
-                  .AddProjectionVariable(new RDFVariable("?S"))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()))
+                  .AddProjectionVariable(new RDFVariable("?S")));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -4461,11 +4518,9 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()))
                   .Optional()
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -4495,17 +4550,13 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -4544,18 +4595,14 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                   .Optional()
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -4594,18 +4641,14 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
                   .UnionWithNext()
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -4647,26 +4690,20 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
                   .UnionWithNext()
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
+                  .AddProjectionVariable(new RDFVariable("?T")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                   .Optional()
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -4718,31 +4755,23 @@ WHERE {
                   .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
                       .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                      .AddFilter(new RDFBoundFilter(new RDFVariable("?S")))
-                    )
+                      .AddFilter(new RDFBoundFilter(new RDFVariable("?S"))))
                     .AddModifier(new RDFDistinctModifier())
                     .AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC))
                     .AddModifier(new RDFLimitModifier(5))
-                    .AddModifier(new RDFOffsetModifier(1))
-                  )
+                    .AddModifier(new RDFOffsetModifier(1)))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
                   .UnionWithNext()
-                  .AddProjectionVariable(new RDFVariable("?Z"))
-                )
+                  .AddProjectionVariable(new RDFVariable("?Z")))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
                   .AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?S") })
                     .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-                      .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))
-                    )
-                  )
-                  .UnionWithNext()
-                )
+                      .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+                  .UnionWithNext())
                 .AddSubQuery(new RDFSelectQuery()
                   .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
@@ -4752,19 +4781,13 @@ WHERE {
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.CLASS),
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
                           new RDFPropertyPathStep(RDFVocabulary.OWL.CLASS).Inverse()
-                        })
-                      )
-                    )
-                    .AddProjectionVariable(new RDFVariable("?START"))
-                  )
-                )
+                        })))
+                    .AddProjectionVariable(new RDFVariable("?START"))))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-                  )
-                  .AddProjectionVariable(new RDFVariable("?T"))
-                );
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
+                  .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
