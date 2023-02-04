@@ -593,6 +593,8 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.RDFS_LITERAL:
                 case RDFModelEnums.RDFDatatypes.XSD_STRING:
                 case RDFModelEnums.RDFDatatypes.RDF_HTML:
+                case RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT:
+                case RDFModelEnums.RDFDatatypes.GEOSPARQL_GML:
                 default:
                     return true;
 

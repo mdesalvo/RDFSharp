@@ -239,7 +239,15 @@ namespace RDFSharp.Model
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#ID
             /// </summary>
-            XSD_ID = 43
+            XSD_ID = 43,
+            /// <summary>
+            /// http://www.opengis.net/ont/geosparql#wktLiteral
+            /// </summary>
+            GEOSPARQL_WKT = 44,
+            /// <summary>
+            /// http://www.opengis.net/ont/geosparql#gmlLiteral
+            /// </summary>
+            GEOSPARQL_GML = 45
         };
 
         /// <summary>

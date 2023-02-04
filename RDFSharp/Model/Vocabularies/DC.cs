@@ -17,13 +17,13 @@
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFVocabulary is an helper for handy usage of supported RDF vocabularies.
+    /// RDFVocabulary is an helper for handy usage of supported RDF vocabularies
     /// </summary>
     public static partial class RDFVocabulary
     {
         #region DC
         /// <summary>
-        /// DC represents the Dublin Core vocabulary (with DCAM, DCTERMS and DCTYPE extensions).
+        /// DC represents the Dublin Core vocabulary (with DCAM, DCTERMS and DCTYPE extensions)
         /// </summary>
         public static class DC
         {

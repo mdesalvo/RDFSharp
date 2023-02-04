@@ -120,6 +120,8 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_TOKEN:
                 case RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY:
                 case RDFModelEnums.RDFDatatypes.XSD_HEXBINARY:
+                case RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT:
+                case RDFModelEnums.RDFDatatypes.GEOSPARQL_GML:
                     return true;
                 default: return false;
             }

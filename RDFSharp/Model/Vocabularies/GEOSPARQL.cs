@@ -17,13 +17,13 @@
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFVocabulary is an helper for handy usage of supported RDF vocabularies.
+    /// RDFVocabulary is an helper for handy usage of supported RDF vocabularies
     /// </summary>
     public static partial class RDFVocabulary
     {
         #region GEOSPARQL
         /// <summary>
-        /// GEOSPARQL represents the OGC GeoSPARQL 1.0 vocabulary.
+        /// GEOSPARQL represents the OGC GeoSPARQL 1.0 vocabulary (with SF extensions)
         /// </summary>
         public static class GEOSPARQL
         {
@@ -237,6 +237,109 @@ namespace RDFSharp.Model
             /// geosparql:hasSerialization
             /// </summary>
             public static readonly RDFResource HAS_SERIALIZATION = new RDFResource(string.Concat(GEOSPARQL.BASE_URI, "hasSerialization"));
+            #endregion
+
+            #region Extended Properties
+            /// <summary>
+            /// Simple Features extensions
+            /// </summary>
+            public static class SF
+            {
+                /// <summary>
+                /// sf
+                /// </summary>
+                public static readonly string PREFIX = "sf";
+
+                /// <summary>
+                /// http://www.opengis.net/ont/sf#
+                /// </summary>
+                public static readonly string BASE_URI = "http://www.opengis.net/ont/sf#";
+
+                /// <summary>
+                /// http://www.opengis.net/ont/sf#
+                /// </summary>
+                public static readonly string DEREFERENCE_URI = "http://www.opengis.net/ont/sf#";
+
+                /// <summary>
+                /// sf:Point
+                /// </summary>
+                public static readonly RDFResource POINT = new RDFResource(string.Concat(SF.BASE_URI, "Point"));
+
+                /// <summary>
+                /// sf:Curve
+                /// </summary>
+                public static readonly RDFResource CURVE = new RDFResource(string.Concat(SF.BASE_URI, "Curve"));
+
+                /// <summary>
+                /// sf:Surface
+                /// </summary>
+                public static readonly RDFResource SURFACE = new RDFResource(string.Concat(SF.BASE_URI, "Surface"));
+
+                /// <summary>
+                /// sf:Polygon
+                /// </summary>
+                public static readonly RDFResource POLYGON = new RDFResource(string.Concat(SF.BASE_URI, "Polygon"));
+
+                /// <summary>
+                /// sf:Triangle
+                /// </summary>
+                public static readonly RDFResource TRIANGLE = new RDFResource(string.Concat(SF.BASE_URI, "Triangle"));
+
+                /// <summary>
+                /// sf:LineString
+                /// </summary>
+                public static readonly RDFResource LINESTRING = new RDFResource(string.Concat(SF.BASE_URI, "LineString"));
+
+                /// <summary>
+                /// sf:LinearRing
+                /// </summary>
+                public static readonly RDFResource LINEAR_RING = new RDFResource(string.Concat(SF.BASE_URI, "LinearRing"));
+
+                /// <summary>
+                /// sf:Line
+                /// </summary>
+                public static readonly RDFResource LINE = new RDFResource(string.Concat(SF.BASE_URI, "Line"));
+
+                /// <summary>
+                /// sf:GeometryCollection
+                /// </summary>
+                public static readonly RDFResource GEOMETRY_COLLECTION = new RDFResource(string.Concat(SF.BASE_URI, "GeometryCollection"));
+
+                /// <summary>
+                /// sf:MultiPoint
+                /// </summary>
+                public static readonly RDFResource MULTI_POINT = new RDFResource(string.Concat(SF.BASE_URI, "MultiPoint"));
+
+                /// <summary>
+                /// sf:MultiCurve
+                /// </summary>
+                public static readonly RDFResource MULTI_CURVE = new RDFResource(string.Concat(SF.BASE_URI, "MultiCurve"));
+
+                /// <summary>
+                /// sf:MultiSurface
+                /// </summary>
+                public static readonly RDFResource MULTI_SURFACE = new RDFResource(string.Concat(SF.BASE_URI, "MultiSurface"));
+
+                /// <summary>
+                /// sf:MultiPolygon
+                /// </summary>
+                public static readonly RDFResource MULTI_POLYGON = new RDFResource(string.Concat(SF.BASE_URI, "MultiPolygon"));
+
+                /// <summary>
+                /// sf:MultiLineString
+                /// </summary>
+                public static readonly RDFResource MULTI_LINESTRING = new RDFResource(string.Concat(SF.BASE_URI, "MultiLineString"));
+
+                /// <summary>
+                /// sf:PolyhedralSurface
+                /// </summary>
+                public static readonly RDFResource POLYHEDRAL_SURFACE = new RDFResource(string.Concat(SF.BASE_URI, "PolyhedralSurface"));
+
+                /// <summary>
+                /// sf:TIN
+                /// </summary>
+                public static readonly RDFResource TIN = new RDFResource(string.Concat(SF.BASE_URI, "TIN"));
+            }
             #endregion
         }
         #endregion

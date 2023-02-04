@@ -17,13 +17,13 @@
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFVocabulary is an helper for handy usage of supported RDF vocabularies.
+    /// RDFVocabulary is an helper for handy usage of supported RDF vocabularies
     /// </summary>
     public static partial class RDFVocabulary
     {
         #region CRM
         /// <summary>
-        /// CRM represents the CIDOC CRM 5.0.4 vocabulary.
+        /// CRM represents the CIDOC CRM 5.0.4 vocabulary
         /// </summary>
         public static class CRM
         {

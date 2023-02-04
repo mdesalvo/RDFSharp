@@ -17,13 +17,13 @@
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFVocabulary is an helper for handy usage of supported RDF vocabularies.
+    /// RDFVocabulary is an helper for handy usage of supported RDF vocabularies
     /// </summary>
     public static partial class RDFVocabulary
     {
         #region SKOS
         /// <summary>
-        /// SKOS represents the W3C SKOS vocabulary.
+        /// SKOS represents the W3C SKOS vocabulary (with SKOS-XL extensions)
         /// </summary>
         public static class SKOS
         {
@@ -215,7 +215,6 @@ namespace RDFSharp.Model
             /// </summary>
             public static class SKOSXL
             {
-
                 #region Properties
                 /// <summary>
                 /// skosxl
@@ -262,7 +261,6 @@ namespace RDFSharp.Model
                 /// </summary>
                 public static readonly RDFResource PREF_LABEL = new RDFResource(string.Concat(SKOSXL.BASE_URI, "prefLabel"));
                 #endregion
-
             }
             #endregion
         }
