@@ -85,6 +85,8 @@ namespace RDFSharp.Model
             { RDFVocabulary.RDF.JSON.ToString(), RDFModelEnums.RDFDatatypes.RDF_JSON },
             { RDFVocabulary.RDF.XML_LITERAL.ToString(), RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL },
             { RDFVocabulary.RDFS.LITERAL.ToString(), RDFModelEnums.RDFDatatypes.RDFS_LITERAL },
+            { RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString(), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT },
+            { RDFVocabulary.GEOSPARQL.GML_LITERAL.ToString(), RDFModelEnums.RDFDatatypes.GEOSPARQL_GML },
             { RDFVocabulary.XSD.ANY_URI.ToString(), RDFModelEnums.RDFDatatypes.XSD_ANYURI },
             { RDFVocabulary.XSD.BASE64_BINARY.ToString(), RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY },
             { RDFVocabulary.XSD.BOOLEAN.ToString(), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN },
@@ -482,6 +484,10 @@ namespace RDFSharp.Model
                     return RDFVocabulary.RDF.HTML.ToString();
                 case RDFModelEnums.RDFDatatypes.RDF_JSON:
                     return RDFVocabulary.RDF.JSON.ToString();
+                case RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT:
+                    return RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString();
+                case RDFModelEnums.RDFDatatypes.GEOSPARQL_GML:
+                    return RDFVocabulary.GEOSPARQL.GML_LITERAL.ToString();
                 case RDFModelEnums.RDFDatatypes.XSD_STRING:
                     return RDFVocabulary.XSD.STRING.ToString();
                 case RDFModelEnums.RDFDatatypes.XSD_ANYURI:
