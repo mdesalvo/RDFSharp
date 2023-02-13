@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     {
         #region GEOSPARQL
         /// <summary>
-        /// GEOSPARQL represents the OGC GeoSPARQL 1.0 vocabulary (with SF extensions)
+        /// GEOSPARQL represents the OGC GeoSPARQL 1.0 vocabulary (with SF and GEOF extensions)
         /// </summary>
         public static class GEOSPARQL
         {
@@ -339,6 +339,202 @@ namespace RDFSharp.Model
                 /// sf:TIN
                 /// </summary>
                 public static readonly RDFResource TIN = new RDFResource(string.Concat(SF.BASE_URI, "TIN"));
+            }
+            
+            /// <summary>
+            /// Functions extensions
+            /// </summary>
+            public static class GEOF
+            {
+                /// <summary>
+                /// geof
+                /// </summary>
+                public static readonly string PREFIX = "geof";
+
+                /// <summary>
+                /// http://www.opengis.net/def/function/geosparql/
+                /// </summary>
+                public static readonly string BASE_URI = "http://www.opengis.net/def/function/geosparql/";
+
+                /// <summary>
+                /// http://www.opengis.net/def/function/geosparql/
+                /// </summary>
+                public static readonly string DEREFERENCE_URI = "http://www.opengis.net/def/function/geosparql/";
+
+                /// <summary>
+                /// geof:boundary
+                /// </summary>
+                public static readonly RDFResource BOUNDARY = new RDFResource(string.Concat(GEOF.BASE_URI, "boundary"));
+
+                /// <summary>
+                /// geof:buffer
+                /// </summary>
+                public static readonly RDFResource BUFFER = new RDFResource(string.Concat(GEOF.BASE_URI, "buffer"));
+
+                /// <summary>
+                /// geof:ehContains
+                /// </summary>
+                public static readonly RDFResource EH_CONTAINS = new RDFResource(string.Concat(GEOF.BASE_URI, "ehContains"));
+
+                /// <summary>
+                /// geof:sfContains
+                /// </summary>
+                public static readonly RDFResource SF_CONTAINS = new RDFResource(string.Concat(GEOF.BASE_URI, "sfContains"));
+
+                /// <summary>
+                /// geof:convexHull
+                /// </summary>
+                public static readonly RDFResource CONVEX_HULL = new RDFResource(string.Concat(GEOF.BASE_URI, "convexHull"));
+
+                /// <summary>
+                /// geof:ehCoveredBy
+                /// </summary>
+                public static readonly RDFResource EH_COVERED_BY = new RDFResource(string.Concat(GEOF.BASE_URI, "ehCoveredBy"));
+
+                /// <summary>
+                /// geof:ehCovers
+                /// </summary>
+                public static readonly RDFResource EH_COVERS = new RDFResource(string.Concat(GEOF.BASE_URI, "ehCovers"));
+
+                /// <summary>
+                /// geof:sfCrosses
+                /// </summary>
+                public static readonly RDFResource SF_CROSSES = new RDFResource(string.Concat(GEOF.BASE_URI, "sfCrosses"));
+
+                /// <summary>
+                /// geof:difference
+                /// </summary>
+                public static readonly RDFResource DIFFERENCE = new RDFResource(string.Concat(GEOF.BASE_URI, "difference"));
+
+                /// <summary>
+                /// geof:rcc8dc
+                /// </summary>
+                public static readonly RDFResource RCC8DC = new RDFResource(string.Concat(GEOF.BASE_URI, "rcc8dc"));
+
+                /// <summary>
+                /// geof:ehDisjoint
+                /// </summary>
+                public static readonly RDFResource EH_DISJOINT = new RDFResource(string.Concat(GEOF.BASE_URI, "ehDisjoint"));
+
+                /// <summary>
+                /// geof:sfDisjoint
+                /// </summary>
+                public static readonly RDFResource SF_DISJOINT = new RDFResource(string.Concat(GEOF.BASE_URI, "sfDisjoint"));
+
+                /// <summary>
+                /// geof:distance
+                /// </summary>
+                public static readonly RDFResource DISTANCE = new RDFResource(string.Concat(GEOF.BASE_URI, "distance"));
+
+                /// <summary>
+                /// geof:envelope
+                /// </summary>
+                public static readonly RDFResource ENVELOPE = new RDFResource(string.Concat(GEOF.BASE_URI, "envelope"));
+
+                /// <summary>
+                /// geof:ehEquals
+                /// </summary>
+                public static readonly RDFResource EH_EQUALS = new RDFResource(string.Concat(GEOF.BASE_URI, "ehEquals"));
+
+                /// <summary>
+                /// geof:sfEquals
+                /// </summary>
+                public static readonly RDFResource SF_EQUALS = new RDFResource(string.Concat(GEOF.BASE_URI, "sfEquals"));
+
+                /// <summary>
+                /// geof:rcc8eq
+                /// </summary>
+                public static readonly RDFResource RCC8EQ = new RDFResource(string.Concat(GEOF.BASE_URI, "rcc8eq"));
+
+                /// <summary>
+                /// geof:rcc8ec
+                /// </summary>
+                public static readonly RDFResource RCC8EC = new RDFResource(string.Concat(GEOF.BASE_URI, "rcc8ec"));
+
+                /// <summary>
+                /// geof:getSRID
+                /// </summary>
+                public static readonly RDFResource GET_SRID = new RDFResource(string.Concat(GEOF.BASE_URI, "getSRID"));
+
+                /// <summary>
+                /// geof:ehInside
+                /// </summary>
+                public static readonly RDFResource EH_INSIDE = new RDFResource(string.Concat(GEOF.BASE_URI, "ehInside"));
+
+                /// <summary>
+                /// geof:intersection
+                /// </summary>
+                public static readonly RDFResource INTERSECTION = new RDFResource(string.Concat(GEOF.BASE_URI, "intersection"));
+
+                /// <summary>
+                /// geof:sfIntersects
+                /// </summary>
+                public static readonly RDFResource SF_INTERSECTS = new RDFResource(string.Concat(GEOF.BASE_URI, "sfIntersects"));
+
+                /// <summary>
+                /// geof:ehMeet
+                /// </summary>
+                public static readonly RDFResource EH_MEET = new RDFResource(string.Concat(GEOF.BASE_URI, "ehMeet"));
+
+                /// <summary>
+                /// geof:rcc8ntpp
+                /// </summary>
+                public static readonly RDFResource RCC8NTPP = new RDFResource(string.Concat(GEOF.BASE_URI, "rcc8ntpp"));
+
+                /// <summary>
+                /// geof:rcc8ntppi
+                /// </summary>
+                public static readonly RDFResource RCC8NTPPI = new RDFResource(string.Concat(GEOF.BASE_URI, "rcc8ntppi"));
+
+                /// <summary>
+                /// geof:ehOverlap
+                /// </summary>
+                public static readonly RDFResource EH_OVERLAP = new RDFResource(string.Concat(GEOF.BASE_URI, "ehOverlap"));
+
+                /// <summary>
+                /// geof:sfOverlaps
+                /// </summary>
+                public static readonly RDFResource SF_OVERLAPS = new RDFResource(string.Concat(GEOF.BASE_URI, "sfOverlaps"));
+
+                /// <summary>
+                /// geof:rcc8po
+                /// </summary>
+                public static readonly RDFResource RCC8PO = new RDFResource(string.Concat(GEOF.BASE_URI, "rcc8po"));
+
+                /// <summary>
+                /// geof:relate
+                /// </summary>
+                public static readonly RDFResource RELATE = new RDFResource(string.Concat(GEOF.BASE_URI, "relate"));
+
+                /// <summary>
+                /// geof:symDifference
+                /// </summary>
+                public static readonly RDFResource SYM_DIFFERENCE = new RDFResource(string.Concat(GEOF.BASE_URI, "symDifference"));
+
+                /// <summary>
+                /// geof:rcc8tpp
+                /// </summary>
+                public static readonly RDFResource RCC8TPP = new RDFResource(string.Concat(GEOF.BASE_URI, "rcc8tpp"));
+
+                /// <summary>
+                /// geof:rcc8tppi
+                /// </summary>
+                public static readonly RDFResource RCC8TPPI = new RDFResource(string.Concat(GEOF.BASE_URI, "rcc8tppi"));
+
+                /// <summary>
+                /// geof:sfTouches
+                /// </summary>
+                public static readonly RDFResource SF_TOUCHES = new RDFResource(string.Concat(GEOF.BASE_URI, "sfTouches"));
+
+                /// <summary>
+                /// geof:union
+                /// </summary>
+                public static readonly RDFResource SF_UNION = new RDFResource(string.Concat(GEOF.BASE_URI, "union"));
+
+                /// <summary>
+                /// geof:sfWithin
+                /// </summary>
+                public static readonly RDFResource SF_WITHIN = new RDFResource(string.Concat(GEOF.BASE_URI, "sfWithin"));
             }
             #endregion
         }
