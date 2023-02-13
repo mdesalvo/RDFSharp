@@ -27,4 +27,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("RDFSharp.Extensions.Oracle")]
 [assembly: InternalsVisibleTo("RDFSharp.Extensions.AzureTable")]
 [assembly: InternalsVisibleTo("RDFSharp.Semantics")]
+[assembly: InternalsVisibleTo("RDFSharp.Semantics.Extensions.GEO")]
+[assembly: InternalsVisibleTo("RDFSharp.Semantics.Extensions.SKOS")]
 [assembly: InternalsVisibleTo("RDFSharp.Test")]
