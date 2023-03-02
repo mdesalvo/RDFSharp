@@ -17,7 +17,6 @@
 using RDFSharp.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data;
-using System.Threading.Tasks;
 using System.IO;
 using System;
 using System.Collections.Generic;
@@ -1470,27 +1469,6 @@ namespace RDFSharp.Test.Model
             => Assert.ThrowsException<RDFModelException>(() => new RDFGraph().ToFile(RDFModelEnums.RDFFormats.NTriples, null));
 
         [DataTestMethod]
-        [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
-        [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
-        [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
-        [DataRow(".ttl", RDFModelEnums.RDFFormats.Turtle)]
-        public async Task ShouldExportToFileAsync(string fileExtension, RDFModelEnums.RDFFormats format)
-        {
-            RDFGraph graph = new RDFGraph();
-            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
-            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-            graph.AddTriple(triple1).AddTriple(triple2);
-            await graph.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFileAsync{fileExtension}"));
-
-            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFileAsync{fileExtension}")));
-            Assert.IsTrue(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFileAsync{fileExtension}")).Length > 100);
-        }
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnExportingToNullOrEmptyFilepathAsync()
-            => Assert.ThrowsExceptionAsync<RDFModelException>(() => new RDFGraph().ToFileAsync(RDFModelEnums.RDFFormats.NTriples, null));
-
-        [DataTestMethod]
         [DataRow(RDFModelEnums.RDFFormats.NTriples)]
         [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
         [DataRow(RDFModelEnums.RDFFormats.TriX)]
@@ -1510,27 +1488,6 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldRaiseExceptionOnExportingToNullStream()
             => Assert.ThrowsException<RDFModelException>(() => new RDFGraph().ToStream(RDFModelEnums.RDFFormats.NTriples, null));
-
-        [DataTestMethod]
-        [DataRow(RDFModelEnums.RDFFormats.NTriples)]
-        [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
-        [DataRow(RDFModelEnums.RDFFormats.TriX)]
-        [DataRow(RDFModelEnums.RDFFormats.Turtle)]
-        public async Task ShouldExportToStreamAsync(RDFModelEnums.RDFFormats format)
-        {
-            MemoryStream stream = new MemoryStream();
-            RDFGraph graph = new RDFGraph();
-            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
-            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-            graph.AddTriple(triple1).AddTriple(triple2);
-            await graph.ToStreamAsync(format, stream);
-
-            Assert.IsTrue(stream.ToArray().Length > 100);
-        }
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnExportingToNullStreamAsync()
-            => Assert.ThrowsExceptionAsync<RDFModelException>(() => new RDFGraph().ToStreamAsync(RDFModelEnums.RDFFormats.NTriples, null));
 
         [TestMethod]
         public void ShouldExportToDataTable()
@@ -1560,43 +1517,6 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             DataTable table = graph.ToDataTable();
-
-            Assert.IsNotNull(table);
-            Assert.IsTrue(table.Columns.Count == 3);
-            Assert.IsTrue(table.Columns[0].ColumnName.Equals("?SUBJECT"));
-            Assert.IsTrue(table.Columns[1].ColumnName.Equals("?PREDICATE"));
-            Assert.IsTrue(table.Columns[2].ColumnName.Equals("?OBJECT"));
-            Assert.IsTrue(table.Rows.Count == 0);
-        }
-
-        [TestMethod]
-        public async Task ShouldExportToDataTableAsync()
-        {
-            RDFGraph graph = new RDFGraph();
-            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
-            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-            graph.AddTriple(triple1).AddTriple(triple2);
-            DataTable table = await graph.ToDataTableAsync();
-
-            Assert.IsNotNull(table);
-            Assert.IsTrue(table.Columns.Count == 3);
-            Assert.IsTrue(table.Columns[0].ColumnName.Equals("?SUBJECT"));
-            Assert.IsTrue(table.Columns[1].ColumnName.Equals("?PREDICATE"));
-            Assert.IsTrue(table.Columns[2].ColumnName.Equals("?OBJECT"));
-            Assert.IsTrue(table.Rows.Count == 2);
-            Assert.IsTrue(table.Rows[0]["?SUBJECT"].ToString().Equals("http://subj/"));
-            Assert.IsTrue(table.Rows[0]["?PREDICATE"].ToString().Equals("http://pred/"));
-            Assert.IsTrue(table.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
-            Assert.IsTrue(table.Rows[1]["?SUBJECT"].ToString().Equals("http://subj/"));
-            Assert.IsTrue(table.Rows[1]["?PREDICATE"].ToString().Equals("http://pred/"));
-            Assert.IsTrue(table.Rows[1]["?OBJECT"].ToString().Equals("http://obj/"));
-        }
-
-        [TestMethod]
-        public async Task ShouldExportEmptyToDataTableAsync()
-        {
-            RDFGraph graph = new RDFGraph();
-            DataTable table = await graph.ToDataTableAsync();
 
             Assert.IsNotNull(table);
             Assert.IsTrue(table.Columns.Count == 3);
@@ -1662,61 +1582,6 @@ namespace RDFSharp.Test.Model
             => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromFile(RDFModelEnums.RDFFormats.NTriples, "blablabla"));
 
         [DataTestMethod]
-        [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
-        [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
-        [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
-        [DataRow(".ttl", RDFModelEnums.RDFFormats.Turtle)]
-        public async Task ShouldImportFromFileAsync(string fileExtension, RDFModelEnums.RDFFormats format)
-        {
-            RDFGraph graph1 = new RDFGraph();
-            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
-            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-            graph1.AddTriple(triple1).AddTriple(triple2);
-            graph1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFile{fileExtension}"));
-            RDFGraph graph2 = await RDFGraph.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFile{fileExtension}"));
-
-            Assert.IsNotNull(graph2);
-            Assert.IsTrue(graph2.TriplesCount == 2);
-            //RDF/XML uses xsd:qname for encoding predicates. In this test we demonstrate that
-            //triples with a predicate ending with "/" will loose this character once abbreviated:
-            //this is correct (being a glitch of RDF/XML specs) so at the end the graphs will differ
-            if (format == RDFModelEnums.RDFFormats.RdfXml)
-            {
-                Assert.IsFalse(graph2.Equals(graph1));
-                Assert.IsTrue(graph2.SelectTriplesByPredicate(new RDFResource("http://ex/pred/")).TriplesCount == 0);
-                Assert.IsTrue(graph2.SelectTriplesByPredicate(new RDFResource("http://ex/pred")).TriplesCount == 2);
-            }
-            else
-            {
-                Assert.IsTrue(graph2.Equals(graph1));
-            }
-        }
-
-        [DataTestMethod]
-        [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
-        [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
-        [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
-        [DataRow(".ttl", RDFModelEnums.RDFFormats.Turtle)]
-        public async Task ShouldImportEmptyFromFileAsync(string fileExtension, RDFModelEnums.RDFFormats format)
-        {
-            RDFGraph graph1 = new RDFGraph();
-            graph1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportEmptyFromFile{fileExtension}"));
-            RDFGraph graph2 = await RDFGraph.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportEmptyFromFile{fileExtension}"));
-
-            Assert.IsNotNull(graph2);
-            Assert.IsTrue(graph2.TriplesCount == 0);
-            Assert.IsTrue(graph2.Equals(graph1));
-        }
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromNullOrEmptyFilepathAsync()
-            => Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.NTriples, null));
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromUnexistingFilepathAsync()
-            => Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.NTriples, "blablabla"));
-
-        [DataTestMethod]
         [DataRow(RDFModelEnums.RDFFormats.NTriples)]
         [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
         [DataRow(RDFModelEnums.RDFFormats.TriX)]
@@ -1767,58 +1632,6 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldRaiseExceptionOnImportingFromNullStream()
             => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromStream(RDFModelEnums.RDFFormats.NTriples, null));
-
-        [DataTestMethod]
-        [DataRow(RDFModelEnums.RDFFormats.NTriples)]
-        [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
-        [DataRow(RDFModelEnums.RDFFormats.TriX)]
-        [DataRow(RDFModelEnums.RDFFormats.Turtle)]
-        public async Task ShouldImportFromStreamAsync(RDFModelEnums.RDFFormats format)
-        {
-            MemoryStream stream = new MemoryStream();
-            RDFGraph graph1 = new RDFGraph();
-            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
-            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-            graph1.AddTriple(triple1).AddTriple(triple2);
-            graph1.ToStream(format, stream);
-            RDFGraph graph2 = await RDFGraph.FromStreamAsync(format, new MemoryStream(stream.ToArray()));
-
-            Assert.IsNotNull(graph2);
-            Assert.IsTrue(graph2.TriplesCount == 2);
-            //RDF/XML uses xsd:qname for encoding predicates. In this test we demonstrate that
-            //triples with a predicate ending with "/" will loose this character once abbreviated:
-            //this is correct (being a glitch of RDF/XML specs) so at the end the graphs will differ
-            if (format == RDFModelEnums.RDFFormats.RdfXml)
-            {
-                Assert.IsFalse(graph2.Equals(graph1));
-                Assert.IsTrue(graph2.SelectTriplesByPredicate(new RDFResource("http://ex/pred/")).TriplesCount == 0);
-                Assert.IsTrue(graph2.SelectTriplesByPredicate(new RDFResource("http://ex/pred")).TriplesCount == 2);
-            }
-            else
-            {
-                Assert.IsTrue(graph2.Equals(graph1));
-            }
-        }
-
-        [DataTestMethod]
-        [DataRow(RDFModelEnums.RDFFormats.NTriples)]
-        [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
-        [DataRow(RDFModelEnums.RDFFormats.TriX)]
-        [DataRow(RDFModelEnums.RDFFormats.Turtle)]
-        public async Task ShouldImportFromEmptyStreamAsync(RDFModelEnums.RDFFormats format)
-        {
-            MemoryStream stream = new MemoryStream();
-            RDFGraph graph1 = new RDFGraph();
-            graph1.ToStream(format, stream);
-            RDFGraph graph2 = await RDFGraph.FromStreamAsync(format, new MemoryStream(stream.ToArray()));
-
-            Assert.IsNotNull(graph2);
-            Assert.IsTrue(graph2.TriplesCount == 0);
-        }
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromNullStreamAsync()
-            => Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromStreamAsync(RDFModelEnums.RDFFormats.NTriples, null));
 
         [TestMethod]
         public void ShouldImportFromDataTable()
@@ -1982,167 +1795,6 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public async Task ShouldImportFromDataTableAsync()
-        {
-            RDFGraph graph1 = new RDFGraph();
-            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
-            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-            graph1.AddTriple(triple1).AddTriple(triple2);
-            DataTable table = graph1.ToDataTable();
-            RDFGraph graph2 = await RDFGraph.FromDataTableAsync(table);
-
-            Assert.IsNotNull(graph2);
-            Assert.IsTrue(graph2.TriplesCount == 2);
-            Assert.IsTrue(graph2.Equals(graph1));
-        }
-
-        [TestMethod]
-        public async Task ShouldImportEmptyFromDataTableAsync()
-        {
-            RDFGraph graph1 = new RDFGraph();
-            DataTable table = graph1.ToDataTable();
-            RDFGraph graph2 = await RDFGraph.FromDataTableAsync(table);
-
-            Assert.IsNotNull(graph2);
-            Assert.IsTrue(graph2.TriplesCount == 0);
-            Assert.IsTrue(graph2.Equals(graph1));
-        }
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromNullDataTableAsync()
-            => Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(null));
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromDataTableNotHaving3ColumnsAsync()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?SUBJECT", typeof(string));
-            table.Columns.Add("?PREDICATE", typeof(string));
-
-            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
-        }
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromDataTableNotHavingExactColumnsAsync()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?SUBJECT", typeof(string));
-            table.Columns.Add("?PREDICATE", typeof(string));
-            table.Columns.Add("?OBJECTTTTT", typeof(string));
-
-            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
-        }
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullSubjectAsync()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?SUBJECT", typeof(string));
-            table.Columns.Add("?PREDICATE", typeof(string));
-            table.Columns.Add("?OBJECT", typeof(string));
-            table.Rows.Add(null, "http://pred/", "http://obj/");
-
-            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
-        }
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithEmptySubjectAsync()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?SUBJECT", typeof(string));
-            table.Columns.Add("?PREDICATE", typeof(string));
-            table.Columns.Add("?OBJECT", typeof(string));
-            table.Rows.Add("", "http://pred/", "http://obj/");
-
-            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
-        }
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithLiteralSubjectAsync()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?SUBJECT", typeof(string));
-            table.Columns.Add("?PREDICATE", typeof(string));
-            table.Columns.Add("?OBJECT", typeof(string));
-            table.Rows.Add("hello@en", "http://pred/", "http://obj/");
-
-            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
-        }
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullPredicateAsync()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?SUBJECT", typeof(string));
-            table.Columns.Add("?PREDICATE", typeof(string));
-            table.Columns.Add("?OBJECT", typeof(string));
-            table.Rows.Add("http://subj/", null, "http://obj/");
-
-            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
-        }
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithEmptyPredicateAsync()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?SUBJECT", typeof(string));
-            table.Columns.Add("?PREDICATE", typeof(string));
-            table.Columns.Add("?OBJECT", typeof(string));
-            table.Rows.Add("http://subj/", "", "http://obj/");
-
-            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
-        }
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithBlankPredicateAsync()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?SUBJECT", typeof(string));
-            table.Columns.Add("?PREDICATE", typeof(string));
-            table.Columns.Add("?OBJECT", typeof(string));
-            table.Rows.Add("http://subj/", "bnode:12345", "http://obj/");
-
-            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
-        }
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithLiteralPredicateAsync()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?SUBJECT", typeof(string));
-            table.Columns.Add("?PREDICATE", typeof(string));
-            table.Columns.Add("?OBJECT", typeof(string));
-            table.Rows.Add("http://subj/", "hello@en", "http://obj/");
-
-            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
-        }
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullObjectAsync()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?SUBJECT", typeof(string));
-            table.Columns.Add("?PREDICATE", typeof(string));
-            table.Columns.Add("?OBJECT", typeof(string));
-            table.Rows.Add("http://subj/", "http://pred/", null);
-
-            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
-        }
-
-        [TestMethod]
-        public async Task ShouldImportEmptyFromDataTableButGivingNameToGraphAsync()
-        {
-            RDFGraph graph1 = new RDFGraph().SetContext(new Uri("http://context/"));
-            DataTable table = graph1.ToDataTable();
-            RDFGraph graph2 = await RDFGraph.FromDataTableAsync(table);
-
-            Assert.IsNotNull(graph2);
-            Assert.IsTrue(graph2.TriplesCount == 0);
-            Assert.IsTrue(graph2.Equals(graph1));
-            Assert.IsTrue(graph2.Context.Equals(new Uri("http://context/")));
-        }
-
-        [TestMethod]
         public void ShouldImportFromUri()
         {
             RDFGraph graph = RDFGraph.FromUri(new Uri(RDFVocabulary.RDFS.BASE_URI));
@@ -2159,28 +1811,6 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldRaiseExceptionOnImportingFromRelativeUri()
             => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromUri(new Uri("/file/system", UriKind.Relative)));
-
-        [TestMethod]
-        public async Task ShouldImportFromUriAsync()
-        {
-            RDFGraph graph = await RDFGraph.FromUriAsync(new Uri(RDFVocabulary.RDFS.BASE_URI));
-
-            Assert.IsNotNull(graph);
-            Assert.IsTrue(graph.Context.Equals(new Uri(RDFVocabulary.RDFS.BASE_URI)));
-            Assert.IsTrue(graph.TriplesCount > 0);
-        }
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromNullUriAsync()
-            => Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromUriAsync(null));
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromRelativeUriAsync()
-            => Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromUriAsync(new Uri("/file/system", UriKind.Relative)));
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromUnreacheableUriAsync()
-            => Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromUriAsync(new Uri("http://rdfsharp.test/")));
 
         [TestCleanup]
         public void Cleanup()

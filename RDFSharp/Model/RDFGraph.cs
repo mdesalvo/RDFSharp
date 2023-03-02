@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace RDFSharp.Model
 {
@@ -190,12 +189,6 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Asynchrously adds the given triple to the graph, avoiding duplicate insertions
-        /// </summary>
-        public Task<RDFGraph> AddTripleAsync(RDFTriple triple)
-            => Task.Run(() => AddTriple(triple));
-
-        /// <summary>
         /// Adds the given container to the graph
         /// </summary>
         public RDFGraph AddContainer(RDFContainer container)
@@ -212,12 +205,6 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Asynchrously adds the given container to the graph
-        /// </summary>
-        public Task<RDFGraph> AddContainerAsync(RDFContainer container)
-            => Task.Run(() => AddContainer(container));
-
-        /// <summary>
         /// Adds the given collection to the graph
         /// </summary>
         public RDFGraph AddCollection(RDFCollection collection)
@@ -232,12 +219,6 @@ namespace RDFSharp.Model
             }
             return this;
         }
-
-        /// <summary>
-        /// Asynchrously adds the given collection to the graph
-        /// </summary>
-        public Task<RDFGraph> AddCollectionAsync(RDFCollection collection)
-            => Task.Run(() => AddCollection(collection));
         #endregion
 
         #region Remove
@@ -255,12 +236,6 @@ namespace RDFSharp.Model
             }
             return this;
         }
-
-        /// <summary>
-        /// Asynchrously removes the given triple from the graph
-        /// </summary>
-        public Task<RDFGraph> RemoveTripleAsync(RDFTriple triple)
-            => Task.Run(() => RemoveTriple(triple));
 
         /// <summary>
         /// Removes the triples with the given subject
@@ -281,12 +256,6 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Asynchrously removes the triples with the given subject
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesBySubjectAsync(RDFResource subjectResource)
-            => Task.Run(() => RemoveTriplesBySubject(subjectResource));
-
-        /// <summary>
         /// Removes the triples with the given predicate
         /// </summary>
         public RDFGraph RemoveTriplesByPredicate(RDFResource predicateResource)
@@ -303,12 +272,6 @@ namespace RDFSharp.Model
             }
             return this;
         }
-
-        /// <summary>
-        /// Asynchrously removes the triples with the given predicate
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesByPredicateAsync(RDFResource predicateResource)
-            => Task.Run(() => RemoveTriplesByPredicate(predicateResource));
 
         /// <summary>
         /// Removes the triples with the given object
@@ -329,12 +292,6 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Asynchrously removes the triples with the given object
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesByObjectAsync(RDFResource objectResource)
-            => Task.Run(() => RemoveTriplesByObject(objectResource));
-
-        /// <summary>
         /// Removes the triples with the given literal
         /// </summary>
         public RDFGraph RemoveTriplesByLiteral(RDFLiteral objectLiteral)
@@ -351,12 +308,6 @@ namespace RDFSharp.Model
             }
             return this;
         }
-
-        /// <summary>
-        /// Asynchrously removes the triples with the given literal
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesByLiteralAsync(RDFLiteral objectLiteral)
-            => Task.Run(() => RemoveTriplesByLiteral(objectLiteral));
 
         /// <summary>
         /// Removes the triples with the given subject and predicate
@@ -378,12 +329,6 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Asynchrously removes the triples with the given subject and predicate
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesBySubjectPredicateAsync(RDFResource subjectResource, RDFResource predicateResource)
-            => Task.Run(() => RemoveTriplesBySubjectPredicate(subjectResource, predicateResource));
-
-        /// <summary>
         /// Removes the triples with the given subject and object
         /// </summary>
         public RDFGraph RemoveTriplesBySubjectObject(RDFResource subjectResource, RDFResource objectResource)
@@ -401,12 +346,6 @@ namespace RDFSharp.Model
             }
             return this;
         }
-
-        /// <summary>
-        /// Asynchrously removes the triples with the given subject and object
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesBySubjectObjectAsync(RDFResource subjectResource, RDFResource objectResource)
-            => Task.Run(() => RemoveTriplesBySubjectObject(subjectResource, objectResource));
 
         /// <summary>
         /// Removes the triples with the given subject and literal
@@ -428,12 +367,6 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Asynchrously removes the triples with the given subject and literal
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesBySubjectLiteralAsync(RDFResource subjectResource, RDFLiteral objectLiteral)
-            => Task.Run(() => RemoveTriplesBySubjectLiteral(subjectResource, objectLiteral));
-
-        /// <summary>
         /// Removes the triples with the given predicate and object
         /// </summary>
         public RDFGraph RemoveTriplesByPredicateObject(RDFResource predicateResource, RDFResource objectResource)
@@ -451,12 +384,6 @@ namespace RDFSharp.Model
             }
             return this;
         }
-
-        /// <summary>
-        /// Asynchrously removes the triples with the given predicate and object
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesByPredicateObjectAsync(RDFResource predicateResource, RDFResource objectResource)
-            => Task.Run(() => RemoveTriplesByPredicateObject(predicateResource, objectResource));
 
         /// <summary>
         /// Removes the triples with the given predicate and literal
@@ -478,12 +405,6 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Asynchrously removes the triples with the given predicate and literal
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesByPredicateLiteralAsync(RDFResource predicateResource, RDFLiteral objectLiteral)
-            => Task.Run(() => RemoveTriplesByPredicateLiteral(predicateResource, objectLiteral));
-
-        /// <summary>
         /// Clears the triples and metadata of the graph
         /// </summary>
         public void ClearTriples()
@@ -493,12 +414,6 @@ namespace RDFSharp.Model
             //Clear index
             GraphIndex.ClearIndex();
         }
-
-        /// <summary>
-        /// Asynchronously clears the triples and metadata of the graph
-        /// </summary>
-        public Task ClearTriplesAsync()
-            => Task.Run(() => ClearTriples());
 
         /// <summary>
         /// Turns back the reified triples into their compact representation
@@ -553,12 +468,6 @@ namespace RDFSharp.Model
                 }
             }
         }
-
-        /// <summary>
-        /// Asynchronously turns back the reified triples into their compact representation
-        /// </summary>
-        public Task UnreifyTriplesAsync()
-            => Task.Run(() => UnreifyTriples());
         #endregion
 
         #region Select
@@ -569,22 +478,10 @@ namespace RDFSharp.Model
             => triple != null && IndexedTriples.ContainsKey(triple.TripleID);
 
         /// <summary>
-        /// Asynchronously checks if the graph contains the given triple
-        /// </summary>
-        public Task<bool> ContainsTripleAsync(RDFTriple triple)
-            => Task.Run(() => ContainsTriple(triple));
-
-        /// <summary>
         /// Gets the subgraph containing triples with the specified subject
         /// </summary>
         public RDFGraph SelectTriplesBySubject(RDFResource subjectResource)
             => new RDFGraph(RDFModelUtilities.SelectTriples(this, subjectResource, null, null, null));
-
-        /// <summary>
-        /// Asynchronously gets the subgraph containing triples with the specified subject
-        /// </summary>
-        public Task<RDFGraph> SelectTriplesBySubjectAsync(RDFResource subjectResource)
-            => Task.Run(() => SelectTriplesBySubject(subjectResource));
 
         /// <summary>
         /// Gets the subgraph containing triples with the specified predicate
@@ -593,34 +490,16 @@ namespace RDFSharp.Model
             => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, predicateResource, null, null));
 
         /// <summary>
-        /// Asynchronously gets the subgraph containing triples with the specified predicate
-        /// </summary>
-        public Task<RDFGraph> SelectTriplesByPredicateAsync(RDFResource predicateResource)
-            => Task.Run(() => SelectTriplesByPredicate(predicateResource));
-
-        /// <summary>
         /// Gets the subgraph containing triples with the specified object
         /// </summary>
         public RDFGraph SelectTriplesByObject(RDFResource objectResource)
             => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, null, objectResource, null));
 
         /// <summary>
-        /// Asynchronously gets the subgraph containing triples with the specified object
-        /// </summary>
-        public Task<RDFGraph> SelectTriplesByObjectAsync(RDFResource objectResource)
-            => Task.Run(() => SelectTriplesByObject(objectResource));
-
-        /// <summary>
         /// Gets the subgraph containing triples with the specified literal
         /// </summary>
         public RDFGraph SelectTriplesByLiteral(RDFLiteral objectLiteral)
             => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, null, null, objectLiteral));
-
-        /// <summary>
-        /// Asynchronously gets the subgraph containing triples with the specified literal
-        /// </summary>
-        public Task<RDFGraph> SelectTriplesByLiteralAsync(RDFLiteral objectLiteral)
-            => Task.Run(() => SelectTriplesByLiteral(objectLiteral));
 
         /// <summary>
         /// Gets the subgraph containing triples with the specified combination of SPOL accessors<br/>
@@ -657,12 +536,6 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Asynchronously builds an intersection graph from this graph and a given one
-        /// </summary>
-        public Task<RDFGraph> IntersectWithAsync(RDFGraph graph)
-            => Task.Run(() => IntersectWith(graph));
-
-        /// <summary>
         /// Builds a union graph from this graph and a given one
         /// </summary>
         public RDFGraph UnionWith(RDFGraph graph)
@@ -683,12 +556,6 @@ namespace RDFSharp.Model
 
             return result;
         }
-
-        /// <summary>
-        /// Asynchronously builds a union graph from this graph and a given one
-        /// </summary>
-        public Task<RDFGraph> UnionWithAsync(RDFGraph graph)
-            => Task.Run(() => UnionWith(graph));
 
         /// <summary>
         /// Builds a difference graph from this graph and a given one
@@ -713,12 +580,6 @@ namespace RDFSharp.Model
             }
             return result;
         }
-
-        /// <summary>
-        /// Asynchronously builds a difference graph from this graph and a given one
-        /// </summary>
-        public Task<RDFGraph> DifferenceWithAsync(RDFGraph graph)
-            => Task.Run(() => DifferenceWith(graph));
         #endregion
 
         #region Convert
@@ -750,12 +611,6 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Asynchronously writes the graph into a file in the given RDF format.
-        /// </summary>
-        public Task ToFileAsync(RDFModelEnums.RDFFormats rdfFormat, string filepath)
-            => Task.Run(() => ToFile(rdfFormat, filepath));
-
-        /// <summary>
         /// Writes the graph into a stream in the given RDF format (at the end the stream is closed).
         /// </summary>
         public void ToStream(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream)
@@ -779,12 +634,6 @@ namespace RDFSharp.Model
                     break;
             }
         }
-
-        /// <summary>
-        /// Asynchronously writes the graph into a stream in the given RDF format (at the end the stream is closed).
-        /// </summary>
-        public Task ToStreamAsync(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream)
-            => Task.Run(() => ToStream(rdfFormat, outputStream));
 
         /// <summary>
         /// Writes the graph into a datatable with "Subject-Predicate-Object" columns
@@ -811,12 +660,6 @@ namespace RDFSharp.Model
 
             return result;
         }
-
-        /// <summary>
-        /// Asynchronously writes the graph into a datatable with "Subject-Predicate-Object" columns
-        /// </summary>
-        public Task<DataTable> ToDataTableAsync()
-            => Task.Run(() => ToDataTable());
         #endregion
 
         #region Import
@@ -846,12 +689,6 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Asynchronously reads a graph from a file of the given RDF format.
-        /// </summary>
-        public static Task<RDFGraph> FromFileAsync(RDFModelEnums.RDFFormats rdfFormat, string filepath)
-            => Task.Run(() => FromFile(rdfFormat, filepath));
-
-        /// <summary>
         /// Reads a graph from a stream of the given RDF format.
         /// </summary>
         public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream) => FromStream(rdfFormat, inputStream, null);
@@ -874,12 +711,6 @@ namespace RDFSharp.Model
                     throw new RDFModelException("Cannot read RDF graph from stream because given \"rdfFormat\" parameter is not supported.");
             }
         }
-
-        /// <summary>
-        /// Asynchronously reads a graph from a stream of the given RDF format.
-        /// </summary>
-        public static Task<RDFGraph> FromStreamAsync(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream)
-            => Task.Run(() => FromStream(rdfFormat, inputStream));
 
         /// <summary>
         /// Reads a graph from a datatable with "Subject-Predicate-Object" columns.
@@ -938,12 +769,6 @@ namespace RDFSharp.Model
 
             return result;
         }
-
-        /// <summary>
-        /// Asynchronously reads a graph from a datatable with "Subject-Predicate-Object" columns.
-        /// </summary>
-        public static Task<RDFGraph> FromDataTableAsync(DataTable table)
-            => Task.Run(() => FromDataTable(table));
 
         /// <summary>
         /// Reads a graph by trying to dereference the given Uri
@@ -1014,12 +839,6 @@ namespace RDFSharp.Model
 
             return result;
         }
-
-        /// <summary>
-        /// Asynchronously reads a graph by trying to dereference the given Uri
-        /// </summary>
-        public static Task<RDFGraph> FromUriAsync(Uri uri, int timeoutMilliseconds = 20000)
-            => Task.Run(() => FromUri(uri, timeoutMilliseconds));
         #endregion
 
         #endregion

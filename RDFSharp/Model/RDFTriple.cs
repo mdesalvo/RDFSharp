@@ -16,6 +16,7 @@
 
 using RDFSharp.Query;
 using System;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Model
 {
@@ -144,6 +145,12 @@ namespace RDFSharp.Model
 
             return reifGraph;
         }
+
+        /// <summary>
+        /// Builds the reification asynchronous graph of the triple
+        /// </summary>
+        public Task<RDFAsyncGraph> ReifyTripleAsync()
+            => Task.Run(() => new RDFAsyncGraph(ReifyTriple()));
         #endregion
     }
 
