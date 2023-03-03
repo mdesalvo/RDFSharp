@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFAsyncGraph represents an asynchronous wrapper for RDFGraph
+    /// RDFAsyncGraph represents an asynchronous wrapper for RDFGraph (suitable for working under UI-dependant applications)
     /// </summary>
     public class RDFAsyncGraph : RDFDataSource, IEquatable<RDFAsyncGraph>, IEnumerable<RDFTriple>, IDisposable
     {
