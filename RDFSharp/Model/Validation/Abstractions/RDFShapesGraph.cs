@@ -139,10 +139,10 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Asynchronously gets a graph representation of this shapes graph
+        /// Gets an asynchronous graph representation of this shapes graph
         /// </summary>
-        public Task<RDFGraph> ToRDFGraphAsync()
-            => Task.Run(() => ToRDFGraph());
+        public Task<RDFAsyncGraph> ToRDFGraphAsync()
+            => Task.Run(() => new RDFAsyncGraph(ToRDFGraph()));
 
         /// <summary>
         /// Gets a shapes graph representation of the given graph
@@ -151,10 +151,10 @@ namespace RDFSharp.Model
             => RDFValidationHelper.FromRDFGraph(graph);
 
         /// <summary>
-        /// Asynchronously gets a shapes graph representation of the given graph
+        /// Gets a shapes graph representation of the given asynchronous graph
         /// </summary>
-        public static Task<RDFShapesGraph> FromRDFGraphAsync(RDFGraph graph)
-            => Task.Run(() => FromRDFGraph(graph));
+        public static Task<RDFShapesGraph> FromRDFGraphAsync(RDFAsyncGraph asyncGraph)
+            => Task.Run(() => FromRDFGraph(asyncGraph?.WrappedGraph));
         #endregion
 
         #endregion

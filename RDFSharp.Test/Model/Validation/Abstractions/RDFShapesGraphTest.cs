@@ -142,16 +142,16 @@ namespace RDFSharp.Test.Model
             shape.AddTarget(new RDFTargetClass(new RDFResource("ex:class")));
             shape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:class")));
             shapesGraph.AddShape(shape);
-            RDFGraph graph = await shapesGraph.ToRDFGraphAsync();
+            RDFAsyncGraph asyncGraph = await shapesGraph.ToRDFGraphAsync();
 
-            Assert.IsNotNull(graph);
-            Assert.IsTrue(graph.Context.Equals(new Uri("ex:shapesGraph")));
-            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(shape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE)));
-            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(shape, RDFVocabulary.SHACL.SEVERITY_PROPERTY, RDFVocabulary.SHACL.VIOLATION)));
-            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(shape, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.False)));
-            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MESSAGE, new RDFPlainLiteral("This is an error", "en-US"))));
-            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(shape, RDFVocabulary.SHACL.TARGET_CLASS, new RDFResource("ex:class"))));
-            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLASS, new RDFResource("ex:class"))));
+            Assert.IsNotNull(asyncGraph);
+            Assert.IsTrue(asyncGraph.Context.Equals(new Uri("ex:shapesGraph")));
+            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(shape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE)));
+            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(shape, RDFVocabulary.SHACL.SEVERITY_PROPERTY, RDFVocabulary.SHACL.VIOLATION)));
+            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(shape, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.False)));
+            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(shape, RDFVocabulary.SHACL.MESSAGE, new RDFPlainLiteral("This is an error", "en-US"))));
+            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(shape, RDFVocabulary.SHACL.TARGET_CLASS, new RDFResource("ex:class"))));
+            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(shape, RDFVocabulary.SHACL.CLASS, new RDFResource("ex:class"))));
         }
 
         [TestMethod]
@@ -219,7 +219,7 @@ namespace RDFSharp.Test.Model
             shape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:class")));
             shapesGraph.AddShape(shape);
             RDFGraph graph = shapesGraph.ToRDFGraph();
-            RDFShapesGraph shapesGraph2 = await RDFShapesGraph.FromRDFGraphAsync(graph);
+            RDFShapesGraph shapesGraph2 = await RDFShapesGraph.FromRDFGraphAsync(new RDFAsyncGraph(graph));
 
             Assert.IsNotNull(shapesGraph2);
             Assert.IsTrue(shapesGraph2.Equals(new RDFResource("ex:shapesGraph")));
