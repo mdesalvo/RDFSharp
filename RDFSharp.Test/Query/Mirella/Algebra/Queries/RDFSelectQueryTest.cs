@@ -1121,8 +1121,8 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public async Task ShouldApplySelectQueryToStoreAsyncAndHaveResults()
         {
-            RDFMemoryStore store = new RDFMemoryStore();
-            store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFAsyncStore store = new RDFAsyncStore();
+            await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1144,8 +1144,8 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public async Task ShouldApplySelectQueryToStoreAsyncAndNotHaveResults()
         {
-            RDFMemoryStore store = new RDFMemoryStore();
-            store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFAsyncStore store = new RDFAsyncStore();
+            await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup()

@@ -41,6 +41,11 @@ namespace RDFSharp.Model
         internal bool IsStore() => this is RDFStore;
 
         /// <summary>
+        /// Checks if this data source is an asynchronous store
+        /// </summary>
+        internal bool IsAsyncStore() => this is RDFAsyncStore;
+
+        /// <summary>
         /// Checks if this data source is a federation
         /// </summary>
         internal bool IsFederation() => this is RDFFederation;

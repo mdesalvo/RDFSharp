@@ -302,7 +302,7 @@ namespace RDFSharp.Test.Query
                             .WithHeader("ContentType", "application/n-quads")
                             .WithBody($"<ex:subj> <ex:pred> <ex:obj> <ex:ctx>."));
 
-            RDFMemoryStore store = new RDFMemoryStore();
+            RDFAsyncStore store = new RDFAsyncStore();
             RDFLoadOperation operation = new RDFLoadOperation(new Uri(server.Url + "/RDFLoadOperationTest/ShouldApplyToStoreAsync"));
             RDFOperationResult result = await operation.ApplyToStoreAsync(store);
 
@@ -321,7 +321,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(result.DeleteResults);
             Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
             Assert.IsTrue(result.DeleteResultsCount == 0);
-            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.WrappedStore is RDFMemoryStore memStore && memStore.QuadruplesCount == 1);
         }
 
         [TestMethod]
@@ -336,7 +336,7 @@ namespace RDFSharp.Test.Query
                             .WithHeader("ContentType", "application/n-quads")
                             .WithBody($"<ex:subj> <ex:pred> <ex:obj>."));
 
-            RDFMemoryStore store = new RDFMemoryStore();
+            RDFAsyncStore store = new RDFAsyncStore();
             RDFLoadOperation operation = new RDFLoadOperation(new Uri(server.Url + "/RDFLoadOperationTest/ShouldApplyToStoreWithDefaultContextAsync"));
             RDFOperationResult result = await operation.ApplyToStoreAsync(store);
 
@@ -355,7 +355,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(result.DeleteResults);
             Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
             Assert.IsTrue(result.DeleteResultsCount == 0);
-            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.WrappedStore is RDFMemoryStore memStore && memStore.QuadruplesCount == 1);
         }
 
         [TestMethod]

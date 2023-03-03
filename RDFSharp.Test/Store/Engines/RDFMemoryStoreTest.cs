@@ -1063,26 +1063,6 @@ namespace RDFSharp.Test.Store
             => Assert.ThrowsException<RDFStoreException>(() => new RDFMemoryStore().ToFile(RDFStoreEnums.RDFFormats.NQuads, null));
 
         [DataTestMethod]
-        [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
-        [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
-        [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
-        public async Task ShouldExportToFileAsync(string fileExtension, RDFStoreEnums.RDFFormats format)
-        {
-            RDFMemoryStore store = new RDFMemoryStore();
-            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
-            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-            store.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
-            await store.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}"));
-
-            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}")));
-            Assert.IsTrue(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}")).Length > 90);
-        }
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnExportingToNullOrEmptyFilepathAsync()
-            => Assert.ThrowsExceptionAsync<RDFStoreException>(() => new RDFMemoryStore().ToFileAsync(RDFStoreEnums.RDFFormats.NQuads, null));
-
-        [DataTestMethod]
         [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
         [DataRow(RDFStoreEnums.RDFFormats.TriX)]
         [DataRow(RDFStoreEnums.RDFFormats.TriG)]
@@ -1101,26 +1081,6 @@ namespace RDFSharp.Test.Store
         [TestMethod]
         public void ShouldRaiseExceptionOnExportingToNullStream()
             => Assert.ThrowsException<RDFStoreException>(() => new RDFMemoryStore().ToStream(RDFStoreEnums.RDFFormats.NQuads, null));
-
-        [DataTestMethod]
-        [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
-        [DataRow(RDFStoreEnums.RDFFormats.TriX)]
-        [DataRow(RDFStoreEnums.RDFFormats.TriG)]
-        public async Task ShouldExportToStreamAsync(RDFStoreEnums.RDFFormats format)
-        {
-            MemoryStream stream = new MemoryStream();
-            RDFMemoryStore store = new RDFMemoryStore();
-            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
-            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-            store.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
-            await store.ToStreamAsync(format, stream);
-
-            Assert.IsTrue(stream.ToArray().Length > 90);
-        }
-
-        [TestMethod]
-        public void ShouldRaiseExceptionOnExportingToNullStreamAsync()
-            => Assert.ThrowsExceptionAsync<RDFStoreException>(() => new RDFMemoryStore().ToStreamAsync(RDFStoreEnums.RDFFormats.NQuads, null));
 
         [TestMethod]
         public void ShouldExportToDataTable()
@@ -1153,47 +1113,6 @@ namespace RDFSharp.Test.Store
         {
             RDFMemoryStore store = new RDFMemoryStore();
             DataTable table = store.ToDataTable();
-
-            Assert.IsNotNull(table);
-            Assert.IsTrue(table.Columns.Count == 4);
-            Assert.IsTrue(table.Columns[0].ColumnName.Equals("?CONTEXT"));
-            Assert.IsTrue(table.Columns[1].ColumnName.Equals("?SUBJECT"));
-            Assert.IsTrue(table.Columns[2].ColumnName.Equals("?PREDICATE"));
-            Assert.IsTrue(table.Columns[3].ColumnName.Equals("?OBJECT"));
-            Assert.IsTrue(table.Rows.Count == 0);
-        }
-
-        [TestMethod]
-        public async Task ShouldExportToDataTableAsync()
-        {
-            RDFMemoryStore store = new RDFMemoryStore();
-            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
-            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-            store.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
-            DataTable table = await store.ToDataTableAsync();
-
-            Assert.IsNotNull(table);
-            Assert.IsTrue(table.Columns.Count == 4);
-            Assert.IsTrue(table.Columns[0].ColumnName.Equals("?CONTEXT"));
-            Assert.IsTrue(table.Columns[1].ColumnName.Equals("?SUBJECT"));
-            Assert.IsTrue(table.Columns[2].ColumnName.Equals("?PREDICATE"));
-            Assert.IsTrue(table.Columns[3].ColumnName.Equals("?OBJECT"));
-            Assert.IsTrue(table.Rows.Count == 2);
-            Assert.IsTrue(table.Rows[0]["?CONTEXT"].ToString().Equals("http://ctx/"));
-            Assert.IsTrue(table.Rows[0]["?SUBJECT"].ToString().Equals("http://subj/"));
-            Assert.IsTrue(table.Rows[0]["?PREDICATE"].ToString().Equals("http://pred/"));
-            Assert.IsTrue(table.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
-            Assert.IsTrue(table.Rows[1]["?CONTEXT"].ToString().Equals("http://ctx/"));
-            Assert.IsTrue(table.Rows[1]["?SUBJECT"].ToString().Equals("http://subj/"));
-            Assert.IsTrue(table.Rows[1]["?PREDICATE"].ToString().Equals("http://pred/"));
-            Assert.IsTrue(table.Rows[1]["?OBJECT"].ToString().Equals("http://obj/"));
-        }
-
-        [TestMethod]
-        public async Task ShouldExportEmptyToDataTableAsync()
-        {
-            RDFMemoryStore store = new RDFMemoryStore();
-            DataTable table = await store.ToDataTableAsync();
 
             Assert.IsNotNull(table);
             Assert.IsTrue(table.Columns.Count == 4);

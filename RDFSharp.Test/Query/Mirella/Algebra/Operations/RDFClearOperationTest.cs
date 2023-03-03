@@ -329,9 +329,9 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public async Task ShouldApplyToStoreWithContextBehaviorAsync()
         {
-            RDFMemoryStore store = new RDFMemoryStore();
-            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
-            store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            RDFAsyncStore store = new RDFAsyncStore();
+            await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
             RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
             RDFOperationResult result = await operation.ApplyToStoreAsync(store);
 
@@ -350,15 +350,15 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(result.InsertResults);
             Assert.IsTrue(result.InsertResults.Columns.Count == 0);
             Assert.IsTrue(result.InsertResultsCount == 0);
-            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.WrappedStore is RDFMemoryStore memStore && memStore.QuadruplesCount == 1);
         }
 
         [TestMethod]
         public async Task ShouldApplyToStoreWithAllFlavorBehaviorAsync()
         {
-            RDFMemoryStore store = new RDFMemoryStore();
-            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
-            store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            RDFAsyncStore store = new RDFAsyncStore();
+            await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
             RDFClearOperation operation = new RDFClearOperation(RDFQueryEnums.RDFClearOperationFlavor.ALL);
             RDFOperationResult result = await operation.ApplyToStoreAsync(store);
 
@@ -381,15 +381,15 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(result.InsertResults);
             Assert.IsTrue(result.InsertResults.Columns.Count == 0);
             Assert.IsTrue(result.InsertResultsCount == 0);
-            Assert.IsTrue(store.QuadruplesCount == 0);
+            Assert.IsTrue(store.WrappedStore is RDFMemoryStore memStore && memStore.QuadruplesCount == 0);
         }
 
         [TestMethod]
         public async Task ShouldApplyToStoreWithDefaultFlavorBehaviorAsync()
         {
-            RDFMemoryStore store = new RDFMemoryStore();
-            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
-            store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            RDFAsyncStore store = new RDFAsyncStore();
+            await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
             RDFClearOperation operation = new RDFClearOperation(RDFQueryEnums.RDFClearOperationFlavor.DEFAULT);
             RDFOperationResult result = await operation.ApplyToStoreAsync(store);
 
@@ -408,15 +408,15 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(result.InsertResults);
             Assert.IsTrue(result.InsertResults.Columns.Count == 0);
             Assert.IsTrue(result.InsertResultsCount == 0);
-            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.WrappedStore is RDFMemoryStore memStore && memStore.QuadruplesCount == 1);
         }
 
         [TestMethod]
         public async Task ShouldApplyToStoreWithNamedFlavorBehaviorAsync()
         {
-            RDFMemoryStore store = new RDFMemoryStore();
-            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
-            store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            RDFAsyncStore store = new RDFAsyncStore();
+            await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
             RDFClearOperation operation = new RDFClearOperation(RDFQueryEnums.RDFClearOperationFlavor.NAMED);
             RDFOperationResult result = await operation.ApplyToStoreAsync(store);
 
@@ -435,7 +435,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(result.InsertResults);
             Assert.IsTrue(result.InsertResults.Columns.Count == 0);
             Assert.IsTrue(result.InsertResultsCount == 0);
-            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.WrappedStore is RDFMemoryStore memStore && memStore.QuadruplesCount == 1);
         }
 
         [TestMethod]

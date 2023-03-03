@@ -78,10 +78,10 @@ namespace RDFSharp.Query
                              : new RDFOperationResult();
 
         /// <summary>
-        /// Asynchronously applies the operation to the given store
+        /// Applies the operation to the given asynchronous store
         /// </summary>
-        public Task<RDFOperationResult> ApplyToStoreAsync(RDFStore store)
-            => Task.Run(() => ApplyToStore(store));
+        public Task<RDFOperationResult> ApplyToStoreAsync(RDFAsyncStore asyncStore)
+            => Task.Run(() => ApplyToStore(asyncStore?.WrappedStore));
 
         /// <summary>
         /// Applies the operation to the given SPARQL UPDATE endpoint

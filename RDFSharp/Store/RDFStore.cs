@@ -73,7 +73,7 @@ namespace RDFSharp.Store
 
         #region Remove
         /// <summary>
-        /// Removes the given quadruples from the store
+        /// Removes the given quadruple from the store
         /// </summary>
         public abstract RDFStore RemoveQuadruple(RDFQuadruple quadruple);
 
@@ -278,7 +278,7 @@ namespace RDFSharp.Store
             => SelectQuadruples(null, null, null, null, objectLiteral);
 
         /// <summary>
-        /// Gets a store containing quadruples satisfying the given pattern
+        /// Gets a memory store containing quadruples satisfying the given pattern
         /// </summary>
         internal abstract RDFMemoryStore SelectQuadruples(RDFContext contextResource,
                                                           RDFResource subjectResource,
@@ -329,7 +329,7 @@ namespace RDFSharp.Store
 
         #region Export
         /// <summary>
-        /// Writes the store into a file in the given RDF format.
+        /// Writes the store into a file in the given RDF format
         /// </summary>
         public void ToFile(RDFStoreEnums.RDFFormats rdfFormat, string filepath)
         {
@@ -351,13 +351,7 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Asynchronously writes the store into a file in the given RDF format.
-        /// </summary>
-        public Task ToFileAsync(RDFStoreEnums.RDFFormats rdfFormat, string filepath)
-            => Task.Run(() => ToFile(rdfFormat, filepath));
-
-        /// <summary>
-        /// Writes the store into a stream in the given RDF format.
+        /// Writes the store into a stream in the given RDF format
         /// </summary>
         public void ToStream(RDFStoreEnums.RDFFormats rdfFormat, Stream outputStream)
         {
@@ -377,12 +371,6 @@ namespace RDFSharp.Store
                     break;
             }
         }
-
-        /// <summary>
-        /// Asynchronously writes the store into a stream in the given RDF format.
-        /// </summary>
-        public Task ToStreamAsync(RDFStoreEnums.RDFFormats rdfFormat, Stream outputStream)
-            => Task.Run(() => ToStream(rdfFormat, outputStream));
 
         /// <summary>
         /// Writes the store into a datatable with "Context-Subject-Predicate-Object" columns
@@ -411,12 +399,6 @@ namespace RDFSharp.Store
 
             return result;
         }
-
-        /// <summary>
-        /// Asynchronously writes the store into a datatable with "Context-Subject-Predicate-Object" columns
-        /// </summary>
-        public Task<DataTable> ToDataTableAsync()
-            => Task.Run(() => ToDataTable());
         #endregion
 
         #endregion

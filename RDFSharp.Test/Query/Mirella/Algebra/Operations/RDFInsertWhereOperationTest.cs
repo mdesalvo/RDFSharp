@@ -876,14 +876,14 @@ WHERE {
         [TestMethod]
         public async Task ShouldApplyToStoreAsync()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            RDFAsyncStore store = new RDFAsyncStore(new RDFMemoryStore(new List<RDFQuadruple>()
             {
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            }));
             RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
             operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFVariable("?Y"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:dog")));
             operation.AddPatternGroup(new RDFPatternGroup()
@@ -914,7 +914,7 @@ WHERE {
             Assert.IsNotNull(result.DeleteResults);
             Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
             Assert.IsTrue(result.DeleteResultsCount == 0);
-            Assert.IsTrue(store.QuadruplesCount == 8);
+            Assert.IsTrue(store.WrappedStore is RDFMemoryStore memStore && memStore.QuadruplesCount == 8);
         }
 
         [TestMethod]

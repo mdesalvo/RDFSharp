@@ -262,9 +262,9 @@ DELETE DATA {
         [TestMethod]
         public async Task ShouldApplyToStoreAsync()
         {
-            RDFMemoryStore store = new RDFMemoryStore();
-            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
-            store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+            RDFAsyncStore store = new RDFAsyncStore();
+            await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+            await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
             RDFDeleteDataOperation operation = new RDFDeleteDataOperation();
             operation.AddDeleteTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
             operation.AddDeleteTemplate(new RDFPattern(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
@@ -290,7 +290,7 @@ DELETE DATA {
             Assert.IsNotNull(result.InsertResults);
             Assert.IsTrue(result.InsertResults.Columns.Count == 0);
             Assert.IsTrue(result.InsertResultsCount == 0);
-            Assert.IsTrue(store.QuadruplesCount == 0);
+            Assert.IsTrue(store.WrappedStore is RDFMemoryStore memStore && memStore.QuadruplesCount == 0);
         }
 
         [TestMethod]

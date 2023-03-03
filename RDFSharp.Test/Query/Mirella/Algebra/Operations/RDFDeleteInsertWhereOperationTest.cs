@@ -569,14 +569,14 @@ WHERE {
         [TestMethod]
         public async Task ShouldApplyToStoreAsync()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            RDFAsyncStore store = new RDFAsyncStore(new RDFMemoryStore(new List<RDFQuadruple>()
             {
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            }));
             RDFDeleteInsertWhereOperation operation = new RDFDeleteInsertWhereOperation();
             operation.AddDeleteTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFVariable("?Y"),new RDFResource("ex:dogOf"),new RDFVariable("?X")));
             operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFVariable("?Y"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:dog")));
@@ -624,10 +624,10 @@ WHERE {
             Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto"));
             Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?PREDICATE"].ToString(), "ex:dogOf"));
             Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?OBJECT"].ToString(), "ex:whoever"));
-            Assert.IsTrue(store.QuadruplesCount == 5);
+            Assert.IsTrue(store.WrappedStore is RDFMemoryStore memStore && memStore.QuadruplesCount == 5);
         }
 
-                [TestMethod]
+        [TestMethod]
         public void ShouldApplyToNullSPARQLUpdateEndpoint()
         {
             RDFDeleteInsertWhereOperation operation = new RDFDeleteInsertWhereOperation();

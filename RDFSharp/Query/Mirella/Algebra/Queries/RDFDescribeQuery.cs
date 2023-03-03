@@ -153,10 +153,10 @@ namespace RDFSharp.Query
                              : new RDFDescribeQueryResult();
 
         /// <summary>
-        /// Asynchronously applies the query to the given store
+        /// Applies the query to the given asynchronous store
         /// </summary>
-        public Task<RDFDescribeQueryResult> ApplyToStoreAsync(RDFStore store)
-            => Task.Run(() => ApplyToStore(store));
+        public Task<RDFDescribeQueryResult> ApplyToStoreAsync(RDFAsyncStore asyncStore)
+            => Task.Run(() => ApplyToStore(asyncStore?.WrappedStore));
 
         /// <summary>
         /// Applies the query to the given federation
