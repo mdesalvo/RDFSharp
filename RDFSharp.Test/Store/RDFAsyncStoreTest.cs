@@ -31,7 +31,7 @@ namespace RDFSharp.Test.Store
     {
         #region Tests
         [TestMethod]
-        public void ShouldCreateAsynctore()
+        public void ShouldCreateAsyncStore()
         {
             RDFAsyncStore store = new RDFAsyncStore();
 
@@ -42,7 +42,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public void ShouldCreateAsynctoreFromStore()
+        public void ShouldCreateAsyncStoreFromStore()
         {
             RDFAsyncStore store = new RDFAsyncStore(new RDFMemoryStore(
                 new List<RDFQuadruple>() {
@@ -66,7 +66,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public void ShouldEqualsAsynctores()
+        public void ShouldEqualsAsyncStores()
         {
             RDFAsyncStore store1 = new RDFAsyncStore();
             Assert.IsTrue(store1.Equals(store1));
@@ -77,7 +77,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldMergeGraph()
+        public async Task ShouldMergeGraphAsync()
         {
             RDFGraph graph = new RDFGraph(new List<RDFTriple>() {
                 new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")),
@@ -95,7 +95,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldAddQuadruple()
+        public async Task ShouldAddQuadrupleAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
@@ -109,7 +109,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruple()
+        public async Task ShouldRemoveQuadrupleAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
@@ -127,7 +127,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesByContext()
+        public async Task ShouldRemoveQuadruplesByContextAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
@@ -145,7 +145,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesBySubject()
+        public async Task ShouldRemoveQuadruplesBySubjectAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj1"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
@@ -163,7 +163,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesByPredicate()
+        public async Task ShouldRemoveQuadruplesByPredicateAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred1"), new RDFResource("ex:obj")));
@@ -181,7 +181,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesByObject()
+        public async Task ShouldRemoveQuadruplesByObjectAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj1")));
@@ -199,7 +199,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesByLiteral()
+        public async Task ShouldRemoveQuadruplesByLiteralAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -217,7 +217,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesByContextSubject()
+        public async Task ShouldRemoveQuadruplesByContextSubjectAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
@@ -235,7 +235,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesByContextPredicate()
+        public async Task ShouldRemoveQuadruplesByContextPredicateAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
@@ -253,7 +253,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesByContextObject()
+        public async Task ShouldRemoveQuadruplesByContextObjectAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
@@ -271,7 +271,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesByContextLiteral()
+        public async Task ShouldRemoveQuadruplesByContextLiteralAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -289,7 +289,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesByContextSubjectPredicate()
+        public async Task ShouldRemoveQuadruplesByContextSubjectPredicateAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
@@ -307,7 +307,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesByContextSubjectObject()
+        public async Task ShouldRemoveQuadruplesByContextSubjectObjectAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
@@ -325,7 +325,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesByContextSubjectLiteral()
+        public async Task ShouldRemoveQuadruplesByContextSubjectLiteralAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -343,7 +343,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesByContextPredicateObject()
+        public async Task ShouldRemoveQuadruplesByContextPredicateObjectAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
@@ -361,7 +361,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesByContextPredicateLiteral()
+        public async Task ShouldRemoveQuadruplesByContextPredicateLiteralAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -378,8 +378,8 @@ namespace RDFSharp.Test.Store
             Assert.IsTrue(store.WrappedStore is RDFMemoryStore memStore2 && memStore2.QuadruplesCount == 1);
         }
 
-                [TestMethod]
-        public async Task ShouldRemoveQuadruplesBySubjectPredicate()
+        [TestMethod]
+        public async Task ShouldRemoveQuadruplesBySubjectPredicateAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
@@ -398,7 +398,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesBySubjectObject()
+        public async Task ShouldRemoveQuadruplesBySubjectObjectAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
@@ -417,7 +417,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesBySubjectLiteral()
+        public async Task ShouldRemoveQuadruplesBySubjectLiteralAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -435,7 +435,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesByPredicateObject()
+        public async Task ShouldRemoveQuadruplesByPredicateObjectAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
@@ -454,7 +454,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldRemoveQuadruplesByPredicateLiteral()
+        public async Task ShouldRemoveQuadruplesByPredicateLiteralAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -472,7 +472,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldClearQuadruples()
+        public async Task ShouldClearQuadruplesAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -483,7 +483,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldContainQuadruples()
+        public async Task ShouldContainQuadruplesAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -494,7 +494,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldNotContainQuadruples()
+        public async Task ShouldNotContainQuadruplesAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -505,7 +505,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldSelectQuadruplesByContext()
+        public async Task ShouldSelectQuadruplesByContextAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -523,7 +523,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldNotSelectQuadruplesByContext()
+        public async Task ShouldNotSelectQuadruplesByContextAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -535,7 +535,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldSelectQuadruplesBySubject()
+        public async Task ShouldSelectQuadruplesBySubjectAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj1"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -553,7 +553,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldNotSelectQuadruplesBySubject()
+        public async Task ShouldNotSelectQuadruplesBySubjectAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj1"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -565,7 +565,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldSelectQuadruplesByPredicate()
+        public async Task ShouldSelectQuadruplesByPredicateAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred1"), new RDFPlainLiteral("lit")));
@@ -583,7 +583,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldNotSelectQuadruplesByPredicate()
+        public async Task ShouldNotSelectQuadruplesByPredicateAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred1"), new RDFPlainLiteral("lit")));
@@ -595,7 +595,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldSelectQuadruplesByObject()
+        public async Task ShouldSelectQuadruplesByObjectAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -613,7 +613,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldNotSelectQuadruplesByObject()
+        public async Task ShouldNotSelectQuadruplesByObjectAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -625,7 +625,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldSelectQuadruplesByLiteral()
+        public async Task ShouldSelectQuadruplesByLiteralAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -643,7 +643,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldNotSelectQuadruplesByLiteral()
+        public async Task ShouldNotSelectQuadruplesByLiteralAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -655,7 +655,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldSelectAllQuadruples()
+        public async Task ShouldSelectAllQuadruplesAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
@@ -667,7 +667,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldExtractContexts()
+        public async Task ShouldExtractContextsAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit","en-US")));
@@ -682,7 +682,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldExtractGraphs()
+        public async Task ShouldExtractGraphsAsync()
         {
             RDFAsyncStore store = new RDFAsyncStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit","en-US")));
@@ -697,7 +697,7 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public async Task ShouldUnreifyQuadruples()
+        public async Task ShouldUnreifyQuadruplesAsync()
         {
             RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"));
             RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit"));
