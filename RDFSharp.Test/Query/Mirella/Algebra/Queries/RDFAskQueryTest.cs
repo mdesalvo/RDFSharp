@@ -481,7 +481,7 @@ namespace RDFSharp.Test.Query
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFAskQueryResult result = await query.ApplyToGraphAsync(graph);
+            RDFAskQueryResult result = await query.ApplyToGraphAsync(new RDFAsyncGraph(graph));
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.AskResult);
@@ -496,7 +496,7 @@ namespace RDFSharp.Test.Query
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFAskQueryResult result = await query.ApplyToGraphAsync(graph);
+            RDFAskQueryResult result = await query.ApplyToGraphAsync(new RDFAsyncGraph(graph));
 
             Assert.IsNotNull(result);
             Assert.IsFalse(result.AskResult);

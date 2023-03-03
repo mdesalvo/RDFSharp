@@ -72,10 +72,10 @@ namespace RDFSharp.Query
                              : new RDFAskQueryResult();
 
         /// <summary>
-        /// Asynchronously applies the query to the given graph
+        /// Applies the query to the given asynchronous graph
         /// </summary>
-        public Task<RDFAskQueryResult> ApplyToGraphAsync(RDFGraph graph)
-            => Task.Run(() => ApplyToGraph(graph));
+        public Task<RDFAskQueryResult> ApplyToGraphAsync(RDFAsyncGraph asyncGraph)
+            => Task.Run(() => ApplyToGraph(asyncGraph?.WrappedGraph));
 
         /// <summary>
         /// Applies the query to the given store

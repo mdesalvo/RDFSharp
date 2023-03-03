@@ -1483,7 +1483,7 @@ namespace RDFSharp.Test.Query
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
                 .AddModifier(new RDFDistinctModifier());
-            RDFDescribeQueryResult result = await query.ApplyToGraphAsync(graph);
+            RDFDescribeQueryResult result = await query.ApplyToGraphAsync(new RDFAsyncGraph(graph));
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.DescribeResults);
@@ -1517,7 +1517,7 @@ namespace RDFSharp.Test.Query
                 .AddDescribeTerm(new RDFVariable("?Q")) //This variable will not be evaluated, since it is not part of results table
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
-            RDFDescribeQueryResult result = await query.ApplyToGraphAsync(graph);
+            RDFDescribeQueryResult result = await query.ApplyToGraphAsync(new RDFAsyncGraph(graph));
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.DescribeResults);

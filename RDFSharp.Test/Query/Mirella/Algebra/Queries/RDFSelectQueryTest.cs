@@ -1073,7 +1073,7 @@ namespace RDFSharp.Test.Query
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
                 .AddProjectionVariable(new RDFVariable("?S"));
-            RDFSelectQueryResult result = await query.ApplyToGraphAsync(graph);
+            RDFSelectQueryResult result = await query.ApplyToGraphAsync(new RDFAsyncGraph(graph));
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.SelectResults);
@@ -1093,7 +1093,7 @@ namespace RDFSharp.Test.Query
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.DATATYPE)))
                 .AddProjectionVariable(new RDFVariable("?S"));
-            RDFSelectQueryResult result = await query.ApplyToGraphAsync(graph);
+            RDFSelectQueryResult result = await query.ApplyToGraphAsync(new RDFAsyncGraph(graph));
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.SelectResults);
