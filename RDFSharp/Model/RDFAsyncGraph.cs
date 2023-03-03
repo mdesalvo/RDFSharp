@@ -35,54 +35,58 @@ namespace RDFSharp.Model
         internal RDFGraph WrappedGraph { get; set; }
 
         /// <summary>
-        /// Uri of the asynchronous asyncGraph
+        /// Uri of the asynchronous graph
         /// </summary>
-        public Uri Context => WrappedGraph.Context;
+        public Uri Context 
+            => WrappedGraph.Context;
 
         /// <summary>
-        /// Count of the asynchronous asyncGraph's triples
+        /// Count of the asynchronous graph's triples
         /// </summary>
-        public long TriplesCount => WrappedGraph.TriplesCount;
+        public long TriplesCount 
+            => WrappedGraph.TriplesCount;
 
         /// <summary>
-        /// Gets the enumerator on the asynchronous asyncGraph's triples for iteration
+        /// Gets the enumerator on the asynchronous graph's triples for iteration
         /// </summary>
-        public IEnumerator<RDFTriple> TriplesEnumerator => WrappedGraph.TriplesEnumerator;
+        public IEnumerator<RDFTriple> TriplesEnumerator 
+            => WrappedGraph.TriplesEnumerator;
 
         /// <summary>
-        /// Flag indicating that the asynchronous asyncGraph has already been disposed
+        /// Flag indicating that the asynchronous graph has already been disposed
         /// </summary>
         internal bool Disposed { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Builds an empty asynchronous asyncGraph
+        /// Builds an empty asynchronous graph
         /// </summary>
         public RDFAsyncGraph()
             => WrappedGraph = new RDFGraph();
 
         /// <summary>
-        /// Builds an asynchronous asyncGraph with the given list of triples
+        /// Builds an asynchronous graph with the given list of triples
         /// </summary>
         public RDFAsyncGraph(List<RDFTriple> triples)
             => WrappedGraph = new RDFGraph(triples);
 
         /// <summary>
-        /// Builds an asynchronous asyncGraph wrapping the given asyncGraph
+        /// Builds an asynchronous graph wrapping the given graph
         /// </summary>
         public RDFAsyncGraph(RDFGraph graph)
             => WrappedGraph = graph ?? new RDFGraph();
 
         /// <summary>
-        /// Destroys the asynchronous asyncGraph instance
+        /// Destroys the asynchronous graph instance
         /// </summary>
-        ~RDFAsyncGraph() => Dispose(false);
+        ~RDFAsyncGraph() 
+            => Dispose(false);
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the asynchronous asyncGraph
+        /// Gives the string representation of the asynchronous graph
         /// </summary>
         public override string ToString() 
             => WrappedGraph.ToString();
@@ -94,19 +98,19 @@ namespace RDFSharp.Model
             => WrappedGraph.Equals(other?.WrappedGraph);
 
         /// <summary>
-        /// Exposes a typed enumerator on the asynchronousgraph's triples
+        /// Exposes a typed enumerator on the asynchronous graph's triples
         /// </summary>
         IEnumerator<RDFTriple> IEnumerable<RDFTriple>.GetEnumerator() 
             => TriplesEnumerator;
 
         /// <summary>
-        /// Exposes an untyped enumerator on the asynchronous asyncGraph's triples
+        /// Exposes an untyped enumerator on the asynchronous graph's triples
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() 
             => TriplesEnumerator;
 
         /// <summary>
-        /// Disposes the gasynchronousraph (IDisposable)
+        /// Disposes the asynchronous graph (IDisposable)
         /// </summary>
         public void Dispose()
         {
@@ -115,7 +119,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Disposes the asynchronous asyncGraph
+        /// Disposes the asynchronous graph
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
@@ -136,25 +140,25 @@ namespace RDFSharp.Model
 
         #region Add
         /// <summary>
-        /// Sets the context of the asynchronous asyncGraph to the given absolute Uri
+        /// Sets the context of the asynchronous graph to the given absolute Uri
         /// </summary>
         public Task<RDFAsyncGraph> SetContextAsync(Uri contextUri)
             => Task.Run(() => { WrappedGraph.SetContext(contextUri); return this; });
 
         /// <summary>
-        /// Adds the given triple to the asynchronous asyncGraph, avoiding duplicate insertions
+        /// Adds the given triple to the asynchronous graph, avoiding duplicate insertions
         /// </summary>
         public Task<RDFAsyncGraph> AddTripleAsync(RDFTriple triple)
             => Task.Run(() => { WrappedGraph.AddTriple(triple); return this; });
 
         /// <summary>
-        /// Adds the given container to the asynchronous asyncGraph
+        /// Adds the given container to the asynchronous graph
         /// </summary>
         public Task<RDFAsyncGraph> AddContainerAsync(RDFContainer container)
             => Task.Run(() => { WrappedGraph.AddContainer(container); return this; });
 
         /// <summary>
-        /// Adds the given collection to the asynchronous asyncGraph
+        /// Adds the given collection to the asynchronous graph
         /// </summary>
         public Task<RDFAsyncGraph> AddCollectionAsync(RDFCollection collection)
             => Task.Run(() => { WrappedGraph.AddCollection(collection); return this; });
@@ -162,73 +166,73 @@ namespace RDFSharp.Model
 
         #region Remove
         /// <summary>
-        /// Removes the given triple from the asynchronous asyncGraph
+        /// Removes the given triple from the asynchronous graph
         /// </summary>
         public Task<RDFAsyncGraph> RemoveTripleAsync(RDFTriple triple)
             => Task.Run(() => { WrappedGraph.RemoveTriple(triple); return this; });
 
         /// <summary>
-        /// Removes the triples with the given subject from the asynchronous asyncGraph
+        /// Removes the triples with the given subject from the asynchronous graph
         /// </summary>
         public Task<RDFAsyncGraph> RemoveTriplesBySubjectAsync(RDFResource subjectResource)
             => Task.Run(() => { WrappedGraph.RemoveTriplesBySubject(subjectResource); return this; });
 
         /// <summary>
-        /// Removes the triples with the given predicate from the asynchronous asyncGraph
+        /// Removes the triples with the given predicate from the asynchronous graph
         /// </summary>
         public Task<RDFAsyncGraph> RemoveTriplesByPredicateAsync(RDFResource predicateResource)
             => Task.Run(() => { WrappedGraph.RemoveTriplesByPredicate(predicateResource); return this; });
 
         /// <summary>
-        /// Removes the triples with the given object from the asynchronous asyncGraph
+        /// Removes the triples with the given object from the asynchronous graph
         /// </summary>
         public Task<RDFAsyncGraph> RemoveTriplesByObjectAsync(RDFResource objectResource)
             => Task.Run(() => { WrappedGraph.RemoveTriplesByObject(objectResource); return this; });
 
         /// <summary>
-        /// Removes the triples with the given literal from the asynchronous asyncGraph
+        /// Removes the triples with the given literal from the asynchronous graph
         /// </summary>
         public Task<RDFAsyncGraph> RemoveTriplesByLiteralAsync(RDFLiteral objectLiteral)
             => Task.Run(() => { WrappedGraph.RemoveTriplesByLiteral(objectLiteral); return this; });
 
         /// <summary>
-        /// Removes the triples with the given subject and predicate from the asynchronous asyncGraph
+        /// Removes the triples with the given subject and predicate from the asynchronous graph
         /// </summary>
         public Task<RDFAsyncGraph> RemoveTriplesBySubjectPredicateAsync(RDFResource subjectResource, RDFResource predicateResource)
             => Task.Run(() => { WrappedGraph.RemoveTriplesBySubjectPredicate(subjectResource, predicateResource); return this; });
 
         /// <summary>
-        /// Removes the triples with the given subject and object from the asynchronous asyncGraph
+        /// Removes the triples with the given subject and object from the asynchronous graph
         /// </summary>
         public Task<RDFAsyncGraph> RemoveTriplesBySubjectObjectAsync(RDFResource subjectResource, RDFResource objectResource)
             => Task.Run(() => { WrappedGraph.RemoveTriplesBySubjectObject(subjectResource, objectResource); return this; });
 
         /// <summary>
-        /// Removes the triples with the given subject and literal from the asynchronous asyncGraph
+        /// Removes the triples with the given subject and literal from the asynchronous graph
         /// </summary>
         public Task<RDFAsyncGraph> RemoveTriplesBySubjectLiteralAsync(RDFResource subjectResource, RDFLiteral objectLiteral)
             => Task.Run(() => { WrappedGraph.RemoveTriplesBySubjectLiteral(subjectResource, objectLiteral); return this; });
 
         /// <summary>
-        /// Removes the triples with the given predicate and object from the asynchronous asyncGraph
+        /// Removes the triples with the given predicate and object from the asynchronous graph
         /// </summary>
         public Task<RDFAsyncGraph> RemoveTriplesByPredicateObjectAsync(RDFResource predicateResource, RDFResource objectResource)
             => Task.Run(() => { WrappedGraph.RemoveTriplesByPredicateObject(predicateResource, objectResource); return this; });
 
         /// <summary>
-        /// Removes the triples with the given predicate and literal from the asynchronous asyncGraph
+        /// Removes the triples with the given predicate and literal from the asynchronous graph
         /// </summary>
         public Task<RDFAsyncGraph> RemoveTriplesByPredicateLiteralAsync(RDFResource predicateResource, RDFLiteral objectLiteral)
             => Task.Run(() => { WrappedGraph.RemoveTriplesByPredicateLiteral(predicateResource, objectLiteral); return this; });
 
         /// <summary>
-        /// Clears the triples and metadata of the asynchronous asyncGraph
+        /// Clears the triples and metadata of the asynchronous graph
         /// </summary>
         public Task ClearTriplesAsync()
             => Task.Run(() => WrappedGraph.ClearTriples());
 
         /// <summary>
-        /// Turns back the reified triples of the asynchronous asyncGraph into their compact representation
+        /// Turns back the reified triples of the asynchronous graph into their compact representation
         /// </summary>
         public Task UnreifyTriplesAsync()
             => Task.Run(() => WrappedGraph.UnreifyTriples());
@@ -236,7 +240,7 @@ namespace RDFSharp.Model
 
         #region Select
         /// <summary>
-        /// Checks if the asynchronous asyncGraph contains the given triple
+        /// Checks if the asynchronous graph contains the given triple
         /// </summary>
         public Task<bool> ContainsTripleAsync(RDFTriple triple)
             => Task.Run(() => WrappedGraph.ContainsTriple(triple));

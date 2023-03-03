@@ -38,7 +38,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the graph's triples
         /// </summary>
-        public long TriplesCount => IndexedTriples.Count;
+        public long TriplesCount 
+            => IndexedTriples.Count;
 
         /// <summary>
         /// Gets the enumerator on the graph's triples for iteration
@@ -92,14 +93,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Destroys the graph instance
         /// </summary>
-        ~RDFGraph() => Dispose(false);
+        ~RDFGraph() 
+            => Dispose(false);
         #endregion
 
         #region Interfaces
         /// <summary>
         /// Gives the string representation of the graph
         /// </summary>
-        public override string ToString() => Context.ToString();
+        public override string ToString() 
+            => Context.ToString();
 
         /// <summary>
         /// Performs the equality comparison between two graphs
@@ -120,12 +123,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the graph's triples
         /// </summary>
-        IEnumerator<RDFTriple> IEnumerable<RDFTriple>.GetEnumerator() => TriplesEnumerator;
+        IEnumerator<RDFTriple> IEnumerable<RDFTriple>.GetEnumerator() 
+            => TriplesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the graph's triples
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() => TriplesEnumerator;
+        IEnumerator IEnumerable.GetEnumerator() 
+            => TriplesEnumerator;
 
         /// <summary>
         /// Disposes the graph (IDisposable)
