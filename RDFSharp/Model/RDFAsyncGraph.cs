@@ -270,12 +270,7 @@ namespace RDFSharp.Model
         /// (null values are threated as * selectors. Ensure to keep object and literal mutually exclusive!)
         /// </summary>
         public Task<RDFAsyncGraph> this[RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
-            => Task.Run(() => 
-               {
-                   if (obj != null && lit != null)
-                       throw new RDFModelException("Cannot access an asynchronous graph when both object and literals are given: they have to be mutually exclusive!");
-                   return new RDFAsyncGraph(RDFModelUtilities.SelectTriples(WrappedGraph, subj, pred, obj, lit));
-               });
+            => Task.Run(() => new RDFAsyncGraph(WrappedGraph[subj, pred, obj, lit]));
         #endregion
 
         #region Set
