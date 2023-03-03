@@ -195,6 +195,9 @@ namespace RDFSharp.Test.Model
         [DataRow("31", RDFModelEnums.RDFDatatypes.XSD_GDAY)]
         [DataRow("31Z", RDFModelEnums.RDFDatatypes.XSD_GDAY)]
         [DataRow("31+00:00", RDFModelEnums.RDFDatatypes.XSD_GDAY)]
+        [DataRow("---01", RDFModelEnums.RDFDatatypes.TIME_GENERALDAY)]
+        [DataRow("--03", RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH)]
+        [DataRow("5761", RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR)]
         public void ShouldCreateTypedLiteralOfDatetimeCategory(string value, RDFModelEnums.RDFDatatypes datatype)
         {
             RDFTypedLiteral tl = new RDFTypedLiteral(value, datatype);
@@ -481,6 +484,9 @@ namespace RDFSharp.Test.Model
         [DataRow("32+00:00", RDFModelEnums.RDFDatatypes.XSD_GDAY)]
         [DataRow("31+26:00", RDFModelEnums.RDFDatatypes.XSD_GDAY)]
         [DataRow("31+00:76", RDFModelEnums.RDFDatatypes.XSD_GDAY)]
+        [DataRow("+1", RDFModelEnums.RDFDatatypes.TIME_GENERALDAY)]
+        [DataRow("+3", RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH)]
+        [DataRow("+61", RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR)]
         public void ShouldNotCreateTypedLiteralOfDatetimeCategory(string value, RDFModelEnums.RDFDatatypes datatype)
             => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
 

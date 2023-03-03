@@ -247,7 +247,19 @@ namespace RDFSharp.Model
             /// <summary>
             /// http://www.opengis.net/ont/geosparql#gmlLiteral
             /// </summary>
-            GEOSPARQL_GML = 45
+            GEOSPARQL_GML = 45,
+            /// <summary>
+            /// http://www.w3.org/2006/time#generalDay
+            /// </summary>
+            TIME_GENERALDAY = 46,
+            /// <summary>
+            /// http://www.w3.org/2006/time#generalMonth
+            /// </summary>
+            TIME_GENERALMONTH = 47,
+            /// <summary>
+            /// http://www.w3.org/2006/time#generalYear
+            /// </summary>
+            TIME_GENERALYEAR = 48
         };
 
         /// <summary>

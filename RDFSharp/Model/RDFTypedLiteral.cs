@@ -85,6 +85,9 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_GYEAR:
                 case RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH:
                 case RDFModelEnums.RDFDatatypes.XSD_TIME:
+                case RDFModelEnums.RDFDatatypes.TIME_GENERALDAY:
+                case RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH:
+                case RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR:
                     return true;
                 default: return false;
             }

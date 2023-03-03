@@ -85,8 +85,6 @@ namespace RDFSharp.Model
             { RDFVocabulary.RDF.JSON.ToString(), RDFModelEnums.RDFDatatypes.RDF_JSON },
             { RDFVocabulary.RDF.XML_LITERAL.ToString(), RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL },
             { RDFVocabulary.RDFS.LITERAL.ToString(), RDFModelEnums.RDFDatatypes.RDFS_LITERAL },
-            { RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString(), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT },
-            { RDFVocabulary.GEOSPARQL.GML_LITERAL.ToString(), RDFModelEnums.RDFDatatypes.GEOSPARQL_GML },
             { RDFVocabulary.XSD.ANY_URI.ToString(), RDFModelEnums.RDFDatatypes.XSD_ANYURI },
             { RDFVocabulary.XSD.BASE64_BINARY.ToString(), RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY },
             { RDFVocabulary.XSD.BOOLEAN.ToString(), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN },
@@ -126,7 +124,12 @@ namespace RDFSharp.Model
             { RDFVocabulary.XSD.UNSIGNED_BYTE.ToString(), RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE },
             { RDFVocabulary.XSD.UNSIGNED_INT.ToString(), RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT },
             { RDFVocabulary.XSD.UNSIGNED_LONG.ToString(), RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG },
-            { RDFVocabulary.XSD.UNSIGNED_SHORT.ToString(), RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT }
+            { RDFVocabulary.XSD.UNSIGNED_SHORT.ToString(), RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT },
+            { RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString(), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT },
+            { RDFVocabulary.GEOSPARQL.GML_LITERAL.ToString(), RDFModelEnums.RDFDatatypes.GEOSPARQL_GML },
+            { RDFVocabulary.TIME.GENERAL_DAY.ToString(), RDFModelEnums.RDFDatatypes.TIME_GENERALDAY },
+            { RDFVocabulary.TIME.GENERAL_MONTH.ToString(), RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH },
+            { RDFVocabulary.TIME.GENERAL_YEAR.ToString(), RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR }
         };
 
         /// <summary>
@@ -484,10 +487,6 @@ namespace RDFSharp.Model
                     return RDFVocabulary.RDF.HTML.ToString();
                 case RDFModelEnums.RDFDatatypes.RDF_JSON:
                     return RDFVocabulary.RDF.JSON.ToString();
-                case RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT:
-                    return RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString();
-                case RDFModelEnums.RDFDatatypes.GEOSPARQL_GML:
-                    return RDFVocabulary.GEOSPARQL.GML_LITERAL.ToString();
                 case RDFModelEnums.RDFDatatypes.XSD_STRING:
                     return RDFVocabulary.XSD.STRING.ToString();
                 case RDFModelEnums.RDFDatatypes.XSD_ANYURI:
@@ -568,6 +567,16 @@ namespace RDFSharp.Model
                     return RDFVocabulary.XSD.UNSIGNED_SHORT.ToString();
                 case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE:
                     return RDFVocabulary.XSD.UNSIGNED_BYTE.ToString();
+                case RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT:
+                    return RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString();
+                case RDFModelEnums.RDFDatatypes.GEOSPARQL_GML:
+                    return RDFVocabulary.GEOSPARQL.GML_LITERAL.ToString();
+                case RDFModelEnums.RDFDatatypes.TIME_GENERALDAY:
+                    return RDFVocabulary.TIME.GENERAL_DAY.ToString();
+                case RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH:
+                    return RDFVocabulary.TIME.GENERAL_MONTH.ToString();
+                case RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR:
+                    return RDFVocabulary.TIME.GENERAL_YEAR.ToString();
 
                 //Fallback to rdfs:Literal
                 case RDFModelEnums.RDFDatatypes.RDFS_LITERAL:
@@ -807,6 +816,15 @@ namespace RDFSharp.Model
                     return    TryParseDateTime(typedLiteral.Value, "dd", "ddZ")
                            || TryParseDateTime(typedLiteral.Value, "ddZ", "ddZ")
                            || TryParseDateTime(typedLiteral.Value, "ddzzz", "ddZ");
+
+                case RDFModelEnums.RDFDatatypes.TIME_GENERALDAY:
+                    return Regex.IsMatch(typedLiteral.Value, "---(0[1-9]|[1-9][0-9])(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
+
+                case RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH:
+                    return Regex.IsMatch(typedLiteral.Value, "--(0[1-9]|1[0-9]|20)(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
+
+                case RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR:
+                    return Regex.IsMatch(typedLiteral.Value, "-?([1-9][0-9]{3,}|0[0-9]{3})(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
                 #endregion
 
                 #region TIMESPAN CATEGORY
