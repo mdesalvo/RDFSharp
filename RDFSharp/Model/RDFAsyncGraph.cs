@@ -245,25 +245,25 @@ namespace RDFSharp.Model
         /// Gets the subgraph containing triples with the specified subject
         /// </summary>
         public Task<RDFAsyncGraph> SelectTriplesBySubjectAsync(RDFResource subjectResource)
-            => Task.Run(() => { WrappedGraph.SelectTriplesBySubject(subjectResource); return this; });
+            => Task.Run(() => new RDFAsyncGraph(WrappedGraph.SelectTriplesBySubject(subjectResource)));
 
         /// <summary>
         /// Gets the subgraph containing triples with the specified predicate
         /// </summary>
         public Task<RDFAsyncGraph> SelectTriplesByPredicateAsync(RDFResource predicateResource)
-            => Task.Run(() => { WrappedGraph.SelectTriplesByPredicate(predicateResource); return this; });
+            => Task.Run(() => new RDFAsyncGraph(WrappedGraph.SelectTriplesByPredicate(predicateResource)));
 
         /// <summary>
         /// Gets the subgraph containing triples with the specified object
         /// </summary>
         public Task<RDFAsyncGraph> SelectTriplesByObjectAsync(RDFResource objectResource)
-            => Task.Run(() => { WrappedGraph.SelectTriplesByObject(objectResource); return this; });
+            => Task.Run(() => new RDFAsyncGraph(WrappedGraph.SelectTriplesByObject(objectResource)));
 
         /// <summary>
         /// Gets the subgraph containing triples with the specified literal
         /// </summary>
         public Task<RDFAsyncGraph> SelectTriplesByLiteralAsync(RDFLiteral objectLiteral)
-            => Task.Run(() => { WrappedGraph.SelectTriplesByLiteral(objectLiteral); return this; });
+            => Task.Run(() => new RDFAsyncGraph(WrappedGraph.SelectTriplesByLiteral(objectLiteral)));
 
         /// <summary>
         /// Gets the subgraph containing triples with the specified combination of SPOL accessors<br/>
