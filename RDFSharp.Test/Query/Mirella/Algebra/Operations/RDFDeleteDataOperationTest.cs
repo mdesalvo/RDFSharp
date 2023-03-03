@@ -170,7 +170,7 @@ DELETE DATA {
             operation.AddDeleteTemplate(new RDFPattern(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
             operation.AddDeleteTemplate(new RDFPattern(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
             operation.AddDeleteTemplate(new RDFPattern(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS)); //Duplicate triple...
-            RDFOperationResult result = await operation.ApplyToGraphAsync(graph);
+            RDFOperationResult result = await operation.ApplyToGraphAsync(new RDFAsyncGraph(graph));
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.DeleteResults);

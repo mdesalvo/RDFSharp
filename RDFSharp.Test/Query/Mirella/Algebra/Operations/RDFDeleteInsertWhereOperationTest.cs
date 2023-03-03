@@ -384,7 +384,7 @@ WHERE {
             operation.AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"),new RDFResource("ex:dogOf"),new RDFVariable("?X")))
                 .AddPattern(new RDFPattern(new RDFVariable("?X"),new RDFResource("ex:hasName"),new RDFVariable("?N")).Optional()));
-            RDFOperationResult result = await operation.ApplyToGraphAsync(graph);
+            RDFOperationResult result = await operation.ApplyToGraphAsync(new RDFAsyncGraph(graph));
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.InsertResults);

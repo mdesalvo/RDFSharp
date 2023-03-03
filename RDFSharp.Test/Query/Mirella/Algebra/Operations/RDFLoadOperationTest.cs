@@ -174,7 +174,7 @@ namespace RDFSharp.Test.Query
 
             RDFGraph graph = new RDFGraph();
             RDFLoadOperation operation = new RDFLoadOperation(new Uri(server.Url + "/RDFLoadOperationTest/ShouldApplyToGraphAsync"));
-            RDFOperationResult result = await operation.ApplyToGraphAsync(graph);
+            RDFOperationResult result = await operation.ApplyToGraphAsync(new RDFAsyncGraph(graph));
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.InsertResults);
