@@ -16,6 +16,7 @@
 
 using RDFSharp.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Test.Model
 {
@@ -144,6 +145,24 @@ namespace RDFSharp.Test.Model
         }
 
         [DataTestMethod]
+        [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]
+        public async Task ShouldReifySPOTripleAsync(string s, string p, string o)
+        {
+            RDFResource subj = new RDFResource(s);
+            RDFResource pred = new RDFResource(p);
+            RDFResource obj = new RDFResource(o);
+
+            RDFTriple triple = new RDFTriple(subj, pred, obj);
+            RDFAsyncGraph asyncGraph = await triple.ReifyTripleAsync();
+            Assert.IsNotNull(asyncGraph);
+            Assert.IsTrue(asyncGraph.TriplesCount == 4);
+            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT)));
+            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)triple.Subject)));
+            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate)));
+            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)triple.Object)));
+        }
+
+        [DataTestMethod]
         [DataRow("http://example.org/subj", "http://example.org/pred", "test")]
         public void ShouldReifySPLTriple(string s, string p, string l)
         {
@@ -159,6 +178,24 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)triple.Subject)));
             Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate)));
             Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)triple.Object)));
+        }
+
+        [DataTestMethod]
+        [DataRow("http://example.org/subj", "http://example.org/pred", "test")]
+        public async Task ShouldReifySPLTripleAsync(string s, string p, string l)
+        {
+            RDFResource subj = new RDFResource(s);
+            RDFResource pred = new RDFResource(p);
+            RDFPlainLiteral lit = new RDFPlainLiteral(l);
+
+            RDFTriple triple = new RDFTriple(subj, pred, lit);
+            RDFAsyncGraph asyncGraph = await triple.ReifyTripleAsync();
+            Assert.IsNotNull(asyncGraph);
+            Assert.IsTrue(asyncGraph.TriplesCount == 4);
+            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT)));
+            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)triple.Subject)));
+            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate)));
+            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)triple.Object)));
         }
         #endregion
     }

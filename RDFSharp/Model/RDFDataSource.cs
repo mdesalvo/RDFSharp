@@ -31,6 +31,11 @@ namespace RDFSharp.Model
         internal bool IsGraph() => this is RDFGraph;
 
         /// <summary>
+        /// Checks if this data source is an asynchronous graph
+        /// </summary>
+        internal bool IsAsyncGraph() => this is RDFAsyncGraph;
+
+        /// <summary>
         /// Checks if this data source is a store
         /// </summary>
         internal bool IsStore() => this is RDFStore;

@@ -30,6 +30,10 @@ namespace RDFSharp.Test.Model
             => Assert.IsTrue(new RDFGraph().IsGraph());
 
         [TestMethod]
+        public void ShouldCreateDataSourceOfTypeAsyncGraph()
+            => Assert.IsTrue(new RDFAsyncGraph().IsAsyncGraph());
+
+        [TestMethod]
         public void ShouldCreateDataSourceOfTypeStore()
             => Assert.IsTrue(new RDFMemoryStore().IsStore());
 
