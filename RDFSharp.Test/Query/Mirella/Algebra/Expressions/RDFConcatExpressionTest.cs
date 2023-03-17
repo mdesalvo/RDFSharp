@@ -218,7 +218,7 @@ namespace RDFSharp.Test.Query
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("13", RDFModelEnums.RDFDatatypes.XSD_GDAY);
+            row["?A"] = new RDFTypedLiteral("---13", RDFModelEnums.RDFDatatypes.XSD_GDAY);
             row["?B"] = new RDFPlainLiteral("B");
             table.Rows.Add(row);
             table.AcceptChanges();
@@ -229,7 +229,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("13ZB")));
+            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("---13ZB")));
         }
 
         [TestMethod]

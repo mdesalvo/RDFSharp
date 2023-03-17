@@ -67,14 +67,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldCreateConstantExpressionWithNotNumericTypedLiteral()
         {
-            RDFConstantExpression expression = new RDFConstantExpression(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_GDAY));
+            RDFConstantExpression expression = new RDFConstantExpression(new RDFTypedLiteral("---25", RDFModelEnums.RDFDatatypes.XSD_GDAY));
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals($"\"25Z\"^^<{RDFVocabulary.XSD.G_DAY}>"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals($"\"25Z\"^^<{RDFVocabulary.XSD.G_DAY}>"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals($"\"25Z\"^^xsd:gDay"));
+            Assert.IsTrue(expression.ToString().Equals($"\"---25Z\"^^<{RDFVocabulary.XSD.G_DAY}>"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals($"\"---25Z\"^^<{RDFVocabulary.XSD.G_DAY}>"));
+            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals($"\"---25Z\"^^xsd:gDay"));
         }
 
         [TestMethod]

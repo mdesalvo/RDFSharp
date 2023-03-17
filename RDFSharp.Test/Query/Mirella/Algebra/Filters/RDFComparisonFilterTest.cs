@@ -243,7 +243,7 @@ namespace RDFSharp.Test.Query
             table.Columns.Add("?B", typeof(string));
             DataRow row = table.NewRow();
             row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-            row["?B"] = new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_GDAY).ToString();
+            row["?B"] = new RDFTypedLiteral("---30", RDFModelEnums.RDFDatatypes.XSD_GDAY).ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 

@@ -808,14 +808,14 @@ namespace RDFSharp.Model
                            || TryParseDateTime(typedLiteral.Value, "yyyyzzz", "yyyyZ");
 
                 case RDFModelEnums.RDFDatatypes.XSD_GMONTH:
-                    return    TryParseDateTime(typedLiteral.Value, "MM", "MMZ")
-                           || TryParseDateTime(typedLiteral.Value, "MMZ", "MMZ")
-                           || TryParseDateTime(typedLiteral.Value, "MMzzz", "MMZ");
+                    return    TryParseDateTime(typedLiteral.Value, "--MM", "--MMZ")
+                           || TryParseDateTime(typedLiteral.Value, "--MMZ", "--MMZ")
+                           || TryParseDateTime(typedLiteral.Value, "--MMzzz", "--MMZ");
 
                 case RDFModelEnums.RDFDatatypes.XSD_GDAY:
-                    return    TryParseDateTime(typedLiteral.Value, "dd", "ddZ")
-                           || TryParseDateTime(typedLiteral.Value, "ddZ", "ddZ")
-                           || TryParseDateTime(typedLiteral.Value, "ddzzz", "ddZ");
+                    return    TryParseDateTime(typedLiteral.Value, "---dd", "---ddZ")
+                           || TryParseDateTime(typedLiteral.Value, "---ddZ", "---ddZ")
+                           || TryParseDateTime(typedLiteral.Value, "---ddzzz", "---ddZ");
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALDAY:
                     return Regex.IsMatch(typedLiteral.Value, "---(0[1-9]|[1-9][0-9])(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");

@@ -90,7 +90,7 @@ namespace RDFSharp.Test.Query
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_GDAY).ToString();
+            row["?A"] = new RDFTypedLiteral("---25", RDFModelEnums.RDFDatatypes.XSD_GDAY).ToString();
             row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
             table.Rows.Add(row);
             table.AcceptChanges();

@@ -30,15 +30,15 @@ namespace RDFSharp.Test.Query
         public void ShouldCreateInFilter()
         {
             RDFInFilter filter = new RDFInFilter(new RDFVariable("?VAR"), new List<RDFPatternMember>() { RDFVocabulary.RDF.ALT, RDFVocabulary.RDF.BAG,
-                                        null, new RDFPlainLiteral("hello", "en-US"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_GDAY) });
+                                        null, new RDFPlainLiteral("hello", "en-US"), new RDFTypedLiteral("---25", RDFModelEnums.RDFDatatypes.XSD_GDAY) });
 
             Assert.IsNotNull(filter);
             Assert.IsNotNull(filter.TermToSearch);
             Assert.IsTrue(filter.TermToSearch.Equals(new RDFVariable("?VAR")));
             Assert.IsNotNull(filter.InTerms);
             Assert.IsTrue(filter.InTerms.Count == 4);
-            Assert.IsTrue(filter.ToString().Equals($"FILTER ( ?VAR IN (<{RDFVocabulary.RDF.ALT}>, <{RDFVocabulary.RDF.BAG}>, \"hello\"@EN-US, \"25Z\"^^<{RDFVocabulary.XSD.G_DAY}>) )"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals($"FILTER ( ?VAR IN (rdf:Alt, rdf:Bag, \"hello\"@EN-US, \"25Z\"^^<{RDFVocabulary.XSD.G_DAY}>) )"));
+            Assert.IsTrue(filter.ToString().Equals($"FILTER ( ?VAR IN (<{RDFVocabulary.RDF.ALT}>, <{RDFVocabulary.RDF.BAG}>, \"hello\"@EN-US, \"---25Z\"^^<{RDFVocabulary.XSD.G_DAY}>) )"));
+            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals($"FILTER ( ?VAR IN (rdf:Alt, rdf:Bag, \"hello\"@EN-US, \"---25Z\"^^<{RDFVocabulary.XSD.G_DAY}>) )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 
