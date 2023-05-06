@@ -524,22 +524,39 @@ namespace RDFSharp.Model
             /// </summary>
             public static readonly RDFResource UNIT_YEAR = new RDFResource(string.Concat(TIME.BASE_URI, "unitYear"));
 
+            // UNIT Extensions
+
+            /// <summary>
+            /// https://en.wikipedia.org/wiki/Mars_sol
+            /// </summary>
+            public static readonly RDFResource UNIT_MARS_SOL = new RDFResource("https://en.wikipedia.org/wiki/Mars_sol");
+
+            /// <summary>
+            /// https://simple.wikipedia.org/wiki/Bya_(unit)
+            /// </summary>
+            public static readonly RDFResource UNIT_BYA = new RDFResource("https://simple.wikipedia.org/wiki/Bya_(unit)");
+
+            /// <summary>
+            /// https://simple.wikipedia.org/wiki/Mya_(unit)
+            /// </summary>
+            public static readonly RDFResource UNIT_MYA = new RDFResource("https://simple.wikipedia.org/wiki/Mya_(unit)");
+
             // TRS Extensions
 
             /// <summary>
             /// http://www.opengis.net/def/uom/ISO-8601/0/Gregorian
             /// </summary>
-            public static readonly RDFResource GregorianTRS = new RDFResource("http://www.opengis.net/def/uom/ISO-8601/0/Gregorian");
+            public static readonly RDFResource TRS_GREGORIAN = new RDFResource("http://www.opengis.net/def/uom/ISO-8601/0/Gregorian");
 
             /// <summary>
             /// http://dbpedia.org/resource/Unix_time
             /// </summary>
-            public static readonly RDFResource UnixTRS = new RDFResource("http://dbpedia.org/resource/Unix_time");
+            public static readonly RDFResource TRS_UNIX = new RDFResource("http://dbpedia.org/resource/Unix_time");
 
             /// <summary>
             /// http://www.opengis.net/def/crs/OGC/0/ChronometricGeologicTime
             /// </summary>
-            public static readonly RDFResource GeologicTRS = new RDFResource("http://www.opengis.net/def/crs/OGC/0/ChronometricGeologicTime");
+            public static readonly RDFResource TRS_GEOLOGIC = new RDFResource("http://www.opengis.net/def/crs/OGC/0/ChronometricGeologicTime");
             #endregion
 
             #region Extended Properties
