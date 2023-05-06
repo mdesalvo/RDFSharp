@@ -13,7 +13,7 @@ RDFSharp has a modular API made up of 3 layers:
 <ul>
     <li>Create and manage <b>RDF stores</b> for context-aware modeling of RDF data (contexts, quadruples, ...)</li>
     <li>Exchange them using standard <b>RDF formats</b> (N-Quads, TriX, TriG)</li>
-    <li>Pick an <a href="https://github.com/mdesalvo/RDFSharp.Extensions">extension</a> to store RDF data on many supported providers</li>
+    <li>Pick a store <a href="https://github.com/mdesalvo/RDFSharp.Extensions">extension</a> to save RDF data on many supported providers</li>
 </ul>
 
 <b><a href="https://github.com/mdesalvo/RDFSharp/releases/download/v3.4.0/RDFSharp.Query-3.4.0.pdf">RDFSharp.Query</a></b>
@@ -23,4 +23,4 @@ RDFSharp has a modular API made up of 3 layers:
 </ul>
 
 <hr/>
-An additional <a href="https://github.com/mdesalvo/RDFSharp.Semantics">layer</a> is also available for working in a powerful and expressive way with <b>OWL-DL ontologies</b>
+An additional <a href="https://github.com/mdesalvo/RDFSharp.Semantics">layer</a> is also available for working in a powerful and expressive way with <b>OWL-DL ontologies</b>, along with its own set of <a href="https://github.com/mdesalvo/RDFSharp.Semantics.Extensions">extensions</a>. All of these make RDFSharp an amazing <b>conceptual</b>, <b>geospatial</b> and <b>temporal</b> modeling platform suited for successfully realizing every kind of idea.
