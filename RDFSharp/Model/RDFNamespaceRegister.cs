@@ -100,7 +100,8 @@ namespace RDFSharp.Model
                     new RDFNamespace(RDFVocabulary.DOAP.PREFIX, RDFVocabulary.DOAP.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.DOAP.DEREFERENCE_URI)),
                     new RDFNamespace(RDFVocabulary.VS.PREFIX, RDFVocabulary.VS.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.VS.DEREFERENCE_URI)),
                     new RDFNamespace(RDFVocabulary.TIME.PREFIX, RDFVocabulary.TIME.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.TIME.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.TIME.GREG.PREFIX, RDFVocabulary.TIME.GREG.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.TIME.GREG.DEREFERENCE_URI))
+                    new RDFNamespace(RDFVocabulary.TIME.GREG.PREFIX, RDFVocabulary.TIME.GREG.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.TIME.GREG.DEREFERENCE_URI)),
+                    new RDFNamespace(RDFVocabulary.TIME.THORS.PREFIX, RDFVocabulary.TIME.THORS.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.TIME.THORS.DEREFERENCE_URI))
                 }
             };
 

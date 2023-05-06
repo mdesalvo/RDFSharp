@@ -1,4 +1,5 @@
-﻿/*
+﻿
+/*
    Copyright 2012-2023 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +24,7 @@ namespace RDFSharp.Model
     {
         #region TIME
         /// <summary>
-        /// TIME represents the W3C Time vocabulary.
+        /// TIME represents the OWL-Time vocabulary
         /// </summary>
         public static class TIME
         {
@@ -522,6 +523,23 @@ namespace RDFSharp.Model
             /// time:unitYear
             /// </summary>
             public static readonly RDFResource UNIT_YEAR = new RDFResource(string.Concat(TIME.BASE_URI, "unitYear"));
+
+            // TRS Extensions
+
+            /// <summary>
+            /// http://www.opengis.net/def/uom/ISO-8601/0/Gregorian
+            /// </summary>
+            public static readonly RDFResource GregorianTRS = new RDFResource("http://www.opengis.net/def/uom/ISO-8601/0/Gregorian");
+
+            /// <summary>
+            /// http://dbpedia.org/resource/Unix_time
+            /// </summary>
+            public static readonly RDFResource UnixTRS = new RDFResource("http://dbpedia.org/resource/Unix_time");
+
+            /// <summary>
+            /// http://www.opengis.net/def/crs/OGC/0/ChronometricGeologicTime
+            /// </summary>
+            public static readonly RDFResource GeologicTRS = new RDFResource("http://www.opengis.net/def/crs/OGC/0/ChronometricGeologicTime");
             #endregion
 
             #region Extended Properties
@@ -604,6 +622,87 @@ namespace RDFSharp.Model
                 /// greg:December
                 /// </summary>
                 public static readonly RDFResource DECEMBER = new RDFResource(string.Concat(GREG.BASE_URI, "December"));
+            }
+
+            /// <summary>
+            /// THORS represents the TIME extension for modeling temporal hierarchical ordinal reference systems
+            /// </summary>
+            public static class THORS
+            {
+                /// <summary>
+                /// thors
+                /// </summary>
+                public static readonly string PREFIX = "thors";
+
+                /// <summary>
+                /// http://resource.geosciml.org/ontology/timescale/thors#
+                /// </summary>
+                public static readonly string BASE_URI = "http://resource.geosciml.org/ontology/timescale/thors#";
+
+                /// <summary>
+                /// http://resource.geosciml.org/ontology/timescale/thors
+                /// </summary>
+                public static readonly string DEREFERENCE_URI = "http://resource.geosciml.org/ontology/timescale/thors#";
+
+                /// <summary>
+                /// thors:Era
+                /// </summary>
+                public static readonly RDFResource ERA = new RDFResource(string.Concat(THORS.BASE_URI, "Era"));
+
+                /// <summary>
+                /// thors:EraBoundary
+                /// </summary>
+                public static readonly RDFResource ERA_BOUNDARY = new RDFResource(string.Concat(THORS.BASE_URI, "EraBoundary"));
+
+                /// <summary>
+                /// thors:ReferenceSystem
+                /// </summary>
+                public static readonly RDFResource REFERENCE_SYSTEM = new RDFResource(string.Concat(THORS.BASE_URI, "ReferenceSystem"));
+
+                /// <summary>
+                /// thors:begin
+                /// </summary>
+                public static readonly RDFResource BEGIN = new RDFResource(string.Concat(THORS.BASE_URI, "begin"));
+
+                /// <summary>
+                /// thors:component
+                /// </summary>
+                public static readonly RDFResource COMPONENT = new RDFResource(string.Concat(THORS.BASE_URI, "component"));
+
+                /// <summary>
+                /// thors:end
+                /// </summary>
+                public static readonly RDFResource END = new RDFResource(string.Concat(THORS.BASE_URI, "end"));
+
+                /// <summary>
+                /// thors:member
+                /// </summary>
+                public static readonly RDFResource MEMBER = new RDFResource(string.Concat(THORS.BASE_URI, "member"));
+
+                /// <summary>
+                /// thors:nextEra
+                /// </summary>
+                public static readonly RDFResource NEXT_ERA = new RDFResource(string.Concat(THORS.BASE_URI, "nextEra"));
+
+                /// <summary>
+                /// thors:previousEra
+                /// </summary>
+                public static readonly RDFResource PREVIOUS_ERA = new RDFResource(string.Concat(THORS.BASE_URI, "previousEra"));
+
+                /// <summary>
+                /// thors:referencePoint
+                /// </summary>
+                public static readonly RDFResource REFERENCE_POINT = new RDFResource(string.Concat(THORS.BASE_URI, "referencePoint"));
+
+                /// <summary>
+                /// thors:system
+                /// </summary>
+                public static readonly RDFResource SYSTEM = new RDFResource(string.Concat(THORS.BASE_URI, "system"));
+
+                /// <summary>
+                /// thors:positionalUncertainty
+                /// </summary>
+                public static readonly RDFResource POSITIONAL_UNCERTAINTY = new RDFResource(string.Concat(THORS.BASE_URI, "positionalUncertainty"));
             }
             #endregion
         }
