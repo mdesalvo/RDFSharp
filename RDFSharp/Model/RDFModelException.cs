@@ -15,12 +15,11 @@
 */
 
 using System;
-using System.Runtime.Serialization;
 
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFModelException represents an exception thrown during manipulation of RDF data models.
+    /// RDFModelException represents an exception thrown during manipulation of RDF models
     /// </summary>
     [Serializable]
     public class RDFModelException : Exception
@@ -40,11 +39,6 @@ namespace RDFSharp.Model
         /// Basic ctor to throw an RDFModelException with message and inner exception
         /// </summary>
         public RDFModelException(string message, Exception innerException) : base(message, innerException) { }
-
-        /// <summary>
-        /// Basic ctor to support serialization of a remotely thrown RDFModelException
-        /// </summary>
-        protected RDFModelException(SerializationInfo info, StreamingContext context) : base(info, context) { }
         #endregion
     }
 }

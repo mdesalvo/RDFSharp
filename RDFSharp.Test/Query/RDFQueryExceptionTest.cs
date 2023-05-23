@@ -17,8 +17,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Query;
 using System;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace RDFSharp.Test.Query
 {
@@ -66,33 +64,6 @@ namespace RDFSharp.Test.Query
                 Assert.IsNotNull(mex.InnerException);
                 Assert.IsTrue(mex.InnerException.Message.Equals("This is the inner exception!"));
             }
-        }
-
-        [TestMethod]
-        public void ShouldSerializeQueryException()
-        {
-            byte[] SerializeToBytes(RDFQueryException e)
-            {
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    new BinaryFormatter().Serialize(stream, e);
-                    return stream.GetBuffer();
-                }   
-            }
-
-            RDFQueryException DeserializeFromBytes(byte[] data)
-            {
-                using (MemoryStream stream = new MemoryStream(data))
-                    return (RDFQueryException)new BinaryFormatter().Deserialize(stream);
-            }
-
-            RDFQueryException mex = new RDFQueryException("RDFQueryException is serializable");
-            byte[] bytes = SerializeToBytes(mex);
-            Assert.IsTrue(bytes.Length > 0);
-
-            RDFQueryException result = DeserializeFromBytes(bytes);
-            Assert.IsTrue(result.Message.Equals("RDFQueryException is serializable"));
-            Assert.IsNull(result.InnerException);
         }
         #endregion
     }
