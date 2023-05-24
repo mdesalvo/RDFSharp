@@ -26,13 +26,13 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFStoreUtilities is a collector of reusable utility methods for RDF store management
     /// </summary>
-    internal static class RDFStoreUtilities
+    public static class RDFStoreUtilities
     {
         #region Select
         /// <summary>
         /// Parses the current quadruple of the data reader
         /// </summary>
-        internal static RDFQuadruple ParseQuadruple(IDataReader fetchedQuadruples)
+        public static RDFQuadruple ParseQuadruple(IDataReader fetchedQuadruples)
         {
             if (fetchedQuadruples == null)
                 throw new RDFStoreException("Cannot parse quadruple because given \"fetchedQuadruples\" parameter is null.");
