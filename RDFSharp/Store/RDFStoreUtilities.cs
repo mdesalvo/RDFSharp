@@ -81,7 +81,8 @@ namespace RDFSharp.Store
         /// <summary>
         /// Selects the quadruples corresponding to the given pattern from the given store
         /// </summary>
-        internal static List<RDFQuadruple> SelectQuadruples(RDFMemoryStore store, RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
+        internal static List<RDFQuadruple> SelectQuadruples(RDFMemoryStore store, RDFContext ctx, RDFResource subj, 
+            RDFResource pred, RDFResource obj, RDFLiteral lit)
         {
             List<RDFQuadruple> matchResult = new List<RDFQuadruple>();
             if (store != null)

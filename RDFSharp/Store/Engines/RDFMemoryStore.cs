@@ -615,7 +615,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Gets a store containing quadruples satisfying the given pattern
         /// </summary>
-        internal override RDFMemoryStore SelectQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
+        public override RDFMemoryStore SelectQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
             => new RDFMemoryStore(RDFStoreUtilities.SelectQuadruples(this, ctx, subj, pred, obj, lit));
         #endregion
 
