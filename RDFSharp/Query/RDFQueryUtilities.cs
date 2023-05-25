@@ -28,13 +28,13 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFQueryUtilities is a collector of reusable utility methods for RDF query management
     /// </summary>
-    internal static class RDFQueryUtilities
+    public static class RDFQueryUtilities
     {
         #region MIRELLA RDF
         /// <summary>
         /// Parses the given string to return an instance of pattern member
         /// </summary>
-        internal static RDFPatternMember ParseRDFPatternMember(string pMember)
+        public static RDFPatternMember ParseRDFPatternMember(string pMember)
         {
             if (pMember == null)
                 throw new RDFQueryException("Cannot parse pattern member because given \"pMember\" parameter is null.");
@@ -258,7 +258,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Removes the duplicates from the given list of T elements
         /// </summary>
-        internal static List<T> RemoveDuplicates<T>(List<T> elements) where T : RDFPatternMember
+        public static List<T> RemoveDuplicates<T>(List<T> elements) where T : RDFPatternMember
         {
             List<T> results = new List<T>();
             if (elements?.Count > 0)

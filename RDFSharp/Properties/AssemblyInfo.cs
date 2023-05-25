@@ -20,21 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: Guid("1EF76FD3-C935-4965-9621-6CA0CBC275BF")]
 //Internals
 [assembly: InternalsVisibleTo("RDFSharp.Test")]
-//Internals (RDFSharp.Extensions)
-[assembly: InternalsVisibleTo("RDFSharp.Extensions.SQLServer")]
-[assembly: InternalsVisibleTo("RDFSharp.Extensions.SQLite")]
-[assembly: InternalsVisibleTo("RDFSharp.Extensions.Firebird")]
-[assembly: InternalsVisibleTo("RDFSharp.Extensions.MySQL")]
-[assembly: InternalsVisibleTo("RDFSharp.Extensions.PostgreSQL")]
-[assembly: InternalsVisibleTo("RDFSharp.Extensions.Oracle")]
-[assembly: InternalsVisibleTo("RDFSharp.Extensions.AzureTable")]
-//Internals (RDFSharp.Semantics)
 [assembly: InternalsVisibleTo("RDFSharp.Semantics")]
-[assembly: InternalsVisibleTo("RDFSharp.Semantics.Test")]
-//Internals (RDFSharp.Semantics.Extensions)
 [assembly: InternalsVisibleTo("RDFSharp.Semantics.Extensions.GEO")]
-[assembly: InternalsVisibleTo("RDFSharp.Semantics.Extensions.GEO.Test")]
 [assembly: InternalsVisibleTo("RDFSharp.Semantics.Extensions.SKOS")]
-[assembly: InternalsVisibleTo("RDFSharp.Semantics.Extensions.SKOS.Test")]
 [assembly: InternalsVisibleTo("RDFSharp.Semantics.Extensions.TIME")]
-[assembly: InternalsVisibleTo("RDFSharp.Semantics.Extensions.TIME.Test")]

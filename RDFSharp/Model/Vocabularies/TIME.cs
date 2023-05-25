@@ -557,6 +557,11 @@ namespace RDFSharp.Model
             /// http://www.opengis.net/def/crs/OGC/0/ChronometricGeologicTime
             /// </summary>
             public static readonly RDFResource TRS_GEOLOGIC = new RDFResource("http://www.opengis.net/def/crs/OGC/0/ChronometricGeologicTime");
+
+            /// <summary>
+            /// https://en.wikipedia.org/wiki/Global_Positioning_System#Timekeeping
+            /// </summary>
+            public static readonly RDFResource TRS_GLOBAL_POSITIONING_SYSTEM = new RDFResource("https://en.wikipedia.org/wiki/Global_Positioning_System#Timekeeping");
             #endregion
 
             #region Extended Properties

@@ -279,11 +279,8 @@ namespace RDFSharp.Store
         /// <summary>
         /// Gets a memory store containing quadruples satisfying the given pattern
         /// </summary>
-        internal abstract RDFMemoryStore SelectQuadruples(RDFContext contextResource,
-                                                          RDFResource subjectResource,
-                                                          RDFResource predicateResource,
-                                                          RDFResource objectResource,
-                                                          RDFLiteral objectLiteral);
+        public abstract RDFMemoryStore SelectQuadruples(RDFContext ctx, 
+            RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit);
 
         /// <summary>
         /// Gets a list containing the graphs saved in the store

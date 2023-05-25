@@ -17,8 +17,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Store;
 using System;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace RDFSharp.Test.Store
 {
@@ -66,33 +64,6 @@ namespace RDFSharp.Test.Store
                 Assert.IsNotNull(mex.InnerException);
                 Assert.IsTrue(mex.InnerException.Message.Equals("This is the inner exception!"));
             }
-        }
-
-        [TestMethod]
-        public void ShouldSerializeStoreException()
-        {
-            byte[] SerializeToBytes(RDFStoreException e)
-            {
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    new BinaryFormatter().Serialize(stream, e);
-                    return stream.GetBuffer();
-                }   
-            }
-
-            RDFStoreException DeserializeFromBytes(byte[] data)
-            {
-                using (MemoryStream stream = new MemoryStream(data))
-                    return (RDFStoreException)new BinaryFormatter().Deserialize(stream);
-            }
-
-            RDFStoreException mex = new RDFStoreException("RDFStoreException is serializable");
-            byte[] bytes = SerializeToBytes(mex);
-            Assert.IsTrue(bytes.Length > 0);
-
-            RDFStoreException result = DeserializeFromBytes(bytes);
-            Assert.IsTrue(result.Message.Equals("RDFStoreException is serializable"));
-            Assert.IsNull(result.InnerException);
         }
         #endregion
     }
