@@ -23,4 +23,4 @@ RDFSharp has a modular API made up of 3 layers:
 </ul>
 
 <hr/>
-An additional <a href="https://github.com/mdesalvo/RDFSharp.Semantics">layer</a> is available for working in a native and expressive way with <b>OWL-DL ontologies</b>, along with its own set of <a href="https://github.com/mdesalvo/RDFSharp.Semantics.Extensions">extensions</a>. All of these make RDFSharp an amazing <b>conceptual</b>, <b>geospatial</b> and <b>temporal</b> modeling platform suited for successfully realizing every kind of idea.
+An additional <a href="https://github.com/mdesalvo/RDFSharp.Semantics">layer</a> is available for working in native and expressive way with <b>OWL-DL ontologies</b>, along with its own set of <a href="https://github.com/mdesalvo/RDFSharp.Semantics.Extensions">extensions</a>. All of these make RDFSharp an amazing <b>conceptual</b>, <b>geospatial</b> and <b>temporal</b> modeling platform for successfully realizing every kind of idea!
