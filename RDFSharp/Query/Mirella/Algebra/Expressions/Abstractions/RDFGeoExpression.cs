@@ -323,7 +323,7 @@ namespace RDFSharp.Query
         #endregion
     }
 
-    #region Converter
+    #region GEOConverter
     /// <summary>
     /// RDFGeoConverter is an helper for converting geometries between different coordinate systems
     /// </summary>
