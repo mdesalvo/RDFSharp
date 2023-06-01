@@ -169,5 +169,83 @@ namespace RDFSharp.Query
             /// </summary>
             ALL = 2
         }
+
+        /// <summary>
+        /// Represents an enumeration for the set of built-in Egenhofer spatial relations
+        /// </summary>
+        public enum RDFGeoEgenhoferRelations
+        {
+            /// <summary>
+            /// geof:ehEquals
+            /// </summary>
+            Equals = 1,
+            /// <summary>
+            /// geof:ehDisjoint
+            /// </summary>
+            Disjoint = 2,
+            /// <summary>
+            /// geof:ehMeet
+            /// </summary>
+            Meet = 3,
+            /// <summary>
+            /// geof:ehOverlap
+            /// </summary>
+            Overlap = 4,
+            /// <summary>
+            /// geof:ehCovers
+            /// </summary>
+            Covers = 5,
+            /// <summary>
+            /// geof:ehCoveredBy
+            /// </summary>
+            CoveredBy = 6,
+            /// <summary>
+            /// geof:ehInside
+            /// </summary>
+            Inside = 7,
+            /// <summary>
+            /// geof:ehContains
+            /// </summary>
+            Contains = 8
+        };
+
+        /// <summary>
+        /// Represents an enumeration for the set of built-in Region-Connected-Calculus-8 spatial relations
+        /// </summary>
+        public enum RDFGeoRCC8Relations
+        {
+            /// <summary>
+            /// geosf:rcc8dc    -> geof:relate("FFTFFTTTT")
+            /// </summary>
+            RCC8DC = 1,
+            /// <summary>
+            /// geosf:rcc8dc    -> geof:relate("FFTFTTTTT")
+            /// </summary>
+            RCC8EC = 2,
+            /// <summary>
+            /// geosf:rcc8po    -> geof:relate("TTTTTTTTT")
+            /// </summary>
+            RCC8PO = 3,
+            /// <summary>
+            /// geosf:rcc8tppi  -> geof:relate("TTTFTTFFT")
+            /// </summary>
+            RCC8TPPI = 4,
+            /// <summary>
+            /// geosf:rcc8tpp   -> geof:relate("TFFTTFTTT")
+            /// </summary>
+            RCC8TPP = 5,
+            /// <summary>
+            /// geosf:rcc8ntpp  -> geof:relate("TFFTFFTTT")
+            /// </summary>
+            RCC8NTPP = 6,
+            /// <summary>
+            /// geosf:rcc8ntppi -> geof:relate("TTTFFTFFT")
+            /// </summary>
+            RCC8NTPPI = 7,
+            /// <summary>
+            /// geosf:rcc8eq    -> geof:relate("TFFFTFFFT")
+            /// </summary>
+            RCC8EQ = 8
+        }
     }
 }
