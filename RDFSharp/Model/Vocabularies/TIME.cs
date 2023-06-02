@@ -165,6 +165,16 @@ namespace RDFSharp.Model
             public static readonly RDFResource DAYS = new RDFResource(string.Concat(TIME.BASE_URI, "days"));
 
             /// <summary>
+            /// time:disjoint
+            /// </summary>
+            public static readonly RDFResource DISJOINT = new RDFResource(string.Concat(TIME.BASE_URI, "disjoint"));
+
+            /// <summary>
+            /// time:equals
+            /// </summary>
+            public static readonly RDFResource EQUALS = new RDFResource(string.Concat(TIME.BASE_URI, "equals"));
+
+            /// <summary>
             /// time:hasBeginning
             /// </summary>
             public static readonly RDFResource HAS_BEGINNING = new RDFResource(string.Concat(TIME.BASE_URI, "hasBeginning"));
@@ -188,6 +198,11 @@ namespace RDFSharp.Model
             /// time:hasEnd
             /// </summary>
             public static readonly RDFResource HAS_END = new RDFResource(string.Concat(TIME.BASE_URI, "hasEnd"));
+
+            /// <summary>
+            /// time:hasInside
+            /// </summary>
+            public static readonly RDFResource HAS_INSIDE = new RDFResource(string.Concat(TIME.BASE_URI, "hasInside"));
 
             /// <summary>
             /// time:hasTemporalDuration
@@ -368,6 +383,11 @@ namespace RDFSharp.Model
             /// time:nominalPosition
             /// </summary>
             public static readonly RDFResource NOMINAL_POSITION = new RDFResource(string.Concat(TIME.BASE_URI, "nominalPosition"));
+
+            /// <summary>
+            /// time:notDisjoint
+            /// </summary>
+            public static readonly RDFResource NOT_DISJOINT = new RDFResource(string.Concat(TIME.BASE_URI, "notDisjoint"));
 
             /// <summary>
             /// time:numericDuration
