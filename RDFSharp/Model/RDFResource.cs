@@ -53,8 +53,8 @@ namespace RDFSharp.Model
         /// </summary>
         internal RDFResource(string uriString, Dictionary<string, long> hashContext)
         {
-            Uri tempUri = RDFModelUtilities.GetUriFromString(uriString);
-            URI = tempUri ?? throw new RDFModelException("Cannot create RDFResource because given \"uriString\" parameter is null or cannot be converted to a valid Uri");
+            URI = RDFModelUtilities.GetUriFromString(uriString) 
+                    ?? throw new RDFModelException("Cannot create RDFResource because given \"uriString\" parameter is null or cannot be converted to a valid Uri");
 
             if (hashContext != null)
             {

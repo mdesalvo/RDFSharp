@@ -111,6 +111,14 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(hashContext.ContainsKey("ex:res2"));
             Assert.IsTrue(hashContext.ContainsKey("ex:res3"));
         }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingResourceExploitingHashContextBecauseNullUri()
+            => Assert.ThrowsException<RDFModelException>(() => new RDFResource(null, new Dictionary<string, long>()));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingResourceExploitingHashContextBecauseRelativeUri()
+            => Assert.ThrowsException<RDFModelException>(() => new RDFResource("/example/org", new Dictionary<string, long>()));
         #endregion
     }
 }
