@@ -118,7 +118,7 @@ namespace RDFSharp.Test.Model
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingResourceExploitingHashContextBecauseRelativeUri()
-            => Assert.ThrowsException<RDFModelException>(() => new RDFResource("/example/org", new Dictionary<string, long>()));
+            => Assert.ThrowsException<RDFModelException>(() => new RDFResource("./example/org", new Dictionary<string, long>()));
         #endregion
     }
 }
