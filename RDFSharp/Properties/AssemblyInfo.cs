@@ -20,6 +20,3 @@ using System.Runtime.InteropServices;
 [assembly: Guid("1EF76FD3-C935-4965-9621-6CA0CBC275BF")]
 [assembly: InternalsVisibleTo("RDFSharp.Test")]
 [assembly: InternalsVisibleTo("RDFSharp.Semantics")]
-[assembly: InternalsVisibleTo("RDFSharp.Semantics.Extensions.GEO")]
-[assembly: InternalsVisibleTo("RDFSharp.Semantics.Extensions.SKOS")]
-[assembly: InternalsVisibleTo("RDFSharp.Semantics.Extensions.TIME")]
