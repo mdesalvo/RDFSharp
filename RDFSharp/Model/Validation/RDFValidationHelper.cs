@@ -86,11 +86,14 @@ namespace RDFSharp.Model
                     case RDFPropertyShape propertyShape:
                         if (focusNode is RDFResource focusNodeResource)
                         {
-                            foreach (RDFTriple triple in dataGraph.SelectTriplesBySubject(focusNodeResource)
-                                                                  .SelectTriplesByPredicate(propertyShape.Path))
-                            {
+                            //In case the property shape requires inverse navigation of its path,
+                            //we must consider the focus node as destination instead of origin
+                            RDFGraph pathTriples = propertyShape.IsInversePath ? dataGraph.SelectTriplesByObject(focusNodeResource)
+                                                                                          .SelectTriplesByPredicate(propertyShape.Path)
+                                                                               : dataGraph.SelectTriplesBySubject(focusNodeResource)
+                                                                                          .SelectTriplesByPredicate(propertyShape.Path);
+                            foreach (RDFTriple triple in pathTriples)
                                 result.Add(triple.Object);
-                            }
                         }
                         break;
                 }
@@ -189,16 +192,39 @@ namespace RDFSharp.Model
                                                            .FirstOrDefault();
 
                 if (declaredPropertyShapePath != null
-                        && declaredPropertyShapePath.Object is RDFResource)
+                     && declaredPropertyShapePath.Object is RDFResource declaredPropertyShapePathObject)
                 {
-                    RDFPropertyShape propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject, (RDFResource)declaredPropertyShapePath.Object);
+                    if (declaredPropertyShapePathObject.IsBlank)
+                    {
+                        //Although several variants of inline "sh:path" are formalized by SHACL,
+                        //at the moment we can only recognize and handle "sh:inversePath"
+                        RDFTriple inversePath = graph.SelectTriplesBySubject(declaredPropertyShapePathObject)
+                                                     .SelectTriplesByPredicate(RDFVocabulary.SHACL.INVERSE_PATH)
+                                                     .FirstOrDefault();
+                        if (inversePath != null
+                             && inversePath.Object is RDFResource inversePathObject)
+                        {
+                            RDFPropertyShape propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject, inversePathObject).SetInversePath();
 
-                    DetectShapeTargets(graph, propertyShape);
-                    DetectShapeAttributes(graph, propertyShape);
-                    DetectShapeNonValidatingAttributes(graph, propertyShape);
-                    DetectShapeConstraints(graph, propertyShape);
+                            DetectShapeTargets(graph, propertyShape);
+                            DetectShapeAttributes(graph, propertyShape);
+                            DetectShapeNonValidatingAttributes(graph, propertyShape);
+                            DetectShapeConstraints(graph, propertyShape);
 
-                    shapesGraph.AddShape(propertyShape);
+                            shapesGraph.AddShape(propertyShape);
+                        }
+                    }
+                    else
+                    {
+                        RDFPropertyShape propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject, declaredPropertyShapePathObject);
+
+                        DetectShapeTargets(graph, propertyShape);
+                        DetectShapeAttributes(graph, propertyShape);
+                        DetectShapeNonValidatingAttributes(graph, propertyShape);
+                        DetectShapeConstraints(graph, propertyShape);
+
+                        shapesGraph.AddShape(propertyShape);
+                    }
                 }
             }
         }

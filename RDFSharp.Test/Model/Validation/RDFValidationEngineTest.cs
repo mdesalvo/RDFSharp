@@ -17,6 +17,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -186,6 +187,89 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.AGE));
             Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MAX_INCLUSIVE_CONSTRAINT_COMPONENT));
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
+        }
+
+        //E2E: BUG#302
+        [TestMethod]
+        public void ShouldWorkWithInversePath()
+        {
+            //ShapesGraph
+            string shapesData =
+@"@prefix ex:     <http://example.com/ns#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+
+ex:Parent  rdf:type  sh:NodeShape ;
+        sh:property     ex:Parent.Child-cardinality ;
+        sh:targetClass  ex:Parent .
+
+
+ex:Child  rdf:type  sh:NodeShape ;
+        sh:property     ex:Child.Parent-cardinality ;
+        sh:targetClass  ex:Child .
+
+ex:Parent.Child-cardinality
+        rdf:type        sh:PropertyShape ;
+        sh:description  ""This constraint validates the cardinality of the association at the inverse direction."" ;
+        sh:group        ex:CardinalityGroup ;
+        sh:message      ""Cardinality violation. Lower bound shall be 1. ex:Parent.Child-cardinality"" ;
+        sh:minCount     1 ;
+        sh:name         ""Parent.Child-cardinality"" ;
+        sh:order        0 ;
+        sh:path         [ sh:inversePath  ex:Child.Parent ] ;
+        sh:severity     sh:Violation .
+
+ex:Child.Parent-cardinality
+        rdf:type        sh:PropertyShape ;
+        sh:description  ""This constraint validates the cardinality of the association at the inverse direction."" ;
+        sh:group        ex:CardinalityGroup ;
+        sh:message      ""Cardinality violation. A child should have at least one parent. Child.Parent-cardinality"" ;
+        sh:minCount     1 ;
+        sh:name         ""Child.Parent-cardinality"" ;
+        sh:order        0 ;
+        sh:path         ex:Child.Parent ;
+        sh:severity     sh:Violation .";
+            MemoryStream shapeStream = new MemoryStream();
+            using (StreamWriter shapeStreamWriter = new StreamWriter(shapeStream))
+                shapeStreamWriter.WriteLine(shapesData);
+            RDFGraph shapesGraphObject = RDFTurtle.Deserialize(new MemoryStream(shapeStream.ToArray()), null);
+            RDFShapesGraph shapesGraph = RDFShapesGraph.FromRDFGraph(shapesGraphObject);
+
+            //DataGraph
+            string graphData =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<rdf:RDF
+	xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
+	xmlns:ex=""http://example.com/ns#""
+	>
+
+	<ex:Child rdf:about=""http://example.com/child"">
+		<ex:Child.Parent rdf:resource=""http://example.com/parent0"" />
+	</ex:Child>
+
+	<ex:Parent rdf:about=""http://example.com/parent0"">
+    </ex:Parent>
+
+	<ex:Parent rdf:about=""http://example.com/parent1"" />
+</rdf:RDF>";
+            MemoryStream dataStream = new MemoryStream();
+            using (StreamWriter dataStreamWriter = new StreamWriter(dataStream))
+                dataStreamWriter.WriteLine(graphData);
+            RDFGraph dataGraph = RDFXml.Deserialize(new MemoryStream(dataStream.ToArray()), null);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsFalse(validationReport.Conforms);
+            Assert.IsTrue(validationReport.ResultsCount == 1);
+            Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
+            Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Cardinality violation. Lower bound shall be 1. ex:Parent.Child-cardinality")));
+            Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://example.com/parent1")));
+            Assert.IsNull(validationReport.Results[0].ResultValue);
+            Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(new RDFResource("http://example.com/ns#Child.Parent")));
+            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT));
+            Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("http://example.com/ns#Parent.Child-cardinality")));
         }
         #endregion
     }
