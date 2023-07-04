@@ -30,6 +30,11 @@ namespace RDFSharp.Model
         public RDFResource Path { get; internal set; }
 
         /// <summary>
+        /// Indicates that the path of this property shape should be considered backward (sh:inversePath)
+        /// </summary>
+        public bool IsInversePath { get; internal set; }
+
+        /// <summary>
         /// Indicates the human-readable descriptions of this property shape's path (sh:description)
         /// </summary>
         public List<RDFLiteral> Descriptions { get; internal set; }
@@ -110,6 +115,15 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
+        /// Sets the path of this property shape to be considered backward (sh:inversePath)
+        /// </summary>
+        public RDFPropertyShape SetInversePath()
+        {
+            IsInversePath = true;
+            return this;
+        }
+
+        /// <summary>
         /// Sets the relative order of this property shape compared to its siblings
         /// </summary>
         public RDFPropertyShape SetOrder(int order)
@@ -137,8 +151,15 @@ namespace RDFSharp.Model
             //PropertyShape
             result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE));
 
-            //Path
-            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, Path));
+            //Path (with support for sh:inversePath)
+            if (IsInversePath)
+            {
+                RDFResource pathBNode = new RDFResource();
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, pathBNode));
+                result.AddTriple(new RDFTriple(pathBNode, RDFVocabulary.SHACL.INVERSE_PATH, Path));
+            }
+            else
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, Path));
 
             //Descriptions
             Descriptions.ForEach(description => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DESCRIPTION, description)));

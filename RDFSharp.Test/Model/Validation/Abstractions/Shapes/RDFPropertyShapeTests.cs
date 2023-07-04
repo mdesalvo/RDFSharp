@@ -16,6 +16,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
+using System.Linq;
 
 namespace RDFSharp.Test.Model
 {
@@ -136,6 +137,16 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+
+        public void ShouldSetInversePathOnPropertyShape()
+        {
+            RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME);
+            propertyShape.SetInversePath();
+
+            Assert.IsTrue(propertyShape.IsInversePath);
+        }
+
+        [TestMethod]
         public void ShouldExportPropertyShape()
         {
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME);
@@ -150,6 +161,34 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(pshGraph.TriplesCount == 8);
             Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE)));
             Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.PATH, RDFVocabulary.FOAF.NAME)));
+            Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.SEVERITY_PROPERTY, RDFVocabulary.SHACL.VIOLATION)));
+            Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.False)));
+            Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.NAME, new RDFPlainLiteral("PropertyShapeName"))));
+            Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.DESCRIPTION, new RDFPlainLiteral("PropertyShapeDescription"))));
+            Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.ORDER, new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.GROUP, new RDFResource("ex:propertyShapeGroup"))));
+        }
+
+        [TestMethod]
+        public void ShouldExportPropertyShapeWithInversePath()
+        {
+            RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME);
+            propertyShape.AddName(new RDFPlainLiteral("PropertyShapeName"));
+            propertyShape.AddDescription(new RDFPlainLiteral("PropertyShapeDescription"));
+            propertyShape.SetOrder(2);
+            propertyShape.SetGroup(new RDFResource("ex:propertyShapeGroup"));
+            propertyShape.SetInversePath();
+            RDFGraph pshGraph = propertyShape.ToRDFGraph();
+
+            Assert.IsNotNull(pshGraph);
+            Assert.IsTrue(pshGraph.Context.Equals(propertyShape.URI));
+            Assert.IsTrue(pshGraph.TriplesCount == 9);
+            Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE)));
+            Assert.IsTrue(pshGraph.Any(t => t.Subject.Equals(propertyShape)
+                                             && t.Predicate.Equals(RDFVocabulary.SHACL.PATH)
+                                              && t.Object is RDFResource objRes
+                                               && objRes.IsBlank
+                                                && pshGraph.ContainsTriple(new RDFTriple(objRes, RDFVocabulary.SHACL.INVERSE_PATH, RDFVocabulary.FOAF.NAME))));
             Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.SEVERITY_PROPERTY, RDFVocabulary.SHACL.VIOLATION)));
             Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.False)));
             Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.NAME, new RDFPlainLiteral("PropertyShapeName"))));
