@@ -14,7 +14,9 @@
    limitations under the License.
 */
 
+using RDFSharp.Query;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RDFSharp.Model
 {
@@ -33,6 +35,11 @@ namespace RDFSharp.Model
         /// Indicates that the path of this property shape should be considered backward (sh:inversePath)
         /// </summary>
         public bool IsInversePath { get; internal set; }
+
+        /// <summary>
+        /// Indicates the alternative properties on which this property shape is applied (sh:alternativePath)
+        /// </summary>
+        public RDFPropertyPath AlternativePath { get; internal set; }
 
         /// <summary>
         /// Indicates the human-readable descriptions of this property shape's path (sh:description)
@@ -59,12 +66,33 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a named property shape on the given property
         /// </summary>
-        public RDFPropertyShape(RDFResource propertyShapeName, RDFResource path) : base(propertyShapeName)
+        public RDFPropertyShape(RDFResource propertyShapeName, RDFResource path, bool isInversePath=false) : base(propertyShapeName)
         {
+            #region Guards
             if (path == null)
                 throw new RDFModelException("Cannot create RDFPropertyShape because given \"path\" parameter is null.");
-            
+            #endregion
+
             Path = path;
+            IsInversePath = isInversePath;
+            Descriptions = new List<RDFLiteral>();
+            Names = new List<RDFLiteral>();
+        }
+
+        /// <summary>
+        /// Default-ctor to build a named property shape on the given alternative properties
+        /// </summary>
+        public RDFPropertyShape(RDFResource propertyShapeName, List<RDFResource> alternativePaths) : base(propertyShapeName)
+        {
+            #region Guards
+            if (alternativePaths == null)
+                throw new RDFModelException("Cannot create RDFPropertyShape because given \"alternativePaths\" parameter is null.");
+            if (alternativePaths.Count == 0)
+                throw new RDFModelException("Cannot create RDFPropertyShape because given \"alternativePaths\" parameter is empty.");
+            #endregion
+
+            AlternativePath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
+                .AddAlternativeSteps(alternativePaths.Select(app => new RDFPropertyPathStep(app)).ToList());
             Descriptions = new List<RDFLiteral>();
             Names = new List<RDFLiteral>();
         }
@@ -72,7 +100,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a blank property shape on the given property
         /// </summary>
-        public RDFPropertyShape(RDFResource path) : this(new RDFResource(), path) { }
+        public RDFPropertyShape(RDFResource path, bool isInversePath=false) : this(new RDFResource(), path, isInversePath) { }
+
+        /// <summary>
+        /// Default-ctor to build a blank property shape on the given alternative properties
+        /// </summary>
+        public RDFPropertyShape(List<RDFResource> alternativePaths) : this(new RDFResource(), alternativePaths) { }
         #endregion
 
         #region Methods
@@ -115,15 +148,6 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Sets the path of this property shape to be considered backward (sh:inversePath)
-        /// </summary>
-        public RDFPropertyShape SetInversePath()
-        {
-            IsInversePath = true;
-            return this;
-        }
-
-        /// <summary>
         /// Sets the relative order of this property shape compared to its siblings
         /// </summary>
         public RDFPropertyShape SetOrder(int order)
@@ -151,13 +175,24 @@ namespace RDFSharp.Model
             //PropertyShape
             result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE));
 
-            //Path (with support for sh:inversePath)
+            //Path (sh:inversePath)
             if (IsInversePath)
             {
                 RDFResource pathBNode = new RDFResource();
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, pathBNode));
                 result.AddTriple(new RDFTriple(pathBNode, RDFVocabulary.SHACL.INVERSE_PATH, Path));
             }
+            //Path (sh:alternativePath)
+            else if (AlternativePath != null)
+            {
+                RDFResource pathBNode = new RDFResource();
+                RDFCollection pathColl = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
+                AlternativePath.Steps.ForEach(aps => pathColl.AddItem(aps.StepProperty));
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, pathBNode));
+                result.AddTriple(new RDFTriple(pathBNode, RDFVocabulary.SHACL.ALTERNATIVE_PATH, pathColl.ReificationSubject));
+                result.AddCollection(pathColl);
+            }
+            //Path
             else
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, Path));
 

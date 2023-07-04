@@ -137,16 +137,6 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-
-        public void ShouldSetInversePathOnPropertyShape()
-        {
-            RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME);
-            propertyShape.SetInversePath();
-
-            Assert.IsTrue(propertyShape.IsInversePath);
-        }
-
-        [TestMethod]
         public void ShouldExportPropertyShape()
         {
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME);
@@ -172,12 +162,11 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldExportPropertyShapeWithInversePath()
         {
-            RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME);
+            RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME, true);
             propertyShape.AddName(new RDFPlainLiteral("PropertyShapeName"));
             propertyShape.AddDescription(new RDFPlainLiteral("PropertyShapeDescription"));
             propertyShape.SetOrder(2);
             propertyShape.SetGroup(new RDFResource("ex:propertyShapeGroup"));
-            propertyShape.SetInversePath();
             RDFGraph pshGraph = propertyShape.ToRDFGraph();
 
             Assert.IsNotNull(pshGraph);
