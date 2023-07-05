@@ -86,31 +86,37 @@ namespace RDFSharp.Model
                     case RDFPropertyShape propertyShape:
                         if (focusNode is RDFResource focusNodeResource)
                         {
-                            //sh:inversePath
+                            #region sh:inversePath
                             if (propertyShape.IsInversePath)
                                 result.AddRange(dataGraph[null, propertyShape.Path, focusNodeResource, null]
                                       .Select(t => t.Object));
+                            #endregion
 
-                            //sh:alternativePath
+                            #region sh:alternativePath
                             else if (propertyShape.AlternativePath != null)
                             {
-                                //Contextualize property shape to the given focus node
+                                //Contextualize property path to the given focus node
                                 propertyShape.AlternativePath.Start = focusNode;
 
-                                //Compute alternative path on the given focus node
+                                //Compute property path on the given focus node
                                 DataTable alternativePathResult = new RDFQueryEngine().ApplyPropertyPath(propertyShape.AlternativePath, dataGraph);
                                 foreach (DataRow alternativePathResultRow in alternativePathResult.Rows)
                                 {
                                     string aprValue = alternativePathResultRow["?END"]?.ToString();
                                     if (!string.IsNullOrEmpty(aprValue))
                                         result.Add(RDFQueryUtilities.ParseRDFPatternMember(aprValue));
-                                }   
-                            }
+                                }
 
-                            //sh:path
+                                //Recontextualize property path to the initial configuration
+                                propertyShape.AlternativePath.Start = new RDFVariable("?START");
+                            }
+                            #endregion
+
+                            #region sh:path
                             else
                                 result.AddRange(dataGraph[focusNodeResource, propertyShape.Path, null, null]
                                       .Select(t => t.Object));
+                            #endregion
                         }
                         break;
                 }
