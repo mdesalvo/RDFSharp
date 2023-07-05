@@ -269,6 +269,79 @@ exns:Child.Parent-cardinality
             Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT));
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("http://ex.com/ns#Parent.Child-cardinality")));
         }
+
+        //E2E: BUG#304
+        [TestMethod]
+        public void ShouldWorkWithAlternativePath()
+        {
+            //ShapesGraph
+            string shapesData =
+@"
+@prefix exns:   <http://ex.com/ns#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh:     <http://www.w3.org/ns/shacl#> .
+
+exns:Person  rdf:type  sh:NodeShape ;
+        sh:property     exns:Person.mobile-landline-cardinality ;
+        sh:targetClass  exns:Person .
+
+exns:Person.mobile-landline-cardinality
+        rdf:type        sh:PropertyShape ;
+        sh:description  ""This constraint validates that a Person has either mobileNumber or landLine set."" ;
+        sh:minCount     1 ;
+        sh:message      ""Either mobileNumber or landLine should be present"" ;
+        sh:name         ""Person.mobileNumber-landLine-cardinality"" ;
+        sh:order        0 ;
+        sh:path         [ sh:alternativePath ( exns:Person.mobilePhone exns:Person.landLine ) ] ;
+        sh:severity     sh:Violation .";
+
+            MemoryStream shapeStream = new MemoryStream();
+            using (StreamWriter shapeStreamWriter = new StreamWriter(shapeStream))
+                shapeStreamWriter.WriteLine(shapesData);
+            RDFGraph shapesGraphObject = RDFTurtle.Deserialize(new MemoryStream(shapeStream.ToArray()), null);
+            RDFShapesGraph shapesGraph = RDFShapesGraph.FromRDFGraph(shapesGraphObject);
+
+            //DataGraph
+            string graphData =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<rdf:RDF
+	xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
+	xmlns:exns=""http://ex.com/ns#"">
+
+	<exns:Person rdf:about=""http://ex.com/ns#person0"">
+        <exns:Person.mobilePhone>0123456789</exns:Person.mobilePhone>
+    </exns:Person>
+
+	<exns:Person rdf:about=""http://ex.com/ns#person1"">
+        <exns:Person.landLine>0123456789</exns:Person.landLine>
+    </exns:Person>
+
+	<exns:Person rdf:about=""http://ex.com/ns#person2"">
+        <exns:Person.mobilePhone>0123456789</exns:Person.mobilePhone>
+        <exns:Person.landLine>0123456789</exns:Person.landLine>
+    </exns:Person>
+
+	<exns:Person rdf:about=""http://ex.com/ns#person3""/>
+</rdf:RDF>";
+            MemoryStream dataStream = new MemoryStream();
+            using (StreamWriter dataStreamWriter = new StreamWriter(dataStream))
+                dataStreamWriter.WriteLine(graphData);
+            RDFGraph dataGraph = RDFXml.Deserialize(new MemoryStream(dataStream.ToArray()), null);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsFalse(validationReport.Conforms);
+            Assert.IsTrue(validationReport.ResultsCount == 1);
+            Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
+            Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Either mobileNumber or landLine should be present")));
+            Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://ex.com/ns#person3")));
+            Assert.IsNull(validationReport.Results[0].ResultValue);
+            Assert.IsNull(validationReport.Results[0].ResultPath);
+            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT));
+            Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("http://ex.com/ns#Person.mobile-landline-cardinality")));
+        }
         #endregion
     }
 }
