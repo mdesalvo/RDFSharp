@@ -18,6 +18,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System.Collections.Generic;
 using System.Linq;
+using static RDFSharp.Query.RDFQueryEnums;
 
 namespace RDFSharp.Test.Model
 {
@@ -73,11 +74,19 @@ namespace RDFSharp.Test.Model
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingPropertyShapeBecauseNullPath()
-            => Assert.ThrowsException<RDFModelException>(() => new RDFPropertyShape(null as RDFResource));
+            => Assert.ThrowsException<RDFModelException>(() => new RDFPropertyShape(null));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingPropertyShapeBecauseNullInversePath()
+            => Assert.ThrowsException<RDFModelException>(() => new RDFPropertyShape(null, true));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingPropertyShapeBecauseNullAlternativePath()
-            => Assert.ThrowsException<RDFModelException>(() => new RDFPropertyShape(null as List<RDFResource>));
+            => Assert.ThrowsException<RDFModelException>(() => new RDFPropertyShape(null, RDFPropertyPathStepFlavors.Alternative));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingPropertyShapeBecauseNullSequencePath()
+            => Assert.ThrowsException<RDFModelException>(() => new RDFPropertyShape(null, RDFPropertyPathStepFlavors.Sequence));
 
         [TestMethod]
         public void ShouldEnumeratePropertyShape()
@@ -195,7 +204,7 @@ namespace RDFSharp.Test.Model
         public void ShouldExportPropertyShapeWithAlternativePath()
         {
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), 
-                new List<RDFResource>() { RDFVocabulary.FOAF.NAME, RDFVocabulary.FOAF.AGE });
+                new List<RDFResource>() { RDFVocabulary.FOAF.NAME, RDFVocabulary.FOAF.AGE }, RDFPropertyPathStepFlavors.Alternative);
             propertyShape.AddName(new RDFPlainLiteral("PropertyShapeName"));
             propertyShape.AddDescription(new RDFPlainLiteral("PropertyShapeDescription"));
             propertyShape.SetOrder(2);
@@ -214,6 +223,36 @@ namespace RDFSharp.Test.Model
                                                                        && t2.Predicate.Equals(RDFVocabulary.SHACL.ALTERNATIVE_PATH)
                                                                         && t2.Object is RDFResource t2ObjRes
                                                                          && t2ObjRes.IsBlank)));
+            Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.SEVERITY_PROPERTY, RDFVocabulary.SHACL.VIOLATION)));
+            Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.False)));
+            Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.NAME, new RDFPlainLiteral("PropertyShapeName"))));
+            Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.DESCRIPTION, new RDFPlainLiteral("PropertyShapeDescription"))));
+            Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.ORDER, new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.GROUP, new RDFResource("ex:propertyShapeGroup"))));
+        }
+
+        [TestMethod]
+        public void ShouldExportPropertyShapeWithSequencePath()
+        {
+            RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"),
+                new List<RDFResource>() { RDFVocabulary.FOAF.NAME, RDFVocabulary.FOAF.AGE }, RDFPropertyPathStepFlavors.Sequence);
+            propertyShape.AddName(new RDFPlainLiteral("PropertyShapeName"));
+            propertyShape.AddDescription(new RDFPlainLiteral("PropertyShapeDescription"));
+            propertyShape.SetOrder(2);
+            propertyShape.SetGroup(new RDFResource("ex:propertyShapeGroup"));
+            RDFGraph pshGraph = propertyShape.ToRDFGraph();
+
+            Assert.IsNotNull(pshGraph);
+            Assert.IsTrue(pshGraph.Context.Equals(propertyShape.URI));
+            Assert.IsTrue(pshGraph.TriplesCount == 14);
+            Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE)));
+            Assert.IsTrue(pshGraph.Any(t => t.Subject.Equals(propertyShape)
+                                             && t.Predicate.Equals(RDFVocabulary.SHACL.PATH)
+                                              && t.Object is RDFResource objRes
+                                               && objRes.IsBlank
+                                                && pshGraph.Any(t2 => t2.Subject.Equals(objRes)
+                                                                       && t2.Predicate.Equals(RDFVocabulary.RDF.TYPE)
+                                                                        && t2.Object.Equals(RDFVocabulary.RDF.LIST))));
             Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.SEVERITY_PROPERTY, RDFVocabulary.SHACL.VIOLATION)));
             Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.False)));
             Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.NAME, new RDFPlainLiteral("PropertyShapeName"))));

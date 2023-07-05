@@ -42,6 +42,11 @@ namespace RDFSharp.Model
         public RDFPropertyPath AlternativePath { get; internal set; }
 
         /// <summary>
+        /// Indicates the sequence properties on which this property shape is applied (sh:path)
+        /// </summary>
+        public RDFPropertyPath SequencePath { get; internal set; }
+
+        /// <summary>
         /// Indicates the human-readable descriptions of this property shape's path (sh:description)
         /// </summary>
         public List<RDFLiteral> Descriptions { get; internal set; }
@@ -80,19 +85,33 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Default-ctor to build a named property shape on the given alternative properties
+        /// Default-ctor to build a named property shape on the given properties
         /// </summary>
-        public RDFPropertyShape(RDFResource propertyShapeName, List<RDFResource> alternativePaths) : base(propertyShapeName)
+        public RDFPropertyShape(RDFResource propertyShapeName, List<RDFResource> pathSteps, RDFQueryEnums.RDFPropertyPathStepFlavors pathStepsFlavor) : base(propertyShapeName)
         {
             #region Guards
-            if (alternativePaths == null)
-                throw new RDFModelException("Cannot create RDFPropertyShape because given \"alternativePaths\" parameter is null.");
-            if (alternativePaths.Count == 0)
-                throw new RDFModelException("Cannot create RDFPropertyShape because given \"alternativePaths\" parameter is empty.");
+            if (pathSteps == null)
+                throw new RDFModelException("Cannot create RDFPropertyShape because given \"pathSteps\" parameter is null.");
+            if (pathSteps.Count == 0)
+                throw new RDFModelException("Cannot create RDFPropertyShape because given \"pathSteps\" parameter is empty.");
             #endregion
 
-            AlternativePath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-                .AddAlternativeSteps(alternativePaths.Select(app => new RDFPropertyPathStep(app)).ToList());
+            switch (pathStepsFlavor)
+            {
+                //sh:path
+                case RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence:
+                    SequencePath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
+                    foreach (RDFResource pathStep in pathSteps)
+                        SequencePath.AddSequenceStep(new RDFPropertyPathStep(pathStep));
+                    break;
+
+                //sh:alternativePath
+                case RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative:
+                    AlternativePath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
+                                        .AddAlternativeSteps(pathSteps.Select(pathStep => new RDFPropertyPathStep(pathStep))
+                                                                      .ToList());
+                    break;
+            }
             Descriptions = new List<RDFLiteral>();
             Names = new List<RDFLiteral>();
         }
@@ -100,12 +119,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a blank property shape on the given property
         /// </summary>
-        public RDFPropertyShape(RDFResource path, bool isInversePath=false) : this(new RDFResource(), path, isInversePath) { }
+        public RDFPropertyShape(RDFResource path, bool isInversePath=false) 
+            : this(new RDFResource(), path, isInversePath) { }
 
         /// <summary>
-        /// Default-ctor to build a blank property shape on the given alternative properties
+        /// Default-ctor to build a blank property shape on the given properties
         /// </summary>
-        public RDFPropertyShape(List<RDFResource> alternativePaths) : this(new RDFResource(), alternativePaths) { }
+        public RDFPropertyShape(List<RDFResource> pathSteps, RDFQueryEnums.RDFPropertyPathStepFlavors pathStepsFlavor) 
+            : this(new RDFResource(), pathSteps, pathStepsFlavor) { }
         #endregion
 
         #region Methods
@@ -175,21 +196,29 @@ namespace RDFSharp.Model
             //PropertyShape
             result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE));
 
-            //Path (sh:inversePath)
+            //Path (inverse)
             if (IsInversePath)
             {
                 RDFResource pathBNode = new RDFResource();
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, pathBNode));
                 result.AddTriple(new RDFTriple(pathBNode, RDFVocabulary.SHACL.INVERSE_PATH, Path));
             }
-            //Path (sh:alternativePath)
+            //Path (alternative)
             else if (AlternativePath != null)
             {
                 RDFResource pathBNode = new RDFResource();
                 RDFCollection pathColl = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
-                AlternativePath.Steps.ForEach(aps => pathColl.AddItem(aps.StepProperty));
+                AlternativePath.Steps.ForEach(pathStep => pathColl.AddItem(pathStep.StepProperty));
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, pathBNode));
                 result.AddTriple(new RDFTriple(pathBNode, RDFVocabulary.SHACL.ALTERNATIVE_PATH, pathColl.ReificationSubject));
+                result.AddCollection(pathColl);
+            }
+            //Path (sequence)
+            else if (SequencePath != null)
+            {
+                RDFCollection pathColl = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
+                SequencePath.Steps.ForEach(pathStep => pathColl.AddItem(pathStep.StepProperty));
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, pathColl.ReificationSubject));
                 result.AddCollection(pathColl);
             }
             //Path

@@ -342,6 +342,85 @@ exns:Person.mobile-landline-cardinality
             Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT));
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("http://ex.com/ns#Person.mobile-landline-cardinality")));
         }
+
+        //E2E: TASK#306
+        [TestMethod]
+        public void ShouldWorkWithSequencePath()
+        {
+            //ShapesGraph
+            string shapesData =
+@"
+@prefix exns:   <http://ex.com/ns#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh:     <http://www.w3.org/ns/shacl#> .
+
+exns:Person  rdf:type  sh:NodeShape ;
+        sh:property     exns:Person.Uncle-cardinality ;
+        sh:targetClass  exns:Person .
+
+exns:Person.Uncle-cardinality
+        rdf:type        sh:PropertyShape ;
+        sh:description  ""This constraint validates that a Person has at least one uncle."" ;
+        sh:minCount     1 ;
+        sh:message      ""Person should have at least one Uncle defined as: Person.Father/Person.Brother"" ;
+        sh:name         ""Person.Uncle-cardinality"" ;
+        sh:order        0 ;
+        sh:path         ( exns:Person.Father exns:Person.Brother ) ;
+        sh:severity     sh:Violation .";
+
+            MemoryStream shapeStream = new MemoryStream();
+            using (StreamWriter shapeStreamWriter = new StreamWriter(shapeStream))
+                shapeStreamWriter.WriteLine(shapesData);
+            RDFGraph shapesGraphObject = RDFTurtle.Deserialize(new MemoryStream(shapeStream.ToArray()), null);
+            RDFShapesGraph shapesGraph = RDFShapesGraph.FromRDFGraph(shapesGraphObject);
+
+            //DataGraph
+            string graphData =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<rdf:RDF
+	xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
+	xmlns:exns=""http://ex.com/ns#"">
+
+	<exns:Person rdf:about=""http://ex.com/ns#person0"">
+        <exns:Person.Father rdf:resource=""http://ex.com/ns#person1""/>
+    </exns:Person>
+
+	<exns:Person rdf:about=""http://ex.com/ns#person1"">
+        <exns:Person.Father rdf:resource=""http://ex.com/ns#person2""/>
+        <exns:Person.Brother rdf:resource=""http://ex.com/ns#person3""/>
+    </exns:Person>
+
+	<exns:Person rdf:about=""http://ex.com/ns#person2"">
+        <exns:Person.Father rdf:resource=""http://ex.com/ns#person4""/>
+        <exns:Person.Brother rdf:resource=""http://ex.com/ns#person3""/>
+    </exns:Person>
+
+	<exns:Person rdf:about=""http://ex.com/ns#person3""/>
+
+    <exns:Person rdf:about=""http://ex.com/ns#person4"">
+        <exns:Person.Father rdf:resource=""http://ex.com/ns#person1""/>
+        <exns:Person.Brother rdf:resource=""http://ex.com/ns#person3""/>
+    </exns:Person>
+</rdf:RDF>";
+            MemoryStream dataStream = new MemoryStream();
+            using (StreamWriter dataStreamWriter = new StreamWriter(dataStream))
+                dataStreamWriter.WriteLine(graphData);
+            RDFGraph dataGraph = RDFXml.Deserialize(new MemoryStream(dataStream.ToArray()), null);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsFalse(validationReport.Conforms);
+            Assert.IsTrue(validationReport.ResultsCount == 1);
+            Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
+            Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Person should have at least one Uncle defined as: Person.Father/Person.Brother")));
+            Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://ex.com/ns#person3")));
+            Assert.IsNull(validationReport.Results[0].ResultValue);
+            Assert.IsNull(validationReport.Results[0].ResultPath);
+            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT));
+            Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("http://ex.com/ns#Person.Uncle-cardinality")));
+        }
         #endregion
     }
 }

@@ -86,33 +86,42 @@ namespace RDFSharp.Model
                     case RDFPropertyShape propertyShape:
                         if (focusNode is RDFResource focusNodeResource)
                         {
-                            #region sh:inversePath
+                            #region inversePath
                             if (propertyShape.IsInversePath)
                                 result.AddRange(dataGraph[null, propertyShape.Path, focusNodeResource, null]
                                       .Select(t => t.Object));
                             #endregion
 
-                            #region sh:alternativePath
-                            else if (propertyShape.AlternativePath != null)
+                            #region [alternative|sequence]Path
+                            else if (propertyShape.AlternativePath != null || propertyShape.SequencePath != null)
                             {
+                                bool isAlternativePath = propertyShape.AlternativePath != null;
+
                                 //Contextualize property path to the given focus node
-                                propertyShape.AlternativePath.Start = focusNode;
+                                if (isAlternativePath)
+                                    propertyShape.AlternativePath.Start = focusNode;
+                                else
+                                    propertyShape.SequencePath.Start = focusNode;
 
                                 //Compute property path on the given focus node
-                                DataTable alternativePathResult = new RDFQueryEngine().ApplyPropertyPath(propertyShape.AlternativePath, dataGraph);
-                                foreach (DataRow alternativePathResultRow in alternativePathResult.Rows)
+                                DataTable pathResult = new RDFQueryEngine().ApplyPropertyPath(
+                                    isAlternativePath ? propertyShape.AlternativePath : propertyShape.SequencePath, dataGraph);
+                                foreach (DataRow pathResultRow in pathResult.Rows)
                                 {
-                                    string aprValue = alternativePathResultRow["?END"]?.ToString();
-                                    if (!string.IsNullOrEmpty(aprValue))
-                                        result.Add(RDFQueryUtilities.ParseRDFPatternMember(aprValue));
+                                    string prValue = pathResultRow["?END"]?.ToString();
+                                    if (!string.IsNullOrEmpty(prValue))
+                                        result.Add(RDFQueryUtilities.ParseRDFPatternMember(prValue));
                                 }
 
                                 //Recontextualize property path to the initial configuration
-                                propertyShape.AlternativePath.Start = new RDFVariable("?START");
+                                if (isAlternativePath)
+                                    propertyShape.AlternativePath.Start = new RDFVariable("?START");
+                                else
+                                    propertyShape.SequencePath.Start = new RDFVariable("?START");
                             }
                             #endregion
 
-                            #region sh:path
+                            #region path
                             else
                                 result.AddRange(dataGraph[focusNodeResource, propertyShape.Path, null, null]
                                       .Select(t => t.Object));
@@ -209,13 +218,14 @@ namespace RDFSharp.Model
                 RDFTriple declaredPropertyShapePath = graph[(RDFResource)declaredPropertyShape.Subject, RDFVocabulary.SHACL.PATH, null, null].FirstOrDefault();
                 if (declaredPropertyShapePath?.Object is RDFResource declaredPropertyShapePathObject)
                 {
+                    RDFPropertyShape propertyShape;
                     if (declaredPropertyShapePathObject.IsBlank)
                     {
-                        #region sh:inversePath
+                        #region inverse
                         RDFTriple inversePath = graph[declaredPropertyShapePathObject, RDFVocabulary.SHACL.INVERSE_PATH, null, null].FirstOrDefault();
                         if (inversePath?.Object is RDFResource inversePathObject)
                         {
-                            RDFPropertyShape propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject, 
+                            propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject, 
                                 inversePathObject, true);
 
                             DetectShapeTargets(graph, propertyShape);
@@ -228,14 +238,14 @@ namespace RDFSharp.Model
                         }
                         #endregion
 
-                        #region sh:alternativePath
+                        #region alternative
                         RDFTriple alternativePath = graph[declaredPropertyShapePathObject, RDFVocabulary.SHACL.ALTERNATIVE_PATH, null, null].FirstOrDefault();
                         if (alternativePath?.Object is RDFResource alternativePathObject)
                         {
                             RDFCollection alternativePathCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, 
                                 alternativePathObject, RDFModelEnums.RDFTripleFlavors.SPO);
-                            RDFPropertyShape propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject, 
-                                alternativePathCollection.Items.OfType<RDFResource>().ToList());
+                            propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject, 
+                                alternativePathCollection.Items.OfType<RDFResource>().ToList(), RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative);
 
                             DetectShapeTargets(graph, propertyShape);
                             DetectShapeAttributes(graph, propertyShape);
@@ -246,10 +256,12 @@ namespace RDFSharp.Model
                             continue;
                         }
                         #endregion
-                    }
-                    else
-                    {
-                        RDFPropertyShape propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject, declaredPropertyShapePathObject);
+
+                        #region sequence
+                        RDFCollection sequencePathCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph,
+                                declaredPropertyShapePathObject, RDFModelEnums.RDFTripleFlavors.SPO);
+                        propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject,
+                            sequencePathCollection.Items.OfType<RDFResource>().ToList(), RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence);
 
                         DetectShapeTargets(graph, propertyShape);
                         DetectShapeAttributes(graph, propertyShape);
@@ -257,6 +269,22 @@ namespace RDFSharp.Model
                         DetectShapeConstraints(graph, propertyShape);
 
                         shapesGraph.AddShape(propertyShape);
+                        continue;
+                        #endregion
+                    }
+                    else
+                    {
+                        #region path
+                        propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject, declaredPropertyShapePathObject);
+
+                        DetectShapeTargets(graph, propertyShape);
+                        DetectShapeAttributes(graph, propertyShape);
+                        DetectShapeNonValidatingAttributes(graph, propertyShape);
+                        DetectShapeConstraints(graph, propertyShape);
+
+                        shapesGraph.AddShape(propertyShape);
+                        continue;
+                        #endregion
                     }
                 }
             }
