@@ -831,7 +831,12 @@ namespace RDFSharp.Model
                 //"rdf:ID" relative Uri: must be resolved against the xmlBase namespace
                 if (attr.LocalName.Equals("rdf:ID", StringComparison.OrdinalIgnoreCase)
                         || attr.LocalName.Equals("ID", StringComparison.OrdinalIgnoreCase))
+                {
+                    //This kind of syntax requires the attribute value to start with "#"
+                    if (!attrValue.StartsWith("#"))
+                        attrValue = string.Concat("#", attrValue);
                     attrValue = RDFModelUtilities.GetUriFromString(string.Concat(xmlBase, attrValue)).ToString();
+                }   
 
                 //"rdf:nodeID" relative Uri: must be resolved against the "bnode:" prefix
                 else if (attr.LocalName.Equals("rdf:nodeID", StringComparison.OrdinalIgnoreCase)

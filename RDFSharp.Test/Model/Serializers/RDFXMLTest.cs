@@ -1224,7 +1224,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "snack")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "fruit/apple"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "#snack")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "fruit/apple"))));
         }
 
         [TestMethod]
@@ -1365,9 +1365,9 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "snack")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFResource("http://obj/"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "#snack")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFResource("http://obj/"))));
             Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.STATEMENT)));
-            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.SUBJECT) && t.Object.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "snack"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.SUBJECT) && t.Object.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "#snack"))));
             Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.PREDICATE) && t.Object.Equals(new RDFResource("http://pred/pred"))));
             Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.OBJECT) && t.Object.Equals(new RDFResource("http://obj/"))));
         }
