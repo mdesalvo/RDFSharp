@@ -2,7 +2,7 @@
 
 RDFSharp has a modular API made up of 3 layers: 
 
-<b><a href="https://github.com/mdesalvo/RDFSharp/releases/download/v3.6.0/RDFSharp.Model-3.6.0.pdf">RDFSharp.Model</a></b>
+<b><a href="https://github.com/mdesalvo/RDFSharp/releases/download/v3.6.2/RDFSharp.Model-3.6.2.pdf">RDFSharp.Model</a></b>
 <ul>
     <li>Create and manage <b>RDF models</b> (resources, literals, triples, graphs, namespaces, ...)</li>
     <li>Exchange them using standard <b>RDF formats</b> (N-Triples, TriX, Turtle, RDF/Xml)</li>
