@@ -9,7 +9,7 @@ RDFSharp has a modular API made up of 3 layers:
     <li>Create and validate <b>SHACL shapes</b> (shape graphs, shapes, targets, constraints, reports, ...)</b></li>
 </ul>
 
-<b><a href="https://github.com/mdesalvo/RDFSharp/releases/download/v3.6.0/RDFSharp.Store-3.6.0.pdf">RDFSharp.Store</a></b>
+<b><a href="https://github.com/mdesalvo/RDFSharp/releases/download/v3.6.2/RDFSharp.Store-3.6.2.pdf">RDFSharp.Store</a></b>
 <ul>
     <li>Create and manage <b>RDF stores</b> for context-aware modeling of RDF data (contexts, quadruples, ...)</li>
     <li>Exchange them using standard <b>RDF formats</b> (N-Quads, TriX, TriG)</li>
