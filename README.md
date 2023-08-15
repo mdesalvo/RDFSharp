@@ -16,7 +16,7 @@ RDFSharp has a modular API made up of 3 layers:
     <li>Pick a store <a href="https://github.com/mdesalvo/RDFSharp.Extensions">extension</a> to save RDF data on many supported providers</li>
 </ul>
 
-<b><a href="https://github.com/mdesalvo/RDFSharp/releases/download/v3.6.0/RDFSharp.Query-3.6.0.pdf">RDFSharp.Query</a></b>
+<b><a href="https://github.com/mdesalvo/RDFSharp/releases/download/v3.6.2/RDFSharp.Query-3.6.2.pdf">RDFSharp.Query</a></b>
 <ul>
     <li>Create and execute <b>SPARQL queries</b> on graphs, stores, federations and <i>SPARQL endpoints</i></li>
     <li>Create and execute <b>SPARQL operations</b> on graphs, stores and <i>SPARQL UPDATE endpoints</i></li>
