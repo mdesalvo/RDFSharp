@@ -65,7 +65,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -101,7 +101,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFVariable("?Y"), new RDFVariable("?X")))
@@ -129,7 +129,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Fido", "it")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?Y")))
@@ -155,7 +155,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Fido", "it")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFVariable("?X"), new RDFVariable("?X")))
@@ -182,7 +182,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Fido", "it")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFVariable("?Y"), new RDFVariable("?Y")))
@@ -208,7 +208,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
@@ -241,7 +241,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
@@ -384,7 +384,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.SelectResults);
             Assert.IsTrue(result.SelectResults.Columns.Count == 5);
-            Assert.IsTrue(result.SelectResultsCount == 3);            
+            Assert.IsTrue(result.SelectResultsCount == 3);
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:fido"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:paperinoo"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?XBIND"].ToString(), "ex:paperinooBIND"));
@@ -478,7 +478,7 @@ namespace RDFSharp.Test.Query
                     .AddBind(new RDFBind(new RDFConcatExpression(new RDFVariableExpression(new RDFVariable("?X")), new RDFConstantExpression(new RDFPlainLiteral("BIND"))), new RDFVariable("?XBIND")))
                     .AddBind(new RDFBind(new RDFAddExpression(new RDFVariable("?Y"), new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_FLOAT))), new RDFVariable("?NEVERBOUND"))))
                 .AddModifier(new RDFOrderByModifier(new RDFVariable("?XBIND"), RDFQueryEnums.RDFOrderByFlavors.DESC))
-                .AddModifier(new RDFOrderByModifier(new RDFVariable("?XBINDLENGTH"), RDFQueryEnums.RDFOrderByFlavors.ASC))                
+                .AddModifier(new RDFOrderByModifier(new RDFVariable("?XBINDLENGTH"), RDFQueryEnums.RDFOrderByFlavors.ASC))
                 .AddProjectionVariable(new RDFVariable("?Y"))
                 .AddProjectionVariable(new RDFVariable("?X"))
                 .AddProjectionVariable(new RDFVariable("?XBIND"))
@@ -774,7 +774,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperoga"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("white")),
                 new RDFTriple(new RDFResource("ex:snoopie"),new RDFResource("ex:dogOf"),new RDFResource("ex:linus"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
@@ -818,7 +818,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperoga"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("white")),
                 new RDFTriple(new RDFResource("ex:snoopie"),new RDFResource("ex:dogOf"),new RDFResource("ex:linus"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
@@ -845,7 +845,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:paperoga"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?C"].ToString(), "white"));            
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?C"].ToString(), "white"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), "Mickey Mouse@EN-US"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:linus"));
@@ -870,7 +870,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperoga"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("white")),
                 new RDFTriple(new RDFResource("ex:snoopie"),new RDFResource("ex:dogOf"),new RDFResource("ex:linus"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
@@ -897,7 +897,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:paperoga"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?C"].ToString(), "white"));            
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?C"].ToString(), "white"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), "Mickey Mouse@EN-US"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:linus"));
@@ -913,7 +913,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[5]["?X"].ToString(), "ex:whoever"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[5]["?N"].ToString(), DBNull.Value.ToString()));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[5]["?Y"].ToString(), "ex:paperoga"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[5]["?C"].ToString(), "white"));            
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[5]["?C"].ToString(), "white"));
         }
 
         [TestMethod]
@@ -927,7 +927,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X")))
@@ -949,7 +949,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery();
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
@@ -970,7 +970,7 @@ namespace RDFSharp.Test.Query
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -1004,7 +1004,7 @@ namespace RDFSharp.Test.Query
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?C"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -1032,7 +1032,7 @@ namespace RDFSharp.Test.Query
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?Y"), new RDFVariable("?C"), new RDFVariable("?X")))
@@ -1061,7 +1061,7 @@ namespace RDFSharp.Test.Query
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?C")))
@@ -1088,7 +1088,7 @@ namespace RDFSharp.Test.Query
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?C"), new RDFVariable("?C"), new RDFVariable("?X")))
@@ -1116,7 +1116,7 @@ namespace RDFSharp.Test.Query
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?C"), new RDFResource("ex:dogOf"), new RDFVariable("?C")))
@@ -1142,7 +1142,7 @@ namespace RDFSharp.Test.Query
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?Y"), new RDFVariable("?C"), new RDFVariable("?C")))
@@ -1169,7 +1169,7 @@ namespace RDFSharp.Test.Query
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?C"), new RDFVariable("?C"), new RDFVariable("?C")))
@@ -1195,7 +1195,7 @@ namespace RDFSharp.Test.Query
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFVariable("?Y"), new RDFVariable("?X")))
@@ -1223,7 +1223,7 @@ namespace RDFSharp.Test.Query
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Fido", "it")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?Y")))
@@ -1249,7 +1249,7 @@ namespace RDFSharp.Test.Query
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Fido", "it")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFVariable("?X"), new RDFVariable("?X")))
@@ -1276,7 +1276,7 @@ namespace RDFSharp.Test.Query
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Fido", "it")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFVariable("?Y"), new RDFVariable("?Y")))
@@ -1346,14 +1346,14 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
             });
             RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {   
+            {
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
             RDFFederation federation = new RDFFederation().AddGraph(graph).AddStore(store);
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -1443,7 +1443,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?Y"))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1475,7 +1475,7 @@ namespace RDFSharp.Test.Query
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?Y"))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1509,7 +1509,7 @@ namespace RDFSharp.Test.Query
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?Y"))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1543,7 +1543,7 @@ namespace RDFSharp.Test.Query
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("ex:pluto"))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1573,7 +1573,7 @@ namespace RDFSharp.Test.Query
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("ex:ctx1"))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1606,7 +1606,7 @@ namespace RDFSharp.Test.Query
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("bnode:12345"))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1636,7 +1636,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("ex:pluto"))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1664,7 +1664,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("bnode:12345"))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1692,7 +1692,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("ex:pluto"));
             RDFDescribeQueryResult result = new RDFQueryEngine().EvaluateDescribeQuery(query, graph);
@@ -1717,7 +1717,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?Y"))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1739,7 +1739,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US"))
             });
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?Y"));
             RDFDescribeQueryResult result = new RDFQueryEngine().EvaluateDescribeQuery(query, graph);
@@ -1763,7 +1763,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFConstructQuery query = new RDFConstructQuery()
                 .AddTemplate(new RDFPattern(new RDFVariable("?Y"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:dog")))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1795,7 +1795,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFConstructQuery query = new RDFConstructQuery()
                 .AddTemplate(new RDFPattern(new RDFResource("ex:pluto"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:dog")))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1824,7 +1824,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFConstructQuery query = new RDFConstructQuery()
                 .AddTemplate(new RDFPattern(new RDFVariable("?Y"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:dog")))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1846,7 +1846,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US"))
             });
-            
+
             RDFConstructQuery query = new RDFConstructQuery()
                 .AddTemplate(new RDFPattern(new RDFVariable("?Y"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:dog")));
             RDFConstructQueryResult result = new RDFQueryEngine().EvaluateConstructQuery(query, graph);
@@ -1870,7 +1870,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFAskQuery query = new RDFAskQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -1892,7 +1892,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFAskQuery query = new RDFAskQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X")))
@@ -1911,7 +1911,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US"))
             });
-            
+
             RDFAskQuery query = new RDFAskQuery();
             RDFAskQueryResult result = new RDFQueryEngine().EvaluateAskQuery(query, graph);
 
@@ -1932,7 +1932,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -1981,7 +1981,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -2032,7 +2032,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -2083,7 +2083,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X")))
@@ -2553,7 +2553,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -2570,7 +2570,7 @@ namespace RDFSharp.Test.Query
             queryEngine.FinalizePatternGroup(query.GetPatternGroups().Single()); //Just to obtain real pattern group table  (instead of mocking it)
             queryEngine.ApplyFilters(query.GetPatternGroups().Single()); //Just to obtain real filtered table (instead of mocking it)
             DataTable resultTable = queryEngine.ApplyModifiers(query, queryEngine.QueryMemberResultTables.ElementAt(0).Value);
-            
+
             Assert.IsTrue(resultTable.Columns.Count == 2);
             Assert.IsTrue(resultTable.Rows.Count == 2);
             Assert.IsTrue(string.Equals(resultTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
@@ -2684,7 +2684,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
             });
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -2745,7 +2745,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
             });
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("ex:balto"))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -2802,7 +2802,7 @@ namespace RDFSharp.Test.Query
             {
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino"))
             });
-            RDFGraph graph2 = new RDFGraph(new List<RDFTriple>()
+            RDFAsyncGraph graph2 = new RDFAsyncGraph(new List<RDFTriple>()
             {
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
@@ -2810,8 +2810,8 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
             });
-            RDFFederation federation = new RDFFederation().AddGraph(graph1).AddGraph(graph2);
-            
+            RDFFederation federation = new RDFFederation().AddGraph(graph1).AddAsyncGraph(graph2);
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("ex:balto"))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -2873,7 +2873,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
             });
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("ex:balto2"))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -2935,7 +2935,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
             });
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?Y"))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -3001,7 +3001,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
             });
             RDFFederation federation = new RDFFederation().AddGraph(graph1).AddGraph(graph2);
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?Y"))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -3063,7 +3063,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
             });
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?Z"))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -3125,7 +3125,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
             });
-            
+
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?C"))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -4597,7 +4597,7 @@ namespace RDFSharp.Test.Query
 
             Assert.IsTrue(table.Rows.Count == 1);
             Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx"));
-        }       
+        }
 
         [TestMethod]
         public void ShouldPopulateTableFromStoreWithPatternHoleS()
@@ -5506,7 +5506,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Y"].ToString(), "ex:pluto"));
             Assert.IsTrue(string.Equals(combineTable.Rows[2]["?X"].ToString(), "ex:minnie"));
             Assert.IsTrue(string.Equals(combineTable.Rows[2]["?N"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Q"].ToString(), DBNull.Value.ToString()));            
+            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Q"].ToString(), DBNull.Value.ToString()));
         }
 
         [TestMethod]
@@ -5609,7 +5609,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Y"].ToString(), "ex:pluto"));
             Assert.IsTrue(string.Equals(combineTable.Rows[2]["?X"].ToString(), "ex:minnie"));
             Assert.IsTrue(string.Equals(combineTable.Rows[2]["?N"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Q"].ToString(), DBNull.Value.ToString()));            
+            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Q"].ToString(), DBNull.Value.ToString()));
         }
 
         [TestMethod]
@@ -5858,7 +5858,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -5896,7 +5896,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -5925,7 +5925,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -5954,7 +5954,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -5989,7 +5989,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))))
@@ -6028,7 +6028,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))))
@@ -6068,7 +6068,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
             });
-            
+
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))))
@@ -6125,7 +6125,7 @@ namespace RDFSharp.Test.Query
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddProjectionVariable(new RDFVariable("?A"))
                 .AddProjectionVariable(new RDFVariable("?AGEX2"), new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)));
-            
+
             RDFQueryEngine.ProjectExpressions(query, table);
 
             Assert.IsNotNull(table);

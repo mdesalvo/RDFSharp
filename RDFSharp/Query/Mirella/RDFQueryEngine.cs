@@ -44,7 +44,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default column type used for Mirella tables
         /// </summary>
-        internal static readonly Type SystemString = typeof(string); 
+        internal static readonly Type SystemString = typeof(string);
 
         /// <summary>
         /// Attribute denoting an optional pattern/patternGroup/query
@@ -201,7 +201,7 @@ namespace RDFSharp.Query
                 //Transform the result into a boolean response
                 askResult.AskResult = (queryResultTable.Rows.Count > 0);
             }
-            
+
             return askResult;
         }
 
@@ -294,7 +294,7 @@ namespace RDFSharp.Query
                 {
                     //Transform SPARQL values into an equivalent filter
                     RDFValuesFilter valuesFilter = values.GetValuesFilter();
-                    
+
                     //Save result datatable
                     PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(valuesFilter.ValuesTable);
 
@@ -640,6 +640,15 @@ namespace RDFSharp.Query
                                                .UnionWith(dataSourceGraph.SelectTriplesByObject(describeResource));
                 result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
             }
+            //Search on ASYNC GRAPH
+            else if (dataSource is RDFAsyncGraph dataSourceAsyncGraph)
+            {
+                //Search as RESOURCE (S-P-O)
+                RDFGraph desc = dataSourceAsyncGraph.WrappedGraph.SelectTriplesBySubject(describeResource)
+                                               .UnionWith(dataSourceAsyncGraph.WrappedGraph.SelectTriplesByPredicate(describeResource))
+                                               .UnionWith(dataSourceAsyncGraph.WrappedGraph.SelectTriplesByObject(describeResource));
+                result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
+            }
             //Search on STORE
             else if (dataSource is RDFStore dataSourceStore)
             {
@@ -693,7 +702,7 @@ namespace RDFSharp.Query
             DataTable result = describeTemplate.Clone();
 
             //In order to be processed this variable must be a column of the results table!
-            string describeVariableName = describeVariable.ToString();                        
+            string describeVariableName = describeVariable.ToString();
             if (!resultTable.Columns.Contains(describeVariableName))
                 return result;
 
@@ -723,6 +732,24 @@ namespace RDFSharp.Query
                     else
                     {
                         RDFGraph desc = dataSourceGraph.SelectTriplesByLiteral((RDFLiteral)describeVariableValue);
+                        result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
+                    }
+                }
+                //Search on ASYNC GRAPH
+                else if (dataSource is RDFAsyncGraph dataSourceAsyncGraph)
+                {
+                    //Search as RESOURCE (S-P-O)
+                    if (describeVariableValue is RDFResource describeVariableValueResource)
+                    {
+                        RDFGraph desc = dataSourceAsyncGraph.WrappedGraph.SelectTriplesBySubject(describeVariableValueResource)
+                                                       .UnionWith(dataSourceAsyncGraph.WrappedGraph.SelectTriplesByPredicate(describeVariableValueResource))
+                                                       .UnionWith(dataSourceAsyncGraph.WrappedGraph.SelectTriplesByObject(describeVariableValueResource));
+                        result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
+                    }
+                    //Search as LITERAL (L)
+                    else
+                    {
+                        RDFGraph desc = dataSourceAsyncGraph.WrappedGraph.SelectTriplesByLiteral((RDFLiteral)describeVariableValue);
                         result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
                     }
                 }
@@ -816,6 +843,9 @@ namespace RDFSharp.Query
                 case RDFGraph graph:
                     return ApplyPatternToGraph(pattern, graph);
 
+                case RDFAsyncGraph asyncGraph:
+                    return ApplyPatternToGraph(pattern, asyncGraph.WrappedGraph);
+
                 case RDFStore store:
                     return ApplyPatternToStore(pattern, store);
 
@@ -858,7 +888,7 @@ namespace RDFSharp.Query
                 templateHoleDetector.Append('O');
                 AddColumn(patternResultTable, pattern.Object.ToString());
             }
-            
+
             //Analyze templateHoleDetector to decide hole filling strategy
             List<RDFTriple> matchingTriples = new List<RDFTriple>();
             switch (templateHoleDetector.ToString())
@@ -952,7 +982,7 @@ namespace RDFSharp.Query
                 templateHoleDetector.Append('O');
                 AddColumn(patternResultTable, pattern.Object.ToString());
             }
-            
+
             //Analyze templateHoleDetector to decide hole filling strategy
             RDFMemoryStore matchingQuadruples = new RDFMemoryStore();
             switch (templateHoleDetector.ToString())
@@ -1109,6 +1139,11 @@ namespace RDFSharp.Query
                     case RDFGraph dataSourceGraph:
                         DataTable graphTable = ApplyPatternToGraph(pattern, dataSourceGraph);
                         resultTable.Merge(graphTable, true, MissingSchemaAction.Add);
+                        break;
+
+                    case RDFAsyncGraph dataSourceAsyncGraph:
+                        DataTable asyncGraphTable = ApplyPatternToGraph(pattern, dataSourceAsyncGraph.WrappedGraph);
+                        resultTable.Merge(asyncGraphTable, true, MissingSchemaAction.Add);
                         break;
 
                     case RDFStore dataSourceStore:
@@ -1579,7 +1614,7 @@ namespace RDFSharp.Query
                 foreach (DataColumn commonColumn in commonColumns)
                     relatedRows = relatedRows.Where(relatedRow => CheckJoin(leftRow, relatedRow, commonColumn.ColumnName));
                 List<DataRow> relatedRowsList = relatedRows.ToList();
-                
+
                 //Relation HAS found data => proceed with outer-join
                 if (relatedRowsList.Any())
                 {
@@ -1699,11 +1734,11 @@ namespace RDFSharp.Query
                 for (int i = 1; i < dataTables.Count; i++)
                 {
                     //Set automatic switch to OuterJoin in case of "Optional" detected
-                    switchToOuterJoin |= dataTables[i].ExtendedProperties.ContainsKey(IsOptional) 
+                    switchToOuterJoin |= dataTables[i].ExtendedProperties.ContainsKey(IsOptional)
                                            && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
 
                     //Proceed with most proper join strategy for current table
-                    finalTable = switchToOuterJoin ? OuterJoinTables(finalTable, dataTables[i]) 
+                    finalTable = switchToOuterJoin ? OuterJoinTables(finalTable, dataTables[i])
                                                    : InnerJoinTables(finalTable, dataTables[i]);
                 }
             }
@@ -1786,7 +1821,7 @@ namespace RDFSharp.Query
                     RDFPatternMember bindResult = expression.ApplyExpression(table.NewRow());
                     if (bindResult != null)
                         AddRow(table, new Dictionary<string, string>() { { bindVariable, bindResult.ToString() } });
-                }                    
+                }
                 else
                 {
                     foreach (DataRow row in table.AsEnumerable())
