@@ -886,11 +886,17 @@ namespace RDFSharp.Test.Query
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
+            RDFAsyncStore asyncStore = new RDFAsyncStore(
+                new RDFMemoryStore().AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:shrub"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("ex:grass"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFAsyncGraph asyncGraph = new RDFAsyncGraph();
+            asyncGraph.AddTripleAsync(new RDFTriple(new RDFResource("ex:plant"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)).GetAwaiter().GetResult();
             RDFFederation federation = new RDFFederation();
             federation.AddStore(store);
             federation.AddGraph(graph);
+            federation.AddAsyncGraph(asyncGraph);
+            federation.AddAsyncStore(asyncStore);
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -900,7 +906,7 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.DescribeResults);
-            Assert.IsTrue(result.DescribeResultsCount == 4);
+            Assert.IsTrue(result.DescribeResultsCount == 6);
             Assert.IsTrue(result.DescribeResults.Columns.Count == 4);
             Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
             Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
@@ -922,6 +928,14 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.DescribeResults.Rows[3]["?SUBJECT"].Equals("ex:grass"));
             Assert.IsTrue(result.DescribeResults.Rows[3]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(result.DescribeResults.Rows[3]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
+            Assert.IsTrue(result.DescribeResults.Rows[4]["?CONTEXT"].Equals(DBNull.Value));
+            Assert.IsTrue(result.DescribeResults.Rows[4]["?SUBJECT"].Equals("ex:plant"));
+            Assert.IsTrue(result.DescribeResults.Rows[4]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.DescribeResults.Rows[4]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
+            Assert.IsTrue(result.DescribeResults.Rows[5]["?CONTEXT"].Equals("ex:ctx"));
+            Assert.IsTrue(result.DescribeResults.Rows[5]["?SUBJECT"].Equals("ex:shrub"));
+            Assert.IsTrue(result.DescribeResults.Rows[5]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.DescribeResults.Rows[5]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
         }
 
         [TestMethod]
@@ -930,8 +944,14 @@ namespace RDFSharp.Test.Query
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
+            RDFAsyncStore asyncStore = new RDFAsyncStore(
+                new RDFMemoryStore().AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.DC.CREATOR, new RDFResource("ex:God"))));
+            RDFAsyncGraph asyncGraph = new RDFAsyncGraph();
+            asyncGraph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("flower","en"))).GetAwaiter().GetResult();
             RDFFederation federation = new RDFFederation();
             federation.AddStore(store);
+            federation.AddAsyncStore(asyncStore);
+            federation.AddAsyncGraph(asyncGraph);
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFResource("ex:flower"))
@@ -941,7 +961,7 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.DescribeResults);
-            Assert.IsTrue(result.DescribeResultsCount == 2);
+            Assert.IsTrue(result.DescribeResultsCount == 4);
             Assert.IsTrue(result.DescribeResults.Columns.Count == 4);
             Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
             Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
@@ -955,6 +975,14 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.DescribeResults.Rows[1]["?SUBJECT"].Equals("ex:flower"));
             Assert.IsTrue(result.DescribeResults.Rows[1]["?PREDICATE"].Equals($"ex:color"));
             Assert.IsTrue(result.DescribeResults.Rows[1]["?OBJECT"].Equals($"white@EN"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?CONTEXT"].Equals("ex:ctx"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?PREDICATE"].Equals($"http://purl.org/dc/elements/1.1/creator"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?OBJECT"].Equals($"ex:God"));
+            Assert.IsTrue(result.DescribeResults.Rows[3]["?CONTEXT"].Equals(DBNull.Value));
+            Assert.IsTrue(result.DescribeResults.Rows[3]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[3]["?PREDICATE"].Equals($"http://www.w3.org/2000/01/rdf-schema#label"));
+            Assert.IsTrue(result.DescribeResults.Rows[3]["?OBJECT"].Equals($"flower@EN"));
         }
 
         [TestMethod]
@@ -964,8 +992,11 @@ namespace RDFSharp.Test.Query
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
+            RDFAsyncStore asyncStore = new RDFAsyncStore(
+                new RDFMemoryStore().AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:flower"), RDFVocabulary.DC.CREATOR, new RDFResource("ex:God"))));
             RDFFederation federation = new RDFFederation();
             federation.AddStore(store);
+            federation.AddAsyncStore(asyncStore);
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFResource("ex:ctx2"))
@@ -975,7 +1006,7 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.DescribeResults);
-            Assert.IsTrue(result.DescribeResultsCount == 1);
+            Assert.IsTrue(result.DescribeResultsCount == 2);
             Assert.IsTrue(result.DescribeResults.Columns.Count == 4);
             Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
             Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
@@ -985,6 +1016,10 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:tree"));
             Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?CONTEXT"].Equals("ex:ctx2"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?PREDICATE"].Equals($"http://purl.org/dc/elements/1.1/creator"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?OBJECT"].Equals($"ex:God"));
         }
 
         [TestMethod]
@@ -994,8 +1029,11 @@ namespace RDFSharp.Test.Query
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
+            RDFAsyncGraph asyncGraph = new RDFAsyncGraph();
+            asyncGraph.AddTripleAsync(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("this is a blank node"))).GetAwaiter().GetResult();
             RDFFederation federation = new RDFFederation();
             federation.AddStore(store);
+            federation.AddAsyncGraph(asyncGraph);
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFResource("bnode:12345"))
@@ -1005,7 +1043,7 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.DescribeResults);
-            Assert.IsTrue(result.DescribeResultsCount == 1);
+            Assert.IsTrue(result.DescribeResultsCount == 2);
             Assert.IsTrue(result.DescribeResults.Columns.Count == 4);
             Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
             Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
@@ -1015,6 +1053,10 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("bnode:12345"));
             Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
             Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?CONTEXT"].Equals(DBNull.Value));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?SUBJECT"].Equals("bnode:12345"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?PREDICATE"].Equals($"{RDFVocabulary.RDFS.LABEL}"));
+            Assert.IsTrue(result.DescribeResults.Rows[1]["?OBJECT"].Equals($"this is a blank node"));
         }
 
         [TestMethod]
@@ -1023,8 +1065,14 @@ namespace RDFSharp.Test.Query
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
+            RDFAsyncGraph asyncGraph = new RDFAsyncGraph();
+            asyncGraph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("flower","en"))).GetAwaiter().GetResult();
+            RDFAsyncStore asyncStore = new RDFAsyncStore(
+                new RDFMemoryStore().AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:flower"), RDFVocabulary.DC.CREATOR, new RDFResource("ex:God"))));
             RDFFederation federation = new RDFFederation();
             federation.AddStore(store);
+            federation.AddAsyncGraph(asyncGraph);
+            federation.AddAsyncStore(asyncStore);
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
@@ -1034,7 +1082,7 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.DescribeResults);
-            Assert.IsTrue(result.DescribeResultsCount == 2);
+            Assert.IsTrue(result.DescribeResultsCount == 4);
             Assert.IsTrue(result.DescribeResults.Columns.Count == 4);
             Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
             Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
@@ -1048,6 +1096,14 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.DescribeResults.Rows[1]["?SUBJECT"].Equals("ex:flower"));
             Assert.IsTrue(result.DescribeResults.Rows[1]["?PREDICATE"].Equals($"ex:color"));
             Assert.IsTrue(result.DescribeResults.Rows[1]["?OBJECT"].Equals($"white@EN"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?CONTEXT"].Equals(DBNull.Value));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?PREDICATE"].Equals($"http://www.w3.org/2000/01/rdf-schema#label"));
+            Assert.IsTrue(result.DescribeResults.Rows[2]["?OBJECT"].Equals($"flower@EN"));
+            Assert.IsTrue(result.DescribeResults.Rows[3]["?CONTEXT"].Equals($"ex:ctx2"));
+            Assert.IsTrue(result.DescribeResults.Rows[3]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.DescribeResults.Rows[3]["?PREDICATE"].Equals($"http://purl.org/dc/elements/1.1/creator"));
+            Assert.IsTrue(result.DescribeResults.Rows[3]["?OBJECT"].Equals($"ex:God"));
         }
 
         [TestMethod]
