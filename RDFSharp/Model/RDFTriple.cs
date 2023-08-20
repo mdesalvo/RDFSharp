@@ -53,6 +53,11 @@ namespace RDFSharp.Model
         public RDFPatternMember Object { get; internal set; }
 
         /// <summary>
+        /// Indicates that the triple has been emitted in consequence of any kind of reasoning
+        /// </summary>
+        public bool IsInference { get; internal set;}
+
+        /// <summary>
         /// Subject of the triple's reification
         /// </summary>
         public RDFResource ReificationSubject => LazyReificationSubject.Value;
@@ -65,15 +70,18 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFTriple(RDFResource subj, RDFResource pred, RDFResource obj)
         {
+            #region Guards
             if (pred == null)
                 throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is null");
             if (pred.IsBlank)
                 throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is a blank resource");
+            #endregion
 
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
             Subject = subj ?? new RDFResource();
             Predicate = pred;
             Object = obj ?? new RDFResource();
+            IsInference = false;
             LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
             LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", TripleID.ToString())));
         }
@@ -83,15 +91,18 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFTriple(RDFResource subj, RDFResource pred, RDFLiteral lit)
         {
+            #region Guards
             if (pred == null)
                 throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is null");
             if (pred.IsBlank)
                 throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is a blank resource");
+            #endregion
 
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
             Subject = subj ?? new RDFResource();
             Predicate = pred;
             Object = lit ?? new RDFPlainLiteral(string.Empty);
+            IsInference = false;
             LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
             LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", TripleID.ToString())));
         }
@@ -151,6 +162,15 @@ namespace RDFSharp.Model
         /// </summary>
         public Task<RDFAsyncGraph> ReifyTripleAsync()
             => Task.Run(() => new RDFAsyncGraph(ReifyTriple()));
+
+        /// <summary>
+        /// Sets the triple as emitted by any kind of reasoning
+        /// </summary>
+        public RDFTriple SetInference()
+        {
+            IsInference = true;
+            return this;
+        }
         #endregion
     }
 

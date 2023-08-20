@@ -39,7 +39,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(triple.Predicate.Equals(pred));
             Assert.IsTrue(triple.Object.Equals(obj));
             Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", triple.TripleID.ToString()))));
-
+            
             string tripleString = triple.ToString();
             Assert.IsTrue(tripleString.Equals(string.Concat(triple.Subject.ToString(), " ", triple.Predicate.ToString(), " ", triple.Object.ToString())));
 
@@ -48,6 +48,10 @@ namespace RDFSharp.Test.Model
 
             RDFTriple triple2 = new RDFTriple(subj, pred, obj);
             Assert.IsTrue(triple.Equals(triple2));
+
+            Assert.IsFalse(triple.IsInference);
+            triple.SetInference();
+            Assert.IsTrue(triple.IsInference);
         }
 
         [DataTestMethod]
