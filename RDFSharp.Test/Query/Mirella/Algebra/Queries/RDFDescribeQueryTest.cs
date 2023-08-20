@@ -1068,7 +1068,7 @@ namespace RDFSharp.Test.Query
             RDFAsyncGraph asyncGraph = new RDFAsyncGraph();
             asyncGraph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("flower","en"))).GetAwaiter().GetResult();
             RDFAsyncStore asyncStore = new RDFAsyncStore(
-                new RDFMemoryStore().AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:flower"), RDFVocabulary.DC.CREATOR, new RDFResource("ex:God"))));
+                new RDFMemoryStore().AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.DC.CREATOR, new RDFResource("ex:God"))));
             RDFFederation federation = new RDFFederation();
             federation.AddStore(store);
             federation.AddAsyncGraph(asyncGraph);
@@ -1100,7 +1100,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.DescribeResults.Rows[2]["?SUBJECT"].Equals("ex:flower"));
             Assert.IsTrue(result.DescribeResults.Rows[2]["?PREDICATE"].Equals($"http://www.w3.org/2000/01/rdf-schema#label"));
             Assert.IsTrue(result.DescribeResults.Rows[2]["?OBJECT"].Equals($"flower@EN"));
-            Assert.IsTrue(result.DescribeResults.Rows[3]["?CONTEXT"].Equals($"ex:ctx2"));
+            Assert.IsTrue(result.DescribeResults.Rows[3]["?CONTEXT"].Equals($"ex:ctx"));
             Assert.IsTrue(result.DescribeResults.Rows[3]["?SUBJECT"].Equals("ex:flower"));
             Assert.IsTrue(result.DescribeResults.Rows[3]["?PREDICATE"].Equals($"http://purl.org/dc/elements/1.1/creator"));
             Assert.IsTrue(result.DescribeResults.Rows[3]["?OBJECT"].Equals($"ex:God"));
