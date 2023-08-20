@@ -2798,22 +2798,35 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldDescribeResourceTermsOnFederation()
         {
-            RDFGraph graph1 = new RDFGraph(new List<RDFTriple>()
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
             {
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino"))
             });
-            RDFAsyncGraph graph2 = new RDFAsyncGraph(new List<RDFTriple>()
+            RDFAsyncGraph asyncGraph = new RDFAsyncGraph(new List<RDFTriple>()
             {
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
-                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
-                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
-                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US"))
             });
-            RDFFederation federation = new RDFFederation().AddGraph(graph1).AddAsyncGraph(graph2);
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
+            {
+                new RDFQuadruple(new RDFContext(), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
+                new RDFQuadruple(new RDFContext(), new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
+            });
+            RDFAsyncStore asyncStore = new RDFAsyncStore(
+                new RDFMemoryStore(new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(new RDFContext(), new RDFResource("ex:snoopy"),new RDFResource("ex:dogOf"),new RDFResource("ex:linus")),
+                    new RDFQuadruple(new RDFContext(), new RDFResource("ex:linus"),new RDFResource("ex:hasName"),new RDFTypedLiteral("Linus", RDFModelEnums.RDFDatatypes.XSD_STRING))
+                }));
+            RDFFederation federation = new RDFFederation().AddGraph(graph)
+                                                          .AddAsyncGraph(asyncGraph)
+                                                          .AddStore(store)
+                                                          .AddAsyncStore(asyncStore);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("ex:balto"))
+                .AddDescribeTerm(new RDFResource("ex:snoopy"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                     .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
@@ -2852,13 +2865,19 @@ namespace RDFSharp.Test.Query
             row3["?N"] = null;
             row3["?C"] = "green@EN";
             table.Rows.Add(row3);
+            DataRow row4 = table.NewRow();
+            row4["?Y"] = "ex:snoopy";
+            row4["?X"] = "ex:linus";
+            row4["?N"] = $"Linus^^{RDFVocabulary.XSD.STRING}";
+            row4["?C"] = null;
+            table.Rows.Add(row4);
 
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.DescribeTerms(query, federation, table);
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Columns.Count == 3);
-            Assert.IsTrue(result.Rows.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 3);
         }
 
         [TestMethod]
