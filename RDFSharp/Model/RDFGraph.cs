@@ -51,8 +51,8 @@ namespace RDFSharp.Model
                 foreach (RDFIndexedTriple indexedTriple in IndexedTriples.Values)
                 {
                     yield return indexedTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
-                        ? new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.ResourcesRegister[indexedTriple.ObjectID])
-                        : new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.LiteralsRegister[indexedTriple.ObjectID]);
+                        ? new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.ResourcesRegister[indexedTriple.ObjectID]) { IsInference = indexedTriple.IsInference }
+                        : new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.LiteralsRegister[indexedTriple.ObjectID]) { IsInference = indexedTriple.IsInference };
                 }
             } 
         }
@@ -595,8 +595,10 @@ namespace RDFSharp.Model
         /// </summary>
         public void ToFile(RDFModelEnums.RDFFormats rdfFormat, string filepath)
         {
+            #region Guards
             if (string.IsNullOrEmpty(filepath))
                 throw new RDFModelException("Cannot write RDF graph to file because given \"filepath\" parameter is null or empty.");
+            #endregion
 
             switch (rdfFormat)
             {
@@ -620,8 +622,10 @@ namespace RDFSharp.Model
         /// </summary>
         public void ToStream(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream)
         {
+            #region Guards
             if (outputStream == null)
                 throw new RDFModelException("Cannot write RDF graph to stream because given \"outputStream\" parameter is null.");
+            #endregion
 
             switch (rdfFormat)
             {
@@ -673,10 +677,12 @@ namespace RDFSharp.Model
         /// </summary>
         public static RDFGraph FromFile(RDFModelEnums.RDFFormats rdfFormat, string filepath)
         {
+            #region Guards
             if (string.IsNullOrEmpty(filepath))
                 throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter is null or empty.");
             if (!File.Exists(filepath))
                 throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
+            #endregion
 
             switch (rdfFormat)
             {
@@ -699,8 +705,10 @@ namespace RDFSharp.Model
         public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream) => FromStream(rdfFormat, inputStream, null);
         internal static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, Uri graphContext)
         {
+            #region Guards
             if (inputStream == null)
                 throw new RDFModelException("Cannot read RDF graph from stream because given \"inputStream\" parameter is null.");
+            #endregion
 
             switch (rdfFormat)
             {
@@ -722,12 +730,14 @@ namespace RDFSharp.Model
         /// </summary>
         public static RDFGraph FromDataTable(DataTable table)
         {
+            #region Guards
             if (table == null)
                 throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter is null.");
             if (table.Columns.Count != 3)
                 throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter does not have exactly 3 columns.");
             if (!(table.Columns.Contains("?SUBJECT") && table.Columns.Contains("?PREDICATE") && table.Columns.Contains("?OBJECT")))
                 throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter does not have the required columns \"?SUBJECT\", \"?PREDICATE\", \"?OBJECT\".");
+            #endregion
 
             RDFGraph result = new RDFGraph();
 
@@ -780,10 +790,12 @@ namespace RDFSharp.Model
         /// </summary>
         public static RDFGraph FromUri(Uri uri, int timeoutMilliseconds = 20000)
         {
+            #region Guards
             if (uri == null)
                 throw new RDFModelException("Cannot read RDF graph from Uri because given \"uri\" parameter is null.");
             if (!uri.IsAbsoluteUri)
                 throw new RDFModelException("Cannot read RDF graph from Uri because given \"uri\" parameter does not represent an absolute Uri.");
+            #endregion
 
             RDFGraph result = new RDFGraph();
             try

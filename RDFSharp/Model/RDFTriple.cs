@@ -38,6 +38,11 @@ namespace RDFSharp.Model
         public RDFModelEnums.RDFTripleFlavors TripleFlavor { get; internal set; }
 
         /// <summary>
+        /// Indicates that the triple has been emitted in consequence of any kind of reasoning
+        /// </summary>
+        public bool IsInference { get; internal set;}
+
+        /// <summary>
         /// Member acting as subject token of the triple
         /// </summary>
         public RDFPatternMember Subject { get; internal set; }
@@ -51,11 +56,6 @@ namespace RDFSharp.Model
         /// Member acting as object token of the triple
         /// </summary>
         public RDFPatternMember Object { get; internal set; }
-
-        /// <summary>
-        /// Indicates that the triple has been emitted in consequence of any kind of reasoning
-        /// </summary>
-        public bool IsInference { get; internal set;}
 
         /// <summary>
         /// Subject of the triple's reification
@@ -78,10 +78,10 @@ namespace RDFSharp.Model
             #endregion
 
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
+            IsInference = false;
             Subject = subj ?? new RDFResource();
             Predicate = pred;
             Object = obj ?? new RDFResource();
-            IsInference = false;
             LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
             LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", TripleID.ToString())));
         }
@@ -99,10 +99,10 @@ namespace RDFSharp.Model
             #endregion
 
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
+            IsInference = false;
             Subject = subj ?? new RDFResource();
             Predicate = pred;
             Object = lit ?? new RDFPlainLiteral(string.Empty);
-            IsInference = false;
             LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
             LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", TripleID.ToString())));
         }
@@ -113,6 +113,7 @@ namespace RDFSharp.Model
         internal RDFTriple(RDFIndexedTriple indexedTriple, RDFGraphIndex graphIndex)
         {
             TripleFlavor = indexedTriple.TripleFlavor;
+            IsInference = indexedTriple.IsInference;
             Subject = graphIndex.ResourcesRegister[indexedTriple.SubjectID];
             Predicate = graphIndex.ResourcesRegister[indexedTriple.PredicateID];
             if (indexedTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
@@ -204,6 +205,11 @@ namespace RDFSharp.Model
         /// Flavor of the triple
         /// </summary>
         internal RDFModelEnums.RDFTripleFlavors TripleFlavor { get; set; }
+
+        /// <summary>
+        /// Indicates that the triple has been emitted in consequence of any kind of reasoning
+        /// </summary>
+        internal bool IsInference { get; set; }
         #endregion
 
         #region Ctor
@@ -213,10 +219,11 @@ namespace RDFSharp.Model
         internal RDFIndexedTriple(RDFTriple triple)
         {
             TripleFlavor = triple.TripleFlavor;
+            IsInference = triple.IsInference;
             TripleID = triple.TripleID;
             SubjectID = triple.Subject.PatternMemberID;
             PredicateID = triple.Predicate.PatternMemberID;
-            ObjectID = triple.Object.PatternMemberID;            
+            ObjectID = triple.Object.PatternMemberID;
         }
         #endregion
 

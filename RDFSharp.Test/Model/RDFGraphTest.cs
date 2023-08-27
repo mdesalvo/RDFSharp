@@ -18,6 +18,7 @@ using RDFSharp.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System;
 using System.Collections.Generic;
 
@@ -219,6 +220,19 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(graph.TriplesCount == 1);
             Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple.TripleID));
+        }
+
+        [TestMethod]
+        public void ShouldAddTripleAsInference()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")).SetInference();
+            graph.AddTriple(triple);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple.TripleID));
+            Assert.IsTrue(graph.Count(t => t.IsInference) == 1);
+            
         }
 
         [TestMethod]
