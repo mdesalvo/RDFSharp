@@ -412,6 +412,11 @@ namespace RDFSharp.Model
             /// owl:annotatedTarget [OWL2]
             /// </summary>
             public static readonly RDFResource ANNOTATED_TARGET = new RDFResource(string.Concat(OWL.BASE_URI, "annotatedTarget"));
+
+            /// <summary>
+            /// owl:real [OWL2]
+            /// </summary>
+            public static readonly RDFResource REAL = new RDFResource(string.Concat(OWL.BASE_URI, "real"));
             #endregion
         }
         #endregion
