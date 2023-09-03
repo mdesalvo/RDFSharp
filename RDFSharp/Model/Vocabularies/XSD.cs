@@ -242,31 +242,6 @@ namespace RDFSharp.Model
             /// xsd:ID
             /// </summary>
             public static readonly RDFResource ID = new RDFResource(string.Concat(XSD.BASE_URI,"ID"));
-
-            /// <summary>
-            /// xsd:pattern
-            /// </summary>
-            public static readonly RDFResource PATTERN = new RDFResource(string.Concat(XSD.BASE_URI,"pattern"));
-
-            /// <summary>
-            /// xsd:minInclusive
-            /// </summary>
-            public static readonly RDFResource MIN_INCLUSIVE = new RDFResource(string.Concat(XSD.BASE_URI,"minInclusive"));
-
-            /// <summary>
-            /// xsd:maxInclusive
-            /// </summary>
-            public static readonly RDFResource MAX_INCLUSIVE = new RDFResource(string.Concat(XSD.BASE_URI,"maxInclusive"));
-
-            /// <summary>
-            /// xsd:minExclusive
-            /// </summary>
-            public static readonly RDFResource MIN_EXCLUSIVE = new RDFResource(string.Concat(XSD.BASE_URI,"minExclusive"));
-
-            /// <summary>
-            /// xsd:maxExclusive
-            /// </summary>
-            public static readonly RDFResource MAX_EXCLUSIVE = new RDFResource(string.Concat(XSD.BASE_URI,"maxExclusive"));
             #endregion
         }
         #endregion
