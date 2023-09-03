@@ -594,6 +594,10 @@ namespace RDFSharp.Test.Model
         [DataRow("", RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)]
         [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)]
         [DataRow("0", RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)]
+        [DataRow("value", RDFModelEnums.RDFDatatypes.OWL_REAL)]
+        [DataRow("", RDFModelEnums.RDFDatatypes.OWL_REAL)]
+        [DataRow(null, RDFModelEnums.RDFDatatypes.OWL_REAL)]
+        [DataRow("4,00", RDFModelEnums.RDFDatatypes.OWL_REAL)]
         public void ShouldNotCreateTypedLiteralOfDecimalCategory(string value, RDFModelEnums.RDFDatatypes datatype)
             => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
 
