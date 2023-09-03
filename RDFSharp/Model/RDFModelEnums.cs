@@ -259,7 +259,11 @@ namespace RDFSharp.Model
             /// <summary>
             /// http://www.w3.org/2006/time#generalYear
             /// </summary>
-            TIME_GENERALYEAR = 48
+            TIME_GENERALYEAR = 48,
+            /// <summary>
+            /// http://www.w3.org/2002/07/owl#real
+            /// </summary>
+            OWL_REAL = 49
         };
 
         /// <summary>

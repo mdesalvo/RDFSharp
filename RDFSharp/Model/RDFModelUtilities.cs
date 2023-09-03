@@ -129,7 +129,8 @@ namespace RDFSharp.Model
             { RDFVocabulary.GEOSPARQL.GML_LITERAL.ToString(), RDFModelEnums.RDFDatatypes.GEOSPARQL_GML },
             { RDFVocabulary.TIME.GENERAL_DAY.ToString(), RDFModelEnums.RDFDatatypes.TIME_GENERALDAY },
             { RDFVocabulary.TIME.GENERAL_MONTH.ToString(), RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH },
-            { RDFVocabulary.TIME.GENERAL_YEAR.ToString(), RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR }
+            { RDFVocabulary.TIME.GENERAL_YEAR.ToString(), RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR },
+            { RDFVocabulary.OWL.REAL.ToString(), RDFModelEnums.RDFDatatypes.OWL_REAL }
         };
 
         /// <summary>
@@ -577,6 +578,8 @@ namespace RDFSharp.Model
                     return RDFVocabulary.TIME.GENERAL_MONTH.ToString();
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR:
                     return RDFVocabulary.TIME.GENERAL_YEAR.ToString();
+                case RDFModelEnums.RDFDatatypes.OWL_REAL:
+                    return RDFVocabulary.OWL.REAL.ToString();
 
                 //Fallback to rdfs:Literal
                 case RDFModelEnums.RDFDatatypes.RDFS_LITERAL:
@@ -839,6 +842,7 @@ namespace RDFSharp.Model
 
                 #region NUMERIC CATEGORY
                 case RDFModelEnums.RDFDatatypes.XSD_DECIMAL:
+                case RDFModelEnums.RDFDatatypes.OWL_REAL:
                     if (decimal.TryParse(typedLiteral.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out decimal outDecimal))
                     {
                         typedLiteral.Value = Convert.ToString(outDecimal, CultureInfo.InvariantCulture);
