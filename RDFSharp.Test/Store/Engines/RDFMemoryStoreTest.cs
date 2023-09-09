@@ -1676,7 +1676,7 @@ namespace RDFSharp.Test.Store
         [TestMethod]
         public void ShouldImportFromUri()
         {
-            RDFMemoryStore store = RDFMemoryStore.FromUri(new Uri("https://w3c.github.io/rdf-tests/nquads/nq-syntax-uri-01.nq"));
+            RDFMemoryStore store = RDFMemoryStore.FromUri(new Uri("https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-n-quads/nq-syntax-uri-01.nq"));
 
             Assert.IsNotNull(store);
             Assert.IsTrue(store.QuadruplesCount > 0);
@@ -1693,7 +1693,7 @@ namespace RDFSharp.Test.Store
         [TestMethod]
         public async Task ShouldImportFromUriAsync()
         {
-            RDFMemoryStore store = await RDFMemoryStore.FromUriAsync(new Uri("https://w3c.github.io/rdf-tests/nquads/nq-syntax-uri-01.nq"));
+            RDFMemoryStore store = await RDFMemoryStore.FromUriAsync(new Uri("https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-n-quads/nq-syntax-uri-01.nq"));
 
             Assert.IsNotNull(store);
             Assert.IsTrue(store.QuadruplesCount > 0);

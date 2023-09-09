@@ -64,19 +64,13 @@ namespace RDFSharp.Query
         /// List-ctor to build a named pattern group with the given list of patterns
         /// </summary>
         public RDFPatternGroup(List<RDFPattern> patterns) : this()
-        {
-            if (patterns != null)
-                patterns.ForEach(p => AddPattern(p));
-        }
+            => patterns?.ForEach(p => AddPattern(p));
 
         /// <summary>
         /// List-ctor to build a named pattern group with the given list of patterns and filters
         /// </summary>
         public RDFPatternGroup(List<RDFPattern> patterns, List<RDFFilter> filters) : this(patterns)
-        {
-            if (filters != null)
-                filters.ForEach(f => AddFilter(f));
-        }
+            => filters?.ForEach(f => AddFilter(f));
         #endregion
 
         #region Interfaces
