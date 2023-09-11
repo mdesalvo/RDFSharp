@@ -279,7 +279,7 @@ namespace RDFSharp.Model
                 List<RDFIndexedTriple> P = new List<RDFIndexedTriple>();
                 List<RDFIndexedTriple> O = new List<RDFIndexedTriple>();
                 List<RDFIndexedTriple> L = new List<RDFIndexedTriple>();
-                List<RDFIndexedTriple>matchResultIndexedTriples = new List<RDFIndexedTriple>();
+                List<RDFIndexedTriple> matchResultIndexedTriples = new List<RDFIndexedTriple>();
                 StringBuilder queryFilters = new StringBuilder();
 
                 //Filter by Subject
