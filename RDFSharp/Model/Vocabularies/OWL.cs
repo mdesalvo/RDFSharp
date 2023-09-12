@@ -414,6 +414,11 @@ namespace RDFSharp.Model
             public static readonly RDFResource ANNOTATED_TARGET = new RDFResource(string.Concat(OWL.BASE_URI, "annotatedTarget"));
 
             /// <summary>
+            /// owl:deprecated
+            /// </summary>
+            public static readonly RDFResource DEPRECATED = new RDFResource(string.Concat(OWL.BASE_URI,"deprecated"));
+
+            /// <summary>
             /// owl:real [OWL2]
             /// </summary>
             public static readonly RDFResource REAL = new RDFResource(string.Concat(OWL.BASE_URI, "real"));

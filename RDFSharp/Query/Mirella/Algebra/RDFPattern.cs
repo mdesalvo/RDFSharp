@@ -143,6 +143,7 @@ namespace RDFSharp.Query
         public RDFPattern Optional()
         {
             IsOptional = true;
+            JoinAsUnion = false;
             return this;
         }
 
@@ -151,6 +152,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPattern UnionWithNext()
         {
+            IsOptional = false;
             JoinAsUnion = true;
             return this;
         }
