@@ -44,7 +44,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Count of the store's quadruples
         /// </summary>
-        public virtual long QuadruplesCount => 0;
+        public abstract long QuadruplesCount { get; }
         #endregion
 
         #region Interfaces
