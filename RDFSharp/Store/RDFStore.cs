@@ -40,6 +40,11 @@ namespace RDFSharp.Store
         /// Type of the store
         /// </summary>
         public string StoreType { get; set; }
+
+        /// <summary>
+        /// Count of the store's quadruples
+        /// </summary>
+        public virtual long QuadruplesCount => 0;
         #endregion
 
         #region Interfaces

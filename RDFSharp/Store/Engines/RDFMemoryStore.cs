@@ -35,7 +35,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Count of the store's quadruples
         /// </summary>
-        public long QuadruplesCount => IndexedQuadruples.Count;
+        public override long QuadruplesCount => IndexedQuadruples.Count;
 
         /// <summary>
         /// Gets the enumerator on the store's quadruples for iteration
