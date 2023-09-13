@@ -94,32 +94,20 @@ namespace RDFSharp.Query
                 GroupMembers.Add(pattern);
 
                 //Context
-                if (pattern.Context is RDFVariable patternContext)
-                {
-                    if (!Variables.Any(v => v.Equals(patternContext)))
-                        Variables.Add(patternContext);
-                }
+                if (pattern.Context is RDFVariable patternContext && !Variables.Any(v => v.Equals(patternContext)))
+                    Variables.Add(patternContext);
 
                 //Subject
-                if (pattern.Subject is RDFVariable patternSubject)
-                {
-                    if (!Variables.Any(v => v.Equals(patternSubject)))
-                        Variables.Add(patternSubject);
-                }
+                if (pattern.Subject is RDFVariable patternSubject && !Variables.Any(v => v.Equals(patternSubject)))
+                    Variables.Add(patternSubject);
 
                 //Predicate
-                if (pattern.Predicate is RDFVariable patternPredicate)
-                {
-                    if (!Variables.Any(v => v.Equals(patternPredicate)))
-                        Variables.Add(patternPredicate);
-                }
+                if (pattern.Predicate is RDFVariable patternPredicate && !Variables.Any(v => v.Equals(patternPredicate)))
+                    Variables.Add(patternPredicate);
 
                 //Object
-                if (pattern.Object is RDFVariable patternObject)
-                {
-                    if (!Variables.Any(v => v.Equals(patternObject)))
-                        Variables.Add(patternObject);
-                }
+                if (pattern.Object is RDFVariable patternObject && !Variables.Any(v => v.Equals(patternObject)))
+                    Variables.Add(patternObject);
             }
             return this;
         }
@@ -169,8 +157,10 @@ namespace RDFSharp.Query
         {
             if (bind != null && !GetBinds().Any(b => b.Equals(bind)))
             {
+                #region Guards
                 if (Variables.Any(v => v.Equals(bind.Variable)))
                     throw new RDFQueryException($"Cannot add BIND to pattern group because its variable '{bind.Variable}' already exists at this moment!");
+                #endregion
 
                 GroupMembers.Add(bind);
 
@@ -185,16 +175,13 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPatternGroup AddFilter(RDFFilter filter)
         {
-            if (filter != null)
-            {
-                if (!GetFilters().Any(f => f.Equals(filter)))
-                    GroupMembers.Add(filter);
-            }
+            if (filter != null && !GetFilters().Any(f => f.Equals(filter)))
+                GroupMembers.Add(filter);
             return this;
         }
 
         /// <summary>
-        /// Sets the pattern group to be joined as optional with the previous query member
+        /// Sets the pattern group to be joined as Optional with the previous query member
         /// </summary>
         public RDFPatternGroup Optional()
         {
@@ -204,7 +191,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the pattern group to be joined as union with the next query member
+        /// Sets the pattern group to be joined as Union with the next query member
         /// </summary>
         public RDFPatternGroup UnionWithNext()
         {
