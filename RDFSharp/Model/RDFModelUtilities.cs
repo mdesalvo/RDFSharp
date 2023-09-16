@@ -23,6 +23,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
+using NetTopologySuite.Geometries;
+using NetTopologySuite.Geometries.Prepared;
+using RDFSharp.Query;
 
 namespace RDFSharp.Model
 {
@@ -610,11 +613,19 @@ namespace RDFSharp.Model
                 #region STRING CATEGORY
                 case RDFModelEnums.RDFDatatypes.RDFS_LITERAL:
                 case RDFModelEnums.RDFDatatypes.XSD_STRING:
-                case RDFModelEnums.RDFDatatypes.RDF_HTML:
-                case RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT:
-                case RDFModelEnums.RDFDatatypes.GEOSPARQL_GML:
+                case RDFModelEnums.RDFDatatypes.RDF_HTML:                
                 default:
                     return true;
+
+                case RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT:
+                case RDFModelEnums.RDFDatatypes.GEOSPARQL_GML:
+                    try
+                    {
+                        _ = typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ?
+                                RDFGeoExpression.WKTReader.Read(typedLiteral.Value) : RDFGeoExpression.GMLReader.Read(typedLiteral.Value);
+                        return true;
+                    }
+                    catch { return false; }
 
                 case RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL:
                     try
