@@ -41,7 +41,7 @@ namespace RDFSharp.Query
         /// </summary>
         public override string ToString()
             => IsDistinct ? string.Format("(SUM(DISTINCT {0}) AS {1})", AggregatorVariable, ProjectionVariable)
-                               : string.Format("(SUM({0}) AS {1})", AggregatorVariable, ProjectionVariable);
+                          : string.Format("(SUM({0}) AS {1})", AggregatorVariable, ProjectionVariable);
         #endregion
 
         #region Methods

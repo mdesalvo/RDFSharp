@@ -38,10 +38,12 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFBooleanNotFilter(RDFFilter filter)
         {
+            #region Guards
             if (filter == null)
                 throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is null.");
             if (filter is RDFExistsFilter)
                 throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is of type RDFExistsFilter: this is not allowed.");
+            #endregion
 
             Filter = filter;
         }

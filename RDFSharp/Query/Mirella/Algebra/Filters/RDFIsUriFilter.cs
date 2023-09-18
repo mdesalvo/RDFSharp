@@ -39,8 +39,10 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFIsUriFilter(RDFVariable variable)
         {
+            #region Guards
             if (variable == null)
                 throw new RDFQueryException("Cannot create RDFIsUriFilter because given \"variable\" parameter is null.");
+            #endregion
 
             VariableName = variable.ToString();
         }

@@ -37,9 +37,11 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFLimitModifier(int limit)
         {
+            #region Guards
             if (limit < 0)
                 throw new RDFQueryException("Cannot create RDFLimitModifier because given \"limit\" parameter (" + limit + ") is negative.");
-            
+            #endregion
+
             Limit = limit;
         }
         #endregion

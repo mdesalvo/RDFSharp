@@ -41,9 +41,11 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFOrderByModifier(RDFVariable variable, RDFQueryEnums.RDFOrderByFlavors orderbyFlavor)
         {
+            #region Guards
             if (variable == null)
                 throw new RDFQueryException("Cannot create RDFOrderByModifier because given \"variable\" parameter is null.");
-            
+            #endregion
+
             OrderByFlavor = orderbyFlavor;
             Variable = variable;
         }

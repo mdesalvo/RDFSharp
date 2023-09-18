@@ -40,7 +40,7 @@ namespace RDFSharp.Query
         /// </summary>
         public override string ToString()
             => IsDistinct ? string.Format("(COUNT(DISTINCT {0}) AS {1})", AggregatorVariable, ProjectionVariable)
-                               : string.Format("(COUNT({0}) AS {1})", AggregatorVariable, ProjectionVariable);
+                          : string.Format("(COUNT({0}) AS {1})", AggregatorVariable, ProjectionVariable);
         #endregion
 
         #region Methods

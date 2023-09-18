@@ -40,8 +40,10 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFIsLiteralFilter(RDFVariable variable)
         {
+            #region Guards
             if (variable == null)
                 throw new RDFQueryException("Cannot create RDFIsLiteralFilter because given \"variable\" parameter is null.");
+            #endregion
 
             VariableName = variable.ToString();
         }

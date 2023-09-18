@@ -38,9 +38,11 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFBoundFilter(RDFVariable variable)
         {
+            #region Guards
             if (variable == null)
                 throw new RDFQueryException("Cannot create RDFBoundFilter because given \"variable\" parameter is null.");
-            
+            #endregion
+
             VariableName = variable.ToString();
         }
         #endregion
