@@ -39,8 +39,10 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFIsBlankFilter(RDFVariable variable)
         {
+            #region Guards
             if (variable == null)
                 throw new RDFQueryException("Cannot create RDFIsBlankFilter because given \"variable\" parameter is null.");
+            #endregion
 
             VariableName = variable.ToString();
         }

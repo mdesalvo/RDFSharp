@@ -44,10 +44,12 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFExistsFilter(RDFPattern pattern)
         {
+            #region Guards
             if (pattern == null)
                 throw new RDFQueryException("Cannot create RDFExistsFilter because given \"pattern\" parameter is null.");
             if (pattern.Variables.Count == 0)
                 throw new RDFQueryException("Cannot create RDFExistsFilter because given \"pattern\" parameter is a ground pattern.");
+            #endregion
 
             Pattern = pattern;
             IsEvaluable = true;

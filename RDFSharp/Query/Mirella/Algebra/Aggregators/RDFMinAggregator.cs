@@ -48,7 +48,7 @@ namespace RDFSharp.Query
         /// </summary>
         public override string ToString()
             => IsDistinct ? string.Format("(MIN(DISTINCT {0}) AS {1})", AggregatorVariable, ProjectionVariable)
-                               : string.Format("(MIN({0}) AS {1})", AggregatorVariable, ProjectionVariable);
+                          : string.Format("(MIN({0}) AS {1})", AggregatorVariable, ProjectionVariable);
         #endregion
 
         #region Methods

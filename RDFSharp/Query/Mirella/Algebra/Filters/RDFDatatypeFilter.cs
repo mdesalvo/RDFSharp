@@ -49,8 +49,10 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFDatatypeFilter(RDFVariable variable, RDFModelEnums.RDFDatatypes datatype)
         {
+            #region Guards
             if (variable == null)
                 throw new RDFQueryException("Cannot create RDFDatatypeFilter because given \"variable\" parameter is null.");
+            #endregion
 
             VariableName = variable.ToString();
             Datatype = datatype;
@@ -67,7 +69,9 @@ namespace RDFSharp.Query
         internal override string ToString(List<RDFNamespace> prefixes)
             => string.Concat(
                 "FILTER ( DATATYPE(", VariableName, ") = ",
-                RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(RDFModelUtilities.GetDatatypeFromEnum(Datatype)), prefixes), " )");
+                RDFQueryPrinter.PrintPatternMember(
+                    RDFQueryUtilities.ParseRDFPatternMember(
+                        RDFModelUtilities.GetDatatypeFromEnum(Datatype)), prefixes), " )");
         #endregion
 
         #region Methods

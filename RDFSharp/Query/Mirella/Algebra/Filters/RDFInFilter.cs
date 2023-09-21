@@ -44,8 +44,10 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFInFilter(RDFPatternMember termToSearch, List<RDFPatternMember> inTerms)
         {
+            #region Guards
             if (termToSearch == null)
                 throw new RDFQueryException("Cannot create RDFInFilter because given \"termToSearch\" parameter is null.");
+            #endregion
 
             TermToSearch = termToSearch;
             InTerms = inTerms ?? new List<RDFPatternMember>();

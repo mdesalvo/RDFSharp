@@ -37,8 +37,10 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFOffsetModifier(int offset)
         {
+            #region Guards
             if (offset < 0)
                 throw new RDFQueryException("Cannot create RDFOffsetModifier because given \"offset\" parameter (" + offset + ") is negative.");
+            #endregion
 
             Offset = offset;
         }

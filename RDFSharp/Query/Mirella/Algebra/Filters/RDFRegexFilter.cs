@@ -45,10 +45,12 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFRegexFilter(RDFVariable variable, Regex regex)
         {
+            #region Guards
             if (variable == null)
                 throw new RDFQueryException("Cannot create RDFRegexFilter because given \"variable\" parameter is null.");
             if (regex == null)
                 throw new RDFQueryException("Cannot create RDFRegexFilter because given \"regex\" parameter is null.");
+            #endregion
 
             VariableName = variable.ToString();
             RegEx = regex;

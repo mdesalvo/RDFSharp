@@ -45,10 +45,12 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFSameTermFilter(RDFVariable variable, RDFPatternMember rdfTerm)
         {
+            #region Guards
             if (variable == null)
                 throw new RDFQueryException("Cannot create RDFSameTermFilter because given \"variable\" parameter is null.");
             if (rdfTerm == null)
                 throw new RDFQueryException("Cannot create RDFSameTermFilter because given \"rdfTerm\" parameter is null.");
+            #endregion
 
             VariableName = variable.ToString();
             RDFTerm = rdfTerm;
