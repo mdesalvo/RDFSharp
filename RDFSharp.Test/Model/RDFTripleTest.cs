@@ -52,6 +52,10 @@ namespace RDFSharp.Test.Model
             Assert.IsNull(triple.TripleMetadata);
             triple.SetMetadata(RDFModelEnums.RDFTripleMetadata.IsInference);
             Assert.IsTrue(triple.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsInference);
+            triple.SetMetadata(RDFModelEnums.RDFTripleMetadata.IsImport);
+            Assert.IsTrue(triple.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsImport);
+            triple.SetMetadata(null);
+            Assert.IsTrue(triple.TripleMetadata is null);
         }
 
         [DataTestMethod]

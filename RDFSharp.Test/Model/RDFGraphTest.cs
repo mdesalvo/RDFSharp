@@ -256,6 +256,31 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldAddTriplesMixingMetadata()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit","en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))
+                                    .SetMetadata(RDFModelEnums.RDFTripleMetadata.IsInference);
+            RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"))
+                                    .SetMetadata(RDFModelEnums.RDFTripleMetadata.IsImport);
+            graph.AddTriple(triple1);
+            graph.AddTriple(triple2);
+            graph.AddTriple(triple3);
+
+            Assert.IsTrue(graph.TriplesCount == 3);
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple1.TripleID));
+            Assert.IsTrue(graph.IndexedTriples[triple1.TripleID].TripleMetadata is null);
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple2.TripleID));
+            Assert.IsTrue(graph.IndexedTriples[triple2.TripleID].TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsInference);
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple3.TripleID));
+            Assert.IsTrue(graph.IndexedTriples[triple3.TripleID].TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsImport);
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata is null) == 1);
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsInference) == 1);
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsImport) == 1);
+        }
+
+        [TestMethod]
         public void ShouldNotAddDuplicateTriples()
         {
             RDFGraph graph = new RDFGraph();
