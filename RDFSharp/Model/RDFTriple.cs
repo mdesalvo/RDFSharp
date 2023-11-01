@@ -38,9 +38,9 @@ namespace RDFSharp.Model
         public RDFModelEnums.RDFTripleFlavors TripleFlavor { get; internal set; }
 
         /// <summary>
-        /// Indicates that the triple has been emitted in consequence of any kind of reasoning
+        /// Metadata of the triple
         /// </summary>
-        public bool IsInference { get; internal set;}
+        public RDFModelEnums.RDFTripleMetadata? TripleMetadata { get; internal set; }
 
         /// <summary>
         /// Member acting as subject token of the triple
@@ -78,7 +78,6 @@ namespace RDFSharp.Model
             #endregion
 
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
-            IsInference = false;
             Subject = subj ?? new RDFResource();
             Predicate = pred;
             Object = obj ?? new RDFResource();
@@ -99,10 +98,9 @@ namespace RDFSharp.Model
             #endregion
 
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
-            IsInference = false;
             Subject = subj ?? new RDFResource();
             Predicate = pred;
-            Object = lit ?? new RDFPlainLiteral(string.Empty);
+            Object = lit ?? new RDFPlainLiteral(string.Empty);            
             LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
             LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", TripleID.ToString())));
         }
@@ -113,7 +111,7 @@ namespace RDFSharp.Model
         internal RDFTriple(RDFIndexedTriple indexedTriple, RDFGraphIndex graphIndex)
         {
             TripleFlavor = indexedTriple.TripleFlavor;
-            IsInference = indexedTriple.IsInference;
+            TripleMetadata = indexedTriple.TripleMetadata;
             Subject = graphIndex.ResourcesRegister[indexedTriple.SubjectID];
             Predicate = graphIndex.ResourcesRegister[indexedTriple.PredicateID];
             if (indexedTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
@@ -165,11 +163,11 @@ namespace RDFSharp.Model
             => Task.Run(() => new RDFAsyncGraph(ReifyTriple()));
 
         /// <summary>
-        /// Sets the triple as emitted by any kind of reasoning
+        /// Sets the metadata of the triple
         /// </summary>
-        public RDFTriple SetInference()
+        public RDFTriple SetMetadata(RDFModelEnums.RDFTripleMetadata? tripleMetadata)
         {
-            IsInference = true;
+            TripleMetadata = tripleMetadata;
             return this;
         }
         #endregion
@@ -207,9 +205,9 @@ namespace RDFSharp.Model
         internal RDFModelEnums.RDFTripleFlavors TripleFlavor { get; set; }
 
         /// <summary>
-        /// Indicates that the triple has been emitted in consequence of any kind of reasoning
+        /// Metadata of the triple
         /// </summary>
-        internal bool IsInference { get; set; }
+        internal RDFModelEnums.RDFTripleMetadata? TripleMetadata { get; set; }
         #endregion
 
         #region Ctor
@@ -219,7 +217,7 @@ namespace RDFSharp.Model
         internal RDFIndexedTriple(RDFTriple triple)
         {
             TripleFlavor = triple.TripleFlavor;
-            IsInference = triple.IsInference;
+            TripleMetadata = triple.TripleMetadata;
             TripleID = triple.TripleID;
             SubjectID = triple.Subject.PatternMemberID;
             PredicateID = triple.Predicate.PatternMemberID;

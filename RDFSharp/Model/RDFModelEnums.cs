@@ -45,7 +45,7 @@ namespace RDFSharp.Model
         };
 
         /// <summary>
-        /// RDFTripleFlavors represents an enumeration for possible triple pattern flavors.
+        /// RDFTripleFlavors represents an enumeration for possible triple flavors.
         /// </summary>
         public enum RDFTripleFlavors
         {
@@ -57,6 +57,21 @@ namespace RDFSharp.Model
             /// Indicates that the object of the triple is a literal
             /// </summary>
             SPL = 2
+        };
+
+        /// <summary>
+        /// RDFTripleMetadata represents an enumeration for possible types of triple metadata.
+        /// </summary>
+        public enum RDFTripleMetadata
+        {
+            /// <summary>
+            /// Indicates that the triple has been emitted in consequence of any kind of reasoning
+            /// </summary>
+            IsInference = 1,
+            /// <summary>
+            /// Indicates that the triple has been imported from an external source (e.g: an ontology)
+            /// </summary>
+            IsImport = 2
         };
 
         /// <summary>

@@ -49,9 +49,9 @@ namespace RDFSharp.Test.Model
             RDFTriple triple2 = new RDFTriple(subj, pred, obj);
             Assert.IsTrue(triple.Equals(triple2));
 
-            Assert.IsFalse(triple.IsInference);
-            triple.SetInference();
-            Assert.IsTrue(triple.IsInference);
+            Assert.IsNull(triple.TripleMetadata);
+            triple.SetMetadata(RDFModelEnums.RDFTripleMetadata.IsInference);
+            Assert.IsTrue(triple.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsInference);
         }
 
         [DataTestMethod]

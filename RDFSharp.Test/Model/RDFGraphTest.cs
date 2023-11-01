@@ -220,19 +220,39 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(graph.TriplesCount == 1);
             Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple.TripleID));
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata is null) == 1);
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsInference) == 0);
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsImport) == 0);
         }
 
         [TestMethod]
         public void ShouldAddTripleAsInference()
         {
             RDFGraph graph = new RDFGraph();
-            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")).SetInference();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))
+                                    .SetMetadata(RDFModelEnums.RDFTripleMetadata.IsInference);
             graph.AddTriple(triple);
 
             Assert.IsTrue(graph.TriplesCount == 1);
             Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple.TripleID));
-            Assert.IsTrue(graph.Count(t => t.IsInference) == 1);
-            
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata is null) == 0);
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsInference) == 1);
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsImport) == 0);
+        }
+
+        [TestMethod]
+        public void ShouldAddTripleAsImport()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))
+                                    .SetMetadata(RDFModelEnums.RDFTripleMetadata.IsImport);
+            graph.AddTriple(triple);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple.TripleID));
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata is null) == 0);
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsInference) == 0);
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsImport) == 1);
         }
 
         [TestMethod]

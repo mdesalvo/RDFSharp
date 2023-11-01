@@ -51,8 +51,8 @@ namespace RDFSharp.Model
                 foreach (RDFIndexedTriple indexedTriple in IndexedTriples.Values)
                 {
                     yield return indexedTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
-                        ? new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.ResourcesRegister[indexedTriple.ObjectID]) { IsInference = indexedTriple.IsInference }
-                        : new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.LiteralsRegister[indexedTriple.ObjectID]) { IsInference = indexedTriple.IsInference };
+                        ? new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.ResourcesRegister[indexedTriple.ObjectID]) { TripleMetadata = indexedTriple.TripleMetadata }
+                        : new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.LiteralsRegister[indexedTriple.ObjectID]) { TripleMetadata = indexedTriple.TripleMetadata };
                 }
             } 
         }
