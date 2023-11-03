@@ -392,7 +392,7 @@ namespace RDFSharp.Test.Query
             DataRow row = table.NewRow();
             row["?A"] = new RDFTypedLiteral("50", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
             row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-            row["?C"] = new RDFTypedLiteral("0", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            row["?C"] = RDFTypedLiteral.Zero.ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
@@ -468,7 +468,7 @@ namespace RDFSharp.Test.Query
             table.Columns.Add("?B", typeof(string));
             DataRow row = table.NewRow();
             row["?A"] = new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-            row["?B"] = new RDFTypedLiteral("0", RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER).ToString();
+            row["?B"] = RDFTypedLiteral.Zero.ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 

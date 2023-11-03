@@ -36,6 +36,11 @@ namespace RDFSharp.Model
         /// Represents an handy typed literal for boolean False
         /// </summary>
         public static readonly RDFTypedLiteral False = new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
+
+        /// <summary>
+        /// Represents an handy typed literal for integer Zero
+        /// </summary>
+        public static readonly RDFTypedLiteral Zero = new RDFTypedLiteral("0", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
         #endregion
 
         #region Ctors

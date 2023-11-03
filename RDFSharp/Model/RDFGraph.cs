@@ -201,9 +201,7 @@ namespace RDFSharp.Model
             if (container != null)
             {
                 //Reify the container to get its graph representation
-                RDFGraph reifCont = container.ReifyContainer();
-                //Iterate on the constructed triples
-                foreach (RDFTriple t in reifCont)
+                foreach (RDFTriple t in container.ReifyContainer())
                     AddTriple(t);
             }
             return this;
@@ -217,9 +215,7 @@ namespace RDFSharp.Model
             if (collection != null)
             {
                 //Reify the collection to get its graph representation
-                RDFGraph reifColl = collection.ReifyCollection();
-                //Iterate on the constructed triples
-                foreach (RDFTriple t in reifColl)
+                foreach (RDFTriple t in collection.ReifyCollection())
                     AddTriple(t);
             }
             return this;

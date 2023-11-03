@@ -157,7 +157,7 @@ namespace RDFSharp.Model
         public static void RemoveByUri(string uri)
         {
             if (uri != null)
-                Instance.Register.RemoveAll(ns => ns.NamespaceUri.ToString().Equals(uri.Trim(), StringComparison.OrdinalIgnoreCase));
+                Instance.Register.RemoveAll(ns => string.Equals(ns.NamespaceUri.ToString(), uri.Trim(), StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace RDFSharp.Model
         public static void RemoveByPrefix(string prefix)
         {
             if (prefix != null)
-                Instance.Register.RemoveAll(ns => ns.NamespacePrefix.Equals(prefix.Trim(), StringComparison.OrdinalIgnoreCase));
+                Instance.Register.RemoveAll(ns => string.Equals(ns.NamespacePrefix, prefix.Trim(), StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace RDFSharp.Model
         {
             if (uri != null)
             {
-                RDFNamespace result = Instance.Register.Find(ns => ns.NamespaceUri.ToString().Equals(uri.Trim(), StringComparison.OrdinalIgnoreCase));
+                RDFNamespace result = Instance.Register.Find(ns => string.Equals(ns.NamespaceUri.ToString(), uri.Trim(), StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService)
                     result = LookupPrefixCC(uri.Trim().TrimEnd(new char[] { '#' }), 2);
                 return result;
@@ -191,7 +191,7 @@ namespace RDFSharp.Model
         {
             if (prefix != null)
             {
-                RDFNamespace result = Instance.Register.Find(ns => ns.NamespacePrefix.Equals(prefix.Trim(), StringComparison.OrdinalIgnoreCase));
+                RDFNamespace result = Instance.Register.Find(ns => string.Equals(ns.NamespacePrefix, prefix.Trim(), StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService)
                     result = LookupPrefixCC(prefix.Trim(), 1);
                 return result;
@@ -213,10 +213,10 @@ namespace RDFSharp.Model
                 {
                     string response = webclient.DownloadString(lookupString);
                     string prefix = response.Split('\t')[0];
-                    string nspace = response.Split('\t')[1].TrimEnd(new char[] { '\n' });
+                    string nspace = response.Split('\t')[1].TrimEnd(Environment.NewLine);
                     RDFNamespace result = new RDFNamespace(prefix, nspace);
 
-                    //Also add the namespace to the register, to avoid future lookups
+                    //Also add the namespace to the register (to avoid future lookups)
                     AddNamespace(result);
 
                     //Return the found result
