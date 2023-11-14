@@ -67,8 +67,12 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFExpression(RDFExpressionArgument leftArgument, RDFExpressionArgument rightArgument)
         {
-            if ((!(this is RDFRandExpression)) && leftArgument == null)
+            #region Guards
+            bool isRandExpression = this is RDFRandExpression;
+            bool isBNodeExpression = this is RDFBNodeExpression; 
+            if (!isRandExpression && !isBNodeExpression && leftArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"leftArgument\" parameter is null");
+            #endregion
 
             LeftArgument = leftArgument;
             RightArgument = rightArgument;
