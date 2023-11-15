@@ -42,7 +42,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a substring function with given arguments
         /// </summary>
-        public RDFSubstringExpression(RDFExpression leftArgument, int start, int? length=null) : base(leftArgument, null as RDFExpression)
+        public RDFSubstringExpression(RDFExpression leftArgument, int start, int? length=null) 
+            : base(leftArgument, null as RDFExpression)
         {
             Start = start;
             Length = length;
@@ -51,7 +52,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a substring function with given arguments
         /// </summary>
-        public RDFSubstringExpression(RDFVariable leftArgument, int start, int? length=null) : base(leftArgument, null as RDFExpression)
+        public RDFSubstringExpression(RDFVariable leftArgument, int start, int? length=null) 
+            : base(leftArgument, null as RDFExpression)
         {
             Start = start;
             Length = length;

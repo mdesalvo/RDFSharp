@@ -40,8 +40,10 @@ namespace RDFSharp.Query
         public RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFExpression leftArgument, RDFExpression rightArgument)
             : base(leftArgument, rightArgument)
         {
+            #region Guards
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            #endregion
 
             ComparisonFlavor = comparisonFlavor;
         }
@@ -52,8 +54,10 @@ namespace RDFSharp.Query
         public RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFExpression leftArgument, RDFVariable rightArgument)
             : base(leftArgument, rightArgument)
         {
+            #region Guards
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            #endregion
 
             ComparisonFlavor = comparisonFlavor;
         }
@@ -64,8 +68,10 @@ namespace RDFSharp.Query
         public RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFVariable leftArgument, RDFExpression rightArgument)
             : base(leftArgument, rightArgument)
         {
+            #region Guards
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            #endregion
 
             ComparisonFlavor = comparisonFlavor;
         }
@@ -76,8 +82,10 @@ namespace RDFSharp.Query
         public RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFVariable leftArgument, RDFVariable rightArgument)
             : base(leftArgument, rightArgument)
         {
+            #region Guards
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            #endregion
 
             ComparisonFlavor = comparisonFlavor;
         }

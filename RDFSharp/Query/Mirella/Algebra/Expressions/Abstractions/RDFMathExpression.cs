@@ -35,8 +35,10 @@ namespace RDFSharp.Query
         public RDFMathExpression(RDFExpression leftArgument, RDFExpression rightArgument) 
             : base(leftArgument, rightArgument)
         {
+            #region Guards
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            #endregion
         }
 
         /// <summary>
@@ -45,8 +47,10 @@ namespace RDFSharp.Query
         public RDFMathExpression(RDFExpression leftArgument, RDFVariable rightArgument) 
             : base(leftArgument, rightArgument)
         {
+            #region Guards
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            #endregion
         }
 
         /// <summary>
@@ -55,10 +59,12 @@ namespace RDFSharp.Query
         public RDFMathExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) 
             : base(leftArgument, rightArgument)
         {
+            #region Guards
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
             if (!rightArgument.HasDecimalDatatype())
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is not a numeric typed literal");
+            #endregion
         }
 
         /// <summary>
@@ -67,8 +73,10 @@ namespace RDFSharp.Query
         public RDFMathExpression(RDFVariable leftArgument, RDFExpression rightArgument) 
             : base(leftArgument, rightArgument)
         {
+            #region Guards
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            #endregion
         }
 
         /// <summary>
@@ -77,8 +85,10 @@ namespace RDFSharp.Query
         public RDFMathExpression(RDFVariable leftArgument, RDFVariable rightArgument) 
             : base(leftArgument, rightArgument)
         {
+            #region Guards
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            #endregion
         }
 
         /// <summary>
@@ -87,10 +97,12 @@ namespace RDFSharp.Query
         public RDFMathExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) 
             : base(leftArgument, rightArgument)
         {
+            #region Guards
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
             if (!rightArgument.HasDecimalDatatype())
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is not a numeric typed literal");
+            #endregion
         }
         #endregion
 

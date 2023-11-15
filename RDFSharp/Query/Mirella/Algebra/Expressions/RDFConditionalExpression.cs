@@ -22,7 +22,7 @@ using System.Text;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFIfExpression represents a conditional expression to be applied on a query results table.
+    /// RDFConditionalExpression represents an IF-THEN-ELSE expression to be applied on a query results table.
     /// </summary>
     public class RDFConditionalExpression : RDFExpression
     {
@@ -40,10 +40,12 @@ namespace RDFSharp.Query
         public RDFConditionalExpression(RDFExpression conditionArgument, RDFExpression leftArgument, RDFExpression rightArgument) 
             : base(leftArgument, rightArgument) 
         {
+            #region Guards
             if (conditionArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"conditionArgument\" parameter is null");
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            #endregion
 
             ConditionArgument = conditionArgument;
         }

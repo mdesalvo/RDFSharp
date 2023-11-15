@@ -31,8 +31,10 @@ namespace RDFSharp.Query
         public RDFBooleanExpression(RDFExpression leftArgument, RDFExpression rightArgument)
             : base(leftArgument, rightArgument)
         {
+            #region Guards
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            #endregion
         }
         #endregion
 
