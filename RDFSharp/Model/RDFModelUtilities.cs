@@ -23,8 +23,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
-using NetTopologySuite.Geometries;
-using NetTopologySuite.Geometries.Prepared;
 using RDFSharp.Query;
 
 namespace RDFSharp.Model
@@ -40,14 +38,13 @@ namespace RDFSharp.Model
         /// </summary>
         public static long CreateHash(string input)
         {
+            #region Guards
             if (input == null)
                 throw new RDFModelException("Cannot create hash because given \"input\" string parameter is null.");
+            #endregion
 
             using (MD5CryptoServiceProvider md5Encryptor = new MD5CryptoServiceProvider())
-            {
-                byte[] hashBytes = md5Encryptor.ComputeHash(UTF8_NoBOM.GetBytes(input));
-                return BitConverter.ToInt64(hashBytes, 0);
-            }
+                return BitConverter.ToInt64(md5Encryptor.ComputeHash(UTF8_NoBOM.GetBytes(input)), 0);
         }
         #endregion
 
@@ -73,11 +70,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Alternative representations of boolean True
         /// </summary>
-        internal static readonly string[] AlternativesBoolTrue  = new string[] { "1", "one", "yes", "y", "t", "on", "ok" };
+        internal static readonly string[] AlternativesBoolTrue  = new string[] { "1", "one", "yes", "y", "t", "on", "ok", "up" };
         /// <summary>
         /// Alternative representations of boolean False
         /// </summary>
-        internal static readonly string[] AlternativesBoolFalse = new string[] { "0", "zero", "no", "n", "f", "off", "ko" };
+        internal static readonly string[] AlternativesBoolFalse = new string[] { "0", "zero", "no", "n", "f", "off", "ko", "down" };
 
         /// <summary>
         /// Dictionay of known datatypes for supporting direct lookup by string
@@ -245,8 +242,8 @@ namespace RDFSharp.Model
         internal static string TrimEnd(this string source, string value)
         {
             if (string.IsNullOrEmpty(source) 
-                    || string.IsNullOrEmpty(value) 
-                        || !source.EndsWith(value))
+                  || string.IsNullOrEmpty(value) 
+                    || !source.EndsWith(value))
                 return source;
 
             return source.Remove(source.LastIndexOf(value));
@@ -445,16 +442,13 @@ namespace RDFSharp.Model
                                 (triple.Object is RDFTypedLiteral ? GetDatatypeFromEnum(((RDFTypedLiteral)triple.Object).Datatype) : string.Empty);
 
                 //Resolve subject Uri
-                IEnumerable<RDFNamespace> subjNS = RDFNamespaceRegister.Instance.Register.Where(ns => subj.StartsWith(ns.ToString()));
-                result.AddRange(subjNS);
+                result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => subj.StartsWith(ns.ToString())));
 
                 //Resolve predicate Uri
-                IEnumerable<RDFNamespace> predNS = RDFNamespaceRegister.Instance.Register.Where(ns => pred.StartsWith(ns.ToString()));
-                result.AddRange(predNS);
+                result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => pred.StartsWith(ns.ToString())));
 
                 //Resolve object Uri
-                IEnumerable<RDFNamespace> objNS = RDFNamespaceRegister.Instance.Register.Where(ns => obj.StartsWith(ns.ToString()));
-                result.AddRange(objNS);
+                result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => obj.StartsWith(ns.ToString())));
             }
             return result.Distinct().ToList();
         }
@@ -473,7 +467,7 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot recognize datatype representation of given \"datatypeString\" parameter because it is not a valid absolute Uri");
             #endregion
 
-            //Lookup known datatypes (fallback to rdfs:Literal)
+            //Lookup known datatypes (fallback to rdfs:Literal if unsupported)
             return KnownDatatypes.TryGetValue(datatypeUri.ToString(), out RDFModelEnums.RDFDatatypes datatype) 
                 ? datatype : RDFModelEnums.RDFDatatypes.RDFS_LITERAL;
         }
