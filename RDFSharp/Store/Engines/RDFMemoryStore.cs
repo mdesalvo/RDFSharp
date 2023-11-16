@@ -697,11 +697,13 @@ namespace RDFSharp.Store
         /// </summary>
         public static RDFMemoryStore FromFile(RDFStoreEnums.RDFFormats rdfFormat, string filepath)
         {
+            #region Guards
             if (string.IsNullOrWhiteSpace(filepath))
                 throw new RDFStoreException("Cannot read RDF memory store from file because given \"filepath\" parameter is null or empty.");
             if (!File.Exists(filepath))
                 throw new RDFStoreException("Cannot read RDF memory store from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
-            
+            #endregion
+
             switch (rdfFormat)
             {
                 case RDFStoreEnums.RDFFormats.NQuads:
@@ -725,9 +727,11 @@ namespace RDFSharp.Store
         /// </summary>
         public static RDFMemoryStore FromStream(RDFStoreEnums.RDFFormats rdfFormat, Stream inputStream)
         {
+            #region Guards
             if (inputStream == null)
                 throw new RDFStoreException("Cannot read RDF memory store from stream because given \"inputStream\" parameter is null.");
-            
+            #endregion
+
             switch (rdfFormat)
             {
                 case RDFStoreEnums.RDFFormats.NQuads:
@@ -751,12 +755,14 @@ namespace RDFSharp.Store
         /// </summary>
         public static RDFMemoryStore FromDataTable(DataTable table)
         {
+            #region Guards
             if (table == null)
                 throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter is null.");
             if (table.Columns.Count != 4)
                 throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter does not have exactly 4 columns.");
             if (!(table.Columns.Contains("?CONTEXT") && table.Columns.Contains("?SUBJECT") && table.Columns.Contains("?PREDICATE") && table.Columns.Contains("?OBJECT")))
                 throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter does not have the required columns \"?CONTEXT\", \"?SUBJECT\", \"?PREDICATE\", \"?OBJECT\".");
+            #endregion
 
             RDFMemoryStore result = new RDFMemoryStore();
 
@@ -820,10 +826,12 @@ namespace RDFSharp.Store
         /// </summary>
         public static RDFMemoryStore FromUri(Uri uri, int timeoutMilliseconds = 20000)
         {
+            #region Guards
             if (uri == null)
                 throw new RDFStoreException("Cannot read RDF memory store from Uri because given \"uri\" parameter is null.");
             if (!uri.IsAbsoluteUri)
                 throw new RDFStoreException("Cannot read RDF memory store from Uri because given \"uri\" parameter does not represent an absolute Uri.");
+            #endregion
 
             RDFMemoryStore result = new RDFMemoryStore();
 
