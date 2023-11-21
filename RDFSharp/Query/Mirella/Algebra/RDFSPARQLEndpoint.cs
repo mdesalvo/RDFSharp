@@ -55,8 +55,10 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFSPARQLEndpoint(Uri baseAddress)
         {
+            #region Guards
             if (baseAddress == null)
                 throw new RDFQueryException("Cannot create RDFSPARQLEndpoint because given \"baseAddress\" parameter is null.");
+            #endregion
 
             BaseAddress = baseAddress;
             QueryParams = new NameValueCollection();
@@ -67,7 +69,7 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the variable
+        /// Gives the string representation of the SPARQL enpoint
         /// </summary>
         public override string ToString()
             => BaseAddress.ToString();
