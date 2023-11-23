@@ -42,10 +42,12 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFBind(RDFExpression expression, RDFVariable variable)
         {
+            #region Guards
             if (expression == null)
                 throw new RDFQueryException("Cannot create RDFBind because given \"expression\" parameter is null");
             if (variable == null)
                 throw new RDFQueryException("Cannot create RDFBind because given \"variable\" parameter is null");
+            #endregion
 
             Expression = expression;
             Variable = variable;

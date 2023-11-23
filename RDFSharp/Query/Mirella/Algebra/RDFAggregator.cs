@@ -61,11 +61,13 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFAggregator(RDFVariable aggregatorVariable, RDFVariable projectionVariable)
         {
+            #region Guards
             if (aggregatorVariable == null)
                 throw new RDFQueryException("Cannot create RDFAggregator because given \"aggregatorVariable\" parameter is null.");
             if (projectionVariable == null)
                 throw new RDFQueryException("Cannot create RDFAggregator because given \"projectionVariable\" parameter is null.");
-            
+            #endregion
+
             AggregatorVariable = aggregatorVariable;
             ProjectionVariable = projectionVariable;
             HavingClause = (false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null);

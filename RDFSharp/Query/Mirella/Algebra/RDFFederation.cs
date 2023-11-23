@@ -23,7 +23,7 @@ using System.Collections.Generic;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFFederation represents a logically integrated collection of RDF data sources
+    /// RDFFederation represents a virtually integrated collection of RDF data sources
     /// </summary>
     public class RDFFederation : RDFDataSource, IEnumerable<RDFDataSource>
     {

@@ -274,9 +274,11 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPropertyPathStep(RDFResource stepProperty)
         {
+            #region Guards
             if (stepProperty == null)
                 throw new RDFQueryException("Cannot create RDFPropertyPathStep because given \"stepProperty\" parameter is null.");
-            
+            #endregion
+
             StepProperty = stepProperty;
         }
         #endregion

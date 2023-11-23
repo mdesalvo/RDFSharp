@@ -98,7 +98,7 @@ namespace RDFSharp.Query
 
             //Create the columns of the SPARQL values
             Bindings.ToList()
-                         .ForEach(b => RDFQueryEngine.AddColumn(result, b.Key));
+                    .ForEach(b => RDFQueryEngine.AddColumn(result, b.Key));
 
             //Create the rows of the SPARQL values
             result.BeginLoadData();
@@ -106,13 +106,13 @@ namespace RDFSharp.Query
             {
                 Dictionary<string, string> bindings = new Dictionary<string, string>();
                 Bindings.ToList()
-                             .ForEach(b =>
-                             {
-                                 RDFPatternMember bindingValue = b.Value.ElementAtOrDefault(i);
-                                 bindings.Add(b.Key, bindingValue?.ToString());
-                                 if (bindingValue == null)
-                                     result.ExtendedProperties[RDFQueryEngine.IsOptional] = true;
-                             });
+                        .ForEach(b =>
+                        {
+                            RDFPatternMember bindingValue = b.Value.ElementAtOrDefault(i);
+                            bindings.Add(b.Key, bindingValue?.ToString());
+                            if (bindingValue == null)
+                                result.ExtendedProperties[RDFQueryEngine.IsOptional] = true;
+                        });
                 RDFQueryEngine.AddRow(result, bindings);
             }
             result.EndLoadData();
@@ -124,12 +124,7 @@ namespace RDFSharp.Query
         /// Gets the current max length of the bindings
         /// </summary>
         internal int MaxBindingsLength()
-        {
-            if (Bindings?.Count > 0)
-                return Bindings.Select(x => x.Value.Count).Max();
-            else
-                return 0;
-        }
+            => Bindings?.Count > 0 ? Bindings.Select(x => x.Value.Count).Max() : 0;
 
         /// <summary>
         /// Gets the filter representation of the SPARQL values
