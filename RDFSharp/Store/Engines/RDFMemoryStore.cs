@@ -603,14 +603,8 @@ namespace RDFSharp.Store
         /// (null values are threated as * selectors. Ensure to keep object and literal mutually exclusive!)
         /// </summary>
         public RDFMemoryStore this[RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
-        {
-            get
-            {
-                if (obj != null && lit != null)
-                    throw new RDFStoreException("Cannot access a store when both object and literals are given: they have to be mutually exclusive!");
-                return new RDFMemoryStore(RDFStoreUtilities.SelectQuadruples(this, ctx, subj, pred, obj, lit));
-            }
-        }
+            => (obj != null && lit != null) ? throw new RDFStoreException("Cannot access a memory store when both object and literals are given: they must be mutually exclusive!")
+                                            : SelectQuadruples(ctx, subj, pred, obj, lit);
 
         /// <summary>
         /// Gets a store containing quadruples satisfying the given pattern
