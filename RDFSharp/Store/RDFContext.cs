@@ -45,30 +45,22 @@ namespace RDFSharp.Store
         public RDFContext(string ctxUri)
         {
             Uri tempUri = RDFModelUtilities.GetUriFromString(ctxUri);
+
+            #region Guards
             if (tempUri == null)
                 throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter is null or does not represent a valid Uri.");
-            if (tempUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase) || tempUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
+            if (tempUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase) 
+                 || tempUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
                 throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter represents a blank node Uri.");
-            
+            #endregion
+
             Context = tempUri;
         }
 
         /// <summary>
         /// Uri-based ctor to build a context from the given Uri
         /// </summary>
-        public RDFContext(Uri ctxUri)
-        {
-            if (ctxUri == null)
-                throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter is null.");
-            
-            Uri tempUri = RDFModelUtilities.GetUriFromString(ctxUri.ToString());
-            if (tempUri == null)
-                throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter does not represent a valid Uri.");
-            if (tempUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase) || tempUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
-                throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter represents a blank node Uri.");
-            
-            Context = tempUri;
-        }
+        public RDFContext(Uri ctxUri) : this(ctxUri?.ToString()) { }
         #endregion
 
         #region Interfaces

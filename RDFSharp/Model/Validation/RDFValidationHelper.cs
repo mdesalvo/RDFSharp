@@ -143,19 +143,13 @@ namespace RDFSharp.Model
             {
                 #region visitContext
                 if (visitContext == null)
-                {
                     visitContext = new HashSet<long>() { { className.PatternMemberID } };
-                }
                 else
                 {
                     if (!visitContext.Contains(className.PatternMemberID))
-                    {
                         visitContext.Add(className.PatternMemberID);
-                    }
                     else
-                    {
                         return result;
-                    }
                 }
                 #endregion
 
