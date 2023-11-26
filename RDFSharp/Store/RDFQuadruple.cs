@@ -69,36 +69,37 @@ namespace RDFSharp.Store
         /// SPO-flavor ctor
         /// </summary>
         public RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred, RDFResource obj)
+            : this(context, subj, pred)
         {
-            if (pred == null)
-                throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is null");
-            if (pred.IsBlank)
-                throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is a blank resource");
-
-            TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
-            Context = context ?? new RDFContext();
-            Subject = subj ?? new RDFResource();
-            Predicate = pred;
+            TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;   
             Object = obj ?? new RDFResource();
-            LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
-            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", QuadrupleID.ToString())));
         }
 
         /// <summary>
         /// SPL-flavor ctor
         /// </summary>
         public RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred, RDFLiteral lit)
+            : this(context, subj, pred)
         {
+            TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
+            Object = lit ?? new RDFPlainLiteral(string.Empty);
+        }
+
+        /// <summary>
+        /// Initializer-ctor for common quadruple properties
+        /// </summary>
+        private RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred)
+        {
+            #region Guards
             if (pred == null)
                 throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is null");
             if (pred.IsBlank)
                 throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is a blank resource");
+            #endregion
 
-            TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
             Context = context ?? new RDFContext();
             Subject = subj ?? new RDFResource();
             Predicate = pred;
-            Object = lit ?? new RDFPlainLiteral(string.Empty);
             LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
             LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", QuadrupleID.ToString())));
         }

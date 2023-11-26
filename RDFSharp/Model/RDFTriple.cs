@@ -68,7 +68,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// SPO-flavor ctor
         /// </summary>
-        public RDFTriple(RDFResource subj, RDFResource pred, RDFResource obj)
+        public RDFTriple(RDFResource subj, RDFResource pred, RDFResource obj) 
+            : this(subj, pred)
         {
             #region Guards
             if (pred == null)
@@ -78,29 +79,33 @@ namespace RDFSharp.Model
             #endregion
 
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
-            Subject = subj ?? new RDFResource();
-            Predicate = pred;
             Object = obj ?? new RDFResource();
-            LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
-            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", TripleID.ToString())));
         }
 
         /// <summary>
         /// SPL-flavor ctor
         /// </summary>
         public RDFTriple(RDFResource subj, RDFResource pred, RDFLiteral lit)
+            : this(subj, pred)
+        {
+            TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
+            Object = lit ?? new RDFPlainLiteral(string.Empty);
+        }
+
+        /// <summary>
+        /// Initializer-ctor for common triple properties
+        /// </summary>
+        private RDFTriple(RDFResource subj, RDFResource pred)
         {
             #region Guards
             if (pred == null)
-                throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is null");
+                throw new RDFModelException("Cannot create RDFTriple because given \"pred\" parameter is null");
             if (pred.IsBlank)
-                throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is a blank resource");
+                throw new RDFModelException("Cannot create RDFTriple because given \"pred\" parameter is a blank resource");
             #endregion
 
-            TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
             Subject = subj ?? new RDFResource();
             Predicate = pred;
-            Object = lit ?? new RDFPlainLiteral(string.Empty);            
             LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
             LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", TripleID.ToString())));
         }
