@@ -71,13 +71,6 @@ namespace RDFSharp.Model
         public RDFTriple(RDFResource subj, RDFResource pred, RDFResource obj) 
             : this(subj, pred)
         {
-            #region Guards
-            if (pred == null)
-                throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is null");
-            if (pred.IsBlank)
-                throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is a blank resource");
-            #endregion
-
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
             Object = obj ?? new RDFResource();
         }
