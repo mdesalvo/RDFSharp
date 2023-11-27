@@ -261,82 +261,116 @@ namespace RDFSharp.Query
         {
             PatternGroupMemberResultTables[patternGroup.QueryMemberID] = new List<DataTable>();
 
-            //Iterate the evaluable members of the pattern group
-            List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().Distinct().ToList();
-            foreach (RDFPatternGroupMember evaluablePGMember in evaluablePGMembers)
+            //**Service** evaluation => send it querified to SPARQL endpoint
+            if (patternGroup.EvaluateAsService.HasValue)
             {
-                #region Pattern
-                if (evaluablePGMember is RDFPattern pattern)
+                //Cleanup pattern group in order to stringify into vanilla "SELECT *"
+                bool isOptional = patternGroup.IsOptional;
+                bool joinAsUnion = patternGroup.JoinAsUnion;
+                (RDFSPARQLEndpoint, RDFSPARQLEndpointQueryOptions)? asService = patternGroup.EvaluateAsService;
+                patternGroup.IsOptional = false;
+                patternGroup.JoinAsUnion = false;
+                patternGroup.EvaluateAsService = null;
+
+                //Send query to SPARQL endpoint
+                RDFSelectQueryResult serviceResults = new RDFSelectQuery()
+                                                        .AddPatternGroup(patternGroup)
+                                                        .ApplyToSPARQLEndpoint(patternGroup.EvaluateAsService.Value.Item1, 
+                                                                               patternGroup.EvaluateAsService.Value.Item2);
+                DataTable serviceResultsTable = serviceResults.SelectResults;
+                
+                //Restore pattern group to its official state
+                patternGroup.IsOptional = isOptional;
+                patternGroup.JoinAsUnion = joinAsUnion;
+                patternGroup.EvaluateAsService = asService;
+
+                //Set name and metadata of result datatable
+                serviceResultsTable.ExtendedProperties.Add(IsOptional, patternGroup.IsOptional);
+                serviceResultsTable.ExtendedProperties.Add(JoinAsUnion, patternGroup.JoinAsUnion);
+
+                //Save result datatable
+                PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(serviceResultsTable);
+            }
+
+            //**Standard** evaluation => iterate its active members
+            else
+            {
+                List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().Distinct().ToList();
+                foreach (RDFPatternGroupMember evaluablePGMember in evaluablePGMembers)
                 {
-                    DataTable patternResultsTable = ApplyPattern(pattern, dataSource);
+                    #region Pattern
+                    if (evaluablePGMember is RDFPattern pattern)
+                    {
+                        DataTable patternResultsTable = ApplyPattern(pattern, dataSource);
 
-                    //Set name and metadata of result datatable
-                    patternResultsTable.ExtendedProperties.Add(IsOptional, pattern.IsOptional);
-                    patternResultsTable.ExtendedProperties.Add(JoinAsUnion, pattern.JoinAsUnion);
+                        //Set name and metadata of result datatable
+                        patternResultsTable.ExtendedProperties.Add(IsOptional, pattern.IsOptional);
+                        patternResultsTable.ExtendedProperties.Add(JoinAsUnion, pattern.JoinAsUnion);
 
-                    //Save result datatable
-                    PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
+                        //Save result datatable
+                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
+                    }
+                    #endregion
+
+                    #region PropertyPath
+                    else if (evaluablePGMember is RDFPropertyPath propertyPath)
+                    {
+                        DataTable pPathResultsTable = ApplyPropertyPath(propertyPath, dataSource);
+
+                        //Save result datatable
+                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
+                    }
+                    #endregion
+
+                    #region Values
+                    else if (evaluablePGMember is RDFValues values)
+                    {
+                        //Transform SPARQL values into an equivalent filter
+                        RDFValuesFilter valuesFilter = values.GetValuesFilter();
+
+                        //Save result datatable
+                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(valuesFilter.ValuesTable);
+
+                        //Inject SPARQL values filter
+                        patternGroup.AddFilter(valuesFilter);
+                    }
+                    #endregion
+
+                    #region Bind
+                    else if (evaluablePGMember is RDFBind bind)
+                    {
+                        //Bind operator is evaluated like an artificial ending of the pattern group:
+                        // first we combine the tables collected until this moment
+                        // then we evaluate the bind expression and project the bind variable, producing the comprehensive bind table
+                        // finally we drop all tables collected until this moment, except the comprehensive bind table
+
+                        //Populate current patternGroup result table
+                        DataTable currentPatternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID], false);
+
+                        //Evaluate bind operator on the current patternGroup result table
+                        ProjectBind(bind, currentPatternGroupResultTable);
+
+                        //Delete previous patternGroup result tables and replace them with bind operator's one
+                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Clear();
+                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(currentPatternGroupResultTable);
+                    }
+                    #endregion
+
+                    #region Filter (Exists/Not Exists)
+                    else if (evaluablePGMember is RDFExistsFilter existsFilter)
+                    {
+                        DataTable existsFilterResultsTable = ApplyPattern(existsFilter.Pattern, dataSource);
+
+                        //Set name and metadata of result datatable
+                        existsFilterResultsTable.ExtendedProperties.Add(IsOptional, false);
+                        existsFilterResultsTable.ExtendedProperties.Add(JoinAsUnion, false);
+
+                        //Save result datatable (directly into the filter)
+                        existsFilter.PatternResults?.Clear();
+                        existsFilter.PatternResults = existsFilterResultsTable;
+                    }
+                    #endregion
                 }
-                #endregion
-
-                #region PropertyPath
-                else if (evaluablePGMember is RDFPropertyPath propertyPath)
-                {
-                    DataTable pPathResultsTable = ApplyPropertyPath(propertyPath, dataSource);
-
-                    //Save result datatable
-                    PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
-                }
-                #endregion
-
-                #region Values
-                else if (evaluablePGMember is RDFValues values)
-                {
-                    //Transform SPARQL values into an equivalent filter
-                    RDFValuesFilter valuesFilter = values.GetValuesFilter();
-
-                    //Save result datatable
-                    PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(valuesFilter.ValuesTable);
-
-                    //Inject SPARQL values filter
-                    patternGroup.AddFilter(valuesFilter);
-                }
-                #endregion
-
-                #region Bind
-                else if (evaluablePGMember is RDFBind bind)
-                {
-                    //Bind operator is evaluated like an artificial ending of the pattern group:
-                    // first we combine the tables collected until this moment
-                    // then we evaluate the bind expression and project the bind variable, producing the comprehensive bind table
-                    // finally we drop all tables collected until this moment, except the comprehensive bind table
-
-                    //Populate current patternGroup result table
-                    DataTable currentPatternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID], false);
-
-                    //Evaluate bind operator on the current patternGroup result table
-                    ProjectBind(bind, currentPatternGroupResultTable);
-
-                    //Delete previous patternGroup result tables and replace them with bind operator's one
-                    PatternGroupMemberResultTables[patternGroup.QueryMemberID].Clear();
-                    PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(currentPatternGroupResultTable);
-                }
-                #endregion
-
-                #region Filter (Exists/Not Exists)
-                else if (evaluablePGMember is RDFExistsFilter existsFilter)
-                {
-                    DataTable existsFilterResultsTable = ApplyPattern(existsFilter.Pattern, dataSource);
-
-                    //Set name and metadata of result datatable
-                    existsFilterResultsTable.ExtendedProperties.Add(IsOptional, false);
-                    existsFilterResultsTable.ExtendedProperties.Add(JoinAsUnion, false);
-
-                    //Save result datatable (directly into the filter)
-                    existsFilter.PatternResults?.Clear();
-                    existsFilter.PatternResults = existsFilterResultsTable;
-                }
-                #endregion
             }
         }
 

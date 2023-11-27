@@ -436,11 +436,22 @@ namespace RDFSharp.Query
 
             #region HEADER
             StringBuilder result = new StringBuilder();
+            
+            //OPTIONAL
             if (patternGroup.IsOptional && !skipOptional)
             {
                 result.AppendLine(string.Concat("  ", spaces, "OPTIONAL {"));
                 spaces = string.Concat(spaces, "  ");
             }
+
+            //SERVICE
+            if (patternGroup.EvaluateAsService.HasValue)
+            {
+                bool isSilent = patternGroup.EvaluateAsService.Value.Item2.ErrorBehavior == RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult;
+                result.AppendLine(string.Concat("  ", spaces, "SERVICE ",  isSilent ? "SILENT " : string.Empty , "<", patternGroup.EvaluateAsService.Value.Item1 , "> {"));
+                spaces = string.Concat(spaces, "  ");
+            }
+
             result.AppendLine(string.Concat(spaces, "  {"));
             #endregion
 
@@ -541,6 +552,8 @@ namespace RDFSharp.Query
 
             #region CLOSURE
             result.AppendLine(string.Concat(spaces, "  }"));
+            if (patternGroup.EvaluateAsService.HasValue)
+                result.AppendLine(string.Concat(spaces, "}"));
             if (patternGroup.IsOptional && !skipOptional)
                 result.AppendLine(string.Concat(spaces, "}"));
             #endregion

@@ -37,6 +37,11 @@ namespace RDFSharp.Query
         internal bool JoinAsUnion { get; set; }
 
         /// <summary>
+        /// Tuple indicating that the pattern group should be evaluated according to SPARQL SERVICE
+        /// </summary>
+        internal (RDFSPARQLEndpoint,RDFSPARQLEndpointQueryOptions)? EvaluateAsService { get; set; }
+
+        /// <summary>
         /// List of members carried by the pattern group
         /// </summary>
         internal List<RDFPatternGroupMember> GroupMembers { get; set; }
@@ -197,6 +202,16 @@ namespace RDFSharp.Query
         {
             IsOptional = false;
             JoinAsUnion = true;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the pattern group to be evaluated according to SPARQL SERVICE
+        /// </summary>
+        public RDFPatternGroup AsService(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
+        {
+            if (sparqlEndpoint != null)
+                EvaluateAsService = (sparqlEndpoint, sparqlEndpointQueryOptions ?? new RDFSPARQLEndpointQueryOptions());
             return this;
         }
 
