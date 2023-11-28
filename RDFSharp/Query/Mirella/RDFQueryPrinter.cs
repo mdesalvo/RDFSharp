@@ -332,8 +332,23 @@ namespace RDFSharp.Query
                                 printingUnion = true;
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                             }
-                            sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
-                            sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
+                            #region PrintPatternGroup
+                            if (pgQueryMember.EvaluateAsService.HasValue)
+                            {
+                                //Service => we need an extra indentation level wrapping the pattern group
+                                subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
+                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  UNION"));
+                            }
+                            else
+                            {
+                                //Standard => just print the pattern group
+                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
+                            }
+                            #endregion
                         }
 
                         //Current pattern group IS the last of the query
@@ -359,8 +374,22 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
-                            sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
-                            sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
+                            #region PrintPatternGroup
+                            if (pgQueryMember.EvaluateAsService.HasValue)
+                            {
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
+                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
+                                if (subqueryBodySpaces.Length >= 2)
+                                    subqueryBodySpaces = subqueryBodySpaces.Substring(2);
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
+                            }
+                            else
+                            {
+                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
+                            }
+                            #endregion
                         }
                         else
                             sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length, false, prefixes));
