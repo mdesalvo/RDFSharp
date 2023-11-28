@@ -553,7 +553,12 @@ namespace RDFSharp.Query
             #region CLOSURE
             result.AppendLine(string.Concat(spaces, "  }"));
             if (patternGroup.EvaluateAsService.HasValue)
+            { 
                 result.AppendLine(string.Concat(spaces, "}"));
+                //In this case we must rewind an indentation level (2 spaces)
+                if (spaces.Length > 2)
+                    spaces = spaces.Substring(2);
+            }
             if (patternGroup.IsOptional && !skipOptional)
                 result.AppendLine(string.Concat(spaces, "}"));
             #endregion
