@@ -714,6 +714,215 @@ WHERE {
         }
 
         [TestMethod]
+        public void ShouldPrintSelectQueryStarWithUnionMixed2ServicePatternGroups()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+                    .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
+                    .Optional())
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+                    .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))
+                    .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+                    .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
+                    .UnionWithNext());
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT *
+WHERE {
+  SERVICE <ex:org1> {
+    {
+      ?S rdfs:label ""label""@EN .
+    }
+  }
+  OPTIONAL {
+    {
+      ?S rdfs:comment rdfs:Class .
+    }
+  }
+  {
+    {
+      SERVICE <ex:org3> {
+        {
+          ?S rdfs:label ""label""@EN .
+        }
+      }
+    }
+    UNION
+    {
+      SERVICE <ex:org4> {
+        {
+          ?S rdfs:label ""label""@EN .
+        }
+      }
+    }
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintSelectQueryStarWithUnionMixed3ServicePatternGroups()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+                    .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
+                    .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+                    .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
+                    .Optional());
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT *
+WHERE {
+  SERVICE <ex:org1> {
+    {
+      ?S rdfs:label ""label""@EN .
+    }
+  }
+  {
+    {
+      ?S rdfs:comment rdfs:Class .
+    }
+    UNION
+    {
+      ?S rdfs:label ""label""@EN .
+    }
+  }
+  OPTIONAL {
+    SERVICE <ex:org4> {
+      {
+        ?S rdfs:label ""label""@EN .
+      }
+    }
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintSelectQueryStarWithUnionMixed4ServicePatternGroups()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+                    .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
+                    .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+                    .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4"))));
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT *
+WHERE {
+  SERVICE <ex:org1> {
+    {
+      ?S rdfs:label ""label""@EN .
+    }
+  }
+  {
+    {
+      ?S rdfs:comment rdfs:Class .
+    }
+    UNION
+    {
+      ?S rdfs:label ""label""@EN .
+    }
+  }
+  SERVICE <ex:org4> {
+    {
+      ?S rdfs:label ""label""@EN .
+    }
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintSelectQueryStarWithUnionMixed5ServicePatternGroups()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+                    .Optional()
+                    .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
+                    .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("ex:org")))
+                    .Optional()) //Should be discarded since running under Union semantic from the previous
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+                    .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
+                    .Optional());
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT *
+WHERE {
+  OPTIONAL {
+    SERVICE <ex:org1> {
+      {
+        ?S rdfs:label ""label""@EN .
+      }
+    }
+  }
+  {
+    {
+      ?S rdfs:comment rdfs:Class .
+    }
+    UNION
+    {
+      ?S rdfs:label <ex:org> .
+    }
+  }
+  OPTIONAL {
+    SERVICE <ex:org4> {
+      {
+        ?S rdfs:label ""label""@EN .
+      }
+    }
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
         public void ShouldPrintSelectQueryStarWithPatternGroupFollowedByMultipleServicePatternGroup()
         {
             RDFSelectQuery query = new RDFSelectQuery()
