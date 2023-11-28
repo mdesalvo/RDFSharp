@@ -332,23 +332,19 @@ namespace RDFSharp.Query
                                 printingUnion = true;
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                             }
+
                             #region PrintPatternGroup
                             if (pgQueryMember.EvaluateAsService.HasValue)
                             {
-                                //Service => we need an extra indentation level wrapping the pattern group
-                                subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
-                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  UNION"));
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "    {"));
+                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 4, true, prefixes));
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "    }"));
                             }
                             else
-                            {
-                                //Standard => just print the pattern group
                                 sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
-                            }
                             #endregion
+
+                            sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
                         }
 
                         //Current pattern group IS the last of the query
@@ -374,22 +370,19 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
+
                             #region PrintPatternGroup
                             if (pgQueryMember.EvaluateAsService.HasValue)
                             {
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
-                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
-                                if (subqueryBodySpaces.Length >= 2)
-                                    subqueryBodySpaces = subqueryBodySpaces.Substring(2);
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "    {"));
+                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 4, true, prefixes));
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "    }"));
                             }
                             else
-                            {
                                 sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
-                            }
                             #endregion
+
+                            sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                         }
                         else
                             sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length, false, prefixes));
@@ -477,7 +470,8 @@ namespace RDFSharp.Query
             if (patternGroup.EvaluateAsService.HasValue)
             {
                 bool isSilent = patternGroup.EvaluateAsService.Value.Item2.ErrorBehavior == RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult;
-                result.AppendLine(string.Concat("  ", spaces, "SERVICE ",  isSilent ? "SILENT " : string.Empty , "<", patternGroup.EvaluateAsService.Value.Item1 , "> {"));
+                string service = string.Concat("SERVICE ",  isSilent ? "SILENT " : string.Empty);
+                result.AppendLine(string.Concat("  ", spaces, service, "<", patternGroup.EvaluateAsService.Value.Item1 , "> {"));
                 spaces = string.Concat(spaces, "  ");
             }
 

@@ -592,7 +592,7 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS)));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-            string expectedQueryString = //TODO: check the wrong indentation of right union member
+            string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT *
@@ -606,11 +606,11 @@ WHERE {
       }
     }
     UNION
-      {
-        ?S rdfs:comment rdfs:Class .
-      }
+    {
+      ?S rdfs:comment rdfs:Class .
     }
   }
+}
 ";
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
@@ -628,7 +628,7 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-            string expectedQueryString = //TODO: check the wrong indentation of right union member
+            string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT *
@@ -638,13 +638,13 @@ WHERE {
       ?S rdfs:label ""label""@EN .
     }
     UNION
-  {
-    SERVICE <ex:org1> {
-      {
-        ?S rdfs:comment rdfs:Class .
+    {
+      SERVICE <ex:org1> {
+        {
+          ?S rdfs:comment rdfs:Class .
+        }
       }
     }
-  }
   }
 }
 ";
