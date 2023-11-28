@@ -355,7 +355,18 @@ namespace RDFSharp.Query
                             if (printingUnion)
                             {
                                 printingUnion = false;
-                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
+
+                                #region PrintPatternGroup
+                                if (pgQueryMember.EvaluateAsService.HasValue)
+                                {
+                                    sb.AppendLine(string.Concat(subqueryBodySpaces, "    {"));
+                                    sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 4, true, prefixes));
+                                    sb.AppendLine(string.Concat(subqueryBodySpaces, "    }"));
+                                }
+                                else
+                                    sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
+                                #endregion
+
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                             }
                             else
