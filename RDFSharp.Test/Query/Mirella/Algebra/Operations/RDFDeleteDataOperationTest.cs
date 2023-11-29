@@ -36,9 +36,6 @@ namespace RDFSharp.Test.Query
         [TestInitialize]
         public void Initialize() { server = WireMockServer.Start(); }
 
-        [TestCleanup]
-        public void Cleanup()  { server.Stop(); server.Dispose(); }
-
         #region Tests
         [TestMethod]
         public void ShouldCreateDeleteDataOperation()

@@ -28,10 +28,8 @@ using WireMock.Server;
 using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Store;
-using System.Reflection.Metadata.Ecma335;
 using WireMock.Util;
 using WireMock.Types;
-using MimeKit;
 using System.Web;
 
 namespace RDFSharp.Test.Query
@@ -43,9 +41,6 @@ namespace RDFSharp.Test.Query
 
         [TestInitialize]
         public void Initialize() { server = WireMockServer.Start(); }
-
-        [TestCleanup]
-        public void Cleanup()  { server.Stop(); server.Dispose(); }
 
         #region Tests
         [TestMethod]
