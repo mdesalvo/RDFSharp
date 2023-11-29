@@ -1880,7 +1880,7 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldEvaluateDescribeQueryOnStoreWithResultsFromvariableTermAssumingBlankValues()
+        public void ShouldEvaluateDescribeQueryOnStoreWithResultsFromVariableTermAssumingBlankValues()
         {
             RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
             {
