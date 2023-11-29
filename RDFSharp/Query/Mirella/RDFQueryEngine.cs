@@ -275,8 +275,7 @@ namespace RDFSharp.Query
                 //Send query to SPARQL endpoint
                 RDFSelectQueryResult serviceResults = new RDFSelectQuery()
                                                         .AddPatternGroup(patternGroup)
-                                                        .ApplyToSPARQLEndpoint(patternGroup.EvaluateAsService.Value.Item1, 
-                                                                               patternGroup.EvaluateAsService.Value.Item2);
+                                                        .ApplyToSPARQLEndpoint(asService.Value.Item1, asService.Value.Item2);
                 DataTable serviceResultsTable = serviceResults.SelectResults;
                 
                 //Restore pattern group to its official state
