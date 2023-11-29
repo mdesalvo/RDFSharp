@@ -1598,6 +1598,104 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraphWithValuesInjectedIntoServicePatternGroup()
+        {
+            string receivedQuery = "";
+            string expectedQuery =
+@"?query=SELECT *
+WHERE {
+  {
+    VALUES (?Y ?X) {
+      ( <ex:pluto> <ex:topolino> )
+    } .
+    ?Y <ex:dogOf> ?X .
+  }
+}
+";
+            string mockedResponseXml =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?Y"" />
+    <variable name=""?X"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:pluto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:topolino</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:fido</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:paperino</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:balto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:whoever</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>";
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithValuesInjectedIntoServicePatternGroup/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithCallback(req =>
+                            {
+                                receivedQuery = req.RawQuery;
+                                return new WireMock.ResponseMessage()
+                                {
+                                    BodyData = new BodyData()
+                                    {
+                                        BodyAsString = mockedResponseXml,
+                                        Encoding = Encoding.UTF8,
+                                        DetectedBodyType = BodyType.String
+                                    }
+                                };
+                            })
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithValuesInjectedIntoServicePatternGroup/sparql"));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddValues(new RDFValues()
+                        .AddColumn(new RDFVariable("?Y"), new List<RDFPatternMember>() { new RDFResource("ex:pluto") })
+                        .AddColumn(new RDFVariable("?X"), new List<RDFPatternMember>() { new RDFResource("ex:topolino") }))
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AsService(endpoint));
+            DataTable result = new RDFQueryEngine().EvaluateSelectQuery(query, new RDFGraph()).SelectResults;
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto")); //Here it is mocked in XML, but real SPARQL servers will have it thanks to injected VALUES
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+
+            //Proves that the pattern group has been sent as an equivalent SELECT * to the given endpoint
+            Assert.IsNotNull(receivedQuery);
+            Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery), expectedQuery));
+        }
+
+        [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraphWithServicePatternGroupAndCombineResults()
         {
             string receivedQuery = "";
