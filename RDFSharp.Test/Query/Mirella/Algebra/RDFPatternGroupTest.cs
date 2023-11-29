@@ -36,6 +36,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pGroup.IsEvaluable);
             Assert.IsFalse(pGroup.IsOptional);
             Assert.IsFalse(pGroup.JoinAsUnion);
+            Assert.IsNull(pGroup.EvaluateAsService);
             Assert.IsNotNull(pGroup.GroupMembers);
             Assert.IsTrue(pGroup.GroupMembers.Count == 0);
             Assert.IsNotNull(pGroup.Variables);
@@ -58,6 +59,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pGroup.IsEvaluable);
             Assert.IsTrue(pGroup.IsOptional);
             Assert.IsFalse(pGroup.JoinAsUnion);
+            Assert.IsFalse(pGroup.EvaluateAsService.HasValue);
             Assert.IsNotNull(pGroup.GroupMembers);
             Assert.IsTrue(pGroup.GroupMembers.Count == 0);
             Assert.IsNotNull(pGroup.Variables);
@@ -80,11 +82,37 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pGroup.IsEvaluable);
             Assert.IsFalse(pGroup.IsOptional);
             Assert.IsTrue(pGroup.JoinAsUnion);
+            Assert.IsFalse(pGroup.EvaluateAsService.HasValue);
             Assert.IsNotNull(pGroup.GroupMembers);
             Assert.IsTrue(pGroup.GroupMembers.Count == 0);
             Assert.IsNotNull(pGroup.Variables);
             Assert.IsTrue(pGroup.Variables.Count == 0);
             Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "  }", Environment.NewLine)));
+            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
+            Assert.IsTrue(pGroup.GetPatterns().Count() == 0);
+            Assert.IsTrue(pGroup.GetFilters().Count() == 0);
+            Assert.IsTrue(pGroup.GetPropertyPaths().Count() == 0);
+            Assert.IsTrue(pGroup.GetValues().Count() == 0);
+            Assert.IsTrue(pGroup.GetBinds().Count() == 0);
+            Assert.IsTrue(pGroup.GetEvaluablePatternGroupMembers().Count() == 0);
+        }
+
+        [TestMethod]
+        public void ShouldCreateServicePatternGroup()
+        {
+            RDFPatternGroup pGroup = new RDFPatternGroup().AsService(new RDFSPARQLEndpoint(new Uri("ex:org")));
+
+            Assert.IsNotNull(pGroup);
+            Assert.IsTrue(pGroup.IsEvaluable);
+            Assert.IsFalse(pGroup.IsOptional);
+            Assert.IsFalse(pGroup.JoinAsUnion);
+            Assert.IsTrue(pGroup.EvaluateAsService.HasValue);
+            Assert.IsTrue(string.Equals(pGroup.EvaluateAsService.Value.Item1.ToString(), "ex:org"));
+            Assert.IsNotNull(pGroup.GroupMembers);
+            Assert.IsTrue(pGroup.GroupMembers.Count == 0);
+            Assert.IsNotNull(pGroup.Variables);
+            Assert.IsTrue(pGroup.Variables.Count == 0);
+            Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  SERVICE <ex:org> {", Environment.NewLine, "    {", Environment.NewLine, "    }", Environment.NewLine, "  }", Environment.NewLine)));
             Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
             Assert.IsTrue(pGroup.GetPatterns().Count() == 0);
             Assert.IsTrue(pGroup.GetFilters().Count() == 0);

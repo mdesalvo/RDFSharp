@@ -332,7 +332,18 @@ namespace RDFSharp.Query
                                 printingUnion = true;
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                             }
-                            sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
+
+                            #region PrintPatternGroup
+                            if (pgQueryMember.EvaluateAsService.HasValue)
+                            {
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "    {"));
+                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 4, true, prefixes));
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "    }"));
+                            }
+                            else
+                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
+                            #endregion
+
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
                         }
 
@@ -344,7 +355,18 @@ namespace RDFSharp.Query
                             if (printingUnion)
                             {
                                 printingUnion = false;
-                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
+
+                                #region PrintPatternGroup
+                                if (pgQueryMember.EvaluateAsService.HasValue)
+                                {
+                                    sb.AppendLine(string.Concat(subqueryBodySpaces, "    {"));
+                                    sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 4, true, prefixes));
+                                    sb.AppendLine(string.Concat(subqueryBodySpaces, "    }"));
+                                }
+                                else
+                                    sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
+                                #endregion
+
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                             }
                             else
@@ -359,7 +381,18 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
-                            sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
+
+                            #region PrintPatternGroup
+                            if (pgQueryMember.EvaluateAsService.HasValue)
+                            {
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "    {"));
+                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 4, true, prefixes));
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "    }"));
+                            }
+                            else
+                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
+                            #endregion
+
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                         }
                         else
@@ -436,11 +469,23 @@ namespace RDFSharp.Query
 
             #region HEADER
             StringBuilder result = new StringBuilder();
+            
+            //OPTIONAL
             if (patternGroup.IsOptional && !skipOptional)
             {
                 result.AppendLine(string.Concat("  ", spaces, "OPTIONAL {"));
                 spaces = string.Concat(spaces, "  ");
             }
+
+            //SERVICE
+            if (patternGroup.EvaluateAsService.HasValue)
+            {
+                bool isSilent = patternGroup.EvaluateAsService.Value.Item2.ErrorBehavior == RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult;
+                string service = string.Concat("SERVICE ",  isSilent ? "SILENT " : string.Empty);
+                result.AppendLine(string.Concat("  ", spaces, service, "<", patternGroup.EvaluateAsService.Value.Item1 , "> {"));
+                spaces = string.Concat(spaces, "  ");
+            }
+
             result.AppendLine(string.Concat(spaces, "  {"));
             #endregion
 
@@ -541,6 +586,13 @@ namespace RDFSharp.Query
 
             #region CLOSURE
             result.AppendLine(string.Concat(spaces, "  }"));
+            if (patternGroup.EvaluateAsService.HasValue)
+            { 
+                result.AppendLine(string.Concat(spaces, "}"));
+                //In this case we must rewind an indentation level (2 spaces)
+                if (spaces.Length > 2)
+                    spaces = spaces.Substring(2);
+            }
             if (patternGroup.IsOptional && !skipOptional)
                 result.AppendLine(string.Concat(spaces, "}"));
             #endregion

@@ -28,6 +28,9 @@ using WireMock.Server;
 using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Store;
+using WireMock.Util;
+using WireMock.Types;
+using System.Web;
 
 namespace RDFSharp.Test.Query
 {
@@ -38,9 +41,6 @@ namespace RDFSharp.Test.Query
 
         [TestInitialize]
         public void Initialize() { server = WireMockServer.Start(); }
-
-        [TestCleanup]
-        public void Cleanup()  { server.Stop(); server.Dispose(); }
 
         #region Tests
         [TestMethod]
@@ -1430,6 +1430,485 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?NEVERBOUND"].ToString(), string.Empty));
         }
 
+        [TestMethod]
+        public void ShouldEvaluateSelectQueryOnEndpointWithResults()
+        {
+            string receivedQuery = "";
+            string mockedResponseXml =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?Y"" />
+    <variable name=""?X"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:pluto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:topolino</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:fido</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:paperino</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:balto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:whoever</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>";
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnEndpointWithResults/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithCallback(req => 
+                            { 
+                                receivedQuery = req.RawQuery;
+                                return new WireMock.ResponseMessage()
+                                {
+                                    BodyData = new BodyData() 
+                                    {
+                                        BodyAsString = mockedResponseXml,
+                                        Encoding = Encoding.UTF8,
+                                        DetectedBodyType = BodyType.String
+                                    }
+                                }; 
+                            })
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnEndpointWithResults/sparql"));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))));
+            DataTable result = new RDFQueryEngine().EvaluateSelectQuery(query, endpoint).SelectResults;
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+
+            Assert.IsNotNull(receivedQuery);
+            Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery), $"?query={query}"));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraphWithServicePatternGroup()
+        {
+            string receivedQuery = "";
+            string expectedQuery = string.Concat("?query=SELECT *", Environment.NewLine, "WHERE {", Environment.NewLine, "  {", Environment.NewLine, "    ?Y <ex:dogOf> ?X .", Environment.NewLine, "  }", Environment.NewLine, "}", Environment.NewLine);
+            string mockedResponseXml =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?Y"" />
+    <variable name=""?X"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:pluto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:topolino</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:fido</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:paperino</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:balto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:whoever</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>";
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithServicePatternGroup/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithCallback(req =>
+                            {
+                                receivedQuery = req.RawQuery;
+                                return new WireMock.ResponseMessage()
+                                {
+                                    BodyData = new BodyData()
+                                    {
+                                        BodyAsString = mockedResponseXml,
+                                        Encoding = Encoding.UTF8,
+                                        DetectedBodyType = BodyType.String
+                                    }
+                                };
+                            })
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithServicePatternGroup/sparql"));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AsService(endpoint));
+            DataTable result = new RDFQueryEngine().EvaluateSelectQuery(query, new RDFGraph()).SelectResults;
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+
+            //Proves that the pattern group has been sent as an equivalent SELECT * to the given endpoint
+            Assert.IsNotNull(receivedQuery);
+            Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery), expectedQuery));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraphWithValuesInjectedIntoServicePatternGroup()
+        {
+            string receivedQuery = "";
+            string expectedQuery =
+@"?query=SELECT *
+WHERE {
+  {
+    VALUES (?Y ?X) {
+      ( <ex:pluto> <ex:topolino> )
+    } .
+    ?Y <ex:dogOf> ?X .
+  }
+}
+";
+            string mockedResponseXml =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?Y"" />
+    <variable name=""?X"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:pluto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:topolino</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:fido</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:paperino</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:balto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:whoever</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>";
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithValuesInjectedIntoServicePatternGroup/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithCallback(req =>
+                            {
+                                receivedQuery = req.RawQuery;
+                                return new WireMock.ResponseMessage()
+                                {
+                                    BodyData = new BodyData()
+                                    {
+                                        BodyAsString = mockedResponseXml,
+                                        Encoding = Encoding.UTF8,
+                                        DetectedBodyType = BodyType.String
+                                    }
+                                };
+                            })
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithValuesInjectedIntoServicePatternGroup/sparql"));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddValues(new RDFValues()
+                        .AddColumn(new RDFVariable("?Y"), new List<RDFPatternMember>() { new RDFResource("ex:pluto") })
+                        .AddColumn(new RDFVariable("?X"), new List<RDFPatternMember>() { new RDFResource("ex:topolino") }))
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AsService(endpoint));
+            DataTable result = new RDFQueryEngine().EvaluateSelectQuery(query, new RDFGraph()).SelectResults;
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto")); //Here it is mocked in XML, but real SPARQL servers will have it thanks to injected VALUES
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+
+            //Proves that the pattern group has been sent as an equivalent SELECT * to the given endpoint
+            Assert.IsNotNull(receivedQuery);
+            Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery), expectedQuery));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraphWithServicePatternGroupAndCombineResults()
+        {
+            string receivedQuery = "";
+            string expectedQuery = string.Concat("?query=SELECT *", Environment.NewLine, "WHERE {", Environment.NewLine, "  {", Environment.NewLine, "    ?Y <ex:dogOf> ?X .", Environment.NewLine, "  }", Environment.NewLine, "}", Environment.NewLine);
+            string mockedResponseXml =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?Y"" />
+    <variable name=""?X"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:pluto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:topolino</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:fido</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:paperino</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:balto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:whoever</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>";
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithServicePatternGroupAndCombineResults/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithCallback(req =>
+                            {
+                                receivedQuery = req.RawQuery;
+                                return new WireMock.ResponseMessage()
+                                {
+                                    BodyData = new BodyData()
+                                    {
+                                        BodyAsString = mockedResponseXml,
+                                        Encoding = Encoding.UTF8,
+                                        DetectedBodyType = BodyType.String
+                                    }
+                                };
+                            })
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithServicePatternGroupAndCombineResults/sparql"));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X"))))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AsService(endpoint));
+            DataTable result = new RDFQueryEngine().EvaluateSelectQuery(query, new RDFGraph()).SelectResults;
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+
+            //Proves that the pattern group has been sent as an equivalent SELECT * to the given endpoint
+            Assert.IsNotNull(receivedQuery);
+            Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery), expectedQuery));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraphWithDifferentServicePatternGroupsAndCombineResults()
+        {
+            string receivedQuery1 = "";
+            string expectedQuery1 = string.Concat("?query=SELECT *", Environment.NewLine, "WHERE {", Environment.NewLine, "  {", Environment.NewLine, "    ?Y <ex:dogOf> ?X .", Environment.NewLine, "  }", Environment.NewLine, "}", Environment.NewLine);
+            string mockedResponse1Xml =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?Y"" />
+    <variable name=""?X"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:pluto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:topolino</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>";
+            string receivedQuery2 = "";
+            string expectedQuery2 = string.Concat("?query=SELECT *", Environment.NewLine, "WHERE {", Environment.NewLine, "  {", Environment.NewLine, "    ?Y <ex:dogOf> ?X .", Environment.NewLine, "  }", Environment.NewLine, "}", Environment.NewLine);
+            string mockedResponse2Xml =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?Y"" />
+    <variable name=""?X"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:pluto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:topolino</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:fido</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:paperino</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:balto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:whoever</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>";
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithDifferentServicePatternGroupsAndCombineResults1/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithCallback(req =>
+                            {
+                                receivedQuery1 = req.RawQuery;
+                                return new WireMock.ResponseMessage()
+                                {
+                                    BodyData = new BodyData()
+                                    {
+                                        BodyAsString = mockedResponse1Xml,
+                                        Encoding = Encoding.UTF8,
+                                        DetectedBodyType = BodyType.String
+                                    }
+                                };
+                            })
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithDifferentServicePatternGroupsAndCombineResults2/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithCallback(req =>
+                            {
+                                receivedQuery2 = req.RawQuery;
+                                return new WireMock.ResponseMessage()
+                                {
+                                    BodyData = new BodyData()
+                                    {
+                                        BodyAsString = mockedResponse2Xml,
+                                        Encoding = Encoding.UTF8,
+                                        DetectedBodyType = BodyType.String
+                                    }
+                                };
+                            })
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint1 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithDifferentServicePatternGroupsAndCombineResults1/sparql"));
+            RDFSPARQLEndpoint endpoint2 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithDifferentServicePatternGroupsAndCombineResults2/sparql"));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AsService(endpoint1))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AsService(endpoint2));
+            DataTable result = new RDFQueryEngine().EvaluateSelectQuery(query, new RDFGraph()).SelectResults;
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+
+            //Proves that the pattern groups have been sent as equivalent SELECT * to the given endpoints
+            Assert.IsNotNull(receivedQuery1);
+            Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery1), expectedQuery1));
+            Assert.IsNotNull(receivedQuery2);
+            Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery2), expectedQuery2));
+        }
+
         //DESCRIBE QUERY
 
         [TestMethod]
@@ -1499,7 +1978,7 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldEvaluateDescribeQueryOnStoreWithResultsFromvariableTermAssumingBlankValues()
+        public void ShouldEvaluateDescribeQueryOnStoreWithResultsFromVariableTermAssumingBlankValues()
         {
             RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
             {

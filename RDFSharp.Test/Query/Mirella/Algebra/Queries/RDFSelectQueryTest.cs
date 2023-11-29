@@ -15,6 +15,9 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RDFSharp.Model;
+using RDFSharp.Query;
+using RDFSharp.Store;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,9 +27,8 @@ using System.Threading.Tasks;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
-using RDFSharp.Model;
-using RDFSharp.Query;
-using RDFSharp.Store;
+using WireMock.Types;
+using WireMock.Util;
 
 namespace RDFSharp.Test.Query
 {
@@ -37,9 +39,6 @@ namespace RDFSharp.Test.Query
 
         [TestInitialize]
         public void Initialize() { server = WireMockServer.Start(); }
-
-        [TestCleanup]
-        public void Cleanup()  { server.Stop(); server.Dispose(); }
 
         #region Tests
         [TestMethod]
@@ -406,6 +405,131 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(result.SelectResults);
             Assert.IsTrue(result.SelectResultsCount == 0);
             Assert.IsTrue(result.SelectResults.Columns.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplySelectQueryOnGraphWithServicePatternGroupAndThrowExceptionAccordingToTimingAndBehavior()
+        {
+            string receivedQuery = null;
+            string mockedResponseXml =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?S"">
+        <uri>ex:flower</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>";
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFSelectQueryTest/ShouldApplySelectQueryOnGraphWithServicePatternGroupAndThrowExceptionAccordingToTimingAndBehavior/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithCallback(req =>
+                            {
+                                receivedQuery = req.RawQuery;
+                                return new WireMock.ResponseMessage()
+                                {
+                                    BodyData = new BodyData()
+                                    {
+                                        BodyAsString = mockedResponseXml,
+                                        Encoding = Encoding.UTF8,
+                                        DetectedBodyType = BodyType.String
+                                    }
+                                };
+                            })
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(750));
+                            
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryOnGraphWithServicePatternGroupAndThrowExceptionAccordingToTimingAndBehavior/sparql"));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")))
+                    .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(250, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)));
+
+            try
+            {
+                RDFSelectQueryResult result = query.ApplyToGraph(new RDFGraph());
+            }
+            catch (RDFQueryException qex) 
+            {
+                Assert.IsTrue(string.Equals(qex.Message, "SELECT query on SPARQL endpoint failed because: The operation has timed out."));
+            }
+        }
+
+        [TestMethod]
+        public void ShouldApplySelectQueryOnGraphWithServicePatternGroupAndGiveEmptyResultAccordingToTimingAndBehavior()
+        {
+            string receivedQuery = null;
+            string mockedResponseXml =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?S"">
+        <uri>ex:flower</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>";
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFSelectQueryTest/ShouldApplySelectQueryOnGraphWithServicePatternGroupAndGiveEmptyResultAccordingToTimingAndBehavior/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithCallback(req =>
+                            {
+                                receivedQuery = req.RawQuery;
+                                return new WireMock.ResponseMessage()
+                                {
+                                    BodyData = new BodyData()
+                                    {
+                                        BodyAsString = mockedResponseXml,
+                                        Encoding = Encoding.UTF8,
+                                        DetectedBodyType = BodyType.String
+                                    }
+                                };
+                            })
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(750));
+
+
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryOnGraphWithServicePatternGroupAndGiveEmptyResultAccordingToTimingAndBehavior/sparql"));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")))
+                    .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(250, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult)));
+            RDFSelectQueryResult result = query.ApplyToGraph(new RDFGraph());
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?X"));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?X"].Equals("ex:topolino"));
         }
 
         [TestMethod]
