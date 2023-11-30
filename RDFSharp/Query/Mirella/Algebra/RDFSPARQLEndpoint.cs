@@ -27,25 +27,6 @@ namespace RDFSharp.Query
     /// </summary>
     public class RDFSPARQLEndpoint : RDFDataSource
     {
-        #region Statics
-        /// <summary>
-        /// Represents the SPARQL query endpoint of DBpedia
-        /// </summary>
-        public static RDFSPARQLEndpoint DBPedia = new RDFSPARQLEndpoint(new Uri("http://dbpedia.org/sparql"));
-        /// <summary>
-        /// Represents the SPARQL query endpoint of WikiData
-        /// </summary>
-        public static RDFSPARQLEndpoint WikiData = new RDFSPARQLEndpoint(new Uri("https://query.wikidata.org/sparql"));
-        /// <summary>
-        /// Represents the SPARQL query endpoint of WikiMedia
-        /// </summary>
-        public static RDFSPARQLEndpoint WikiMedia = new RDFSPARQLEndpoint(new Uri("https://commons-query.wikimedia.org/sparql"));
-        /// <summary>
-        /// Represents the SPARQL query endpoint of SPARQLer
-        /// </summary>
-        public static RDFSPARQLEndpoint SPARQLer = new RDFSPARQLEndpoint(new Uri("https://www.sparql.org/sparql"));
-        #endregion
-
         #region Properties
         /// <summary>
         /// Base address of the SPARQL endpoint
