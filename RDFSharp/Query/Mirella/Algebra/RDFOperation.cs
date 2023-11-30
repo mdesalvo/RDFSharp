@@ -254,32 +254,20 @@ namespace RDFSharp.Query
         internal void CollectVariables(RDFPattern template)
         {
             //Context
-            if (template.Context != null && template.Context is RDFVariable ctxVar)
-            {
-                if (!Variables.Any(v => v.Equals(ctxVar)))
-                    Variables.Add(ctxVar);
-            }
+            if (template.Context is RDFVariable ctxVar && !Variables.Any(v => v.Equals(ctxVar)))
+                Variables.Add(ctxVar);
 
             //Subject
-            if (template.Subject is RDFVariable subjVar)
-            {
-                if (!Variables.Any(v => v.Equals(subjVar)))
+            if (template.Subject is RDFVariable subjVar && !Variables.Any(v => v.Equals(subjVar)))
                     Variables.Add(subjVar);
-            }
 
             //Predicate
-            if (template.Predicate is RDFVariable predVar)
-            {
-                if (!Variables.Any(v => v.Equals(predVar)))
-                    Variables.Add(predVar);
-            }
+            if (template.Predicate is RDFVariable predVar && !Variables.Any(v => v.Equals(predVar)))
+                Variables.Add(predVar);
 
             //Object
-            if (template.Object is RDFVariable objVar)
-            {
-                if (!Variables.Any(v => v.Equals(objVar)))
-                    Variables.Add(objVar);
-            }
+            if (template.Object is RDFVariable objVar && !Variables.Any(v => v.Equals(objVar)))
+                Variables.Add(objVar);
         }
         #endregion
     }

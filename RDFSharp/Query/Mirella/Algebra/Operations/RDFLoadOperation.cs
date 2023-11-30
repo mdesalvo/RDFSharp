@@ -46,8 +46,10 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFLoadOperation(Uri fromContext)
         {
+            #region Guards
             if (fromContext == null)
                 throw new RDFQueryException("Cannot create RDFLoadOperation because given \"fromContext\" parameter is null.");
+            #endregion
 
             FromContext = fromContext;
         }
