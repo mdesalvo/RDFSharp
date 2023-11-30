@@ -68,6 +68,84 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldCreateOptionalSelectQuery()
+        {
+            RDFSelectQuery query = new RDFSelectQuery().Optional();
+
+            Assert.IsNotNull(query);
+            Assert.IsNotNull(query.QueryMembers);
+            Assert.IsTrue(query.QueryMembers.Count == 0);
+            Assert.IsNotNull(query.Prefixes);
+            Assert.IsTrue(query.Prefixes.Count == 0);
+            Assert.IsNotNull(query.ProjectionVars);
+            Assert.IsTrue(query.ProjectionVars.Count == 0);
+            Assert.IsTrue(query.IsEvaluable);
+            Assert.IsTrue(query.IsOptional);
+            Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.IsSubQuery);
+            Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
+            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
+            Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
+            Assert.IsTrue(query.GetPatternGroups().Count() == 0);
+            Assert.IsTrue(query.GetSubQueries().Count() == 0);
+            Assert.IsTrue(query.GetValues().Count() == 0);
+            Assert.IsTrue(query.GetModifiers().Count() == 0);
+            Assert.IsTrue(query.GetPrefixes().Count() == 0);
+        }
+
+        [TestMethod]
+        public void ShouldCreateUnionSelectQuery()
+        {
+            RDFSelectQuery query = new RDFSelectQuery().UnionWithNext();
+
+            Assert.IsNotNull(query);
+            Assert.IsNotNull(query.QueryMembers);
+            Assert.IsTrue(query.QueryMembers.Count == 0);
+            Assert.IsNotNull(query.Prefixes);
+            Assert.IsTrue(query.Prefixes.Count == 0);
+            Assert.IsNotNull(query.ProjectionVars);
+            Assert.IsTrue(query.ProjectionVars.Count == 0);
+            Assert.IsTrue(query.IsEvaluable);
+            Assert.IsFalse(query.IsOptional);
+            Assert.IsTrue(query.JoinAsUnion);
+            Assert.IsFalse(query.IsSubQuery);
+            Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
+            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
+            Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
+            Assert.IsTrue(query.GetPatternGroups().Count() == 0);
+            Assert.IsTrue(query.GetSubQueries().Count() == 0);
+            Assert.IsTrue(query.GetValues().Count() == 0);
+            Assert.IsTrue(query.GetModifiers().Count() == 0);
+            Assert.IsTrue(query.GetPrefixes().Count() == 0);
+        }
+
+        [TestMethod]
+        public void ShouldCreateSubSelectQuery()
+        {
+            RDFSelectQuery query = new RDFSelectQuery().SubQuery();
+
+            Assert.IsNotNull(query);
+            Assert.IsNotNull(query.QueryMembers);
+            Assert.IsTrue(query.QueryMembers.Count == 0);
+            Assert.IsNotNull(query.Prefixes);
+            Assert.IsTrue(query.Prefixes.Count == 0);
+            Assert.IsNotNull(query.ProjectionVars);
+            Assert.IsTrue(query.ProjectionVars.Count == 0);
+            Assert.IsTrue(query.IsEvaluable);
+            Assert.IsFalse(query.IsOptional);
+            Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsTrue(query.IsSubQuery);
+            Assert.IsTrue(query.ToString().Equals("{" + Environment.NewLine + "SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine + "}" + Environment.NewLine));
+            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
+            Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
+            Assert.IsTrue(query.GetPatternGroups().Count() == 0);
+            Assert.IsTrue(query.GetSubQueries().Count() == 0);
+            Assert.IsTrue(query.GetValues().Count() == 0);
+            Assert.IsTrue(query.GetModifiers().Count() == 0);
+            Assert.IsTrue(query.GetPrefixes().Count() == 0);
+        }
+
+        [TestMethod]
         public void ShouldCreateSelectQueryWithQueryMembers()
         {
             RDFSelectQuery query = new RDFSelectQuery();
@@ -137,7 +215,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 3); //SPARQL Values is managed by Mirella
             Assert.IsTrue(query.GetPatternGroups().Count() == 1);
             Assert.IsTrue(query.GetSubQueries().Count() == 1);
-            Assert.IsTrue(query.GetSubQueries().Single().IsOptional);
+            Assert.IsTrue(query.GetSubQueries().Single() is RDFSelectQuery sq && sq.IsOptional);
             Assert.IsTrue(query.GetValues().Count() == 1);
             Assert.IsTrue(query.GetModifiers().Count() == 5);
             Assert.IsTrue(query.GetPrefixes().Count() == 2);
@@ -179,8 +257,8 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 4); //SPARQL Values is managed by Mirella
             Assert.IsTrue(query.GetPatternGroups().Count() == 1);
             Assert.IsTrue(query.GetSubQueries().Count() == 2);
-            Assert.IsTrue(query.GetSubQueries().ElementAt(0).JoinAsUnion);
-            Assert.IsFalse(query.GetSubQueries().ElementAt(1).JoinAsUnion);
+            Assert.IsTrue(query.GetSubQueries().ElementAt(0) is RDFSelectQuery sq1 && sq1.JoinAsUnion);
+            Assert.IsFalse(query.GetSubQueries().ElementAt(1) is RDFSelectQuery sq2 && sq2.JoinAsUnion);
             Assert.IsTrue(query.GetValues().Count() == 1);
             Assert.IsTrue(query.GetModifiers().Count() == 5);
             Assert.IsTrue(query.GetPrefixes().Count() == 2);
