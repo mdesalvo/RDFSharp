@@ -54,9 +54,6 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(query.Prefixes);
             Assert.IsTrue(query.Prefixes.Count == 0);
             Assert.IsTrue(query.IsEvaluable);
-            Assert.IsFalse(query.IsOptional);
-            Assert.IsFalse(query.JoinAsUnion);
-            Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("CONSTRUCT {" + Environment.NewLine + "}" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}"));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
             Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
@@ -137,7 +134,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 2);
             Assert.IsTrue(query.GetPatternGroups().Count() == 1);
             Assert.IsTrue(query.GetSubQueries().Count() == 1);
-            Assert.IsTrue(query.GetSubQueries().Single().IsOptional);
+            Assert.IsTrue(query.GetSubQueries().Single() is RDFSelectQuery sq && sq.IsOptional);
             Assert.IsTrue(query.GetValues().Count() == 1);
             Assert.IsTrue(query.GetModifiers().Count() == 3);
             Assert.IsTrue(query.GetPrefixes().Count() == 2);
@@ -184,8 +181,8 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 3);
             Assert.IsTrue(query.GetPatternGroups().Count() == 1);
             Assert.IsTrue(query.GetSubQueries().Count() == 2);
-            Assert.IsTrue(query.GetSubQueries().ElementAt(0).JoinAsUnion);
-            Assert.IsFalse(query.GetSubQueries().ElementAt(1).JoinAsUnion);
+            Assert.IsTrue(query.GetSubQueries().ElementAt(0) is RDFSelectQuery sq1 && sq1.JoinAsUnion);
+            Assert.IsFalse(query.GetSubQueries().ElementAt(1) is RDFSelectQuery sq2 && sq2.JoinAsUnion);
             Assert.IsTrue(query.GetValues().Count() == 2);
             Assert.IsTrue(query.GetModifiers().Count() == 3);
             Assert.IsTrue(query.GetPrefixes().Count() == 2);

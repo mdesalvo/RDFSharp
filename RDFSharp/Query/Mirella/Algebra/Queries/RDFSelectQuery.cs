@@ -34,6 +34,21 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
+        /// Flag indicating the query to be joined as Optional
+        /// </summary>
+        internal bool IsOptional { get; set; }
+
+        /// <summary>
+        /// Flag indicating the query to be joined as Union
+        /// </summary>
+        internal bool JoinAsUnion { get; set; }
+
+        /// <summary>
+        /// Flag indicating that the query is a subquery
+        /// </summary>
+        internal bool IsSubQuery { get; set; }
+
+        /// <summary>
         /// Dictionary of projection variables and associated ordinals
         /// </summary>
         internal Dictionary<RDFVariable, (int, RDFExpression)> ProjectionVars { get; set; }
@@ -286,20 +301,31 @@ namespace RDFSharp.Query
             => Task.Run(() => ApplyToDataSource(dataSource));
 
         /// <summary>
-        /// Sets the query to be joined as optional with the previous query member
+        /// Sets the query to be joined as Optional with the previous query member
         /// </summary>
         public RDFSelectQuery Optional()
         {
             IsOptional = true;
+            JoinAsUnion = false;
             return this;
         }
 
         /// <summary>
-        /// Sets the query to be joined as union with the next query member
+        /// Sets the query to be joined as Union with the next query member
         /// </summary>
         public RDFSelectQuery UnionWithNext()
         {
+            IsOptional = false;
             JoinAsUnion = true;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the query as a subquery
+        /// </summary>
+        internal RDFSelectQuery SubQuery()
+        {
+            IsSubQuery = true;
             return this;
         }
         #endregion

@@ -37,9 +37,6 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(query.Prefixes);
             Assert.IsTrue(query.Prefixes.Count == 0);
             Assert.IsTrue(query.IsEvaluable);
-            Assert.IsFalse(query.IsOptional);
-            Assert.IsFalse(query.JoinAsUnion);
-            Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals(string.Empty));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
             Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
@@ -65,9 +62,6 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(query.Prefixes);
             Assert.IsTrue(query.Prefixes.Count == 0);
             Assert.IsTrue(query.IsEvaluable);
-            Assert.IsFalse(query.IsOptional);
-            Assert.IsFalse(query.JoinAsUnion);
-            Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals(string.Empty));
             Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 1);
             Assert.IsTrue(query.GetPatternGroups().Count() == 1);
@@ -97,9 +91,6 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(query.Prefixes);
             Assert.IsTrue(query.Prefixes.Count == 0);
             Assert.IsTrue(query.IsEvaluable);
-            Assert.IsFalse(query.IsOptional);
-            Assert.IsFalse(query.JoinAsUnion);
-            Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals(string.Empty));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
             Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
@@ -124,9 +115,6 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(query.Prefixes);
             Assert.IsTrue(query.Prefixes.Count == 1);
             Assert.IsTrue(query.IsEvaluable);
-            Assert.IsFalse(query.IsOptional);
-            Assert.IsFalse(query.JoinAsUnion);
-            Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals(string.Empty));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
             Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
@@ -152,9 +140,6 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(query.Prefixes);
             Assert.IsTrue(query.Prefixes.Count == 0);
             Assert.IsTrue(query.IsEvaluable);
-            Assert.IsFalse(query.IsOptional);
-            Assert.IsFalse(query.JoinAsUnion);
-            Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(subQuery.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals(string.Empty));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -182,9 +167,6 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(query.Prefixes);
             Assert.IsTrue(query.Prefixes.Count == 0);
             Assert.IsTrue(query.IsEvaluable);
-            Assert.IsFalse(query.IsOptional);
-            Assert.IsFalse(query.JoinAsUnion);
-            Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals(string.Empty));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
             Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 1); //The only pattern group
@@ -212,9 +194,6 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(query.Prefixes);
             Assert.IsTrue(query.Prefixes.Count == 0);
             Assert.IsTrue(query.IsEvaluable);
-            Assert.IsFalse(query.IsOptional);
-            Assert.IsFalse(query.JoinAsUnion);
-            Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals(string.Empty));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
             Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 1); //The only sub query

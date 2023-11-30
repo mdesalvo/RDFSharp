@@ -50,9 +50,6 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(query.Prefixes);
             Assert.IsTrue(query.Prefixes.Count == 0);
             Assert.IsTrue(query.IsEvaluable);
-            Assert.IsFalse(query.IsOptional);
-            Assert.IsFalse(query.JoinAsUnion);
-            Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("ASK" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}"));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
             Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);

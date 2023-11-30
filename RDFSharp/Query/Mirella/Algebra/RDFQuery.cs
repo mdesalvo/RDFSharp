@@ -36,21 +36,6 @@ namespace RDFSharp.Query
         /// List of prefixes registered for the query
         /// </summary>
         internal List<RDFNamespace> Prefixes { get; set; }
-
-        /// <summary>
-        /// Flag indicating the subquery to be joined as Optional
-        /// </summary>
-        internal bool IsOptional { get; set; }
-
-        /// <summary>
-        /// Flag indicating the subquery to be joined as Union
-        /// </summary>
-        internal bool JoinAsUnion { get; set; }
-
-        /// <summary>
-        /// Flag indicating that the query is a subquery
-        /// </summary>
-        internal bool IsSubQuery { get; set; }
         #endregion
 
         #region Ctors
@@ -62,9 +47,6 @@ namespace RDFSharp.Query
             QueryMembers = new List<RDFQueryMember>();
             Prefixes = new List<RDFNamespace>();
             IsEvaluable = true;
-            IsOptional = false;
-            JoinAsUnion = false;
-            IsSubQuery = false;
         }
         #endregion
 
@@ -215,15 +197,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal IEnumerable<RDFQueryMember> GetEvaluableQueryMembers()
             => QueryMembers.Where(q => q.IsEvaluable);
-
-        /// <summary>
-        /// Sets the query as a subquery
-        /// </summary>
-        internal RDFQuery SubQuery()
-        {
-            IsSubQuery = true;
-            return this;
-        }
         #endregion
     }
 }
