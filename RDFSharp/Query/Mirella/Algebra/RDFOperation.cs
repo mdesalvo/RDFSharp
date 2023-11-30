@@ -115,10 +115,12 @@ namespace RDFSharp.Query
         /// </summary>
         internal T AddDeleteGroundTemplate<T>(RDFPattern template) where T : RDFOperation
         {
+            #region Guards
             if (template == null)
                 throw new RDFQueryException($"Cannot add DELETE template to operation because it is null.");
             if (template.Variables.Count > 0)
                 throw new RDFQueryException($"Cannot add DELETE template '{template}' to operation because it is not ground: please ensure it does not contain variables.");
+            #endregion
 
             if (!DeleteTemplates.Any(tp => tp.Equals(template)))
                 DeleteTemplates.Add(template);
@@ -131,8 +133,10 @@ namespace RDFSharp.Query
         /// </summary>
         internal T AddDeleteNonGroundTemplate<T>(RDFPattern template) where T : RDFOperation
         {
+            #region Guards
             if (template == null)
                 throw new RDFQueryException($"Cannot add DELETE template to operation because it is null.");
+            #endregion
 
             if (!DeleteTemplates.Any(tp => tp.Equals(template)))
             {
@@ -148,10 +152,12 @@ namespace RDFSharp.Query
         /// </summary>
         internal T AddInsertGroundTemplate<T>(RDFPattern template) where T : RDFOperation
         {
+            #region Guards
             if (template == null)
                 throw new RDFQueryException($"Cannot add INSERT template to operation because it is null.");
             if (template.Variables.Count > 0)
                 throw new RDFQueryException($"Cannot add INSERT template '{template}' to operation because it is not ground: please ensure it does not contain variables.");
+            #endregion
 
             if (!InsertTemplates.Any(tp => tp.Equals(template)))
                 InsertTemplates.Add(template);
@@ -164,8 +170,10 @@ namespace RDFSharp.Query
         /// </summary>
         internal T AddInsertNonGroundTemplate<T>(RDFPattern template) where T : RDFOperation
         {
+            #region Guards
             if (template == null)
                 throw new RDFQueryException($"Cannot add INSERT template to operation because it is null.");
+            #endregion
 
             if (!InsertTemplates.Any(tp => tp.Equals(template)))
             {
@@ -181,8 +189,10 @@ namespace RDFSharp.Query
         /// </summary>
         internal new T AddPrefix<T>(RDFNamespace prefix) where T : RDFOperation
         {
+            #region Guards
             if (prefix == null)
                 throw new RDFQueryException($"Cannot add prefix to operation because it is null.");
+            #endregion
 
             if (!Prefixes.Any(p => p.Equals(prefix)))
                 Prefixes.Add(prefix);
@@ -195,8 +205,10 @@ namespace RDFSharp.Query
         /// </summary>
         internal new T AddPatternGroup<T>(RDFPatternGroup patternGroup) where T : RDFOperation
         {
+            #region Guards
             if (patternGroup == null)
                 throw new RDFQueryException($"Cannot add pattern group to operation because it is null.");
+            #endregion
 
             if (!GetPatternGroups().Any(q => q.Equals(patternGroup)))
                 QueryMembers.Add(patternGroup);
@@ -209,8 +221,10 @@ namespace RDFSharp.Query
         /// </summary>
         internal new T AddModifier<T>(RDFDistinctModifier modifier) where T : RDFOperation
         {
+            #region Guards
             if (modifier == null)
                 throw new RDFQueryException($"Cannot add modifier to operation because it is null.");
+            #endregion
 
             if (!GetModifiers().Any(m => m is RDFDistinctModifier))
                 QueryMembers.Add(modifier);
@@ -223,8 +237,10 @@ namespace RDFSharp.Query
         /// </summary>
         internal new T AddSubQuery<T>(RDFSelectQuery subQuery) where T : RDFOperation
         {
+            #region Guards
             if (subQuery == null)
                 throw new RDFQueryException($"Cannot add sub query to operation because it is null.");
+            #endregion
 
             if (!GetSubQueries().Any(q => q.Equals(subQuery)))
                 QueryMembers.Add(subQuery.SubQuery());
@@ -238,31 +254,31 @@ namespace RDFSharp.Query
         internal void CollectVariables(RDFPattern template)
         {
             //Context
-            if (template.Context != null && template.Context is RDFVariable)
+            if (template.Context != null && template.Context is RDFVariable ctxVar)
             {
-                if (!Variables.Any(v => v.Equals(template.Context)))
-                    Variables.Add((RDFVariable)template.Context);
+                if (!Variables.Any(v => v.Equals(ctxVar)))
+                    Variables.Add(ctxVar);
             }
 
             //Subject
-            if (template.Subject is RDFVariable)
+            if (template.Subject is RDFVariable subjVar)
             {
-                if (!Variables.Any(v => v.Equals(template.Subject)))
-                    Variables.Add((RDFVariable)template.Subject);
+                if (!Variables.Any(v => v.Equals(subjVar)))
+                    Variables.Add(subjVar);
             }
 
             //Predicate
-            if (template.Predicate is RDFVariable)
+            if (template.Predicate is RDFVariable predVar)
             {
-                if (!Variables.Any(v => v.Equals(template.Predicate)))
-                    Variables.Add((RDFVariable)template.Predicate);
+                if (!Variables.Any(v => v.Equals(predVar)))
+                    Variables.Add(predVar);
             }
 
             //Object
-            if (template.Object is RDFVariable)
+            if (template.Object is RDFVariable objVar)
             {
-                if (!Variables.Any(v => v.Equals(template.Object)))
-                    Variables.Add((RDFVariable)template.Object);
+                if (!Variables.Any(v => v.Equals(objVar)))
+                    Variables.Add(objVar);
             }
         }
         #endregion
