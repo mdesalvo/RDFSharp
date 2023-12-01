@@ -510,6 +510,7 @@ namespace RDFSharp.Query
             bindings.Add("?OBJECT", null);
 
             //Iterate on the templates
+            string defaultContext = RDFNamespaceRegister.DefaultNamespace.ToString();
             foreach (RDFPattern template in templates.Where(tp => tp.Variables.Count == 0
                                                                     || tp.Variables.TrueForAll(v => resultTable.Columns.Contains(v.ToString()))))
             {
@@ -522,7 +523,7 @@ namespace RDFSharp.Query
                 if (template.Variables.Count == 0)
                 {
                     if (needsContext)
-                        bindings["?CONTEXT"] = templateCtx ?? RDFNamespaceRegister.DefaultNamespace.ToString();
+                        bindings["?CONTEXT"] = templateCtx ?? defaultContext;
                     bindings["?SUBJECT"] = templateSubj;
                     bindings["?PREDICATE"] = templatePred;
                     bindings["?OBJECT"] = templateObj;
@@ -555,7 +556,7 @@ namespace RDFSharp.Query
                         }
                         //Context of the template is a resource
                         else
-                            bindings["?CONTEXT"] = templateCtx ?? RDFNamespaceRegister.DefaultNamespace.ToString();
+                            bindings["?CONTEXT"] = templateCtx ?? defaultContext;
                     }
                     #endregion
 
@@ -749,7 +750,7 @@ namespace RDFSharp.Query
             #endregion
 
             DataTable result = describeTemplate.Clone();
-
+    
             switch (dataSource)
             {
                 //GRAPH
