@@ -31,6 +31,7 @@ using RDFSharp.Store;
 using WireMock.Util;
 using WireMock.Types;
 using System.Web;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Test.Query
 {
@@ -3306,6 +3307,7 @@ WHERE {
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("ex:balto"))
                 .AddDescribeTerm(new RDFResource("ex:snoopy"))
+                .AddDescribeTerm(new RDFResource())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                     .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
@@ -3486,11 +3488,11 @@ WHERE {
         [TestMethod]
         public void ShouldDescribeVariableTermsOnFederation()
         {
-            RDFGraph graph1 = new RDFGraph(new List<RDFTriple>()
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
             {
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino"))
             });
-            RDFGraph graph2 = new RDFGraph(new List<RDFTriple>()
+            RDFAsyncGraph agraph = new RDFAsyncGraph(new List<RDFTriple>()
             {
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
@@ -3498,10 +3500,11 @@ WHERE {
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
             });
-            RDFFederation federation = new RDFFederation().AddGraph(graph1).AddGraph(graph2);
+            RDFFederation federation = new RDFFederation().AddGraph(graph).AddAsyncGraph(agraph);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?Y"))
+                .AddDescribeTerm(new RDFVariable("?N"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                     .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
@@ -3546,7 +3549,7 @@ WHERE {
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Columns.Count == 3);
-            Assert.IsTrue(result.Rows.Count == 4);
+            Assert.IsTrue(result.Rows.Count == 6);
         }
 
         [TestMethod]
@@ -3682,6 +3685,32 @@ WHERE {
         }
 
         [TestMethod]
+        public void ShouldApplyPatternToDataSourceAsyncGraph()
+        {
+            RDFAsyncGraph agraph = new RDFAsyncGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            });
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPattern(pattern, agraph);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        }
+
+        [TestMethod]
         public void ShouldApplyPatternToDataSourceStore()
         {
             RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
@@ -3695,6 +3724,30 @@ WHERE {
             RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPattern(pattern, store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyPatternToDataSourceAsyncStore()
+        {
+            RDFAsyncStore astore = new RDFAsyncStore();
+            await astore.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")));
+            await astore.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")));
+            await astore.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")));
+            await astore.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")));
+            await astore.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")));
+            RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+            RDFQueryEngine queryEngine = new RDFQueryEngine();
+            DataTable result = queryEngine.ApplyPattern(pattern, astore);
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Columns.Count == 2);
