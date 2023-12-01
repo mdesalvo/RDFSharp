@@ -39,7 +39,7 @@ namespace RDFSharp.Query
             if (pMember == null)
                 throw new RDFQueryException("Cannot parse pattern member because given \"pMember\" parameter is null.");
             
-            #region Uri
+            #region Resource
             if (Uri.TryCreate(pMember, UriKind.Absolute, out _))
                 return new RDFResource(pMember);
             #endregion

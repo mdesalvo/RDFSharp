@@ -651,7 +651,7 @@ namespace RDFSharp.Query
                 if (describeTerm is RDFResource describeResource)
                     result.Merge(DescribeResourceTerm(describeResource, dataSource, result), true, MissingSchemaAction.Add);
                 else if (describeTerm is RDFVariable describeVariable)
-                    result.Merge(DescribeVariableTerm(describeVariable, describeQuery, dataSource, result, resultTable), true, MissingSchemaAction.Add);
+                    result.Merge(DescribeVariableTerm(describeVariable, dataSource, result, resultTable), true, MissingSchemaAction.Add);
             }
 
             return result;
@@ -681,13 +681,13 @@ namespace RDFSharp.Query
                 => describeResource.IsBlank 
                    ? new RDFSelectQuery()
                         .AddPatternGroup(new RDFPatternGroup()
-                            .AddPattern(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
-                            .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource)))
+                          .AddPattern(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
+                          .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource)))
                    : new RDFSelectQuery()
                         .AddPatternGroup(new RDFPatternGroup()
-                            .AddPattern(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
-                            .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), describeResource, new RDFVariable("?OBJECT")).UnionWithNext())
-                            .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource)));
+                          .AddPattern(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
+                          .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), describeResource, new RDFVariable("?OBJECT")).UnionWithNext())
+                          .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource)));
             #endregion
 
             DataTable result = describeTemplate.Clone();
@@ -731,9 +731,68 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Describes the given literal term with data from the given result table
+        /// </summary>
+        internal DataTable DescribeLiteralTerm(RDFLiteral describeLiteral, RDFDataSource dataSource, DataTable describeTemplate)
+        {
+            #region Utilities
+            RDFGraph QueryGraph(RDFGraph dsGraph)
+                => dsGraph[null, null, null, describeLiteral];
+
+            RDFMemoryStore QueryStore(RDFStore dsStore)
+                => dsStore.SelectQuadruplesByLiteral(describeLiteral);
+
+            RDFSelectQuery BuildFederationOrSPARQLEndpointQuery()
+                => new RDFSelectQuery()
+                        .AddPatternGroup(new RDFPatternGroup()
+                          .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeLiteral)));
+            #endregion
+
+            DataTable result = describeTemplate.Clone();
+
+            switch (dataSource)
+            {
+                //GRAPH
+                case RDFGraph dataSourceGraph:
+                    RDFGraph graph = QueryGraph(dataSourceGraph);
+                    result.Merge(graph.ToDataTable(), true, MissingSchemaAction.Add);
+                    break;
+
+                //ASYNC GRAPH
+                case RDFAsyncGraph dataSourceAsyncGraph:
+                    RDFGraph grapha = QueryGraph(dataSourceAsyncGraph.WrappedGraph);
+                    result.Merge(grapha.ToDataTable(), true, MissingSchemaAction.Add);
+                    break;
+
+                //STORE
+                case RDFStore dataSourceStore:
+                    RDFMemoryStore store = QueryStore(dataSourceStore);
+                    result.Merge(store.ToDataTable(), true, MissingSchemaAction.Add);
+                    break;
+
+                //ASYNC STORE
+                case RDFAsyncStore dataSourceAsyncStore:
+                    RDFMemoryStore storea = QueryStore(dataSourceAsyncStore.WrappedStore);
+                    result.Merge(storea.ToDataTable(), true, MissingSchemaAction.Add);
+                    break;
+
+                //FEDERATION / SPARQL ENDPOINT
+                default:
+                    RDFSelectQuery query = BuildFederationOrSPARQLEndpointQuery();
+                    RDFSelectQueryResult queryResults = 
+                        dataSource.IsSPARQLEndpoint() ? query.ApplyToSPARQLEndpoint((RDFSPARQLEndpoint)dataSource)
+                                                      : query.ApplyToFederation((RDFFederation)dataSource);
+                    result.Merge(queryResults.SelectResults, true, MissingSchemaAction.Add);
+                    break;
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Describes the given variable term with data from the given result table
         /// </summary>
-        internal DataTable DescribeVariableTerm(RDFVariable describeVariable, RDFDescribeQuery describeQuery, RDFDataSource dataSource, DataTable describeTemplate, DataTable resultTable)
+        internal DataTable DescribeVariableTerm(RDFVariable describeVariable, RDFDataSource dataSource, DataTable describeTemplate, DataTable resultTable)
         {
             DataTable result = describeTemplate.Clone();
 
@@ -752,122 +811,20 @@ namespace RDFSharp.Query
 
                 //Retrieve the value of the variable
                 RDFPatternMember describeVariableValue = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[describeVariableName].ToString());
-                switch (dataSource)
+
+                //Execute most appropriate strategy, depending on the type of the variable value
+                switch (describeVariableValue)
                 {
-                    //GRAPH
-                    case RDFGraph dataSourceGraph:
-                        if (describeVariableValue is RDFResource describeVariableValueResourceGraph)
-                        {
-                            RDFGraph graph = dataSourceGraph.SelectTriplesBySubject(describeVariableValueResourceGraph)
-                                                .UnionWith(dataSourceGraph.SelectTriplesByPredicate(describeVariableValueResourceGraph))
-                                                .UnionWith(dataSourceGraph.SelectTriplesByObject(describeVariableValueResourceGraph));
-                            result.Merge(graph.ToDataTable(), true, MissingSchemaAction.Add);
-                        }
-                        else
-                        {
-                            RDFGraph graph = dataSourceGraph.SelectTriplesByLiteral((RDFLiteral)describeVariableValue);
-                            result.Merge(graph.ToDataTable(), true, MissingSchemaAction.Add);
-                        }
+                    //RESOURCE
+                    case RDFResource describeResource:
+                        DataTable describeResourceTable = DescribeResourceTerm(describeResource, dataSource, describeTemplate);
+                        result.Merge(describeResourceTable, true, MissingSchemaAction.Add);
                         break;
 
-                    //ASYNC GRAPH
-                    case RDFAsyncGraph dataSourceAsyncGraph:
-                        if (describeVariableValue is RDFResource describeVariableValueResourceAsyncGraph)
-                        {
-                            RDFGraph graph = dataSourceAsyncGraph.WrappedGraph.SelectTriplesBySubject(describeVariableValueResourceAsyncGraph)
-                                                .UnionWith(dataSourceAsyncGraph.WrappedGraph.SelectTriplesByPredicate(describeVariableValueResourceAsyncGraph))
-                                                .UnionWith(dataSourceAsyncGraph.WrappedGraph.SelectTriplesByObject(describeVariableValueResourceAsyncGraph));
-                            result.Merge(graph.ToDataTable(), true, MissingSchemaAction.Add);
-                        }
-                        else
-                        {
-                            RDFGraph asyncGraph = dataSourceAsyncGraph.WrappedGraph.SelectTriplesByLiteral((RDFLiteral)describeVariableValue);
-                            result.Merge(asyncGraph.ToDataTable(), true, MissingSchemaAction.Add);
-                        }
-                        break;
-
-                    //STORE
-                    case RDFStore dataSourceStore:
-                        if (describeVariableValue is RDFResource describeVariableValueResourceStore)
-                        {
-                            if (describeVariableValueResourceStore.IsBlank)
-                            {
-                                RDFMemoryStore store = dataSourceStore.SelectQuadruplesBySubject(describeVariableValueResourceStore)
-                                                        .UnionWith(dataSourceStore.SelectQuadruplesByObject(describeVariableValueResourceStore));
-                                result.Merge(store.ToDataTable(), true, MissingSchemaAction.Add);
-                            }
-                            else
-                            {
-                                RDFMemoryStore store = dataSourceStore.SelectQuadruplesByContext(new RDFContext(describeVariableValueResourceStore.URI))
-                                                        .UnionWith(dataSourceStore.SelectQuadruplesBySubject(describeVariableValueResourceStore))
-                                                        .UnionWith(dataSourceStore.SelectQuadruplesByPredicate(describeVariableValueResourceStore))
-                                                        .UnionWith(dataSourceStore.SelectQuadruplesByObject(describeVariableValueResourceStore));
-                                result.Merge(store.ToDataTable(), true, MissingSchemaAction.Add);
-                            }
-                        }
-                        else
-                        {
-                            RDFMemoryStore store = dataSourceStore.SelectQuadruplesByLiteral((RDFLiteral)describeVariableValue);
-                            result.Merge(store.ToDataTable(), true, MissingSchemaAction.Add);
-                        }
-                        break;
-
-                    //ASYNC STORE:
-                    case RDFAsyncStore dataSourceAsyncStore:
-                        if (describeVariableValue is RDFResource describeVariableValueResourceAsyncStore)
-                        {
-                            if (describeVariableValueResourceAsyncStore.IsBlank)
-                            {
-                                RDFMemoryStore store = dataSourceAsyncStore.WrappedStore.SelectQuadruplesBySubject(describeVariableValueResourceAsyncStore)
-                                                        .UnionWith(dataSourceAsyncStore.WrappedStore.SelectQuadruplesByObject(describeVariableValueResourceAsyncStore));
-                                result.Merge(store.ToDataTable(), true, MissingSchemaAction.Add);
-                            }
-                            else
-                            {
-                                RDFMemoryStore store = dataSourceAsyncStore.WrappedStore.SelectQuadruplesByContext(new RDFContext(describeVariableValueResourceAsyncStore.URI))
-                                                        .UnionWith(dataSourceAsyncStore.WrappedStore.SelectQuadruplesBySubject(describeVariableValueResourceAsyncStore))
-                                                        .UnionWith(dataSourceAsyncStore.WrappedStore.SelectQuadruplesByPredicate(describeVariableValueResourceAsyncStore))
-                                                        .UnionWith(dataSourceAsyncStore.WrappedStore.SelectQuadruplesByObject(describeVariableValueResourceAsyncStore));
-                                result.Merge(store.ToDataTable(), true, MissingSchemaAction.Add);
-                            }
-                        }
-                        else
-                        {
-                            RDFMemoryStore store = dataSourceAsyncStore.WrappedStore.SelectQuadruplesByLiteral((RDFLiteral)describeVariableValue);
-                            result.Merge(store.ToDataTable(), true, MissingSchemaAction.Add);
-                        }
-                        break;
-
-                    //FEDERATION / SPARQL ENDPOINT
-                    default:
-                        RDFConstructQuery constructQuery =
-                            describeVariableValue is RDFResource describeVariableValueResource
-                            ? describeVariableValueResource.IsBlank
-                              //In case the resource to be described is blank, skip querying by predicate
-                              ? new RDFConstructQuery()
-                                    .AddPatternGroup(new RDFPatternGroup()
-                                        .AddPattern(new RDFPattern(describeVariableValueResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
-                                        .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeVariableValueResource)))
-                                    .AddTemplate(new RDFPattern(describeVariableValueResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")))
-                                    .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeVariableValueResource))
-                              : new RDFConstructQuery()
-                                    .AddPatternGroup(new RDFPatternGroup()
-                                        .AddPattern(new RDFPattern(describeVariableValueResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
-                                        .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), describeVariableValueResource, new RDFVariable("?OBJECT")).UnionWithNext())
-                                        .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeVariableValueResource)))
-                                    .AddTemplate(new RDFPattern(describeVariableValueResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")))
-                                    .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), describeVariableValueResource, new RDFVariable("?OBJECT")))
-                                    .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeVariableValueResource))
-                            : new RDFConstructQuery()
-                                .AddPatternGroup(new RDFPatternGroup()
-                                    .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), (RDFLiteral)describeVariableValue)))
-                                .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), (RDFLiteral)describeVariableValue));
-
-                        //Apply the query to the SPARQL endpoint / FEDERATION
-                        RDFConstructQueryResult constructQueryResults =
-                            dataSource.IsSPARQLEndpoint() ? constructQuery.ApplyToSPARQLEndpoint((RDFSPARQLEndpoint)dataSource)
-                                                          : constructQuery.ApplyToFederation((RDFFederation)dataSource);
-                        result.Merge(constructQueryResults.ConstructResults, true, MissingSchemaAction.Add);
+                    //LITERAL
+                    case RDFLiteral describeLiteral:
+                        DataTable describeLiteralTable = DescribeLiteralTerm(describeLiteral, dataSource, describeTemplate);
+                        result.Merge(describeLiteralTable, true, MissingSchemaAction.Add);
                         break;
                 }
             }
@@ -882,15 +839,13 @@ namespace RDFSharp.Query
         {
             foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
             {
-                #region PATTERN GROUP
+                //PATTERN GROUP
                 if (evaluableQueryMember is RDFPatternGroup pgEvaluableQueryMember)
                     pgEvaluableQueryMember.Variables.ForEach(v => describeQuery.AddDescribeTerm(v));
-                #endregion
-
-                #region SUBQUERY
+                
+                //SUBQUERY
                 else if (evaluableQueryMember is RDFSelectQuery sqEvaluableQueryMember)
                     FetchDescribeVariablesFromQueryMembers(describeQuery, sqEvaluableQueryMember.GetEvaluableQueryMembers());
-                #endregion
             }
         }
 
