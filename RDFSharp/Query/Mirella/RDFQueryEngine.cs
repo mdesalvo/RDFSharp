@@ -649,7 +649,7 @@ namespace RDFSharp.Query
             foreach (RDFPatternMember describeTerm in describeQuery.DescribeTerms)
             {
                 if (describeTerm is RDFResource describeResource)
-                    result.Merge(DescribeResourceTerm(describeResource, describeQuery, dataSource, result, resultTable), true, MissingSchemaAction.Add);
+                    result.Merge(DescribeResourceTerm(describeResource, dataSource, result), true, MissingSchemaAction.Add);
                 else if (describeTerm is RDFVariable describeVariable)
                     result.Merge(DescribeVariableTerm(describeVariable, describeQuery, dataSource, result, resultTable), true, MissingSchemaAction.Add);
             }
@@ -660,89 +660,70 @@ namespace RDFSharp.Query
         /// <summary>
         /// Describes the given resource term with data from the given result table
         /// </summary>
-        internal DataTable DescribeResourceTerm(RDFResource describeResource, RDFDescribeQuery describeQuery, RDFDataSource dataSource, DataTable describeTemplate, DataTable resultTable)
+        internal DataTable DescribeResourceTerm(RDFResource describeResource, RDFDataSource dataSource, DataTable describeTemplate)
         {
+            #region Utilities
+            RDFGraph QueryGraph(RDFGraph dsGraph)
+                => dsGraph[describeResource, null, null, null]
+                    .UnionWith(dsGraph[null, describeResource, null, null])
+                    .UnionWith(dsGraph[null, null, describeResource, null]);
+
+            RDFMemoryStore QueryStore(RDFStore dsStore)
+                => describeResource.IsBlank 
+                   ? dsStore.SelectQuadruplesBySubject(describeResource)
+                            .UnionWith(dsStore.SelectQuadruplesByObject(describeResource))
+                   : dsStore.SelectQuadruplesByContext(new RDFContext(describeResource.URI))
+                            .UnionWith(dsStore.SelectQuadruplesBySubject(describeResource))
+                            .UnionWith(dsStore.SelectQuadruplesByPredicate(describeResource))
+                            .UnionWith(dsStore.SelectQuadruplesByObject(describeResource));
+
+            RDFSelectQuery BuildFederationOrSPARQLEndpointQuery()
+                => describeResource.IsBlank 
+                   ? new RDFSelectQuery()
+                        .AddPatternGroup(new RDFPatternGroup()
+                            .AddPattern(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
+                            .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource)))
+                   : new RDFSelectQuery()
+                        .AddPatternGroup(new RDFPatternGroup()
+                            .AddPattern(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
+                            .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), describeResource, new RDFVariable("?OBJECT")).UnionWithNext())
+                            .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource)));
+            #endregion
+
             DataTable result = describeTemplate.Clone();
 
             switch (dataSource)
             {
                 //GRAPH
                 case RDFGraph dataSourceGraph:
-                    RDFGraph graph = dataSourceGraph.SelectTriplesBySubject(describeResource)
-                                        .UnionWith(dataSourceGraph.SelectTriplesByPredicate(describeResource))
-                                        .UnionWith(dataSourceGraph.SelectTriplesByObject(describeResource));
+                    RDFGraph graph = QueryGraph(dataSourceGraph);
                     result.Merge(graph.ToDataTable(), true, MissingSchemaAction.Add);
                     break;
 
                 //ASYNC GRAPH
                 case RDFAsyncGraph dataSourceAsyncGraph:
-                    RDFGraph grapha = dataSourceAsyncGraph.WrappedGraph.SelectTriplesBySubject(describeResource)
-                                        .UnionWith(dataSourceAsyncGraph.WrappedGraph.SelectTriplesByPredicate(describeResource))
-                                        .UnionWith(dataSourceAsyncGraph.WrappedGraph.SelectTriplesByObject(describeResource));
+                    RDFGraph grapha = QueryGraph(dataSourceAsyncGraph.WrappedGraph);
                     result.Merge(grapha.ToDataTable(), true, MissingSchemaAction.Add);
                     break;
 
                 //STORE
                 case RDFStore dataSourceStore:
-                    if (describeResource.IsBlank)
-                    {
-                        RDFMemoryStore store = dataSourceStore.SelectQuadruplesBySubject(describeResource)
-                                                .UnionWith(dataSourceStore.SelectQuadruplesByObject(describeResource));
-                        result.Merge(store.ToDataTable(), true, MissingSchemaAction.Add);
-                    }
-                    else
-                    {
-                        RDFMemoryStore store = dataSourceStore.SelectQuadruplesByContext(new RDFContext(describeResource.URI))
-                                                .UnionWith(dataSourceStore.SelectQuadruplesBySubject(describeResource))
-                                                .UnionWith(dataSourceStore.SelectQuadruplesByPredicate(describeResource))
-                                                .UnionWith(dataSourceStore.SelectQuadruplesByObject(describeResource));
-                        result.Merge(store.ToDataTable(), true, MissingSchemaAction.Add);
-                    }
+                    RDFMemoryStore store = QueryStore(dataSourceStore);
+                    result.Merge(store.ToDataTable(), true, MissingSchemaAction.Add);
                     break;
 
                 //ASYNC STORE
                 case RDFAsyncStore dataSourceAsyncStore:
-                    if (describeResource.IsBlank)
-                    {
-                        RDFMemoryStore store = dataSourceAsyncStore.WrappedStore.SelectQuadruplesBySubject(describeResource)
-                                                .UnionWith(dataSourceAsyncStore.WrappedStore.SelectQuadruplesByObject(describeResource));
-                        result.Merge(store.ToDataTable(), true, MissingSchemaAction.Add);
-                    }
-                    else
-                    {
-                        RDFMemoryStore store = dataSourceAsyncStore.WrappedStore.SelectQuadruplesByContext(new RDFContext(describeResource.URI))
-                                                .UnionWith(dataSourceAsyncStore.WrappedStore.SelectQuadruplesBySubject(describeResource))
-                                                .UnionWith(dataSourceAsyncStore.WrappedStore.SelectQuadruplesByPredicate(describeResource))
-                                                .UnionWith(dataSourceAsyncStore.WrappedStore.SelectQuadruplesByObject(describeResource));
-                        result.Merge(store.ToDataTable(), true, MissingSchemaAction.Add);
-                    }
+                    RDFMemoryStore storea = QueryStore(dataSourceAsyncStore.WrappedStore);
+                    result.Merge(storea.ToDataTable(), true, MissingSchemaAction.Add);
                     break;
 
                 //FEDERATION / SPARQL ENDPOINT
                 default:
-                    RDFConstructQuery constructQuery =
-                        describeResource.IsBlank 
-                        //In case the resource to be described is blank, skip querying by predicate
-                        ?   new RDFConstructQuery()
-                                .AddPatternGroup(new RDFPatternGroup()
-                                    .AddPattern(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
-                                    .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource)))
-                                .AddTemplate(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")))
-                                .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource))
-                        :   new RDFConstructQuery()
-                                .AddPatternGroup(new RDFPatternGroup()
-                                    .AddPattern(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
-                                    .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), describeResource, new RDFVariable("?OBJECT")).UnionWithNext())
-                                    .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource)))
-                                .AddTemplate(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")))
-                                .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), describeResource, new RDFVariable("?OBJECT")))
-                                .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource));
-
-                    //Apply the query to the SPARQL Endpoint / FEDERATION
-                    RDFConstructQueryResult constructQueryResults =
-                        dataSource.IsSPARQLEndpoint() ? constructQuery.ApplyToSPARQLEndpoint((RDFSPARQLEndpoint)dataSource)
-                                                      : constructQuery.ApplyToFederation((RDFFederation)dataSource);
-                    result.Merge(constructQueryResults.ConstructResults, true, MissingSchemaAction.Add);
+                    RDFSelectQuery query = BuildFederationOrSPARQLEndpointQuery();
+                    RDFSelectQueryResult queryResults = dataSource.IsSPARQLEndpoint() ? query.ApplyToSPARQLEndpoint((RDFSPARQLEndpoint)dataSource)
+                                                                                      : query.ApplyToFederation((RDFFederation)dataSource);
+                    result.Merge(queryResults.SelectResults, true, MissingSchemaAction.Add);
                     break;
             }
 
