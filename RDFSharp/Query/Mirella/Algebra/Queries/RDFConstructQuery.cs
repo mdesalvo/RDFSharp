@@ -144,8 +144,7 @@ namespace RDFSharp.Query
         /// Applies the query to the given graph
         /// </summary>
         public RDFConstructQueryResult ApplyToGraph(RDFGraph graph)
-            => graph != null ? new RDFQueryEngine().EvaluateConstructQuery(this, graph)
-                             : new RDFConstructQueryResult();
+            => graph != null ? new RDFQueryEngine().EvaluateConstructQuery(this, graph) : new RDFConstructQueryResult();
 
         /// <summary>
         /// Applies the query to the given asynchronous graph
@@ -157,8 +156,7 @@ namespace RDFSharp.Query
         /// Applies the query to the given store
         /// </summary>
         public RDFConstructQueryResult ApplyToStore(RDFStore store)
-            => store != null ? new RDFQueryEngine().EvaluateConstructQuery(this, store)
-                             : new RDFConstructQueryResult();
+            => store != null ? new RDFQueryEngine().EvaluateConstructQuery(this, store) : new RDFConstructQueryResult();
 
         /// <summary>
         /// Applies the query to the given asynchronous store
@@ -170,8 +168,7 @@ namespace RDFSharp.Query
         /// Applies the query to the given federation
         /// </summary>
         public RDFConstructQueryResult ApplyToFederation(RDFFederation federation)
-            => federation != null ? new RDFQueryEngine().EvaluateConstructQuery(this, federation)
-                                  : new RDFConstructQueryResult();
+            => federation != null ? new RDFQueryEngine().EvaluateConstructQuery(this, federation) : new RDFConstructQueryResult();
 
         /// <summary>
         /// Asynchronously applies the query to the given federation
@@ -186,16 +183,16 @@ namespace RDFSharp.Query
             => ApplyRawToSPARQLEndpoint(ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
 
         /// <summary>
-        /// Applies the given raw string CONSTRUCT query to the given SPARQL endpoint
-        /// </summary>
-        public static RDFConstructQueryResult ApplyRawToSPARQLEndpoint(string constructQuery, RDFSPARQLEndpoint sparqlEndpoint)
-            => ApplyRawToSPARQLEndpoint(constructQuery, sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
-
-        /// <summary>
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
         public RDFConstructQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
             => ApplyRawToSPARQLEndpoint(ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
+
+        /// <summary>
+        /// Applies the given raw string CONSTRUCT query to the given SPARQL endpoint
+        /// </summary>
+        public static RDFConstructQueryResult ApplyRawToSPARQLEndpoint(string constructQuery, RDFSPARQLEndpoint sparqlEndpoint)
+            => ApplyRawToSPARQLEndpoint(constructQuery, sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
 
         /// <summary>
         /// Applies the given raw string CONSTRUCT query to the given SPARQL endpoint
@@ -262,16 +259,16 @@ namespace RDFSharp.Query
             => ApplyRawToSPARQLEndpointAsync(ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
 
         /// <summary>
-        /// Asynchronously applies the given raw string CONSTRUCT query to the given SPARQL endpoint
-        /// </summary>
-        public static Task<RDFConstructQueryResult> ApplyRawToSPARQLEndpointAsync(string constructQuery, RDFSPARQLEndpoint sparqlEndpoint)
-            => ApplyRawToSPARQLEndpointAsync(constructQuery, sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
-
-        /// <summary>
         /// Asynchronously applies the query to the given SPARQL endpoint
         /// </summary>
         public Task<RDFConstructQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
             => ApplyRawToSPARQLEndpointAsync(ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
+
+        /// <summary>
+        /// Asynchronously applies the given raw string CONSTRUCT query to the given SPARQL endpoint
+        /// </summary>
+        public static Task<RDFConstructQueryResult> ApplyRawToSPARQLEndpointAsync(string constructQuery, RDFSPARQLEndpoint sparqlEndpoint)
+            => ApplyRawToSPARQLEndpointAsync(constructQuery, sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
 
         /// <summary>
         /// Asynchronously applies the given raw string CONSTRUCT query to the given SPARQL endpoint

@@ -93,8 +93,7 @@ namespace RDFSharp.Query
         /// Applies the operation to the given SPARQL UPDATE endpoint
         /// </summary>
         public bool ApplyToSPARQLUpdateEndpoint(RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions)
-            => sparqlUpdateEndpoint != null ? new RDFOperationEngine().EvaluateOperationOnSPARQLUpdateEndpoint(this, sparqlUpdateEndpoint, sparqlUpdateEndpointOperationOptions)
-                                            : false;
+            => sparqlUpdateEndpoint != null && new RDFOperationEngine().EvaluateOperationOnSPARQLUpdateEndpoint(this, sparqlUpdateEndpoint, sparqlUpdateEndpointOperationOptions);
 
         /// <summary>
         /// Asynchronously applies the operation to the given SPARQL UPDATE endpoint
