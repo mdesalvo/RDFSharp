@@ -310,7 +310,7 @@ namespace RDFSharp.Query
             string subqueryBodySpaces, double indentLevel, bool fromUnion)
         {
             #region Facilities
-            void ExecutePatternGroupPrinting(RDFPatternGroup patternGroup)
+            void PrintWrappedPatternGroup(RDFPatternGroup patternGroup)
             {
                 if (patternGroup.EvaluateAsService.HasValue)
                 {
@@ -333,50 +333,29 @@ namespace RDFSharp.Query
                 #region PATTERNGROUP
                 if (queryMember is RDFPatternGroup pgQueryMember)
                 {
-                    //Current pattern group is set as UNION with the next one
-                    if (pgQueryMember.JoinAsUnion)
+                    //PatternGroup is set as UNION with the next query member and it IS NOT the last one => append UNION
+                    if (pgQueryMember.JoinAsUnion && !pgQueryMember.Equals(lastQueryMbr)) 
                     {
-                        //Current pattern group IS NOT the last of the query
-                        //(so UNION keyword must be appended at last)
-                        if (!pgQueryMember.Equals(lastQueryMbr))
+                        if (!printingUnion)
                         {
-                            //Begin a new Union block
-                            if (!printingUnion)
-                            {
-                                printingUnion = true;
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
-                            }
+                            //Begin new UNION block
+                            printingUnion = true;
 
-                            ExecutePatternGroupPrinting(pgQueryMember);
-                            sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
+                            sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                         }
-
-                        //Current pattern group IS the last of the query
-                        //(so UNION keyword must not be appended at last)
-                        else
-                        {
-                            //End the Union block
-                            if (printingUnion)
-                            {
-                                printingUnion = false;
-
-                                ExecutePatternGroupPrinting(pgQueryMember);
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
-                            }
-                            else
-                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length, false, prefixes));
-                        }
+                        PrintWrappedPatternGroup(pgQueryMember);
+                        sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
                     }
 
-                    //Current pattern group is set as INTERSECT with the next one
+                    //PatternGroup is set as INTERSECT with the next query member or it IS the last one => do not append UNION
                     else
                     {
-                        //End the Union block
                         if (printingUnion)
                         {
+                            //End active UNION block
                             printingUnion = false;
 
-                            ExecutePatternGroupPrinting(pgQueryMember);
+                            PrintWrappedPatternGroup(pgQueryMember);
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                         }
                         else
@@ -392,47 +371,26 @@ namespace RDFSharp.Query
                     query.GetPrefixes()
                          .ForEach(pf1 => sqQueryMember.AddPrefix(pf1));
 
-                    //Current subquery is set as UNION with the next one
-                    if (sqQueryMember.JoinAsUnion)
+                    //SubQuery is set as UNION with the next query member and it IS NOT the last one => append UNION
+                    if (sqQueryMember.JoinAsUnion && !sqQueryMember.Equals(lastQueryMbr))
                     {
-                        //Current subquery IS NOT the last of the query
-                        //(so UNION keyword must be appended at last)
-                        if (!sqQueryMember.Equals(lastQueryMbr))
+                        if (!printingUnion)
                         {
-                            //Begin a new Union block
-                            if (!printingUnion)
-                            {
-                                printingUnion = true;
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
-                            }
+                            //Begin new UNION block
+                            printingUnion = true;
 
-                            sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
-                            sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
+                            sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                         }
-
-                        //Current query IS the last of the query
-                        //(so UNION keyword must not be appended at last)
-                        else
-                        {
-                            //End the Union block
-                            if (printingUnion)
-                            {
-                                printingUnion = false;
-
-                                sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
-                            }
-                            else
-                                sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), false));
-                        }
+                        sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
+                        sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
                     }
 
-                    //Current query is set as INTERSECT with the next one
+                    //SubQuery is set as INTERSECT with the next query member or it IS the last one => do not append UNION
                     else
                     {
-                        //End the Union block
                         if (printingUnion)
                         {
+                            //End active UNION block
                             printingUnion = false;
 
                             sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
