@@ -309,6 +309,20 @@ namespace RDFSharp.Query
         internal static void PrintWhereClause(RDFQuery query, StringBuilder sb, List<RDFNamespace> prefixes, 
             string subqueryBodySpaces, double indentLevel, bool fromUnion)
         {
+            #region Facilities
+            void ExecutePatternGroupPrinting(RDFPatternGroup patternGroup)
+            {
+                if (patternGroup.EvaluateAsService.HasValue)
+                {
+                    sb.AppendLine(string.Concat(subqueryBodySpaces, "    {"));
+                    sb.Append(PrintPatternGroup(patternGroup, subqueryBodySpaces.Length + 4, true, prefixes));
+                    sb.AppendLine(string.Concat(subqueryBodySpaces, "    }"));
+                }
+                else
+                    sb.Append(PrintPatternGroup(patternGroup, subqueryBodySpaces.Length + 2, true, prefixes));
+            }
+            #endregion
+
             sb.AppendLine(string.Concat(subqueryBodySpaces, "WHERE {"));
 
             bool printingUnion = false;
@@ -333,17 +347,7 @@ namespace RDFSharp.Query
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                             }
 
-                            #region PrintPatternGroup
-                            if (pgQueryMember.EvaluateAsService.HasValue)
-                            {
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "    {"));
-                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 4, true, prefixes));
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "    }"));
-                            }
-                            else
-                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
-                            #endregion
-
+                            ExecutePatternGroupPrinting(pgQueryMember);
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
                         }
 
@@ -356,17 +360,7 @@ namespace RDFSharp.Query
                             {
                                 printingUnion = false;
 
-                                #region PrintPatternGroup
-                                if (pgQueryMember.EvaluateAsService.HasValue)
-                                {
-                                    sb.AppendLine(string.Concat(subqueryBodySpaces, "    {"));
-                                    sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 4, true, prefixes));
-                                    sb.AppendLine(string.Concat(subqueryBodySpaces, "    }"));
-                                }
-                                else
-                                    sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
-                                #endregion
-
+                                ExecutePatternGroupPrinting(pgQueryMember);
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                             }
                             else
@@ -382,17 +376,7 @@ namespace RDFSharp.Query
                         {
                             printingUnion = false;
 
-                            #region PrintPatternGroup
-                            if (pgQueryMember.EvaluateAsService.HasValue)
-                            {
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "    {"));
-                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 4, true, prefixes));
-                                sb.AppendLine(string.Concat(subqueryBodySpaces, "    }"));
-                            }
-                            else
-                                sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length + 2, true, prefixes));
-                            #endregion
-
+                            ExecutePatternGroupPrinting(pgQueryMember);
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                         }
                         else
@@ -421,6 +405,7 @@ namespace RDFSharp.Query
                                 printingUnion = true;
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                             }
+
                             sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
                         }
@@ -433,6 +418,7 @@ namespace RDFSharp.Query
                             if (printingUnion)
                             {
                                 printingUnion = false;
+
                                 sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                             }
@@ -448,6 +434,7 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
+
                             sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                         }
