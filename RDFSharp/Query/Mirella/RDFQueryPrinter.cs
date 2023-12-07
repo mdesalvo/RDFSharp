@@ -446,32 +446,19 @@ namespace RDFSharp.Query
                 #region PATTERN
                 if (pgMember is RDFPattern ptPgMember)
                 {
-                    //Union pattern
-                    if (ptPgMember.JoinAsUnion)
+                    //Pattern is set as UNION with the next pg member and it IS NOT the last one => append UNION
+                    if (ptPgMember.JoinAsUnion && !thisIsLastPgMemberOrNextPgMemberIsBind)
                     {
-                        if (!thisIsLastPgMemberOrNextPgMemberIsBind)
-                        {
-                            //Begin a new Union block
-                            printingUnion = true;
-                            result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
-                            result.AppendLine(string.Concat(spaces, "    UNION"));
-                        }
-                        else
-                        {
-                            //End the Union block
-                            if (printingUnion)
-                            {
-                                printingUnion = false;
-                                result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
-                            }
-                            else
-                                result.AppendLine(string.Concat(spaces, "    ", PrintPattern(ptPgMember, prefixes), " ."));
-                        }
+                        //Begin new UNION block
+                        printingUnion = true;
+                        result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
+                        result.AppendLine(string.Concat(spaces, "    UNION"));
                     }
-                    //Intersect pattern
+
+                    //Pattern is set as INTERSECT with the next pg member or it IS the last one => do not append UNION
                     else
                     {
-                        //End the Union block
+                        //End active UNION block
                         if (printingUnion)
                         {
                             printingUnion = false;
@@ -486,7 +473,7 @@ namespace RDFSharp.Query
                 #region PROPERTY PATH
                 else if (pgMember is RDFPropertyPath ppPgMember && ppPgMember.IsEvaluable)
                 {
-                    //End the Union block
+                    //End active UNION block
                     if (printingUnion)
                     {
                         printingUnion = false;
@@ -500,7 +487,7 @@ namespace RDFSharp.Query
                 #region VALUES
                 else if (pgMember is RDFValues vlPgMember && vlPgMember.IsEvaluable && !vlPgMember.IsInjected)
                 {
-                    //End the Union block
+                    //End active UNION block
                     if (printingUnion)
                     {
                         printingUnion = false;
@@ -514,7 +501,7 @@ namespace RDFSharp.Query
                 #region BIND
                 else if (pgMember is RDFBind bdPgMember)
                 {
-                    //End the Union block
+                    //End active UNION block
                     if (printingUnion)
                         printingUnion = false;
                     result.AppendLine(string.Concat(spaces, "    ", PrintBind(bdPgMember, prefixes), " ."));
@@ -531,13 +518,16 @@ namespace RDFSharp.Query
 
             #region CLOSURE
             result.AppendLine(string.Concat(spaces, "  }"));
+
+            //SERVICE
             if (patternGroup.EvaluateAsService.HasValue)
             { 
                 result.AppendLine(string.Concat(spaces, "}"));
-                //In this case we must rewind an indentation level (2 spaces)
                 if (spaces.Length > 2)
                     spaces = spaces.Substring(2);
             }
+
+            //OPTIONAL
             if (patternGroup.IsOptional && !skipOptional)
                 result.AppendLine(string.Concat(spaces, "}"));
             #endregion
