@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2023 Marco De Salvo
+   Copyright 2012-2024 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -170,7 +170,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Retrieves a namespace by seeking presence of its Uri.
+        /// Retrieves a namespace by seeking presence of its Uri (cascading a lookup to prefix.cc service, if specified)
         /// </summary>
         public static RDFNamespace GetByUri(string uri, bool enablePrefixCCService = false)
         {
@@ -185,7 +185,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Retrieves a namespace by seeking presence of its prefix.
+        /// Retrieves a namespace by seeking presence of its prefix (cascading a lookup to prefix.cc service, if specified)
         /// </summary>
         public static RDFNamespace GetByPrefix(string prefix, bool enablePrefixCCService = false)
         {
@@ -200,7 +200,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Looksup the given prefix or namespace into the prefix.cc service
+        /// Lookups the given prefix or namespace into the prefix.cc service
         /// </summary>
         internal static RDFNamespace LookupPrefixCC(string data, int lookupMode)
         {
@@ -212,8 +212,9 @@ namespace RDFSharp.Model
                 try
                 {
                     string response = webclient.DownloadString(lookupString);
-                    string prefix = response.Split('\t')[0];
-                    string nspace = response.Split('\t')[1].TrimEnd(Environment.NewLine);
+                    string[] splittedResponse = response.Split('\t');
+                    string prefix = splittedResponse[0];
+                    string nspace = splittedResponse[1].TrimEnd(Environment.NewLine);
                     RDFNamespace result = new RDFNamespace(prefix, nspace);
 
                     //Also add the namespace to the register (to avoid future lookups)
