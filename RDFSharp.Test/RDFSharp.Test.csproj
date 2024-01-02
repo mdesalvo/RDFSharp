@@ -3,7 +3,7 @@
 		<AssemblyTitle>RDFSharp.Test</AssemblyTitle>
 		<AssemblyName>RDFSharp.Test</AssemblyName>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
-		<Version>3.9.0</Version>
+		<Version>3.10.0</Version>
 		<Authors>Marco De Salvo</Authors>
 		<Copyright>Marco De Salvo</Copyright>
 		<TargetFramework>net8.0</TargetFramework>
@@ -14,7 +14,7 @@
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
 		<PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
 		<PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
-		<PackageReference Include="WireMock.Net" Version="1.5.40" />
+		<PackageReference Include="WireMock.Net" Version="1.5.46" />
 		<PackageReference Include="coverlet.collector" Version="6.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
