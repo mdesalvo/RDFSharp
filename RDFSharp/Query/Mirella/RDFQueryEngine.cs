@@ -875,9 +875,6 @@ namespace RDFSharp.Query
 
                 case RDFFederation federation:
                     return ApplyPatternToFederation(pattern, federation);
-
-                case RDFSPARQLEndpoint sparqlEndpoint:
-                    return ApplyPatternToSPARQLEndpoint(pattern, sparqlEndpoint);
             }
             return new DataTable();
         }
@@ -1186,31 +1183,17 @@ namespace RDFSharp.Query
                         break;
 
                     case RDFSPARQLEndpoint dataSourceSparqlEndpoint:
-                        federation.EndpointDataSourcesQueryOptions.TryGetValue(dataSourceSparqlEndpoint.ToString(), out RDFSPARQLEndpointQueryOptions sparqlEndpointOptions);
-                        DataTable sparqlEndpointTable = ApplyPatternToSPARQLEndpoint(pattern, dataSourceSparqlEndpoint, sparqlEndpointOptions);
-                        resultTable.Merge(sparqlEndpointTable, true, MissingSchemaAction.Add);
+                        //Pattern is transformed into an equivalent "SELECT *" query which is sent to the SPARQL endpoint.
+                        //SPARQL endpoint options are eventually retrieved directly from the federation.
+                        federation.EndpointDataSourcesQueryOptions.TryGetValue(dataSourceSparqlEndpoint.ToString(), out RDFSPARQLEndpointQueryOptions dataSourceSparqlEndpointOptions);
+                        RDFSelectQuery sparqlEndpointQuery =  new RDFSelectQuery().AddPatternGroup(new RDFPatternGroup().AddPattern(pattern));
+                        RDFSelectQueryResult sparqlEndpointTable = sparqlEndpointQuery.ApplyToSPARQLEndpoint(dataSourceSparqlEndpoint, dataSourceSparqlEndpointOptions);
+                        resultTable.Merge(sparqlEndpointTable.SelectResults, true, MissingSchemaAction.Add);
                         break;
                 }
             }
 
             return resultTable;
-        }
-
-        /// <summary>
-        /// Applies the given pattern to the given SPARQL endpoint (within a federation)
-        /// </summary>
-        internal DataTable ApplyPatternToSPARQLEndpoint(RDFPattern pattern, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
-        {
-            //Transform the pattern into an equivalent "SELECT *" query
-            RDFSelectQuery selectQuery =
-                new RDFSelectQuery()
-                    .AddPatternGroup(new RDFPatternGroup()
-                        .AddPattern(pattern));
-
-            //Apply the query to the SPARQL endpoint
-            RDFSelectQueryResult selectQueryResult = selectQuery.ApplyToSPARQLEndpoint(sparqlEndpoint, sparqlEndpointQueryOptions);
-
-            return selectQueryResult.SelectResults;
         }
 
         /// <summary>
