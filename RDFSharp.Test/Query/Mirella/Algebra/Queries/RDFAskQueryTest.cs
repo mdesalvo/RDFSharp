@@ -278,6 +278,37 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldApplyAskQueryToSPARQLEndpointAndHaveTrueResultViaPost()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAndHaveTrueResultViaPost/sparql")
+                           .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                            .WithBody(
+@"<?xml version=""1.0""?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+    <head />
+    <boolean>true</boolean>
+</sparql>", encoding: Encoding.UTF8)
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAndHaveTrueResultViaPost/sparql"));
+            RDFAskQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions() { 
+                QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.AskResult);
+        }
+
+        [TestMethod]
         public void ShouldApplyAskQueryToSPARQLEndpointAndHaveFalseResult()
         {
             server
@@ -309,6 +340,37 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldApplyAskQueryToSPARQLEndpointAndHaveFalseResultViaPost()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAndHaveFalseResultViaPost/sparql")
+                           .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                            .WithBody(
+@"<?xml version=""1.0""?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+    <head />
+    <boolean>false</boolean>
+</sparql>", encoding: Encoding.UTF8)
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAndHaveFalseResultViaPost/sparql"));
+            RDFAskQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions() { 
+                QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.AskResult);
+        }
+
+        [TestMethod]
         public void ShouldApplyRawAskQueryToSPARQLEndpoint()
         {
             server
@@ -334,6 +396,37 @@ namespace RDFSharp.Test.Query
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldApplyRawAskQueryToSPARQLEndpoint/sparql"));
             RDFAskQueryResult result = RDFAskQuery.ApplyRawToSPARQLEndpoint(query.ToString(), endpoint);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.AskResult);
+        }
+
+        [TestMethod]
+        public void ShouldApplyRawAskQueryToSPARQLEndpointViaPost()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFAskQueryTest/ShouldApplyRawAskQueryToSPARQLEndpointViaPost/sparql")
+                           .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                            .WithBody(
+@"<?xml version=""1.0""?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+    <head />
+    <boolean>true</boolean>
+</sparql>", encoding: Encoding.UTF8)
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldApplyRawAskQueryToSPARQLEndpointViaPost/sparql"));
+            RDFAskQueryResult result = RDFAskQuery.ApplyRawToSPARQLEndpoint(query.ToString(), endpoint, new RDFSPARQLEndpointQueryOptions() { 
+                QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.AskResult);
@@ -382,6 +475,35 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldThrowExceptionWhenApplyingAskQueryToSPARQLEndpointAccordingToTimingAndBehaviorViaPost()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFAskQueryTest/ShouldThrowExceptionWhenApplyingAskQueryToSPARQLEndpointAccordingToTimingAndBehaviorViaPost/sparql")
+                           .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                            .WithBody(
+@"<?xml version=""1.0""?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+    <head />
+    <boolean>false</boolean>
+</sparql>", encoding: Encoding.UTF8)
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(750));
+
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldThrowExceptionWhenApplyingAskQueryToSPARQLEndpointAccordingToTimingAndBehaviorViaPost/sparql"));
+
+            Assert.ThrowsException<RDFQueryException>(() => query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(250, 
+                RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException, RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post)));
+        }
+
+        [TestMethod]
         public void ShouldGiveEmptyResultWhenApplyingAskQueryToSPARQLEndpointAccordingToTimingAndBehavior()
         {
             server
@@ -414,6 +536,38 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldGiveEmptyResultWhenApplyingAskQueryToSPARQLEndpointAccordingToTimingAndBehaviorViaPost()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFAskQueryTest/ShouldGiveEmptyResultWhenApplyingAskQueryToSPARQLEndpointAccordingToTimingAndBehaviorViaPost/sparql")
+                           .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                            .WithBody(
+@"<?xml version=""1.0""?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+    <head />
+    <boolean>false</boolean>
+</sparql>", encoding: Encoding.UTF8)
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(750));
+
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldGiveEmptyResultWhenApplyingAskQueryToSPARQLEndpointAccordingToTimingAndBehaviorViaPost/sparql"));
+
+            RDFAskQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(250, 
+                RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult, RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post));
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.AskResult);
+        }
+
+        [TestMethod]
         public void ShouldThrowExceptionWhenApplyingAskQueryToSPARQLEndpointAccordingToBehavior()
         {
             server
@@ -438,6 +592,30 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldThrowExceptionWhenApplyingAskQueryToSPARQLEndpointAccordingToBehaviorViaPost()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFAskQueryTest/ShouldThrowExceptionWhenApplyingAskQueryToSPARQLEndpointAccordingToBehaviorViaPost/sparql")
+                           .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                            .WithBody("Internal Server Error")
+                            .WithStatusCode(HttpStatusCode.InternalServerError)
+                            .WithFault(FaultType.NONE));
+
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldThrowExceptionWhenApplyingAskQueryToSPARQLEndpointAccordingToBehaviorViaPost/sparql"));
+
+            Assert.ThrowsException<RDFQueryException>(() => query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(750, 
+                RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException, RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post)));
+        }
+
+        [TestMethod]
         public void ShouldGiveEmptyResultWhenApplyingAskQueryToSPARQLEndpointAccordingToBehavior()
         {
             server
@@ -459,6 +637,33 @@ namespace RDFSharp.Test.Query
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldGiveEmptyResultWhenApplyingAskQueryToSPARQLEndpointAccordingToBehavior/sparql"));
 
             RDFAskQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(1000, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult));
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.AskResult);
+        }
+
+        [TestMethod]
+        public void ShouldGiveEmptyResultWhenApplyingAskQueryToSPARQLEndpointAccordingToBehaviorViaPost()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFAskQueryTest/ShouldGiveEmptyResultWhenApplyingAskQueryToSPARQLEndpointAccordingToBehaviorViaPost/sparql")
+                           .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                            .WithBody("Internal Server Error")
+                            .WithStatusCode(HttpStatusCode.InternalServerError)
+                            .WithFault(FaultType.NONE));
+
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldGiveEmptyResultWhenApplyingAskQueryToSPARQLEndpointAccordingToBehaviorViaPost/sparql"));
+
+            RDFAskQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(1000, 
+                RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult, RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post));
 
             Assert.IsNotNull(result);
             Assert.IsFalse(result.AskResult);

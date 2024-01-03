@@ -122,50 +122,7 @@ namespace RDFSharp.Query
         /// Applies the given raw string ASK query to the given SPARQL endpoint
         /// </summary>
         public static RDFAskQueryResult ApplyRawToSPARQLEndpoint(string askQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-        {
-            RDFAskQueryResult askResult = new RDFAskQueryResult();
-            if (!string.IsNullOrWhiteSpace(askQuery) && sparqlEndpoint != null)
-            {
-                if (sparqlEndpointQueryOptions == null)
-                    sparqlEndpointQueryOptions = new RDFSPARQLEndpointQueryOptions();
-
-                //Establish a connection to the given SPARQL endpoint
-                using (RDFWebClient webClient = new RDFWebClient(sparqlEndpointQueryOptions.TimeoutMilliseconds))
-                {
-                    //Insert reserved "query" parameter
-                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(askQuery));
-
-                    //Insert user-provided parameters
-                    webClient.QueryString.Add(sparqlEndpoint.QueryParams);
-
-                    //Insert request headers
-                    webClient.Headers.Add(HttpRequestHeader.Accept, "application/sparql-results+xml");
-
-                    //Insert eventual authorization headers
-                    sparqlEndpoint.FillWebClientAuthorization(webClient);
-
-                    //Send querystring to SPARQL endpoint
-                    byte[] sparqlResponse = null;
-                    try
-                    {
-                        sparqlResponse = webClient.DownloadData(sparqlEndpoint.BaseAddress);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (sparqlEndpointQueryOptions.ErrorBehavior == RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)
-                            throw new RDFQueryException($"ASK query on SPARQL endpoint failed because: {ex.Message}", ex);
-                    }
-
-                    //Parse response from SPARQL endpoint
-                    if (sparqlResponse != null)
-                    {
-                        using (MemoryStream sStream = new MemoryStream(sparqlResponse))
-                            askResult = RDFAskQueryResult.FromSparqlXmlResult(sStream);
-                    }
-                }
-            }
-            return askResult;
-        }
+            => sparqlEndpoint != null ? (RDFAskQueryResult)new RDFQueryEngine().ApplyRawToSPARQLEndpoint("ASK", askQuery, sparqlEndpoint, sparqlEndpointQueryOptions) : new RDFAskQueryResult();
 
         /// <summary>
         /// Asynchronously applies the query to the given SPARQL endpoint

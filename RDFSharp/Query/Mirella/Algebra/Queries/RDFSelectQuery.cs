@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using static RDFSharp.Query.RDFQueryUtilities;
@@ -192,58 +193,7 @@ namespace RDFSharp.Query
         /// Applies the given raw string SELECT query to the given SPARQL endpoint
         /// </summary>
         public static RDFSelectQueryResult ApplyRawToSPARQLEndpoint(string selectQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-        {
-            RDFSelectQueryResult selResult = new RDFSelectQueryResult();
-            if (!string.IsNullOrWhiteSpace(selectQuery) && sparqlEndpoint != null)
-            {
-                if (sparqlEndpointQueryOptions == null)
-                    sparqlEndpointQueryOptions = new RDFSPARQLEndpointQueryOptions();
-
-                //Establish a connection to the given SPARQL endpoint
-                using (RDFWebClient webClient = new RDFWebClient(sparqlEndpointQueryOptions.TimeoutMilliseconds))
-                {
-                    //Insert reserved "query" parameter
-                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(selectQuery));
-
-                    //Insert user-provided parameters
-                    webClient.QueryString.Add(sparqlEndpoint.QueryParams);
-
-                    //Insert request headers
-                    webClient.Headers.Add(HttpRequestHeader.Accept, "application/sparql-results+xml");
-
-                    //Insert eventual authorization headers
-                    sparqlEndpoint.FillWebClientAuthorization(webClient);
-
-                    //Send querystring to SPARQL endpoint
-                    byte[] sparqlResponse = null;
-                    try
-                    {
-                        sparqlResponse = webClient.DownloadData(sparqlEndpoint.BaseAddress);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (sparqlEndpointQueryOptions.ErrorBehavior == RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)
-                            throw new RDFQueryException($"SELECT query on SPARQL endpoint failed because: {ex.Message}", ex);
-                    }
-
-                    //Parse response from SPARQL endpoint
-                    if (sparqlResponse != null)
-                    {
-                        using (MemoryStream sStream = new MemoryStream(sparqlResponse))
-                            selResult = RDFSelectQueryResult.FromSparqlXmlResult(sStream);
-                    }
-                }
-
-                //Eventually adjust column names (should start with "?")
-                int columnsCount = selResult.SelectResults.Columns.Count;
-                for (int i = 0; i < columnsCount; i++)
-                {
-                    if (!selResult.SelectResults.Columns[i].ColumnName.StartsWith("?"))
-                        selResult.SelectResults.Columns[i].ColumnName = string.Concat("?", selResult.SelectResults.Columns[i].ColumnName);
-                }
-            }
-            return selResult;
-        }
+            => sparqlEndpoint != null ? (RDFSelectQueryResult)new RDFQueryEngine().ApplyRawToSPARQLEndpoint("SELECT", selectQuery, sparqlEndpoint, sparqlEndpointQueryOptions) : new RDFSelectQueryResult();
 
         /// <summary>
         /// Asynchronously applies the query to the given SPARQL endpoint

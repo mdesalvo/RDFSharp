@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFConstructQueryResult is a container for SPARQL "CONSTRUCT" query results.
     /// </summary>
-    public class RDFConstructQueryResult
+    public class RDFConstructQueryResult : RDFQueryResult
     {
         #region Properties
         /// <summary>

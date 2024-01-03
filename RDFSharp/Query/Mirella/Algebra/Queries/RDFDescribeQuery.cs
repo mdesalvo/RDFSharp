@@ -190,59 +190,7 @@ namespace RDFSharp.Query
         /// Applies the given raw string DESCRIBE query to the given SPARQL endpoint
         /// </summary>
         public static RDFDescribeQueryResult ApplyRawToSPARQLEndpoint(string describeQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-        {
-            RDFDescribeQueryResult describeResult = new RDFDescribeQueryResult();
-            if (!string.IsNullOrWhiteSpace(describeQuery) && sparqlEndpoint != null)
-            {
-                if (sparqlEndpointQueryOptions == null)
-                    sparqlEndpointQueryOptions = new RDFSPARQLEndpointQueryOptions();
-
-                //Establish a connection to the given SPARQL endpoint
-                using (RDFWebClient webClient = new RDFWebClient(sparqlEndpointQueryOptions.TimeoutMilliseconds))
-                {
-                    //Insert reserved "query" parameter
-                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(describeQuery));
-
-                    //Insert user-provided parameters
-                    webClient.QueryString.Add(sparqlEndpoint.QueryParams);
-
-                    //Insert request headers
-                    webClient.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
-                    webClient.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
-
-                    //Insert eventual authorization headers
-                    sparqlEndpoint.FillWebClientAuthorization(webClient);
-
-                    //Send querystring to SPARQL endpoint
-                    byte[] sparqlResponse = null;
-                    try
-                    {
-                        sparqlResponse = webClient.DownloadData(sparqlEndpoint.BaseAddress);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (sparqlEndpointQueryOptions.ErrorBehavior == RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)
-                            throw new RDFQueryException($"DESCRIBE query on SPARQL endpoint failed because: {ex.Message}", ex);
-                    }
-
-                    //Parse response from SPARQL endpoint
-                    if (sparqlResponse != null)
-                    {
-                        using (MemoryStream sStream = new MemoryStream(sparqlResponse))
-                            describeResult = RDFDescribeQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
-                    }
-                }
-
-                //Eventually adjust column names (should start with "?")
-                int columnsCount = describeResult.DescribeResults.Columns.Count;
-                for (int i = 0; i < columnsCount; i++)
-                {
-                    if (!describeResult.DescribeResults.Columns[i].ColumnName.StartsWith("?"))
-                        describeResult.DescribeResults.Columns[i].ColumnName = string.Concat("?", describeResult.DescribeResults.Columns[i].ColumnName);
-                }
-            }
-            return describeResult;
-        }
+            => sparqlEndpoint != null ? (RDFDescribeQueryResult)new RDFQueryEngine().ApplyRawToSPARQLEndpoint("DESCRIBE", describeQuery, sparqlEndpoint, sparqlEndpointQueryOptions) : new RDFDescribeQueryResult();
 
         /// <summary>
         /// Asynchronously applies the query to the given SPARQL endpoint

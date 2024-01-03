@@ -199,4 +199,9 @@ namespace RDFSharp.Query
             => QueryMembers.Where(q => q.IsEvaluable);
         #endregion
     }
+
+    /// <summary>
+    /// RDFQueryResult is the foundation class for modeling SPARQL query results
+    /// </summary>
+    public class RDFQueryResult {}
 }

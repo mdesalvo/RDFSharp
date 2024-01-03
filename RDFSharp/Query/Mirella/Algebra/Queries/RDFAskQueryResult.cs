@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFAskResult is a container for SPARQL "ASK" query results.
     /// </summary>
-    public class RDFAskQueryResult
+    public class RDFAskQueryResult : RDFQueryResult
     {
         #region Properties
         /// <summary>

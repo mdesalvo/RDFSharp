@@ -137,6 +137,21 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// RDFSPARQLEndpointQueryMethods represents an enumeration for possible HTTP methods of SPARQL endpoint query
+        /// </summary>
+        public enum RDFSPARQLEndpointQueryMethods
+        {
+            /// <summary>
+            /// SPARQL endpoint will be contacted with HTTP/GET
+            /// </summary>
+            Get = 1,
+            /// <summary>
+            /// SPARQL endpoint will be contacted with HTTP/POST
+            /// </summary>
+            Post = 2
+        }
+
+        /// <summary>
         /// RDFSPARQLEndpointOperationContentTypes represents an enumeration for supported Content-Type headers to be sent for SPARQL UPDATE operations
         /// </summary>
         public enum RDFSPARQLEndpointOperationContentTypes

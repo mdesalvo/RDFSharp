@@ -112,6 +112,15 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Adds a "named-graph-uri" parameter to be sent to the SPARQL endpoint
+        /// </summary>
+        public RDFSPARQLEndpoint AddNamedGraphUri(string namedGraphUri)
+        {
+            QueryParams.Add("named-graph-uri", namedGraphUri ?? string.Empty);
+            return this;
+        }
+
+        /// <summary>
         /// Adds the proper authorization header to the given RDF WebClient
         /// </summary>
         internal void FillWebClientAuthorization(RDFWebClient webClient)
@@ -122,20 +131,12 @@ namespace RDFSharp.Query
                 case RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Basic:
                     webClient.Headers.Add(HttpRequestHeader.Authorization, $"Basic {AuthorizationValue}");
                     break;
+
                 //Bearer
                 case RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Bearer:
                     webClient.Headers.Add(HttpRequestHeader.Authorization, $"Bearer {AuthorizationValue}");
                     break;
             }
-        }
-
-        /// <summary>
-        /// Adds a "named-graph-uri" parameter to be sent to the SPARQL endpoint
-        /// </summary>
-        public RDFSPARQLEndpoint AddNamedGraphUri(string namedGraphUri)
-        {
-            QueryParams.Add("named-graph-uri", namedGraphUri ?? string.Empty);
-            return this;
         }
         #endregion
     }
@@ -147,14 +148,19 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Represents the timeout observed for the query sent to the SPARQL endpoint (defaults to: -1)
+        /// Represents the timeout observed for the query sent to the SPARQL endpoint (default: -1)
         /// </summary>
         public int TimeoutMilliseconds { get; set; }
 
         /// <summary>
-        /// Represents the behavior used by the query in case of runtime errors (defaults to: ThrowException)
+        /// Represents the behavior used by the query in case of runtime errors (default: ThrowException)
         /// </summary>
         public RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors ErrorBehavior { get; set; }
+
+        /// <summary>
+        /// Represents the HTTP method used by the query to contact the SPARQL endpoint (default: Get)
+        /// </summary>
+        public RDFQueryEnums.RDFSPARQLEndpointQueryMethods QueryMethod { get; set; }
         #endregion
 
         #region Ctors
@@ -165,6 +171,7 @@ namespace RDFSharp.Query
         {
             TimeoutMilliseconds = -1;
             ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException;
+            QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Get;
         }
 
         /// <summary>
@@ -176,8 +183,13 @@ namespace RDFSharp.Query
         /// <summary>
         /// Custom-ctor to configure options for a SPARQL endpoint query
         /// </summary>
-        public RDFSPARQLEndpointQueryOptions(int timeoutMilliseconds, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors errorBehavior) : this(timeoutMilliseconds)
-            => ErrorBehavior = errorBehavior;
+        public RDFSPARQLEndpointQueryOptions(int timeoutMilliseconds, 
+            RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors? errorBehavior=null, 
+            RDFQueryEnums.RDFSPARQLEndpointQueryMethods? queryMethod=null) : this(timeoutMilliseconds)
+         {
+            ErrorBehavior = errorBehavior ?? RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException;
+            QueryMethod = queryMethod ?? RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Get;
+         }
         #endregion
     }
 

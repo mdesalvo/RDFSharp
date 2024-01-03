@@ -314,7 +314,7 @@ namespace RDFSharp.Query
                 string operationString = operation.ToString();
                 switch (sparqlUpdateEndpointOperationOptions.RequestContentType)
                 {
-                    //update via POST with URL-encoded parameters
+                    //update via POST with URL-encoded body
                     case RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded:
                         webClient.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");
                         operationString = string.Concat("update=", HttpUtility.UrlEncode(operationString));
