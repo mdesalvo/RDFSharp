@@ -1197,7 +1197,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Applies the given pattern to the given federation
+        /// Applies the given pattern to the given SPARQL endpoint (within a federation)
         /// </summary>
         internal DataTable ApplyPatternToSPARQLEndpoint(RDFPattern pattern, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
         {

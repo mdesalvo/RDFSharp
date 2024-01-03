@@ -1548,10 +1548,11 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
             Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
 
+            string qString = query.ToString();
             Assert.IsNotNull(receivedQuery1);
-            Assert.IsTrue(string.Equals(receivedQuery1, $"?query=SELECT+*%0aWHERE+%7b%0a++%7b%0a++++%3fY+%3cex%3adogOf%3e+%3fX+.%0a++%7d%0a%7d%0a"));
+            Assert.IsTrue(string.Equals(receivedQuery1, $"?query={HttpUtility.UrlEncode(qString)}"));
             Assert.IsNotNull(receivedQuery2);
-            Assert.IsTrue(string.Equals(receivedQuery2, $"query=SELECT+*%0aWHERE+%7b%0a++%7b%0a++++%3fY+%3cex%3adogOf%3e+%3fX+.%0a++%7d%0a%7d%0a"));
+            Assert.IsTrue(string.Equals(receivedQuery2, $"query={HttpUtility.UrlEncode(qString)}"));
         }
 
         [TestMethod]
@@ -1673,10 +1674,11 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
             Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
 
+            string qString = query.ToString();
             Assert.IsNotNull(receivedQuery1);
-            Assert.IsTrue(string.Equals(receivedQuery1, $"?query=SELECT+*%0aWHERE+%7b%0a++%7b%0a++++%3fY+%3cex%3adogOf%3e+%3fX+.%0a++%7d%0a%7d%0a"));
+            Assert.IsTrue(string.Equals(receivedQuery1, $"?query={HttpUtility.UrlEncode(qString)}"));
             Assert.IsNotNull(receivedQuery2);
-            Assert.IsTrue(string.Equals(receivedQuery2, string.Empty)); //empty because timeout (250ms) occurred before execution of valorization payload (750 ms)
+            Assert.IsTrue(string.Equals(receivedQuery2, string.Empty));
         }
 
         [TestMethod]
