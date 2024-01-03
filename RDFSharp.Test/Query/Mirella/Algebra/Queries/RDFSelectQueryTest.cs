@@ -1118,15 +1118,14 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
-        /*
         [TestMethod]
+        [TestProperty("Warning", "This is a physical test! It tries to contact http://statistics.gov.scot/sparql service, which may be unavailable! We are not going to mock tests like this.")]
         public void ShouldApplySelectQueryToRealSPARQLEndpointAndHaveResults()
         {
             RDFSelectQuery query = new RDFSelectQuery()
-                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDFS.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFVariable("?O"))))
-                .AddModifier(new RDFLimitModifier(5));
+                .AddModifier(new RDFLimitModifier(2));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri("http://statistics.gov.scot/sparql"));
 
             RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions() { 
@@ -1134,14 +1133,34 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.SelectResults);
-            Assert.IsTrue(result.SelectResultsCount == 5);
+            Assert.IsTrue(result.SelectResultsCount == 2);
             Assert.IsTrue(result.SelectResults.Columns.Count == 3);
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
             Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?P"));
             Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?O"));
-            Assert.IsTrue(result.SelectResults.Rows.Count == 5);
         }
-        */
+
+        [TestMethod]
+        [TestProperty("Warning", "This is a physical test! It tries to contact http://statistics.gov.scot/sparql service, which may be unavailable! We are not going to mock tests like this.")]
+        public void ShouldApplySelectQueryToRealSPARQLEndpointAndHaveResultsViaPost()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFVariable("?O"))))
+                .AddModifier(new RDFLimitModifier(2));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri("http://statistics.gov.scot/sparql"));
+
+            RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions() { 
+                QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 2);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 3);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?P"));
+            Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?O"));
+        }
 
         [TestMethod]
         public void ShouldApplySelectQueryToSPARQLEndpointAndHaveResultsWithBearerAuthorizationHeader()
