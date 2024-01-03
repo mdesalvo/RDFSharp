@@ -19,7 +19,6 @@ using RDFSharp.Store;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -1187,7 +1186,8 @@ namespace RDFSharp.Query
                         break;
 
                     case RDFSPARQLEndpoint dataSourceSparqlEndpoint:
-                        DataTable sparqlEndpointTable = ApplyPatternToSPARQLEndpoint(pattern, dataSourceSparqlEndpoint);
+                        federation.EndpointDataSourcesQueryOptions.TryGetValue(dataSourceSparqlEndpoint.ToString(), out RDFSPARQLEndpointQueryOptions sparqlEndpointOptions);
+                        DataTable sparqlEndpointTable = ApplyPatternToSPARQLEndpoint(pattern, dataSourceSparqlEndpoint, sparqlEndpointOptions);
                         resultTable.Merge(sparqlEndpointTable, true, MissingSchemaAction.Add);
                         break;
                 }
@@ -1199,7 +1199,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the given pattern to the given federation
         /// </summary>
-        internal DataTable ApplyPatternToSPARQLEndpoint(RDFPattern pattern, RDFSPARQLEndpoint sparqlEndpoint)
+        internal DataTable ApplyPatternToSPARQLEndpoint(RDFPattern pattern, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
         {
             //Transform the pattern into an equivalent "SELECT *" query
             RDFSelectQuery selectQuery =
@@ -1208,15 +1208,7 @@ namespace RDFSharp.Query
                         .AddPattern(pattern));
 
             //Apply the query to the SPARQL endpoint
-            RDFSelectQueryResult selectQueryResult = selectQuery.ApplyToSPARQLEndpoint(sparqlEndpoint);
-
-            //Eventually adjust variable names (should start with "?")
-            int columnsCount = selectQueryResult.SelectResults.Columns.Count;
-            for (int i = 0; i < columnsCount; i++)
-            {
-                if (!selectQueryResult.SelectResults.Columns[i].ColumnName.StartsWith("?"))
-                    selectQueryResult.SelectResults.Columns[i].ColumnName = string.Concat("?", selectQueryResult.SelectResults.Columns[i].ColumnName);
-            }
+            RDFSelectQueryResult selectQueryResult = selectQuery.ApplyToSPARQLEndpoint(sparqlEndpoint, sparqlEndpointQueryOptions);
 
             return selectQueryResult.SelectResults;
         }

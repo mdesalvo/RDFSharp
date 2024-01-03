@@ -35,6 +35,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(federation);
             Assert.IsNotNull(federation.DataSources);
             Assert.IsTrue(federation.DataSourcesCount == 0);
+            Assert.IsNotNull(federation.EndpointDataSourcesQueryOptions);
+            Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.Count == 0);
             Assert.IsTrue(federation.FederationName.StartsWith("FEDERATION|ID="));
             Assert.IsTrue(federation.ToString().Equals(federation.FederationName));
 
@@ -56,6 +58,7 @@ namespace RDFSharp.Test.Query
             federation.AddGraph(null); //Will be discarded, since null is not allowed
 
             Assert.IsTrue(federation.DataSourcesCount == 1);
+            Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.Count == 0);
 
             int i = 0;
             foreach (RDFDataSource s in federation) i++;
@@ -75,6 +78,7 @@ namespace RDFSharp.Test.Query
             federation.AddAsyncGraph(null); //Will be discarded, since null is not allowed
 
             Assert.IsTrue(federation.DataSourcesCount == 1);
+            Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.Count == 0);
 
             int i = 0;
             foreach (RDFDataSource s in federation) i++;
@@ -94,6 +98,7 @@ namespace RDFSharp.Test.Query
             federation.AddStore(null); //Will be discarded, since null is not allowed
 
             Assert.IsTrue(federation.DataSourcesCount == 1);
+            Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.Count == 0);
 
             int i = 0;
             foreach (RDFDataSource s in federation) i++;
@@ -113,6 +118,7 @@ namespace RDFSharp.Test.Query
             federation.AddAsyncStore(null); //Will be discarded, since null is not allowed
 
             Assert.IsTrue(federation.DataSourcesCount == 1);
+            Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.Count == 0);
 
             int i = 0;
             foreach (RDFDataSource s in federation) i++;
@@ -133,6 +139,7 @@ namespace RDFSharp.Test.Query
             federation.AddFederation(null); //Will be discarded, since null is not allowed
 
             Assert.IsTrue(federation.DataSourcesCount == 1);
+            Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.Count == 0);
 
             int i = 0;
             foreach (RDFDataSource s in federation) i++;
@@ -148,19 +155,27 @@ namespace RDFSharp.Test.Query
         public void ShouldAddSPARQLEndpointToFederation()
         {
             RDFFederation federation = new RDFFederation();
-            federation.AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri("ex:sparqlEndpoint")));
+            federation.AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri("ex:sparqlEndpoint1")));
+            federation.AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri("ex:sparqlEndpoint1"))); //Will be discarded, since duplicate endpoints are not allowed
             federation.AddSPARQLEndpoint(null); //Will be discarded, since null is not allowed
+            federation.AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri("ex:sparqlEndpoint2")), new RDFSPARQLEndpointQueryOptions() { 
+                ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult, 
+                QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post, 
+                TimeoutMilliseconds = 25000});
 
-            Assert.IsTrue(federation.DataSourcesCount == 1);
+            Assert.IsTrue(federation.DataSourcesCount == 2);
+            Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.Count == 2);
+            Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.ContainsKey("ex:sparqlEndpoint1"));
+            Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.ContainsKey("ex:sparqlEndpoint2"));
 
             int i = 0;
             foreach (RDFDataSource s in federation) i++;
-            Assert.IsTrue(i == 1);
+            Assert.IsTrue(i == 2);
 
             int j = 0;
             IEnumerator<RDFDataSource> datasourcesEnumerator = federation.DataSourcesEnumerator;
             while (datasourcesEnumerator.MoveNext()) j++;
-            Assert.IsTrue(j == 1);
+            Assert.IsTrue(j == 2);
         }
 
         [TestMethod]
@@ -168,11 +183,14 @@ namespace RDFSharp.Test.Query
         {
             RDFFederation federation = new RDFFederation();
             federation.AddGraph(new RDFGraph());
+            federation.AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri("ex:sparqlEndpoint")), new RDFSPARQLEndpointQueryOptions() { TimeoutMilliseconds = 12500 });
             federation.ClearDataSources();
 
             Assert.IsNotNull(federation);
             Assert.IsNotNull(federation.DataSources);
             Assert.IsTrue(federation.DataSourcesCount == 0);
+            Assert.IsNotNull(federation.EndpointDataSourcesQueryOptions);
+            Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.Count == 0);
 
             int i = 0;
             foreach (RDFDataSource s in federation) i++;

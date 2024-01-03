@@ -1432,6 +1432,367 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpoints()
+        {
+            string receivedQuery1 = "";
+            string receivedQuery2 = "";
+
+            string mockedResponseXml1 =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?Y"" />
+    <variable name=""?X"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:pluto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:topolino</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:fido</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:paperino</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>";
+            string mockedResponseXml2 =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?Y"" />
+    <variable name=""?X"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:balto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:whoever</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>";
+            
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpoints1/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithCallback(req => 
+                            { 
+                                receivedQuery1 = req.RawQuery;
+                                return new WireMock.ResponseMessage()
+                                {
+                                    BodyData = new BodyData() 
+                                    {
+                                        BodyAsString = mockedResponseXml1,
+                                        Encoding = Encoding.UTF8,
+                                        DetectedBodyType = BodyType.String
+                                    }
+                                }; 
+                            })
+                            .WithStatusCode(HttpStatusCode.OK));
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpoints2/sparql")
+                           .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithCallback(req => 
+                            { 
+                                receivedQuery2 = req.Body;
+                                return new WireMock.ResponseMessage()
+                                {
+                                    BodyData = new BodyData() 
+                                    {
+                                        BodyAsString = mockedResponseXml2,
+                                        Encoding = Encoding.UTF8,
+                                        DetectedBodyType = BodyType.String
+                                    }
+                                }; 
+                            })
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFSPARQLEndpoint endpoint1 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpoints1/sparql"));
+            RDFSPARQLEndpoint endpoint2 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpoints2/sparql"));
+            RDFFederation federation = new RDFFederation()
+                .AddSPARQLEndpoint(endpoint1)
+                .AddSPARQLEndpoint(endpoint2, new RDFSPARQLEndpointQueryOptions() { QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))));
+            DataTable result = new RDFQueryEngine().EvaluateSelectQuery(query, federation).SelectResults;
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 3);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+
+            Assert.IsNotNull(receivedQuery1);
+            Assert.IsTrue(string.Equals(receivedQuery1, $"?query=SELECT+*%0aWHERE+%7b%0a++%7b%0a++++%3fY+%3cex%3adogOf%3e+%3fX+.%0a++%7d%0a%7d%0a"));
+            Assert.IsNotNull(receivedQuery2);
+            Assert.IsTrue(string.Equals(receivedQuery2, $"query=SELECT+*%0aWHERE+%7b%0a++%7b%0a++++%3fY+%3cex%3adogOf%3e+%3fX+.%0a++%7d%0a%7d%0a"));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneGivingEmptyResult()
+        {
+            string receivedQuery1 = "";
+            string receivedQuery2 = "";
+
+            string mockedResponseXml1 =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?Y"" />
+    <variable name=""?X"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:pluto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:topolino</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:fido</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:paperino</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>";
+            string mockedResponseXml2 =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?Y"" />
+    <variable name=""?X"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:balto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:whoever</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>";
+            
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneGivingEmptyResult1/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithCallback(req => 
+                            { 
+                                receivedQuery1 = req.RawQuery;
+                                return new WireMock.ResponseMessage()
+                                {
+                                    BodyData = new BodyData() 
+                                    {
+                                        BodyAsString = mockedResponseXml1,
+                                        Encoding = Encoding.UTF8,
+                                        DetectedBodyType = BodyType.String
+                                    }
+                                }; 
+                            })
+                            .WithStatusCode(HttpStatusCode.OK));
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneGivingEmptyResult2/sparql")
+                           .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithCallback(req => 
+                            { 
+                                receivedQuery2 = req.Body;
+                                return new WireMock.ResponseMessage()
+                                {
+                                    BodyData = new BodyData() 
+                                    {
+                                        BodyAsString = mockedResponseXml2,
+                                        Encoding = Encoding.UTF8,
+                                        DetectedBodyType = BodyType.String
+                                    }
+                                }; 
+                            })
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(750));
+
+            RDFSPARQLEndpoint endpoint1 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneGivingEmptyResult1/sparql"));
+            RDFSPARQLEndpoint endpoint2 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneGivingEmptyResult2/sparql"));
+            RDFFederation federation = new RDFFederation()
+                .AddSPARQLEndpoint(endpoint1)
+                .AddSPARQLEndpoint(endpoint2, new RDFSPARQLEndpointQueryOptions() { 
+                    ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult, 
+                    QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post,
+                    TimeoutMilliseconds = 250 });
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))));
+            DataTable result = new RDFQueryEngine().EvaluateSelectQuery(query, federation).SelectResults;
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 2);
+            Assert.IsTrue(result.Rows.Count == 2);
+            Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
+
+            Assert.IsNotNull(receivedQuery1);
+            Assert.IsTrue(string.Equals(receivedQuery1, $"?query=SELECT+*%0aWHERE+%7b%0a++%7b%0a++++%3fY+%3cex%3adogOf%3e+%3fX+.%0a++%7d%0a%7d%0a"));
+            Assert.IsNotNull(receivedQuery2);
+            Assert.IsTrue(string.Equals(receivedQuery2, string.Empty)); //empty because timeout (250ms) occurred before execution of valorization payload (750 ms)
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneThrowingException()
+        {
+            string receivedQuery1 = "";
+            string receivedQuery2 = "";
+
+            string mockedResponseXml1 =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?Y"" />
+    <variable name=""?X"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:pluto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:topolino</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:fido</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:paperino</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>";
+            string mockedResponseXml2 =
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?Y"" />
+    <variable name=""?X"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?Y"">
+        <uri>ex:balto</uri>
+      </binding>
+      <binding name=""?X"">
+        <uri>ex:whoever</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>";
+            
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneThrowingException1/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithCallback(req => 
+                            { 
+                                receivedQuery1 = req.RawQuery;
+                                return new WireMock.ResponseMessage()
+                                {
+                                    BodyData = new BodyData() 
+                                    {
+                                        BodyAsString = mockedResponseXml1,
+                                        Encoding = Encoding.UTF8,
+                                        DetectedBodyType = BodyType.String
+                                    }
+                                }; 
+                            })
+                            .WithStatusCode(HttpStatusCode.OK));
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneThrowingException2/sparql")
+                           .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithCallback(req => 
+                            { 
+                                receivedQuery2 = req.Body;
+                                return new WireMock.ResponseMessage()
+                                {
+                                    BodyData = new BodyData() 
+                                    {
+                                        BodyAsString = mockedResponseXml2,
+                                        Encoding = Encoding.UTF8,
+                                        DetectedBodyType = BodyType.String
+                                    }
+                                }; 
+                            })
+                            .WithStatusCode(HttpStatusCode.OK)
+                            .WithDelay(750));
+
+            RDFSPARQLEndpoint endpoint1 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneThrowingException1/sparql"));
+            RDFSPARQLEndpoint endpoint2 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneThrowingException2/sparql"));
+            RDFFederation federation = new RDFFederation()
+                .AddSPARQLEndpoint(endpoint1)
+                .AddSPARQLEndpoint(endpoint2, new RDFSPARQLEndpointQueryOptions() { 
+                    ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException, 
+                    QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post,
+                    TimeoutMilliseconds = 250 });
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))));
+
+            Assert.ThrowsException<RDFQueryException>(() => new RDFQueryEngine().EvaluateSelectQuery(query, federation));
+        }
+
+        [TestMethod]
         public void ShouldEvaluateSelectQueryOnEndpointWithResults()
         {
             string receivedQuery = "";
