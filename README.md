@@ -1,4 +1,4 @@
-# RDFSharp ![NuGet Version](https://img.shields.io/nuget/v/RDFSharp?style=flat-square&color=abcdef&logo=nuget&label=version) ![NuGet Downloads](https://img.shields.io/nuget/dt/RDFSharp?style=flat-square&color=abcdef&logo=nuget) ![Coverage](https://img.shields.io/codecov/c/github/mdesalvo/RDFSharp?style=flat-square&color=04aa6d&logo=codecov&label=coverage)
+# RDFSharp <a href="https://github.com/mdesalvo/RDFSharp/releases"><img src="https://img.shields.io/nuget/v/RDFSharp?style=flat-square&color=abcdef&logo=nuget&label=version"/></a> <a href="https://www.nuget.org/packages/RDFSharp"><img src="https://img.shields.io/nuget/dt/RDFSharp?style=flat-square&color=abcdef&logo=nuget&label=downloads"/></a> <a href="https://app.codecov.io/gh/mdesalvo/RDFSharp"><img src="https://img.shields.io/codecov/c/github/mdesalvo/RDFSharp?style=flat-square&color=04aa6d&logo=codecov&label=coverage"/></a>
 
 RDFSharp has a modular structure made up of 3 layers: 
 
@@ -23,4 +23,4 @@ RDFSharp has a modular structure made up of 3 layers:
 </ul>
 
 <hr/>
-An additional <a href="https://github.com/mdesalvo/OWLSharp">layer</a> is available for working in native and expressive way with <b>OWL2 ontologies</b>
+An additional <a href="https://github.com/mdesalvo/OWLSharp">layer</a> is available for working in native and powerful way with <b>OWL2 ontologies</b>
