@@ -3,7 +3,7 @@
     <AssemblyTitle>RDFSharp</AssemblyTitle>
     <AssemblyName>RDFSharp</AssemblyName>
     <AssemblyVersion>$(Version)</AssemblyVersion>
-    <Version>3.10.0</Version>
+    <Version>3.11.0</Version>
     <Authors>Marco De Salvo</Authors>
     <Copyright>Marco De Salvo</Copyright>
     <Description>Lightweight and friendly .NET library for realizing Semantic Web applications</Description>
