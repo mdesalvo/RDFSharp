@@ -319,6 +319,16 @@ namespace RDFSharp.Model
             public static readonly RDFResource ON_DATARANGE = new RDFResource(string.Concat(OWL.BASE_URI,"onDataRange"));
 
             /// <summary>
+            /// owl:onDatatype [OWL2]
+            /// </summary>
+            public static readonly RDFResource ON_DATATYPE = new RDFResource(string.Concat(OWL.BASE_URI,"onDatatype"));
+
+            /// <summary>
+            /// owl:withRestrictions [OWL2]
+            /// </summary>
+            public static readonly RDFResource WITH_RESTRICTIONS = new RDFResource(string.Concat(OWL.BASE_URI,"withRestrictions"));
+
+            /// <summary>
             /// owl:propertyDisjointWith [OWL2]
             /// </summary>
             public static readonly RDFResource PROPERTY_DISJOINT_WITH = new RDFResource(string.Concat(OWL.BASE_URI,"propertyDisjointWith"));
