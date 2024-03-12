@@ -124,6 +124,16 @@ namespace RDFSharp.Model
             public static readonly RDFResource VALUE = new RDFResource(string.Concat(RDF.BASE_URI,"value"));
 
             /// <summary>
+            /// rdf:language
+            /// </summary>
+            public static readonly RDFResource LANGUAGE = new RDFResource(string.Concat(RDF.BASE_URI, "language"));
+
+            /// <summary>
+            /// rdf:direction
+            /// </summary>
+            public static readonly RDFResource DIRECTION = new RDFResource(string.Concat(RDF.BASE_URI, "direction"));
+
+            /// <summary>
             /// rdf:first
             /// </summary>
             public static readonly RDFResource FIRST = new RDFResource(string.Concat(RDF.BASE_URI,"first"));
@@ -137,6 +147,11 @@ namespace RDFSharp.Model
             /// rdf:dir
             /// </summary>
             public static readonly RDFResource DIR = new RDFResource(string.Concat(RDF.BASE_URI, "dir"));
+
+            /// <summary>
+            /// rdf:CompoundLiteral
+            /// </summary>
+            public static readonly RDFResource COMPOUND_LITERAL = new RDFResource(string.Concat(RDF.BASE_URI, "CompoundLiteral"));
             #endregion
         }
         #endregion
