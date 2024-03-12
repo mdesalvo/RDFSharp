@@ -32,12 +32,12 @@ namespace RDFSharp.Model
         internal static readonly Regex LangTagRegex = new Regex("^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled);
 
         /// <summary>
-        /// Optional language of the plain literal
+        /// Optional language of the plain literal's value
         /// </summary>
         public string Language { get; internal set; }
 
         /// <summary>
-        /// Optional direction of the plain literal (ltr,rtl)
+        /// Optional direction of the plain literal's value
         /// </summary>
         public string Direction { get; internal set; }
         #endregion
@@ -72,31 +72,37 @@ namespace RDFSharp.Model
 
         #region Methods
         /// <summary>
-        /// Checks if the plain literal has a language tag
+        /// Checks if the plain literal's value has a language tag
         /// </summary>
         public bool HasLanguage()
             => !string.IsNullOrEmpty(Language);
 
         /// <summary>
-        /// Checks if the plain literal has a direction
+        /// Checks if the plain literal's value has a direction
         /// </summary>
         public bool HasDirection()
             => !string.IsNullOrEmpty(Direction);
 
         /// <summary>
-        /// Sets the plain literal to have "ltr" direction
+        /// Sets the plain literal's value to have "ltr" direction
         /// </summary>
-        public void SetLeftToRightDirection()
-            => Direction = "ltr";
+        public RDFPlainLiteral SetLeftToRightDirection()
+        {
+            Direction = "ltr";
+            return this;
+        }
 
         /// <summary>
-        /// Sets the plain literal to have "rtl" direction
+        /// Sets the plain literal's value to have "rtl" direction
         /// </summary>
-        public void SetRightToLeftDirection()
-            => Direction = "rtl";
+        public RDFPlainLiteral SetRightToLeftDirection()
+        {
+            Direction = "rtl";
+            return this;
+        }
 
         /// <summary>
-        /// Gets a graph representation of the plain literal as rdf:CompoundLiteral
+        /// Gets a graph representation of the plain literal as rdf:CompoundLiteral (reified with value, language, direction)
         /// </summary>
         public RDFGraph ReifyToCompoundLiteral()
         {

@@ -88,8 +88,7 @@ namespace RDFSharp.Test.Model
         [DataRow("donal duck")]
         public void ShouldCreateUnlanguagedPlainLiteralWithLTRDirection(string value)
         {
-            RDFPlainLiteral pl = new RDFPlainLiteral(value);
-            pl.SetLeftToRightDirection();
+            RDFPlainLiteral pl = new RDFPlainLiteral(value).SetLeftToRightDirection();
 
             Assert.IsNotNull(pl);
             Assert.IsFalse(pl.HasLanguage());
@@ -102,8 +101,7 @@ namespace RDFSharp.Test.Model
         [DataRow("donal duck")]
         public void ShouldCreateUnlanguagedPlainLiteralWithRTLDirection(string value)
         {
-            RDFPlainLiteral pl = new RDFPlainLiteral(value);
-            pl.SetRightToLeftDirection();
+            RDFPlainLiteral pl = new RDFPlainLiteral(value).SetRightToLeftDirection();
 
             Assert.IsNotNull(pl);
             Assert.IsFalse(pl.HasLanguage());
@@ -122,8 +120,7 @@ namespace RDFSharp.Test.Model
         [DataRow(null, "en")]
         public void ShouldCreatePlainLiteralWithLanguageWithLTRDirection(string value, string language)
         {
-            RDFPlainLiteral pl = new RDFPlainLiteral(value, language);
-            pl.SetLeftToRightDirection();
+            RDFPlainLiteral pl = new RDFPlainLiteral(value, language).SetLeftToRightDirection();
 
             Assert.IsNotNull(pl);
             Assert.IsTrue(pl.HasLanguage());
@@ -142,8 +139,7 @@ namespace RDFSharp.Test.Model
         [DataRow(null, "en")]
         public void ShouldCreatePlainLiteralWithLanguageWithRTLDirection(string value, string language)
         {
-            RDFPlainLiteral pl = new RDFPlainLiteral(value, language);
-            pl.SetRightToLeftDirection();
+            RDFPlainLiteral pl = new RDFPlainLiteral(value, language).SetRightToLeftDirection();
 
             Assert.IsNotNull(pl);
             Assert.IsTrue(pl.HasLanguage());
@@ -169,8 +165,7 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldReifyUnlanguagedLTRToCompoundLiteral()
         {
-            RDFPlainLiteral pl = new RDFPlainLiteral("hello");
-            pl.SetLeftToRightDirection();
+            RDFPlainLiteral pl = new RDFPlainLiteral("hello").SetLeftToRightDirection();
 
             RDFGraph cl = pl.ReifyToCompoundLiteral();
             RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
@@ -185,8 +180,7 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldReifyUnlanguagedRTLToCompoundLiteral()
         {
-            RDFPlainLiteral pl = new RDFPlainLiteral("hello");
-            pl.SetRightToLeftDirection();
+            RDFPlainLiteral pl = new RDFPlainLiteral("hello").SetRightToLeftDirection();
 
             RDFGraph cl = pl.ReifyToCompoundLiteral();
             RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
@@ -216,8 +210,7 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldReifyLanguagedLTRToCompoundLiteral()
         {
-            RDFPlainLiteral pl = new RDFPlainLiteral("hello","en-US");
-            pl.SetLeftToRightDirection();
+            RDFPlainLiteral pl = new RDFPlainLiteral("hello","en-US").SetLeftToRightDirection();
 
             RDFGraph cl = pl.ReifyToCompoundLiteral();
             RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
@@ -233,8 +226,7 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldReifyLanguagedRTLToCompoundLiteral()
         {
-            RDFPlainLiteral pl = new RDFPlainLiteral("hello", "en-US");
-            pl.SetRightToLeftDirection();
+            RDFPlainLiteral pl = new RDFPlainLiteral("hello", "en-US").SetRightToLeftDirection();
 
             RDFGraph cl = pl.ReifyToCompoundLiteral();
             RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
