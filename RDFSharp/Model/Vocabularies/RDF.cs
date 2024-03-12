@@ -144,11 +144,6 @@ namespace RDFSharp.Model
             public static readonly RDFResource REST = new RDFResource(string.Concat(RDF.BASE_URI,"rest"));
 
             /// <summary>
-            /// rdf:dir
-            /// </summary>
-            public static readonly RDFResource DIR = new RDFResource(string.Concat(RDF.BASE_URI, "dir"));
-
-            /// <summary>
             /// rdf:CompoundLiteral
             /// </summary>
             public static readonly RDFResource COMPOUND_LITERAL = new RDFResource(string.Concat(RDF.BASE_URI, "CompoundLiteral"));

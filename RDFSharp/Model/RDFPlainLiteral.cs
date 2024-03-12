@@ -35,6 +35,11 @@ namespace RDFSharp.Model
         /// Optional language of the plain literal
         /// </summary>
         public string Language { get; internal set; }
+
+        /// <summary>
+        /// Optional direction of the plain literal (ltr,rtl)
+        /// </summary>
+        public string Direction { get; internal set; }
         #endregion
 
         #region Ctors
@@ -71,6 +76,42 @@ namespace RDFSharp.Model
         /// </summary>
         public bool HasLanguage()
             => !string.IsNullOrEmpty(Language);
+
+        /// <summary>
+        /// Checks if the plain literal has a direction
+        /// </summary>
+        public bool HasDirection()
+            => !string.IsNullOrEmpty(Direction);
+
+        /// <summary>
+        /// Sets the plain literal to have "ltr" direction
+        /// </summary>
+        public void SetLeftToRightDirection()
+            => Direction = "ltr";
+
+        /// <summary>
+        /// Sets the plain literal to have "rtl" direction
+        /// </summary>
+        public void SetRightToLeftDirection()
+            => Direction = "rtl";
+
+        /// <summary>
+        /// Gets a graph representation of the plain literal as rdf:CompoundLiteral
+        /// </summary>
+        public RDFGraph ReifyToCompoundLiteral()
+        {
+            RDFGraph compoundLiteralGraph = new RDFGraph();
+
+            RDFResource compoundLiteralRepresentative = new RDFResource(string.Concat("bnode:", PatternMemberID.ToString()));
+            compoundLiteralGraph.AddTriple(new RDFTriple(compoundLiteralRepresentative, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.COMPOUND_LITERAL));
+            compoundLiteralGraph.AddTriple(new RDFTriple(compoundLiteralRepresentative, RDFVocabulary.RDF.VALUE, new RDFPlainLiteral(Value)));
+            if (HasLanguage())
+                compoundLiteralGraph.AddTriple(new RDFTriple(compoundLiteralRepresentative, RDFVocabulary.RDF.LANGUAGE, new RDFPlainLiteral(Language)));
+            if (HasDirection())
+                compoundLiteralGraph.AddTriple(new RDFTriple(compoundLiteralRepresentative, RDFVocabulary.RDF.DIRECTION, new RDFPlainLiteral(Direction)));
+            
+            return compoundLiteralGraph;
+        }
         #endregion
     }
 }
