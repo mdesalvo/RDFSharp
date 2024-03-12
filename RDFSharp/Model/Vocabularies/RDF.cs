@@ -132,6 +132,11 @@ namespace RDFSharp.Model
             /// rdf:rest
             /// </summary>
             public static readonly RDFResource REST = new RDFResource(string.Concat(RDF.BASE_URI,"rest"));
+
+            /// <summary>
+            /// rdf:dir
+            /// </summary>
+            public static readonly RDFResource DIR = new RDFResource(string.Concat(RDF.BASE_URI, "dir"));
             #endregion
         }
         #endregion
