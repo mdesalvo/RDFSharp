@@ -446,6 +446,18 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldSerializeGraphWithSPLLDirectionedTriple()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US--ltr")));
+            RDFTurtle.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFTurtleTest_ShouldSerializeGraphWithSPLLDirectionedTriple.ttl"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTurtleTest_ShouldSerializeGraphWithSPLLDirectionedTriple.ttl")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTurtleTest_ShouldSerializeGraphWithSPLLDirectionedTriple.ttl"));
+            Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"lit\"@EN-US--LTR. {Environment.NewLine}"));
+        }
+
+        [TestMethod]
         public void ShouldSerializeGraphWithSPLLQuotedTriple()
         {
             RDFGraph graph = new RDFGraph();
@@ -695,6 +707,18 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTurtleTest_ShouldSerializeGraphWithBPLLTriple.ttl")));
             string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTurtleTest_ShouldSerializeGraphWithBPLLTriple.ttl"));
             Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"lit\"@EN-US. {Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPLLDirectionedTriple()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US--rtl")));
+            RDFTurtle.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFTurtleTest_ShouldSerializeGraphWithBPLLDirectionedTriple.ttl"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTurtleTest_ShouldSerializeGraphWithBPLLDirectionedTriple.ttl")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTurtleTest_ShouldSerializeGraphWithBPLLDirectionedTriple.ttl"));
+            Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"lit\"@EN-US--RTL. {Environment.NewLine}"));
         }
 
         [TestMethod]
@@ -3788,6 +3812,32 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithSPLLDirectionedTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> <http://pred/> \"hello\"@en-US--ltr.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello","en-US--ltr"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPLLDirectionedTriple2()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> <http://pred/> \"hello\"@en--ltr.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello","en--ltr"))));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeGraphWithSPLLQuotedTriple()
         {
             MemoryStream stream = new MemoryStream();
@@ -4292,6 +4342,19 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLDirectionedTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}_:12345 <http://pred/> \"hello\"@en-US--ltr.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US--ltr"))));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeGraphWithBPLLInlineAnonymousTriple()
         {
             MemoryStream stream = new MemoryStream();
@@ -4304,6 +4367,21 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(graph.Single().Subject is RDFResource subjRes && subjRes.IsBlank);
             Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
             Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hello", "en-US")));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLInlineAnonymousDirectionedTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ <http://pred/> \"hello\"@en--rtl ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Single().Subject is RDFResource subjRes && subjRes.IsBlank);
+            Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
+            Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hello", "en--rtl")));
         }
 
         [TestMethod]
