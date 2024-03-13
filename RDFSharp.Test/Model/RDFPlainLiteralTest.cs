@@ -16,6 +16,7 @@
 
 using RDFSharp.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace RDFSharp.Test.Model
 {
@@ -38,6 +39,7 @@ namespace RDFSharp.Test.Model
             Assert.IsFalse(pl.HasLanguage());
             Assert.IsFalse(pl.HasDirection());
             Assert.IsTrue(pl.ToString().Equals(value ?? ""));
+            Assert.IsTrue(pl.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()))));
         }
 
         [DataTestMethod]
@@ -64,6 +66,7 @@ namespace RDFSharp.Test.Model
             Assert.IsFalse(pl.HasLanguage());
             Assert.IsFalse(pl.HasDirection());
             Assert.IsTrue(pl.ToString().Equals(value ?? ""));
+            Assert.IsTrue(pl.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()))));
         }
 
         [DataTestMethod]
@@ -82,6 +85,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(pl.HasLanguage());
             Assert.IsFalse(pl.HasDirection());
             Assert.IsTrue(pl.ToString().Equals(string.Concat(value, "@", language.ToUpperInvariant())));
+            Assert.IsTrue(pl.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()))));
         }
 
         [DataTestMethod]
@@ -95,6 +99,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(pl.HasDirection());
             Assert.IsTrue(string.Equals(pl.Direction, "ltr"));
             Assert.IsTrue(pl.ToString().Equals(value));
+            Assert.IsTrue(pl.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()))));
         }
 
         [DataTestMethod]
@@ -108,6 +113,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(pl.HasDirection());
             Assert.IsTrue(string.Equals(pl.Direction, "rtl"));
             Assert.IsTrue(pl.ToString().Equals(value));
+            Assert.IsTrue(pl.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()))));
         }
 
         [DataTestMethod]
@@ -127,6 +133,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(pl.HasDirection());
             Assert.IsTrue(string.Equals(pl.Direction, "ltr"));
             Assert.IsTrue(pl.ToString().Equals(string.Concat(value, "@", language.ToUpperInvariant())));
+            Assert.IsTrue(pl.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()))));
         }
 
         [DataTestMethod]
@@ -146,6 +153,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(pl.HasDirection());
             Assert.IsTrue(string.Equals(pl.Direction, "rtl"));
             Assert.IsTrue(pl.ToString().Equals(string.Concat(value, "@", language.ToUpperInvariant())));
+            Assert.IsTrue(pl.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()))));
         }
 
         [TestMethod]
@@ -153,7 +161,7 @@ namespace RDFSharp.Test.Model
         {
             RDFPlainLiteral pl = new RDFPlainLiteral("hello");
 
-            RDFGraph cl = pl.ReifyToCompoundLiteral();
+            RDFGraph cl = pl.ReifyCompoundLiteral();
             RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
 
             Assert.IsNotNull(cl);
@@ -167,7 +175,7 @@ namespace RDFSharp.Test.Model
         {
             RDFPlainLiteral pl = new RDFPlainLiteral("hello").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR);
 
-            RDFGraph cl = pl.ReifyToCompoundLiteral();
+            RDFGraph cl = pl.ReifyCompoundLiteral();
             RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
 
             Assert.IsNotNull(cl);
@@ -182,7 +190,7 @@ namespace RDFSharp.Test.Model
         {
             RDFPlainLiteral pl = new RDFPlainLiteral("hello").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL);
 
-            RDFGraph cl = pl.ReifyToCompoundLiteral();
+            RDFGraph cl = pl.ReifyCompoundLiteral();
             RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
 
             Assert.IsNotNull(cl);
@@ -197,7 +205,7 @@ namespace RDFSharp.Test.Model
         {
             RDFPlainLiteral pl = new RDFPlainLiteral("hello", "en-US");
             
-            RDFGraph cl = pl.ReifyToCompoundLiteral();
+            RDFGraph cl = pl.ReifyCompoundLiteral();
             RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
 
             Assert.IsNotNull(cl);
@@ -212,7 +220,7 @@ namespace RDFSharp.Test.Model
         {
             RDFPlainLiteral pl = new RDFPlainLiteral("hello", "en-US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR);
 
-            RDFGraph cl = pl.ReifyToCompoundLiteral();
+            RDFGraph cl = pl.ReifyCompoundLiteral();
             RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
 
             Assert.IsNotNull(cl);
@@ -228,7 +236,7 @@ namespace RDFSharp.Test.Model
         {
             RDFPlainLiteral pl = new RDFPlainLiteral("hello", "en-US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL);
 
-            RDFGraph cl = pl.ReifyToCompoundLiteral();
+            RDFGraph cl = pl.ReifyCompoundLiteral();
             RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
 
             Assert.IsNotNull(cl);

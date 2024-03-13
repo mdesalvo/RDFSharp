@@ -196,9 +196,9 @@ namespace RDFSharp.Model
                      && triple.Object is RDFPlainLiteral plitObj
                      && plitObj.HasDirection()
                      //Avoid serializing the same compound literal reification more than once
-                     && this[new RDFResource($"bnode:{plitObj.PatternMemberID}"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.COMPOUND_LITERAL, null].TriplesCount == 0)
+                     && this[plitObj.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.COMPOUND_LITERAL, null].TriplesCount == 0)
                 {
-                    foreach (RDFTriple compoundLiteralTriple in plitObj.ReifyToCompoundLiteral())
+                    foreach (RDFTriple compoundLiteralTriple in plitObj.ReifyCompoundLiteral())
                         AddTriple(compoundLiteralTriple);
                 }
             }

@@ -40,6 +40,12 @@ namespace RDFSharp.Model
         /// Optional direction of the plain literal's value
         /// </summary>
         public string Direction { get; internal set; }
+
+        /// <summary>
+        /// Subject of the plain literal's reification
+        /// </summary>
+        public RDFResource ReificationSubject => LazyReificationSubject.Value;
+        private readonly Lazy<RDFResource> LazyReificationSubject;
         #endregion
 
         #region Ctors
@@ -50,6 +56,7 @@ namespace RDFSharp.Model
         {
             Value = value ?? string.Empty;
             Language = string.Empty;
+            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", PatternMemberID.ToString())));
         }
 
         /// <summary>
@@ -59,6 +66,7 @@ namespace RDFSharp.Model
         {
             if (language != null && LangTag.Value.Match(language).Success)
                 Language = language.ToUpperInvariant();
+            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", PatternMemberID.ToString())));
         }
         #endregion
 
@@ -95,17 +103,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of the plain literal as rdf:CompoundLiteral (reified with value, language, direction)
         /// </summary>
-        public RDFGraph ReifyToCompoundLiteral()
+        public RDFGraph ReifyCompoundLiteral()
         {
             RDFGraph compoundLiteralGraph = new RDFGraph();
 
-            RDFResource compoundLiteralRepresentative = new RDFResource(string.Concat("bnode:", PatternMemberID.ToString()));
-            compoundLiteralGraph.AddTriple(new RDFTriple(compoundLiteralRepresentative, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.COMPOUND_LITERAL));
-            compoundLiteralGraph.AddTriple(new RDFTriple(compoundLiteralRepresentative, RDFVocabulary.RDF.VALUE, new RDFPlainLiteral(Value)));
+            compoundLiteralGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.COMPOUND_LITERAL));
+            compoundLiteralGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.VALUE, new RDFPlainLiteral(Value)));
             if (HasLanguage())
-                compoundLiteralGraph.AddTriple(new RDFTriple(compoundLiteralRepresentative, RDFVocabulary.RDF.LANGUAGE, new RDFPlainLiteral(Language)));
+                compoundLiteralGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.LANGUAGE, new RDFPlainLiteral(Language)));
             if (HasDirection())
-                compoundLiteralGraph.AddTriple(new RDFTriple(compoundLiteralRepresentative, RDFVocabulary.RDF.DIRECTION, new RDFPlainLiteral(Direction)));
+                compoundLiteralGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.DIRECTION, new RDFPlainLiteral(Direction)));
             
             return compoundLiteralGraph;
         }
