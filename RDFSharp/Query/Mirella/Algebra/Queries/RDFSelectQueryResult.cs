@@ -135,7 +135,7 @@ namespace RDFSharp.Query
                                     XmlNode litElement = sparqlDoc.CreateNode(XmlNodeType.Element, "literal", null);
                                     if (rdfTerm is RDFPlainLiteral)
                                     {
-                                        if (((RDFPlainLiteral)rdfTerm).Language != string.Empty)
+                                        if (((RDFPlainLiteral)rdfTerm).HasLanguage())
                                         {
                                             XmlAttribute xmlLang = sparqlDoc.CreateAttribute(string.Concat(RDFVocabulary.XML.PREFIX, ":lang"), RDFVocabulary.XML.BASE_URI);
                                             XmlText xmlLangText = sparqlDoc.CreateTextNode(((RDFPlainLiteral)rdfTerm).Language);

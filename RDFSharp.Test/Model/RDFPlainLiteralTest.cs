@@ -37,9 +37,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(pl);
             Assert.IsFalse(pl.HasLanguage());
-            Assert.IsFalse(pl.HasDirection());
             Assert.IsTrue(pl.ToString().Equals(value ?? ""));
-            Assert.IsTrue(pl.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()))));
         }
 
         [DataTestMethod]
@@ -50,8 +48,10 @@ namespace RDFSharp.Test.Model
         [DataRow("donald duck", "abcdefghi")]
         [DataRow("donald duck", "en-")]
         [DataRow("donald duck", "en-US-")]
+        [DataRow("donald duck", "en-US--")] //invalid direction will invalidate the language tag
         [DataRow("donald duck", "en-US-123456789")]
         [DataRow("donald duck", "@en-US")]
+        [DataRow("donald duck", "@en-US--kkk")] //unknown direction will invalidate the language tag
         [DataRow("", "@en-US")]
         [DataRow("", "")]
         [DataRow("", null)]
@@ -64,9 +64,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(pl);
             Assert.IsFalse(pl.HasLanguage());
-            Assert.IsFalse(pl.HasDirection());
             Assert.IsTrue(pl.ToString().Equals(value ?? ""));
-            Assert.IsTrue(pl.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()))));
         }
 
         [DataTestMethod]
@@ -83,168 +81,24 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(pl);
             Assert.IsTrue(pl.HasLanguage());
-            Assert.IsFalse(pl.HasDirection());
             Assert.IsTrue(pl.ToString().Equals(string.Concat(value, "@", language.ToUpperInvariant())));
-            Assert.IsTrue(pl.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()))));
         }
 
         [DataTestMethod]
-        [DataRow("donal duck")]
-        public void ShouldCreateUnlanguagedPlainLiteralWithLTRDirection(string value)
-        {
-            RDFPlainLiteral pl = new RDFPlainLiteral(value).SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR);
-
-            Assert.IsNotNull(pl);
-            Assert.IsFalse(pl.HasLanguage());
-            Assert.IsTrue(pl.HasDirection());
-            Assert.IsTrue(string.Equals(pl.Direction, "ltr"));
-            Assert.IsTrue(pl.ToString().Equals(value));
-            Assert.IsTrue(pl.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()))));
-        }
-
-        [DataTestMethod]
-        [DataRow("donal duck")]
-        public void ShouldCreateUnlanguagedPlainLiteralWithRTLDirection(string value)
-        {
-            RDFPlainLiteral pl = new RDFPlainLiteral(value).SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL);
-
-            Assert.IsNotNull(pl);
-            Assert.IsFalse(pl.HasLanguage());
-            Assert.IsTrue(pl.HasDirection());
-            Assert.IsTrue(string.Equals(pl.Direction, "rtl"));
-            Assert.IsTrue(pl.ToString().Equals(value));
-            Assert.IsTrue(pl.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()))));
-        }
-
-        [DataTestMethod]
-        [DataRow("donal duck", "en")]
-        [DataRow("donal duck", "en-US")]
-        [DataRow("donal duck", "en-US-25")]
-        [DataRow("donal duck@en-US", "en-US")]
-        [DataRow("donal duck@", "en")]
+        [DataRow("donal duck", "en--ltr")]
+        [DataRow("donal duck", "en-US--ltr")]
+        [DataRow("donal duck", "en-US-25--rtl")]
+        [DataRow("donal duck@en-US", "en-US--rtl")]
+        [DataRow("donal duck@", "en--rtl")]
         [DataRow("", "en")]
         [DataRow(null, "en")]
-        public void ShouldCreatePlainLiteralWithLanguageWithLTRDirection(string value, string language)
+        public void ShouldCreatePlainLiteralWithLanguageDirection(string value, string language)
         {
-            RDFPlainLiteral pl = new RDFPlainLiteral(value, language).SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR);
+            RDFPlainLiteral pl = new RDFPlainLiteral(value, language);
 
             Assert.IsNotNull(pl);
             Assert.IsTrue(pl.HasLanguage());
-            Assert.IsTrue(pl.HasDirection());
-            Assert.IsTrue(string.Equals(pl.Direction, "ltr"));
             Assert.IsTrue(pl.ToString().Equals(string.Concat(value, "@", language.ToUpperInvariant())));
-            Assert.IsTrue(pl.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()))));
-        }
-
-        [DataTestMethod]
-        [DataRow("donal duck", "en")]
-        [DataRow("donal duck", "en-US")]
-        [DataRow("donal duck", "en-US-25")]
-        [DataRow("donal duck@en-US", "en-US")]
-        [DataRow("donal duck@", "en")]
-        [DataRow("", "en")]
-        [DataRow(null, "en")]
-        public void ShouldCreatePlainLiteralWithLanguageWithRTLDirection(string value, string language)
-        {
-            RDFPlainLiteral pl = new RDFPlainLiteral(value, language).SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL);
-
-            Assert.IsNotNull(pl);
-            Assert.IsTrue(pl.HasLanguage());
-            Assert.IsTrue(pl.HasDirection());
-            Assert.IsTrue(string.Equals(pl.Direction, "rtl"));
-            Assert.IsTrue(pl.ToString().Equals(string.Concat(value, "@", language.ToUpperInvariant())));
-            Assert.IsTrue(pl.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()))));
-        }
-
-        [TestMethod]
-        public void ShouldReifyUnlanguagedToCompoundLiteral()
-        {
-            RDFPlainLiteral pl = new RDFPlainLiteral("hello");
-
-            RDFGraph cl = pl.ReifyCompoundLiteral();
-            RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
-
-            Assert.IsNotNull(cl);
-            Assert.IsTrue(cl.TriplesCount == 2);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.COMPOUND_LITERAL, null].TriplesCount == 1);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.VALUE, null, new RDFPlainLiteral("hello")].TriplesCount == 1);
-        }
-
-        [TestMethod]
-        public void ShouldReifyUnlanguagedLTRToCompoundLiteral()
-        {
-            RDFPlainLiteral pl = new RDFPlainLiteral("hello").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR);
-
-            RDFGraph cl = pl.ReifyCompoundLiteral();
-            RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
-
-            Assert.IsNotNull(cl);
-            Assert.IsTrue(cl.TriplesCount == 3);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.COMPOUND_LITERAL, null].TriplesCount == 1);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.VALUE, null, new RDFPlainLiteral("hello")].TriplesCount == 1);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.DIRECTION, null, new RDFPlainLiteral("ltr")].TriplesCount == 1);
-        }
-
-        [TestMethod]
-        public void ShouldReifyUnlanguagedRTLToCompoundLiteral()
-        {
-            RDFPlainLiteral pl = new RDFPlainLiteral("hello").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL);
-
-            RDFGraph cl = pl.ReifyCompoundLiteral();
-            RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
-
-            Assert.IsNotNull(cl);
-            Assert.IsTrue(cl.TriplesCount == 3);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.COMPOUND_LITERAL, null].TriplesCount == 1);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.VALUE, null, new RDFPlainLiteral("hello")].TriplesCount == 1);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.DIRECTION, null, new RDFPlainLiteral("rtl")].TriplesCount == 1);
-        }
-
-        [TestMethod]
-        public void ShouldReifyLanguagedToCompoundLiteral()
-        {
-            RDFPlainLiteral pl = new RDFPlainLiteral("hello", "en-US");
-            
-            RDFGraph cl = pl.ReifyCompoundLiteral();
-            RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
-
-            Assert.IsNotNull(cl);
-            Assert.IsTrue(cl.TriplesCount == 3);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.COMPOUND_LITERAL, null].TriplesCount == 1);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.VALUE, null, new RDFPlainLiteral("hello")].TriplesCount == 1);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.LANGUAGE, null, new RDFPlainLiteral("EN-US")].TriplesCount == 1);
-        }
-
-        [TestMethod]
-        public void ShouldReifyLanguagedLTRToCompoundLiteral()
-        {
-            RDFPlainLiteral pl = new RDFPlainLiteral("hello", "en-US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR);
-
-            RDFGraph cl = pl.ReifyCompoundLiteral();
-            RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
-
-            Assert.IsNotNull(cl);
-            Assert.IsTrue(cl.TriplesCount == 4);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.COMPOUND_LITERAL, null].TriplesCount == 1);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.VALUE, null, new RDFPlainLiteral("hello")].TriplesCount == 1);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.LANGUAGE, null, new RDFPlainLiteral("EN-US")].TriplesCount == 1);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.DIRECTION, null, new RDFPlainLiteral("ltr")].TriplesCount == 1);
-        }
-
-        [TestMethod]
-        public void ShouldReifyLanguagedRTLToCompoundLiteral()
-        {
-            RDFPlainLiteral pl = new RDFPlainLiteral("hello", "en-US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL);
-
-            RDFGraph cl = pl.ReifyCompoundLiteral();
-            RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
-
-            Assert.IsNotNull(cl);
-            Assert.IsTrue(cl.TriplesCount == 4);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.COMPOUND_LITERAL, null].TriplesCount == 1);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.VALUE, null, new RDFPlainLiteral("hello")].TriplesCount == 1);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.LANGUAGE, null, new RDFPlainLiteral("EN-US")].TriplesCount == 1);
-            Assert.IsTrue(cl[clRepresentative, RDFVocabulary.RDF.DIRECTION, null, new RDFPlainLiteral("rtl")].TriplesCount == 1);
         }
         #endregion
     }

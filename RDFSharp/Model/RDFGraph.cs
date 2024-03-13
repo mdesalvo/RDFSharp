@@ -20,7 +20,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
 using System.Net;
 
 namespace RDFSharp.Model
@@ -53,7 +52,7 @@ namespace RDFSharp.Model
                 {
                     yield return indexedTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
                         ? new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.ResourcesRegister[indexedTriple.ObjectID]) { TripleMetadata = indexedTriple.TripleMetadata }
-                        : new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.LiteralsRegister[indexedTriple.ObjectID]) { TripleMetadata = indexedTriple.TripleMetadata };
+                        : new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.LiteralsRegister[indexedTriple.ObjectID])  { TripleMetadata = indexedTriple.TripleMetadata };
                 }
             } 
         }
@@ -190,18 +189,6 @@ namespace RDFSharp.Model
                 IndexedTriples.Add(triple.TripleID, new RDFIndexedTriple(triple));
                 //Add index
                 GraphIndex.AddIndex(triple);
-
-                //Handle eventual presence of a compound literal in the given triple's object:
-                //merge its reification graph (to retain its direction when serializing)
-                if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL
-                     && triple.Object is RDFPlainLiteral plitObj
-                     && plitObj.HasDirection()
-                     //Avoid serializing the same compound literal reification more than once
-                     && this[plitObj.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.COMPOUND_LITERAL, null].TriplesCount == 0)
-                {
-                    foreach (RDFTriple compoundLiteralTriple in plitObj.ReifyCompoundLiteral())
-                        AddTriple(compoundLiteralTriple);
-                }
             }
             return this;
         }
@@ -247,15 +234,6 @@ namespace RDFSharp.Model
                 IndexedTriples.Remove(triple.TripleID);
                 //Remove index
                 GraphIndex.RemoveIndex(triple);
-
-                //Handle eventual presence of a compound literal in the given triple's object:
-                //drop its reification graph in case the eliminated triple was the last one containing it
-                if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL
-                     && triple.Object is RDFPlainLiteral plitObj
-                     && plitObj.HasDirection()
-                     //Ensure no triples contain this literal anymore (apart reserved "rdf:value" triple)
-                     && this[null, null, null, plitObj].Count(t => !t.Predicate.Equals(RDFVocabulary.RDF.VALUE)) == 0)
-                    RemoveTriplesBySubject(plitObj.ReificationSubject);
             }
             return this;
         }

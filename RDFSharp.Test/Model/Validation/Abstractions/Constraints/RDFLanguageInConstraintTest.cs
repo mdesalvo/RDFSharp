@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System;
@@ -31,6 +32,7 @@ namespace RDFSharp.Test.Model
         {
             List<string> languages = new List<string>();
             languages.Add("en-US");
+            languages.Add("en-US--ltr");
             languages.Add("*");
             languages.Add(string.Empty);
             languages.Add(null); //Will be discarded since null not allowed
@@ -39,7 +41,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(languageinConstraint);
             Assert.IsNotNull(languageinConstraint.LanguageTags);
-            Assert.IsTrue(languageinConstraint.LanguageTags.Count == 3);
+            Assert.IsTrue(languageinConstraint.LanguageTags.Count == 4);
         }
 
         [TestMethod]
@@ -47,18 +49,21 @@ namespace RDFSharp.Test.Model
         {
             List<string> languages = new List<string>();
             languages.Add("en-US");
+            languages.Add("en-US--ltr");
             languages.Add("it-IT");
             RDFLanguageInConstraint languageinConstraint = new RDFLanguageInConstraint(languages);
             RDFGraph graph = languageinConstraint.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:NodeShape")));
 
             Assert.IsNotNull(graph);
-            Assert.IsTrue(graph.TriplesCount == 7);
+            Assert.IsTrue(graph.TriplesCount == 10);
             Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.LANGUAGE_IN.PatternMemberID)));
             Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
                                                         && t.Value.ObjectID.Equals(RDFVocabulary.RDF.LIST.PatternMemberID))); //2 occurrences of this
             Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
                                                         && t.Value.ObjectID.Equals(new RDFPlainLiteral("EN-US").PatternMemberID)));
+            Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
+                                                        && t.Value.ObjectID.Equals(new RDFPlainLiteral("EN-US--LTR").PatternMemberID)));
             Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.REST.PatternMemberID)));
             Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
                                                         && t.Value.ObjectID.Equals(new RDFPlainLiteral("IT-IT").PatternMemberID)));

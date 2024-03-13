@@ -209,7 +209,7 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldCreateExactLangMatchesFilterAndNotKeepRow()
+        public void ShouldCreateExactLangMatchesFilterAndKeepRowHavingSubLanguage()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
@@ -223,11 +223,11 @@ namespace RDFSharp.Test.Query
             RDFLangMatchesFilter filter = new RDFLangMatchesFilter(new RDFVariable("?B"), "en");
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
-            Assert.IsFalse(keepRow);
+            Assert.IsTrue(keepRow);
         }
 
         [TestMethod]
-        public void ShouldCreateExactLangMatchesFilterAndKeepRowBecauseNegation()
+        public void ShouldCreateExactLangMatchesFilterAndNotKeepRowHavingSubLanguageBecauseNegation()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
@@ -241,7 +241,7 @@ namespace RDFSharp.Test.Query
             RDFLangMatchesFilter filter = new RDFLangMatchesFilter(new RDFVariable("?B"), "en");
             bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
-            Assert.IsTrue(keepRow);
+            Assert.IsFalse(keepRow);
         }
         #endregion
     }

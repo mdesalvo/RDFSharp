@@ -76,15 +76,15 @@ namespace RDFSharp.Model
                         {
                             //NO language is found in the variable
                             if (langTagsEnumerator.Current == string.Empty)
-                                langMatches = !Regex.IsMatch(valueNodePlainLiteral.ToString(), "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                                langMatches = !Regex.IsMatch(valueNodePlainLiteral.ToString(), string.Concat("@", RDFPlainLiteral.LangTagMask, "$"), RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
                             //ANY language is found in the variable
                             else if (langTagsEnumerator.Current == "*")
-                                langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                                langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), string.Concat("@", RDFPlainLiteral.LangTagMask, "$"), RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
                             //GIVEN language is found in the variable
                             else
-                                langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), string.Concat("@", langTagsEnumerator.Current, "(-[a-zA-Z0-9]{1,8})*$"), RegexOptions.IgnoreCase);
+                                langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), string.Concat("@", langTagsEnumerator.Current, RDFPlainLiteral.LangTagSubMask, "$"), RegexOptions.IgnoreCase);
                         }
                         if (!langMatches)
                         {

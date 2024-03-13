@@ -80,30 +80,6 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldCreateGraphFromTriplesWithCompoundLiterals()
-        {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
-                new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFResource("http://obj/")),
-                new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR)),
-                new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR))
-            });
-
-            Assert.IsNotNull(graph);
-            Assert.IsNotNull(graph.IndexedTriples);
-            Assert.IsTrue(graph.TriplesCount == 6);
-            Assert.IsNotNull(graph.GraphIndex);
-            Assert.IsTrue(graph.GraphIndex.ResourcesRegister.Count == 9);
-            Assert.IsTrue(graph.GraphIndex.LiteralsRegister.Count == 2);
-            Assert.IsTrue(graph.GraphIndex.SubjectsIndex.Count == 3);
-            Assert.IsTrue(graph.GraphIndex.PredicatesIndex.Count == 4);
-            Assert.IsTrue(graph.GraphIndex.ObjectsIndex.Count == 2);
-            Assert.IsTrue(graph.GraphIndex.LiteralsIndex.Count == 2);
-            Assert.IsNotNull(graph.Context);
-            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-        }
-
-        [TestMethod]
         public void ShouldDisposeGraphWithUsing()
         {
             RDFGraph graph;
@@ -245,37 +221,6 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(graph.TriplesCount == 1);
             Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple.TripleID));
             Assert.IsTrue(graph.Count(t => t.TripleMetadata is null) == 1);
-            Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsInference) == 0);
-            Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsImport) == 0);
-        }
-
-        [TestMethod]
-        public void ShouldAddTripleWithCompoundLiteral()
-        {
-            RDFGraph graph = new RDFGraph();
-            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("olleh", "en-US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL));
-            graph.AddTriple(triple);
-
-            Assert.IsTrue(graph.TriplesCount == 5);
-            Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple.TripleID));
-            Assert.IsTrue(graph.Count(t => t.TripleMetadata is null) == 5);
-            Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsInference) == 0);
-            Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsImport) == 0);
-        }
-
-        [TestMethod]
-        public void ShouldAddTripleWithCraftedCompoundLiterals()
-        {
-            RDFGraph graph = new RDFGraph();
-            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFPlainLiteral("olleh", "en-US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL));
-            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFPlainLiteral("olleh", "en-US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR)); //Reification graph of this literal will not be added, since the same literal has already been reified (in RTL)
-            graph.AddTriple(triple1);
-            graph.AddTriple(triple2);
-
-            Assert.IsTrue(graph.TriplesCount == 6);
-            Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple1.TripleID));
-            Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple2.TripleID));
-            Assert.IsTrue(graph.Count(t => t.TripleMetadata is null) == 6);
             Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsInference) == 0);
             Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsImport) == 0);
         }
@@ -427,23 +372,6 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldRemoveTriplesWithCompoundLiteral()
-        {
-            RDFGraph graph = new RDFGraph();
-            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit","en-US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR));
-            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR));
-            RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFPlainLiteral("lit").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL));
-            graph.AddTriple(triple1);
-            graph.AddTriple(triple2);
-            graph.AddTriple(triple3);
-            graph.RemoveTriple(triple1);
-            graph.RemoveTriple(triple2);
-            graph.RemoveTriple(triple3);
-
-            Assert.IsTrue(graph.TriplesCount == 0);
-        }
-
-        [TestMethod]
         public void ShouldNotRemoveUnexistingTriple()
         {
             RDFGraph graph = new RDFGraph();
@@ -480,17 +408,6 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldRemoveTriplesBySubjectHavingCompoundLiteral()
-        {
-            RDFGraph graph = new RDFGraph();
-            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit","en-US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR));
-            graph.AddTriple(triple);
-            graph.RemoveTriplesBySubject((RDFResource)triple.Subject);
-
-            Assert.IsTrue(graph.TriplesCount == 0);
-        }
-
-        [TestMethod]
         public void ShouldNotRemoveTriplesBySubjectBecauseUnexisting()
         {
             RDFGraph graph = new RDFGraph();
@@ -519,17 +436,6 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-            graph.AddTriple(triple);
-            graph.RemoveTriplesByPredicate((RDFResource)triple.Predicate);
-
-            Assert.IsTrue(graph.TriplesCount == 0);
-        }
-
-        [TestMethod]
-        public void ShouldRemoveTriplesByPredicateHavingCompoundLiteral()
-        {
-            RDFGraph graph = new RDFGraph();
-            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL));
             graph.AddTriple(triple);
             graph.RemoveTriplesByPredicate((RDFResource)triple.Predicate);
 
@@ -607,17 +513,6 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldRemoveTriplesByLiteralHavingCompoundLiteral()
-        {
-            RDFGraph graph = new RDFGraph();
-            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("en", "US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR));
-            graph.AddTriple(triple);
-            graph.RemoveTriplesByLiteral((RDFLiteral)triple.Object);
-
-            Assert.IsTrue(graph.TriplesCount == 0);
-        }
-
-        [TestMethod]
         public void ShouldNotRemoveTriplesByLiteralBecauseUnexisting()
         {
             RDFGraph graph = new RDFGraph();
@@ -646,17 +541,6 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-            graph.AddTriple(triple);
-            graph.RemoveTriplesBySubjectPredicate((RDFResource)triple.Subject, (RDFResource)triple.Predicate);
-
-            Assert.IsTrue(graph.TriplesCount == 0);
-        }
-
-        [TestMethod]
-        public void ShouldRemoveTriplesBySubjectPredicateHavingCompoundLiteral()
-        {
-            RDFGraph graph = new RDFGraph();
-            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL));
             graph.AddTriple(triple);
             graph.RemoveTriplesBySubjectPredicate((RDFResource)triple.Subject, (RDFResource)triple.Predicate);
 
@@ -782,17 +666,6 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldRemoveTriplesBySubjectLiteralHavingCompoundLiteral()
-        {
-            RDFGraph graph = new RDFGraph();
-            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL));
-            graph.AddTriple(triple);
-            graph.RemoveTriplesBySubjectLiteral((RDFResource)triple.Subject, (RDFLiteral)triple.Object);
-
-            Assert.IsTrue(graph.TriplesCount == 0);
-        }
-
-        [TestMethod]
         public void ShouldNotRemoveTriplesBySubjectLiteralBecauseUnexistingSubject()
         {
             RDFGraph graph = new RDFGraph();
@@ -911,17 +784,6 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldRemoveTriplesByPredicateLiteralHavingCompoundLiteral()
-        {
-            RDFGraph graph = new RDFGraph();
-            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR));
-            graph.AddTriple(triple);
-            graph.RemoveTriplesByPredicateLiteral((RDFResource)triple.Predicate, (RDFLiteral)triple.Object);
-
-            Assert.IsTrue(graph.TriplesCount == 0);
-        }
-
-        [TestMethod]
         public void ShouldNotRemoveTriplesByPredicateLiteralBecauseUnexistingPredicate()
         {
             RDFGraph graph = new RDFGraph();
@@ -1009,33 +871,10 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldUnreifySPLTriplesHavingCompoundLiteral()
-        {
-            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit","en-US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL));
-            RDFGraph graph = triple.ReifyTriple();
-            graph.UnreifyTriples();
-
-            Assert.IsNotNull(graph);
-            Assert.IsTrue(graph.TriplesCount == 5);
-            Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple.TripleID));
-            Assert.IsTrue(graph[new RDFPlainLiteral("lit", "en-US").ReificationSubject,null,null,null].TriplesCount == 4);
-        }
-
-        [TestMethod]
         public void ShouldContainTriple()
         {
             RDFGraph graph = new RDFGraph();
             RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
-            graph.AddTriple(triple);
-
-            Assert.IsTrue(graph.ContainsTriple(triple));
-        }
-
-        [TestMethod]
-        public void ShouldContainTripleHavingCompoundLiteral()
-        {
-            RDFGraph graph = new RDFGraph();
-            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR));
             graph.AddTriple(triple);
 
             Assert.IsTrue(graph.ContainsTriple(triple));
@@ -1433,26 +1272,6 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldIntersectGraphsHavingSameCompoundLiteral()
-        {
-            RDFGraph graph1 = new RDFGraph();
-            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFPlainLiteral("lit").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR));
-            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFPlainLiteral("lit").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR));
-            graph1.AddTriple(triple1).AddTriple(triple2);
-            RDFGraph graph2 = new RDFGraph();
-            graph2.AddTriple(triple1);
-
-            RDFGraph intersect12 = graph1.IntersectWith(graph2);
-            Assert.IsNotNull(intersect12);
-            Assert.IsTrue(intersect12.TriplesCount == 4); //3 triples for same compound literal reification
-            Assert.IsTrue(intersect12.IndexedTriples.ContainsKey(triple1.TripleID));
-            RDFGraph intersect21 = graph2.IntersectWith(graph1);
-            Assert.IsNotNull(intersect21);
-            Assert.IsTrue(intersect21.TriplesCount == 4); //3 triples for same compound literal reification
-            Assert.IsTrue(intersect21.IndexedTriples.ContainsKey(triple1.TripleID));
-        }
-
-        [TestMethod]
         public void ShouldIntersectGraphWithEmpty()
         {
             RDFGraph graph1 = new RDFGraph();
@@ -1546,25 +1365,6 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldUnionGraphsHavingCompoundLiterals()
-        {
-            RDFGraph graph1 = new RDFGraph();
-            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL));
-            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-            RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj3/"), new RDFResource("http://pred3/"), new RDFResource("http://obj3/"));
-            graph1.AddTriple(triple1).AddTriple(triple2);
-            RDFGraph graph2 = new RDFGraph();
-            graph2.AddTriple(triple1).AddTriple(triple3);
-
-            RDFGraph union12 = graph1.UnionWith(graph2);
-            Assert.IsNotNull(union12);
-            Assert.IsTrue(union12.TriplesCount == 6); //3 triples coming from reification of compound literal
-            RDFGraph union21 = graph2.UnionWith(graph1);
-            Assert.IsNotNull(union21);
-            Assert.IsTrue(union21.TriplesCount == 6); //3 triples coming from reification of compound literal
-        }
-
-        [TestMethod]
         public void ShouldUnionGraphWithEmpty()
         {
             RDFGraph graph1 = new RDFGraph();
@@ -1629,27 +1429,6 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph1 = new RDFGraph();
             RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
-            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-            RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj3/"), new RDFResource("http://pred3/"), new RDFResource("http://obj3/"));
-            graph1.AddTriple(triple1).AddTriple(triple2);
-            RDFGraph graph2 = new RDFGraph();
-            graph2.AddTriple(triple1).AddTriple(triple3);
-
-            RDFGraph difference12 = graph1.DifferenceWith(graph2);
-            Assert.IsNotNull(difference12);
-            Assert.IsTrue(difference12.TriplesCount == 1);
-            Assert.IsTrue(difference12.IndexedTriples.ContainsKey(triple2.TripleID));
-            RDFGraph difference21 = graph2.DifferenceWith(graph1);
-            Assert.IsNotNull(difference21);
-            Assert.IsTrue(difference21.TriplesCount == 1);
-            Assert.IsTrue(difference21.IndexedTriples.ContainsKey(triple3.TripleID));
-        }
-
-        [TestMethod]
-        public void ShouldDifferenceGraphsHavingCompoundLiterals()
-        {
-            RDFGraph graph1 = new RDFGraph();
-            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR));
             RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
             RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj3/"), new RDFResource("http://pred3/"), new RDFResource("http://obj3/"));
             graph1.AddTriple(triple1).AddTriple(triple2);

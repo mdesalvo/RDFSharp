@@ -67,6 +67,8 @@ namespace RDFSharp.Test.Model
         [DataRow("en-US", RDFModelEnums.RDFDatatypes.XSD_LANGUAGE)]
         [DataRow("en-US2", RDFModelEnums.RDFDatatypes.XSD_LANGUAGE)]
         [DataRow("en-US-ZK", RDFModelEnums.RDFDatatypes.XSD_LANGUAGE)]
+        [DataRow("en--ltr", RDFModelEnums.RDFDatatypes.XSD_LANGUAGE)]
+        [DataRow("en-US--ltr", RDFModelEnums.RDFDatatypes.XSD_LANGUAGE)]
         [DataRow("dmFsdWU=", RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY)]
         [DataRow("dmFsdWUgdmFsdWUgIGV4YW1wbGU=", RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY)]
         [DataRow("", RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY)]

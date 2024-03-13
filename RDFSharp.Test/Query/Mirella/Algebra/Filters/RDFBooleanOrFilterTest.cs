@@ -106,7 +106,7 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldCreateBooleanOrFilterAndNotKeepRow()
+        public void ShouldCreateBooleanOrFilterAndKeepRowHavingSubLanguage()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
@@ -120,7 +120,7 @@ namespace RDFSharp.Test.Query
             RDFBooleanOrFilter filter = new RDFBooleanOrFilter(new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN), new RDFLangMatchesFilter(new RDFVariable("?B"), "en"));
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
-            Assert.IsFalse(keepRow);
+            Assert.IsTrue(keepRow);
         }
 
         [TestMethod]

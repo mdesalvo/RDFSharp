@@ -20,7 +20,7 @@ using System.Text.RegularExpressions;
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFPlainLiteral represents a literal eventually decorated with a language tag.
+    /// RDFPlainLiteral represents a literal eventually decorated with a language tag
     /// </summary>
     public class RDFPlainLiteral : RDFLiteral
     {
@@ -28,24 +28,15 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex for validation of language tags
         /// </summary>
-        internal static readonly Lazy<Regex> LangTag = new Lazy<Regex>(() => LangTagRegex);
-        internal static readonly Regex LangTagRegex = new Regex("^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled);
+        internal static readonly string LangTagSubMask = "(-[a-zA-Z0-9]{1,8})*(--ltr|--rtl)?";
+        internal static readonly string LangTagMask = string.Concat("[a-zA-Z]{1,8}", LangTagSubMask);
+        internal static readonly Regex LangTagRegex = new Regex(string.Concat("^", LangTagMask, "$"), RegexOptions.Compiled);
+        internal static readonly Lazy<Regex> LangTag = new Lazy<Regex>(() => LangTagRegex);        
 
         /// <summary>
         /// Optional language of the plain literal's value
         /// </summary>
         public string Language { get; internal set; }
-
-        /// <summary>
-        /// Optional direction of the plain literal's value
-        /// </summary>
-        public string Direction { get; internal set; }
-
-        /// <summary>
-        /// Subject of the plain literal's reification
-        /// </summary>
-        public RDFResource ReificationSubject => LazyReificationSubject.Value;
-        private readonly Lazy<RDFResource> LazyReificationSubject;
         #endregion
 
         #region Ctors
@@ -56,7 +47,6 @@ namespace RDFSharp.Model
         {
             Value = value ?? string.Empty;
             Language = string.Empty;
-            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", PatternMemberID.ToString())));
         }
 
         /// <summary>
@@ -66,7 +56,6 @@ namespace RDFSharp.Model
         {
             if (language != null && LangTag.Value.Match(language).Success)
                 Language = language.ToUpperInvariant();
-            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", PatternMemberID.ToString())));
         }
         #endregion
 
@@ -80,42 +69,10 @@ namespace RDFSharp.Model
 
         #region Methods
         /// <summary>
-        /// Checks if the plain literal's value has a language tag
+        /// Checks if the plain literal has a language tag
         /// </summary>
         public bool HasLanguage()
             => !string.IsNullOrEmpty(Language);
-
-        /// <summary>
-        /// Checks if the plain literal's value has a direction
-        /// </summary>
-        public bool HasDirection()
-            => !string.IsNullOrEmpty(Direction);
-
-        /// <summary>
-        /// Sets the plain literal's value to have the given direction (ltr, rtl)
-        /// </summary>
-        public RDFPlainLiteral SetDirection(RDFModelEnums.RDFPlainLiteralDirections direction)
-        {
-            Direction = direction == RDFModelEnums.RDFPlainLiteralDirections.RTL ? "rtl" : "ltr";
-            return this;
-        }
-
-        /// <summary>
-        /// Gets a graph representation of the plain literal as rdf:CompoundLiteral (reified with value, language, direction)
-        /// </summary>
-        public RDFGraph ReifyCompoundLiteral()
-        {
-            RDFGraph compoundLiteralGraph = new RDFGraph();
-
-            compoundLiteralGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.COMPOUND_LITERAL));
-            compoundLiteralGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.VALUE, new RDFPlainLiteral(Value)));
-            if (HasLanguage())
-                compoundLiteralGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.LANGUAGE, new RDFPlainLiteral(Language)));
-            if (HasDirection())
-                compoundLiteralGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.DIRECTION, new RDFPlainLiteral(Direction)));
-            
-            return compoundLiteralGraph;
-        }
         #endregion
     }
 }
