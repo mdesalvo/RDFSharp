@@ -172,8 +172,8 @@ namespace RDFSharp.Model
         {
             if (contextUri != null
                   && contextUri.IsAbsoluteUri
-                    && !contextUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
-                      && !contextUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
+                  && !contextUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
+                  && !contextUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
                 Context = contextUri;
             return this;
         }
@@ -189,6 +189,18 @@ namespace RDFSharp.Model
                 IndexedTriples.Add(triple.TripleID, new RDFIndexedTriple(triple));
                 //Add index
                 GraphIndex.AddIndex(triple);
+
+                //Handle eventual presence of a compound literal in the given triple's object:
+                //we merge its reification graph in order to retain its direction when serializing
+                if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL
+                     && triple.Object is RDFPlainLiteral plitObj
+                     && plitObj.HasDirection()
+                     //Avoid serializing the same compound literal reification more than once
+                     && this[new RDFResource($"bnode:{plitObj.PatternMemberID}"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.COMPOUND_LITERAL, null].TriplesCount == 0)
+                {
+                    foreach (RDFTriple compoundLiteralTriple in plitObj.ReifyToCompoundLiteral())
+                        AddTriple(compoundLiteralTriple);
+                }
             }
             return this;
         }

@@ -80,6 +80,30 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldCreateGraphFromTriplesWithCompoundLiterals()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFResource("http://obj/")),
+                new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR)),
+                new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR))
+            });
+
+            Assert.IsNotNull(graph);
+            Assert.IsNotNull(graph.IndexedTriples);
+            Assert.IsTrue(graph.TriplesCount == 6);
+            Assert.IsNotNull(graph.GraphIndex);
+            Assert.IsTrue(graph.GraphIndex.ResourcesRegister.Count == 9);
+            Assert.IsTrue(graph.GraphIndex.LiteralsRegister.Count == 2);
+            Assert.IsTrue(graph.GraphIndex.SubjectsIndex.Count == 3);
+            Assert.IsTrue(graph.GraphIndex.PredicatesIndex.Count == 4);
+            Assert.IsTrue(graph.GraphIndex.ObjectsIndex.Count == 2);
+            Assert.IsTrue(graph.GraphIndex.LiteralsIndex.Count == 2);
+            Assert.IsNotNull(graph.Context);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+        }
+
+        [TestMethod]
         public void ShouldDisposeGraphWithUsing()
         {
             RDFGraph graph;
@@ -221,6 +245,37 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(graph.TriplesCount == 1);
             Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple.TripleID));
             Assert.IsTrue(graph.Count(t => t.TripleMetadata is null) == 1);
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsInference) == 0);
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsImport) == 0);
+        }
+
+        [TestMethod]
+        public void ShouldAddTripleWithCompoundLiteral()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("olleh", "en-US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL));
+            graph.AddTriple(triple);
+
+            Assert.IsTrue(graph.TriplesCount == 5);
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple.TripleID));
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata is null) == 5);
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsInference) == 0);
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsImport) == 0);
+        }
+
+        [TestMethod]
+        public void ShouldAddTripleWithCraftedCompoundLiterals()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFPlainLiteral("olleh", "en-US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFPlainLiteral("olleh", "en-US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR)); //Reification graph of this literal will not be added, since the same literal has already been reified (in RTL)
+            graph.AddTriple(triple1);
+            graph.AddTriple(triple2);
+
+            Assert.IsTrue(graph.TriplesCount == 6);
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple1.TripleID));
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple2.TripleID));
+            Assert.IsTrue(graph.Count(t => t.TripleMetadata is null) == 6);
             Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsInference) == 0);
             Assert.IsTrue(graph.Count(t => t.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsImport) == 0);
         }
