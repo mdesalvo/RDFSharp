@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System;
@@ -30,27 +29,29 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldCreateLanguageInConstraint()
         {
-            List<string> languages = new List<string>();
-            languages.Add("en-US");
-            languages.Add("en-US--ltr");
-            languages.Add("*");
-            languages.Add(string.Empty);
-            languages.Add(null); //Will be discarded since null not allowed
-            languages.Add("?en-US"); //Will be discarded since bad formed
+            List<string> languages =
+            [
+                "en",
+                "en-US",
+                "en-US-ZK",
+                "en-US--ltr",
+                "*",
+                string.Empty,
+                null, //Will be discarded since null not allowed
+                "?en-US", //Will be discarded since bad formed
+                "en-US--ltr--rtl" //Will be discarded since bad formed
+            ];
             RDFLanguageInConstraint languageinConstraint = new RDFLanguageInConstraint(languages);
 
             Assert.IsNotNull(languageinConstraint);
             Assert.IsNotNull(languageinConstraint.LanguageTags);
-            Assert.IsTrue(languageinConstraint.LanguageTags.Count == 4);
+            Assert.IsTrue(languageinConstraint.LanguageTags.Count == 6);
         }
 
         [TestMethod]
         public void ShouldExportLanguageInConstraint()
         {
-            List<string> languages = new List<string>();
-            languages.Add("en-US");
-            languages.Add("en-US--ltr");
-            languages.Add("it-IT");
+            List<string> languages = ["en-US", "en-US--ltr", "it-IT"];
             RDFLanguageInConstraint languageinConstraint = new RDFLanguageInConstraint(languages);
             RDFGraph graph = languageinConstraint.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:NodeShape")));
 
@@ -59,7 +60,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.LANGUAGE_IN.PatternMemberID)));
             Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
-                                                        && t.Value.ObjectID.Equals(RDFVocabulary.RDF.LIST.PatternMemberID))); //2 occurrences of this
+                                                        && t.Value.ObjectID.Equals(RDFVocabulary.RDF.LIST.PatternMemberID)));
             Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
                                                         && t.Value.ObjectID.Equals(new RDFPlainLiteral("EN-US").PatternMemberID)));
             Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
@@ -90,7 +91,7 @@ namespace RDFSharp.Test.Model
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.FIRSTNAME);
             propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
-            propertyShape.AddConstraint(new RDFLanguageInConstraint(new List<string>(){"en-US"}));
+            propertyShape.AddConstraint(new RDFLanguageInConstraint(["en-US"]));
             shapesGraph.AddShape(propertyShape);
 
             //Validate
@@ -111,13 +112,13 @@ namespace RDFSharp.Test.Model
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Steve"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.FIRSTNAME, new RDFPlainLiteral("Alice", "en-US")));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.FIRSTNAME, new RDFPlainLiteral("Bob", "en-US")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.FIRSTNAME, new RDFPlainLiteral("Bob", "en-US--ltr")));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.FIRSTNAME);
             propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
-            propertyShape.AddConstraint(new RDFLanguageInConstraint(new List<string>(){"en"}));
+            propertyShape.AddConstraint(new RDFLanguageInConstraint(["en"]));
             shapesGraph.AddShape(propertyShape);
 
             //Validate
@@ -138,13 +139,13 @@ namespace RDFSharp.Test.Model
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Steve"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.FIRSTNAME, new RDFPlainLiteral("Alice", "en-US")));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.FIRSTNAME, new RDFPlainLiteral("Bob", "en-US")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.FIRSTNAME, new RDFPlainLiteral("Bob", "en-US--rtl")));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.FIRSTNAME);
             propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
-            propertyShape.AddConstraint(new RDFLanguageInConstraint(new List<string>(){"*"}));
+            propertyShape.AddConstraint(new RDFLanguageInConstraint(["*"]));
             shapesGraph.AddShape(propertyShape);
 
             //Validate
@@ -171,7 +172,7 @@ namespace RDFSharp.Test.Model
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.FIRSTNAME);
             propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
-            propertyShape.AddConstraint(new RDFLanguageInConstraint(new List<string>(){string.Empty}));
+            propertyShape.AddConstraint(new RDFLanguageInConstraint([string.Empty]));
             shapesGraph.AddShape(propertyShape);
 
             //Validate
@@ -192,13 +193,13 @@ namespace RDFSharp.Test.Model
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Steve"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.FIRSTNAME, new RDFPlainLiteral("Alice", "en-US")));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.FIRSTNAME, new RDFPlainLiteral("Bob", "en-US")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.FIRSTNAME, new RDFPlainLiteral("Bob", "en-US--ltr")));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.FIRSTNAME);
             propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
-            propertyShape.AddConstraint(new RDFLanguageInConstraint(new List<string>(){"en"}));
+            propertyShape.AddConstraint(new RDFLanguageInConstraint(["en"]));
             shapesGraph.AddShape(propertyShape);
 
             //Validate
@@ -225,7 +226,7 @@ namespace RDFSharp.Test.Model
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.FIRSTNAME);
             propertyShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.RDF.TYPE));
-            propertyShape.AddConstraint(new RDFLanguageInConstraint(new List<string>(){string.Empty}));
+            propertyShape.AddConstraint(new RDFLanguageInConstraint([string.Empty]));
             shapesGraph.AddShape(propertyShape);
 
             //Validate
@@ -254,7 +255,7 @@ namespace RDFSharp.Test.Model
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.FIRSTNAME);
             propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
-            propertyShape.AddConstraint(new RDFLanguageInConstraint(new List<string>(){"*"}));
+            propertyShape.AddConstraint(new RDFLanguageInConstraint(["*"]));
             shapesGraph.AddShape(propertyShape);
 
             //Validate
@@ -283,7 +284,7 @@ namespace RDFSharp.Test.Model
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.FIRSTNAME);
             propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
-            propertyShape.AddConstraint(new RDFLanguageInConstraint(new List<string>(){"en-US"}));
+            propertyShape.AddConstraint(new RDFLanguageInConstraint(["en-US"]));
             shapesGraph.AddShape(propertyShape);
 
             //Validate
@@ -313,13 +314,13 @@ namespace RDFSharp.Test.Model
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Steve"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.FIRSTNAME, new RDFPlainLiteral("Alice", "it-IT")));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.FIRSTNAME, new RDFPlainLiteral("Bob", "en-US")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.FIRSTNAME, new RDFPlainLiteral("Bob", "en--rtl")));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.FIRSTNAME);
             propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
-            propertyShape.AddConstraint(new RDFLanguageInConstraint(new List<string>(){"en"}));
+            propertyShape.AddConstraint(new RDFLanguageInConstraint(["en--rtl"]));
             shapesGraph.AddShape(propertyShape);
 
             //Validate
@@ -355,7 +356,7 @@ namespace RDFSharp.Test.Model
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.FIRSTNAME);
             propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
-            propertyShape.AddConstraint(new RDFLanguageInConstraint(new List<string>(){"*"}));
+            propertyShape.AddConstraint(new RDFLanguageInConstraint(["*"]));
             shapesGraph.AddShape(propertyShape);
 
             //Validate
@@ -391,7 +392,7 @@ namespace RDFSharp.Test.Model
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.FIRSTNAME);
             propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
-            propertyShape.AddConstraint(new RDFLanguageInConstraint(new List<string>(){string.Empty}));
+            propertyShape.AddConstraint(new RDFLanguageInConstraint([string.Empty]));
             shapesGraph.AddShape(propertyShape);
 
             //Validate
@@ -427,7 +428,7 @@ namespace RDFSharp.Test.Model
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.FIRSTNAME);
             propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
-            propertyShape.AddConstraint(new RDFLanguageInConstraint(new List<string>(){"  en-US "}));
+            propertyShape.AddConstraint(new RDFLanguageInConstraint(["  en-US "]));
             shapesGraph.AddShape(propertyShape);
 
             //Validate
@@ -463,7 +464,7 @@ namespace RDFSharp.Test.Model
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.FIRSTNAME);
             propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
-            propertyShape.AddConstraint(new RDFLanguageInConstraint(new List<string>(){" * "}));
+            propertyShape.AddConstraint(new RDFLanguageInConstraint([" * "]));
             shapesGraph.AddShape(propertyShape);
 
             //Validate
@@ -500,7 +501,7 @@ namespace RDFSharp.Test.Model
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.FIRSTNAME);
             propertyShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.RDF.TYPE));
-            propertyShape.AddConstraint(new RDFLanguageInConstraint(new List<string>(){"en"}));
+            propertyShape.AddConstraint(new RDFLanguageInConstraint(["en"]));
             shapesGraph.AddShape(propertyShape);
 
             //Validate
@@ -539,7 +540,7 @@ namespace RDFSharp.Test.Model
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.FIRSTNAME);
             propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
-            propertyShape.AddConstraint(new RDFLanguageInConstraint(new List<string>(){"en"}));
+            propertyShape.AddConstraint(new RDFLanguageInConstraint(["en"]));
             shapesGraph.AddShape(propertyShape);
 
             //Validate
@@ -575,7 +576,7 @@ namespace RDFSharp.Test.Model
             nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Mountain")));
             nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Berg")));
             RDFPropertyShape propShape = new RDFPropertyShape(new RDFResource("ex:PropShape"), new RDFResource("ex:prefLabel"));
-            propShape.AddConstraint(new RDFLanguageInConstraint(new List<string>(){ "en", "mi" }));
+            propShape.AddConstraint(new RDFLanguageInConstraint(["en", "mi"]));
             nodeShape.AddConstraint(new RDFPropertyConstraint(propShape));
             shapesGraph.AddShape(nodeShape);
             shapesGraph.AddShape(propShape);
@@ -607,7 +608,7 @@ namespace RDFSharp.Test.Model
             nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Mountain")));
             nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Berg")));
             RDFPropertyShape propShape = new RDFPropertyShape(new RDFResource("ex:PropShape"), new RDFResource("ex:prefLabel"));
-            propShape.AddConstraint(new RDFLanguageInConstraint(new List<string>(){ "en", "mi" }));
+            propShape.AddConstraint(new RDFLanguageInConstraint(["en", "mi"]));
             nodeShape.AddConstraint(new RDFPropertyConstraint(propShape));
             shapesGraph.AddShape(nodeShape);
             shapesGraph.AddShape(propShape);

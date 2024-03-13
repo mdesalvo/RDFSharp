@@ -109,6 +109,18 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldSerializeGraphWithSPLLTripleHavingDirection()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello","en-US--ltr")));
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLLTripleHavingDirection.nt"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLLTripleHavingDirection.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLLTripleHavingDirection.nt"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"hello\"@EN-US--LTR .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
         public void ShouldSerializeGraphWithSPLTTriple()
         {
             RDFGraph graph = new RDFGraph();
@@ -142,6 +154,18 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPLLTriple.nt")));
             string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPLLTriple.nt"));
             Assert.IsTrue(fileContent.Equals($"_:54321 <http://pred/> \"hello\"@EN-US .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPLLTripleHavingDirection()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:54321"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en--rtl")));
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPLLTripleHavingDirection.nt"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPLLTripleHavingDirection.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPLLTripleHavingDirection.nt"));
+            Assert.IsTrue(fileContent.Equals($"_:54321 <http://pred/> \"hello\"@EN--RTL .{Environment.NewLine}"));
         }
 
         [TestMethod]
@@ -205,6 +229,18 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteralWithDirection()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Smile!😃","en-US--ltr")));
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteralWithDirection.nt"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteralWithDirection.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteralWithDirection.nt"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Smile!\\U0001F603\"@EN-US--LTR .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
         public void ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInSubject()
         {
             RDFGraph graph = new RDFGraph();
@@ -250,6 +286,18 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteral.nt")));
             string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteral.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Beta!\\u03B2\"@EN-US .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteralWithDirection()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Beta!β", "en-US--rtl")));
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteralWithDirection.nt"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteralWithDirection.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteralWithDirection.nt"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Beta!\\u03B2\"@EN-US--RTL .{Environment.NewLine}"));
         }
 
         [TestMethod]
@@ -540,6 +588,19 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithSPLLTripleHavingDirection()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"hello\"@en-US--ltr .{Environment.NewLine}");
+            RDFGraph graph = RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US--ltr"))));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeGraphWithSPLTTriple()
         {
             MemoryStream stream = new MemoryStream();
@@ -625,6 +686,19 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLTripleHavingDirection()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> \"hello\"@en-US--rtl .{Environment.NewLine}");
+            RDFGraph graph = RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US--rtl"))));
         }
 
         [TestMethod]

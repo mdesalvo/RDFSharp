@@ -75,6 +75,22 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldCreateExactDirectionLangMatchesFilter()
+        {
+            RDFLangMatchesFilter filter = new RDFLangMatchesFilter(new RDFVariable("?VAR"), "en-US--ltr");
+
+            Assert.IsNotNull(filter);
+            Assert.IsNotNull(filter.VariableName);
+            Assert.IsTrue(filter.VariableName.Equals("?VAR"));
+            Assert.IsNotNull(filter.Language);
+            Assert.IsTrue(filter.Language.Equals("EN-US--LTR"));
+            Assert.IsNotNull(filter.ExactLanguageRegex);
+            Assert.IsTrue(filter.ToString().Equals("FILTER ( LANGMATCHES(LANG(?VAR), \"EN-US--LTR\") )"));
+            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { }).Equals("FILTER ( LANGMATCHES(LANG(?VAR), \"EN-US--LTR\") )"));
+            Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
+        }
+
+        [TestMethod]
         public void ShouldThrowExceptionOnCreatingLangMatchesFilterBecauseNullVariable()
             => Assert.ThrowsException<RDFQueryException>(() => new RDFLangMatchesFilter(null, "*"));
 
@@ -95,9 +111,7 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFLangMatchesFilter filter = new RDFLangMatchesFilter(new RDFVariable("?A"), string.Empty);
-            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
-
-            Assert.IsTrue(keepRow);
+            Assert.IsTrue(filter.ApplyFilter(table.Rows[0], false));
         }
 
         [TestMethod]
@@ -106,16 +120,26 @@ namespace RDFSharp.Test.Query
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            table.Columns.Add("?D", typeof(string));
+            table.Columns.Add("?E", typeof(string));
             DataRow row = table.NewRow();
             row["?A"] = new RDFResource("http://example.org/").ToString();
-            row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            row["?B"] = new RDFPlainLiteral("hello", "en").ToString();
+            row["?C"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            row["?D"] = new RDFPlainLiteral("hello", "en-US--ltr").ToString();
+            row["?E"] = new RDFPlainLiteral("hello", "en--ltr").ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFLangMatchesFilter filter = new RDFLangMatchesFilter(new RDFVariable("?B"), "*");
-            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
-
-            Assert.IsTrue(keepRow);
+            RDFLangMatchesFilter filterB = new RDFLangMatchesFilter(new RDFVariable("?B"), "*");
+            Assert.IsTrue(filterB.ApplyFilter(table.Rows[0], false));
+            RDFLangMatchesFilter filterC = new RDFLangMatchesFilter(new RDFVariable("?C"), "*");
+            Assert.IsTrue(filterC.ApplyFilter(table.Rows[0], false));
+            RDFLangMatchesFilter filterD = new RDFLangMatchesFilter(new RDFVariable("?D"), "*");
+            Assert.IsTrue(filterD.ApplyFilter(table.Rows[0], false));
+            RDFLangMatchesFilter filterE = new RDFLangMatchesFilter(new RDFVariable("?E"), "*");
+            Assert.IsTrue(filterE.ApplyFilter(table.Rows[0], false));
         }
 
         [TestMethod]
@@ -152,6 +176,34 @@ namespace RDFSharp.Test.Query
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsTrue(keepRow);
+        }
+
+        [TestMethod]
+        public void ShouldCreateExactLangMatchesFilterAndKeepRowHavingSubLanguage()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            table.Columns.Add("?D", typeof(string));
+            table.Columns.Add("?E", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFResource("http://example.org/").ToString();
+            row["?B"] = new RDFPlainLiteral("hello", "en").ToString();
+            row["?C"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            row["?D"] = new RDFPlainLiteral("hello", "en-US--ltr").ToString();
+            row["?E"] = new RDFPlainLiteral("hello", "en--ltr").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFLangMatchesFilter filterB = new RDFLangMatchesFilter(new RDFVariable("?B"), "en");
+            Assert.IsTrue(filterB.ApplyFilter(table.Rows[0], false));
+            RDFLangMatchesFilter filterC = new RDFLangMatchesFilter(new RDFVariable("?C"), "en");
+            Assert.IsTrue(filterC.ApplyFilter(table.Rows[0], false));
+            RDFLangMatchesFilter filterD = new RDFLangMatchesFilter(new RDFVariable("?D"), "en");
+            Assert.IsTrue(filterD.ApplyFilter(table.Rows[0], false));
+            RDFLangMatchesFilter filterE = new RDFLangMatchesFilter(new RDFVariable("?E"), "en");
+            Assert.IsTrue(filterE.ApplyFilter(table.Rows[0], false));
         }
 
         [TestMethod]
@@ -209,39 +261,31 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldCreateExactLangMatchesFilterAndKeepRowHavingSubLanguage()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = new RDFResource("http://example.org/").ToString();
-            row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFLangMatchesFilter filter = new RDFLangMatchesFilter(new RDFVariable("?B"), "en");
-            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
-
-            Assert.IsTrue(keepRow);
-        }
-
-        [TestMethod]
         public void ShouldCreateExactLangMatchesFilterAndNotKeepRowHavingSubLanguageBecauseNegation()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            table.Columns.Add("?D", typeof(string));
+            table.Columns.Add("?E", typeof(string));
             DataRow row = table.NewRow();
             row["?A"] = new RDFResource("http://example.org/").ToString();
-            row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            row["?B"] = new RDFPlainLiteral("hello", "en").ToString();
+            row["?C"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            row["?D"] = new RDFPlainLiteral("hello", "en-US--ltr").ToString();
+            row["?E"] = new RDFPlainLiteral("hello", "en--ltr").ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFLangMatchesFilter filter = new RDFLangMatchesFilter(new RDFVariable("?B"), "en");
-            bool keepRow = filter.ApplyFilter(table.Rows[0], true);
-
-            Assert.IsFalse(keepRow);
+            RDFLangMatchesFilter filterB = new RDFLangMatchesFilter(new RDFVariable("?B"), "en");
+            Assert.IsFalse(filterB.ApplyFilter(table.Rows[0], true));
+            RDFLangMatchesFilter filterC = new RDFLangMatchesFilter(new RDFVariable("?C"), "en");
+            Assert.IsFalse(filterC.ApplyFilter(table.Rows[0], true));
+            RDFLangMatchesFilter filterD = new RDFLangMatchesFilter(new RDFVariable("?D"), "en");
+            Assert.IsFalse(filterD.ApplyFilter(table.Rows[0], true));
+            RDFLangMatchesFilter filterE = new RDFLangMatchesFilter(new RDFVariable("?E"), "en");
+            Assert.IsFalse(filterE.ApplyFilter(table.Rows[0], true));
         }
         #endregion
     }

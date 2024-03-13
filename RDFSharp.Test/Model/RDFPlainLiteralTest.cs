@@ -47,11 +47,12 @@ namespace RDFSharp.Test.Model
         [DataRow("donald duck", "25")]
         [DataRow("donald duck", "abcdefghi")]
         [DataRow("donald duck", "en-")]
+        [DataRow("donald duck", "en--")] //empty direction will invalidate the language tag
         [DataRow("donald duck", "en-US-")]
-        [DataRow("donald duck", "en-US--")] //invalid direction will invalidate the language tag
+        [DataRow("donald duck", "en-US--")] //empty direction will invalidate the language tag
         [DataRow("donald duck", "en-US-123456789")]
         [DataRow("donald duck", "@en-US")]
-        [DataRow("donald duck", "@en-US--kkk")] //unknown direction will invalidate the language tag
+        [DataRow("donald duck", "@en-US--kkk")] //invalid direction will invalidate the language tag
         [DataRow("", "@en-US")]
         [DataRow("", "")]
         [DataRow("", null)]

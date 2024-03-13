@@ -242,6 +242,22 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldSerializeGraphWithSPBTripleHavingCollectionOfLanguagedLiteralsAsObject()
+        {
+            RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal);
+            coll.AddItem(new RDFPlainLiteral("lit1","en-us--ltr"));
+            coll.ReificationSubject = new RDFResource("http://coll/");
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred/"), coll.ReificationSubject));
+            graph.AddCollection(coll);
+            RDFXml.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingCollectionOfLanguagedLiteralsAsObject.rdf"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingCollectionOfLanguagedLiteralsAsObject.rdf")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingCollectionOfLanguagedLiteralsAsObject.rdf"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:resource=\"http://coll/\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://coll/\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#List\" />{Environment.NewLine}{" ",4}<rdf:first xml:lang=\"EN-US--LTR\">lit1</rdf:first>{Environment.NewLine}{" ",4}<rdf:rest rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#nil\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+        }
+
+        [TestMethod]
         public void ShouldThrowExceptionOnSerializingGraphWithSPOTripleBecauseBadFormedCollectionAsObject()
         {
             RDFGraph graph = new RDFGraph();
@@ -379,6 +395,18 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldSerializeGraphWithSPLLTripleHavingDirection()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred/"), new RDFPlainLiteral("lit", "en-US--ltr")));
+            RDFXml.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithSPLLTripleHavingDirection.rdf"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithSPLLTripleHavingDirection.rdf")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithSPLLTripleHavingDirection.rdf"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred xml:lang=\"EN-US--LTR\">lit</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+        }
+
+        [TestMethod]
         public void ShouldSerializeGraphWithSPLTTripleHavingUnregisteredPredicate()
         {
             RDFGraph graph = new RDFGraph();
@@ -448,6 +476,18 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithBPLLTripleHavingRegisteredPredicate.rdf")));
             string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithBPLLTripleHavingRegisteredPredicate.rdf"));
             Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:Alt xml:lang=\"EN-US\">lit</rdf:Alt>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPLLTripleHavingDirection()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit", "en--rtl")));
+            RDFXml.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithBPLLTripleHavingDirection.rdf"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithBPLLTripleHavingDirection.rdf")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithBPLLTripleHavingDirection.rdf"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:Alt xml:lang=\"EN--RTL\">lit</rdf:Alt>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
         }
 
         [TestMethod]
@@ -550,14 +590,14 @@ namespace RDFSharp.Test.Model
         public void ShouldSerializeGraphWithFloatingContainerOfLiterals()
         {
             RDFContainer cont = new RDFContainer(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal);
-            cont.AddItem(new RDFPlainLiteral("item1"));
+            cont.AddItem(new RDFPlainLiteral("item1", "en-US--ltr"));
             cont.AddItem(new RDFPlainLiteral("item2"));
             cont.ReificationSubject = new RDFResource("bnode:12345");
             RDFXml.Serialize(cont.ReifyContainer(), Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithFloatingContainerOfLiterals.rdf"));
 
             Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithFloatingContainerOfLiterals.rdf")));
             string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithFloatingContainerOfLiterals.rdf"));
-            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt\" />{Environment.NewLine}{" ",4}<rdf:_1>item1</rdf:_1>{Environment.NewLine}{" ",4}<rdf:_2>item2</rdf:_2>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt\" />{Environment.NewLine}{" ",4}<rdf:_1 xml:lang=\"EN-US--LTR\">item1</rdf:_1>{Environment.NewLine}{" ",4}<rdf:_2>item2</rdf:_2>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
         }
 
         [TestMethod]
@@ -664,13 +704,13 @@ namespace RDFSharp.Test.Model
         public void ShouldSerializeGraphWithFloatingCollectionOfLiterals()
         {
             RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal);
-            coll.AddItem(new RDFPlainLiteral("item1"));
+            coll.AddItem(new RDFPlainLiteral("item1","en--rtl"));
             coll.ReificationSubject = new RDFResource("bnode:12345");
             RDFXml.Serialize(coll.ReifyCollection(), Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithFloatingCollectionOfLiterals.rdf"));
 
             Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithFloatingCollectionOfLiterals.rdf")));
             string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithFloatingCollectionOfLiterals.rdf"));
-            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#List\" />{Environment.NewLine}{" ",4}<rdf:first>item1</rdf:first>{Environment.NewLine}{" ",4}<rdf:rest rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#nil\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#List\" />{Environment.NewLine}{" ",4}<rdf:first xml:lang=\"EN--RTL\">item1</rdf:first>{Environment.NewLine}{" ",4}<rdf:rest rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#nil\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
         }
 
         [TestMethod]
@@ -1206,12 +1246,12 @@ namespace RDFSharp.Test.Model
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\" xml:lang=\"en-US\">{Environment.NewLine}{" ",4}<autoNS1:pred xml:lang=\"en-UK\">Hello</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\" xml:lang=\"en-US\">{Environment.NewLine}{" ",4}<autoNS1:pred xml:lang=\"en-UK--ltr\">Hello</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
             RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
 
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFPlainLiteral("Hello", "en-UK"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFPlainLiteral("Hello", "en-UK--ltr"))));
         }
 
         [TestMethod]
@@ -1283,16 +1323,16 @@ namespace RDFSharp.Test.Model
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:ID=\"triple1\" xml:lang=\"en-US\">lit</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:ID=\"triple1\" xml:lang=\"en-US--ltr\">lit</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
             RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
 
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFPlainLiteral("lit","en-US"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFPlainLiteral("lit","en-US--ltr"))));
             Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.STATEMENT)));
             Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.SUBJECT) && t.Object.Equals(new RDFResource("http://subj/"))));
             Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.PREDICATE) && t.Object.Equals(new RDFResource("http://pred/pred"))));
-            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.OBJECT) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.OBJECT) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US--ltr"))));
         }
 
         [TestMethod]
@@ -1300,16 +1340,16 @@ namespace RDFSharp.Test.Model
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\" xml:lang=\"en-US\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:ID=\"triple1\">lit</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\" xml:lang=\"en--rtl\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:ID=\"triple1\">lit</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
             RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
 
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFPlainLiteral("lit", "en--rtl"))));
             Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.STATEMENT)));
             Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.SUBJECT) && t.Object.Equals(new RDFResource("http://subj/"))));
             Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.PREDICATE) && t.Object.Equals(new RDFResource("http://pred/pred"))));
-            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.OBJECT) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.OBJECT) && t.Object.Equals(new RDFPlainLiteral("lit", "en--rtl"))));
         }
 
         [TestMethod]

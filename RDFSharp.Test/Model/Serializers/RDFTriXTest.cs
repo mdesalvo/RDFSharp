@@ -180,6 +180,18 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldSerializeGraphWithSPLLTripleHavingDirection()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US--ltr")));
+            RDFTriX.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeGraphWithSPLLTripleHavingDirection.trix"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeGraphWithSPLLTripleHavingDirection.trix")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeGraphWithSPLLTripleHavingDirection.trix"));
+            Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>https://rdfsharp.codeplex.com/</uri>{Environment.NewLine}    <triple>{Environment.NewLine}      <uri>http://subj/</uri>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <plainLiteral xml:lang=\"EN-US--LTR\">hello</plainLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
+        }
+
+        [TestMethod]
         public void ShouldSerializeNamedGraphWithSPLLTriple()
         {
             RDFGraph graph = new RDFGraph().SetContext(new Uri("http://example.org/"));
@@ -189,6 +201,18 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeNamedGraphWithSPLLTriple.trix")));
             string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeNamedGraphWithSPLLTriple.trix"));
             Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>http://example.org/</uri>{Environment.NewLine}    <triple>{Environment.NewLine}      <uri>http://subj/</uri>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <plainLiteral xml:lang=\"EN-US\">hello</plainLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeNamedGraphWithSPLLTripleHavingDirection()
+        {
+            RDFGraph graph = new RDFGraph().SetContext(new Uri("http://example.org/"));
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US-ZK--rtl")));
+            RDFTriX.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeNamedGraphWithSPLLTripleHavingDirection.trix"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeNamedGraphWithSPLLTripleHavingDirection.trix")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeNamedGraphWithSPLLTripleHavingDirection.trix"));
+            Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>http://example.org/</uri>{Environment.NewLine}    <triple>{Environment.NewLine}      <uri>http://subj/</uri>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <plainLiteral xml:lang=\"EN-US-ZK--RTL\">hello</plainLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
         }
 
         [TestMethod]
@@ -249,6 +273,18 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeGraphWithBPLLTriple.trix")));
             string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeGraphWithBPLLTriple.trix"));
             Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>https://rdfsharp.codeplex.com/</uri>{Environment.NewLine}    <triple>{Environment.NewLine}      <id>bnode:12345</id>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <plainLiteral xml:lang=\"EN-US\">hello</plainLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPLLTripleHavingDirection()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US--ltr")));
+            RDFTriX.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeGraphWithBPLLTripleHavingDirection.trix"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeGraphWithBPLLTripleHavingDirection.trix")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeGraphWithBPLLTripleHavingDirection.trix"));
+            Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>https://rdfsharp.codeplex.com/</uri>{Environment.NewLine}    <triple>{Environment.NewLine}      <id>bnode:12345</id>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <plainLiteral xml:lang=\"EN-US--LTR\">hello</plainLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
         }
 
         [TestMethod]
@@ -640,6 +676,19 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithSPLLTripleHavingDirection()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>https://rdfsharp.codeplex.com/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><plainLiteral xml:lang=\"en-US--ltr\">hello</plainLiteral></triple></graph></TriX>");
+            RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US--ltr"))));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeNamedGraphWithSPLLTriple()
         {
             MemoryStream stream = new MemoryStream();
@@ -650,6 +699,20 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
             Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
+            Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeNamedGraphWithSPLLTripleHavingDirection()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>https://example.org/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><plainLiteral xml:lang=\"en-US-ZK--rtl\">hello</plainLiteral></triple></graph></TriX>");
+            RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US-ZK--rtl"))));
             Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
         }
 
@@ -772,6 +835,19 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(graph.TriplesCount == 1);
             Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
             Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLTripleHavingDirection()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>https://rdfsharp.codeplex.com/</uri><triple><id>_:12345</id><uri>http://pred/</uri><plainLiteral xml:lang=\"en--ltr\">hello</plainLiteral></triple></graph></TriX>");
+            RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en--ltr"))));
         }
 
         [TestMethod]
