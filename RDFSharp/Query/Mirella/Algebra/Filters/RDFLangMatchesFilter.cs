@@ -61,7 +61,7 @@ namespace RDFSharp.Query
             #endregion
 
             bool acceptsNoneOrAnyLanguageTag = (string.IsNullOrEmpty(language) || language == "*");
-            if (acceptsNoneOrAnyLanguageTag || RDFPlainLiteral.LangTag.Value.Match(language).Success)
+            if (acceptsNoneOrAnyLanguageTag || RDFPlainLiteral.LangTagRegex.Match(language).Success)
             {
                 VariableName = variable.ToString();
                 Language = language?.ToUpperInvariant() ?? string.Empty;

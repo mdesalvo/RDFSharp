@@ -701,7 +701,7 @@ namespace RDFSharp.Model
                     return typedLiteral.Value.IndexOfAny(new char[] { '\n', '\r', '\t' }) == -1;
 
                 case RDFModelEnums.RDFDatatypes.XSD_LANGUAGE:
-                    return RDFPlainLiteral.LangTag.Value.Match(typedLiteral.Value).Success;
+                    return RDFPlainLiteral.LangTagRegex.Match(typedLiteral.Value).Success;
 
                 case RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY:
                     try
