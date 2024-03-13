@@ -280,6 +280,26 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(graph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST)
                                .TriplesCount == 2);
         }
+
+        [TestMethod]
+        public void ShouldReifyCollectionWithCompoundLiterals()
+        {
+            RDFPlainLiteral compoundLiteral = new RDFPlainLiteral("hello", "en-US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR);
+            RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal);
+            coll.AddItem(compoundLiteral);
+
+            RDFGraph graph = coll.ReifyCollection();
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 7);
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST).TripleID));
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.FIRST, compoundLiteral).TripleID));
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.REST, RDFVocabulary.RDF.NIL).TripleID));
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(new RDFResource($"bnode:{compoundLiteral.PatternMemberID}"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.COMPOUND_LITERAL).TripleID));
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(new RDFResource($"bnode:{compoundLiteral.PatternMemberID}"), RDFVocabulary.RDF.VALUE, new RDFPlainLiteral(compoundLiteral.Value)).TripleID));
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(new RDFResource($"bnode:{compoundLiteral.PatternMemberID}"), RDFVocabulary.RDF.LANGUAGE, new RDFPlainLiteral(compoundLiteral.Language)).TripleID));
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(new RDFResource($"bnode:{compoundLiteral.PatternMemberID}"), RDFVocabulary.RDF.DIRECTION, new RDFPlainLiteral(compoundLiteral.Direction)).TripleID));
+        }
         #endregion
     }
 }

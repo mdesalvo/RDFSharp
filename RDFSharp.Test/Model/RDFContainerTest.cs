@@ -346,6 +346,25 @@ namespace RDFSharp.Test.Model
                     break;
             }
         }
+
+        [TestMethod]
+        public void ShouldReifyContainerWithCompoundLiterals()
+        {
+            RDFPlainLiteral compoundLiteral = new RDFPlainLiteral("hello","en-US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR);
+            RDFContainer cont = new RDFContainer(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Literal);
+            cont.AddItem(compoundLiteral);
+
+            RDFGraph graph = cont.ReifyContainer();
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 6);
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.BAG).TripleID));
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(cont.ReificationSubject, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, "_1")), compoundLiteral).TripleID));
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(new RDFResource($"bnode:{compoundLiteral.PatternMemberID}"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.COMPOUND_LITERAL).TripleID));
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(new RDFResource($"bnode:{compoundLiteral.PatternMemberID}"), RDFVocabulary.RDF.VALUE, new RDFPlainLiteral(compoundLiteral.Value)).TripleID));
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(new RDFResource($"bnode:{compoundLiteral.PatternMemberID}"), RDFVocabulary.RDF.LANGUAGE, new RDFPlainLiteral(compoundLiteral.Language)).TripleID));
+            Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(new RDFResource($"bnode:{compoundLiteral.PatternMemberID}"), RDFVocabulary.RDF.DIRECTION, new RDFPlainLiteral(compoundLiteral.Direction)).TripleID));
+        }
         #endregion
     }
 }
