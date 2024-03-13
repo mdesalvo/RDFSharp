@@ -95,12 +95,12 @@ namespace RDFSharp.Test.Store
         {
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFPlainLiteral("hello")));
-            store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFPlainLiteral("hello","en-US")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFPlainLiteral("hello","en-US--ltr")));
             RDFTriG.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriGTest_ShouldSerializeStoreWithDefaultGraphSPLQuadruples.trig"));
 
             Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriGTest_ShouldSerializeStoreWithDefaultGraphSPLQuadruples.trig")));
             string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriGTest_ShouldSerializeStoreWithDefaultGraphSPLQuadruples.trig"));
-            Assert.IsTrue(fileContent.Equals("{" + Environment.NewLine + "  <http://subj1/> <http://pred1/> \"hello\". " + Environment.NewLine + "  <http://subj2/> <http://pred2/> \"hello\"@EN-US. " + Environment.NewLine + "}"));
+            Assert.IsTrue(fileContent.Equals("{" + Environment.NewLine + "  <http://subj1/> <http://pred1/> \"hello\". " + Environment.NewLine + "  <http://subj2/> <http://pred2/> \"hello\"@EN-US--LTR. " + Environment.NewLine + "}"));
         }
 
         [TestMethod]
@@ -476,7 +476,7 @@ namespace RDFSharp.Test.Store
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine($"@base <http://example.org/>.{Environment.NewLine}:graph1{{<http://subj/> <http://pred/> <http://obj/>; <http://pred2/> <http://obj2/>, <http://obj3/>.}}{Environment.NewLine}GRAPH :graph2{{<http://subj> <http://pred> <http://obj>.}}{Environment.NewLine}GRAPH <http://ctx3/>{{_:12345 <http://pred/> \"hello\"@EN-US.}}{Environment.NewLine}GRAPH <http://ctx3/>{{<http://subj/> <http://pred/> <http://obj/>.}}{Environment.NewLine}<http://subjAlone/> <http://predAlone/> <http://objAlone/>.");
+                writer.WriteLine($"@base <http://example.org/>.{Environment.NewLine}:graph1{{<http://subj/> <http://pred/> <http://obj/>; <http://pred2/> <http://obj2/>, <http://obj3/>.}}{Environment.NewLine}GRAPH :graph2{{<http://subj> <http://pred> <http://obj>.}}{Environment.NewLine}GRAPH <http://ctx3/>{{_:12345 <http://pred/> \"hello\"@EN-US--LTR.}}{Environment.NewLine}GRAPH <http://ctx3/>{{<http://subj/> <http://pred/> <http://obj/>.}}{Environment.NewLine}<http://subjAlone/> <http://predAlone/> <http://objAlone/>.");
             RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
@@ -485,7 +485,7 @@ namespace RDFSharp.Test.Store
             Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://example.org/graph1"), new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"))));
             Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://example.org/graph1"), new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj3/"))));
             Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://example.org/graph2"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx3/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello","EN-US"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx3/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello","EN-US--LTR"))));
             Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx3/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
             Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://example.org/"), new RDFResource("http://subjAlone/"), new RDFResource("http://predAlone/"), new RDFResource("http://objAlone/"))));
         }

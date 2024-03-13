@@ -110,6 +110,18 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
+        public void ShouldSerializeStoreWithCSPLLDirectionedQuadruple()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("hello","en-US--ltr")));
+            RDFNQuads.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLLDirectionedQuadruple.nq"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLLDirectionedQuadruple.nq")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLLDirectionedQuadruple.nq"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"hello\"@EN-US--LTR <http://ctx/> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
         public void ShouldSerializeStoreWithCSPLTQuadruple()
         {
             RDFMemoryStore store = new RDFMemoryStore();
@@ -143,6 +155,18 @@ namespace RDFSharp.Test.Store
             Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCBPLLQuadruple.nq")));
             string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCBPLLQuadruple.nq"));
             Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> \"hello\"@EN-US <http://ctx/> .{Environment.NewLine}"));
+        }
+
+         [TestMethod]
+        public void ShouldSerializeStoreWithCBPLLDirectionedQuadruple()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"),new RDFResource("http://pred/"),new RDFPlainLiteral("hello","en--rtl")));
+            RDFNQuads.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCBPLLDirectionedQuadruple.nq"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCBPLLDirectionedQuadruple.nq")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCBPLLDirectionedQuadruple.nq"));
+            Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> \"hello\"@EN--RTL <http://ctx/> .{Environment.NewLine}"));
         }
 
         [TestMethod]
@@ -565,6 +589,19 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
+        public void ShouldDeserializeStoreWithCSPLLDirectionedQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"hello\"@en-US--ltr <http://ctx/> .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US--ltr"))));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeStoreWithCSPLTQuadruple()
         {
             MemoryStream stream = new MemoryStream();
@@ -676,6 +713,19 @@ namespace RDFSharp.Test.Store
 
             Assert.IsNotNull(store);
             Assert.IsTrue(store.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithCBPLLDirectionedQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> \"hello\"@en--rtl <http://ctx/> .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en--rtl"))));
         }
 
         [TestMethod]
