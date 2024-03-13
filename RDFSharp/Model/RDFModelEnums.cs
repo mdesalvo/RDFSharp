@@ -314,5 +314,20 @@ namespace RDFSharp.Model
             /// </summary>
             Literal = 2
         };
+
+        /// <summary>
+        /// RDFPlainLiteralDirections represents an enumeration for supported directions of plain literal's value
+        /// </summary>
+        public enum RDFPlainLiteralDirections
+        {
+            /// <summary>
+            /// Indicates that the value of the plain literal should be read in "left to right" direction
+            /// </summary>
+            LTR = 1,
+            /// <summary>
+            /// Indicates that the value of the plain literal should be read in "right to left" direction
+            /// </summary>
+            RTL = 2
+        };
     }
 }

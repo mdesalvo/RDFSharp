@@ -88,7 +88,7 @@ namespace RDFSharp.Test.Model
         [DataRow("donal duck")]
         public void ShouldCreateUnlanguagedPlainLiteralWithLTRDirection(string value)
         {
-            RDFPlainLiteral pl = new RDFPlainLiteral(value).SetLeftToRightDirection();
+            RDFPlainLiteral pl = new RDFPlainLiteral(value).SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR);
 
             Assert.IsNotNull(pl);
             Assert.IsFalse(pl.HasLanguage());
@@ -101,7 +101,7 @@ namespace RDFSharp.Test.Model
         [DataRow("donal duck")]
         public void ShouldCreateUnlanguagedPlainLiteralWithRTLDirection(string value)
         {
-            RDFPlainLiteral pl = new RDFPlainLiteral(value).SetRightToLeftDirection();
+            RDFPlainLiteral pl = new RDFPlainLiteral(value).SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL);
 
             Assert.IsNotNull(pl);
             Assert.IsFalse(pl.HasLanguage());
@@ -120,7 +120,7 @@ namespace RDFSharp.Test.Model
         [DataRow(null, "en")]
         public void ShouldCreatePlainLiteralWithLanguageWithLTRDirection(string value, string language)
         {
-            RDFPlainLiteral pl = new RDFPlainLiteral(value, language).SetLeftToRightDirection();
+            RDFPlainLiteral pl = new RDFPlainLiteral(value, language).SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR);
 
             Assert.IsNotNull(pl);
             Assert.IsTrue(pl.HasLanguage());
@@ -139,7 +139,7 @@ namespace RDFSharp.Test.Model
         [DataRow(null, "en")]
         public void ShouldCreatePlainLiteralWithLanguageWithRTLDirection(string value, string language)
         {
-            RDFPlainLiteral pl = new RDFPlainLiteral(value, language).SetRightToLeftDirection();
+            RDFPlainLiteral pl = new RDFPlainLiteral(value, language).SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL);
 
             Assert.IsNotNull(pl);
             Assert.IsTrue(pl.HasLanguage());
@@ -165,7 +165,7 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldReifyUnlanguagedLTRToCompoundLiteral()
         {
-            RDFPlainLiteral pl = new RDFPlainLiteral("hello").SetLeftToRightDirection();
+            RDFPlainLiteral pl = new RDFPlainLiteral("hello").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR);
 
             RDFGraph cl = pl.ReifyToCompoundLiteral();
             RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
@@ -180,7 +180,7 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldReifyUnlanguagedRTLToCompoundLiteral()
         {
-            RDFPlainLiteral pl = new RDFPlainLiteral("hello").SetRightToLeftDirection();
+            RDFPlainLiteral pl = new RDFPlainLiteral("hello").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL);
 
             RDFGraph cl = pl.ReifyToCompoundLiteral();
             RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
@@ -210,7 +210,7 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldReifyLanguagedLTRToCompoundLiteral()
         {
-            RDFPlainLiteral pl = new RDFPlainLiteral("hello","en-US").SetLeftToRightDirection();
+            RDFPlainLiteral pl = new RDFPlainLiteral("hello", "en-US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.LTR);
 
             RDFGraph cl = pl.ReifyToCompoundLiteral();
             RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));
@@ -226,7 +226,7 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldReifyLanguagedRTLToCompoundLiteral()
         {
-            RDFPlainLiteral pl = new RDFPlainLiteral("hello", "en-US").SetRightToLeftDirection();
+            RDFPlainLiteral pl = new RDFPlainLiteral("hello", "en-US").SetDirection(RDFModelEnums.RDFPlainLiteralDirections.RTL);
 
             RDFGraph cl = pl.ReifyToCompoundLiteral();
             RDFResource clRepresentative = new RDFResource(string.Concat("bnode:", pl.PatternMemberID.ToString()));

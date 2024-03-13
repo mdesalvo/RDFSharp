@@ -84,20 +84,11 @@ namespace RDFSharp.Model
             => !string.IsNullOrEmpty(Direction);
 
         /// <summary>
-        /// Sets the plain literal's value to have "ltr" direction
+        /// Sets the plain literal's value to have the given direction (ltr, rtl)
         /// </summary>
-        public RDFPlainLiteral SetLeftToRightDirection()
+        public RDFPlainLiteral SetDirection(RDFModelEnums.RDFPlainLiteralDirections direction)
         {
-            Direction = "ltr";
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the plain literal's value to have "rtl" direction
-        /// </summary>
-        public RDFPlainLiteral SetRightToLeftDirection()
-        {
-            Direction = "rtl";
+            Direction = direction == RDFModelEnums.RDFPlainLiteralDirections.RTL ? "rtl" : "ltr";
             return this;
         }
 
