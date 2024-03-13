@@ -20,6 +20,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Net;
 
 namespace RDFSharp.Model
@@ -191,7 +192,7 @@ namespace RDFSharp.Model
                 GraphIndex.AddIndex(triple);
 
                 //Handle eventual presence of a compound literal in the given triple's object:
-                //we merge its reification graph in order to retain its direction when serializing
+                //merge its reification graph (to retain its direction when serializing)
                 if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL
                      && triple.Object is RDFPlainLiteral plitObj
                      && plitObj.HasDirection()
@@ -246,6 +247,15 @@ namespace RDFSharp.Model
                 IndexedTriples.Remove(triple.TripleID);
                 //Remove index
                 GraphIndex.RemoveIndex(triple);
+
+                //Handle eventual presence of a compound literal in the given triple's object:
+                //drop its reification graph in case the eliminated triple was the last one containing it
+                if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL
+                     && triple.Object is RDFPlainLiteral plitObj
+                     && plitObj.HasDirection()
+                     //Ensure no triples contain this literal anymore (apart reserved "rdf:value" triple)
+                     && this[null, null, null, plitObj].Count(t => !t.Predicate.Equals(RDFVocabulary.RDF.VALUE)) == 0)
+                    RemoveTriplesBySubject(plitObj.ReificationSubject);
             }
             return this;
         }
@@ -258,12 +268,7 @@ namespace RDFSharp.Model
             if (subjectResource != null)
             {
                 foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource))
-                {
-                    //Remove triple
-                    IndexedTriples.Remove(triple.TripleID);
-                    //Remove index
-                    GraphIndex.RemoveIndex(triple);
-                }
+                    RemoveTriple(triple);
             }
             return this;
         }
@@ -276,12 +281,7 @@ namespace RDFSharp.Model
             if (predicateResource != null)
             {
                 foreach (RDFTriple triple in SelectTriplesByPredicate(predicateResource))
-                {
-                    //Remove triple
-                    IndexedTriples.Remove(triple.TripleID);
-                    //Remove index
-                    GraphIndex.RemoveIndex(triple);
-                }
+                    RemoveTriple(triple);
             }
             return this;
         }
@@ -294,12 +294,7 @@ namespace RDFSharp.Model
             if (objectResource != null)
             {
                 foreach (RDFTriple triple in SelectTriplesByObject(objectResource))
-                {
-                    //Remove triple
-                    IndexedTriples.Remove(triple.TripleID);
-                    //Remove index
-                    GraphIndex.RemoveIndex(triple);
-                }
+                    RemoveTriple(triple);
             }
             return this;
         }
@@ -312,12 +307,7 @@ namespace RDFSharp.Model
             if (objectLiteral != null)
             {
                 foreach (RDFTriple triple in SelectTriplesByLiteral(objectLiteral))
-                {
-                    //Remove triple
-                    IndexedTriples.Remove(triple.TripleID);
-                    //Remove index
-                    GraphIndex.RemoveIndex(triple);
-                }
+                    RemoveTriple(triple);
             }
             return this;
         }
@@ -330,13 +320,8 @@ namespace RDFSharp.Model
             if (subjectResource != null && predicateResource != null)
             {
                 foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource)
-                                               .SelectTriplesByPredicate(predicateResource))
-                {
-                    //Remove triple
-                    IndexedTriples.Remove(triple.TripleID);
-                    //Remove index
-                    GraphIndex.RemoveIndex(triple);
-                }
+                                             .SelectTriplesByPredicate(predicateResource))
+                    RemoveTriple(triple);
             }
             return this;
         }
@@ -349,13 +334,8 @@ namespace RDFSharp.Model
             if (subjectResource != null && objectResource != null)
             {
                 foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource)
-                                               .SelectTriplesByObject(objectResource))
-                {
-                    //Remove triple
-                    IndexedTriples.Remove(triple.TripleID);
-                    //Remove index
-                    GraphIndex.RemoveIndex(triple);
-                }
+                                             .SelectTriplesByObject(objectResource))
+                    RemoveTriple(triple);
             }
             return this;
         }
@@ -368,13 +348,8 @@ namespace RDFSharp.Model
             if (subjectResource != null && objectLiteral != null)
             {
                 foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource)
-                                               .SelectTriplesByLiteral(objectLiteral))
-                {
-                    //Remove triple
-                    IndexedTriples.Remove(triple.TripleID);
-                    //Remove index
-                    GraphIndex.RemoveIndex(triple);
-                }
+                                             .SelectTriplesByLiteral(objectLiteral))
+                    RemoveTriple(triple);
             }
             return this;
         }
@@ -387,13 +362,8 @@ namespace RDFSharp.Model
             if (predicateResource != null && objectResource != null)
             {
                 foreach (RDFTriple triple in SelectTriplesByPredicate(predicateResource)
-                                               .SelectTriplesByObject(objectResource))
-                {
-                    //Remove triple
-                    IndexedTriples.Remove(triple.TripleID);
-                    //Remove index
-                    GraphIndex.RemoveIndex(triple);
-                }
+                                             .SelectTriplesByObject(objectResource))
+                    RemoveTriple(triple);
             }
             return this;
         }
@@ -406,13 +376,8 @@ namespace RDFSharp.Model
             if (predicateResource != null && objectLiteral != null)
             {
                 foreach (RDFTriple triple in SelectTriplesByPredicate(predicateResource)
-                                               .SelectTriplesByLiteral(objectLiteral))
-                {
-                    //Remove triple
-                    IndexedTriples.Remove(triple.TripleID);
-                    //Remove index
-                    GraphIndex.RemoveIndex(triple);
-                }
+                                             .SelectTriplesByLiteral(objectLiteral))
+                    RemoveTriple(triple);
             }
             return this;
         }
