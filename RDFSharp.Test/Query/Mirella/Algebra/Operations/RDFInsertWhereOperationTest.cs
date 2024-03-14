@@ -317,9 +317,9 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
                         .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?X"))
-                            .AddAlternativeSteps(new List<RDFPropertyPathStep>() { 
+                            .AddAlternativeSteps([ 
                                 new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
-                                new RDFPropertyPathStep(RDFVocabulary.RDFS.COMMENT)})))
+                                new RDFPropertyPathStep(RDFVocabulary.RDFS.COMMENT)])))
                     .AddProjectionVariable(new RDFVariable("?Y"))
                     .UnionWithNext())
                 .AddSubQuery(new RDFSelectQuery()
@@ -396,9 +396,9 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
                         .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?X"))
-                            .AddAlternativeSteps(new List<RDFPropertyPathStep>() {
+                            .AddAlternativeSteps([
                                 new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
-                                new RDFPropertyPathStep(RDFVocabulary.RDFS.COMMENT)})))
+                                new RDFPropertyPathStep(RDFVocabulary.RDFS.COMMENT)])))
                     .AddProjectionVariable(new RDFVariable("?Y"))
                     .UnionWithNext())
                 .AddSubQuery(new RDFSelectQuery()
@@ -482,9 +482,9 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
                         .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?X"))
-                            .AddAlternativeSteps(new List<RDFPropertyPathStep>() {
+                            .AddAlternativeSteps([
                                 new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
-                                new RDFPropertyPathStep(RDFVocabulary.RDFS.COMMENT)}))
+                                new RDFPropertyPathStep(RDFVocabulary.RDFS.COMMENT)]))
                         .UnionWithNext())
                     .AddProjectionVariable(new RDFVariable("?Y"))
                     .UnionWithNext())
@@ -569,14 +569,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyToGraph()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
             operation.AddInsertTemplate(new RDFPattern(new RDFVariable("?Y"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:dog")));
             operation.AddPatternGroup(new RDFPatternGroup()
@@ -609,8 +609,8 @@ WHERE {
         [TestMethod]
         public void ShouldApplyToGraphWithExpressionsFromSubQuery()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("85.00", RDFModelEnums.RDFDatatypes.XSD_FLOAT)),
@@ -618,7 +618,7 @@ WHERE {
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("83", RDFModelEnums.RDFDatatypes.XSD_BYTE)),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
             operation.AddInsertTemplate(new RDFPattern(new RDFVariable("?X"), RDFVocabulary.FOAF.AGE, new RDFVariable("?AGEX2")));
             operation.AddPatternGroup(new RDFPatternGroup()
@@ -654,8 +654,8 @@ WHERE {
         [TestMethod]
         public void ShouldApplyToGraphWithExpressionsAndBindFromSubQuery()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("85.00", RDFModelEnums.RDFDatatypes.XSD_FLOAT)),
@@ -663,7 +663,7 @@ WHERE {
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("83", RDFModelEnums.RDFDatatypes.XSD_BYTE)),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
             operation.AddInsertTemplate(new RDFPattern(new RDFVariable("?X"), RDFVocabulary.FOAF.AGE, new RDFVariable("?AGEX2")));
             operation.AddInsertTemplate(new RDFPattern(new RDFVariable("?XAA"), new RDFResource("ex:derivedFrom"), new RDFVariable("?X")));
@@ -708,8 +708,8 @@ WHERE {
         [TestMethod]
         public void ShouldApplyToGraphWithExpressionsAndBindFromSubQueryHavingErrors()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("85.00", RDFModelEnums.RDFDatatypes.XSD_FLOAT)),
@@ -717,7 +717,7 @@ WHERE {
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("83", RDFModelEnums.RDFDatatypes.XSD_BYTE)),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
             operation.AddInsertTemplate(new RDFPattern(new RDFVariable("?X"), RDFVocabulary.FOAF.AGE, new RDFVariable("?AGEX2")));
             operation.AddInsertTemplate(new RDFPattern(new RDFVariable("?XFLOOR"), new RDFResource("ex:derivedFrom"), new RDFVariable("?X")));
@@ -750,14 +750,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyToGraphWithGroundTemplate()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
             operation.AddInsertTemplate(new RDFPattern(new RDFResource("ex:doggy"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:dog")));
             operation.AddPatternGroup(new RDFPatternGroup()
@@ -803,14 +803,14 @@ WHERE {
         [TestMethod]
         public async Task ShouldApplyToGraphAsync()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
             operation.AddInsertTemplate(new RDFPattern(new RDFVariable("?Y"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:dog")));
             operation.AddPatternGroup(new RDFPatternGroup()
@@ -862,14 +862,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
             operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFVariable("?Y"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:dog")));
             operation.AddPatternGroup(new RDFPatternGroup()
@@ -906,14 +906,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyToStoreWithGroundTemplate()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
             operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:doggy"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:dog")));
             operation.AddPatternGroup(new RDFPatternGroup()
@@ -961,14 +961,14 @@ WHERE {
         [TestMethod]
         public async Task ShouldApplyToStoreAsync()
         {
-            RDFAsyncStore store = new RDFAsyncStore(new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFAsyncStore store = new RDFAsyncStore(new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            }));
+            ]));
             RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
             operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFVariable("?Y"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:dog")));
             operation.AddPatternGroup(new RDFPatternGroup()

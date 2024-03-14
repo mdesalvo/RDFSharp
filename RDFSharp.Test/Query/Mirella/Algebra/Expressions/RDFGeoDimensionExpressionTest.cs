@@ -36,7 +36,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
             Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.DIMENSION}>(?V))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("geosparql") }).Equals("(geosparql:dimension(?V))"));
+            Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geosparql:dimension(?V))"));
         }
 
         [TestMethod]
@@ -49,7 +49,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
             Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.DIMENSION}>(?V))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("geosparql") }).Equals("(geosparql:dimension(?V))"));
+            Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geosparql:dimension(?V))"));
         }
 
         [TestMethod]

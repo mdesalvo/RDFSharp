@@ -91,7 +91,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFCountAggregator(new RDFVariable("?B"), new RDFVariable("?COUNTPROJ")));
             DataTable result = modifier.ApplyModifier(table);
 
@@ -130,7 +130,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFCountAggregator(new RDFVariable("?B"), new RDFVariable("?COUNTPROJ")).Distinct());
             DataTable result = modifier.ApplyModifier(table);
 
@@ -169,7 +169,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             RDFCountAggregator aggregator = new RDFCountAggregator(new RDFVariable("?B"), new RDFVariable("?COUNTPROJ"))
                                                     .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.LessThan, new RDFTypedLiteral("2.0", RDFModelEnums.RDFDatatypes.XSD_FLOAT)) as RDFCountAggregator;
             modifier.AddAggregator(aggregator);
@@ -183,7 +183,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value0"));
             Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.DECIMAL}"));
             Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(COUNT(?B) < \"2\"^^<{RDFVocabulary.XSD.FLOAT}>)"));
-            Assert.IsTrue(aggregator.PrintHavingClause(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals($"(COUNT(?B) < \"2\"^^xsd:float)"));
+            Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals($"(COUNT(?B) < \"2\"^^xsd:float)"));
         }
         #endregion
     }

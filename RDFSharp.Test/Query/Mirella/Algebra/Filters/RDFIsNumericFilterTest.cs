@@ -35,7 +35,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(filter.VariableName);
             Assert.IsTrue(filter.VariableName.Equals("?VAR"));
             Assert.IsTrue(filter.ToString().Equals("FILTER ( ISNUMERIC(?VAR) )"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { }).Equals("FILTER ( ISNUMERIC(?VAR) )"));
+            Assert.IsTrue(filter.ToString([]).Equals("FILTER ( ISNUMERIC(?VAR) )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 

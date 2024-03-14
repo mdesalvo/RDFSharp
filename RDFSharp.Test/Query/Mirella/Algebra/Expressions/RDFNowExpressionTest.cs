@@ -35,7 +35,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
             Assert.IsTrue(expression.ToString().Equals("(NOW())"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(NOW())"));
+            Assert.IsTrue(expression.ToString([]).Equals("(NOW())"));
         }
 
         [TestMethod]

@@ -45,9 +45,9 @@ namespace RDFSharp.Test.Store
         public void ShouldCreateAsyncStoreFromStore()
         {
             RDFAsyncStore store = new RDFAsyncStore(new RDFMemoryStore(
-                new List<RDFQuadruple>() {
+                [
                     new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFResource("ex:o"))
-                }));
+                ]));
 
             Assert.IsNotNull(store);
             Assert.IsTrue(store.WrappedStore.StoreType.Equals("MEMORY"));
@@ -79,10 +79,10 @@ namespace RDFSharp.Test.Store
         [TestMethod]
         public async Task ShouldMergeGraphAsync()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>() {
+            RDFGraph graph = new RDFGraph([
                 new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")),
                 new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit"))
-            }).SetContext(new Uri("ex:ctx"));
+            ]).SetContext(new Uri("ex:ctx"));
             RDFAsyncStore store = new RDFAsyncStore(new RDFMemoryStore());
             await store.MergeGraphAsync(graph);
 
@@ -701,7 +701,7 @@ namespace RDFSharp.Test.Store
         {
             RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"));
             RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit"));
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>() { quadruple1, quadruple2 });
+            RDFMemoryStore store = new RDFMemoryStore([quadruple1, quadruple2]);
             RDFMemoryStore storeQuadruple1 = quadruple1.ReifyQuadruple();
             RDFMemoryStore storeQuadruple2 = quadruple2.ReifyQuadruple();
             RDFAsyncStore reifiedStore = new RDFAsyncStore(storeQuadruple1.UnionWith(storeQuadruple2));

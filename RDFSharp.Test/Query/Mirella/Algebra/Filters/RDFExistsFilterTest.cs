@@ -35,7 +35,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(filter.Pattern);
             Assert.IsNull(filter.PatternResults);
             Assert.IsTrue(filter.ToString().Equals("FILTER ( EXISTS { ?S ?P <" + RDFVocabulary.RDF.ALT + "> } )"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals("FILTER ( EXISTS { ?S ?P rdf:Alt } )"));
+            Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("FILTER ( EXISTS { ?S ?P rdf:Alt } )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 

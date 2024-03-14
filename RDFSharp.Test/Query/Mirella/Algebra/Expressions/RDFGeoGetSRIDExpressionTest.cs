@@ -36,7 +36,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
             Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.GET_SRID}>(?V))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("geof") }).Equals("(geof:getSRID(?V))"));
+            Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof")]).Equals("(geof:getSRID(?V))"));
         }
 
         [TestMethod]
@@ -49,7 +49,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
             Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.GET_SRID}>(?V))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("geof") }).Equals("(geof:getSRID(?V))"));
+            Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof")]).Equals("(geof:getSRID(?V))"));
         }
 
         [TestMethod]

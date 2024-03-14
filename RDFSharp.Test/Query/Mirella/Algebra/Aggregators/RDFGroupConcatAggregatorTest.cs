@@ -110,7 +110,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFGroupConcatAggregator(new RDFVariable("?A"), new RDFVariable("?CONCATPROJ"), ";"));
             DataTable result = modifier.ApplyModifier(table);
 
@@ -149,7 +149,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFGroupConcatAggregator(new RDFVariable("?B"), new RDFVariable("?CONCATPROJ"), ";").Distinct());
             DataTable result = modifier.ApplyModifier(table);
 
@@ -188,7 +188,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             RDFGroupConcatAggregator aggregator = new RDFGroupConcatAggregator(new RDFVariable("?B"), new RDFVariable("?CONCATPROJ"), ";")
                                                         .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.NotEqualTo, new RDFPlainLiteral("hello", "en-US")) as RDFGroupConcatAggregator;
             modifier.AddAggregator(aggregator);

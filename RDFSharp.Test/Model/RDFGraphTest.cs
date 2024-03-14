@@ -59,11 +59,11 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldCreateGraphFromTriples()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            { 
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFResource("http://obj/")),
                 new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit"))
-            });
+            ]);
 
             Assert.IsNotNull(graph);
             Assert.IsNotNull(graph.IndexedTriples);
@@ -83,9 +83,9 @@ namespace RDFSharp.Test.Model
         public void ShouldDisposeGraphWithUsing()
         {
             RDFGraph graph;
-            using (graph = new RDFGraph(new List<RDFTriple>() {
+            using (graph = new RDFGraph([
                 new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFResource("http://obj/")),
-                new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit")) })) 
+                new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit")) ])) 
             {
                 Assert.IsFalse(graph.Disposed);
                 Assert.IsNotNull(graph.IndexedTriples);
@@ -142,11 +142,11 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldEnumerateGraph()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFResource("http://obj/")),
                 new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit"))
-            });
+            ]);
 
             int i = 0;
             foreach (RDFTriple t in graph) i++;

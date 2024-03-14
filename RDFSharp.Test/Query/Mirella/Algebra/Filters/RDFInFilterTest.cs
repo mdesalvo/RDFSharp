@@ -29,8 +29,8 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldCreateInFilter()
         {
-            RDFInFilter filter = new RDFInFilter(new RDFVariable("?VAR"), new List<RDFPatternMember>() { RDFVocabulary.RDF.ALT, RDFVocabulary.RDF.BAG,
-                                        null, new RDFPlainLiteral("hello", "en-US"), new RDFTypedLiteral("---25", RDFModelEnums.RDFDatatypes.XSD_GDAY) });
+            RDFInFilter filter = new RDFInFilter(new RDFVariable("?VAR"), [ RDFVocabulary.RDF.ALT, RDFVocabulary.RDF.BAG,
+                                        null, new RDFPlainLiteral("hello", "en-US"), new RDFTypedLiteral("---25", RDFModelEnums.RDFDatatypes.XSD_GDAY) ]);
 
             Assert.IsNotNull(filter);
             Assert.IsNotNull(filter.TermToSearch);
@@ -38,13 +38,13 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(filter.InTerms);
             Assert.IsTrue(filter.InTerms.Count == 4);
             Assert.IsTrue(filter.ToString().Equals($"FILTER ( ?VAR IN (<{RDFVocabulary.RDF.ALT}>, <{RDFVocabulary.RDF.BAG}>, \"hello\"@EN-US, \"---25Z\"^^<{RDFVocabulary.XSD.G_DAY}>) )"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals($"FILTER ( ?VAR IN (rdf:Alt, rdf:Bag, \"hello\"@EN-US, \"---25Z\"^^<{RDFVocabulary.XSD.G_DAY}>) )"));
+            Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals($"FILTER ( ?VAR IN (rdf:Alt, rdf:Bag, \"hello\"@EN-US, \"---25Z\"^^<{RDFVocabulary.XSD.G_DAY}>) )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingInFilterBecauseNullSearchTerm()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFInFilter(null, new List<RDFPatternMember>()));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFInFilter(null, []));
 
         [TestMethod]
         public void ShouldCreateInFilterAndKeepRow1()
@@ -58,7 +58,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFInFilter filter = new RDFInFilter(new RDFVariable("?A"), new List<RDFPatternMember>() { new RDFResource("ex:novo") });
+            RDFInFilter filter = new RDFInFilter(new RDFVariable("?A"), [new RDFResource("ex:novo")]);
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsTrue(keepRow);
@@ -76,7 +76,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFInFilter filter = new RDFInFilter(new RDFVariable("?B"), new List<RDFPatternMember>() { new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_INT) });
+            RDFInFilter filter = new RDFInFilter(new RDFVariable("?B"), [new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_INT)]);
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsTrue(keepRow);
@@ -94,7 +94,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFInFilter filter = new RDFInFilter(new RDFVariable("?A"), new List<RDFPatternMember>() { new RDFPlainLiteral(null) });
+            RDFInFilter filter = new RDFInFilter(new RDFVariable("?A"), [new RDFPlainLiteral(null)]);
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsTrue(keepRow);
@@ -112,7 +112,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFInFilter filter = new RDFInFilter(new RDFVariable("?A"), new List<RDFPatternMember>() { new RDFPlainLiteral("hello", "en") });
+            RDFInFilter filter = new RDFInFilter(new RDFVariable("?A"), [new RDFPlainLiteral("hello", "en")]);
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsFalse(keepRow);
@@ -130,7 +130,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFInFilter filter = new RDFInFilter(new RDFVariable("?A"), new List<RDFPatternMember>() { new RDFResource("ex:novo") });
+            RDFInFilter filter = new RDFInFilter(new RDFVariable("?A"), [new RDFResource("ex:novo")]);
             bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
             Assert.IsFalse(keepRow);

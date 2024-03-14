@@ -92,7 +92,7 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             //Partition aggregator is not available to users and it is always associated to a GroupBy modifier
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             DataTable result = modifier.ApplyModifier(table);
 
             Assert.IsNotNull(result);
@@ -128,7 +128,7 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             //Partition aggregator is not available to users and it is always associated to a GroupBy modifier
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.Aggregators[0].SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFResource("ex:value0"));
             DataTable result = modifier.ApplyModifier(table);
 

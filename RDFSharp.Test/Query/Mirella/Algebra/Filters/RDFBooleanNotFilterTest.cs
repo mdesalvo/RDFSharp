@@ -34,7 +34,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(filter);
             Assert.IsNotNull(filter.Filter);
             Assert.IsTrue(filter.ToString().Equals($"FILTER ( !( ISURI(?VARU) ) )"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals("FILTER ( !( ISURI(?VARU) ) )"));
+            Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( !( ISURI(?VARU) ) )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 
@@ -47,7 +47,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(filterB);
             Assert.IsNotNull(filterB.Filter);
             Assert.IsTrue(filterB.ToString().Equals($"FILTER ( !( !( ISURI(?VARU) ) ) )"));
-            Assert.IsTrue(filterB.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals($"FILTER ( !( !( ISURI(?VARU) ) ) )"));
+            Assert.IsTrue(filterB.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals($"FILTER ( !( !( ISURI(?VARU) ) ) )"));
             Assert.IsTrue(filterB.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filterB.PatternGroupMemberStringID)));
         }
 

@@ -38,7 +38,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(filter.Language.Equals(string.Empty));
             Assert.IsNull(filter.ExactLanguageRegex);
             Assert.IsTrue(filter.ToString().Equals("FILTER ( LANGMATCHES(LANG(?VAR), \"\") )"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { }).Equals("FILTER ( LANGMATCHES(LANG(?VAR), \"\") )"));
+            Assert.IsTrue(filter.ToString([]).Equals("FILTER ( LANGMATCHES(LANG(?VAR), \"\") )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 
@@ -54,7 +54,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(filter.Language.Equals("*"));
             Assert.IsNull(filter.ExactLanguageRegex);
             Assert.IsTrue(filter.ToString().Equals("FILTER ( LANGMATCHES(LANG(?VAR), \"*\") )"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { }).Equals("FILTER ( LANGMATCHES(LANG(?VAR), \"*\") )"));
+            Assert.IsTrue(filter.ToString([]).Equals("FILTER ( LANGMATCHES(LANG(?VAR), \"*\") )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 
@@ -70,7 +70,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(filter.Language.Equals("EN-US"));
             Assert.IsNotNull(filter.ExactLanguageRegex);
             Assert.IsTrue(filter.ToString().Equals("FILTER ( LANGMATCHES(LANG(?VAR), \"EN-US\") )"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { }).Equals("FILTER ( LANGMATCHES(LANG(?VAR), \"EN-US\") )"));
+            Assert.IsTrue(filter.ToString([]).Equals("FILTER ( LANGMATCHES(LANG(?VAR), \"EN-US\") )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 
@@ -86,7 +86,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(filter.Language.Equals("EN-US--LTR"));
             Assert.IsNotNull(filter.ExactLanguageRegex);
             Assert.IsTrue(filter.ToString().Equals("FILTER ( LANGMATCHES(LANG(?VAR), \"EN-US--LTR\") )"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { }).Equals("FILTER ( LANGMATCHES(LANG(?VAR), \"EN-US--LTR\") )"));
+            Assert.IsTrue(filter.ToString([]).Equals("FILTER ( LANGMATCHES(LANG(?VAR), \"EN-US--LTR\") )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 

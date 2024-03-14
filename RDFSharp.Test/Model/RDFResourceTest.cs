@@ -86,7 +86,7 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldCreateResourceExploitingHashContext()
         {
-            Dictionary<string, long> hashContext = new Dictionary<string, long>();
+            Dictionary<string, long> hashContext = [];
             RDFResource res1 = new RDFResource("ex:res1", hashContext);
             RDFResource res1CacheHitA = new RDFResource("ex:res1", hashContext);
             RDFResource res2 = new RDFResource("ex:res2", hashContext);
@@ -103,7 +103,7 @@ namespace RDFSharp.Test.Model
             RDFTriple triple4 = new RDFTriple(res1, res2CacheHitB, res3);
             RDFTriple triple5 = new RDFTriple(res1CacheHitA, res2CacheHitA, res3);
             RDFTriple triple6 = new RDFTriple(res1CacheHitA, res2CacheHitB, res3);
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>(){ triple1, triple2, triple3, triple4, triple5, triple6 });
+            RDFGraph graph = new RDFGraph([triple1, triple2, triple3, triple4, triple5, triple6]);
 
             //Now we have materialized the lazy promises and calculated the hashes, exploiting the cache for boosting performances
             Assert.IsTrue(hashContext.Count == 3);
@@ -114,11 +114,11 @@ namespace RDFSharp.Test.Model
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingResourceExploitingHashContextBecauseNullUri()
-            => Assert.ThrowsException<RDFModelException>(() => new RDFResource(null, new Dictionary<string, long>()));
+            => Assert.ThrowsException<RDFModelException>(() => new RDFResource(null, []));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingResourceExploitingHashContextBecauseRelativeUri()
-            => Assert.ThrowsException<RDFModelException>(() => new RDFResource("./example/org", new Dictionary<string, long>()));
+            => Assert.ThrowsException<RDFModelException>(() => new RDFResource("./example/org", []));
         #endregion
     }
 }

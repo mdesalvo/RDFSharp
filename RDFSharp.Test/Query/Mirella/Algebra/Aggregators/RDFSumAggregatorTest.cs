@@ -91,7 +91,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFSumAggregator(new RDFVariable("?A"), new RDFVariable("?SUMPROJ")));
             DataTable result = modifier.ApplyModifier(table);
 
@@ -130,7 +130,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFSumAggregator(new RDFVariable("?A"), new RDFVariable("?SUMPROJ")).Distinct());
             DataTable result = modifier.ApplyModifier(table);
 
@@ -169,7 +169,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             RDFSumAggregator aggregator = new RDFSumAggregator(new RDFVariable("?A"), new RDFVariable("?SUMPROJ"))
                                                     .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan, new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_BYTE)) as RDFSumAggregator;
             modifier.AddAggregator(aggregator);
@@ -183,7 +183,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value0"));
             Assert.IsTrue(result.Rows[0]["?SUMPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}"));
             Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(SUM(?A) <= \"30\"^^<{RDFVocabulary.XSD.BYTE}>)"));
-            Assert.IsTrue(aggregator.PrintHavingClause(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals($"(SUM(?A) <= \"30\"^^xsd:byte)"));
+            Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals($"(SUM(?A) <= \"30\"^^xsd:byte)"));
         }
 
         [TestMethod]
@@ -215,7 +215,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row3);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFSumAggregator(new RDFVariable("?A"), new RDFVariable("?SUMPROJ")));
             DataTable result = modifier.ApplyModifier(table);
 

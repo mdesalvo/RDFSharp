@@ -36,7 +36,7 @@ namespace RDFSharp.Test.Model
                 new RDFResource("ex:focusNode"),
                 new RDFResource("ex:resultPath"),
                 new RDFPlainLiteral("resultValue"),
-                new List<RDFLiteral>() { new RDFPlainLiteral("resultMessage") },
+                [new RDFPlainLiteral("resultMessage")],
                 severity
             );
 
@@ -71,7 +71,7 @@ namespace RDFSharp.Test.Model
                 new RDFResource("ex:focusNode"),
                 new RDFResource("ex:resultPath"),
                 new RDFPlainLiteral("resultValue"),
-                new List<RDFLiteral>() { new RDFPlainLiteral("resultMessage") },
+                [new RDFPlainLiteral("resultMessage")],
                 severity
             );
             RDFGraph vrGraph = result.ToRDFGraph();
@@ -112,7 +112,7 @@ namespace RDFSharp.Test.Model
                 new RDFResource("ex:focusNode"),
                 new RDFResource("ex:resultPath"),
                 new RDFResource("ex:resultValue"),
-                new List<RDFLiteral>() { new RDFPlainLiteral("resultMessage","en") },
+                [new RDFPlainLiteral("resultMessage","en")],
                 severity
             );
             RDFGraph vrGraph = result.ToRDFGraph();

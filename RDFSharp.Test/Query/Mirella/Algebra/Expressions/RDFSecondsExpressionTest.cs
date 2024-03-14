@@ -36,7 +36,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
             Assert.IsTrue(expression.ToString().Equals("(SECONDS((?V1 + ?V2)))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(SECONDS((?V1 + ?V2)))"));
+            Assert.IsTrue(expression.ToString([]).Equals("(SECONDS((?V1 + ?V2)))"));
         }
 
         [TestMethod]
@@ -49,7 +49,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
             Assert.IsTrue(expression.ToString().Equals("(SECONDS(?V1))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(SECONDS(?V1))"));
+            Assert.IsTrue(expression.ToString([]).Equals("(SECONDS(?V1))"));
         }
 
         [TestMethod]

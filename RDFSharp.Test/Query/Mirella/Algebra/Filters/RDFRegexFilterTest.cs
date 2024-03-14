@@ -39,7 +39,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(filter.RegEx);
             Assert.IsTrue(filter.RegEx.ToString().Equals("^hello$"));
             Assert.IsTrue(filter.ToString().Equals("FILTER ( REGEX(STR(?VAR), \"^hello$\") )"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { }).Equals("FILTER ( REGEX(STR(?VAR), \"^hello$\") )"));
+            Assert.IsTrue(filter.ToString([]).Equals("FILTER ( REGEX(STR(?VAR), \"^hello$\") )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 
@@ -54,7 +54,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(filter.RegEx);
             Assert.IsTrue(filter.RegEx.ToString().Equals("^hello$"));
             Assert.IsTrue(filter.ToString().Equals("FILTER ( REGEX(STR(?VAR), \"^hello$\", \"ismx\") )"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { }).Equals("FILTER ( REGEX(STR(?VAR), \"^hello$\", \"ismx\") )"));
+            Assert.IsTrue(filter.ToString([]).Equals("FILTER ( REGEX(STR(?VAR), \"^hello$\", \"ismx\") )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 

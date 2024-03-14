@@ -106,7 +106,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row3);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFMaxAggregator(new RDFVariable("?B"), new RDFVariable("?MAXPROJ"), RDFQueryEnums.RDFMinMaxAggregatorFlavors.String));
             DataTable result = modifier.ApplyModifier(table);
 
@@ -150,7 +150,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row3);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFMaxAggregator(new RDFVariable("?B"), new RDFVariable("?MAXPROJ"), RDFQueryEnums.RDFMinMaxAggregatorFlavors.String).Distinct());
             DataTable result = modifier.ApplyModifier(table);
 
@@ -189,7 +189,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             RDFMaxAggregator aggregator = new RDFMaxAggregator(new RDFVariable("?B"), new RDFVariable("?MAXPROJ"), RDFQueryEnums.RDFMinMaxAggregatorFlavors.String)
                                                     .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFPlainLiteral("hello", "en-US")) as RDFMaxAggregator;
             modifier.AddAggregator(aggregator);
@@ -203,7 +203,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
             Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals("hello@EN-US"));
             Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(MAX(?B) = \"hello\"@EN-US)"));
-            Assert.IsTrue(aggregator.PrintHavingClause(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals($"(MAX(?B) = \"hello\"@EN-US)"));
+            Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals($"(MAX(?B) = \"hello\"@EN-US)"));
         }
 
         [TestMethod]
@@ -235,7 +235,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row3);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFMaxAggregator(new RDFVariable("?A"), new RDFVariable("?MAXPROJ"), RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric));
             DataTable result = modifier.ApplyModifier(table);
 
@@ -279,7 +279,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row3);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFMaxAggregator(new RDFVariable("?A"), new RDFVariable("?MAXPROJ"), RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric).Distinct());
             DataTable result = modifier.ApplyModifier(table);
 
@@ -318,7 +318,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             RDFMaxAggregator aggregator = new RDFMaxAggregator(new RDFVariable("?A"), new RDFVariable("?MAXPROJ"), RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric)
                                                     .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFTypedLiteral("28", RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)) as RDFMaxAggregator;
             modifier.AddAggregator(aggregator);
@@ -332,7 +332,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
             Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals($"28.24^^{RDFVocabulary.XSD.DOUBLE}"));
             Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(MAX(?A) > \"28\"^^<{RDFVocabulary.XSD.POSITIVE_INTEGER}>)"));
-            Assert.IsTrue(aggregator.PrintHavingClause(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals($"(MAX(?A) > \"28\"^^xsd:positiveInteger)"));
+            Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals($"(MAX(?A) > \"28\"^^xsd:positiveInteger)"));
         }
 
         [TestMethod]
@@ -364,7 +364,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row3);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFMaxAggregator(new RDFVariable("?A"), new RDFVariable("?MAXPROJ"), RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric));
             DataTable result = modifier.ApplyModifier(table);
 

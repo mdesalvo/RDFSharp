@@ -36,7 +36,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
             Assert.IsTrue(expression.ToString().Equals("(ENCODE_FOR_URI((?V1 + ?V2)))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(ENCODE_FOR_URI((?V1 + ?V2)))"));
+            Assert.IsTrue(expression.ToString([]).Equals("(ENCODE_FOR_URI((?V1 + ?V2)))"));
         }
 
         [TestMethod]
@@ -49,7 +49,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
             Assert.IsTrue(expression.ToString().Equals("(ENCODE_FOR_URI(?V1))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(ENCODE_FOR_URI(?V1))"));
+            Assert.IsTrue(expression.ToString([]).Equals("(ENCODE_FOR_URI(?V1))"));
         }
 
         [TestMethod]

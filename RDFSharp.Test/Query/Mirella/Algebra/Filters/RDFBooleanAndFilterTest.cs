@@ -35,7 +35,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(filter.LeftFilter);
             Assert.IsNotNull(filter.RightFilter);
             Assert.IsTrue(filter.ToString().Equals($"FILTER ( ( ISURI(?VARU) ) && ( DATATYPE(?VARL) = <{RDFVocabulary.XSD.BOOLEAN}> ) )"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals("FILTER ( ( ISURI(?VARU) ) && ( DATATYPE(?VARL) = xsd:boolean ) )"));
+            Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( ( ISURI(?VARU) ) && ( DATATYPE(?VARL) = xsd:boolean ) )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 
@@ -49,7 +49,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(filterB.LeftFilter);
             Assert.IsNotNull(filterB.RightFilter);
             Assert.IsTrue(filterB.ToString().Equals($"FILTER ( ( ( ISURI(?VARU) ) && ( DATATYPE(?VARL) = <{RDFVocabulary.XSD.BOOLEAN}> ) ) && ( SAMETERM(?VARL, <{RDFVocabulary.RDF.ALT}>) ) )"));
-            Assert.IsTrue(filterB.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals($"FILTER ( ( ( ISURI(?VARU) ) && ( DATATYPE(?VARL) = xsd:boolean ) ) && ( SAMETERM(?VARL, <{RDFVocabulary.RDF.ALT}>) ) )"));
+            Assert.IsTrue(filterB.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals($"FILTER ( ( ( ISURI(?VARU) ) && ( DATATYPE(?VARL) = xsd:boolean ) ) && ( SAMETERM(?VARL, <{RDFVocabulary.RDF.ALT}>) ) )"));
             Assert.IsTrue(filterB.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filterB.PatternGroupMemberStringID)));
         }
 

@@ -68,11 +68,11 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldCreateAsyncGraphFromGraph()
         {
-            RDFAsyncGraph asyncGraph = new RDFAsyncGraph(new RDFGraph(new List<RDFTriple>()
-            {
+            RDFAsyncGraph asyncGraph = new RDFAsyncGraph(new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFResource("http://obj/")),
                 new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit"))
-            }));
+            ]));
 
             Assert.IsNotNull(asyncGraph);
             Assert.IsNotNull(asyncGraph.WrappedGraph);

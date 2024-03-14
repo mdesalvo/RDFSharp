@@ -58,14 +58,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraphWithResults()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -94,14 +94,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraphWithResultsHavingCommonSPVariables()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:pluto"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -122,14 +122,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraphWithResultsHavingCommonSOVariables()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:pluto")),
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Pluto", "it")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Fido", "it")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -148,14 +148,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraphWithResultsHavingCommonPOVariables()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:dogOf")),
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Pluto", "it")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Fido", "it")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -175,14 +175,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraphWithResultsHavingCommonSPOVariables()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:pluto"),new RDFResource("ex:pluto")),
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Pluto", "it")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Fido", "it")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -201,14 +201,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraph_UnionsThenOptional()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -234,14 +234,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraph_UnionsThenInner()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -265,14 +265,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraph_BindAndProjectionExpressions()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -312,14 +312,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraph_BindAndProjectionExpressionsSortedByBind()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -359,14 +359,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraph_BindAndProjectionExpressionsSortedByProjectionExpressions()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperinoo")),
                 new RDFTriple(new RDFResource("ex:paperinoo"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -406,8 +406,8 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraph_BindAndProjectionExpressionsSortedByProjectionExpressionsThenByBind()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:doggy"),new RDFResource("ex:dogOf"),new RDFResource("ex:pippo")),
@@ -415,7 +415,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperinoo")),
                 new RDFTriple(new RDFResource("ex:paperinoo"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoev"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -461,8 +461,8 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraph_BindAndProjectionExpressionsSortedByBindThenByProjectionExpressions()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:doggy"),new RDFResource("ex:dogOf"),new RDFResource("ex:pippo")),
@@ -470,7 +470,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperinoo")),
                 new RDFTriple(new RDFResource("ex:paperinoo"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoev"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -516,8 +516,8 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraph_ProjectionExpressionsSortedByUnboundProjectionExpressions()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:doggy"),new RDFResource("ex:dogOf"),new RDFResource("ex:pippo")),
@@ -525,7 +525,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperinoo")),
                 new RDFTriple(new RDFResource("ex:paperinoo"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoev"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -548,14 +548,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraph_StarWithBind()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -764,8 +764,8 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraphWithComplexQuery1()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
@@ -774,7 +774,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:baubau"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperoga")),
                 new RDFTriple(new RDFResource("ex:paperoga"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("white")),
                 new RDFTriple(new RDFResource("ex:snoopie"),new RDFResource("ex:dogOf"),new RDFResource("ex:linus"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -808,8 +808,8 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraphWithComplexQuery2()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
@@ -818,7 +818,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:baubau"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperoga")),
                 new RDFTriple(new RDFResource("ex:paperoga"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("white")),
                 new RDFTriple(new RDFResource("ex:snoopie"),new RDFResource("ex:dogOf"),new RDFResource("ex:linus"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -860,8 +860,8 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraphWithComplexQuery3()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
@@ -870,7 +870,7 @@ namespace RDFSharp.Test.Query
                 new RDFTriple(new RDFResource("ex:baubau"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperoga")),
                 new RDFTriple(new RDFResource("ex:paperoga"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("white")),
                 new RDFTriple(new RDFResource("ex:snoopie"),new RDFResource("ex:dogOf"),new RDFResource("ex:linus"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -920,14 +920,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraphWithNoResults()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -945,11 +945,11 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraphWithNoResultsBecauseNoEvaluableQueryMembers()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery();
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
@@ -963,14 +963,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnStoreWithResults()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -997,14 +997,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnStoreWithResultsHavingCommonCSVariables()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:ctx"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1025,14 +1025,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnStoreWithResultsHavingCommonCPVariables()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"),new RDFResource("ex:ctx"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1054,14 +1054,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnStoreWithResultsHavingCommonCOVariables()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:ctx")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:ctx"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1081,14 +1081,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnStoreWithResultsHavingCommonCSPVariables()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:ctx"),new RDFResource("ex:ctx"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1109,14 +1109,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnStoreWithResultsHavingCommonCSOVariables()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:ctx"),new RDFResource("ex:dogOf"),new RDFResource("ex:ctx")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:ctx"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1135,14 +1135,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnStoreWithResultsHavingCommonCPOVariables()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"),new RDFResource("ex:ctx"),new RDFResource("ex:ctx")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:ctx"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1162,14 +1162,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnStoreWithResultsHavingCommonCSPOVariables()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:ctx"),new RDFResource("ex:ctx"),new RDFResource("ex:ctx")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:ctx"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1188,14 +1188,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnStoreWithResultsHavingCommonSPVariables()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"),new RDFResource("ex:pluto"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1216,14 +1216,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnStoreWithResultsHavingCommonSOVariables()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:pluto")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Pluto", "it")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Fido", "it")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1242,14 +1242,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnStoreWithResultsHavingCommonPOVariables()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:dogOf")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Pluto", "it")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Fido", "it")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1269,14 +1269,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnStoreWithResultsHavingCommonSPOVariables()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"),new RDFResource("ex:pluto"),new RDFResource("ex:pluto")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Pluto", "it")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Fido", "it")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1295,14 +1295,14 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnStore_BindAndProjectionExpressions()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext(), new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext(), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext(), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext(), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext(), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -1342,17 +1342,17 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnFederationWithResults()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
-            });
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            ]);
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFFederation federation = new RDFFederation().AddGraph(graph).AddStore(store);
 
             RDFSelectQuery query = new RDFSelectQuery()
@@ -1383,17 +1383,17 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldEvaluateSelectQueryOnFederation_BindAndProjectionExpressions()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
-            });
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            ]);
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFFederation federation = new RDFFederation().AddGraph(graph).AddStore(store);
 
             RDFSelectQuery query = new RDFSelectQuery()
@@ -1956,8 +1956,8 @@ WHERE {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddValues(new RDFValues()
-                        .AddColumn(new RDFVariable("?Y"), new List<RDFPatternMember>() { new RDFResource("ex:pluto") })
-                        .AddColumn(new RDFVariable("?X"), new List<RDFPatternMember>() { new RDFResource("ex:topolino") }))
+                        .AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")])
+                        .AddColumn(new RDFVariable("?X"), [new RDFResource("ex:topolino")]))
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                     .AsService(endpoint));
             DataTable result = new RDFQueryEngine().EvaluateSelectQuery(query, new RDFGraph()).SelectResults;
@@ -2196,14 +2196,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateDescribeQueryWithResults()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?Y"))
@@ -2228,14 +2228,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateDescribeQueryOnStoreWithResultsFromvariableTerms()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx1"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx1"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?Y"))
@@ -2262,14 +2262,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateDescribeQueryOnStoreWithResultsFromVariableTermAssumingBlankValues()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx1"),new RDFResource("bnode:12345"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx1"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?Y"))
@@ -2296,14 +2296,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateDescribeQueryOnStoreWithResultsFromResourceTerm()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx1"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx1"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("ex:pluto"))
@@ -2326,14 +2326,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateDescribeQueryOnStoreWithResultsFromContextTerm()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx1"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx1"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("ex:ctx1"))
@@ -2359,14 +2359,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateDescribeQueryOnStoreWithResultsFromBlankResourceTerm()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx1"),new RDFResource("bnode:12345"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx1"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx2"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("bnode:12345"))
@@ -2389,14 +2389,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateDescribeQueryWithResultsFromResourceTerm()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("ex:pluto"))
@@ -2417,14 +2417,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateDescribeQueryWithResultsFromBlankResourceTerm()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("bnode:12345"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("bnode:12345"))
@@ -2445,14 +2445,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateDescribeQueryWithResultsFromResourceTermOnly()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("ex:pluto"));
@@ -2470,14 +2470,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateDescribeQueryWithNoResults()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?Y"))
@@ -2495,11 +2495,11 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateDescribeQueryWithNoResultsBecauseNoEvaluableQueryMembersAndVariableDescribeTerm()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US"))
-            });
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?Y"));
@@ -2516,14 +2516,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateConstructQueryWithResults()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFConstructQuery query = new RDFConstructQuery()
                 .AddTemplate(new RDFPattern(new RDFVariable("?Y"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:dog")))
@@ -2548,14 +2548,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateConstructQueryWithResultsFromGroundTemplate()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFConstructQuery query = new RDFConstructQuery()
                 .AddTemplate(new RDFPattern(new RDFResource("ex:pluto"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:dog")))
@@ -2577,14 +2577,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateConstructQueryWithNoResults()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFConstructQuery query = new RDFConstructQuery()
                 .AddTemplate(new RDFPattern(new RDFVariable("?Y"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:dog")))
@@ -2602,11 +2602,11 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateConstructQueryWithNoResultsBecauseNoEvaluableQueryMembers()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US"))
-            });
+            ]);
 
             RDFConstructQuery query = new RDFConstructQuery()
                 .AddTemplate(new RDFPattern(new RDFVariable("?Y"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:dog")));
@@ -2623,14 +2623,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateAskQueryTrue()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFAskQuery query = new RDFAskQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -2645,14 +2645,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateAskQueryFalse()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFAskQuery query = new RDFAskQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -2667,11 +2667,11 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateAskQueryFalseBecauseNoEvaluableQueryMembers()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US"))
-            });
+            ]);
 
             RDFAskQuery query = new RDFAskQuery();
             RDFAskQueryResult result = new RDFQueryEngine().EvaluateAskQuery(query, graph);
@@ -2685,14 +2685,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateQueryMembersWithResults()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -2701,7 +2701,7 @@ WHERE {
                     .AddFilter(new RDFBoundFilter(new RDFVariable("?N"))))
                 .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
-                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), new List<RDFPatternMember>() { new RDFResource("ex:pluto") }))))
+                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")]))))
                 .AddModifier(new RDFOrderByModifier(new RDFVariable("?Y"), RDFQueryEnums.RDFOrderByFlavors.ASC));
             List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
 
@@ -2734,14 +2734,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateQueryMembersWithResultsAndExtendedPropertiesOpUn()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -2751,7 +2751,7 @@ WHERE {
                     .Optional())
                 .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
-                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), new List<RDFPatternMember>() { new RDFResource("ex:pluto") })))
+                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")])))
                     .UnionWithNext())
                 .AddModifier(new RDFOrderByModifier(new RDFVariable("?Y"), RDFQueryEnums.RDFOrderByFlavors.ASC));
             List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
@@ -2785,14 +2785,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateQueryMembersWithResultsAndExtendedPropertiesUnOp()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -2802,7 +2802,7 @@ WHERE {
                     .UnionWithNext())
                 .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
-                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), new List<RDFPatternMember>() { new RDFResource("ex:pluto") })))
+                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")])))
                     .Optional())
                 .AddModifier(new RDFOrderByModifier(new RDFVariable("?Y"), RDFQueryEnums.RDFOrderByFlavors.ASC));
             List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
@@ -2836,14 +2836,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluateQueryMembersWithNoResults()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -2852,7 +2852,7 @@ WHERE {
                     .AddFilter(new RDFBoundFilter(new RDFVariable("?N"))))
                 .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
-                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), new List<RDFPatternMember>() { new RDFResource("ex:pluto") }))))
+                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")]))))
                 .AddModifier(new RDFOrderByModifier(new RDFVariable("?Y"), RDFQueryEnums.RDFOrderByFlavors.ASC));
             List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
 
@@ -2879,14 +2879,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluatePatternGroupWithResultsFromPattern()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFPatternGroup patternGroup = new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -2924,14 +2924,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluatePatternGroupWithNoResultsFromPattern()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFPatternGroup patternGroup = new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X")).UnionWithNext())
@@ -2959,14 +2959,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluatePatternGroupWithResultsFromPropertyPath()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFPatternGroup patternGroup = new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?N"))
@@ -2991,14 +2991,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluatePatternGroupWithNoResultsFromPropertyPath()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFPatternGroup patternGroup = new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?N"))
@@ -3019,17 +3019,17 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluatePatternGroupWithResultsFromValues()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFPatternGroup patternGroup = new RDFPatternGroup()
-                .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), new List<RDFPatternMember>() { new RDFResource("ex:pluto") }));
+                .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")]));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
@@ -3049,14 +3049,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluatePatternGroupWithResultsFromUndefValues()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFPatternGroup patternGroup = new RDFPatternGroup()
                 .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), null)); //UNDEF
@@ -3079,14 +3079,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluatePatternGroupWithResultsFromExistsFilter()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFPatternGroup patternGroup = new RDFPatternGroup()
                 .AddFilter(new RDFExistsFilter(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))));
@@ -3117,14 +3117,14 @@ WHERE {
         [TestMethod]
         public void ShouldEvaluatePatternGroupWithNoResultsFromExistsFilter()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFPatternGroup patternGroup = new RDFPatternGroup()
                 .AddFilter(new RDFExistsFilter(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X"))));
@@ -3149,14 +3149,14 @@ WHERE {
         [TestMethod]
         public void ShouldFinalizePatternGroup()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFPatternGroup patternGroup = new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -3188,14 +3188,14 @@ WHERE {
         [TestMethod]
         public void ShouldFinalizePatternGroupWithOptional()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFPatternGroup patternGroup = new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -3228,14 +3228,14 @@ WHERE {
         [TestMethod]
         public void ShouldFinalizePatternGroupWithUnionWithNext()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFPatternGroup patternGroup = new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
@@ -3268,8 +3268,8 @@ WHERE {
         [TestMethod]
         public void ShouldApplyFilters()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:baobao"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperoga")),
@@ -3277,13 +3277,13 @@ WHERE {
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFPatternGroup patternGroup = new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                 .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
                 .AddFilter(new RDFRegexFilter(new RDFVariable("?Y"), new Regex("^ex:[a-zA-Z]+o$")))
-                .AddFilter(new RDFInFilter(new RDFVariable("?Y"), new List<RDFPatternMember>() { new RDFResource("ex:pluto") }));
+                .AddFilter(new RDFInFilter(new RDFVariable("?Y"), [new RDFResource("ex:pluto")]));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             queryEngine.EvaluatePatternGroup(patternGroup, graph); //Just to obtain real pattern tables (instead of mocking them)
             queryEngine.FinalizePatternGroup(patternGroup); //Just to obtain real pattern group table  (instead of mocking it)
@@ -3306,20 +3306,20 @@ WHERE {
         [TestMethod]
         public void ShouldApplyModifiers()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                     .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional()))
-                .AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?Y") })
+                .AddModifier(new RDFGroupByModifier([new RDFVariable("?Y")])
                     .AddAggregator(new RDFSampleAggregator(new RDFVariable("?X"), new RDFVariable("?SAMPLE_X"))))
                 .AddModifier(new RDFOrderByModifier(new RDFVariable("?SAMPLE_X"), RDFQueryEnums.RDFOrderByFlavors.ASC))
                 .AddModifier(new RDFOffsetModifier(1))
@@ -3343,11 +3343,11 @@ WHERE {
         [TestMethod]
         public void ShouldFillTemplateTriples()
         {
-            List<RDFPattern> templates = new List<RDFPattern>()
-            {
+            List<RDFPattern> templates =
+            [
                 new RDFPattern(new RDFResource("ex:bracco"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")),
                 new RDFPattern(new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog"))
-            };
+            ];
             DataTable table = new DataTable();
             table.Columns.Add("?Y", typeof(string));
             table.Columns.Add("?X", typeof(string));
@@ -3388,11 +3388,11 @@ WHERE {
         [TestMethod]
         public void ShouldFillTemplateQuadruples()
         {
-            List<RDFPattern> templates = new List<RDFPattern>()
-            {
+            List<RDFPattern> templates =
+            [
                 new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:bracco"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")),
                 new RDFPattern(new RDFVariable("?Y"), new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog"))
-            };
+            ];
             DataTable table = new DataTable();
             table.Columns.Add("?Y", typeof(string));
             table.Columns.Add("?X", typeof(string));
@@ -3436,15 +3436,15 @@ WHERE {
         [TestMethod]
         public void ShouldDescribeStarTerms()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
-            });
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -3497,15 +3497,15 @@ WHERE {
         [TestMethod]
         public void ShouldDescribeResourceTerms()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
-            });
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("ex:balto"))
@@ -3559,27 +3559,27 @@ WHERE {
         [TestMethod]
         public void ShouldDescribeResourceTermsOnFederation()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino"))
-            });
+            ]);
             RDFAsyncGraph asyncGraph = new RDFAsyncGraph(new List<RDFTriple>()
             {
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US"))
             });
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext(), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFQuadruple(new RDFContext(), new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
-            });
+            ]);
             RDFAsyncStore asyncStore = new RDFAsyncStore(
-                new RDFMemoryStore(new List<RDFQuadruple>()
-                {
+                new RDFMemoryStore(
+                [
                     new RDFQuadruple(new RDFContext(), new RDFResource("ex:snoopy"),new RDFResource("ex:dogOf"),new RDFResource("ex:linus")),
                     new RDFQuadruple(new RDFContext(), new RDFResource("ex:linus"),new RDFResource("ex:hasName"),new RDFTypedLiteral("Linus", RDFModelEnums.RDFDatatypes.XSD_STRING))
-                }));
+                ]));
             RDFFederation federation = new RDFFederation().AddGraph(graph)
                                                           .AddAsyncGraph(asyncGraph)
                                                           .AddStore(store)
@@ -3645,15 +3645,15 @@ WHERE {
         [TestMethod]
         public void ShouldDescribeUnexistingResourceTerms()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
-            });
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("ex:balto2"))
@@ -3707,15 +3707,15 @@ WHERE {
         [TestMethod]
         public void ShouldDescribeVariableTerms()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
-            });
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?Y"))
@@ -3769,10 +3769,10 @@ WHERE {
         [TestMethod]
         public void ShouldDescribeVariableTermsOnFederation()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino"))
-            });
+            ]);
             RDFAsyncGraph agraph = new RDFAsyncGraph(new List<RDFTriple>()
             {
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
@@ -3836,15 +3836,15 @@ WHERE {
         [TestMethod]
         public void ShouldDescribeUnexistingVariableTerms()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
-            });
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?Z"))
@@ -3898,15 +3898,15 @@ WHERE {
         [TestMethod]
         public void ShouldDescribeLiteralBoundVariableTerms()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
-            });
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?C"))
@@ -3986,15 +3986,15 @@ WHERE {
         [TestMethod]
         public void ShouldDescribeLiteralBoundVariableTermsOnAsyncStore()
         {
-            RDFAsyncStore astore = new RDFAsyncStore(new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFAsyncStore astore = new RDFAsyncStore(new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
-            }));
+            ]));
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?C"))
@@ -4030,14 +4030,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternToDataSourceGraph()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPattern(pattern, graph);
@@ -4082,14 +4082,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternToDataSourceStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext(), new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext(), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext(), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext(), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext(), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPattern(pattern, store);
@@ -4132,17 +4132,17 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternToDataSourceFederation()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US"))
-            });
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            ]);
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext(), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext(), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext(), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFFederation federation = new RDFFederation()
                                             .AddGraph(graph)
                                             .AddStore(store);
@@ -4164,14 +4164,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithSubjectVariableToGraph()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
@@ -4185,14 +4185,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithPredicateVariableToGraph()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
@@ -4206,14 +4206,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithObjectVariableToGraph()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
@@ -4227,14 +4227,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithLiteralVariableToGraph()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFResource("ex:topolino"), new RDFResource("ex:hasName"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
@@ -4248,14 +4248,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithSubjectPredicateVariableToGraph()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFVariable("?V"), new RDFResource("ex:topolino"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
@@ -4270,14 +4270,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithEqualSubjectPredicateVariableToGraph()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:pluto"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFVariable("?Y"), new RDFResource("ex:topolino"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
@@ -4291,14 +4291,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithSubjectObjectVariableToGraph()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
@@ -4317,14 +4317,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithEqualSubjectObjectVariableToGraph()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:pluto")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?Y"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
@@ -4338,14 +4338,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithPredicateObjectVariableToGraph()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFVariable("?V"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
@@ -4360,14 +4360,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithEqualPredicateObjectVariableToGraph()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:dogOf")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFVariable("?V"), new RDFVariable("?V"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
@@ -4381,14 +4381,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithSubjectPredicateObjectVariableToGraph()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:dogOf")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFVariable("?V"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
@@ -4401,14 +4401,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithEqualSubjectPredicateObjectVariableToGraph()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:pluto"),new RDFResource("ex:pluto")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFVariable("?Y"), new RDFVariable("?Y"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToGraph(pattern, graph);
@@ -4422,14 +4422,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithContextVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4443,14 +4443,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithSubjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4464,14 +4464,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithPredicateVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4485,14 +4485,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithObjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4506,14 +4506,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithLiteralVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:topolino"), new RDFResource("ex:hasName"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4527,14 +4527,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithContextSubjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4549,14 +4549,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithEqualContextSubjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:ctx"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?C"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4570,14 +4570,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithContextPredicateVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4592,14 +4592,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithEqualContextPredicateVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:ctx"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFVariable("?C"), new RDFResource("ex:topolino"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4613,14 +4613,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithContextObjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4635,14 +4635,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithEqualContextObjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:ctx")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?C"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4656,14 +4656,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithContextLiteralVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:topolino"), new RDFResource("ex:hasName"), new RDFVariable("?N"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4678,14 +4678,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithContextSubjectPredicateVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?Y"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4701,14 +4701,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithEqualContextSubjectPredicateVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:ctx"),new RDFResource("ex:ctx"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?C"), new RDFVariable("?C"), new RDFResource("ex:topolino"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4722,14 +4722,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithContextSubjectObjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4751,14 +4751,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithEqualContextSubjectObjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:ctx"),new RDFResource("ex:dogOf"),new RDFResource("ex:ctx")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?C"), new RDFResource("ex:dogOf"), new RDFVariable("?C"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4772,14 +4772,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithContextPredicateObjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4795,14 +4795,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithEqualContextPredicateObjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:ctx"),new RDFResource("ex:ctx")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFVariable("?C"), new RDFVariable("?C"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4816,14 +4816,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithContextSubjectPredicateObjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?Y"), new RDFVariable("?P"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4836,14 +4836,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithEqualContextSubjectPredicateObjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:ctx"),new RDFResource("ex:ctx"),new RDFResource("ex:ctx")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?C"), new RDFVariable("?C"), new RDFVariable("?C"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4857,14 +4857,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithSubjectPredicateVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?Y"), new RDFVariable("?V"), new RDFResource("ex:topolino"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4879,14 +4879,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithEqualSubjectPredicateVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:pluto"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?Y"), new RDFVariable("?Y"), new RDFResource("ex:topolino"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4900,14 +4900,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithSubjectObjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4926,14 +4926,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithEqualSubjectObjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:pluto")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?Y"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4947,14 +4947,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithPredicateObjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFVariable("?V"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4969,14 +4969,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithEqualPredicateObjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:dogOf")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFVariable("?V"), new RDFVariable("?V"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -4990,14 +4990,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithSubjectPredicateObjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:dogOf")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?Y"), new RDFVariable("?V"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -5010,14 +5010,14 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternWithEqualSubjectPredicateObjectVariableToStore()
         {
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:pluto"),new RDFResource("ex:pluto"),new RDFResource("ex:pluto")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFPattern pattern = new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?Y"), new RDFVariable("?Y"), new RDFVariable("?Y"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
             DataTable result = queryEngine.ApplyPatternToStore(pattern, store);
@@ -5031,17 +5031,17 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternToFederationHavingGraph()
         {
-            RDFGraph graph1 = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph1 = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US"))
-            });
-            RDFGraph graph2 = new RDFGraph(new List<RDFTriple>()
-            {
+            ]);
+            RDFGraph graph2 = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFFederation federation = new RDFFederation()
                 .AddFederation(new RDFFederation().AddGraph(graph1))
                 .AddGraph(graph2);
@@ -5064,17 +5064,17 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternToFederationHavingStore()
         {
-            RDFMemoryStore store1 = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            RDFMemoryStore store1 = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US"))
-            });
-            RDFMemoryStore store2 = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            ]);
+            RDFMemoryStore store2 = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFFederation federation = new RDFFederation()
                 .AddFederation(new RDFFederation().AddStore(store1))
                 .AddStore(store2);
@@ -5097,17 +5097,17 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternToFederationHavingFederation()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US"))
-            });
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            ]);
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFFederation federation = new RDFFederation()
                 .AddFederation(new RDFFederation().AddGraph(graph))
                 .AddFederation(new RDFFederation().AddFederation(new RDFFederation().AddStore(store)));
@@ -5160,15 +5160,15 @@ WHERE {
                             .WithStatusCode(HttpStatusCode.OK));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldApplyPatternToFederationHavingSPARQLEndpoint/sparql"));
 
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US"))
-            });
-            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>()
-            {
+            ]);
+            RDFMemoryStore store = new RDFMemoryStore(
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
             RDFFederation federation = new RDFFederation()
                 .AddFederation(new RDFFederation().AddGraph(graph))
                 .AddFederation(new RDFFederation().AddFederation(new RDFFederation().AddStore(store)))
@@ -5193,13 +5193,13 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPropertyPath()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US"))
-            });
+            ]);
             RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?N"))
                 .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:dogOf")))
                 .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:hasName")));
@@ -5280,10 +5280,10 @@ WHERE {
             DataTable table = new DataTable();
             RDFQueryEngine.AddColumn(table, "?S");
             RDFPattern pattern = new RDFPattern(new RDFVariable("?S"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
-            List<RDFTriple> matchingTriples = new List<RDFTriple>()
-            {
+            List<RDFTriple> matchingTriples =
+            [
                 new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.S, table);
 
             Assert.IsTrue(table.Rows.Count == 1);
@@ -5296,10 +5296,10 @@ WHERE {
             DataTable table = new DataTable();
             RDFQueryEngine.AddColumn(table, "?P");
             RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
-            List<RDFTriple> matchingTriples = new List<RDFTriple>()
-            {
+            List<RDFTriple> matchingTriples =
+            [
                 new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.P, table);
 
             Assert.IsTrue(table.Rows.Count == 1);
@@ -5312,10 +5312,10 @@ WHERE {
             DataTable table = new DataTable();
             RDFQueryEngine.AddColumn(table, "?O");
             RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?O"));
-            List<RDFTriple> matchingTriples = new List<RDFTriple>()
-            {
+            List<RDFTriple> matchingTriples =
+            [
                 new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.O, table);
 
             Assert.IsTrue(table.Rows.Count == 1);
@@ -5329,10 +5329,10 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?S");
             RDFQueryEngine.AddColumn(table, "?P");
             RDFPattern pattern = new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
-            List<RDFTriple> matchingTriples = new List<RDFTriple>()
-            {
+            List<RDFTriple> matchingTriples =
+            [
                 new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SP, table);
 
             Assert.IsTrue(table.Rows.Count == 1);
@@ -5347,10 +5347,10 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?S");
             RDFQueryEngine.AddColumn(table, "?O");
             RDFPattern pattern = new RDFPattern(new RDFVariable("?S"), new RDFResource("ex:dogOf"), new RDFVariable("?O"));
-            List<RDFTriple> matchingTriples = new List<RDFTriple>()
-            {
+            List<RDFTriple> matchingTriples =
+            [
                 new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SO, table);
 
             Assert.IsTrue(table.Rows.Count == 1);
@@ -5365,10 +5365,10 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?P");
             RDFQueryEngine.AddColumn(table, "?O");
             RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFVariable("?O"));
-            List<RDFTriple> matchingTriples = new List<RDFTriple>()
-            {
+            List<RDFTriple> matchingTriples =
+            [
                 new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.PO, table);
 
             Assert.IsTrue(table.Rows.Count == 1);
@@ -5384,10 +5384,10 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?P");
             RDFQueryEngine.AddColumn(table, "?O");
             RDFPattern pattern = new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFVariable("?O"));
-            List<RDFTriple> matchingTriples = new List<RDFTriple>()
-            {
+            List<RDFTriple> matchingTriples =
+            [
                 new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SPO, table);
 
             Assert.IsTrue(table.Rows.Count == 1);
@@ -5402,10 +5402,10 @@ WHERE {
             DataTable table = new DataTable();
             RDFQueryEngine.AddColumn(table, "?C");
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
-            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
-            {
+            List<RDFQuadruple> matchingQuadruples =
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
             RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.C, table);
 
@@ -5419,10 +5419,10 @@ WHERE {
             DataTable table = new DataTable();
             RDFQueryEngine.AddColumn(table, "?S");
             RDFPattern pattern = new RDFPattern(new RDFVariable("?S"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
-            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
-            {
+            List<RDFQuadruple> matchingQuadruples =
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
             RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.S, table);
 
@@ -5436,10 +5436,10 @@ WHERE {
             DataTable table = new DataTable();
             RDFQueryEngine.AddColumn(table, "?P");
             RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
-            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
-            {
+            List<RDFQuadruple> matchingQuadruples =
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
             RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.P, table);
 
@@ -5453,10 +5453,10 @@ WHERE {
             DataTable table = new DataTable();
             RDFQueryEngine.AddColumn(table, "?O");
             RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?O"));
-            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
-            {
+            List<RDFQuadruple> matchingQuadruples =
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
             RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.O, table);
 
@@ -5471,10 +5471,10 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?C");
             RDFQueryEngine.AddColumn(table, "?S");
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"));
-            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
-            {
+            List<RDFQuadruple> matchingQuadruples =
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
             RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CS, table);
 
@@ -5490,10 +5490,10 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?C");
             RDFQueryEngine.AddColumn(table, "?P");
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
-            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
-            {
+            List<RDFQuadruple> matchingQuadruples =
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
             RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CP, table);
 
@@ -5509,10 +5509,10 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?C");
             RDFQueryEngine.AddColumn(table, "?O");
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?O"));
-            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
-            {
+            List<RDFQuadruple> matchingQuadruples =
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
             RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CO, table);
 
@@ -5528,10 +5528,10 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?S");
             RDFQueryEngine.AddColumn(table, "?P");
             RDFPattern pattern = new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
-            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
-            {
+            List<RDFQuadruple> matchingQuadruples =
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
             RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.SP, table);
 
@@ -5547,10 +5547,10 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?S");
             RDFQueryEngine.AddColumn(table, "?O");
             RDFPattern pattern = new RDFPattern(new RDFVariable("?S"), new RDFResource("ex:dogOf"), new RDFVariable("?O"));
-            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
-            {
+            List<RDFQuadruple> matchingQuadruples =
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
             RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.SO, table);
 
@@ -5566,10 +5566,10 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?P");
             RDFQueryEngine.AddColumn(table, "?O");
             RDFPattern pattern = new RDFPattern(new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFVariable("?O"));
-            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
-            {
+            List<RDFQuadruple> matchingQuadruples =
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
             RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.PO, table);
 
@@ -5586,10 +5586,10 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?S");
             RDFQueryEngine.AddColumn(table, "?P");
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), new RDFResource("ex:topolino"));
-            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
-            {
+            List<RDFQuadruple> matchingQuadruples =
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
             RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CSP, table);
 
@@ -5607,10 +5607,10 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?S");
             RDFQueryEngine.AddColumn(table, "?O");
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFResource("ex:dogOf"), new RDFVariable("?O"));
-            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
-            {
+            List<RDFQuadruple> matchingQuadruples =
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
             RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CSO, table);
 
@@ -5628,10 +5628,10 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?P");
             RDFQueryEngine.AddColumn(table, "?O");
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFResource("ex:pluto"), new RDFVariable("?P"), new RDFVariable("?O"));
-            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
-            {
+            List<RDFQuadruple> matchingQuadruples =
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
             RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CPO, table);
 
@@ -5649,10 +5649,10 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?P");
             RDFQueryEngine.AddColumn(table, "?O");
             RDFPattern pattern = new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFVariable("?O"));
-            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
-            {
+            List<RDFQuadruple> matchingQuadruples =
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
             RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.SPO, table);
 
@@ -5671,10 +5671,10 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?P");
             RDFQueryEngine.AddColumn(table, "?O");
             RDFPattern pattern = new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), new RDFVariable("?O"));
-            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>()
-            {
+            List<RDFQuadruple> matchingQuadruples =
+            [
                 new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
-            };
+            ];
             RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
             RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CSPO, table);
 
@@ -6299,7 +6299,7 @@ WHERE {
             };
             RDFQueryEngine.AddRow(dt3, dt3Bindings);
 
-            List<DataTable> tables = new List<DataTable>() { dt1, dt2, dt3 };
+            List<DataTable> tables = [dt1, dt2, dt3];
             DataTable combineTable = RDFQueryEngine.CombineTables(tables, false);
 
             Assert.IsNotNull(combineTable);
@@ -6351,7 +6351,7 @@ WHERE {
             DataTable dt3 = new DataTable();
             RDFQueryEngine.AddColumn(dt3, "?Q");
 
-            List<DataTable> tables = new List<DataTable>() { dt1, dt2, dt3 };
+            List<DataTable> tables = [dt1, dt2, dt3];
             DataTable combineTable = RDFQueryEngine.CombineTables(tables, false);
 
             Assert.IsNotNull(combineTable);
@@ -6402,7 +6402,7 @@ WHERE {
             };
             RDFQueryEngine.AddRow(dt3, dt3Bindings);
 
-            List<DataTable> tables = new List<DataTable>() { dt1, dt2, dt3 };
+            List<DataTable> tables = [dt1, dt2, dt3];
             DataTable combineTable = RDFQueryEngine.CombineTables(tables, true);
 
             Assert.IsNotNull(combineTable);
@@ -6452,7 +6452,7 @@ WHERE {
             DataTable dt3 = new DataTable();
             RDFQueryEngine.AddColumn(dt3, "?Q");
 
-            List<DataTable> tables = new List<DataTable>() { dt1, dt2, dt3 };
+            List<DataTable> tables = [dt1, dt2, dt3];
             DataTable combineTable = RDFQueryEngine.CombineTables(tables, true);
 
             Assert.IsNotNull(combineTable);
@@ -6504,7 +6504,7 @@ WHERE {
             };
             RDFQueryEngine.AddRow(dt3, dt3Bindings);
 
-            List<DataTable> tables = new List<DataTable>() { dt1, dt2, dt3 };
+            List<DataTable> tables = [dt1, dt2, dt3];
             DataTable combineTable = RDFQueryEngine.CombineTables(tables, false);
 
             Assert.IsNotNull(combineTable);
@@ -6543,7 +6543,7 @@ WHERE {
             };
             RDFQueryEngine.AddRow(dt2, dt2Bindings);
 
-            List<DataTable> tables = new List<DataTable>() { dt1, dt2 };
+            List<DataTable> tables = [dt1, dt2];
             DataTable combineTable = RDFQueryEngine.CombineTables(tables, false);
 
             Assert.IsNotNull(combineTable);
@@ -6580,7 +6580,7 @@ WHERE {
             };
             RDFQueryEngine.AddRow(dt2, dt2Bindings);
 
-            List<DataTable> tables = new List<DataTable>() { dt1, dt2 };
+            List<DataTable> tables = [dt1, dt2];
             DataTable combineTable = RDFQueryEngine.CombineTables(tables, false);
 
             Assert.IsNotNull(combineTable);
@@ -6645,7 +6645,7 @@ WHERE {
             };
             RDFQueryEngine.AddRow(dt5, dt5Bindings);
 
-            List<DataTable> tables = new List<DataTable>() { dt1, dt2, dt3, dt4, dt5 };
+            List<DataTable> tables = [dt1, dt2, dt3, dt4, dt5];
             DataTable combineTable = RDFQueryEngine.CombineTables(tables, false);
 
             Assert.IsNotNull(combineTable);
@@ -6664,14 +6664,14 @@ WHERE {
         [TestMethod]
         public void ShouldProjectStarTable()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -6702,14 +6702,14 @@ WHERE {
         [TestMethod]
         public void ShouldProjectNonStarTable()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -6731,14 +6731,14 @@ WHERE {
         [TestMethod]
         public void ShouldProjectNonStarTableWithAllUnexistingVariable()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -6760,14 +6760,14 @@ WHERE {
         [TestMethod]
         public void ShouldProjectNonStarTableWithAlsoUnexistingVariable()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -6795,14 +6795,14 @@ WHERE {
         [TestMethod]
         public void ShouldProjectNonStarTableWithCommonProjectionFromSubQuery()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -6834,14 +6834,14 @@ WHERE {
         [TestMethod]
         public void ShouldProjectNonStarTableWithUncommonProjectionFromSubQuery()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -6874,14 +6874,14 @@ WHERE {
         [TestMethod]
         public void ShouldProjectStarTableWithProjectionFromSubQuery()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -7044,14 +7044,14 @@ WHERE {
         [TestMethod]
         public void ShouldProjectTableAlsoWithExpressions()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("85", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("83.0", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -7079,14 +7079,14 @@ WHERE {
         [TestMethod]
         public void ShouldProjectTableAlsoWithSubsequentExpressions()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("85", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("83.0", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -7128,7 +7128,7 @@ WHERE {
         {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?X"), new List<RDFPatternMember>() { new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER) })))
+                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?X"), [new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)])))
                 .AddProjectionVariable(new RDFVariable("?X"))
                 .AddProjectionVariable(new RDFVariable("?AGEX2"), new RDFMultiplyExpression(new RDFVariable("?X"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)))
                 .AddProjectionVariable(new RDFVariable("?AGEX4"), new RDFMultiplyExpression(new RDFVariable("?AGEX2"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)));
@@ -7151,14 +7151,14 @@ WHERE {
         [TestMethod]
         public void ShouldProjectTableAlsoWithExpressionsFromSubQuery()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("85", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("83.0", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
@@ -7197,14 +7197,14 @@ WHERE {
         [TestMethod]
         public void ShouldProjectTableAlsoWithExpressionsAndExpressionsFromSubQuery()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
-            {
+            RDFGraph graph = new RDFGraph(
+            [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("85", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
                 new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasAge"),new RDFTypedLiteral("83.0", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-            });
+            ]);
 
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()

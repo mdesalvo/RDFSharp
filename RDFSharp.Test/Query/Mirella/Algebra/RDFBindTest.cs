@@ -36,7 +36,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(bind.IsEvaluable);
             Assert.IsTrue(bind.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(bind.PatternGroupMemberStringID)));
             Assert.IsTrue(string.Equals(bind.ToString(), "BIND(?EXP AS ?BIND)"));
-            Assert.IsTrue(string.Equals(bind.ToString(new List<RDFNamespace>()), "BIND(?EXP AS ?BIND)"));
+            Assert.IsTrue(string.Equals(bind.ToString([]), "BIND(?EXP AS ?BIND)"));
         }
 
         [TestMethod]
@@ -50,8 +50,8 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(bind.IsEvaluable);
             Assert.IsTrue(bind.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(bind.PatternGroupMemberStringID)));
             Assert.IsTrue(string.Equals(bind.ToString(), $"BIND(\"hello\"^^<{RDFVocabulary.XSD.STRING}> AS ?BIND)"));
-            Assert.IsTrue(string.Equals(bind.ToString(new List<RDFNamespace>()), $"BIND(\"hello\"^^<{RDFVocabulary.XSD.STRING}> AS ?BIND)"));
-            Assert.IsTrue(string.Equals(bind.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }), $"BIND(\"hello\"^^xsd:string AS ?BIND)"));
+            Assert.IsTrue(string.Equals(bind.ToString([]), $"BIND(\"hello\"^^<{RDFVocabulary.XSD.STRING}> AS ?BIND)"));
+            Assert.IsTrue(string.Equals(bind.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]), $"BIND(\"hello\"^^xsd:string AS ?BIND)"));
         }
 
         [TestMethod]

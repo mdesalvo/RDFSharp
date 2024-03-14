@@ -91,7 +91,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFAvgAggregator(new RDFVariable("?A"), new RDFVariable("?AVGPROJ")));
             DataTable result = modifier.ApplyModifier(table);
 
@@ -130,7 +130,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFAvgAggregator(new RDFVariable("?A"), new RDFVariable("?AVGPROJ")).Distinct());
             DataTable result = modifier.ApplyModifier(table);
 
@@ -169,7 +169,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             RDFAvgAggregator aggregator = new RDFAvgAggregator(new RDFVariable("?A"), new RDFVariable("?AVGPROJ"))
                                                     .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("25.99", RDFModelEnums.RDFDatatypes.XSD_FLOAT)) as RDFAvgAggregator;
             modifier.AddAggregator(aggregator);
@@ -183,7 +183,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
             Assert.IsTrue(result.Rows[0]["?AVGPROJ"].ToString().Equals($"26.5^^{RDFVocabulary.XSD.DOUBLE}"));
             Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(AVG(?A) >= \"25.99\"^^<{RDFVocabulary.XSD.FLOAT}>)"));
-            Assert.IsTrue(aggregator.PrintHavingClause(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals($"(AVG(?A) >= \"25.99\"^^xsd:float)"));
+            Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals($"(AVG(?A) >= \"25.99\"^^xsd:float)"));
         }
 
         [TestMethod]
@@ -215,7 +215,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row3);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFAvgAggregator(new RDFVariable("?A"), new RDFVariable("?AVGPROJ")));
             DataTable result = modifier.ApplyModifier(table);
 

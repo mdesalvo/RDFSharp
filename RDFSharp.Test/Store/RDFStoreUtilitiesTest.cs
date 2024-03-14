@@ -84,11 +84,10 @@ namespace RDFSharp.Test.Store
             RDFResource obj = new RDFResource("ex:obj");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx, subj, pred, obj),
                     new RDFQuadruple(ctx, subj, pred, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, null, null, null); //select *
 
@@ -109,12 +108,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, null, null, null);
 
@@ -135,12 +133,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj1, null, null, null);
 
@@ -161,12 +158,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, pred1, null, null);
 
@@ -187,12 +183,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, null, obj1, null);
 
@@ -214,12 +209,11 @@ namespace RDFSharp.Test.Store
             RDFPlainLiteral lit1 = new RDFPlainLiteral("lit");
             RDFPlainLiteral lit2 = new RDFPlainLiteral("lit", "en-US");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit1),
                     new RDFQuadruple(ctx2, subj1, pred2, lit2)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, null, null, lit2);
 
@@ -240,12 +234,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, null, null, null);
 
@@ -266,12 +259,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, pred1, null, null);
 
@@ -292,12 +284,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, null, obj1, null);
 
@@ -318,12 +309,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, null, null, lit);
 
@@ -344,12 +334,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, pred1, null, null);
 
@@ -370,12 +359,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, null, obj1, null);
 
@@ -396,12 +384,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj2, null, null, lit);
 
@@ -422,12 +409,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, pred1, obj1, null);
 
@@ -448,12 +434,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, pred1, null, lit);
 
@@ -474,12 +459,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, pred1, obj1, null);
 
@@ -500,12 +484,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj2, pred1, null, lit);
 
@@ -526,12 +509,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj1, pred1, null, null);
 
@@ -552,12 +534,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj1, null, obj1, null);
 
@@ -578,12 +559,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj2, null, null, lit);
 
@@ -604,12 +584,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, pred1, obj1, null);
 
@@ -630,12 +609,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, pred1, null, lit);
 
@@ -656,12 +634,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj1, pred1, obj1, null);
 
@@ -682,12 +659,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj2, pred1, null, lit);
 
@@ -708,12 +684,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx1, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx2, null, null, null, null);
 
@@ -734,12 +709,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj1, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred2, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj2, null, null, null);
 
@@ -760,12 +734,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred1, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, pred2, null, null);
 
@@ -786,12 +759,11 @@ namespace RDFSharp.Test.Store
             RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred2, lit),
                     new RDFQuadruple(ctx2, subj1, pred1, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, null, obj2, null);
 
@@ -813,12 +785,11 @@ namespace RDFSharp.Test.Store
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFPlainLiteral lit2 = new RDFPlainLiteral("lit2");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj2, pred2, lit),
                     new RDFQuadruple(ctx2, subj1, pred1, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, null, null, lit2);
 
@@ -840,12 +811,11 @@ namespace RDFSharp.Test.Store
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFPlainLiteral lit2 = new RDFPlainLiteral("lit2");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj1, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred1, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, pred2, null, lit);
 
@@ -867,12 +837,11 @@ namespace RDFSharp.Test.Store
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFPlainLiteral lit2 = new RDFPlainLiteral("lit2");
             RDFMemoryStore data = new RDFMemoryStore(
-                new List<RDFQuadruple>()
-                {
+                [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
                     new RDFQuadruple(ctx1, subj1, pred1, lit),
                     new RDFQuadruple(ctx2, subj1, pred1, lit)
-                }
+                ]
             );
             List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, pred1, null, lit2);
 

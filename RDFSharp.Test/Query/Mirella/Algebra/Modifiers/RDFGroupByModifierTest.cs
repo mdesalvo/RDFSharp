@@ -31,7 +31,7 @@ namespace RDFSharp.Test.Query
         public void ShouldCreateGroupByModifier()
         {
             RDFVariable variable = new RDFVariable("?VAR");
-            List<RDFVariable> partitionVariables = new List<RDFVariable>() { variable };
+            List<RDFVariable> partitionVariables = [variable];
             RDFGroupByModifier modifier = new RDFGroupByModifier(partitionVariables);
 
             Assert.IsNotNull(modifier);
@@ -56,11 +56,11 @@ namespace RDFSharp.Test.Query
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingGroupByModifierBecauseEmptyVariables()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGroupByModifier(new List<RDFVariable>()));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFGroupByModifier([]));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingGroupByModifierBecauseNullItemInVariables()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFGroupByModifier(new List<RDFVariable>() { null }));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFGroupByModifier([null]));
 
         [TestMethod]
         public void ShouldAddAggregator()
@@ -68,7 +68,7 @@ namespace RDFSharp.Test.Query
             RDFVariable variable1 = new RDFVariable("?VAR1");
             RDFVariable variable2 = new RDFVariable("?VAR2");
             RDFVariable variable3 = new RDFVariable("?VAR3");
-            List<RDFVariable> partitionVariables = new List<RDFVariable>() { variable1 };
+            List<RDFVariable> partitionVariables = [variable1];
             RDFGroupByModifier modifier = new RDFGroupByModifier(partitionVariables);
             RDFAggregator aggregator = new RDFAggregator(variable2, variable3);
             modifier.AddAggregator(aggregator);
@@ -98,7 +98,7 @@ namespace RDFSharp.Test.Query
             RDFVariable variable1 = new RDFVariable("?VAR1");
             RDFVariable variable2 = new RDFVariable("?VAR2");
             RDFVariable variable3 = new RDFVariable("?VAR3");
-            List<RDFVariable> partitionVariables = new List<RDFVariable>() { variable1 };
+            List<RDFVariable> partitionVariables = [variable1];
             RDFGroupByModifier modifier = new RDFGroupByModifier(partitionVariables);
             RDFAggregator aggregator1 = new RDFAggregator(variable1, variable3);
             RDFAggregator aggregator2 = new RDFAggregator(variable2, variable3);
@@ -131,7 +131,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?D") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?D")]);
             
             Assert.ThrowsException<RDFQueryException>(() => modifier.ApplyModifier(table), "Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: ?D");
         }
@@ -160,7 +160,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFAggregator(new RDFVariable("?D"), new RDFVariable("?A")));
             modifier.AddAggregator(new RDFAggregator(new RDFVariable("?D"), new RDFVariable("?B")));
             
@@ -191,7 +191,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?B") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?B")]);
             modifier.AddAggregator(new RDFAggregator(new RDFVariable("?A"), new RDFVariable("?A")));
             modifier.AddAggregator(new RDFAggregator(new RDFVariable("?A"), new RDFVariable("?B")));
             
@@ -223,7 +223,7 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             //This will behave like a partition aggregator on column "?C"
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             DataTable result = modifier.ApplyModifier(table);
 
             Assert.IsNotNull(result);
@@ -264,7 +264,7 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             //This will behave like a partition aggregator on column "?C" with an having clause "?C = ex:value0"
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.Aggregators[0].SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFResource("ex:value0"));
             DataTable result = modifier.ApplyModifier(table);
 

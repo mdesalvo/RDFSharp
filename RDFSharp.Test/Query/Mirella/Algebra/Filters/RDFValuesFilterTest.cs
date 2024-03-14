@@ -31,14 +31,14 @@ namespace RDFSharp.Test.Query
         public void ShouldCreateValuesFilterWithSingleBinding()
         {
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { RDFVocabulary.RDF.ALT }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [RDFVocabulary.RDF.ALT]));
 
             Assert.IsNotNull(filter);
             Assert.IsNotNull(filter.Values);
             Assert.IsTrue(filter.Values.Bindings.Count == 1);
             Assert.IsNotNull(filter.ValuesTable);
             Assert.IsTrue(filter.ToString().Equals("VALUES ?A { <" + RDFVocabulary.RDF.ALT + "> }"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals("VALUES ?A { rdf:Alt }"));
+            Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("VALUES ?A { rdf:Alt }"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 
@@ -46,14 +46,14 @@ namespace RDFSharp.Test.Query
         public void ShouldCreateValuesFilterWithUndefSingleBinding()
         {
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { null }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [null]));
 
             Assert.IsNotNull(filter);
             Assert.IsNotNull(filter.Values);
             Assert.IsTrue(filter.Values.Bindings.Count == 1);
             Assert.IsNotNull(filter.ValuesTable);
             Assert.IsTrue(filter.ToString().Equals("VALUES ?A { UNDEF }"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals("VALUES ?A { UNDEF }"));
+            Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("VALUES ?A { UNDEF }"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 
@@ -70,7 +70,7 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { new RDFResource("http://example.org/") }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/")]));
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsTrue(keepRow);
@@ -89,7 +89,7 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { null }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [null]));
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsTrue(keepRow);
@@ -108,7 +108,7 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?Q"), new List<RDFPatternMember>() { new RDFResource("http://example.org/") }));
+                new RDFValues().AddColumn(new RDFVariable("?Q"), [new RDFResource("http://example.org/")]));
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsTrue(keepRow);
@@ -127,7 +127,7 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { new RDFResource("http://example.org/test/") }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/test/")]));
             bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
             Assert.IsTrue(keepRow);
@@ -146,7 +146,7 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { new RDFResource("http://example.org/test/") }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/test/")]));
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsFalse(keepRow);
@@ -165,7 +165,7 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { new RDFResource("http://example.org/test/") }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/test/")]));
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsFalse(keepRow);
@@ -184,7 +184,7 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { new RDFResource("http://example.org/") }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/")]));
             bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
             Assert.IsFalse(keepRow);
@@ -194,15 +194,15 @@ namespace RDFSharp.Test.Query
         public void ShouldCreateValuesFilterWithMultipleBindings()
         {
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { RDFVocabulary.RDF.ALT })
-                               .AddColumn(new RDFVariable("?B"), new List<RDFPatternMember>() { RDFVocabulary.RDF.BAG }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [RDFVocabulary.RDF.ALT])
+                               .AddColumn(new RDFVariable("?B"), [RDFVocabulary.RDF.BAG]));
 
             Assert.IsNotNull(filter);
             Assert.IsNotNull(filter.Values);
             Assert.IsTrue(filter.Values.Bindings.Count == 2);
             Assert.IsNotNull(filter.ValuesTable);
             Assert.IsTrue(filter.ToString().Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( <" + RDFVocabulary.RDF.ALT + "> <" + RDFVocabulary.RDF.BAG + "> )" + Environment.NewLine + "    }"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( rdf:Alt rdf:Bag )" + Environment.NewLine + "    }"));
+            Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( rdf:Alt rdf:Bag )" + Environment.NewLine + "    }"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 
@@ -210,15 +210,15 @@ namespace RDFSharp.Test.Query
         public void ShouldCreateValuesFilterWithUndefMultipleBindings()
         {
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { null })
-                               .AddColumn(new RDFVariable("?B"), new List<RDFPatternMember>() { RDFVocabulary.RDF.BAG }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [null])
+                               .AddColumn(new RDFVariable("?B"), [RDFVocabulary.RDF.BAG]));
 
             Assert.IsNotNull(filter);
             Assert.IsNotNull(filter.Values);
             Assert.IsTrue(filter.Values.Bindings.Count == 2);
             Assert.IsNotNull(filter.ValuesTable);
             Assert.IsTrue(filter.ToString().Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( UNDEF <" + RDFVocabulary.RDF.BAG + "> )" + Environment.NewLine + "    }"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( UNDEF rdf:Bag )" + Environment.NewLine + "    }"));
+            Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( UNDEF rdf:Bag )" + Environment.NewLine + "    }"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 
@@ -235,8 +235,8 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { new RDFResource("http://example.org/") })
-                               .AddColumn(new RDFVariable("?B"), new List<RDFPatternMember>() { new RDFPlainLiteral("hello", "en-US") }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/")])
+                               .AddColumn(new RDFVariable("?B"), [new RDFPlainLiteral("hello", "en-US")]));
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsTrue(keepRow);
@@ -255,8 +255,8 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { null })
-                               .AddColumn(new RDFVariable("?B"), new List<RDFPatternMember>() { new RDFPlainLiteral("hello", "en-US") }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [null])
+                               .AddColumn(new RDFVariable("?B"), [new RDFPlainLiteral("hello", "en-US")]));
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsTrue(keepRow);
@@ -275,8 +275,8 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { new RDFResource("http://example.org/") })
-                               .AddColumn(new RDFVariable("?Q"), new List<RDFPatternMember>() { new RDFPlainLiteral("hello", "en-US") }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/")])
+                               .AddColumn(new RDFVariable("?Q"), [new RDFPlainLiteral("hello", "en-US")]));
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsTrue(keepRow);
@@ -295,8 +295,8 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { new RDFResource("http://example.org/") })
-                               .AddColumn(new RDFVariable("?B"), new List<RDFPatternMember>() { new RDFPlainLiteral("hello") }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/")])
+                               .AddColumn(new RDFVariable("?B"), [new RDFPlainLiteral("hello")]));
             bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
             Assert.IsTrue(keepRow);
@@ -315,8 +315,8 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { new RDFResource("http://example.org/") })
-                               .AddColumn(new RDFVariable("?B"), new List<RDFPatternMember>() { null }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/")])
+                               .AddColumn(new RDFVariable("?B"), [null]));
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsTrue(keepRow);
@@ -339,8 +339,8 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { new RDFResource("http://example.org/"), new RDFResource("http://example2.org/") })
-                               .AddColumn(new RDFVariable("?B"), new List<RDFPatternMember>() { null, new RDFPlainLiteral("hello", "en-US") }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/"), new RDFResource("http://example2.org/")])
+                               .AddColumn(new RDFVariable("?B"), [null, new RDFPlainLiteral("hello", "en-US")]));
             bool keepRow1 = filter.ApplyFilter(table.Rows[0], false);
             bool keepRow2 = filter.ApplyFilter(table.Rows[1], false);
 
@@ -361,8 +361,8 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { new RDFResource("http://example.org/test/") })
-                               .AddColumn(new RDFVariable("?B"), new List<RDFPatternMember>() { new RDFPlainLiteral("hello", "en-US") }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/test/")])
+                               .AddColumn(new RDFVariable("?B"), [new RDFPlainLiteral("hello", "en-US")]));
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsFalse(keepRow);
@@ -381,8 +381,8 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { null })
-                               .AddColumn(new RDFVariable("?B"), new List<RDFPatternMember>() { new RDFPlainLiteral("hello") }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [null])
+                               .AddColumn(new RDFVariable("?B"), [new RDFPlainLiteral("hello")]));
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsFalse(keepRow);
@@ -401,8 +401,8 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { new RDFResource("http://example.org/") })
-                               .AddColumn(new RDFVariable("?B"), new List<RDFPatternMember>() { new RDFPlainLiteral("hello", "en-US") }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/")])
+                               .AddColumn(new RDFVariable("?B"), [new RDFPlainLiteral("hello", "en-US")]));
             bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
             Assert.IsFalse(keepRow);
@@ -425,8 +425,8 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFValuesFilter filter = new RDFValuesFilter(
-                new RDFValues().AddColumn(new RDFVariable("?A"), new List<RDFPatternMember>() { new RDFResource("http://example.org/"), new RDFResource("http://example3.org/") })
-                               .AddColumn(new RDFVariable("?B"), new List<RDFPatternMember>() { null, new RDFPlainLiteral("hello", "en-US") }));
+                new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/"), new RDFResource("http://example3.org/")])
+                               .AddColumn(new RDFVariable("?B"), [null, new RDFPlainLiteral("hello", "en-US")]));
             bool keepRow1 = filter.ApplyFilter(table.Rows[0], false);
             bool keepRow2 = filter.ApplyFilter(table.Rows[1], false);
 

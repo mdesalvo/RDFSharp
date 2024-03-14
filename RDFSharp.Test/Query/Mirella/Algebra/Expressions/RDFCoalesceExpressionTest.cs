@@ -37,7 +37,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
             Assert.IsTrue(expression.ToString().Equals("(COALESCE((?V1 + ?V2), ?V3))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(COALESCE((?V1 + ?V2), ?V3))"));
+            Assert.IsTrue(expression.ToString([]).Equals("(COALESCE((?V1 + ?V2), ?V3))"));
         }
 
         [TestMethod]
@@ -51,8 +51,8 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
             Assert.IsTrue(expression.ToString().Equals($"(COALESCE((?V1 + ?V2), \"hello\"^^<{RDFVocabulary.XSD.STRING}>))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals($"(COALESCE((?V1 + ?V2), \"hello\"^^<{RDFVocabulary.XSD.STRING}>))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals("(COALESCE((?V1 + ?V2), \"hello\"^^xsd:string))"));
+            Assert.IsTrue(expression.ToString([]).Equals($"(COALESCE((?V1 + ?V2), \"hello\"^^<{RDFVocabulary.XSD.STRING}>))"));
+            Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(COALESCE((?V1 + ?V2), \"hello\"^^xsd:string))"));
         }
 
         [TestMethod]
@@ -66,7 +66,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
             Assert.IsTrue(expression.ToString().Equals("(COALESCE((?V1 + ?V2), (COALESCE(?V3, \"hello\"@EN-US))))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(COALESCE((?V1 + ?V2), (COALESCE(?V3, \"hello\"@EN-US))))"));
+            Assert.IsTrue(expression.ToString([]).Equals("(COALESCE((?V1 + ?V2), (COALESCE(?V3, \"hello\"@EN-US))))"));
         }
 
         [TestMethod]
@@ -80,7 +80,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
             Assert.IsTrue(expression.ToString().Equals("(COALESCE((?V1 + ?V2), ?V3))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(COALESCE((?V1 + ?V2), ?V3))"));
+            Assert.IsTrue(expression.ToString([]).Equals("(COALESCE((?V1 + ?V2), ?V3))"));
         }
 
         [TestMethod]
@@ -94,7 +94,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
             Assert.IsTrue(expression.ToString().Equals("(COALESCE(?V3, (?V1 + ?V2)))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(COALESCE(?V3, (?V1 + ?V2)))"));
+            Assert.IsTrue(expression.ToString([]).Equals("(COALESCE(?V3, (?V1 + ?V2)))"));
         }
 
         [TestMethod]
@@ -108,7 +108,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(expression.LeftArgument);
             Assert.IsNotNull(expression.RightArgument);
             Assert.IsTrue(expression.ToString().Equals("(COALESCE(?V3, ?V1))"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(COALESCE(?V3, ?V1))"));
+            Assert.IsTrue(expression.ToString([]).Equals("(COALESCE(?V3, ?V1))"));
         }
 
         [TestMethod]

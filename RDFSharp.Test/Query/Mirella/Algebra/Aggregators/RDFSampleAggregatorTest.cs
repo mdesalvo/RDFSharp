@@ -91,7 +91,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFSampleAggregator(new RDFVariable("?B"), new RDFVariable("?SAMPLEPROJ")));
             DataTable result = modifier.ApplyModifier(table);
 
@@ -130,7 +130,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             modifier.AddAggregator(new RDFSampleAggregator(new RDFVariable("?B"), new RDFVariable("?SAMPLEPROJ")).Distinct());
             DataTable result = modifier.ApplyModifier(table);
 
@@ -169,7 +169,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
             RDFSampleAggregator aggregator = new RDFSampleAggregator(new RDFVariable("?B"), new RDFVariable("?SAMPLEPROJ"))
                                                     .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFPlainLiteral("hello", "en-UK")) as RDFSampleAggregator;
             modifier.AddAggregator(aggregator);

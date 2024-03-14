@@ -160,13 +160,13 @@ namespace RDFSharp.Test.Query
                     .AddPatternGroup(
                         new RDFPatternGroup()
                             .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
-                            .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { RDFVocabulary.RDFS.CLASS })))
+                            .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
                     .AddProjectionVariable(new RDFVariable("?S"))
                     .AddProjectionVariable(new RDFVariable("?S")) //Will be discarded, since duplicate projection variables are not allowed
                     .AddProjectionVariable(null) //Will be discarded, since null projection variables are not allowed
                     );
-            query.AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?S") }));
-            query.AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?P") })); //Will be discarded, since duplicate modifiers are not allowed
+            query.AddModifier(new RDFGroupByModifier([new RDFVariable("?S")]));
+            query.AddModifier(new RDFGroupByModifier([new RDFVariable("?P")])); //Will be discarded, since duplicate modifiers are not allowed
             query.AddModifier(new RDFDistinctModifier());
             query.AddModifier(new RDFDistinctModifier()); //Will be discarded, since duplicate modifiers are not allowed
             query.AddModifier(new RDFLimitModifier(100));
@@ -201,10 +201,10 @@ namespace RDFSharp.Test.Query
                     .AddPatternGroup(
                         new RDFPatternGroup()
                             .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
-                            .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { RDFVocabulary.RDFS.CLASS })))
+                            .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
                     .AddProjectionVariable(new RDFVariable("?S"))
                     .Optional());
-            query.AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?S") }));
+            query.AddModifier(new RDFGroupByModifier([new RDFVariable("?S")]));
             query.AddModifier(new RDFDistinctModifier());
             query.AddModifier(new RDFLimitModifier(100));
             query.AddModifier(new RDFOffsetModifier(20));
@@ -236,7 +236,7 @@ namespace RDFSharp.Test.Query
                     .AddPatternGroup(
                         new RDFPatternGroup()
                             .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
-                            .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { RDFVocabulary.RDFS.CLASS })))
+                            .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
                     .AddProjectionVariable(new RDFVariable("?S"))
                     .UnionWithNext());
             query.AddSubQuery(
@@ -246,7 +246,7 @@ namespace RDFSharp.Test.Query
                         new RDFPatternGroup()
                             .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS)))
                     .AddProjectionVariable(new RDFVariable("?S")));
-            query.AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?S") }));
+            query.AddModifier(new RDFGroupByModifier([new RDFVariable("?S")]));
             query.AddModifier(new RDFDistinctModifier());
             query.AddModifier(new RDFLimitModifier(100));
             query.AddModifier(new RDFOffsetModifier(20));

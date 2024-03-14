@@ -204,7 +204,7 @@ namespace RDFSharp.Test.Model
         public void ShouldExportPropertyShapeWithAlternativePath()
         {
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), 
-                new List<RDFResource>() { RDFVocabulary.FOAF.NAME, RDFVocabulary.FOAF.AGE }, RDFPropertyPathStepFlavors.Alternative);
+                [RDFVocabulary.FOAF.NAME, RDFVocabulary.FOAF.AGE], RDFPropertyPathStepFlavors.Alternative);
             propertyShape.AddName(new RDFPlainLiteral("PropertyShapeName"));
             propertyShape.AddDescription(new RDFPlainLiteral("PropertyShapeDescription"));
             propertyShape.SetOrder(2);
@@ -235,7 +235,7 @@ namespace RDFSharp.Test.Model
         public void ShouldExportPropertyShapeWithSequencePath()
         {
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"),
-                new List<RDFResource>() { RDFVocabulary.FOAF.NAME, RDFVocabulary.FOAF.AGE }, RDFPropertyPathStepFlavors.Sequence);
+                [RDFVocabulary.FOAF.NAME, RDFVocabulary.FOAF.AGE], RDFPropertyPathStepFlavors.Sequence);
             propertyShape.AddName(new RDFPlainLiteral("PropertyShapeName"));
             propertyShape.AddDescription(new RDFPlainLiteral("PropertyShapeDescription"));
             propertyShape.SetOrder(2);

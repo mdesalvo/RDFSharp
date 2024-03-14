@@ -305,7 +305,7 @@ namespace RDFSharp.Test.Model
         {
             RDFShape nShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, nShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, nShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -317,7 +317,7 @@ namespace RDFSharp.Test.Model
         {
             RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.AGE);
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, pShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, pShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -330,7 +330,7 @@ namespace RDFSharp.Test.Model
             RDFShape nShape = new RDFNodeShape(new RDFResource("ex:nodeShape"))
                                     .AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, nShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, nShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -343,7 +343,7 @@ namespace RDFSharp.Test.Model
             RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
                                     .AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, pShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, pShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -356,7 +356,7 @@ namespace RDFSharp.Test.Model
             RDFShape nShape = new RDFNodeShape(new RDFResource("ex:nodeShape"))
                                     .AddTarget(new RDFTargetClass(new RDFResource("ex:Human")));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, nShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, nShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -369,7 +369,7 @@ namespace RDFSharp.Test.Model
             RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
                                     .AddTarget(new RDFTargetClass(new RDFResource("ex:Human")));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, pShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, pShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -382,7 +382,7 @@ namespace RDFSharp.Test.Model
             RDFShape nShape = new RDFNodeShape(new RDFResource("ex:nodeShape"))
                                     .AddTarget(new RDFTargetClass(new RDFResource("ex:Guy")));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, nShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, nShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -395,7 +395,7 @@ namespace RDFSharp.Test.Model
             RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
                                     .AddTarget(new RDFTargetClass(new RDFResource("ex:Guy")));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, pShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, pShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -408,7 +408,7 @@ namespace RDFSharp.Test.Model
             RDFShape nShape = new RDFNodeShape(new RDFResource("ex:nodeShape"))
                                     .AddTarget(new RDFTargetClass(new RDFResource("ex:People")));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, nShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, nShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -421,7 +421,7 @@ namespace RDFSharp.Test.Model
             RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
                                     .AddTarget(new RDFTargetClass(new RDFResource("ex:People")));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, pShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, pShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -434,7 +434,7 @@ namespace RDFSharp.Test.Model
             RDFShape nShape = new RDFNodeShape(new RDFResource("ex:nodeShape"))
                                     .AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, nShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, nShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -447,7 +447,7 @@ namespace RDFSharp.Test.Model
             RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
                                     .AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, pShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, pShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -460,7 +460,7 @@ namespace RDFSharp.Test.Model
             RDFShape nShape = new RDFNodeShape(new RDFResource("ex:nodeShape"))
                                     .AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.AGE));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, nShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, nShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -473,7 +473,7 @@ namespace RDFSharp.Test.Model
             RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
                                     .AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.AGE));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, pShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, pShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -486,7 +486,7 @@ namespace RDFSharp.Test.Model
             RDFShape nShape = new RDFNodeShape(new RDFResource("ex:nodeShape"))
                                     .AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.BASED_NEAR));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, nShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, nShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -499,7 +499,7 @@ namespace RDFSharp.Test.Model
             RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
                                     .AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.BASED_NEAR));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, pShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, pShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -512,7 +512,7 @@ namespace RDFSharp.Test.Model
             RDFShape nShape = new RDFNodeShape(new RDFResource("ex:nodeShape"))
                                     .AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, nShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, nShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -525,7 +525,7 @@ namespace RDFSharp.Test.Model
             RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.AGE)
                                     .AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, pShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, pShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -538,7 +538,7 @@ namespace RDFSharp.Test.Model
             RDFShape nShape = new RDFNodeShape(new RDFResource("ex:nodeShape"))
                                     .AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.MBOX));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, nShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, nShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -551,7 +551,7 @@ namespace RDFSharp.Test.Model
             RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
                                     .AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.MBOX));
             List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(dataGraph, pShape);
-            List<RDFPatternMember> valueNodes = new List<RDFPatternMember>();
+            List<RDFPatternMember> valueNodes = [];
             focusNodes.ForEach(focusNode => valueNodes.AddRange(RDFValidationHelper.GetValueNodesOf(dataGraph, pShape, focusNode)));
 
             Assert.IsNotNull(valueNodes);
@@ -681,7 +681,7 @@ namespace RDFSharp.Test.Model
             shape.AddConstraint(new RDFHasValueConstraint(new RDFPlainLiteral("Alice")));
             shape.AddConstraint(new RDFInConstraint(RDFModelEnums.RDFItemTypes.Resource).AddValue(new RDFResource("ex:Alice")));
             shape.AddConstraint(new RDFInConstraint(RDFModelEnums.RDFItemTypes.Literal).AddValue(new RDFPlainLiteral("Alice")));
-            shape.AddConstraint(new RDFLanguageInConstraint(new List<string>() { "en-US" }));
+            shape.AddConstraint(new RDFLanguageInConstraint(["en-US"]));
             shape.AddConstraint(new RDFLessThanConstraint(new RDFResource("ex:prop")));
             shape.AddConstraint(new RDFLessThanOrEqualsConstraint(new RDFResource("ex:prop")));
             shape.AddConstraint(new RDFMaxCountConstraint(2));
@@ -878,7 +878,7 @@ namespace RDFSharp.Test.Model
             shape.AddConstraint(new RDFHasValueConstraint(new RDFPlainLiteral("Alice")));
             shape.AddConstraint(new RDFInConstraint(RDFModelEnums.RDFItemTypes.Resource).AddValue(new RDFResource("ex:Alice")));
             shape.AddConstraint(new RDFInConstraint(RDFModelEnums.RDFItemTypes.Literal).AddValue(new RDFPlainLiteral("Alice")));
-            shape.AddConstraint(new RDFLanguageInConstraint(new List<string>() { "en-US" }));
+            shape.AddConstraint(new RDFLanguageInConstraint(["en-US"]));
             shape.AddConstraint(new RDFLessThanConstraint(new RDFResource("ex:prop")));
             shape.AddConstraint(new RDFLessThanOrEqualsConstraint(new RDFResource("ex:prop")));
             shape.AddConstraint(new RDFMaxCountConstraint(2));

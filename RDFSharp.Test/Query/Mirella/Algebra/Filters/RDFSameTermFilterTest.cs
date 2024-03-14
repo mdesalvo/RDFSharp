@@ -40,7 +40,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(filter.RDFTermString);
             Assert.IsTrue(filter.RDFTermString.Equals($"{RDFVocabulary.RDF.ALT}"));
             Assert.IsTrue(filter.ToString().Equals($"FILTER ( SAMETERM(?VAR, <{RDFVocabulary.RDF.ALT}>) )"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals("FILTER ( SAMETERM(?VAR, rdf:Alt) )"));
+            Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("FILTER ( SAMETERM(?VAR, rdf:Alt) )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 

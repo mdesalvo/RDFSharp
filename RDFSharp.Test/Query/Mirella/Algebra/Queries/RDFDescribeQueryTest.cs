@@ -85,7 +85,7 @@ namespace RDFSharp.Test.Query
                     .AddPatternGroup(
                         new RDFPatternGroup()
                             .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
-                            .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { RDFVocabulary.RDFS.CLASS })))
+                            .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
                     .AddProjectionVariable(new RDFVariable("?S"))
                     .AddProjectionVariable(new RDFVariable("?P")));
             query.AddModifier(new RDFDistinctModifier());
@@ -121,7 +121,7 @@ namespace RDFSharp.Test.Query
                     .AddPatternGroup(
                         new RDFPatternGroup()
                             .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
-                            .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { RDFVocabulary.RDFS.CLASS })))
+                            .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
                     .AddProjectionVariable(new RDFVariable("?S"))
                     .AddProjectionVariable(new RDFVariable("?P"))
                     .Optional());
@@ -160,7 +160,7 @@ namespace RDFSharp.Test.Query
                     .AddPatternGroup(
                         new RDFPatternGroup()
                             .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
-                            .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { RDFVocabulary.RDFS.CLASS })))
+                            .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
                     .AddProjectionVariable(new RDFVariable("?S"))
                     .AddProjectionVariable(new RDFVariable("?P")));
             query.AddModifier(new RDFDistinctModifier());
@@ -222,7 +222,7 @@ namespace RDFSharp.Test.Query
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { new RDFResource("ex:flower") })))
+                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:flower")])))
                 .AddModifier(new RDFDistinctModifier());
             RDFDescribeQueryResult result = query.ApplyToGraph(graph);
 

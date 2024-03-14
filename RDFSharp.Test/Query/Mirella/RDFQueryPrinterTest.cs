@@ -214,7 +214,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
-                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { RDFVocabulary.RDFS.LABEL })));
+                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.LABEL])));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -1384,7 +1384,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddValues(new RDFValues()
-                        .AddColumn(new RDFVariable("?V"), new List<RDFPatternMember>() { new RDFResource("ex:val1") }))
+                        .AddColumn(new RDFVariable("?V"), [new RDFResource("ex:val1")]))
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -2455,20 +2455,20 @@ WHERE {
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
-                  .AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?S") })
+                  .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
                     .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
                       .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
                   .UnionWithNext())
                 .AddSubQuery(new RDFSelectQuery()
                   .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
-                      .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { new RDFResource("ex:org") }))
+                      .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:org")]))
                       .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-                        .AddAlternativeSteps(new List<RDFPropertyPathStep>() {
+                        .AddAlternativeSteps([
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.CLASS),
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
                           new RDFPropertyPathStep(RDFVocabulary.OWL.CLASS).Inverse()
-                        })))
+                        ])))
                     .AddProjectionVariable(new RDFVariable("?START"))))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
@@ -2570,20 +2570,20 @@ WHERE {
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
-                  .AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?S") })
+                  .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
                     .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
                       .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
                   .UnionWithNext())
                 .AddSubQuery(new RDFSelectQuery()
                   .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
-                      .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { new RDFResource("ex:org") }))
+                      .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:org")]))
                       .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-                        .AddAlternativeSteps(new List<RDFPropertyPathStep>() {
+                        .AddAlternativeSteps([
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.CLASS),
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
                           new RDFPropertyPathStep(RDFVocabulary.OWL.CLASS).Inverse()
-                        }))
+                        ]))
                       .AddBind(new RDFBind(new RDFAbsExpression(new RDFVariable("?T")), new RDFVariable("?ABST"))))
                     .AddProjectionVariable(new RDFVariable("?START"))
                     .AddProjectionVariable(new RDFVariable("?STARTLEN"), new RDFLengthExpression(new RDFVariable("?START")))))
@@ -3848,20 +3848,20 @@ WHERE {
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
-                  .AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?S") })
+                  .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
                     .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
                       .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
                   .UnionWithNext())
                 .AddSubQuery(new RDFSelectQuery()
                   .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
-                      .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { new RDFResource("ex:org") }))
+                      .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:org")]))
                       .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-                        .AddAlternativeSteps(new List<RDFPropertyPathStep>() {
+                        .AddAlternativeSteps([
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.CLASS),
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
                           new RDFPropertyPathStep(RDFVocabulary.OWL.CLASS).Inverse()
-                        })))
+                        ])))
                     .AddProjectionVariable(new RDFVariable("?START"))))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
@@ -4889,20 +4889,20 @@ WHERE {
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
-                  .AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?S") })
+                  .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
                     .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
                       .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
                   .UnionWithNext())
                 .AddSubQuery(new RDFSelectQuery()
                   .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
-                      .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { new RDFResource("ex:org") }))
+                      .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:org")]))
                       .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-                        .AddAlternativeSteps(new List<RDFPropertyPathStep>() {
+                        .AddAlternativeSteps([
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.CLASS),
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
                           new RDFPropertyPathStep(RDFVocabulary.OWL.CLASS).Inverse()
-                        })))
+                        ])))
                     .AddProjectionVariable(new RDFVariable("?START"))))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
@@ -5895,20 +5895,20 @@ WHERE {
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
                   .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
-                  .AddModifier(new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?S") })
+                  .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
                     .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
                       .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
                   .UnionWithNext())
                 .AddSubQuery(new RDFSelectQuery()
                   .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
-                      .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { new RDFResource("ex:org") }))
+                      .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:org")]))
                       .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-                        .AddAlternativeSteps(new List<RDFPropertyPathStep>() {
+                        .AddAlternativeSteps([
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.CLASS),
                           new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
                           new RDFPropertyPathStep(RDFVocabulary.OWL.CLASS).Inverse()
-                        })))
+                        ])))
                     .AddProjectionVariable(new RDFVariable("?START"))))
                 .AddSubQuery(new RDFSelectQuery()
                   .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
@@ -6002,7 +6002,7 @@ WHERE {
 
         [TestMethod]
         public void ShouldPrintPatternMemberResourceNotBlankResolved()
-          => Assert.IsTrue(string.Equals("ex:test", RDFQueryPrinter.PrintPatternMember(new RDFResource("http://example.org/test"), new List<RDFNamespace>() { new RDFNamespace("ex", "http://example.org/") })));
+          => Assert.IsTrue(string.Equals("ex:test", RDFQueryPrinter.PrintPatternMember(new RDFResource("http://example.org/test"), [new RDFNamespace("ex", "http://example.org/")])));
 
         [TestMethod]
         public void ShouldPrintPatternMemberContextUnresolved()
@@ -6010,7 +6010,7 @@ WHERE {
 
         [TestMethod]
         public void ShouldPrintPatternMemberContextResolved()
-          => Assert.IsTrue(string.Equals("ex:test", RDFQueryPrinter.PrintPatternMember(new RDFContext(new Uri("http://example.org/test")), new List<RDFNamespace>() { new RDFNamespace("ex", "http://example.org/") })));
+          => Assert.IsTrue(string.Equals("ex:test", RDFQueryPrinter.PrintPatternMember(new RDFContext(new Uri("http://example.org/test")), [new RDFNamespace("ex", "http://example.org/")])));
 
         [TestMethod]
         public void ShouldPrintPatternMemberPlainLiteral()
@@ -6026,7 +6026,7 @@ WHERE {
 
         [TestMethod]
         public void ShouldPrintPatternMemberTypedLiteralResolved()
-          => Assert.IsTrue(string.Equals($"\"hello\"^^xsd:string", RDFQueryPrinter.PrintPatternMember(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING), new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd")})));
+          => Assert.IsTrue(string.Equals($"\"hello\"^^xsd:string", RDFQueryPrinter.PrintPatternMember(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING), [RDFNamespaceRegister.GetByPrefix("xsd")])));
         #endregion
     }
 }

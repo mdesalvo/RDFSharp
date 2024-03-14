@@ -48,7 +48,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(filter.RightMemberString);
             Assert.IsTrue(filter.RightMemberString.Equals(RDFVocabulary.RDF.ALT.ToString()));
 
-            List<RDFNamespace> namespaces = new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") };
+            List<RDFNamespace> namespaces = [RDFNamespaceRegister.GetByPrefix("rdf")];
             string leftValue = RDFQueryPrinter.PrintPatternMember(filter.LeftMember, null);
             string leftValueNS = RDFQueryPrinter.PrintPatternMember(filter.LeftMember, namespaces);
             string rightValue = RDFQueryPrinter.PrintPatternMember(filter.RightMember, null);

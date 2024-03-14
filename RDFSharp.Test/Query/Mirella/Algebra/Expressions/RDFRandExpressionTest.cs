@@ -35,7 +35,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNull(expression.LeftArgument);
             Assert.IsNull(expression.RightArgument);
             Assert.IsTrue(expression.ToString().Equals("(RAND())"));
-            Assert.IsTrue(expression.ToString(new List<RDFNamespace>()).Equals("(RAND())"));
+            Assert.IsTrue(expression.ToString([]).Equals("(RAND())"));
         }
 
         [TestMethod]

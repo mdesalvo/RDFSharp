@@ -39,7 +39,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(filter.DatatypeRegex);
             Assert.IsTrue(filter.DatatypeRegex.ToString().Equals(new Regex($"\\^\\^{RDFModelUtilities.GetDatatypeFromEnum(filter.Datatype)}$").ToString()));
             Assert.IsTrue(filter.ToString().Equals($"FILTER ( DATATYPE(?VAR) = <{RDFVocabulary.RDFS.LITERAL}> )"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdfs") }).Equals("FILTER ( DATATYPE(?VAR) = rdfs:Literal )"));
+            Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdfs")]).Equals("FILTER ( DATATYPE(?VAR) = rdfs:Literal )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 

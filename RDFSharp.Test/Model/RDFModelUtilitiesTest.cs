@@ -432,13 +432,12 @@ namespace RDFSharp.Test.Model
         public void ShouldSelectSPOTriplesBySubjectPredicateObject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"), null);
 
             Assert.IsNotNull(result);
@@ -450,13 +449,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPOTriplesBySubjectPredicateObjectBecauseFaultingSubject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"), null);
 
             Assert.IsNotNull(result);
@@ -467,13 +465,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPOTriplesBySubjectPredicateObjectBecauseFaultingPredicate()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred6/"), new RDFResource("http://obj2/"), null);
 
             Assert.IsNotNull(result);
@@ -484,13 +481,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPOTriplesBySubjectPredicateObjectBecauseFaultingObject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFResource("http://obj6/"), null);
 
             Assert.IsNotNull(result);
@@ -501,13 +497,12 @@ namespace RDFSharp.Test.Model
         public void ShouldSelectSPOTriplesBySubjectPredicate()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), null, null);
 
             Assert.IsNotNull(result);
@@ -519,13 +514,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPOTriplesBySubjectPredicateBecauseFaultingSubject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), new RDFResource("http://pred2/"), null, null);
 
             Assert.IsNotNull(result);
@@ -536,13 +530,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPOTriplesBySubjectPredicateBecauseFaultingPredicate()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred6/"), null, null);
 
             Assert.IsNotNull(result);
@@ -553,13 +546,12 @@ namespace RDFSharp.Test.Model
         public void ShouldSelectSPOTriplesBySubjectObject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), null, new RDFResource("http://obj2/"), null);
 
             Assert.IsNotNull(result);
@@ -571,13 +563,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPOTriplesBySubjectObjectBecauseFaultingSubject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), null, new RDFResource("http://obj2/"), null);
 
             Assert.IsNotNull(result);
@@ -588,13 +579,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPOTriplesBySubjectObjectBecauseFaultingObject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), null, new RDFResource("http://obj6/"), null);
 
             Assert.IsNotNull(result);
@@ -605,13 +595,12 @@ namespace RDFSharp.Test.Model
         public void ShouldSelectSPOTriplesBySubject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), null, null, null);
 
             Assert.IsNotNull(result);
@@ -624,13 +613,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPOTriplesBySubject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), null, null, null);
 
             Assert.IsNotNull(result);
@@ -641,13 +629,12 @@ namespace RDFSharp.Test.Model
         public void ShouldSelectSPOTriplesByPredicateObject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred2/"), new RDFResource("http://obj2/"), null);
 
             Assert.IsNotNull(result);
@@ -660,13 +647,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPOTriplesByPredicateObjectBecauseFaultingPredicate()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred6/"), new RDFResource("http://obj2/"), null);
 
             Assert.IsNotNull(result);
@@ -677,13 +663,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPOTriplesByPredicateObjectBecauseFaultingObject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred1/"), new RDFResource("http://obj6/"), null);
 
             Assert.IsNotNull(result);
@@ -694,13 +679,12 @@ namespace RDFSharp.Test.Model
         public void ShouldSelectSPOTriplesByPredicate()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred2/"), null, null);
 
             Assert.IsNotNull(result);
@@ -713,13 +697,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPOTriplesByPredicate()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred6/"), null, null);
 
             Assert.IsNotNull(result);
@@ -730,13 +713,12 @@ namespace RDFSharp.Test.Model
         public void ShouldSelectSPOTriplesByObject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, null, new RDFResource("http://obj2/"), null);
 
             Assert.IsNotNull(result);
@@ -749,13 +731,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPOTriplesByObject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, null, new RDFResource("http://obj6/"), null);
 
             Assert.IsNotNull(result);
@@ -766,13 +747,12 @@ namespace RDFSharp.Test.Model
         public void ShouldSelectSPOTriples()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, null, null, null);
 
             Assert.IsNotNull(result);
@@ -787,13 +767,12 @@ namespace RDFSharp.Test.Model
         public void ShouldSelectSPLTriplesBySubjectPredicateLiteral()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
             Assert.IsNotNull(result);
@@ -805,13 +784,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPLTriplesBySubjectPredicateLiteralBecauseFaultingSubject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), new RDFResource("http://pred2/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
             Assert.IsNotNull(result);
@@ -822,13 +800,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPLTriplesBySubjectPredicateLiteralBecauseFaultingPredicate()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred6/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
             Assert.IsNotNull(result);
@@ -839,13 +816,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPLTriplesBySubjectPredicateLiteralBecauseFaultingLiteral()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
             Assert.IsNotNull(result);
@@ -856,13 +832,12 @@ namespace RDFSharp.Test.Model
         public void ShouldSelectSPLTriplesBySubjectPredicate()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), null, null);
 
             Assert.IsNotNull(result);
@@ -874,13 +849,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPLTriplesBySubjectPredicateBecauseFaultingSubject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), new RDFResource("http://pred2/"), null, null);
 
             Assert.IsNotNull(result);
@@ -891,13 +865,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPLTriplesBySubjectPredicateBecauseFaultingPredicate()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred6/"), null, null);
 
             Assert.IsNotNull(result);
@@ -908,13 +881,12 @@ namespace RDFSharp.Test.Model
         public void ShouldSelectSPLTriplesBySubjectLiteral()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), null, null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
             Assert.IsNotNull(result);
@@ -926,13 +898,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPLTriplesBySubjectLiteralBecauseFaultingSubject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), null, null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
             Assert.IsNotNull(result);
@@ -943,13 +914,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPLTriplesBySubjectLiteralBecauseFaultingLiteral()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), null, null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
             Assert.IsNotNull(result);
@@ -960,13 +930,12 @@ namespace RDFSharp.Test.Model
         public void ShouldSelectSPLTriplesBySubject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), null, null, null);
 
             Assert.IsNotNull(result);
@@ -979,13 +948,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPLTriplesBySubject()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), null, null, null);
 
             Assert.IsNotNull(result);
@@ -996,13 +964,12 @@ namespace RDFSharp.Test.Model
         public void ShouldSelectSPLTriplesByPredicateLiteral()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred2/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
             Assert.IsNotNull(result);
@@ -1015,13 +982,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPLTriplesByPredicateLiteralBecauseFaultingPredicate()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred6/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
             Assert.IsNotNull(result);
@@ -1032,13 +998,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPLTriplesByPredicateLiteralBecauseFaultingLiteral()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred2/"), null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
             Assert.IsNotNull(result);
@@ -1049,13 +1014,12 @@ namespace RDFSharp.Test.Model
         public void ShouldSelectSPLTriplesByPredicate()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred2/"), null, null);
 
             Assert.IsNotNull(result);
@@ -1068,13 +1032,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPLTriplesByPredicate()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred6/"), null, null);
 
             Assert.IsNotNull(result);
@@ -1085,13 +1048,12 @@ namespace RDFSharp.Test.Model
         public void ShouldSelectSPLTriplesByLiteral()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, null, null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
             Assert.IsNotNull(result);
@@ -1104,13 +1066,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPLTriplesByLiteral()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, null, null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
             Assert.IsNotNull(result);
@@ -1121,13 +1082,12 @@ namespace RDFSharp.Test.Model
         public void ShouldSelectSPLTriples()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
                     new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
-                });
+                ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, null, null, null);
 
             Assert.IsNotNull(result);
@@ -1151,8 +1111,7 @@ namespace RDFSharp.Test.Model
         public void ShouldDeserializeSPOCollectionFromGraph()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item1/")),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
@@ -1162,7 +1121,7 @@ namespace RDFSharp.Test.Model
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item3/")),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
-                });
+                ]);
             RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPO);
 
             Assert.IsNotNull(coll1);
@@ -1176,8 +1135,7 @@ namespace RDFSharp.Test.Model
         public void ShouldDeserializeSPOCollectionFromGraphWithMultipleLists()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item1/")),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
@@ -1187,7 +1145,7 @@ namespace RDFSharp.Test.Model
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item3/")),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
-                });
+                ]);
             RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPO);
 
             Assert.IsNotNull(coll1);
@@ -1200,8 +1158,7 @@ namespace RDFSharp.Test.Model
         public void ShouldDeserializeSPOCollectionFromGraphWithoutHangingOnCycles()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item1/")),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
@@ -1211,7 +1168,7 @@ namespace RDFSharp.Test.Model
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item3/")),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll1/"))
-                });
+                ]);
             RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPO);
 
             Assert.IsNotNull(coll1);
@@ -1225,8 +1182,7 @@ namespace RDFSharp.Test.Model
         public void ShouldDeserializeSPOCollectionFromGraphWithoutHangingOnMissingRest()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item1/")),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
@@ -1235,7 +1191,7 @@ namespace RDFSharp.Test.Model
                     new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll3/")),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item3/"))
-                });
+                ]);
             RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPO);
 
             Assert.IsNotNull(coll1);
@@ -1249,8 +1205,7 @@ namespace RDFSharp.Test.Model
         public void ShouldDeserializeSPOCollectionFromGraphExitingOnMissingFirst()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item1/")),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
@@ -1259,7 +1214,7 @@ namespace RDFSharp.Test.Model
                     new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll3/")),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
-                });
+                ]);
             RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPO);
 
             Assert.IsNotNull(coll1);
@@ -1272,8 +1227,7 @@ namespace RDFSharp.Test.Model
         public void ShouldDeserializeSPOCollectionFromGraphExitingOnInvalidItemType()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item1/")),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
@@ -1283,7 +1237,7 @@ namespace RDFSharp.Test.Model
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item3")),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
-                });
+                ]);
             RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPO);
 
             Assert.IsNotNull(coll1);
@@ -1296,12 +1250,11 @@ namespace RDFSharp.Test.Model
         public void ShouldDeserializeEmptySPOCollectionFromGraph()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,RDFVocabulary.RDF.NIL),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
-                });
+                ]);
             RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPO);
 
             Assert.IsNotNull(coll1);
@@ -1313,8 +1266,7 @@ namespace RDFSharp.Test.Model
         public void ShouldDeserializeSPLCollectionFromGraph()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item1")),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
@@ -1324,7 +1276,7 @@ namespace RDFSharp.Test.Model
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item3")),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
-                });
+                ]);
             RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPL);
 
             Assert.IsNotNull(coll1);
@@ -1338,8 +1290,7 @@ namespace RDFSharp.Test.Model
         public void ShouldDeserializeSPLCollectionFromGraphWithMultipleLists()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item1")),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
@@ -1349,7 +1300,7 @@ namespace RDFSharp.Test.Model
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item3")),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
-                });
+                ]);
             RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPL);
 
             Assert.IsNotNull(coll1);
@@ -1362,8 +1313,7 @@ namespace RDFSharp.Test.Model
         public void ShouldDeserializeSPLCollectionFromGraphWithoutHangingOnCycles()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item1")),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
@@ -1373,7 +1323,7 @@ namespace RDFSharp.Test.Model
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item3")),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll1/"))
-                });
+                ]);
             RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPL);
 
             Assert.IsNotNull(coll1);
@@ -1387,8 +1337,7 @@ namespace RDFSharp.Test.Model
         public void ShouldDeserializeSPLCollectionFromGraphWithoutHangingOnMissingRest()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item1")),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
@@ -1397,7 +1346,7 @@ namespace RDFSharp.Test.Model
                     new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll3/")),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item3"))
-                });
+                ]);
             RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPL);
 
             Assert.IsNotNull(coll1);
@@ -1411,8 +1360,7 @@ namespace RDFSharp.Test.Model
         public void ShouldDeserializeSPLCollectionFromGraphExitingOnMissingFirst()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item1")),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
@@ -1421,7 +1369,7 @@ namespace RDFSharp.Test.Model
                     new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll3/")),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
-                });
+                ]);
             RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPL);
 
             Assert.IsNotNull(coll1);
@@ -1434,8 +1382,7 @@ namespace RDFSharp.Test.Model
         public void ShouldDeserializeSPLCollectionFromGraphExitingOnInvalidItemType()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item1")),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
@@ -1445,7 +1392,7 @@ namespace RDFSharp.Test.Model
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item3/")),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
-                });
+                ]);
             RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPL);
 
             Assert.IsNotNull(coll1);
@@ -1458,12 +1405,11 @@ namespace RDFSharp.Test.Model
         public void ShouldDeserializeEmptySPLCollectionFromGraph()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,RDFVocabulary.RDF.NIL),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
-                });
+                ]);
             RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPL);
 
             Assert.IsNotNull(coll1);
@@ -1473,8 +1419,7 @@ namespace RDFSharp.Test.Model
         public void ShouldDetectSPOCollectionFlavorFromGraph()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item1/")),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
@@ -1484,7 +1429,7 @@ namespace RDFSharp.Test.Model
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item3/")),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
-                });
+                ]);
             RDFModelEnums.RDFTripleFlavors tripleFlavor = RDFModelUtilities.DetectCollectionFlavorFromGraph(graph, new RDFResource("bnode://coll1/"));
 
             Assert.IsNotNull(tripleFlavor);
@@ -1495,8 +1440,7 @@ namespace RDFSharp.Test.Model
         public void ShouldDetectSPLCollectionFlavorFromGraph()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item1")),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
@@ -1506,7 +1450,7 @@ namespace RDFSharp.Test.Model
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item3")),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
-                });
+                ]);
             RDFModelEnums.RDFTripleFlavors tripleFlavor = RDFModelUtilities.DetectCollectionFlavorFromGraph(graph, new RDFResource("bnode://coll1/"));
 
             Assert.IsNotNull(tripleFlavor);
@@ -1517,8 +1461,7 @@ namespace RDFSharp.Test.Model
         public void ShouldNotDetectCollectionFlavorFromGraphAndDefaultToSPO()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item1/")),
                     new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
@@ -1528,7 +1471,7 @@ namespace RDFSharp.Test.Model
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item3/")),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
-                });
+                ]);
             RDFModelEnums.RDFTripleFlavors tripleFlavor = RDFModelUtilities.DetectCollectionFlavorFromGraph(graph, new RDFResource("bnode://coll2/"));
 
             Assert.IsNotNull(tripleFlavor);
@@ -1539,14 +1482,13 @@ namespace RDFSharp.Test.Model
         public void ShouldGetGraphNamespaces()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(RDFVocabulary.RDF.BAG,new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),RDFVocabulary.GEO.LAT,new RDFResource("http://obj1/")),
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
                     new RDFTriple(RDFVocabulary.RDF.BAG,RDFVocabulary.GEO.LAT,RDFVocabulary.XSD.INT)
-                });
+                ]);
             List<RDFNamespace> graphNS = RDFModelUtilities.GetGraphNamespaces(graph);
 
             Assert.IsNotNull(graphNS);
@@ -1560,10 +1502,9 @@ namespace RDFSharp.Test.Model
         public void ShouldNotGetGraphNamespaces()
         {
             RDFGraph graph = new RDFGraph(
-                new List<RDFTriple>()
-                {
+                [
                     new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/"))
-                });
+                ]);
             List<RDFNamespace> graphNS = RDFModelUtilities.GetGraphNamespaces(graph);
 
             Assert.IsNotNull(graphNS);

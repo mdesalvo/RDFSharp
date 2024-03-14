@@ -191,7 +191,7 @@ namespace RDFSharp.Test.Query
         public void ShouldAbbreviateNamespaceByPrefixSearch()
         {
             (bool, string) result = RDFQueryUtilities.AbbreviateRDFPatternMember(new RDFResource("test:HTML"),
-                                        new List<RDFNamespace>() { new RDFNamespace("test","http://test/") });
+                                        [new RDFNamespace("test","http://test/")]);
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Item1);
@@ -202,7 +202,7 @@ namespace RDFSharp.Test.Query
         public void ShouldAbbreviateNamespaceByNamespaceSearch()
         {
             (bool, string) result = RDFQueryUtilities.AbbreviateRDFPatternMember(new RDFResource("http://test/HTML"),
-                                        new List<RDFNamespace>() { new RDFNamespace("test","http://test/") });
+                                        [new RDFNamespace("test","http://test/")]);
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Item1);
@@ -213,7 +213,7 @@ namespace RDFSharp.Test.Query
         public void ShouldAbbreviateNamespaceByNamespaceSearchMatchingFirst()
         {
             (bool, string) result = RDFQueryUtilities.AbbreviateRDFPatternMember(new RDFResource("http://test/HTML"),
-                                        new List<RDFNamespace>() { new RDFNamespace("test1","http://test"), new RDFNamespace("test2","http://test") });
+                                        [new RDFNamespace("test1","http://test"), new RDFNamespace("test2","http://test")]);
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Item1);
@@ -224,7 +224,7 @@ namespace RDFSharp.Test.Query
         public void ShouldAbbreviateNamespaceByNamespaceSearchAtSecondAttempt()
         {
             (bool, string) result = RDFQueryUtilities.AbbreviateRDFPatternMember(new RDFResource("http://test/HTML1"),
-                                        new List<RDFNamespace>() { new RDFNamespace("test1","http://test/HTML"), new RDFNamespace("test2","http://test/") });
+                                        [new RDFNamespace("test1","http://test/HTML"), new RDFNamespace("test2","http://test/")]);
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Item1);
@@ -244,7 +244,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldRemoveDuplicates()
         {
-            List<RDFPatternMember> pMembers = new List<RDFPatternMember>() {
+            List<RDFPatternMember> pMembers = [
                 new RDFResource("ex:res1"),
                 new RDFResource("ex:res1"),
                 new RDFPlainLiteral("lit1"),
@@ -253,7 +253,7 @@ namespace RDFSharp.Test.Query
                 new RDFPlainLiteral("lit1", "en-US"),
                 new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER),
                 new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)
-            };
+            ];
             List<RDFPatternMember> pMembersWithoutDuplicates = RDFQueryUtilities.RemoveDuplicates<RDFPatternMember>(pMembers);
 
             Assert.IsNotNull(pMembersWithoutDuplicates);

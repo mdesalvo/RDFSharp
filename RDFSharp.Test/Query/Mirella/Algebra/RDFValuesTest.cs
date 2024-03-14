@@ -46,8 +46,8 @@ namespace RDFSharp.Test.Query
         public void ShouldAddColumns()
         {
             RDFValues values = new RDFValues();
-            values.AddColumn(new RDFVariable("?V1"), new List<RDFPatternMember>() { RDFVocabulary.RDF.TYPE });
-            values.AddColumn(new RDFVariable("?V2"), new List<RDFPatternMember>() { RDFVocabulary.FOAF.KNOWS });
+            values.AddColumn(new RDFVariable("?V1"), [RDFVocabulary.RDF.TYPE]);
+            values.AddColumn(new RDFVariable("?V2"), [RDFVocabulary.FOAF.KNOWS]);
             values.AddColumn(new RDFVariable("?V3"), null);
 
             Assert.IsNotNull(values);
@@ -57,7 +57,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(values.IsEvaluable);
             Assert.IsFalse(values.IsInjected);
             Assert.IsTrue(values.ToString().Equals(string.Concat("VALUES (?V1 ?V2 ?V3) {", Environment.NewLine, "      ( <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/knows> UNDEF )", Environment.NewLine, "    }")));
-            Assert.IsTrue(values.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }, string.Empty).Equals(string.Concat("VALUES (?V1 ?V2 ?V3) {", Environment.NewLine, "      ( rdf:type <http://xmlns.com/foaf/0.1/knows> UNDEF )", Environment.NewLine, "    }")));
+            Assert.IsTrue(values.ToString([RDFNamespaceRegister.GetByPrefix("rdf")], string.Empty).Equals(string.Concat("VALUES (?V1 ?V2 ?V3) {", Environment.NewLine, "      ( rdf:type <http://xmlns.com/foaf/0.1/knows> UNDEF )", Environment.NewLine, "    }")));
             Assert.IsTrue(values.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(values.PatternGroupMemberStringID)));
         }
 
@@ -65,8 +65,8 @@ namespace RDFSharp.Test.Query
         public void ShouldAddColumnsAtVariableBindingsLength()
         {
             RDFValues values = new RDFValues();
-            values.AddColumn(new RDFVariable("?V1"), new List<RDFPatternMember>() { RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT });
-            values.AddColumn(new RDFVariable("?V2"), new List<RDFPatternMember>() { RDFVocabulary.FOAF.KNOWS });
+            values.AddColumn(new RDFVariable("?V1"), [RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT]);
+            values.AddColumn(new RDFVariable("?V2"), [RDFVocabulary.FOAF.KNOWS]);
             values.AddColumn(new RDFVariable("?V3"), null);
 
             Assert.IsNotNull(values);
@@ -76,7 +76,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(values.IsEvaluable);
             Assert.IsFalse(values.IsInjected);
             Assert.IsTrue(values.ToString().Equals(string.Concat("VALUES (?V1 ?V2 ?V3) {", Environment.NewLine, "      ( <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/knows> UNDEF )", Environment.NewLine, "      ( <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt> UNDEF UNDEF )", Environment.NewLine, "    }")));
-            Assert.IsTrue(values.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }, string.Empty).Equals(string.Concat("VALUES (?V1 ?V2 ?V3) {", Environment.NewLine, "      ( rdf:type <http://xmlns.com/foaf/0.1/knows> UNDEF )", Environment.NewLine, "      ( rdf:Alt UNDEF UNDEF )", Environment.NewLine, "    }")));
+            Assert.IsTrue(values.ToString([RDFNamespaceRegister.GetByPrefix("rdf")], string.Empty).Equals(string.Concat("VALUES (?V1 ?V2 ?V3) {", Environment.NewLine, "      ( rdf:type <http://xmlns.com/foaf/0.1/knows> UNDEF )", Environment.NewLine, "      ( rdf:Alt UNDEF UNDEF )", Environment.NewLine, "    }")));
             Assert.IsTrue(values.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(values.PatternGroupMemberStringID)));
         }
 
@@ -84,8 +84,8 @@ namespace RDFSharp.Test.Query
         public void ShouldGetDataTable()
         {
             RDFValues values = new RDFValues();
-            values.AddColumn(new RDFVariable("?V1"), new List<RDFPatternMember>() { RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT });
-            values.AddColumn(new RDFVariable("?V2"), new List<RDFPatternMember>() { RDFVocabulary.FOAF.KNOWS });
+            values.AddColumn(new RDFVariable("?V1"), [RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT]);
+            values.AddColumn(new RDFVariable("?V2"), [RDFVocabulary.FOAF.KNOWS]);
             values.AddColumn(new RDFVariable("?V3"), null);
             DataTable valuesTable = values.GetDataTable();
 
@@ -111,7 +111,7 @@ namespace RDFSharp.Test.Query
         public void ShouldGetValuesFilter()
         {
             RDFValues values = new RDFValues();
-            values.AddColumn(new RDFVariable("?V1"), new List<RDFPatternMember>() { new RDFResource("ex:res1") });
+            values.AddColumn(new RDFVariable("?V1"), [new RDFResource("ex:res1")]);
             RDFValuesFilter valuesFilter = values.GetValuesFilter();
 
             Assert.IsNotNull(valuesFilter);

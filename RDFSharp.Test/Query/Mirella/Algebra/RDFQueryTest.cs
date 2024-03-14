@@ -154,8 +154,8 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldInjectValuesToPatternGroupsOfQuery()
         {
-            List<RDFValues> values = new List<RDFValues>() { 
-                new RDFValues().AddColumn(new RDFVariable("?V"), new List<RDFPatternMember>() { new RDFResource("ex:value") }) };
+            List<RDFValues> values = [ 
+                new RDFValues().AddColumn(new RDFVariable("?V"), [new RDFResource("ex:value")]) ];
             RDFQuery query = new RDFQuery()
                 .AddPatternGroup<RDFQuery>(new RDFPatternGroup())
                 .InjectValues(values)
@@ -181,8 +181,8 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldInjectValuesToSubQueriesOfQuery()
         {
-            List<RDFValues> values = new List<RDFValues>() { 
-                new RDFValues().AddColumn(new RDFVariable("?V"), new List<RDFPatternMember>() { new RDFResource("ex:value") }) };
+            List<RDFValues> values = [ 
+                new RDFValues().AddColumn(new RDFVariable("?V"), [new RDFResource("ex:value")]) ];
             RDFQuery query = new RDFQuery()
                 .AddSubQuery<RDFQuery>(new RDFSelectQuery().AddPatternGroup(new RDFPatternGroup()))
                 .InjectValues(values)
