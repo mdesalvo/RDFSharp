@@ -36,23 +36,13 @@ namespace RDFSharp.Model
         /// Default-ctor to build a minExclusive constraint with the given resource value
         /// </summary>
         public RDFMinExclusiveConstraint(RDFResource value)
-        {
-            if (value == null)
-                throw new RDFModelException("Cannot create RDFMinExclusiveConstraint because given \"value\" parameter is null.");
-            
-            Value = value;
-        }
+            => Value = value ?? throw new RDFModelException("Cannot create RDFMinExclusiveConstraint because given \"value\" parameter is null.");
 
         /// <summary>
         /// Default-ctor to build a minExclusive constraint with the given literal value
         /// </summary>
         public RDFMinExclusiveConstraint(RDFLiteral value)
-        {
-            if (value == null)
-                throw new RDFModelException("Cannot create RDFMinExclusiveConstraint because given \"value\" parameter is null.");
-            
-            Value = value;
-        }
+            => Value = value ?? throw new RDFModelException("Cannot create RDFMinExclusiveConstraint because given \"value\" parameter is null.");
         #endregion
 
         #region Methods
@@ -96,8 +86,8 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:minExclusive
-                if (Value is RDFResource)
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_EXCLUSIVE, (RDFResource)Value));
+                if (Value is RDFResource valRes)
+                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_EXCLUSIVE, valRes));
                 else
                     result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_EXCLUSIVE, (RDFLiteral)Value));
             }

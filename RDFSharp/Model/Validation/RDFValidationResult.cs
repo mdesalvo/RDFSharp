@@ -117,8 +117,8 @@ namespace RDFSharp.Model
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.SOURCE_CONSTRAINT_COMPONENT, SourceConstraintComponent));
 
             //FocusNode
-            if (FocusNode != null && FocusNode is RDFResource)
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.FOCUS_NODE, (RDFResource)FocusNode));
+            if (FocusNode != null && FocusNode is RDFResource focusNodeResource)
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.FOCUS_NODE, focusNodeResource));
 
             //ResultPath
             if (ResultPath != null)
@@ -127,8 +127,8 @@ namespace RDFSharp.Model
             //Value
             if (ResultValue != null)
             {
-                if (ResultValue is RDFLiteral)
-                    result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.VALUE, (RDFLiteral)ResultValue));
+                if (ResultValue is RDFLiteral resvalLit)
+                    result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.VALUE, resvalLit));
                 else
                     result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.VALUE, (RDFResource)ResultValue));
             }

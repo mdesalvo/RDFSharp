@@ -36,23 +36,13 @@ namespace RDFSharp.Model
         /// Default-ctor to build a maxExclusive constraint with the given resource value
         /// </summary>
         public RDFMaxExclusiveConstraint(RDFResource value)
-        {
-            if (value == null)
-                throw new RDFModelException("Cannot create RDFMaxExclusiveConstraint because given \"value\" parameter is null.");
-            
-            Value = value;
-        }
+            => Value = value ?? throw new RDFModelException("Cannot create RDFMaxExclusiveConstraint because given \"value\" parameter is null.");
 
         /// <summary>
         /// Default-ctor to build a maxExclusive constraint with the given literal value
         /// </summary>
         public RDFMaxExclusiveConstraint(RDFLiteral value)
-        {
-            if (value == null)
-                throw new RDFModelException("Cannot create RDFMaxExclusiveConstraint because given \"value\" parameter is null.");
-            
-            Value = value;
-        }
+            => Value = value ?? throw new RDFModelException("Cannot create RDFMaxExclusiveConstraint because given \"value\" parameter is null.");
         #endregion
 
         #region Methods
@@ -96,8 +86,8 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:maxExclusive
-                if (Value is RDFResource)
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MAX_EXCLUSIVE, (RDFResource)Value));
+                if (Value is RDFResource valRes)
+                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MAX_EXCLUSIVE, valRes));
                 else
                     result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MAX_EXCLUSIVE, (RDFLiteral)Value));
             }

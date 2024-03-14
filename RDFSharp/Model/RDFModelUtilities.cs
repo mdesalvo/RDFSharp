@@ -438,8 +438,9 @@ namespace RDFSharp.Model
             {
                 string subj = triple.Subject.ToString();
                 string pred = triple.Predicate.ToString();
-                string obj = triple.Object is RDFResource ? triple.Object.ToString() :
-                                (triple.Object is RDFTypedLiteral ? GetDatatypeFromEnum(((RDFTypedLiteral)triple.Object).Datatype) : string.Empty);
+                string obj = triple.Object is RDFResource ? triple.Object.ToString() 
+                                                          : triple.Object is RDFTypedLiteral tlitObj ? GetDatatypeFromEnum(tlitObj.Datatype) 
+                                                          : string.Empty;
 
                 //Resolve subject Uri
                 result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => subj.StartsWith(ns.ToString())));

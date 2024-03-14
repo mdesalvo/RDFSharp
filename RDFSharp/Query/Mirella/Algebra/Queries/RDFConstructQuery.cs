@@ -74,31 +74,31 @@ namespace RDFSharp.Query
                 Templates.Add(template);
 
                 //Context
-                if (template.Context != null && template.Context is RDFVariable)
+                if (template.Context != null && template.Context is RDFVariable ctxVar)
                 {
                     if (!Variables.Any(v => v.Equals(template.Context)))
-                        Variables.Add((RDFVariable)template.Context);
+                        Variables.Add(ctxVar);
                 }
 
                 //Subject
-                if (template.Subject is RDFVariable)
+                if (template.Subject is RDFVariable subjVar)
                 {
                     if (!Variables.Any(v => v.Equals(template.Subject)))
-                        Variables.Add((RDFVariable)template.Subject);
+                        Variables.Add(subjVar);
                 }
 
                 //Predicate
-                if (template.Predicate is RDFVariable)
+                if (template.Predicate is RDFVariable predVar)
                 {
                     if (!Variables.Any(v => v.Equals(template.Predicate)))
-                        Variables.Add((RDFVariable)template.Predicate);
+                        Variables.Add(predVar);
                 }
 
                 //Object
-                if (template.Object is RDFVariable)
+                if (template.Object is RDFVariable objVar)
                 {
                     if (!Variables.Any(v => v.Equals(template.Object)))
-                        Variables.Add((RDFVariable)template.Object);
+                        Variables.Add(objVar);
                 }
             }
             return this;

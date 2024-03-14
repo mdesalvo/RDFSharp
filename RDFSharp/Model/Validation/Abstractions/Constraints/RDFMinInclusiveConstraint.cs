@@ -36,23 +36,13 @@ namespace RDFSharp.Model
         /// Default-ctor to build a minInclusive constraint with the given resource value
         /// </summary>
         public RDFMinInclusiveConstraint(RDFResource value)
-        {
-            if (value == null)
-                throw new RDFModelException("Cannot create RDFMinInclusiveConstraint because given \"value\" parameter is null.");
-            
-            Value = value;
-        }
+            => Value = value ?? throw new RDFModelException("Cannot create RDFMinInclusiveConstraint because given \"value\" parameter is null.");
 
         /// <summary>
         /// Default-ctor to build a minInclusive constraint with the given literal value
         /// </summary>
         public RDFMinInclusiveConstraint(RDFLiteral value)
-        {
-            if (value == null)
-                throw new RDFModelException("Cannot create RDFMinInclusiveConstraint because given \"value\" parameter is null.");
-            
-            Value = value;
-        }
+            => Value = value ?? throw new RDFModelException("Cannot create RDFMinInclusiveConstraint because given \"value\" parameter is null.");
         #endregion
 
         #region Methods
@@ -96,8 +86,8 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:minInclusive
-                if (Value is RDFResource)
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_INCLUSIVE, (RDFResource)Value));
+                if (Value is RDFResource valRes)
+                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_INCLUSIVE, valRes));
                 else
                     result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_INCLUSIVE, (RDFLiteral)Value));
             }
