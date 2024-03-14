@@ -54,10 +54,10 @@ namespace RDFSharp.Store
             //PlainLiteral
             int lastIndexOfDatatype = literal.LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
             if (!literal.Contains("^^")
-                    || literal.EndsWith("^^")
-                        || RDFModelUtilities.GetUriFromString(literal.Substring(lastIndexOfDatatype + 2)) == null)
+                  || literal.EndsWith("^^")
+                  || RDFModelUtilities.GetUriFromString(literal.Substring(lastIndexOfDatatype + 2)) == null)
             {
-                RDFPlainLiteral pLit = null;
+                RDFPlainLiteral pLit;
                 if (RDFNTriples.regexLPL.Value.Match(literal).Success)
                 {
                     int lastIndexOfLanguage = literal.LastIndexOf("@", StringComparison.OrdinalIgnoreCase);

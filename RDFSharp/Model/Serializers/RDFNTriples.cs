@@ -151,9 +151,9 @@ namespace RDFSharp.Model
                                                            .Replace("\r", "\\r");
 
                             #region plain literal
-                            if (t.Object is RDFPlainLiteral)
-                                tripleTemplate = ((RDFPlainLiteral)t.Object).HasLanguage() ? tripleTemplate.Replace("{LANG}", ((RDFPlainLiteral)t.Object).Language)
-                                                    : tripleTemplate.Replace("@{LANG}", string.Empty);
+                            if (t.Object is RDFPlainLiteral plitObj)
+                                tripleTemplate = plitObj.HasLanguage() ? tripleTemplate.Replace("{LANG}", plitObj.Language)
+                                                                       : tripleTemplate.Replace("@{LANG}", string.Empty);
                             #endregion
 
                             #region typed literal
@@ -273,8 +273,8 @@ namespace RDFSharp.Model
 
                             #region plain literal
                             if (!tokens[2].Contains("^^")
-                                    || tokens[2].EndsWith("^^")
-                                        || tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2, 1) != "<")
+                                  || tokens[2].EndsWith("^^")
+                                  || tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2, 1) != "<")
                             {
                                 if (regexLPL.Value.Match(tokens[2]).Success)
                                 {
@@ -285,9 +285,7 @@ namespace RDFSharp.Model
                                     L = new RDFPlainLiteral(HttpUtility.HtmlDecode(pLitValue), pLitLang);
                                 }
                                 else
-                                {
                                     L = new RDFPlainLiteral(HttpUtility.HtmlDecode(tokens[2]));
-                                }
                             }
                             #endregion
 

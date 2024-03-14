@@ -145,20 +145,14 @@ namespace RDFSharp.Store
                                                                  .Replace("\r", "\\r");
 
                             #region plain literal
-                            if (q.Object is RDFPlainLiteral)
-                            {
-                                if (((RDFPlainLiteral)q.Object).Language != string.Empty)
-                                    quadrupleTemplate = quadrupleTemplate.Replace("{LANG}", ((RDFPlainLiteral)q.Object).Language);
-                                else
-                                    quadrupleTemplate = quadrupleTemplate.Replace("@{LANG}", string.Empty);
-                            }
+                            if (q.Object is RDFPlainLiteral plitObj)
+                                quadrupleTemplate = plitObj.HasLanguage() ? quadrupleTemplate.Replace("{LANG}", plitObj.Language)
+                                                                          : quadrupleTemplate.Replace("@{LANG}", string.Empty);
                             #endregion
 
                             #region typed literal
                             else
-                            {
                                 quadrupleTemplate = quadrupleTemplate.Replace("{DTYPE}", RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)q.Object).Datatype));
-                            }
                             #endregion
                         }
                         #endregion
@@ -275,8 +269,8 @@ namespace RDFSharp.Store
 
                             #region plain literal
                             if (!tokens[2].Contains("^^")
-                                    || tokens[2].EndsWith("^^")
-                                        || tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2, 1) != "<")
+                                  || tokens[2].EndsWith("^^")
+                                  || tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2, 1) != "<")
                             {
                                 if (RDFNTriples.regexLPL.Value.Match(tokens[2]).Success)
                                 {
@@ -287,9 +281,7 @@ namespace RDFSharp.Store
                                     L = new RDFPlainLiteral(HttpUtility.HtmlDecode(pLitValue), pLitLang);
                                 }
                                 else
-                                {
                                     L = new RDFPlainLiteral(HttpUtility.HtmlDecode(tokens[2]));
-                                }
                             }
                             #endregion
 

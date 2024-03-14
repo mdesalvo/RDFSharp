@@ -47,10 +47,10 @@ namespace RDFSharp.Query
             #region Plain Literal
             int lastIndexOfDatatype = pMember.LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
             if (!pMember.Contains("^^")
-                    || pMember.EndsWith("^^")
-                        || RDFModelUtilities.GetUriFromString(pMember.Substring(lastIndexOfDatatype + 2)) == null)
+                  || pMember.EndsWith("^^")
+                  || RDFModelUtilities.GetUriFromString(pMember.Substring(lastIndexOfDatatype + 2)) == null)
             {
-                RDFPlainLiteral pLit = null;
+                RDFPlainLiteral pLit;
                 if (RDFNTriples.regexLPL.Value.Match(pMember).Success)
                 {
                     int lastIndexOfLanguage = pMember.LastIndexOf("@", StringComparison.OrdinalIgnoreCase);
@@ -59,9 +59,7 @@ namespace RDFSharp.Query
                     pLit = new RDFPlainLiteral(pLitVal, pLitLng);
                 }
                 else
-                {
                     pLit = new RDFPlainLiteral(pMember);
-                }
                 return pLit;
             }
             #endregion
