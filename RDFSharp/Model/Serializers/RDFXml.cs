@@ -296,14 +296,13 @@ namespace RDFSharp.Model
                                 else
                                 {
                                     #region plain literal
-                                    if (triple.Object is RDFPlainLiteral)
+                                    if (triple.Object is RDFPlainLiteral plitObj)
                                     {
-                                        RDFPlainLiteral pLit = (RDFPlainLiteral)triple.Object;
                                         //  xml:lang="plitLANG">
-                                        if (pLit.HasLanguage())
+                                        if (plitObj.HasLanguage())
                                         {
                                             XmlAttribute plainLiteralLangNodeDesc = rdfDoc.CreateAttribute("xml:lang", RDFVocabulary.XML.BASE_URI);
-                                            XmlText plainLiteralLangNodeDescText = rdfDoc.CreateTextNode(pLit.Language);
+                                            XmlText plainLiteralLangNodeDescText = rdfDoc.CreateTextNode(plitObj.Language);
                                             plainLiteralLangNodeDesc.AppendChild(plainLiteralLangNodeDescText);
                                             predNode.Attributes.Append(plainLiteralLangNodeDesc);
                                         }
