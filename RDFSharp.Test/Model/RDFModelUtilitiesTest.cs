@@ -419,9 +419,8 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(shortUri.Equals("http://example.org/"));
         }
 
-        [DataTestMethod]
-        [DataRow("")]
-        public void ShouldNotGetShortUriFromNullInput(string input)
+        [TestMethod]
+        public void ShouldNotGetShortUriFromNullInput()
         {
             string shortUri = RDFModelUtilities.GetShortUri(null);
 
