@@ -74,8 +74,7 @@ namespace RDFSharp.Model
                 IEnumerable<RDFPropertyConstraint> propertyConstraints = shape.Constraints.OfType<RDFPropertyConstraint>();
                 foreach (RDFPropertyConstraint propertyConstraint in propertyConstraints)
                 {
-                    RDFPropertyShape propertyShape = shapesGraph.SelectShape(propertyConstraint.PropertyShapeUri.ToString()) as RDFPropertyShape;
-                    if (propertyShape != null)
+                    if (shapesGraph.SelectShape(propertyConstraint.PropertyShapeUri.ToString()) is RDFPropertyShape propertyShape)
                         allowedProperties.Add(propertyShape.Path);
                 }
 
