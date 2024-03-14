@@ -795,7 +795,7 @@ namespace RDFSharp.Model
             //the case we can directly build a triple with "rdf:type" pred
             if (!CheckIfRdfDescriptionNode(subjNode))
             {
-                RDFResource obj = null;
+                RDFResource obj;
                 if (subjNode.NamespaceURI == string.Empty)
                     obj = new RDFResource(string.Concat(xmlBase, subjNode.LocalName), hashContext);
                 else
@@ -1118,12 +1118,10 @@ namespace RDFSharp.Model
                     else
                     {
                         //Parse the literal contained in the item
-                        RDFLiteral literal = null;
+                        RDFLiteral literal;
                         XmlAttribute attr = GetRdfDatatypeAttribute(elem);
                         if (attr != null)
-                        {
                             literal = new RDFTypedLiteral(elem.InnerText, RDFModelUtilities.GetDatatypeFromString(attr.InnerText));
-                        }
                         else
                         {
                             attr = GetXmlLangAttribute(elem) ?? xmlLangPred;

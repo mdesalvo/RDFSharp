@@ -55,9 +55,9 @@ namespace RDFSharp.Query
         public RDFGraph ToRDFGraph()
         {
             RDFGraph result = new RDFGraph();
-            RDFPatternMember subj = null;
-            RDFPatternMember pred = null;
-            RDFPatternMember obj = null;
+            RDFPatternMember subj;
+            RDFPatternMember pred;
+            RDFPatternMember obj;
 
             //Iterate the datatable rows and generate the corresponding triples to be added to the result graph
             IEnumerator resultRows = DescribeResults.Rows.GetEnumerator();
@@ -66,8 +66,8 @@ namespace RDFSharp.Query
                 subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?SUBJECT"].ToString());
                 pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?PREDICATE"].ToString());
                 obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?OBJECT"].ToString());
-                if (obj is RDFResource)
-                    result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, (RDFResource)obj));
+                if (obj is RDFResource objRes)
+                    result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, objRes));
                 else
                     result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, (RDFLiteral)obj));
             }
@@ -87,10 +87,7 @@ namespace RDFSharp.Query
         public RDFMemoryStore ToRDFMemoryStore()
         {
             RDFMemoryStore result = new RDFMemoryStore();
-            RDFPatternMember ctx = null;
-            RDFPatternMember subj = null;
-            RDFPatternMember pred = null;
-            RDFPatternMember obj = null;
+            RDFPatternMember ctx, subj, pred, obj;
 
             //Prepare context data
             bool hasCtx = DescribeResults.Columns.Contains("?CONTEXT");

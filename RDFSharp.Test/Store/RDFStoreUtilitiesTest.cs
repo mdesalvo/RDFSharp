@@ -49,7 +49,7 @@ namespace RDFSharp.Test.Store
             DataRow r4 = table.NewRow();
             r4["Context"] = "http://ctx2/"; r4["Subject"] = "http://subj2/"; r4["Predicate"] = "http://pred2/"; r4["Object"] = "5^^http://www.w3.org/2001/XMLSchema#integer"; r4["TripleFlavor"] = 2;
             table.Rows.Add(r4);
-            using (IDataReader reader = table.CreateDataReader())
+            using (DataTableReader reader = table.CreateDataReader())
             {
                 while (reader.Read())
                     result.AddQuadruple(RDFStoreUtilities.ParseQuadruple(reader));
@@ -105,7 +105,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -130,7 +129,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -155,7 +153,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -180,7 +177,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -205,7 +201,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit1 = new RDFPlainLiteral("lit");
             RDFPlainLiteral lit2 = new RDFPlainLiteral("lit", "en-US");
             RDFMemoryStore data = new RDFMemoryStore(
@@ -231,7 +226,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -256,7 +250,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -281,7 +274,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -306,7 +298,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -331,7 +322,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -356,7 +346,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -381,7 +370,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -406,7 +394,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -431,7 +418,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -456,7 +442,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -481,7 +466,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -506,7 +490,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -531,7 +514,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -556,7 +538,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -581,7 +562,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -606,7 +586,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -631,7 +610,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -656,7 +634,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -681,7 +658,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -706,7 +682,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -731,7 +706,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
@@ -781,7 +755,6 @@ namespace RDFSharp.Test.Store
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFPlainLiteral lit2 = new RDFPlainLiteral("lit2");
             RDFMemoryStore data = new RDFMemoryStore(
@@ -803,13 +776,10 @@ namespace RDFSharp.Test.Store
             RDFContext ctx1 = new RDFContext("ex:ctx1");
             RDFContext ctx2 = new RDFContext("ex:ctx2");
             RDFResource subj1 = new RDFResource("ex:subj1");
-            RDFResource subj2 = new RDFResource("ex:subj2");
             RDFResource pred1 = new RDFResource("ex:pred1");
             RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
-            RDFPlainLiteral lit2 = new RDFPlainLiteral("lit2");
             RDFMemoryStore data = new RDFMemoryStore(
                 [
                     new RDFQuadruple(ctx1, subj1, pred1, obj1),
@@ -829,11 +799,8 @@ namespace RDFSharp.Test.Store
             RDFContext ctx1 = new RDFContext("ex:ctx1");
             RDFContext ctx2 = new RDFContext("ex:ctx2");
             RDFResource subj1 = new RDFResource("ex:subj1");
-            RDFResource subj2 = new RDFResource("ex:subj2");
             RDFResource pred1 = new RDFResource("ex:pred1");
-            RDFResource pred2 = new RDFResource("ex:pred2");
             RDFResource obj1 = new RDFResource("ex:obj1");
-            RDFResource obj2 = new RDFResource("ex:obj2");
             RDFPlainLiteral lit = new RDFPlainLiteral("lit");
             RDFPlainLiteral lit2 = new RDFPlainLiteral("lit2");
             RDFMemoryStore data = new RDFMemoryStore(
