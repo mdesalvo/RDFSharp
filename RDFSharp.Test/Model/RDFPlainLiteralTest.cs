@@ -88,9 +88,11 @@ namespace RDFSharp.Test.Model
         [DataTestMethod]
         [DataRow("donal duck", "en--ltr")]
         [DataRow("donal duck", "en-US--ltr")]
+        [DataRow("donal duck", "en-uS--Ltr")]
         [DataRow("donal duck", "en-US-25--rtl")]
         [DataRow("donal duck@en-US", "en-US--rtl")]
         [DataRow("donal duck@", "en--rtl")]
+        [DataRow("donal duck@", "en--rTL")]
         [DataRow("", "en")]
         [DataRow(null, "en")]
         public void ShouldCreatePlainLiteralWithLanguageDirection(string value, string language)

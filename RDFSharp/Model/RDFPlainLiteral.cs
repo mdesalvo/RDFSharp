@@ -25,13 +25,13 @@ namespace RDFSharp.Model
     public class RDFPlainLiteral : RDFLiteral
     {
         #region Properties
-        /// <summary>
-        /// Regex for validation of language tags (with support for optional direction)
-        /// </summary>
         internal static readonly string LangTagDirection = "(--ltr|--rtl)?";
         internal static readonly string LangTagSubMask = string.Concat("(-[a-zA-Z0-9]{1,8})*", LangTagDirection);
         internal static readonly string LangTagMask = string.Concat("[a-zA-Z]{1,8}", LangTagSubMask);
-        internal static readonly Regex LangTagRegex = new Regex(string.Concat("^", LangTagMask, "$"), RegexOptions.Compiled);     
+        /// <summary>
+        /// Regex for validation of language tags (with support for optional direction)
+        /// </summary>
+        internal static readonly Regex LangTagRegex = new Regex(string.Concat("^", LangTagMask, "$"), RegexOptions.Compiled | RegexOptions.IgnoreCase);     
 
         /// <summary>
         /// Optional language of the plain literal's value
