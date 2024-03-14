@@ -188,16 +188,14 @@ namespace RDFSharp.Store
 
             string directive = sb.ToString();
             if (directive.StartsWith("@")
-                    || directive.Equals("prefix", StringComparison.InvariantCultureIgnoreCase)
-                        || directive.Equals("base", StringComparison.InvariantCultureIgnoreCase))
+                 || directive.Equals("prefix", StringComparison.InvariantCultureIgnoreCase)
+                 || directive.Equals("base", StringComparison.InvariantCultureIgnoreCase))
             {
                 ParseDirective(trigData, trigContext, trigContext.Graph, directive);
                 SkipWhitespace(trigData, trigContext);
                 // Turtle @base and @prefix directives MUST end with "."
                 if (directive.StartsWith("@"))
-                {
                     VerifyCharacterOrFail(trigData, trigContext, ReadCodePoint(trigData, trigContext), ".");
-                }
                 // SPARQL BASE and PREFIX directives MUST NOT end with "."
                 else
                 {
@@ -348,12 +346,12 @@ namespace RDFSharp.Store
             // the two parsing methods for blank nodes to use
             if (bufChar == '[')
             {
-                bufChar = ReadCodePoint(trigData, trigContext);
+                ReadCodePoint(trigData, trigContext);
                 SkipWhitespace(trigData, trigContext);
                 bufChar = PeekCodePoint(trigData, trigContext);
                 if (bufChar == ']')
                 {
-                    bufChar = ReadCodePoint(trigData, trigContext);
+                    ReadCodePoint(trigData, trigContext);
                     trigContext.Subject = new RDFResource();
                     SkipWhitespace(trigData, trigContext);
                     ParsePredicateObjectList(trigData, trigContext, trigContext.Graph);
