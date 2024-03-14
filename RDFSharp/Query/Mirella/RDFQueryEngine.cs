@@ -419,12 +419,12 @@ namespace RDFSharp.Query
                 IEnumerator rowsEnum = QueryMemberResultTables[patternGroup.QueryMemberID].Rows.GetEnumerator();
 
                 //Iterate the rows of the pattern group's result table
-                bool keepRow = false;
+                bool keepRow;
                 while (rowsEnum.MoveNext())
                 {
                     //Apply the pattern group's filters on the row
                     keepRow = true;
-                    var filtersEnum = filters.GetEnumerator();
+                    List<RDFFilter>.Enumerator filtersEnum = filters.GetEnumerator();
                     while (keepRow && filtersEnum.MoveNext())
                         keepRow = filtersEnum.Current.ApplyFilter((DataRow)rowsEnum.Current, false);
 

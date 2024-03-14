@@ -503,8 +503,8 @@ namespace RDFSharp.Model
             }
 
             //report statement
-            if (turtleContext.Object is RDFLiteral)
-                result.AddTriple(new RDFTriple(turtleContext.Subject, turtleContext.Predicate, (RDFLiteral)turtleContext.Object));
+            if (turtleContext.Object is RDFLiteral tcLit)
+                result.AddTriple(new RDFTriple(turtleContext.Subject, turtleContext.Predicate, tcLit));
             else
                 result.AddTriple(new RDFTriple(turtleContext.Subject, turtleContext.Predicate, (RDFResource)turtleContext.Object));
         }
