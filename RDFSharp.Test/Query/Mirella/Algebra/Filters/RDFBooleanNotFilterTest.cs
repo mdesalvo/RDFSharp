@@ -52,6 +52,27 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldCreateBooleanNotFilterHavingExpressionFilter()
+        {
+            RDFExpressionFilter expFilter = new RDFExpressionFilter(
+                new RDFBooleanAndExpression(
+                    new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
+                        new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")),
+                        new RDFConstantExpression(new RDFTypedLiteral("24.08", RDFModelEnums.RDFDatatypes.XSD_FLOAT))),
+                    new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
+                        new RDFVariableExpression(new RDFVariable("?V1")),
+                        new RDFConstantExpression(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING)))));
+
+            RDFBooleanNotFilter notFilter = new RDFBooleanNotFilter(expFilter);
+
+            Assert.IsNotNull(notFilter);
+            Assert.IsNotNull(notFilter.Filter);
+            Assert.IsTrue(notFilter.ToString().Equals($"FILTER ( !( (((?V1 + ?V2) = 24.08) && (?V1 = \"hello\"^^<http://www.w3.org/2001/XMLSchema#string>)) ) )"));
+            Assert.IsTrue(notFilter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( !( (((?V1 + ?V2) = 24.08) && (?V1 = \"hello\"^^xsd:string)) ) )"));
+            Assert.IsTrue(notFilter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(notFilter.PatternGroupMemberStringID)));
+        }
+
+        [TestMethod]
         public void ShouldThrowExceptionOnCreatingBooleanNotFilterBecauseNullFilter()
             => Assert.ThrowsException<RDFQueryException>(() => new RDFBooleanNotFilter(null));
 
