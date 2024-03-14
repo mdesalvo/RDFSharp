@@ -75,9 +75,8 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter cannot be \"bnode\" or \"xmlns\"");
             
             //Uri must be absolute and cannot start with "bnode:" or "xmlns:"
-            Uri finalUri = RDFModelUtilities.GetUriFromString(uri.Trim());
-            if (finalUri == null)
-                throw new RDFModelException("Cannot create RDFNamespace because \"uri\" parameter is not a valid Uri");
+            Uri finalUri = RDFModelUtilities.GetUriFromString(uri.Trim()) 
+                            ?? throw new RDFModelException("Cannot create RDFNamespace because \"uri\" parameter is not a valid Uri");
             if (finalUri.ToString().StartsWith("bnode", StringComparison.OrdinalIgnoreCase) || finalUri.ToString().StartsWith("xmlns", StringComparison.OrdinalIgnoreCase))
                 throw new RDFModelException("Cannot create RDFNamespace because \"uri\" parameter cannot start with \"bnode:\" or \"xmlns:\"");
             

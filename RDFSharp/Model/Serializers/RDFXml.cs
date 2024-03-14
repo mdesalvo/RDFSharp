@@ -452,9 +452,9 @@ namespace RDFSharp.Model
 
                 //Assert resource as subject
                 XmlAttribute xmlLangSubj = GetXmlLangAttribute(subjNode) ?? xmlLangParent;
-                RDFResource subj = subjectParent ?? GetSubjectNode(subjNode, xmlBase, result, hashContext);
-                if (subj == null)
-                    subj = new RDFResource();
+                RDFResource subj = subjectParent 
+                                    ?? GetSubjectNode(subjNode, xmlBase, result, hashContext) 
+                                    ?? new RDFResource();
                 subjects.Add(subj);
                 #endregion
 
@@ -670,12 +670,9 @@ namespace RDFSharp.Model
         /// </summary>
         private static XmlNode GetRdfRootNode(XmlDocument xmlDoc, XmlNamespaceManager nsMgr)
         {
-            XmlNode rdf = xmlDoc.SelectSingleNode("rdf:RDF", nsMgr) ?? xmlDoc.SelectSingleNode("RDF", nsMgr);
-
-            //Invalid RDF/XML file: root node is neither "rdf:RDF" or "RDF"
-            if (rdf == null)
-                throw new Exception("Given file has not a valid \"rdf:RDF\" or \"RDF\" root node");
-
+            XmlNode rdf = xmlDoc.SelectSingleNode("rdf:RDF", nsMgr) 
+                           ?? xmlDoc.SelectSingleNode("RDF", nsMgr) 
+                           ?? throw new Exception("Given file has not a valid \"rdf:RDF\" or \"RDF\" root node");
             return rdf;
         }
 
@@ -691,16 +688,15 @@ namespace RDFSharp.Model
                 while (iEnum != null && iEnum.MoveNext())
                 {
                     XmlAttribute attr = (XmlAttribute)iEnum.Current;
-                    if (attr.LocalName.ToUpperInvariant() != "XMLNS"
-                            && attr.Name.ToUpperInvariant() != "XML:LANG"
-                                && attr.Name.ToUpperInvariant() != "XML:BASE")
+                    if (!string.Equals(attr.LocalName, "xmlns", StringComparison.OrdinalIgnoreCase)
+                          && !string.Equals(attr.Name, "xml:lang", StringComparison.OrdinalIgnoreCase)
+                          && !string.Equals(attr.Name, "xml:base", StringComparison.OrdinalIgnoreCase))
                     {
                         //Try to resolve the current namespace against the namespace register;
                         //if not resolved, create new namespace with scope limited to actual node
-                        RDFNamespace ns =
-                        (RDFNamespaceRegister.GetByPrefix(attr.LocalName) ??
-                                RDFNamespaceRegister.GetByUri(attr.Value) ??
-                                    new RDFNamespace(attr.LocalName, attr.Value));
+                        RDFNamespace ns = RDFNamespaceRegister.GetByPrefix(attr.LocalName) 
+                                           ?? RDFNamespaceRegister.GetByUri(attr.Value) 
+                                           ?? new RDFNamespace(attr.LocalName, attr.Value);
 
                         nsMgr.AddNamespace(ns.NamespacePrefix, ns.NamespaceUri.ToString());
                     }
@@ -717,11 +713,9 @@ namespace RDFSharp.Model
             if (namespaceString != null && namespaceString.Trim() != string.Empty)
             {
                 //Extract the prefixable part from the Uri
-                Uri uriNS = RDFModelUtilities.GetUriFromString(namespaceString);
-                if (uriNS == null)
-                    throw new RDFModelException("Cannot create RDFNamespace because given \"namespaceString\" (" + namespaceString + ") parameter cannot be converted to a valid Uri");
-
-                string fragment = null;
+                Uri uriNS = RDFModelUtilities.GetUriFromString(namespaceString) 
+                             ?? throw new RDFModelException("Cannot create RDFNamespace because given \"namespaceString\" (" + namespaceString + ") parameter cannot be converted to a valid Uri");
+                string fragment;
                 string nspace = uriNS.AbsoluteUri;
 
                 // e.g.:  "http://www.w3.org/2001/XMLSchema#integer"
