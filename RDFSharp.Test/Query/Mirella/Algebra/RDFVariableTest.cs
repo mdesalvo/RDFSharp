@@ -32,7 +32,7 @@ namespace RDFSharp.Test.Query
         [DataRow("$var$")]
         public void ShouldCreateVariable(string variableName)
         {
-            string effectiveVariableName = string.Concat("?", variableName.Trim(new char[] { ' ', '?', '$' }).ToUpperInvariant());
+            string effectiveVariableName = string.Concat("?", variableName.Trim([' ', '?', '$']).ToUpperInvariant());
             RDFVariable variable1 = new RDFVariable(variableName);
 
             Assert.IsNotNull(variable1);
