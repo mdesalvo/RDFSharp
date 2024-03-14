@@ -57,6 +57,7 @@ namespace RDFSharp.Model
         internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
         {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
+            RDFPropertyShape pShape = shape as RDFPropertyShape;
 
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
@@ -65,13 +66,12 @@ namespace RDFSharp.Model
 
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
-            {
                 switch (valueNode)
                 {
                     //PlainLiteral
                     case RDFPlainLiteral valueNodePlainLiteral:
                         bool langMatches = false;
-                        var langTagsEnumerator = LanguageTags.GetEnumerator();
+                        HashSet<string>.Enumerator langTagsEnumerator = LanguageTags.GetEnumerator();
                         while (langTagsEnumerator.MoveNext() && !langMatches)
                         {
                             //NO language is found in the variable
@@ -87,15 +87,13 @@ namespace RDFSharp.Model
                                 langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), string.Concat("@", langTagsEnumerator.Current, RDFPlainLiteral.LangTagSubMask, "$"), RegexOptions.IgnoreCase);
                         }
                         if (!langMatches)
-                        {
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
                                                                      focusNode,
-                                                                     shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                                     pShape?.Path,
                                                                      valueNode,
                                                                      shapeMessages,
                                                                      shape.Severity));
-                        }
                         break;
 
                     //Resource/TypedLiteral
@@ -103,13 +101,12 @@ namespace RDFSharp.Model
                         report.AddResult(new RDFValidationResult(shape,
                                                                  RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
                                                                  focusNode,
-                                                                 shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                                 pShape?.Path,
                                                                  valueNode,
                                                                  shapeMessages,
                                                                  shape.Severity));
                         break;
                 }
-            }
             #endregion
 
             return report;

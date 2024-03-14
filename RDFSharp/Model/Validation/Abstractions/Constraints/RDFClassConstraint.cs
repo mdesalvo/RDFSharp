@@ -53,6 +53,7 @@ namespace RDFSharp.Model
         {
             RDFValidationReport report = new RDFValidationReport();
             List<RDFPatternMember> classInstances = dataGraph.GetInstancesOfClass(ClassType);
+            RDFPropertyShape pShape = shape as RDFPropertyShape;
 
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
@@ -61,7 +62,6 @@ namespace RDFSharp.Model
 
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
-            {
                 switch (valueNode)
                 {
                     //Resource
@@ -70,24 +70,23 @@ namespace RDFSharp.Model
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT,
                                                                      focusNode,
-                                                                     shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                                     pShape?.Path,
                                                                      valueNode,
                                                                      shapeMessages,
                                                                      shape.Severity));
                         break;
 
                     //Literal
-                    case RDFLiteral valueNodeLiteral:
+                    case RDFLiteral _:
                         report.AddResult(new RDFValidationResult(shape,
                                                                  RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT,
                                                                  focusNode,
-                                                                 shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                                 pShape?.Path,
                                                                  valueNode,
                                                                  shapeMessages,
                                                                  shape.Severity));
                         break;
                 }
-            }
             #endregion
 
             return report;

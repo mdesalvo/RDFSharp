@@ -108,8 +108,7 @@ namespace RDFSharp.Model
                 //sh:alternativePath
                 case RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative:
                     AlternativePath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-                                        .AddAlternativeSteps(pathSteps.Select(pathStep => new RDFPropertyPathStep(pathStep))
-                                                                      .ToList());
+                                        .AddAlternativeSteps(pathSteps.Select(pathStep => new RDFPropertyPathStep(pathStep)).ToList());
                     break;
             }
             Descriptions = new List<RDFLiteral>();

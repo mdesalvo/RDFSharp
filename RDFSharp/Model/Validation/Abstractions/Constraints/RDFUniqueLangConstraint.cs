@@ -47,6 +47,7 @@ namespace RDFSharp.Model
         internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
         {
             RDFValidationReport report = new RDFValidationReport();
+            RDFPropertyShape pShape = shape as RDFPropertyShape;
 
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
@@ -62,11 +63,9 @@ namespace RDFSharp.Model
                                                                     .ToList();
 
                 foreach (RDFPlainLiteral innerlanglitValueNode in langlitValueNodes)
-                {
                     foreach (RDFPlainLiteral outerlanglitValueNode in langlitValueNodes)
-                    {
                         if (!innerlanglitValueNode.Equals(outerlanglitValueNode)
-                                && innerlanglitValueNode.Language.Equals(outerlanglitValueNode.Language))
+                              && innerlanglitValueNode.Language.Equals(outerlanglitValueNode.Language))
                         {
                             //Ensure to not report twice the same language tag
                             if (!reportedLangs.Contains(innerlanglitValueNode.Language))
@@ -75,14 +74,12 @@ namespace RDFSharp.Model
                                 report.AddResult(new RDFValidationResult(shape,
                                                                          RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
                                                                          focusNode,
-                                                                         shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                                         pShape?.Path,
                                                                          null,
                                                                          shapeMessages,
                                                                          shape.Severity));
                             }
                         }
-                    }
-                }
             }
             #endregion
 

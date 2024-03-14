@@ -53,8 +53,7 @@ namespace RDFSharp.Model
             RDFValidationReport report = new RDFValidationReport();
 
             //Search for given property shape
-            RDFPropertyShape propertyShape = shapesGraph.SelectShape(PropertyShapeUri.ToString()) as RDFPropertyShape;
-            if (propertyShape == null)
+            if (!(shapesGraph.SelectShape(PropertyShapeUri.ToString()) is RDFPropertyShape propertyShape))
                 return report;
 
             #region Evaluation

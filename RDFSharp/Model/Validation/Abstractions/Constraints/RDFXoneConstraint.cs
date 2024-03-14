@@ -56,6 +56,7 @@ namespace RDFSharp.Model
         internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
         {
             RDFValidationReport report = new RDFValidationReport();
+            RDFPropertyShape pShape = shape as RDFPropertyShape;
 
             //Search for given xone shapes
             List<RDFShape> xoneShapes = new List<RDFShape>();
@@ -91,7 +92,7 @@ namespace RDFSharp.Model
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.XONE_CONSTRAINT_COMPONENT,
                                                              focusNode,
-                                                             shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                             pShape?.Path,
                                                              valueNode,
                                                              shapeMessages,
                                                              shape.Severity));

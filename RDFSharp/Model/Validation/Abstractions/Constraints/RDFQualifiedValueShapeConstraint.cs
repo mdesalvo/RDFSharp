@@ -65,6 +65,7 @@ namespace RDFSharp.Model
         internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
         {
             RDFValidationReport report = new RDFValidationReport();
+            RDFPropertyShape pShape = shape as RDFPropertyShape;
 
             //Search for given qualified value shape
             RDFShape qualifiedValueShape = shapesGraph.SelectShape(QualifiedValueShapeUri.ToString());
@@ -98,7 +99,7 @@ namespace RDFSharp.Model
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT_CONSTRAINT_COMPONENT,
                                                              focusNode,
-                                                             shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                             pShape?.Path,
                                                              null,
                                                              shapeMessages,
                                                              shape.Severity));
@@ -107,7 +108,7 @@ namespace RDFSharp.Model
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT_CONSTRAINT_COMPONENT,
                                                              focusNode,
-                                                             shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                             pShape?.Path,
                                                              null,
                                                              shapeMessages,
                                                              shape.Severity));

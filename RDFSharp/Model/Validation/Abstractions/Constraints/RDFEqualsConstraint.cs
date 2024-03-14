@@ -52,6 +52,7 @@ namespace RDFSharp.Model
         internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
         {
             RDFValidationReport report = new RDFValidationReport();
+            RDFPropertyShape pShape = shape as RDFPropertyShape;
 
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
@@ -65,28 +66,24 @@ namespace RDFSharp.Model
                                                              .ToList();
 
             foreach (RDFPatternMember predicateNode in predicateNodes)
-            {
                 if (!valueNodes.Any(v => v.Equals(predicateNode)))
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT,
                                                              focusNode,
-                                                             shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                             pShape?.Path,
                                                              predicateNode,
                                                              shapeMessages,
                                                              shape.Severity));
-            }
 
             foreach (RDFPatternMember valueNode in valueNodes)
-            {
                 if (!predicateNodes.Any(p => p.Equals(valueNode)))
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT,
                                                              focusNode,
-                                                             shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                             pShape?.Path,
                                                              valueNode,
                                                              shapeMessages,
                                                              shape.Severity));
-            }
             #endregion
 
             return report;

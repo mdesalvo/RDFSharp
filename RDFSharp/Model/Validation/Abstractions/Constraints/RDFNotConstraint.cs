@@ -51,6 +51,7 @@ namespace RDFSharp.Model
         internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
         {
             RDFValidationReport report = new RDFValidationReport();
+            RDFPropertyShape pShape = shape as RDFPropertyShape;
 
             //Search for given not shape
             RDFShape notShape = shapesGraph.SelectShape(NotShape.ToString());
@@ -70,7 +71,7 @@ namespace RDFSharp.Model
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.NOT_CONSTRAINT_COMPONENT,
                                                              focusNode,
-                                                             shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                             pShape?.Path,
                                                              valueNode,
                                                              shapeMessages,
                                                              shape.Severity));

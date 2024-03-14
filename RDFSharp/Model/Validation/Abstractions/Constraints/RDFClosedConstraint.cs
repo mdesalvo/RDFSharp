@@ -56,7 +56,6 @@ namespace RDFSharp.Model
         {
             if (ignoredProperty != null && !IgnoredProperties.ContainsKey(ignoredProperty.PatternMemberID))
                 IgnoredProperties.Add(ignoredProperty.PatternMemberID, ignoredProperty);
-
             return this;
         }
 
@@ -66,7 +65,7 @@ namespace RDFSharp.Model
         internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
         {
             RDFValidationReport report = new RDFValidationReport();
-
+            
             #region Evaluation
             if (Closed)
             {
@@ -87,7 +86,6 @@ namespace RDFSharp.Model
 
                 //Detect unallowed predicates
                 foreach (RDFPatternMember valueNode in valueNodes)
-                {
                     if (valueNode is RDFResource valueNodeResource)
                     {
                         RDFGraph valuenodeResourceGraph = dataGraph.SelectTriplesBySubject(valueNodeResource);
@@ -101,7 +99,6 @@ namespace RDFSharp.Model
                                                                      shapeMessages,
                                                                      shape.Severity));
                     }
-                }
             }
             #endregion
 

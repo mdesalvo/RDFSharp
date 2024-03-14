@@ -62,6 +62,7 @@ namespace RDFSharp.Model
         internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
         {
             RDFValidationReport report = new RDFValidationReport();
+            RDFPropertyShape pShape = shape as RDFPropertyShape;
 
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
@@ -76,7 +77,7 @@ namespace RDFSharp.Model
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.MIN_INCLUSIVE_CONSTRAINT_COMPONENT,
                                                              focusNode,
-                                                             shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                             pShape?.Path,
                                                              valueNode,
                                                              shapeMessages,
                                                              shape.Severity));

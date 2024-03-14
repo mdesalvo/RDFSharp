@@ -52,6 +52,7 @@ namespace RDFSharp.Model
         internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
         {
             RDFValidationReport report = new RDFValidationReport();
+            RDFPropertyShape pShape = shape as RDFPropertyShape;
 
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
@@ -60,12 +61,11 @@ namespace RDFSharp.Model
 
             #region Evaluation
             List<RDFPatternMember> predicateNodes = dataGraph.Where(t => t.Subject.Equals(focusNode)
-                                                                            && t.Predicate.Equals(LessThanOrEqualsPredicate))
+                                                                          && t.Predicate.Equals(LessThanOrEqualsPredicate))
                                                              .Select(x => x.Object)
                                                              .ToList();
 
             foreach (RDFPatternMember valueNode in valueNodes)
-            {
                 foreach (RDFPatternMember predicateNode in predicateNodes)
                 {
                     int comparison = RDFQueryUtilities.CompareRDFPatternMembers(valueNode, predicateNode);
@@ -73,12 +73,11 @@ namespace RDFSharp.Model
                         report.AddResult(new RDFValidationResult(shape,
                                                                  RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS_CONSTRAINT_COMPONENT,
                                                                  focusNode,
-                                                                 shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                                 pShape?.Path,
                                                                  valueNode,
                                                                  shapeMessages,
                                                                  shape.Severity));
                 }
-            }
             #endregion
 
             return report;
