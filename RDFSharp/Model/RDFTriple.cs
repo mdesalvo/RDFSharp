@@ -38,11 +38,6 @@ namespace RDFSharp.Model
         public RDFModelEnums.RDFTripleFlavors TripleFlavor { get; internal set; }
 
         /// <summary>
-        /// Metadata of the triple
-        /// </summary>
-        public RDFModelEnums.RDFTripleMetadata? TripleMetadata { get; internal set; }
-
-        /// <summary>
         /// Member acting as subject token of the triple
         /// </summary>
         public RDFPatternMember Subject { get; internal set; }
@@ -109,7 +104,6 @@ namespace RDFSharp.Model
         internal RDFTriple(RDFIndexedTriple indexedTriple, RDFGraphIndex graphIndex)
         {
             TripleFlavor = indexedTriple.TripleFlavor;
-            TripleMetadata = indexedTriple.TripleMetadata;
             Subject = graphIndex.ResourcesRegister[indexedTriple.SubjectID];
             Predicate = graphIndex.ResourcesRegister[indexedTriple.PredicateID];
             if (indexedTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
@@ -159,15 +153,6 @@ namespace RDFSharp.Model
         /// </summary>
         public Task<RDFAsyncGraph> ReifyTripleAsync()
             => Task.Run(() => new RDFAsyncGraph(ReifyTriple()));
-
-        /// <summary>
-        /// Sets the metadata of the triple
-        /// </summary>
-        public RDFTriple SetMetadata(RDFModelEnums.RDFTripleMetadata? tripleMetadata)
-        {
-            TripleMetadata = tripleMetadata;
-            return this;
-        }
         #endregion
     }
 
@@ -201,11 +186,6 @@ namespace RDFSharp.Model
         /// Flavor of the triple
         /// </summary>
         internal RDFModelEnums.RDFTripleFlavors TripleFlavor { get; set; }
-
-        /// <summary>
-        /// Metadata of the triple
-        /// </summary>
-        internal RDFModelEnums.RDFTripleMetadata? TripleMetadata { get; set; }
         #endregion
 
         #region Ctor
@@ -215,7 +195,6 @@ namespace RDFSharp.Model
         internal RDFIndexedTriple(RDFTriple triple)
         {
             TripleFlavor = triple.TripleFlavor;
-            TripleMetadata = triple.TripleMetadata;
             TripleID = triple.TripleID;
             SubjectID = triple.Subject.PatternMemberID;
             PredicateID = triple.Predicate.PatternMemberID;

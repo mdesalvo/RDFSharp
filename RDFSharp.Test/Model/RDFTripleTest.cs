@@ -48,14 +48,6 @@ namespace RDFSharp.Test.Model
 
             RDFTriple triple2 = new RDFTriple(subj, pred, obj);
             Assert.IsTrue(triple.Equals(triple2));
-
-            Assert.IsNull(triple.TripleMetadata);
-            triple.SetMetadata(RDFModelEnums.RDFTripleMetadata.IsInference);
-            Assert.IsTrue(triple.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsInference);
-            triple.SetMetadata(RDFModelEnums.RDFTripleMetadata.IsImport);
-            Assert.IsTrue(triple.TripleMetadata == RDFModelEnums.RDFTripleMetadata.IsImport);
-            triple.SetMetadata(null);
-            Assert.IsTrue(triple.TripleMetadata is null);
         }
 
         [DataTestMethod]

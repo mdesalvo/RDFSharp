@@ -60,21 +60,6 @@ namespace RDFSharp.Model
         };
 
         /// <summary>
-        /// RDFTripleMetadata represents an enumeration for possible types of triple metadata.
-        /// </summary>
-        public enum RDFTripleMetadata
-        {
-            /// <summary>
-            /// Indicates that the triple has been emitted in consequence of any kind of reasoning
-            /// </summary>
-            IsInference = 1,
-            /// <summary>
-            /// Indicates that the triple has been imported from an external source (e.g: an ontology)
-            /// </summary>
-            IsImport = 2
-        };
-
-        /// <summary>
         /// RDFDatatypes represents an enumeration for supported datatypes (RDF/RDFS/XSD).
         /// </summary>
         public enum RDFDatatypes
