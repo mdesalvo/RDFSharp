@@ -37,12 +37,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a lessThan constraint with the given predicate
         /// </summary>
         public RDFLessThanConstraint(RDFResource lessThanPredicate)
-        {
-            if (lessThanPredicate == null)
-                throw new RDFModelException("Cannot create RDFLessThanConstraint because given \"lessThanPredicate\" parameter is null.");
-            
-            LessThanPredicate = lessThanPredicate;
-        }
+            => LessThanPredicate = lessThanPredicate ?? throw new RDFModelException("Cannot create RDFLessThanConstraint because given \"lessThanPredicate\" parameter is null.");
         #endregion
 
         #region Methods

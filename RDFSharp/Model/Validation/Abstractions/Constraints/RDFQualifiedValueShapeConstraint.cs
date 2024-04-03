@@ -47,10 +47,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFQualifiedValueShapeConstraint(RDFResource qualifiedValueShapeUri, int? qualifiedValueMinCount, int? qualifiedValueMaxCount)
         {
-            if (qualifiedValueShapeUri == null)
-                throw new RDFModelException("Cannot create RDFQualifiedValueShapeConstraint because given \"qualifiedValueShapeUri\" parameter is null.");
-            
-            QualifiedValueShapeUri = qualifiedValueShapeUri;
+            QualifiedValueShapeUri = qualifiedValueShapeUri ?? throw new RDFModelException("Cannot create RDFQualifiedValueShapeConstraint because given \"qualifiedValueShapeUri\" parameter is null.");
             if (qualifiedValueMinCount.HasValue)
                 QualifiedValueMinCount = qualifiedValueMinCount < 0 ? 0 : qualifiedValueMinCount;
             if (qualifiedValueMaxCount.HasValue)

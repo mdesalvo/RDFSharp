@@ -73,12 +73,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFPropertyShape(RDFResource propertyShapeName, RDFResource path, bool isInversePath=false) : base(propertyShapeName)
         {
-            #region Guards
-            if (path == null)
-                throw new RDFModelException("Cannot create RDFPropertyShape because given \"path\" parameter is null.");
-            #endregion
-
-            Path = path;
+            Path = path ?? throw new RDFModelException("Cannot create RDFPropertyShape because given \"path\" parameter is null.");
             IsInversePath = isInversePath;
             Descriptions = new List<RDFLiteral>();
             Names = new List<RDFLiteral>();
