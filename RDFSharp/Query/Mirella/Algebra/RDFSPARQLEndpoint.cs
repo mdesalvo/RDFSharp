@@ -55,12 +55,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFSPARQLEndpoint(Uri baseAddress)
         {
-            #region Guards
-            if (baseAddress == null)
-                throw new RDFQueryException("Cannot create RDFSPARQLEndpoint because given \"baseAddress\" parameter is null.");
-            #endregion
-
-            BaseAddress = baseAddress;
+            BaseAddress = baseAddress ?? throw new RDFQueryException("Cannot create RDFSPARQLEndpoint because given \"baseAddress\" parameter is null.");
             QueryParams = new NameValueCollection();
             AuthorizationType = RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.None;
             AuthorizationValue = null;

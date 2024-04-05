@@ -94,7 +94,7 @@ namespace RDFSharp.Query
             if (evaluableQueryMembers.Any())
             {
                 //Iterate the evaluable members of the query
-                EvaluateQueryMembers(selectQuery, evaluableQueryMembers, datasource);
+                EvaluateQueryMembers(evaluableQueryMembers, datasource);
 
                 //Get the result table of the query
                 queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList(), false);
@@ -140,7 +140,7 @@ namespace RDFSharp.Query
             if (evaluableQueryMembers.Any())
             {
                 //Iterate the evaluable members of the query
-                EvaluateQueryMembers(describeQuery, evaluableQueryMembers, datasource);
+                EvaluateQueryMembers(evaluableQueryMembers, datasource);
 
                 //Get the result table of the query
                 queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList(), false);
@@ -169,7 +169,7 @@ namespace RDFSharp.Query
             if (evaluableQueryMembers.Any())
             {
                 //Iterate the evaluable members of the query
-                EvaluateQueryMembers(constructQuery, evaluableQueryMembers, datasource);
+                EvaluateQueryMembers(evaluableQueryMembers, datasource);
 
                 //Get the result table of the query
                 queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList(), false);
@@ -197,7 +197,7 @@ namespace RDFSharp.Query
             if (evaluableQueryMembers.Any())
             {
                 //Iterate the evaluable members of the query
-                EvaluateQueryMembers(askQuery, evaluableQueryMembers, datasource);
+                EvaluateQueryMembers(evaluableQueryMembers, datasource);
 
                 //Get the result table of the query
                 DataTable queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList(), false);
@@ -212,7 +212,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Evaluates the given list of query members against the given datasource
         /// </summary>
-        internal void EvaluateQueryMembers(RDFQuery query, List<RDFQueryMember> evaluableQueryMembers, RDFDataSource datasource)
+        internal void EvaluateQueryMembers(List<RDFQueryMember> evaluableQueryMembers, RDFDataSource datasource)
         {
             foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
             {

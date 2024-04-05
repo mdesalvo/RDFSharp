@@ -180,7 +180,7 @@ namespace RDFSharp.Store
                 codePoint = ReadCodePoint(trigData, trigContext);
                 if (codePoint == -1 || IsWhitespace(codePoint))
                 {
-                    UnreadCodePoint(trigData, trigContext, codePoint);
+                    UnreadCodePoint(trigContext, codePoint);
                     break;
                 }
                 sb.Append(char.ConvertFromUtf32(codePoint));
@@ -195,7 +195,7 @@ namespace RDFSharp.Store
                 SkipWhitespace(trigData, trigContext);
                 // Turtle @base and @prefix directives MUST end with "."
                 if (directive.StartsWith("@"))
-                    VerifyCharacterOrFail(trigData, trigContext, ReadCodePoint(trigData, trigContext), ".");
+                    VerifyCharacterOrFail(trigContext, ReadCodePoint(trigData, trigContext), ".");
                 // SPARQL BASE and PREFIX directives MUST NOT end with "."
                 else
                 {
@@ -207,7 +207,7 @@ namespace RDFSharp.Store
             {
                 // If there was a colon immediately after the graph keyword then
                 // assume it was a pname and not the SPARQL GRAPH keyword
-                UnreadCodePoint(trigData, trigContext, directive);
+                UnreadCodePoint(trigContext, directive);
                 ParseGraph(trigData, trigContext);
             }
             else if (directive.StartsWith("graph", StringComparison.OrdinalIgnoreCase))
@@ -225,7 +225,7 @@ namespace RDFSharp.Store
             }
             else
             {
-                UnreadCodePoint(trigData, trigContext, directive);
+                UnreadCodePoint(trigContext, directive);
                 ParseGraph(trigData, trigContext);
             }
         }
@@ -252,14 +252,14 @@ namespace RDFSharp.Store
                 }
                 else
                 {
-			        UnreadCodePoint(trigData, trigContext, c2);
-                    UnreadCodePoint(trigData, trigContext, c);
+			        UnreadCodePoint(trigContext, c2);
+                    UnreadCodePoint(trigContext, c);
                 }
 		        c = ReadCodePoint(trigData, trigContext);
             }
             else if (c == '<' || IsPrefixStartChar(c) || (c == ':' && c2 != '-') || (c == '_' && c2 == ':'))
             {
-                UnreadCodePoint(trigData, trigContext, c);
+                UnreadCodePoint(trigContext, c);
 
                 object value = ParseValue(trigData, trigContext, trigContext.Graph);
 
@@ -303,7 +303,7 @@ namespace RDFSharp.Store
                     }
                 }
 
-			    VerifyCharacterOrFail(trigData, trigContext, c, "}");
+			    VerifyCharacterOrFail(trigContext, c, "}");
             }
 	        else
             {
@@ -314,13 +314,13 @@ namespace RDFSharp.Store
 		        if (foundContextOrSubject)
                 {
 			        trigContext.Subject = contextOrSubject;
-			        UnreadCodePoint(trigData, trigContext, c);
+			        UnreadCodePoint(trigContext, c);
 			        ParsePredicateObjectList(trigData, trigContext, trigContext.Graph);
 		        }
 		        // Or if we didn't recognise anything, just parse as Turtle
 		        else
                 {
-                    UnreadCodePoint(trigData, trigContext, c);
+                    UnreadCodePoint(trigContext, c);
                     ParseTriples(trigData, trigContext);
 		        }
             }
@@ -362,7 +362,7 @@ namespace RDFSharp.Store
                     //initial '[' character in order for the method to work
                     while (bufChar != '[')
                     {
-                        UnreadCodePoint(trigData, trigContext, bufChar);
+                        UnreadCodePoint(trigContext, bufChar);
                         bufChar = PeekCodePoint(trigData, trigContext);
                     }
                     trigContext.Subject = ParseImplicitBlank(trigData, trigContext, trigContext.Graph);

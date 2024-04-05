@@ -105,8 +105,8 @@ namespace RDFSharp.Query
                 subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?SUBJECT"].ToString());
                 pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?PREDICATE"].ToString());
                 obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?OBJECT"].ToString());
-                if (obj is RDFResource)
-                    result.AddQuadruple(new RDFQuadruple((RDFContext)ctx, (RDFResource)subj, (RDFResource)pred, (RDFResource)obj));
+                if (obj is RDFResource objRes)
+                    result.AddQuadruple(new RDFQuadruple((RDFContext)ctx, (RDFResource)subj, (RDFResource)pred, objRes));
                 else
                     result.AddQuadruple(new RDFQuadruple((RDFContext)ctx, (RDFResource)subj, (RDFResource)pred, (RDFLiteral)obj));
             }

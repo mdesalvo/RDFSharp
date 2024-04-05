@@ -78,7 +78,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create RDFPattern because given \"predicate\" parameter is null");
             if (!(predicate is RDFResource || predicate is RDFVariable))
                 throw new RDFQueryException("Cannot create RDFPattern because given \"predicate\" parameter (" + predicate + ") is neither a resource or a variable");
-            if (predicate is RDFResource && ((RDFResource)predicate).IsBlank)
+            if (predicate is RDFResource predRes && predRes.IsBlank)
                 throw new RDFQueryException("Cannot create RDFPattern because given \"predicate\" parameter is a blank resource");
             if (objLit == null)
                 throw new RDFQueryException("Cannot create RDFPattern because given \"objLit\" parameter is null");

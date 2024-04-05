@@ -2706,7 +2706,7 @@ WHERE {
             List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
 
             RDFQueryEngine queryEngine = new RDFQueryEngine();
-            queryEngine.EvaluateQueryMembers(query, evaluableQueryMembers, graph);
+            queryEngine.EvaluateQueryMembers(evaluableQueryMembers, graph);
 
             Assert.IsNotNull(queryEngine.QueryMemberResultTables);
             Assert.IsTrue(queryEngine.QueryMemberResultTables.Count == 2);
@@ -2757,7 +2757,7 @@ WHERE {
             List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
 
             RDFQueryEngine queryEngine = new RDFQueryEngine();
-            queryEngine.EvaluateQueryMembers(query, evaluableQueryMembers, graph);
+            queryEngine.EvaluateQueryMembers(evaluableQueryMembers, graph);
 
             Assert.IsNotNull(queryEngine.QueryMemberResultTables);
             Assert.IsTrue(queryEngine.QueryMemberResultTables.Count == 2);
@@ -2808,7 +2808,7 @@ WHERE {
             List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
 
             RDFQueryEngine queryEngine = new RDFQueryEngine();
-            queryEngine.EvaluateQueryMembers(query, evaluableQueryMembers, graph);
+            queryEngine.EvaluateQueryMembers(evaluableQueryMembers, graph);
 
             Assert.IsNotNull(queryEngine.QueryMemberResultTables);
             Assert.IsTrue(queryEngine.QueryMemberResultTables.Count == 2);
@@ -2857,7 +2857,7 @@ WHERE {
             List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
 
             RDFQueryEngine queryEngine = new RDFQueryEngine();
-            queryEngine.EvaluateQueryMembers(query, evaluableQueryMembers, graph);
+            queryEngine.EvaluateQueryMembers(evaluableQueryMembers, graph);
 
             Assert.IsNotNull(queryEngine.QueryMemberResultTables);
             Assert.IsTrue(queryEngine.QueryMemberResultTables.Count == 2);

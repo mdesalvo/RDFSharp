@@ -799,8 +799,8 @@ namespace RDFSharp.Store
                     throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having NULL value in the \"?OBJECT\" column.");
                 
                 RDFPatternMember rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?OBJECT"].ToString());
-                if (rowObj is RDFResource)
-                    result.AddQuadruple(new RDFQuadruple(new RDFContext(rowCtx.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, (RDFResource)rowObj));
+                if (rowObj is RDFResource objRes)
+                    result.AddQuadruple(new RDFQuadruple(new RDFContext(rowCtx.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, objRes));
                 else
                     result.AddQuadruple(new RDFQuadruple(new RDFContext(rowCtx.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, (RDFLiteral)rowObj));
                 #endregion

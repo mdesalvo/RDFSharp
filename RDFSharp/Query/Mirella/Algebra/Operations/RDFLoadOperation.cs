@@ -45,14 +45,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build a LOAD operation for the given remote graph Uri
         /// </summary>
         public RDFLoadOperation(Uri fromContext)
-        {
-            #region Guards
-            if (fromContext == null)
-                throw new RDFQueryException("Cannot create RDFLoadOperation because given \"fromContext\" parameter is null.");
-            #endregion
-
-            FromContext = fromContext;
-        }
+            => FromContext = fromContext ?? throw new RDFQueryException("Cannot create RDFLoadOperation because given \"fromContext\" parameter is null.");
         #endregion
 
         #region Interfaces

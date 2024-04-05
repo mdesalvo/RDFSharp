@@ -219,13 +219,13 @@ namespace RDFSharp.Store
                 RDFPatternMember tObject = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?O"].ToString());
 
                 //Cleanup store from detected reifications
-                if (tObject is RDFResource)
+                if (tObject is RDFResource objRes)
                 {
-                    AddQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tSubject, (RDFResource)tPredicate, (RDFResource)tObject));
+                    AddQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tSubject, (RDFResource)tPredicate, objRes));
                     RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
                     RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT, (RDFResource)tSubject));
                     RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
-                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, (RDFResource)tObject));
+                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, objRes));
                 }
                 else
                 {
@@ -293,7 +293,7 @@ namespace RDFSharp.Store
         public List<RDFGraph> ExtractGraphs()
         {
             Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>();
-            foreach (RDFQuadruple q in (this is RDFMemoryStore ? (RDFMemoryStore)this : SelectAllQuadruples()))
+            foreach (RDFQuadruple q in (this is RDFMemoryStore memStore ? memStore : SelectAllQuadruples()))
             {
                 // Step 1: Cache-Update
                 if (!graphs.ContainsKey(q.Context.PatternMemberID))
@@ -317,7 +317,7 @@ namespace RDFSharp.Store
         public List<RDFContext> ExtractContexts()
         {
             Dictionary<long, RDFPatternMember> contexts = new Dictionary<long, RDFPatternMember>();
-            foreach (RDFQuadruple q in (this is RDFMemoryStore ? (RDFMemoryStore)this : SelectAllQuadruples()))
+            foreach (RDFQuadruple q in (this is RDFMemoryStore memStore ? memStore : SelectAllQuadruples()))
             {
                 if (!contexts.ContainsKey(q.Context.PatternMemberID))
                     contexts.Add(q.Context.PatternMemberID, q.Context);

@@ -98,24 +98,26 @@ namespace RDFSharp.Query
         {
             if (modifier != null)
             {
+                List<RDFModifier> modifiers = GetModifiers().ToList();
+
                 //Ensure to have only one groupby modifier in the query
-                if (modifier is RDFGroupByModifier && GetModifiers().Any(m => m is RDFGroupByModifier))
+                if (modifier is RDFGroupByModifier && modifiers.Any(m => m is RDFGroupByModifier))
                     return this;
 
                 //Ensure to have only one distinct modifier in the query
-                if (modifier is RDFDistinctModifier && GetModifiers().Any(m => m is RDFDistinctModifier))
+                if (modifier is RDFDistinctModifier && modifiers.Any(m => m is RDFDistinctModifier))
                     return this;
 
                 //Ensure to have only one limit modifier in the query
-                if (modifier is RDFLimitModifier && GetModifiers().Any(m => m is RDFLimitModifier))
+                if (modifier is RDFLimitModifier && modifiers.Any(m => m is RDFLimitModifier))
                     return this;
 
                 //Ensure to have only one offset modifier in the query
-                if (modifier is RDFOffsetModifier && GetModifiers().Any(m => m is RDFOffsetModifier))
+                if (modifier is RDFOffsetModifier && modifiers.Any(m => m is RDFOffsetModifier))
                     return this;
 
                 //Ensure to have only one orderby modifier per variable in the query
-                if (modifier is RDFOrderByModifier && GetModifiers().Any(m => m is RDFOrderByModifier && ((RDFOrderByModifier)m).Variable.Equals(((RDFOrderByModifier)modifier).Variable)))
+                if (modifier is RDFOrderByModifier obm && modifiers.Any(m => m is RDFOrderByModifier om && om.Variable.Equals(obm.Variable)))
                     return this;
 
                 QueryMembers.Add(modifier);

@@ -81,8 +81,10 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), new RDFVariable("?T"), new RDFVariable("?L")));
-            filter.PatternResults = new DataTable();
+            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), new RDFVariable("?T"), new RDFVariable("?L")))
+            {
+                PatternResults = new DataTable()
+            };
             filter.PatternResults.Columns.Add("?A", typeof(string));
             DataRow filterRow = filter.PatternResults.NewRow();
             filterRow["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
@@ -107,8 +109,10 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), new RDFVariable("?T"), new RDFVariable("?L")));
-            filter.PatternResults = new DataTable();
+            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), new RDFVariable("?T"), new RDFVariable("?L")))
+            {
+                PatternResults = new DataTable()
+            };
             filter.PatternResults.Columns.Add("?T", typeof(string));
             DataRow filterRow = filter.PatternResults.NewRow();
             filterRow["?T"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
@@ -133,8 +137,10 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?A")));
-            filter.PatternResults = new DataTable();
+            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?A")))
+            {
+                PatternResults = new DataTable()
+            };
             filter.PatternResults.Columns.Add("?A", typeof(string));
             DataRow filterRow = filter.PatternResults.NewRow();
             filterRow["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
@@ -159,8 +165,10 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), new RDFVariable("?B"), RDFVocabulary.RDFS.CLASS));
-            filter.PatternResults = new DataTable();
+            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), new RDFVariable("?B"), RDFVocabulary.RDFS.CLASS))
+            {
+                PatternResults = new DataTable()
+            };
             filter.PatternResults.Columns.Add("?A", typeof(string));
             filter.PatternResults.Columns.Add("?B", typeof(string));
             filter.PatternResults.Columns.Add("?C", typeof(string));
@@ -189,8 +197,10 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?A")));
-            filter.PatternResults = new DataTable();
+            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?A")))
+            {
+                PatternResults = new DataTable()
+            };
             filter.PatternResults.Columns.Add("?A", typeof(string));
             DataRow filterRow = filter.PatternResults.NewRow();
             filterRow["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
@@ -215,8 +225,10 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?A")));
-            filter.PatternResults = new DataTable();
+            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?A")))
+            {
+                PatternResults = new DataTable()
+            };
             filter.PatternResults.Columns.Add("?A", typeof(string));
             DataRow filterRow = filter.PatternResults.NewRow();
             filterRow["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
@@ -241,8 +253,10 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?B"), new RDFVariable("?Q")));
-            filter.PatternResults = new DataTable();
+            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?B"), new RDFVariable("?Q")))
+            {
+                PatternResults = new DataTable()
+            };
             filter.PatternResults.Columns.Add("?B", typeof(string));
             DataRow filterRow = filter.PatternResults.NewRow();
             filterRow["?B"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
@@ -267,8 +281,10 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?C")));
-            filter.PatternResults = new DataTable();
+            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?C")))
+            {
+                PatternResults = new DataTable()
+            };
             filter.PatternResults.Columns.Add("?C", typeof(string));
             DataRow filterRow = filter.PatternResults.NewRow();
             filterRow["?C"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
@@ -293,8 +309,10 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), new RDFVariable("?T"), new RDFVariable("?L")));
-            filter.PatternResults = new DataTable();
+            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), new RDFVariable("?T"), new RDFVariable("?L")))
+            {
+                PatternResults = new DataTable()
+            };
             filter.PatternResults.Columns.Add("?A", typeof(string));
             DataRow filterRow = filter.PatternResults.NewRow();
             filterRow["?A"] = new RDFPlainLiteral("hello").ToString();
@@ -319,8 +337,10 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), new RDFVariable("?T"), new RDFVariable("?L")));
-            filter.PatternResults = new DataTable();
+            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), new RDFVariable("?T"), new RDFVariable("?L")))
+            {
+                PatternResults = new DataTable()
+            };
             filter.PatternResults.Columns.Add("?T", typeof(string));
             DataRow filterRow = filter.PatternResults.NewRow();
             filterRow["?T"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
@@ -345,8 +365,10 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?A")));
-            filter.PatternResults = new DataTable();
+            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?A")))
+            {
+                PatternResults = new DataTable()
+            };
             filter.PatternResults.Columns.Add("?A", typeof(string));
             DataRow filterRow = filter.PatternResults.NewRow();
             filterRow["?A"] = new RDFResource("ex:org").ToString();
@@ -371,8 +393,10 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?A")));
-            filter.PatternResults = new DataTable();
+            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?A")))
+            {
+                PatternResults = new DataTable()
+            };
             filter.PatternResults.Columns.Add("?A", typeof(string));
             DataRow filterRow = filter.PatternResults.NewRow();
             filterRow["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
@@ -397,8 +421,10 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
-            filter.PatternResults = new DataTable();
+            RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
+            {
+                PatternResults = new DataTable()
+            };
             filter.PatternResults.Columns.Add("?A", typeof(string));
             filter.PatternResults.AcceptChanges();
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);

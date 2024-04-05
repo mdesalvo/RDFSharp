@@ -265,10 +265,10 @@ namespace RDFSharp.Query
             foreach (RDFQueryMember queryMember in evaluableQueryMembers)
             {
                 #region PATTERNGROUPS
-                if (queryMember is RDFPatternGroup)
+                if (queryMember is RDFPatternGroup pGroup)
                 {
                     //Current pattern group is set as UNION with the next one
-                    if (((RDFPatternGroup)queryMember).JoinAsUnion)
+                    if (pGroup.JoinAsUnion)
                     {
                         //Current pattern group IS NOT the last of the query
                         //(so UNION keyword must be appended at last)
@@ -280,7 +280,7 @@ namespace RDFSharp.Query
                                 printingUnion = true;
                                 sb.AppendLine("  {");
                             }
-                            sb.Append(RDFQueryPrinter.PrintPatternGroup((RDFPatternGroup)queryMember, 2, true, operationPrefixes));
+                            sb.Append(RDFQueryPrinter.PrintPatternGroup(pGroup, 2, true, operationPrefixes));
                             sb.AppendLine("    UNION");
                         }
 
@@ -292,11 +292,11 @@ namespace RDFSharp.Query
                             if (printingUnion)
                             {
                                 printingUnion = false;
-                                sb.Append(RDFQueryPrinter.PrintPatternGroup((RDFPatternGroup)queryMember, 2, true, operationPrefixes));
+                                sb.Append(RDFQueryPrinter.PrintPatternGroup(pGroup, 2, true, operationPrefixes));
                                 sb.AppendLine("  }");
                             }
                             else
-                                sb.Append(RDFQueryPrinter.PrintPatternGroup((RDFPatternGroup)queryMember, 0, false, operationPrefixes));
+                                sb.Append(RDFQueryPrinter.PrintPatternGroup(pGroup, 0, false, operationPrefixes));
                         }
                     }
 
@@ -307,11 +307,11 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
-                            sb.Append(RDFQueryPrinter.PrintPatternGroup((RDFPatternGroup)queryMember, 2, true, operationPrefixes));
+                            sb.Append(RDFQueryPrinter.PrintPatternGroup(pGroup, 2, true, operationPrefixes));
                             sb.AppendLine("  }");
                         }
                         else
-                            sb.Append(RDFQueryPrinter.PrintPatternGroup((RDFPatternGroup)queryMember, 0, false, operationPrefixes));
+                            sb.Append(RDFQueryPrinter.PrintPatternGroup(pGroup, 0, false, operationPrefixes));
                     }
                 }
                 #endregion

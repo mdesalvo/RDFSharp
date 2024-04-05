@@ -130,28 +130,28 @@ namespace RDFSharp.Query
                                         bindingElement.AppendChild(uriElement);
                                     }
                                 }
-                                else if (rdfTerm is RDFLiteral)
+                                else if (rdfTerm is RDFLiteral rdfTermLit)
                                 {
                                     XmlNode litElement = sparqlDoc.CreateNode(XmlNodeType.Element, "literal", null);
-                                    if (rdfTerm is RDFPlainLiteral)
+                                    if (rdfTermLit is RDFPlainLiteral rdfTermPLit)
                                     {
-                                        if (((RDFPlainLiteral)rdfTerm).HasLanguage())
+                                        if (rdfTermPLit.HasLanguage())
                                         {
                                             XmlAttribute xmlLang = sparqlDoc.CreateAttribute(string.Concat(RDFVocabulary.XML.PREFIX, ":lang"), RDFVocabulary.XML.BASE_URI);
-                                            XmlText xmlLangText = sparqlDoc.CreateTextNode(((RDFPlainLiteral)rdfTerm).Language);
+                                            XmlText xmlLangText = sparqlDoc.CreateTextNode(rdfTermPLit.Language);
                                             xmlLang.AppendChild(xmlLangText);
                                             litElement.Attributes.Append(xmlLang);
                                         }
-                                        XmlText plainLiteralText = sparqlDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(((RDFLiteral)rdfTerm).Value)));
+                                        XmlText plainLiteralText = sparqlDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(rdfTermLit.Value)));
                                         litElement.AppendChild(plainLiteralText);
                                     }
                                     else
                                     {
                                         XmlAttribute datatype = sparqlDoc.CreateAttribute("datatype");
-                                        XmlText datatypeText = sparqlDoc.CreateTextNode(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)rdfTerm).Datatype));
+                                        XmlText datatypeText = sparqlDoc.CreateTextNode(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)rdfTermLit).Datatype));
                                         datatype.AppendChild(datatypeText);
                                         litElement.Attributes.Append(datatype);
-                                        XmlText typedLiteralText = sparqlDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(((RDFLiteral)rdfTerm).Value)));
+                                        XmlText typedLiteralText = sparqlDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(rdfTermLit.Value)));
                                         litElement.AppendChild(typedLiteralText);
                                     }
                                     bindingElement.AppendChild(litElement);

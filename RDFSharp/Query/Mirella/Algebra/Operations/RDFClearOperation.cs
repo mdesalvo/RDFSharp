@@ -46,12 +46,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an explicit CLEAR operation for the given remote graph Uri
         /// </summary>
         public RDFClearOperation(Uri fromContext)
-        {
-            if (fromContext == null)
-                throw new RDFQueryException("Cannot create RDFClearOperation because given \"fromContext\" parameter is null.");
-
-            FromContext = fromContext;
-        }
+            => FromContext = fromContext ?? throw new RDFQueryException("Cannot create RDFClearOperation because given \"fromContext\" parameter is null.");
 
         /// <summary>
         /// Default-ctor to build an implicit CLEAR operation with the given flavor

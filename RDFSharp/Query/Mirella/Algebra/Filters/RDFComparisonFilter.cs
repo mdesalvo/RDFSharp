@@ -50,17 +50,10 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFPatternMember leftMember, RDFPatternMember rightMember)
         {
-            #region Guards
-            if (leftMember == null)
-                throw new RDFQueryException("Cannot create RDFComparisonFilter because given \"leftMember\" parameter is null.");
-            if (rightMember == null)
-                throw new RDFQueryException("Cannot create RDFComparisonFilter because given \"rightMember\" parameter is null.");
-            #endregion
-
             ComparisonFlavor = comparisonFlavor;
-            LeftMember = leftMember;
+            LeftMember = leftMember ?? throw new RDFQueryException("Cannot create RDFComparisonFilter because given \"leftMember\" parameter is null.");
             LeftMemberString = leftMember.ToString();
-            RightMember = rightMember;
+            RightMember = rightMember ?? throw new RDFQueryException("Cannot create RDFComparisonFilter because given \"rightMember\" parameter is null.");
             RightMemberString = rightMember.ToString();
         }
         #endregion

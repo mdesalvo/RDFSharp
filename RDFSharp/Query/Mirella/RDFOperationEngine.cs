@@ -375,7 +375,7 @@ namespace RDFSharp.Query
             if (evaluableQueryMembers.Any())
             {
                 //Iterate the evaluable members of the operation
-                EvaluateQueryMembers(operation, evaluableQueryMembers, datasource);
+                EvaluateQueryMembers(evaluableQueryMembers, datasource);
 
                 //Get the result table of the operation
                 resultTable = CombineTables(QueryMemberResultTables.Values.ToList(), false);
@@ -422,8 +422,8 @@ namespace RDFSharp.Query
                 //GRAPH
                 if (datasource.IsGraph())
                 {
-                    RDFTriple insertTriple = insertTemplate.Object is RDFLiteral
-                                                ? new RDFTriple((RDFResource)insertTemplate.Subject, (RDFResource)insertTemplate.Predicate, (RDFLiteral)insertTemplate.Object)
+                    RDFTriple insertTriple = insertTemplate.Object is RDFLiteral litObj
+                                                ? new RDFTriple((RDFResource)insertTemplate.Subject, (RDFResource)insertTemplate.Predicate, litObj)
                                                 : new RDFTriple((RDFResource)insertTemplate.Subject, (RDFResource)insertTemplate.Predicate, (RDFResource)insertTemplate.Object);
                     if (!((RDFGraph)datasource).ContainsTriple(insertTriple))
                     {
@@ -443,8 +443,8 @@ namespace RDFSharp.Query
                 else if (datasource.IsStore())
                 {
                     RDFContext insertContext = insertTemplate.Context as RDFContext ?? new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri);
-                    RDFQuadruple insertQuadruple = insertTemplate.Object is RDFLiteral
-                                                      ? new RDFQuadruple(insertContext, (RDFResource)insertTemplate.Subject, (RDFResource)insertTemplate.Predicate, (RDFLiteral)insertTemplate.Object)
+                    RDFQuadruple insertQuadruple = insertTemplate.Object is RDFLiteral litObj
+                                                      ? new RDFQuadruple(insertContext, (RDFResource)insertTemplate.Subject, (RDFResource)insertTemplate.Predicate, litObj)
                                                       : new RDFQuadruple(insertContext, (RDFResource)insertTemplate.Subject, (RDFResource)insertTemplate.Predicate, (RDFResource)insertTemplate.Object);
                     if (!((RDFStore)datasource).ContainsQuadruple(insertQuadruple))
                     {
@@ -483,8 +483,8 @@ namespace RDFSharp.Query
                 //GRAPH
                 if (datasource.IsGraph())
                 {
-                    RDFTriple deleteTriple = deleteTemplate.Object is RDFLiteral
-                                                ? new RDFTriple((RDFResource)deleteTemplate.Subject, (RDFResource)deleteTemplate.Predicate, (RDFLiteral)deleteTemplate.Object)
+                    RDFTriple deleteTriple = deleteTemplate.Object is RDFLiteral litObj
+                                                ? new RDFTriple((RDFResource)deleteTemplate.Subject, (RDFResource)deleteTemplate.Predicate, litObj)
                                                 : new RDFTriple((RDFResource)deleteTemplate.Subject, (RDFResource)deleteTemplate.Predicate, (RDFResource)deleteTemplate.Object);
                     if (((RDFGraph)datasource).ContainsTriple(deleteTriple))
                     {
@@ -504,8 +504,8 @@ namespace RDFSharp.Query
                 else if (datasource.IsStore())
                 {
                     RDFContext deleteContext = deleteTemplate.Context as RDFContext ?? new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri);
-                    RDFQuadruple deleteQuadruple = deleteTemplate.Object is RDFLiteral
-                                                      ? new RDFQuadruple(deleteContext, (RDFResource)deleteTemplate.Subject, (RDFResource)deleteTemplate.Predicate, (RDFLiteral)deleteTemplate.Object)
+                    RDFQuadruple deleteQuadruple = deleteTemplate.Object is RDFLiteral litObj
+                                                      ? new RDFQuadruple(deleteContext, (RDFResource)deleteTemplate.Subject, (RDFResource)deleteTemplate.Predicate, litObj)
                                                       : new RDFQuadruple(deleteContext, (RDFResource)deleteTemplate.Subject, (RDFResource)deleteTemplate.Predicate, (RDFResource)deleteTemplate.Object);
                     if (((RDFStore)datasource).ContainsQuadruple(deleteQuadruple))
                     {

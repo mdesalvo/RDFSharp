@@ -41,13 +41,11 @@ namespace RDFSharp.Query
             : base(leftArgument, rightArgument) 
         {
             #region Guards
-            if (conditionArgument == null)
-                throw new RDFQueryException("Cannot create expression because given \"conditionArgument\" parameter is null");
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
             #endregion
 
-            ConditionArgument = conditionArgument;
+            ConditionArgument = conditionArgument ?? throw new RDFQueryException("Cannot create expression because given \"conditionArgument\" parameter is null");
         }
         #endregion
 
