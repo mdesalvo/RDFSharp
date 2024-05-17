@@ -266,11 +266,6 @@ namespace RDFSharp.Model
             public static readonly RDFResource PATTERN = new RDFResource(string.Concat(XSD.BASE_URI, "pattern"));
 
             /// <summary>
-            /// xsd:enumeration
-            /// </summary>
-            public static readonly RDFResource ENUMERATION = new RDFResource(string.Concat(XSD.BASE_URI, "enumeration"));
-
-            /// <summary>
             /// xsd:maxInclusive
             /// </summary>
             public static readonly RDFResource MAX_INCLUSIVE = new RDFResource(string.Concat(XSD.BASE_URI, "maxInclusive"));
@@ -289,21 +284,6 @@ namespace RDFSharp.Model
             /// xsd:minInclusive
             /// </summary>
             public static readonly RDFResource MIN_INCLUSIVE = new RDFResource(string.Concat(XSD.BASE_URI, "minInclusive"));
-
-            /// <summary>
-            /// xsd:totalDigits
-            /// </summary>
-            public static readonly RDFResource TOTAL_DIGITS = new RDFResource(string.Concat(XSD.BASE_URI, "totalDigits"));
-
-            /// <summary>
-            /// xsd:fractionDigits
-            /// </summary>
-            public static readonly RDFResource FRACTION_DIGITS = new RDFResource(string.Concat(XSD.BASE_URI, "fractionDigits"));
-
-            /// <summary>
-            /// xsd:assertion
-            /// </summary>
-            public static readonly RDFResource ASSERTION = new RDFResource(string.Concat(XSD.BASE_URI, "assertion"));
             #endregion
         }
         #endregion
