@@ -94,7 +94,7 @@ namespace RDFSharp.Model
         /// Retrieves a datatype by seeking presence of its Uri
         /// </summary>
         public static RDFDatatype GetDatatype(string datatypeUri)
-			=> Instance.Register.Find(dt => string.Equals(dt.ToString(), datatypeUri?.Trim(), StringComparison.OrdinalIgnoreCase));
+			=> Instance.Register.Find(dt => string.Equals(dt.ToString(), datatypeUri?.Trim()));
 
 		/// <summary>
         /// Retrieves a datatype by seeking presence of its Uri

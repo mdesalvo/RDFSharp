@@ -627,8 +627,8 @@ namespace RDFSharp.Model
 
                 case RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY:
                     (bool,string) isValidGMonthDay = TryParseDateTime(literalValue, "--MM-dd", "--MM-ddZ");
-                    if (!isValidGMonthDay.Item1) isValidTime = TryParseDateTime(literalValue, "--MM-ddZ", "--MM-ddZ");
-                    if (!isValidGMonthDay.Item1) isValidTime = TryParseDateTime(literalValue, "--MM-ddzzz", "--MM-ddZ");
+                    if (!isValidGMonthDay.Item1) isValidGMonthDay = TryParseDateTime(literalValue, "--MM-ddZ", "--MM-ddZ");
+                    if (!isValidGMonthDay.Item1) isValidGMonthDay = TryParseDateTime(literalValue, "--MM-ddzzz", "--MM-ddZ");
 					return isValidGMonthDay;
 
                 case RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH:
@@ -645,14 +645,14 @@ namespace RDFSharp.Model
 
                 case RDFModelEnums.RDFDatatypes.XSD_GMONTH:
                     (bool,string) isValidGMonth = TryParseDateTime(literalValue, "--MM", "--MMZ");
-                    if (!isValidGMonth.Item1) isValidTime = TryParseDateTime(literalValue, "--MMZ", "--MMZ");
-                    if (!isValidGMonth.Item1) isValidTime = TryParseDateTime(literalValue, "--MMzzz", "--MMZ");
+                    if (!isValidGMonth.Item1) isValidGMonth = TryParseDateTime(literalValue, "--MMZ", "--MMZ");
+                    if (!isValidGMonth.Item1) isValidGMonth = TryParseDateTime(literalValue, "--MMzzz", "--MMZ");
 					return isValidGMonth;
 
                 case RDFModelEnums.RDFDatatypes.XSD_GDAY:
                     (bool,string) isValidGDay = TryParseDateTime(literalValue, "---dd", "---ddZ");
-                    if (!isValidGDay.Item1) isValidTime = TryParseDateTime(literalValue, "---ddZ", "---ddZ");
-                    if (!isValidGDay.Item1) isValidTime = TryParseDateTime(literalValue, "---ddzzz", "---ddZ");
+                    if (!isValidGDay.Item1) isValidGDay = TryParseDateTime(literalValue, "---ddZ", "---ddZ");
+                    if (!isValidGDay.Item1) isValidGDay = TryParseDateTime(literalValue, "---ddzzz", "---ddZ");
 					return isValidGDay;
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALDAY:
