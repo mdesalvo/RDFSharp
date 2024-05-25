@@ -21,6 +21,21 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFTypedLiteral : RDFLiteral
     {
+		#region Statics
+		/// <summary>
+		/// Represents an handy typed literal for boolean True
+		/// </summary>
+		public static RDFTypedLiteral True = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
+		/// <summary>
+		/// Represents an handy typed literal for boolean False
+		/// </summary>
+		public static RDFTypedLiteral False = new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
+		/// <summary>
+		/// Represents an handy typed literal for integer Zero
+		/// </summary>
+		public static RDFTypedLiteral Zero = new RDFTypedLiteral("0", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
+		#endregion
+
         #region Properties
         /// <summary>
         /// Datatype of the literal's value
