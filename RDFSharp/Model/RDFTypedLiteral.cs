@@ -56,14 +56,12 @@ namespace RDFSharp.Model
         public RDFTypedLiteral(string value, RDFDatatype datatype)
         {
             Value = value ?? string.Empty;
-            Datatype = datatype ?? RDFDatatypeRegister.GetDatatype(RDFVocabulary.RDFS.LITERAL.ToString());
+            Datatype = datatype ?? RDFDatatypeRegister.RDFSLiteral;
 
             //Validation against semantic of given datatype
 			(bool,string) validationResult = Datatype.Validate(Value);
-            if (validationResult.Item1)
-				Value = validationResult.Item2;
-			else
-				throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + Datatype.ToString() + ")");
+            Value = validationResult.Item1 ? validationResult.Item2
+										   : throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + Datatype.ToString() + ")");
         }
         #endregion
 

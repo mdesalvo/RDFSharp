@@ -37,6 +37,7 @@ namespace RDFSharp.Model
         /// List of registered datatypes
         /// </summary>
         internal List<RDFDatatype> Register { get; set; }
+		internal static RDFDatatype RDFSLiteral = new RDFDatatype(RDFVocabulary.RDFS.LITERAL.URI, RDFModelEnums.RDFDatatypes.RDFS_LITERAL, null);
 
         /// <summary>
         /// Count of the register's namespaces
@@ -98,8 +99,8 @@ namespace RDFSharp.Model
 		/// <summary>
         /// Retrieves a datatype by seeking presence of its Uri
         /// </summary>
-        public static RDFDatatype GetDatatype(RDFModelEnums.RDFDatatypes datatypeEnum)
-			=> Instance.Register.Find(dt => string.Equals(dt.ToString(), datatypeEnum.GetDatatypeFromEnum(), StringComparison.OrdinalIgnoreCase));
+        public static RDFDatatype GetDatatype(RDFModelEnums.RDFDatatypes datatype)
+			=> GetDatatype(datatype.GetDatatypeFromEnum());
         #endregion
     }
 }

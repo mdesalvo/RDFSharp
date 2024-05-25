@@ -1562,8 +1562,8 @@ namespace RDFSharp.Test.Model
         [DataTestMethod]
         [DataRow("http://www.w3.org/2000/01/rdf-schema#UnexistingDatatype")]
         [DataRow("http://www.w3.org/2001/XMLSchema#Id")]
-        public void ShouldGetDefaultDatatypeFromUnrecognizedString(string input)
-        	=> Assert.IsTrue(RDFDatatypeRegister.GetDatatype(input).ToString() == RDFModelEnums.RDFDatatypes.RDFS_LITERAL.GetDatatypeFromEnum());
+        public void ShouldNotGetDatatypeFromUnrecognizedString(string input)
+        	=> Assert.IsNull(RDFDatatypeRegister.GetDatatype(input));
 
         [DataTestMethod]
         [DataRow("http://www.w3.org/2000/01/rdf-schema#Literal", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)]
