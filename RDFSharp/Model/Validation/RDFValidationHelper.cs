@@ -399,7 +399,7 @@ namespace RDFSharp.Model
             //sh:order (accepted occurrences: 1)
             RDFTriple shapeOrder = shapeDefinition[null, RDFVocabulary.SHACL.ORDER, null, null].FirstOrDefault();
             if (shapeOrder?.Object is RDFTypedLiteral shapeOrderLiteral
-                  && shapeOrderLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                  && shapeOrderLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.INTEGER.ToString()))
                 propertyShape.SetOrder(int.Parse(shapeOrderLiteral.Value));
         }
 
@@ -506,7 +506,7 @@ namespace RDFSharp.Model
             //sh:maxCount (accepted occurrences: 1)
             RDFTriple shapeMaxCountConstraint = shapeDefinition[null, RDFVocabulary.SHACL.MAX_COUNT, null, null].FirstOrDefault();
             if (shapeMaxCountConstraint?.Object is RDFTypedLiteral shaclMaxCountConstraintLiteral
-                  && shaclMaxCountConstraintLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                  && shaclMaxCountConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.INTEGER.ToString()))
                 shape.AddConstraint(new RDFMaxCountConstraint(int.Parse(shaclMaxCountConstraintLiteral.Value)));
 
             //sh:maxExclusive (accepted occurrences: 1)
@@ -526,13 +526,13 @@ namespace RDFSharp.Model
             //sh:maxLength (accepted occurrences: 1)
             RDFTriple shapeMaxLengthConstraint = shapeDefinition[null, RDFVocabulary.SHACL.MAX_LENGTH, null, null].FirstOrDefault();
             if (shapeMaxLengthConstraint?.Object is RDFTypedLiteral shaclMaxLengthConstraintLiteral
-                  && shaclMaxLengthConstraintLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                  && shaclMaxLengthConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.INTEGER.ToString()))
                 shape.AddConstraint(new RDFMaxLengthConstraint(int.Parse(shaclMaxLengthConstraintLiteral.Value)));
 
             //sh:minCount (accepted occurrences: 1)
             RDFTriple shapeMinCountConstraint = shapeDefinition[null, RDFVocabulary.SHACL.MIN_COUNT, null, null].FirstOrDefault();
             if (shapeMinCountConstraint?.Object is RDFTypedLiteral shaclMinCountConstraintLiteral
-                  && shaclMinCountConstraintLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                  && shaclMinCountConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.INTEGER.ToString()))
                 shape.AddConstraint(new RDFMinCountConstraint(int.Parse(shaclMinCountConstraintLiteral.Value)));
 
             //sh:minExclusive (accepted occurrences: 1)
@@ -552,7 +552,7 @@ namespace RDFSharp.Model
             //sh:minLength (accepted occurrences: 1)
             RDFTriple shapeMinLengthConstraint = shapeDefinition[null, RDFVocabulary.SHACL.MIN_LENGTH, null, null].FirstOrDefault();
             if (shapeMinLengthConstraint?.Object is RDFTypedLiteral shaclMinLengthConstraintLiteral
-                  && shaclMinLengthConstraintLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                  && shaclMinLengthConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.INTEGER.ToString()))
                 shape.AddConstraint(new RDFMinLengthConstraint(int.Parse(shaclMinLengthConstraintLiteral.Value)));
 
             //sh:node (accepted occurrences: N)
@@ -593,13 +593,13 @@ namespace RDFSharp.Model
             //sh:pattern (accepted occurrences: 1)
             RDFTriple shapePatternConstraint = shapeDefinition[null, RDFVocabulary.SHACL.PATTERN, null, null].FirstOrDefault();
             if (shapePatternConstraint?.Object is RDFTypedLiteral shapePatternConstraintLiteral
-                  && shapePatternConstraintLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
+                  && shapePatternConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.STRING.ToString()))
             {
                 //sh:flags (accepted occurrences: 1)
                 RegexOptions regexOptions = RegexOptions.None;
                 RDFTriple shapeFlagsConstraint = shapeDefinition[null, RDFVocabulary.SHACL.FLAGS, null, null].FirstOrDefault();
                 if (shapeFlagsConstraint?.Object is RDFTypedLiteral shapeFlagsConstraintLiteral
-                      && shapeFlagsConstraintLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
+                      && shapeFlagsConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.STRING.ToString()))
                 {
                     if (shapeFlagsConstraintLiteral.Value.Contains("i"))
                         regexOptions |= RegexOptions.IgnoreCase;
@@ -626,14 +626,14 @@ namespace RDFSharp.Model
                 int? qualifiedMinCountValue = null;
                 RDFTriple shapeQualifiedMinCountConstraint = shapeDefinition[null, RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT, null, null].FirstOrDefault();
                 if (shapeQualifiedMinCountConstraint?.Object is RDFTypedLiteral shapeQualifiedMinCountConstraintLiteral
-                      && shapeQualifiedMinCountConstraintLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                      && shapeQualifiedMinCountConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.INTEGER.ToString()))
                     qualifiedMinCountValue = int.Parse(shapeQualifiedMinCountConstraintLiteral.Value);
 
                 //sh:qualifiedMaxCount (accepted occurrences: 1)
                 int? qualifiedMaxCountValue = null;
                 RDFTriple shapeQualifiedMaxCountConstraint = shapeDefinition[null, RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT, null, null].FirstOrDefault();
                 if (shapeQualifiedMaxCountConstraint?.Object is RDFTypedLiteral shapeQualifiedMaxCountConstraintLiteral
-                      && shapeQualifiedMaxCountConstraintLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                      && shapeQualifiedMaxCountConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.INTEGER.ToString()))
                     qualifiedMaxCountValue = int.Parse(shapeQualifiedMaxCountConstraintLiteral.Value);
 
                 shape.AddConstraint(new RDFQualifiedValueShapeConstraint((RDFResource)shapeQualifiedValueConstraint.Object, qualifiedMinCountValue, qualifiedMaxCountValue));
