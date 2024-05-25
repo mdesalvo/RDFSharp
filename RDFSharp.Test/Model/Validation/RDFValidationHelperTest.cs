@@ -871,7 +871,7 @@ namespace RDFSharp.Test.Model
             shape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Human")));
             shape.AddConstraint(new RDFAndConstraint().AddShape(shape));
             shape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS));
-            shape.AddConstraint(new RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+            shape.AddConstraint(new RDFDatatypeConstraint(RDFDatatypeRegister.GetDatatype(RDFModelEnums.RDFDatatypes.XSD_INTEGER.GetDatatypeFromEnum())));
             shape.AddConstraint(new RDFDisjointConstraint(RDFVocabulary.FOAF.KNOWS));
             shape.AddConstraint(new RDFEqualsConstraint(RDFVocabulary.FOAF.KNOWS));
             shape.AddConstraint(new RDFHasValueConstraint(new RDFResource("ex:Alice")));
@@ -959,7 +959,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(shape2ClosedConstraint.IgnoredProperties.ContainsKey(RDFVocabulary.FOAF.KNOWS.PatternMemberID));
             RDFDatatypeConstraint shape2DatatypeConstraint = shape2.Constraints.Single(x => x is RDFDatatypeConstraint) as RDFDatatypeConstraint;
             Assert.IsNotNull(shape2DatatypeConstraint);
-            Assert.IsTrue(shape2DatatypeConstraint.Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+            Assert.IsTrue(shape2DatatypeConstraint.Datatype.ToString() == RDFModelEnums.RDFDatatypes.XSD_INTEGER.GetDatatypeFromEnum());
             RDFDisjointConstraint shape2DisjointConstraint = shape2.Constraints.Single(x => x is RDFDisjointConstraint) as RDFDisjointConstraint;
             Assert.IsNotNull(shape2DisjointConstraint);
             Assert.IsTrue(shape2DisjointConstraint.DisjointPredicate.Equals(RDFVocabulary.FOAF.KNOWS));

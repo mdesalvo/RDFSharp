@@ -815,7 +815,7 @@ namespace RDFSharp.Test.Model
             shapesGraph.AddShape(personShape);
             
             RDFPropertyShape postalCodePropertyShape = new RDFPropertyShape(new RDFResource("ex:PostalCodePropertyShape"), new RDFResource("ex:postalCode"));
-            postalCodePropertyShape.AddConstraint(new RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes.XSD_STRING));
+            postalCodePropertyShape.AddConstraint(new RDFDatatypeConstraint(RDFDatatypeRegister.GetDatatype(RDFModelEnums.RDFDatatypes.XSD_STRING.GetDatatypeFromEnum())));
             postalCodePropertyShape.AddConstraint(new RDFMaxCountConstraint(1));
             shapesGraph.AddShape(postalCodePropertyShape);
 
@@ -858,7 +858,7 @@ namespace RDFSharp.Test.Model
             shapesGraph.AddShape(personShape);
             
             RDFPropertyShape postalCodePropertyShape = new RDFPropertyShape(new RDFResource("ex:PostalCodePropertyShape"), new RDFResource("ex:postalCode"));
-            postalCodePropertyShape.AddConstraint(new RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes.XSD_STRING));
+            postalCodePropertyShape.AddConstraint(new RDFDatatypeConstraint(RDFDatatypeRegister.GetDatatype(RDFModelEnums.RDFDatatypes.XSD_STRING.GetDatatypeFromEnum())));
             postalCodePropertyShape.AddConstraint(new RDFMaxCountConstraint(1));
             shapesGraph.AddShape(postalCodePropertyShape);
 
