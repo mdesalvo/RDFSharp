@@ -58,6 +58,16 @@ namespace RDFSharp.Test.Model
 		}
 
 		[TestMethod]
+        public void ShouldValidateFacetedDatatype()
+        {
+			RDFDatatype length6 = new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+				new RDFLengthFacet(6) ]);
+
+			Assert.IsTrue(length6.Validate("123456").Item1);
+			Assert.IsFalse(length6.Validate("1234567").Item1);
+		}
+
+		[TestMethod]
         public void ShouldCreateAliasDatatype()
         {
 			RDFDatatype exString = new RDFDatatype(new Uri("ex:string"), RDFModelEnums.RDFDatatypes.XSD_STRING, []);
@@ -75,9 +85,17 @@ namespace RDFSharp.Test.Model
 			RDFGraph exStringGraph = exString.ToRDFGraph();
 
 			Assert.IsNotNull(exStringGraph);
-            Assert.IsTrue(exStringGraph.TriplesCount == 3);
+            Assert.IsTrue(exStringGraph.TriplesCount == 2);
 			Assert.IsTrue(exStringGraph[new RDFResource("ex:string"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE, null].TriplesCount == 1);
 			Assert.IsTrue(exStringGraph[new RDFResource("ex:string"), RDFVocabulary.OWL.EQUIVALENT_CLASS, RDFVocabulary.XSD.STRING, null].TriplesCount == 1);
+		}
+
+		[TestMethod]
+        public void ShouldValidateAliasDatatype()
+        {
+			RDFDatatype exString = new RDFDatatype(new Uri("ex:string"), RDFModelEnums.RDFDatatypes.XSD_STRING, []);
+
+			Assert.IsTrue(exString.Validate("hello").Item1);
 		}
 		#endregion
 	}
