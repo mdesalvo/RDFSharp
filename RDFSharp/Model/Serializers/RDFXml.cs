@@ -315,7 +315,7 @@ namespace RDFSharp.Model
                                     {
                                         RDFTypedLiteral tLit = (RDFTypedLiteral)triple.Object;
                                         XmlAttribute typedLiteralNodeDesc = rdfDoc.CreateAttribute("rdf:datatype", RDFVocabulary.RDF.BASE_URI);
-                                        XmlText typedLiteralNodeDescText = rdfDoc.CreateTextNode(RDFModelUtilities.GetDatatypeFromEnum(tLit.Datatype));
+                                        XmlText typedLiteralNodeDescText = rdfDoc.CreateTextNode(tLit.Datatype.URI.ToString());
                                         typedLiteralNodeDesc.AppendChild(typedLiteralNodeDescText);
                                         predNode.Attributes.Append(typedLiteralNodeDesc);
                                     }

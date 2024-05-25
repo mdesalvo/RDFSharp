@@ -82,7 +82,7 @@ namespace RDFSharp.Model
 
                     //TypedLiteral
                     case RDFTypedLiteral valueNodeTypedLiteral:
-                        if (Datatype != valueNodeTypedLiteral.Datatype)
+                        if (Datatype != valueNodeTypedLiteral.Datatype.BaseDatatype)
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.DATATYPE_CONSTRAINT_COMPONENT,
                                                                      focusNode,

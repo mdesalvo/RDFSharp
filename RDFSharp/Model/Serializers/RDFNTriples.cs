@@ -158,7 +158,7 @@ namespace RDFSharp.Model
 
                             #region typed literal
                             else
-                                tripleTemplate = tripleTemplate.Replace("{DTYPE}", RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)t.Object).Datatype));
+                                tripleTemplate = tripleTemplate.Replace("{DTYPE}", ((RDFTypedLiteral)t.Object).Datatype.URI.ToString());
                             #endregion
                         }
                         #endregion

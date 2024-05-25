@@ -744,7 +744,7 @@ namespace RDFSharp.Query
             #region TypedLiteral
             else if (patternMember is RDFTypedLiteral tlPatternMember)
             {
-                string tlDatatype = RDFModelUtilities.GetDatatypeFromEnum(tlPatternMember.Datatype);
+                string tlDatatype = tlPatternMember.Datatype.URI.ToString();
                 (bool, string) abbreviatedPM = RDFQueryUtilities.AbbreviateRDFPatternMember(RDFQueryUtilities.ParseRDFPatternMember(tlDatatype), prefixes);
                 if (abbreviatedPM.Item1)
                     return string.Concat("\"", tlPatternMember.Value, "\"^^", abbreviatedPM.Item2);

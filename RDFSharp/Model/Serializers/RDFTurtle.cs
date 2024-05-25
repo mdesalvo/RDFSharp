@@ -1596,7 +1596,7 @@ namespace RDFSharp.Model
                         {
                             string dtype = RDFQueryPrinter.PrintPatternMember(
                                             RDFQueryUtilities.ParseRDFPatternMember(
-                                             RDFModelUtilities.GetDatatypeFromEnum(tlitObj.Datatype)), prefixes);
+                                             tlitObj.Datatype.URI.ToString()), prefixes);
                             string tLit = string.Concat(litValDelim, tlitObj.Value.Replace("\\", "\\\\"), litValDelim, "^^", dtype);
                             result.Append(tLit);
                         }
