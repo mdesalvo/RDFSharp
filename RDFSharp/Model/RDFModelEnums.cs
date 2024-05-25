@@ -199,7 +199,7 @@ namespace RDFSharp.Model
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#time
             /// </summary>
-			[Description("ttp://www.w3.org/2001/XMLSchema#time")]
+			[Description("http://www.w3.org/2001/XMLSchema#time")]
             XSD_TIME = 26,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gYear
