@@ -31,7 +31,7 @@ namespace RDFSharp.Test.Model
             RDFDatatypeConstraint datatypeConstraint = new RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes.XSD_INTEGER);
 
             Assert.IsNotNull(datatypeConstraint);
-            Assert.IsTrue(datatypeConstraint.Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+            Assert.IsTrue(datatypeConstraint.Datatype.ToString() == RDFModelEnums.RDFDatatypes.XSD_INTEGER.GetDatatypeFromEnum());
         }
 
         [TestMethod]
@@ -391,7 +391,7 @@ namespace RDFSharp.Test.Model
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.AGE);
             propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
-            propertyShape.AddConstraint(new RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+            propertyShape.AddConstraint(new RDFDatatypeConstraint(RDFDatatypeRegister.GetDatatype(RDFModelEnums.RDFDatatypes.XSD_INTEGER.GetDatatypeFromEnum())));
             shapesGraph.AddShape(propertyShape);
 
             //Validate

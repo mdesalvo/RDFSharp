@@ -752,7 +752,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(shape2ClosedConstraint.IgnoredProperties.ContainsKey(RDFVocabulary.FOAF.KNOWS.PatternMemberID));
             RDFDatatypeConstraint shape2DatatypeConstraint = shape2.Constraints.Single(x => x is RDFDatatypeConstraint) as RDFDatatypeConstraint;
             Assert.IsNotNull(shape2DatatypeConstraint);
-            Assert.IsTrue(shape2DatatypeConstraint.Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+            Assert.IsTrue(shape2DatatypeConstraint.Datatype.ToString() == RDFModelEnums.RDFDatatypes.XSD_INTEGER.GetDatatypeFromEnum());
             RDFDisjointConstraint shape2DisjointConstraint = shape2.Constraints.Single(x => x is RDFDisjointConstraint) as RDFDisjointConstraint;
             Assert.IsNotNull(shape2DisjointConstraint);
             Assert.IsTrue(shape2DisjointConstraint.DisjointPredicate.Equals(RDFVocabulary.FOAF.KNOWS));
