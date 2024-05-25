@@ -5238,7 +5238,7 @@ WHERE {
 
             Assert.IsTrue(table.Columns.Count == 1);
             Assert.IsTrue(string.Equals(table.Columns[0].ColumnName, "?COL"));
-            Assert.IsTrue(table.Columns[0].DataType.ToString().Equals(RDFQueryEngine.SystemString));
+            Assert.IsTrue(table.Columns[0].DataType.Equals(RDFQueryEngine.SystemString));
         }
 
         [TestMethod]

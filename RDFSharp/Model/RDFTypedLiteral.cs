@@ -33,7 +33,7 @@ namespace RDFSharp.Model
 		/// <summary>
 		/// Represents an handy typed literal for integer Zero
 		/// </summary>
-		public static RDFTypedLiteral Zero = new RDFTypedLiteral("0", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
+		public static RDFTypedLiteral Zero = new RDFTypedLiteral("0", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
 		#endregion
 
         #region Properties
