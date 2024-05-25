@@ -85,14 +85,14 @@ namespace RDFSharp.Model
         /// </summary>
         public static void AddDatatype(RDFDatatype datatype)
         {
-            if (datatype != null && GetByUri(datatype.URI.ToString()) == null)
+            if (datatype != null && GetDatatype(datatype.URI.ToString()) == null)
 				Instance.Register.Add(datatype);
         }
 
         /// <summary>
         /// Retrieves a datatype by seeking presence of its Uri
         /// </summary>
-        public static RDFDatatype GetByUri(string datatypeUri)
+        public static RDFDatatype GetDatatype(string datatypeUri)
 			=> Instance.Register.Find(dt => string.Equals(dt.URI.ToString(), datatypeUri?.Trim(), StringComparison.OrdinalIgnoreCase));
         #endregion
     }
