@@ -446,7 +446,7 @@ namespace RDFSharp.Model
             //sh:datatype (accepted occurrences: N)
             RDFGraph shapeDatatypeConstraints = shapeDefinition[null, RDFVocabulary.SHACL.DATATYPE, null, null];
             foreach (RDFTriple shapeDatatypeConstraint in shapeDatatypeConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
-                shape.AddConstraint(new RDFDatatypeConstraint(RDFModelUtilities.GetDatatypeFromString(shapeDatatypeConstraint.Object.ToString())));
+                shape.AddConstraint(new RDFDatatypeConstraint(RDFDatatypeRegister.GetDatatype(shapeDatatypeConstraint.Object.ToString())));
 
             //sh:disjoint (accepted occurrences: N)
             RDFGraph shapeDisjointConstraints = shapeDefinition[null, RDFVocabulary.SHACL.DISJOINT, null, null];

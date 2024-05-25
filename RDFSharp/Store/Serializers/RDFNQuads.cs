@@ -294,8 +294,7 @@ namespace RDFSharp.Store
                                 string tLitDatatype = tokens[2].Substring(lastIndexOfDatatype + 2)
                                                                .TrimStart(new char[] { '<' })
                                                                .TrimEnd(new char[] { '>' });
-                                RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
-                                L = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), dt);
+                                L = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), RDFDatatypeRegister.GetDatatype(tLitDatatype));
                             }
                             #endregion
                         }

@@ -365,7 +365,7 @@ namespace RDFSharp.Model
                 if (datatype != null)
                     result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText, hashContext),
                                                    new RDFResource(graphChild.ChildNodes[1].InnerText, hashContext),
-                                                   new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)), RDFModelUtilities.GetDatatypeFromString(datatype.Value))));
+                                                   new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)), RDFDatatypeRegister.GetDatatype(datatype.Value))));
 
                 //Typed literal has not datatype: exception must be raised
                 else

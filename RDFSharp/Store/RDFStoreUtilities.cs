@@ -73,8 +73,7 @@ namespace RDFSharp.Store
             //TypedLiteral
             string tLitValue = literal.Substring(0, lastIndexOfDatatype);
             string tLitDatatype = literal.Substring(lastIndexOfDatatype + 2);
-            RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
-            RDFTypedLiteral tLit = new RDFTypedLiteral(tLitValue, dt);
+            RDFTypedLiteral tLit = new RDFTypedLiteral(tLitValue, RDFDatatypeRegister.GetDatatype(tLitDatatype));
             return new RDFQuadruple(qContext, qSubject, qPredicate, tLit);
         }
 

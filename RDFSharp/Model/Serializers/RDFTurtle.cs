@@ -1064,8 +1064,8 @@ namespace RDFSharp.Model
 
                 // Read datatype
                 object datatype = ParseValue(turtleData, turtleContext, result);
-                if (datatype is Uri)
-                    return new RDFTypedLiteral(label, RDFModelUtilities.GetDatatypeFromString(datatype.ToString()));
+                if (datatype is Uri datatypeUri)
+                    return new RDFTypedLiteral(label, RDFDatatypeRegister.GetDatatype(datatypeUri.ToString()));
                 else
                     throw new RDFModelException("Illegal datatype value: " + datatype + GetTurtleContextCoordinates(turtleContext));
             }

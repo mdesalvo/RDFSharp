@@ -53,7 +53,7 @@ namespace RDFSharp.Model
             Datatype = RDFDatatypeRegister.GetDatatype(RDFModelUtilities.GetDatatypeFromEnum(datatype));
 
             //Validation against semantic of given datatype
-            if (!Datatype.Validate(value))
+            if (!Datatype.Validate(Value))
                 throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + Datatype.ToString() + ")");
         }
 
@@ -66,7 +66,7 @@ namespace RDFSharp.Model
             Datatype = datatype ?? RDFDatatypeRegister.GetDatatype(RDFVocabulary.RDFS.LITERAL.ToString());
 
             //Validation against semantic of given datatype
-            if (!Datatype.Validate(value))
+            if (!Datatype.Validate(Value))
                 throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + Datatype.ToString() + ")");
         }
         #endregion
