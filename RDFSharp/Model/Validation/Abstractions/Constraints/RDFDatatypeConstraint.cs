@@ -76,7 +76,7 @@ namespace RDFSharp.Model
 
                     //PlainLiteral
                     case RDFPlainLiteral valueNodePlainLiteral:
-                        if (!string.Equals(Datatype.ToString(), RDFVocabulary.XSD.STRING) || valueNodePlainLiteral.HasLanguage())
+                        if (!string.Equals(Datatype.ToString(), RDFVocabulary.XSD.STRING.ToString()) || valueNodePlainLiteral.HasLanguage())
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.DATATYPE_CONSTRAINT_COMPONENT,
                                                                      focusNode,
