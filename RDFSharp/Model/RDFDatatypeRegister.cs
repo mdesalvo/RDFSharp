@@ -27,6 +27,10 @@ namespace RDFSharp.Model
     /// </summary>
     public sealed class RDFDatatypeRegister : IEnumerable<RDFDatatype>
     {
+		#region Statics
+		internal static RDFDatatype RDFSLiteral = new RDFDatatype(RDFVocabulary.RDFS.LITERAL.URI, RDFModelEnums.RDFDatatypes.RDFS_LITERAL, null);
+		#endregion
+
         #region Properties
         /// <summary>
         /// Singleton instance of the RDFDatatypeRegister class
@@ -37,7 +41,6 @@ namespace RDFSharp.Model
         /// List of registered datatypes
         /// </summary>
         internal List<RDFDatatype> Register { get; set; }
-		internal static RDFDatatype RDFSLiteral = new RDFDatatype(RDFVocabulary.RDFS.LITERAL.URI, RDFModelEnums.RDFDatatypes.RDFS_LITERAL, null);
 
         /// <summary>
         /// Count of the register's namespaces
