@@ -29,18 +29,30 @@ namespace RDFSharp.Model
         #endregion
 
         #region Ctors
+		/// <summary>
+        /// Default-ctor to build a typed literal with given value and given base datatype
+        /// </summary>
+        public RDFTypedLiteral(string value, RDFModelEnums.RDFDatatypes datatype)
+        {
+            Value = value ?? string.Empty;
+            Datatype = RDFDatatypeRegister.GetDatatype(RDFModelUtilities.GetDatatypeFromEnum(datatype));
+
+            //Validation against semantic of given datatype
+            if (!Datatype.Validate(value))
+                throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + Datatype.ToString() + ")");
+        }
+
         /// <summary>
-        /// Default-ctor to build a typed literal with given value and given datatype
-        /// (semantic validation of given value against given datatype is performed).
+        /// Default-ctor to build a typed literal with given value and given custom datatype
         /// </summary>
         public RDFTypedLiteral(string value, RDFDatatype datatype)
         {
             Value = value ?? string.Empty;
-            Datatype = datatype;
+            Datatype = datatype ?? RDFDatatypeRegister.GetDatatype(RDFVocabulary.RDFS.LITERAL.ToString());
 
             //Validation against semantic of given datatype
-            if (!datatype.Validate(value))
-                throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + datatype.ToString() + ")");
+            if (!Datatype.Validate(value))
+                throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + Datatype.ToString() + ")");
         }
         #endregion
 
