@@ -589,7 +589,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Validates the value of the given typed literal against its datatype
         /// </summary>
-        internal static bool ValidateTypedLiteral(RDFTypedLiteral typedLiteral)
+        internal static bool ValidateTypedLiteral(string literalValue, RDFModelEnums.RDFDatatypes datatype)
         {
             //Tries to parse the given value into a DateTime having exactly the specified input/output formats.
             //RDFSharp datetime-based typed literals are automatically converted in UTC timezone (Z)
@@ -597,13 +597,13 @@ namespace RDFSharp.Model
             { 
                 if (DateTime.TryParseExact(value, formatToParse, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out DateTime parsedDateTime))
                 { 
-                    typedLiteral.Value = parsedDateTime.ToString(formatToConvert, CultureInfo.InvariantCulture);
+                    literalValue = parsedDateTime.ToString(formatToConvert, CultureInfo.InvariantCulture);
                     return true;
                 }
                 return false;
             }
 
-            switch (typedLiteral.Datatype)
+            switch (datatype)
             {
                 #region STRING CATEGORY
                 case RDFModelEnums.RDFDatatypes.RDFS_LITERAL:
@@ -616,8 +616,8 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.GEOSPARQL_GML:
                     try
                     {
-                        _ = typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ?
-                                RDFGeoExpression.WKTReader.Read(typedLiteral.Value) : RDFGeoExpression.GMLReader.Read(typedLiteral.Value);
+                        _ = datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ? RDFGeoExpression.WKTReader.Read(literalValue) 
+																					  : RDFGeoExpression.GMLReader.Read(literalValue);
                         return true;
                     }
                     catch { return false; }
@@ -625,19 +625,19 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL:
                     try
                     {
-                        XDocument.Parse(typedLiteral.Value);
+                        XDocument.Parse(literalValue);
                         return true;
                     }
                     catch { return false; }
 
                 case RDFModelEnums.RDFDatatypes.RDF_JSON:
-                    return (typedLiteral.Value.StartsWith("{") && typedLiteral.Value.EndsWith("}"))
-                                || (typedLiteral.Value.StartsWith("[") && typedLiteral.Value.EndsWith("]"));
+                    return (literalValue.StartsWith("{") && literalValue.EndsWith("}"))
+                                || (literalValue.StartsWith("[") && literalValue.EndsWith("]"));
 
                 case RDFModelEnums.RDFDatatypes.XSD_ANYURI:
-                    if (Uri.TryCreate(typedLiteral.Value, UriKind.Absolute, out Uri outUri))
+                    if (Uri.TryCreate(literalValue, UriKind.Absolute, out Uri outUri))
                     {
-                        typedLiteral.Value = Convert.ToString(outUri);
+                        literalValue = Convert.ToString(outUri);
                         return true;
                     }
                     return false;
@@ -645,13 +645,13 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_NAME:
                     try
                     {
-                        XmlConvert.VerifyName(typedLiteral.Value);
+                        XmlConvert.VerifyName(literalValue);
                         return true;
                     }
                     catch { return false; }
 
                 case RDFModelEnums.RDFDatatypes.XSD_QNAME:
-                    string[] prefixedQName = typedLiteral.Value.Split(':');
+                    string[] prefixedQName = literalValue.Split(':');
                     if (prefixedQName.Length == 1)
                     {
                         try
@@ -677,7 +677,7 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_ID:
                     try
                     {
-                        XmlConvert.VerifyNCName(typedLiteral.Value);
+                        XmlConvert.VerifyNCName(literalValue);
                         return true;
                     }
                     catch { return false; }
@@ -685,7 +685,7 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_TOKEN:
                     try
                     {
-                        XmlConvert.VerifyTOKEN(typedLiteral.Value);
+                        XmlConvert.VerifyTOKEN(literalValue);
                         return true;
                     }
                     catch { return false; }
@@ -693,40 +693,40 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_NMTOKEN:
                     try
                     {
-                        XmlConvert.VerifyNMTOKEN(typedLiteral.Value);
+                        XmlConvert.VerifyNMTOKEN(literalValue);
                         return true;
                     }
                     catch { return false; }
 
                 case RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING:
-                    return typedLiteral.Value.IndexOfAny(new char[] { '\n', '\r', '\t' }) == -1;
+                    return literalValue.IndexOfAny(new char[] { '\n', '\r', '\t' }) == -1;
 
                 case RDFModelEnums.RDFDatatypes.XSD_LANGUAGE:
-                    return RDFPlainLiteral.LangTagRegex.Match(typedLiteral.Value).Success;
+                    return RDFPlainLiteral.LangTagRegex.Match(literalValue).Success;
 
                 case RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY:
                     try
                     {
-                        Convert.FromBase64String(typedLiteral.Value);
+                        Convert.FromBase64String(literalValue);
                         return true;
                     }
                     catch { return false; }
 
                 case RDFModelEnums.RDFDatatypes.XSD_HEXBINARY:
-                    return hexBinary.Value.Match(typedLiteral.Value).Success;
+                    return hexBinary.Value.Match(literalValue).Success;
                 #endregion
 
                 #region BOOLEAN CATEGORY
                 case RDFModelEnums.RDFDatatypes.XSD_BOOLEAN:
-                    if (bool.TryParse(typedLiteral.Value, out bool outBool))
-                        typedLiteral.Value = outBool ? "true" : "false";
+                    if (bool.TryParse(literalValue, out bool outBool))
+                        literalValue = outBool ? "true" : "false";
                     else
                     {
                         //Support intelligent detection of alternative boolean representations
-                        if (AlternativesBoolTrue.Any(tl => tl.Equals(typedLiteral.Value, StringComparison.OrdinalIgnoreCase)))
-                            typedLiteral.Value = "true";
-                        else if (AlternativesBoolFalse.Any(tl => tl.Equals(typedLiteral.Value, StringComparison.OrdinalIgnoreCase)))
-                            typedLiteral.Value = "false";
+                        if (AlternativesBoolTrue.Any(tl => tl.Equals(literalValue, StringComparison.OrdinalIgnoreCase)))
+                            literalValue = "true";
+                        else if (AlternativesBoolFalse.Any(tl => tl.Equals(literalValue, StringComparison.OrdinalIgnoreCase)))
+                            literalValue = "false";
                         else
                             return false;
                     }
@@ -735,112 +735,112 @@ namespace RDFSharp.Model
 
                 #region DATETIME CATEGORY
                 case RDFModelEnums.RDFDatatypes.XSD_DATETIME:
-                    return    TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss", "yyyy-MM-ddTHH:mm:ssZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ssZ", "yyyy-MM-ddTHH:mm:ssZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:sszzz", "yyyy-MM-ddTHH:mm:ssZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.f", "yyyy-MM-ddTHH:mm:ss.fZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.fZ", "yyyy-MM-ddTHH:mm:ss.fZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.fzzz", "yyyy-MM-ddTHH:mm:ss.fZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.ff", "yyyy-MM-ddTHH:mm:ss.ffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.ffZ", "yyyy-MM-ddTHH:mm:ss.ffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.ffzzz", "yyyy-MM-ddTHH:mm:ss.ffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.fff", "yyyy-MM-ddTHH:mm:ss.fffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.fffZ", "yyyy-MM-ddTHH:mm:ss.fffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.fffzzz", "yyyy-MM-ddTHH:mm:ss.fffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.ffff", "yyyy-MM-ddTHH:mm:ss.ffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.ffffZ", "yyyy-MM-ddTHH:mm:ss.ffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.ffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.fffff", "yyyy-MM-ddTHH:mm:ss.fffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.fffffZ", "yyyy-MM-ddTHH:mm:ss.fffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.fffffzzz", "yyyy-MM-ddTHH:mm:ss.fffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.ffffff", "yyyy-MM-ddTHH:mm:ss.ffffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.ffffffZ", "yyyy-MM-ddTHH:mm:ss.ffffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.ffffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffffZ");
+                    return    TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss", "yyyy-MM-ddTHH:mm:ssZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ssZ", "yyyy-MM-ddTHH:mm:ssZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:sszzz", "yyyy-MM-ddTHH:mm:ssZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.f", "yyyy-MM-ddTHH:mm:ss.fZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fZ", "yyyy-MM-ddTHH:mm:ss.fZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fzzz", "yyyy-MM-ddTHH:mm:ss.fZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ff", "yyyy-MM-ddTHH:mm:ss.ffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffZ", "yyyy-MM-ddTHH:mm:ss.ffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffzzz", "yyyy-MM-ddTHH:mm:ss.ffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fff", "yyyy-MM-ddTHH:mm:ss.fffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffZ", "yyyy-MM-ddTHH:mm:ss.fffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffzzz", "yyyy-MM-ddTHH:mm:ss.fffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffff", "yyyy-MM-ddTHH:mm:ss.ffffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffZ", "yyyy-MM-ddTHH:mm:ss.ffffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffff", "yyyy-MM-ddTHH:mm:ss.fffffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffffZ", "yyyy-MM-ddTHH:mm:ss.fffffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffffzzz", "yyyy-MM-ddTHH:mm:ss.fffffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffff", "yyyy-MM-ddTHH:mm:ss.ffffffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffffZ", "yyyy-MM-ddTHH:mm:ss.ffffffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffffZ");
 
                 case RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP:
-                    return    TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ssZ", "yyyy-MM-ddTHH:mm:ssZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:sszzz", "yyyy-MM-ddTHH:mm:ssZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.fZ", "yyyy-MM-ddTHH:mm:ss.fZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.fzzz", "yyyy-MM-ddTHH:mm:ss.fZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.ffZ", "yyyy-MM-ddTHH:mm:ss.ffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.ffzzz", "yyyy-MM-ddTHH:mm:ss.ffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.fffZ", "yyyy-MM-ddTHH:mm:ss.fffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.fffzzz", "yyyy-MM-ddTHH:mm:ss.fffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.ffffZ", "yyyy-MM-ddTHH:mm:ss.ffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.ffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.fffffZ", "yyyy-MM-ddTHH:mm:ss.fffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.fffffzzz", "yyyy-MM-ddTHH:mm:ss.fffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.ffffffZ", "yyyy-MM-ddTHH:mm:ss.ffffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.ffffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffffZ");
+                    return    TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ssZ", "yyyy-MM-ddTHH:mm:ssZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:sszzz", "yyyy-MM-ddTHH:mm:ssZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fZ", "yyyy-MM-ddTHH:mm:ss.fZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fzzz", "yyyy-MM-ddTHH:mm:ss.fZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffZ", "yyyy-MM-ddTHH:mm:ss.ffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffzzz", "yyyy-MM-ddTHH:mm:ss.ffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffZ", "yyyy-MM-ddTHH:mm:ss.fffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffzzz", "yyyy-MM-ddTHH:mm:ss.fffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffZ", "yyyy-MM-ddTHH:mm:ss.ffffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffffZ", "yyyy-MM-ddTHH:mm:ss.fffffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffffzzz", "yyyy-MM-ddTHH:mm:ss.fffffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffffZ", "yyyy-MM-ddTHH:mm:ss.ffffffZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffffZ");
 
                 case RDFModelEnums.RDFDatatypes.XSD_DATE:
-                    return    TryParseDateTime(typedLiteral.Value, "yyyy-MM-dd", "yyyy-MM-ddZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddZ", "yyyy-MM-ddZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MM-ddzzz", "yyyy-MM-ddZ");
+                    return    TryParseDateTime(literalValue, "yyyy-MM-dd", "yyyy-MM-ddZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddZ", "yyyy-MM-ddZ")
+                           || TryParseDateTime(literalValue, "yyyy-MM-ddzzz", "yyyy-MM-ddZ");
 
                 case RDFModelEnums.RDFDatatypes.XSD_TIME:
-                    return    TryParseDateTime(typedLiteral.Value, "HH:mm:ss", "HH:mm:ssZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ssZ", "HH:mm:ssZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:sszzz", "HH:mm:ssZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.f", "HH:mm:ss.fZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.fZ", "HH:mm:ss.fZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.fzzz", "HH:mm:ss.fZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.ff", "HH:mm:ss.ffZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.ffZ", "HH:mm:ss.ffZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.ffzzz", "HH:mm:ss.ffZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.fff", "HH:mm:ss.fffZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.fffZ", "HH:mm:ss.fffZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.fffzzz", "HH:mm:ss.fffZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.ffff", "HH:mm:ss.ffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.ffffZ", "HH:mm:ss.ffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.ffffzzz", "HH:mm:ss.ffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.fffff", "HH:mm:ss.fffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.fffffZ", "HH:mm:ss.fffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.fffffzzz", "HH:mm:ss.fffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.ffffff", "HH:mm:ss.ffffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.ffffffZ", "HH:mm:ss.ffffffZ")
-                           || TryParseDateTime(typedLiteral.Value, "HH:mm:ss.ffffffzzz", "HH:mm:ss.ffffffZ");
+                    return    TryParseDateTime(literalValue, "HH:mm:ss", "HH:mm:ssZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ssZ", "HH:mm:ssZ")
+                           || TryParseDateTime(literalValue, "HH:mm:sszzz", "HH:mm:ssZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.f", "HH:mm:ss.fZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.fZ", "HH:mm:ss.fZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.fzzz", "HH:mm:ss.fZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.ff", "HH:mm:ss.ffZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.ffZ", "HH:mm:ss.ffZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.ffzzz", "HH:mm:ss.ffZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.fff", "HH:mm:ss.fffZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.fffZ", "HH:mm:ss.fffZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.fffzzz", "HH:mm:ss.fffZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.ffff", "HH:mm:ss.ffffZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.ffffZ", "HH:mm:ss.ffffZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.ffffzzz", "HH:mm:ss.ffffZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.fffff", "HH:mm:ss.fffffZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.fffffZ", "HH:mm:ss.fffffZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.fffffzzz", "HH:mm:ss.fffffZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.ffffff", "HH:mm:ss.ffffffZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.ffffffZ", "HH:mm:ss.ffffffZ")
+                           || TryParseDateTime(literalValue, "HH:mm:ss.ffffffzzz", "HH:mm:ss.ffffffZ");
 
                 case RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY:
-                    return    TryParseDateTime(typedLiteral.Value, "--MM-dd", "--MM-ddZ")
-                           || TryParseDateTime(typedLiteral.Value, "--MM-ddZ", "--MM-ddZ")
-                           || TryParseDateTime(typedLiteral.Value, "--MM-ddzzz", "--MM-ddZ");
+                    return    TryParseDateTime(literalValue, "--MM-dd", "--MM-ddZ")
+                           || TryParseDateTime(literalValue, "--MM-ddZ", "--MM-ddZ")
+                           || TryParseDateTime(literalValue, "--MM-ddzzz", "--MM-ddZ");
 
                 case RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH:
-                    return    TryParseDateTime(typedLiteral.Value, "yyyy-MM", "yyyy-MMZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MMZ", "yyyy-MMZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyy-MMzzz", "yyyy-MMZ");
+                    return    TryParseDateTime(literalValue, "yyyy-MM", "yyyy-MMZ")
+                           || TryParseDateTime(literalValue, "yyyy-MMZ", "yyyy-MMZ")
+                           || TryParseDateTime(literalValue, "yyyy-MMzzz", "yyyy-MMZ");
 
                 case RDFModelEnums.RDFDatatypes.XSD_GYEAR:
-                    return    TryParseDateTime(typedLiteral.Value, "yyyy", "yyyyZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyyZ", "yyyyZ")
-                           || TryParseDateTime(typedLiteral.Value, "yyyyzzz", "yyyyZ");
+                    return    TryParseDateTime(literalValue, "yyyy", "yyyyZ")
+                           || TryParseDateTime(literalValue, "yyyyZ", "yyyyZ")
+                           || TryParseDateTime(literalValue, "yyyyzzz", "yyyyZ");
 
                 case RDFModelEnums.RDFDatatypes.XSD_GMONTH:
-                    return    TryParseDateTime(typedLiteral.Value, "--MM", "--MMZ")
-                           || TryParseDateTime(typedLiteral.Value, "--MMZ", "--MMZ")
-                           || TryParseDateTime(typedLiteral.Value, "--MMzzz", "--MMZ");
+                    return    TryParseDateTime(literalValue, "--MM", "--MMZ")
+                           || TryParseDateTime(literalValue, "--MMZ", "--MMZ")
+                           || TryParseDateTime(literalValue, "--MMzzz", "--MMZ");
 
                 case RDFModelEnums.RDFDatatypes.XSD_GDAY:
-                    return    TryParseDateTime(typedLiteral.Value, "---dd", "---ddZ")
-                           || TryParseDateTime(typedLiteral.Value, "---ddZ", "---ddZ")
-                           || TryParseDateTime(typedLiteral.Value, "---ddzzz", "---ddZ");
+                    return    TryParseDateTime(literalValue, "---dd", "---ddZ")
+                           || TryParseDateTime(literalValue, "---ddZ", "---ddZ")
+                           || TryParseDateTime(literalValue, "---ddzzz", "---ddZ");
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALDAY:
-                    return Regex.IsMatch(typedLiteral.Value, "---(0[1-9]|[1-9][0-9])(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
+                    return Regex.IsMatch(literalValue, "---(0[1-9]|[1-9][0-9])(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH:
-                    return Regex.IsMatch(typedLiteral.Value, "--(0[1-9]|1[0-9]|20)(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
+                    return Regex.IsMatch(literalValue, "--(0[1-9]|1[0-9]|20)(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR:
-                    return Regex.IsMatch(typedLiteral.Value, "-?([1-9][0-9]{3,}|0[0-9]{3})(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
+                    return Regex.IsMatch(literalValue, "-?([1-9][0-9]{3,}|0[0-9]{3})(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
                 #endregion
 
                 #region TIMESPAN CATEGORY
                 case RDFModelEnums.RDFDatatypes.XSD_DURATION:
                     try
                     {
-                        XmlConvert.ToTimeSpan(typedLiteral.Value);
+                        XmlConvert.ToTimeSpan(literalValue);
                         return true;
                     }
                     catch { return false; }
@@ -849,160 +849,160 @@ namespace RDFSharp.Model
                 #region NUMERIC CATEGORY
                 case RDFModelEnums.RDFDatatypes.XSD_DECIMAL:
                 case RDFModelEnums.RDFDatatypes.OWL_REAL:
-                    if (decimal.TryParse(typedLiteral.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out decimal outDecimal))
+                    if (decimal.TryParse(literalValue, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out decimal outDecimal))
                     {
-                        typedLiteral.Value = Convert.ToString(outDecimal, CultureInfo.InvariantCulture);
+                        literalValue = Convert.ToString(outDecimal, CultureInfo.InvariantCulture);
                         return true;
                     }
                     else
                         return false;
 
                 case RDFModelEnums.RDFDatatypes.XSD_DOUBLE:
-                    if (double.TryParse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double outDouble))
+                    if (double.TryParse(literalValue, NumberStyles.Float, CultureInfo.InvariantCulture, out double outDouble))
                     {
-                        typedLiteral.Value = Convert.ToString(outDouble, CultureInfo.InvariantCulture);
+                        literalValue = Convert.ToString(outDouble, CultureInfo.InvariantCulture);
                         return true;
                     }
                     else
                         return false;
 
                 case RDFModelEnums.RDFDatatypes.XSD_FLOAT:
-                    if (float.TryParse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out float outFloat))
+                    if (float.TryParse(literalValue, NumberStyles.Float, CultureInfo.InvariantCulture, out float outFloat))
                     {
-                        typedLiteral.Value = Convert.ToString(outFloat, CultureInfo.InvariantCulture);
+                        literalValue = Convert.ToString(outFloat, CultureInfo.InvariantCulture);
                         return true;
                     }
                     else
                         return false;
 
                 case RDFModelEnums.RDFDatatypes.XSD_INTEGER:
-                    if (decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outInteger))
+                    if (decimal.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outInteger))
                     {
-                        typedLiteral.Value = Convert.ToString(outInteger, CultureInfo.InvariantCulture);
+                        literalValue = Convert.ToString(outInteger, CultureInfo.InvariantCulture);
                         return true;
                     }
                     else
                         return false;
 
                 case RDFModelEnums.RDFDatatypes.XSD_LONG:
-                    if (long.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out long outLong))
+                    if (long.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out long outLong))
                     {
-                        typedLiteral.Value = Convert.ToString(outLong, CultureInfo.InvariantCulture);
+                        literalValue = Convert.ToString(outLong, CultureInfo.InvariantCulture);
                         return true;
                     }
                     else
                         return false;
 
                 case RDFModelEnums.RDFDatatypes.XSD_INT:
-                    if (int.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int outInt))
+                    if (int.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out int outInt))
                     {
-                        typedLiteral.Value = Convert.ToString(outInt, CultureInfo.InvariantCulture);
+                        literalValue = Convert.ToString(outInt, CultureInfo.InvariantCulture);
                         return true;
                     }
                     else
                         return false;
 
                 case RDFModelEnums.RDFDatatypes.XSD_SHORT:
-                    if (short.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out short outShort))
+                    if (short.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out short outShort))
                     {
-                        typedLiteral.Value = Convert.ToString(outShort, CultureInfo.InvariantCulture);
+                        literalValue = Convert.ToString(outShort, CultureInfo.InvariantCulture);
                         return true;
                     }
                     else
                         return false;
 
                 case RDFModelEnums.RDFDatatypes.XSD_BYTE:
-                    if (sbyte.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out sbyte outSByte))
+                    if (sbyte.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out sbyte outSByte))
                     {
-                        typedLiteral.Value = Convert.ToString(outSByte, CultureInfo.InvariantCulture);
+                        literalValue = Convert.ToString(outSByte, CultureInfo.InvariantCulture);
                         return true;
                     }
                     else
                         return false;
 
                 case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG:
-                    if (ulong.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out ulong outULong))
+                    if (ulong.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out ulong outULong))
                     {
-                        typedLiteral.Value = Convert.ToString(outULong, CultureInfo.InvariantCulture);
+                        literalValue = Convert.ToString(outULong, CultureInfo.InvariantCulture);
                         return true;
                     }
                     else
                         return false;
 
                 case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT:
-                    if (uint.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint outUInt))
+                    if (uint.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint outUInt))
                     {
-                        typedLiteral.Value = Convert.ToString(outUInt, CultureInfo.InvariantCulture);
+                        literalValue = Convert.ToString(outUInt, CultureInfo.InvariantCulture);
                         return true;
                     }
                     else
                         return false;
 
                 case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT:
-                    if (ushort.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out ushort outUShort))
+                    if (ushort.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out ushort outUShort))
                     {
-                        typedLiteral.Value = Convert.ToString(outUShort, CultureInfo.InvariantCulture);
+                        literalValue = Convert.ToString(outUShort, CultureInfo.InvariantCulture);
                         return true;
                     }
                     else
                         return false;
 
                 case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE:
-                    if (byte.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out byte outByte))
+                    if (byte.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out byte outByte))
                     {
-                        typedLiteral.Value = Convert.ToString(outByte, CultureInfo.InvariantCulture);
+                        literalValue = Convert.ToString(outByte, CultureInfo.InvariantCulture);
                         return true;
                     }
                     else
                         return false;
 
                 case RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER:
-                    if (decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outNPInteger))
+                    if (decimal.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outNPInteger))
                     {
                         if (outNPInteger > 0)
                             return false;
                         else
                         {
-                            typedLiteral.Value = Convert.ToString(outNPInteger, CultureInfo.InvariantCulture);
+                            literalValue = Convert.ToString(outNPInteger, CultureInfo.InvariantCulture);
                             return true;
                         }
                     }
                     return false;
 
                 case RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER:
-                    if (decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outNInteger))
+                    if (decimal.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outNInteger))
                     {
                         if (outNInteger > -1)
                             return false;
                         else
                         {
-                            typedLiteral.Value = Convert.ToString(outNInteger, CultureInfo.InvariantCulture);
+                            literalValue = Convert.ToString(outNInteger, CultureInfo.InvariantCulture);
                             return true;
                         }
                     }
                     return false;
 
                 case RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER:
-                    if (decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outNNInteger))
+                    if (decimal.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outNNInteger))
                     {
                         if (outNNInteger < 0)
                             return false;
                         else
                         {
-                            typedLiteral.Value = Convert.ToString(outNNInteger, CultureInfo.InvariantCulture);
+                            literalValue = Convert.ToString(outNNInteger, CultureInfo.InvariantCulture);
                             return true;
                         }
                     }
                     return false;
 
                 case RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER:
-                    if (decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outPInteger))
+                    if (decimal.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outPInteger))
                     {
                         if (outPInteger < 1)
                             return false;
                         else
                         {
-                            typedLiteral.Value = Convert.ToString(outPInteger, CultureInfo.InvariantCulture);
+                            literalValue = Convert.ToString(outPInteger, CultureInfo.InvariantCulture);
                             return true;
                         }
                     }

@@ -51,13 +51,22 @@ namespace RDFSharp.Model
           BaseDatatype = onDatatype;
           Facets = facets ?? new List<RDFFacet>();
         }
-        #endregion
+		#endregion
 
-        #region Methods
-        /// <summary>
-        /// Gives a graph representation of the datatype
-        /// </summary>
-        public RDFGraph ToRDFGraph()
+		#region Interfaces
+		/// <summary>
+		/// Gives the string representation of the datatype
+		/// </summary>
+		/// <returns></returns>
+		public override string ToString()
+			=> URI.ToString();
+		#endregion
+
+		#region Methods
+		/// <summary>
+		/// Gives a graph representation of the datatype
+		/// </summary>
+		public RDFGraph ToRDFGraph()
         {
 			RDFGraph datatypeGraph = new RDFGraph();
 
@@ -78,6 +87,13 @@ namespace RDFSharp.Model
 
 			return datatypeGraph;
         }
+
+		/// <summary>
+		/// Validates the given literal against the datatype
+		/// </summary>
+		public bool Validate(string literalValue)
+			=> Facets.Count > 0 ? Facets.TrueForAll(facet => facet.Validate(literalValue))
+								: RDFModelUtilities.ValidateTypedLiteral(literalValue, BaseDatatype);
         #endregion
     }   
 }

@@ -23,24 +23,9 @@ namespace RDFSharp.Model
     {
         #region Properties
         /// <summary>
-        /// Mandatory datatype of the typed literal
+        /// Datatype of the literal's value
         /// </summary>
-        public RDFModelEnums.RDFDatatypes Datatype { get; internal set; }
-
-        /// <summary>
-        /// Represents an handy typed literal for boolean True
-        /// </summary>
-        public static readonly RDFTypedLiteral True = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
-
-        /// <summary>
-        /// Represents an handy typed literal for boolean False
-        /// </summary>
-        public static readonly RDFTypedLiteral False = new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
-
-        /// <summary>
-        /// Represents an handy typed literal for integer Zero
-        /// </summary>
-        public static readonly RDFTypedLiteral Zero = new RDFTypedLiteral("0", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+        public RDFDatatype Datatype { get; internal set; }
         #endregion
 
         #region Ctors
@@ -48,14 +33,14 @@ namespace RDFSharp.Model
         /// Default-ctor to build a typed literal with given value and given datatype
         /// (semantic validation of given value against given datatype is performed).
         /// </summary>
-        public RDFTypedLiteral(string value, RDFModelEnums.RDFDatatypes datatype)
+        public RDFTypedLiteral(string value, RDFDatatype datatype)
         {
             Value = value ?? string.Empty;
             Datatype = datatype;
 
             //Validation against semantic of given datatype
-            if (!RDFModelUtilities.ValidateTypedLiteral(this))
-                throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + RDFModelUtilities.GetDatatypeFromEnum(datatype) + ")");
+            if (!datatype.Validate(value))
+                throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + datatype.ToString() + ")");
         }
         #endregion
 
@@ -64,22 +49,22 @@ namespace RDFSharp.Model
         /// Gives the string representation of the typed literal
         /// </summary>
         public override string ToString()
-            => string.Concat(base.ToString(), "^^", RDFModelUtilities.GetDatatypeFromEnum(Datatype));
+            => string.Concat(base.ToString(), "^^", Datatype.ToString());
         #endregion
 
         #region Methods
         /// <summary>
         /// Checks if the datatype of this typed literal is compatible with boolean
         /// </summary>
-        internal bool HasBooleanDatatype()
-            => Datatype == RDFModelEnums.RDFDatatypes.XSD_BOOLEAN;
+        public bool HasBooleanDatatype()
+            => Datatype.BaseDatatype == RDFModelEnums.RDFDatatypes.XSD_BOOLEAN;
 
         /// <summary>
         /// Checks if the datatype of this typed literal is compatible with datetime
         /// </summary>
-        internal bool HasDatetimeDatatype()
+        public bool HasDatetimeDatatype()
         {
-            switch (Datatype)
+            switch (Datatype.BaseDatatype)
             {
                 case RDFModelEnums.RDFDatatypes.XSD_DATE:
                 case RDFModelEnums.RDFDatatypes.XSD_DATETIME:
@@ -101,15 +86,15 @@ namespace RDFSharp.Model
         /// <summary>
         /// Checks if the datatype of this typed literal is compatible with timespan
         /// </summary>
-        internal bool HasTimespanDatatype()
-            => Datatype == RDFModelEnums.RDFDatatypes.XSD_DURATION;
+        public bool HasTimespanDatatype()
+            => Datatype.BaseDatatype == RDFModelEnums.RDFDatatypes.XSD_DURATION;
 
         /// <summary>
         /// Checks if the datatype of this typed literal is compatible with string
         /// </summary>
-        internal bool HasStringDatatype()
+        public bool HasStringDatatype()
         {
-            switch (Datatype)
+            switch (Datatype.BaseDatatype)
             {
                 case RDFModelEnums.RDFDatatypes.RDFS_LITERAL:
                 case RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL:
@@ -138,9 +123,9 @@ namespace RDFSharp.Model
         /// <summary>
         /// Checks if the datatype of this typed literal is compatible with decimal
         /// </summary>
-        internal bool HasDecimalDatatype()
+        public bool HasDecimalDatatype()
         {
-            switch (Datatype)
+            switch (Datatype.BaseDatatype)
             {
                 case RDFModelEnums.RDFDatatypes.XSD_DECIMAL:
                 case RDFModelEnums.RDFDatatypes.XSD_DOUBLE:
