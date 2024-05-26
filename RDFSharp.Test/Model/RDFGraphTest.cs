@@ -1840,7 +1840,7 @@ namespace RDFSharp.Test.Model
 				.AddDatatype(exInteger)
 				.RegisterDatatypeDefinitions();
 
-			/*Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:length6").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
+			Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:length6").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
 							&& RDFDatatypeRegister.GetDatatype("ex:length6").Facets.Single() is RDFLengthFacet lengthFacet && lengthFacet.Length == 6);
 			Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:minlength6").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
 							&& RDFDatatypeRegister.GetDatatype("ex:minlength6").Facets.Single() is RDFMinLengthFacet minlengthFacet && minlengthFacet.Length == 6);
@@ -1849,7 +1849,7 @@ namespace RDFSharp.Test.Model
 			Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:patternex").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
 							&& RDFDatatypeRegister.GetDatatype("ex:patternex").Facets.Single() is RDFPatternFacet patternFacet && patternFacet.Pattern == "^ex");
 			Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:integer").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER
-							&& RDFDatatypeRegister.GetDatatype("ex:integer").Facets.Count == 0);*/
+							&& RDFDatatypeRegister.GetDatatype("ex:integer").Facets.Count == 0);
 		}
 
         [TestCleanup]

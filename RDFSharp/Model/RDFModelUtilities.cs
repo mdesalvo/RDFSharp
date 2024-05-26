@@ -324,6 +324,7 @@ namespace RDFSharp.Model
 					RDFModelEnums.RDFDatatypes targetDatatypeEnum = targetDatatype.ToString().GetEnumFromDatatype();
 
 					//Detect the constraining facets
+					List<RDFFacet> targetFacets = new List<RDFFacet>();
 					RDFCollection facetsCollection = DeserializeCollectionFromGraph(graph, facetsRepresentative, RDFModelEnums.RDFTripleFlavors.SPO);
 					foreach (RDFResource facet in facetsCollection.Items.Cast<RDFResource>())
 					{
@@ -331,34 +332,34 @@ namespace RDFSharp.Model
 						if (graph[facet, RDFVocabulary.XSD.LENGTH, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetLength
 							 && facetLength.HasDecimalDatatype() && uint.TryParse(facetLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetLengthValue))
 						{
-							targetDatatype.Facets.Add(new RDFLengthFacet(facetLengthValue));
+							targetFacets.Add(new RDFLengthFacet(facetLengthValue));
 							continue;
 						}
 						//xsd:maxLength
 						if (graph[facet, RDFVocabulary.XSD.MAX_LENGTH, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxLength
 							 && facetMaxLength.HasDecimalDatatype() && uint.TryParse(facetMaxLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMaxLengthValue))
 						{
-							targetDatatype.Facets.Add(new RDFMaxLengthFacet(facetMaxLengthValue));
+							targetFacets.Add(new RDFMaxLengthFacet(facetMaxLengthValue));
 							continue;
 						}
 						//xsd:minLength
 						if (graph[facet, RDFVocabulary.XSD.MIN_LENGTH, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMinLength
 							 && facetMinLength.HasDecimalDatatype() && uint.TryParse(facetMinLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMinLengthValue))
 						{
-							targetDatatype.Facets.Add(new RDFMinLengthFacet(facetMinLengthValue));
+							targetFacets.Add(new RDFMinLengthFacet(facetMinLengthValue));
 							continue;
 						}
 						//xsd:pattern
 						if (graph[facet, RDFVocabulary.XSD.PATTERN, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetPattern
 							 && facetPattern.HasStringDatatype())
 						{
-							targetDatatype.Facets.Add(new RDFPatternFacet(facetPattern.Value));
+							targetFacets.Add(new RDFPatternFacet(facetPattern.Value));
 							continue;
 						}
 					}
 
 					//Finally send the datatype to the register
-					RDFDatatypeRegister.AddDatatype(new RDFDatatype(datatypeIRI.URI, targetDatatypeEnum, targetDatatype.Facets));
+					RDFDatatypeRegister.AddDatatype(new RDFDatatype(datatypeIRI.URI, targetDatatypeEnum, targetFacets));
 				}
 
 				//Try detect an alias datatype
