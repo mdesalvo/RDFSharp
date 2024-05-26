@@ -77,13 +77,13 @@ namespace RDFSharp.Model
 			{
 				RDFCollection facetsCollection = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
 				Facets.ForEach(constraint => facetsCollection.AddItem(constraint.URI));
-				datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.OWL.ON_DATATYPE, new RDFResource(RDFModelUtilities.GetDatatypeFromEnum(TargetDatatype))));
+				datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.OWL.ON_DATATYPE, new RDFResource(TargetDatatype.GetDatatypeFromEnum())));
 				datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.OWL.WITH_RESTRICTIONS, facetsCollection.ReificationSubject));
 				datatypeGraph.AddCollection(facetsCollection);
 				Facets.ForEach(facet => datatypeGraph = datatypeGraph.UnionWith(facet.ToRDFGraph()));
 			}
 			else
-				datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.OWL.EQUIVALENT_CLASS, new RDFResource(RDFModelUtilities.GetDatatypeFromEnum(TargetDatatype))));
+				datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.OWL.EQUIVALENT_CLASS, new RDFResource(TargetDatatype.GetDatatypeFromEnum())));
 
 			return datatypeGraph;
         }
