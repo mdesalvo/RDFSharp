@@ -18,7 +18,6 @@ using RDFSharp.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data;
 using System.IO;
-using System.Linq;
 using System;
 using System.Collections.Generic;
 
@@ -300,6 +299,17 @@ namespace RDFSharp.Test.Model
             graph.AddCollection(null);
 
             Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+		[TestMethod]
+        public void ShouldAddDatatype()
+        {
+            RDFGraph graph = new RDFGraph();
+			RDFDatatype exlength6 = new RDFDatatype(new Uri("ex:exlength6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+				new RDFLengthFacet(6), new RDFPatternFacet("^ex") ]);
+			graph.AddDatatype(exlength6);
+
+            Assert.IsTrue(graph.TriplesCount == 11);
         }
 
         [TestMethod]

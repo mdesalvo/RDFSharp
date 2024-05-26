@@ -220,6 +220,20 @@ namespace RDFSharp.Model
             }
             return this;
         }
+
+		/// <summary>
+        /// Adds the given datatype to the graph
+        /// </summary>
+        public RDFGraph AddDatatype(RDFDatatype datatype)
+        {
+            if (datatype != null)
+            {
+				//Reify the datatype to get its graph representation
+                foreach (RDFTriple t in datatype.ToRDFGraph())
+					AddTriple(t);
+            }
+            return this;
+        }
         #endregion
 
         #region Remove
