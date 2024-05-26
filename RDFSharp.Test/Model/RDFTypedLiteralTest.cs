@@ -16,6 +16,7 @@
 
 using RDFSharp.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace RDFSharp.Test.Model
 {
@@ -617,6 +618,38 @@ namespace RDFSharp.Test.Model
         [DataRow("P1YM", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
         public void ShouldNotCreateTypedLiteralOfTimeSpanCategory(string value, RDFModelEnums.RDFDatatypes datatype)
             => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
-        #endregion
+        
+		[TestMethod]
+		public void ShouldCreateCustomTypedLiteral()
+		{
+			RDFDatatypeRegister.AddDatatype(new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+				new RDFLengthFacet(6) ]));
+			RDFTypedLiteral tlit = new RDFTypedLiteral("abcdef", RDFDatatypeRegister.GetDatatype("ex:length6"));
+
+			Assert.IsNotNull(tlit);
+			Assert.IsTrue(tlit.Value.Equals("abcdef"));
+			Assert.IsTrue(tlit.Datatype.ToString().Equals("ex:length6"));
+		}
+
+		[TestMethod]
+		public void ShouldCreateUndeclaredCustomTypedLiteral()
+		{
+			RDFTypedLiteral tlit = new RDFTypedLiteral("abcdefg", new RDFDatatype(new Uri("ex:length7"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+				new RDFLengthFacet(7) ]));
+
+			Assert.IsNotNull(tlit);
+			Assert.IsTrue(tlit.Value.Equals("abcdefg"));
+			Assert.IsTrue(tlit.Datatype.ToString().Equals("ex:length7"));
+		}
+
+		[TestMethod]
+		public void ShouldNotCreateInvalidCustomTypedLiteral()
+		{
+			RDFDatatypeRegister.AddDatatype(new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+				new RDFLengthFacet(6) ]));
+
+			Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral("abcdefghi", RDFDatatypeRegister.GetDatatype("ex:length6")));
+		}
+		#endregion
     }
 }

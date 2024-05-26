@@ -158,7 +158,7 @@ namespace RDFSharp.Model
 
                             #region typed literal
                             else
-                                tripleTemplate = tripleTemplate.Replace("{DTYPE}", RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)t.Object).Datatype));
+                                tripleTemplate = tripleTemplate.Replace("{DTYPE}", ((RDFTypedLiteral)t.Object).Datatype.URI.ToString());
                             #endregion
                         }
                         #endregion
@@ -298,8 +298,7 @@ namespace RDFSharp.Model
                                 string tLitDatatype = tokens[2].Substring(lastIndexOfDatatype + 2)
                                                                .TrimStart(new char[] { '<' })
                                                                .TrimEnd(new char[] { '>' });
-                                RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
-                                L = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), dt);
+                                L = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), RDFDatatypeRegister.GetDatatype(tLitDatatype));
                             }
                             #endregion
 

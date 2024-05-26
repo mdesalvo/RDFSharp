@@ -1557,26 +1557,13 @@ namespace RDFSharp.Test.Model
         [DataRow("http://www.w3.org/2001/XMLSchema#ID", RDFModelEnums.RDFDatatypes.XSD_ID)]
         [DataRow(" http://www.w3.org/2001/XMLSchema#ID ", RDFModelEnums.RDFDatatypes.XSD_ID)] //trimmed case
         public void ShouldGetDatatypeFromString(string input, RDFModelEnums.RDFDatatypes datatype)
-        {
-            RDFModelEnums.RDFDatatypes output = RDFModelUtilities.GetDatatypeFromString(input);
-            Assert.IsTrue(output == datatype);
-        }
+        	=> Assert.IsTrue(RDFDatatypeRegister.GetDatatype(input).ToString() == datatype.GetDatatypeFromEnum());
 
         [DataTestMethod]
         [DataRow("http://www.w3.org/2000/01/rdf-schema#UnexistingDatatype")]
         [DataRow("http://www.w3.org/2001/XMLSchema#Id")]
-        public void ShouldGetDefaultDatatypeFromUnrecognizedString(string input)
-        {
-            RDFModelEnums.RDFDatatypes output = RDFModelUtilities.GetDatatypeFromString(input);
-            Assert.IsTrue(output == RDFModelEnums.RDFDatatypes.RDFS_LITERAL);
-        }
-
-        [DataTestMethod]
-        [DataRow(null)]
-        [DataRow("")]
-        [DataRow("http:/example.org/test#")]
-        public void ShouldThrowExceptionOnGettingDatatypeFromString(string input)
-            => Assert.ThrowsException<RDFModelException>(() => RDFModelUtilities.GetDatatypeFromString(input));
+        public void ShouldNotGetDatatypeFromUnrecognizedString(string input)
+        	=> Assert.IsNull(RDFDatatypeRegister.GetDatatype(input));
 
         [DataTestMethod]
         [DataRow("http://www.w3.org/2000/01/rdf-schema#Literal", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)]

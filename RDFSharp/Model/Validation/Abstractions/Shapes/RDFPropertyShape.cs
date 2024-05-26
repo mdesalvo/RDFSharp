@@ -137,7 +137,7 @@ namespace RDFSharp.Model
 
                 //Typed Literal
                 else
-                    if (((RDFTypedLiteral)description).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
+                    if (((RDFTypedLiteral)description).Datatype.ToString().Equals(RDFVocabulary.XSD.STRING.ToString()))
                     Descriptions.Add(description);
             }
             return this;
@@ -156,7 +156,7 @@ namespace RDFSharp.Model
 
                 //Typed Literal
                 else
-                    if (((RDFTypedLiteral)name).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
+                    if (((RDFTypedLiteral)name).Datatype.ToString().Equals(RDFVocabulary.XSD.STRING.ToString()))
                     Names.Add(name);
             }
             return this;

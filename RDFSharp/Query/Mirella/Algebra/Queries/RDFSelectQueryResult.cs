@@ -148,7 +148,7 @@ namespace RDFSharp.Query
                                     else
                                     {
                                         XmlAttribute datatype = sparqlDoc.CreateAttribute("datatype");
-                                        XmlText datatypeText = sparqlDoc.CreateTextNode(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)rdfTermLit).Datatype));
+                                        XmlText datatypeText = sparqlDoc.CreateTextNode(((RDFTypedLiteral)rdfTermLit).Datatype.URI.ToString());
                                         datatype.AppendChild(datatypeText);
                                         litElement.Attributes.Append(datatype);
                                         XmlText typedLiteralText = sparqlDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(rdfTermLit.Value)));

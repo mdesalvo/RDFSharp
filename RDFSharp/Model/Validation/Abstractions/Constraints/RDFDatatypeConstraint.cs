@@ -28,15 +28,21 @@ namespace RDFSharp.Model
         /// <summary>
         /// Allowed datatype for the given RDF term
         /// </summary>
-        public RDFModelEnums.RDFDatatypes Datatype { get; internal set; }
+        public RDFDatatype Datatype { get; internal set; }
         #endregion
 
         #region Ctors
-        /// <summary>
+		/// <summary>
         /// Default-ctor to build a datatype constraint with the given datatype
         /// </summary>
-        public RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes datatype)
-			=> Datatype = datatype;
+        public RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes datatype) 
+			: this(RDFDatatypeRegister.GetDatatype(datatype)) { }
+
+        /// <summary>
+        /// Default-ctor to build a datatype constraint with the given datatype (rdfs:Literal in case of null)
+        /// </summary>
+        public RDFDatatypeConstraint(RDFDatatype datatype)
+			=> Datatype = datatype ?? RDFDatatypeRegister.RDFSLiteral;
         #endregion
 
         #region Methods
@@ -51,7 +57,7 @@ namespace RDFSharp.Model
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Value must be a valid literal of type <{RDFModelUtilities.GetDatatypeFromEnum(Datatype)}>"));
+                shapeMessages.Add(new RDFPlainLiteral($"Value must be a valid literal of type <{Datatype}>"));
 
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
@@ -70,7 +76,7 @@ namespace RDFSharp.Model
 
                     //PlainLiteral
                     case RDFPlainLiteral valueNodePlainLiteral:
-                        if (Datatype != RDFModelEnums.RDFDatatypes.XSD_STRING || valueNodePlainLiteral.HasLanguage())
+                        if (!string.Equals(Datatype.ToString(), RDFVocabulary.XSD.STRING.ToString()) || valueNodePlainLiteral.HasLanguage())
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.DATATYPE_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -82,7 +88,7 @@ namespace RDFSharp.Model
 
                     //TypedLiteral
                     case RDFTypedLiteral valueNodeTypedLiteral:
-                        if (Datatype != valueNodeTypedLiteral.Datatype)
+                        if (!string.Equals(Datatype.ToString(), valueNodeTypedLiteral.Datatype.ToString()))
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.DATATYPE_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -106,7 +112,7 @@ namespace RDFSharp.Model
             if (shape != null)
             {
                 //sh:datatype
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.DATATYPE, new RDFResource(RDFModelUtilities.GetDatatypeFromEnum(Datatype))));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.DATATYPE, new RDFResource(Datatype.ToString())));
             }
             return result;
         }

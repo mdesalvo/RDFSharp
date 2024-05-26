@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using System;
 using System.Text.RegularExpressions;
 
 namespace RDFSharp.Model
@@ -34,7 +33,7 @@ namespace RDFSharp.Model
         internal static readonly Regex LangTagRegex = new Regex(string.Concat("^", LangTagMask, "$"), RegexOptions.Compiled | RegexOptions.IgnoreCase);     
 
         /// <summary>
-        /// Optional language of the plain literal's value
+        /// Optional language of the literal's value
         /// </summary>
         public string Language { get; internal set; }
         #endregion

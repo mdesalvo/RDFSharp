@@ -148,7 +148,7 @@ namespace RDFSharp.Model
 
                 //Typed Literal
                 else
-                    if (((RDFTypedLiteral)message).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
+                    if (((RDFTypedLiteral)message).Datatype.ToString().Equals(RDFVocabulary.XSD.STRING.ToString()))
                         Messages.Add(message);
             }
             return this;

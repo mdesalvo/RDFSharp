@@ -315,7 +315,7 @@ namespace RDFSharp.Model
                                     {
                                         RDFTypedLiteral tLit = (RDFTypedLiteral)triple.Object;
                                         XmlAttribute typedLiteralNodeDesc = rdfDoc.CreateAttribute("rdf:datatype", RDFVocabulary.RDF.BASE_URI);
-                                        XmlText typedLiteralNodeDescText = rdfDoc.CreateTextNode(RDFModelUtilities.GetDatatypeFromEnum(tLit.Datatype));
+                                        XmlText typedLiteralNodeDescText = rdfDoc.CreateTextNode(tLit.Datatype.URI.ToString());
                                         typedLiteralNodeDesc.AppendChild(typedLiteralNodeDescText);
                                         predNode.Attributes.Append(typedLiteralNodeDesc);
                                     }
@@ -620,8 +620,7 @@ namespace RDFSharp.Model
                         XmlAttribute rdfDatatype = GetRdfDatatypeAttribute(predNode);
                         if (rdfDatatype != null)
                         {
-                            RDFModelEnums.RDFDatatypes dtype = RDFModelUtilities.GetDatatypeFromString(rdfDatatype.Value);
-                            RDFTypedLiteral tLit = new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerText)), dtype);
+                            RDFTypedLiteral tLit = new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerText)), RDFDatatypeRegister.GetDatatype(rdfDatatype.Value));
                             result.AddTriple(new RDFTriple(subj, pred, tLit));
                             continue;
                         }
@@ -933,8 +932,7 @@ namespace RDFSharp.Model
             XmlAttribute rdfDatatypeAttr = GetRdfDatatypeAttribute(predNode);
             if (rdfDatatypeAttr != null)
             {
-                RDFModelEnums.RDFDatatypes dtype = RDFModelUtilities.GetDatatypeFromString(rdfDatatypeAttr.Value);
-                RDFTypedLiteral tLit = new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerText)), dtype);
+                RDFTypedLiteral tLit = new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerText)), RDFDatatypeRegister.GetDatatype(rdfDatatypeAttr.Value));
                 return new RDFTriple(subject, predicate, tLit);
             }
             XmlAttribute parseLiteral = GetParseTypeLiteralAttribute(predNode);
@@ -1121,11 +1119,11 @@ namespace RDFSharp.Model
                         RDFLiteral literal;
                         XmlAttribute attr = GetRdfDatatypeAttribute(elem);
                         if (attr != null)
-                            literal = new RDFTypedLiteral(elem.InnerText, RDFModelUtilities.GetDatatypeFromString(attr.InnerText));
+                            literal = new RDFTypedLiteral(elem.InnerText, RDFDatatypeRegister.GetDatatype(attr.InnerText));
                         else
                         {
                             attr = GetXmlLangAttribute(elem) ?? xmlLangPred;
-                            literal = new RDFPlainLiteral(elem.InnerText, (attr != null ? attr.InnerText : string.Empty));
+                            literal = new RDFPlainLiteral(elem.InnerText, attr?.InnerText ?? string.Empty);
                         }
 
                         //obj -> rdf:_N -> VALUE

@@ -35,7 +35,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Datatype to be filtered
         /// </summary>
-        public RDFModelEnums.RDFDatatypes Datatype { get; internal set; }
+        public RDFDatatype Datatype { get; internal set; }
 
         /// <summary>
         /// Regex to be applied for datatype filtering
@@ -45,9 +45,15 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a filter on the given variable for the given datatype
+        /// Default-ctor to build a filter on the given variable for the given standard datatype
         /// </summary>
         public RDFDatatypeFilter(RDFVariable variable, RDFModelEnums.RDFDatatypes datatype)
+			: this(variable, RDFDatatypeRegister.GetDatatype(datatype)) { }
+
+		/// <summary>
+        /// Default-ctor to build a filter on the given variable for the given datatype (rdfs:Literal if null)
+        /// </summary>
+        public RDFDatatypeFilter(RDFVariable variable, RDFDatatype datatype)
         {
             #region Guards
             if (variable == null)
@@ -55,8 +61,8 @@ namespace RDFSharp.Query
             #endregion
 
             VariableName = variable.ToString();
-            Datatype = datatype;
-            DatatypeRegex = new Regex($"\\^\\^{RDFModelUtilities.GetDatatypeFromEnum(Datatype)}$", RegexOptions.Compiled);
+            Datatype = datatype ?? RDFDatatypeRegister.RDFSLiteral;
+            DatatypeRegex = new Regex($"\\^\\^{Datatype}$", RegexOptions.Compiled);
         }
         #endregion
 
@@ -70,8 +76,7 @@ namespace RDFSharp.Query
             => string.Concat(
                 "FILTER ( DATATYPE(", VariableName, ") = ",
                 RDFQueryPrinter.PrintPatternMember(
-                    RDFQueryUtilities.ParseRDFPatternMember(
-                        RDFModelUtilities.GetDatatypeFromEnum(Datatype)), prefixes), " )");
+                    RDFQueryUtilities.ParseRDFPatternMember(Datatype.ToString()), prefixes), " )");
         #endregion
 
         #region Methods

@@ -67,8 +67,7 @@ namespace RDFSharp.Query
             #region Typed Literal
             string tLitValue = pMember.Substring(0, lastIndexOfDatatype);
             string tLitDatatype = pMember.Substring(lastIndexOfDatatype + 2);
-            RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
-            RDFTypedLiteral tLit = new RDFTypedLiteral(tLitValue, dt);
+            RDFTypedLiteral tLit = new RDFTypedLiteral(tLitValue, RDFDatatypeRegister.GetDatatype(tLitDatatype));
             return tLit;
             #endregion
         }

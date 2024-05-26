@@ -107,11 +107,11 @@ namespace RDFSharp.Query
                 Geometry rightGeometry = null;
                 Geometry rightGeometryLAZ = null;
                 if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
-                     && (leftArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) || 
-                          leftArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)))
+                     && (leftArgumentTypedLiteral.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString()) || 
+                         leftArgumentTypedLiteral.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.GML_LITERAL.ToString())))
                 {
                     //Parse WGS84 WKT/GML left geometry
-                    leftGeometry = leftArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ?
+                    leftGeometry = leftArgumentTypedLiteral.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString()) ?
                         WKTReader.Read(leftArgumentTypedLiteral.Value) : GMLReader.Read(leftArgumentTypedLiteral.Value);
                     leftGeometry.SRID = 4326;
 
@@ -127,11 +127,11 @@ namespace RDFSharp.Query
                     {
                         //If so, it must be a well-formed GEO literal (WKT/GML)
                         if (rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
-                             && (rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) 
-                                  || rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)))
+                             && (rightArgumentTypedLiteral.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString()) || 
+							 	 rightArgumentTypedLiteral.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.GML_LITERAL.ToString())))
                         {
                             //Parse WGS84 WKT/GML right geometry
-                            rightGeometry = rightArgumentTypedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ?
+                            rightGeometry = rightArgumentTypedLiteral.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString()) ?
                                 WKTReader.Read(rightArgumentTypedLiteral.Value) : GMLReader.Read(rightArgumentTypedLiteral.Value);
                             rightGeometry.SRID = 4326;
 
