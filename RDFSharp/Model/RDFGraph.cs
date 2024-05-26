@@ -656,7 +656,7 @@ namespace RDFSharp.Model
                     graph =  RDFTriX.Deserialize(filepath);
 					break;
             }
-			return graph;
+			return graph.RegisterDatatypeDefinitions();
         }
 
         /// <summary>
@@ -686,7 +686,7 @@ namespace RDFSharp.Model
                     graph =  RDFTriX.Deserialize(inputStream, graphContext);
 					break;
             }
-			return graph;
+			return graph.RegisterDatatypeDefinitions();
         }
 
         /// <summary>
@@ -747,7 +747,7 @@ namespace RDFSharp.Model
             }
 			#endregion
 
-            return graph;
+            return graph.RegisterDatatypeDefinitions();
         }
 
         /// <summary>
@@ -819,7 +819,7 @@ namespace RDFSharp.Model
                 throw new RDFModelException($"Cannot read RDF graph from Uri {uri} because: " + ex.Message);
             }
 
-            return graph;
+            return graph.RegisterDatatypeDefinitions();
         }
         #endregion
 

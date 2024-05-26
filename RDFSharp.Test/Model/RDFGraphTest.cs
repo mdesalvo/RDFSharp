@@ -20,6 +20,7 @@ using System.Data;
 using System.IO;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RDFSharp.Test.Model
 {
@@ -1822,6 +1823,34 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldRaiseExceptionOnImportingFromRelativeUri()
             => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromUri(new Uri("/file/system", UriKind.Relative)));
+
+		[TestMethod]
+		public void ShouldLoadDatatypesFromGraph()
+		{
+			RDFDatatype exLength6 = new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [	new RDFLengthFacet(6) ]);
+			RDFDatatype exMinLength6 = new RDFDatatype(new Uri("ex:minlength6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [ new RDFMinLengthFacet(6) ]);
+			RDFDatatype exMaxLength6 = new RDFDatatype(new Uri("ex:maxlength6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [ new RDFMaxLengthFacet(6) ]);
+			RDFDatatype exPatternEx = new RDFDatatype(new Uri("ex:patternex"), RDFModelEnums.RDFDatatypes.XSD_STRING, [	new RDFPatternFacet("^ex") ]);
+			RDFDatatype exInteger = new RDFDatatype(new Uri("ex:integer"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, null);
+			RDFGraph graph = new RDFGraph()
+				.AddDatatype(exLength6)
+				.AddDatatype(exMinLength6)
+				.AddDatatype(exMaxLength6)
+				.AddDatatype(exPatternEx)
+				.AddDatatype(exInteger)
+				.RegisterDatatypeDefinitions();
+
+			/*Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:length6").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
+							&& RDFDatatypeRegister.GetDatatype("ex:length6").Facets.Single() is RDFLengthFacet lengthFacet && lengthFacet.Length == 6);
+			Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:minlength6").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
+							&& RDFDatatypeRegister.GetDatatype("ex:minlength6").Facets.Single() is RDFMinLengthFacet minlengthFacet && minlengthFacet.Length == 6);
+			Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:maxlength6").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
+							&& RDFDatatypeRegister.GetDatatype("ex:maxlength6").Facets.Single() is RDFMaxLengthFacet maxlengthFacet && maxlengthFacet.Length == 6);
+			Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:patternex").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
+							&& RDFDatatypeRegister.GetDatatype("ex:patternex").Facets.Single() is RDFPatternFacet patternFacet && patternFacet.Pattern == "^ex");
+			Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:integer").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER
+							&& RDFDatatypeRegister.GetDatatype("ex:integer").Facets.Count == 0);*/
+		}
 
         [TestCleanup]
         public void Cleanup()

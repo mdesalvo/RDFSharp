@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -304,7 +305,75 @@ namespace RDFSharp.Model
             }
             return matchResult;
         }
-        #endregion
+        
+		/// <summary>
+		/// Loads the datatype definitions contained in the given graphs and sends them to the datatype register
+		/// </summary>
+		internal static RDFGraph RegisterDatatypeDefinitions(this RDFGraph graph)
+		{
+			foreach (RDFTriple datatypeTriple in graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE, null])
+			{
+				RDFResource datatypeIRI = (RDFResource)datatypeTriple.Subject;
+
+				//Try detect a faceted datatype
+				if (graph[datatypeIRI, RDFVocabulary.OWL.WITH_RESTRICTIONS, null, null].FirstOrDefault()?.Object is RDFResource facetsRepresentative
+					 && graph[datatypeIRI, RDFVocabulary.OWL.ON_DATATYPE, null, null].FirstOrDefault()?.Object is RDFResource onDatatype)
+				{
+					//Detect the target datatype (fallback to rdfs:Literal in case not found)
+					RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(onDatatype.ToString()) ?? RDFDatatypeRegister.RDFSLiteral;
+					RDFModelEnums.RDFDatatypes targetDatatypeEnum = targetDatatype.ToString().GetEnumFromDatatype();
+
+					//Detect the constraining facets
+					RDFCollection facetsCollection = DeserializeCollectionFromGraph(graph, facetsRepresentative, RDFModelEnums.RDFTripleFlavors.SPO);
+					foreach (RDFResource facet in facetsCollection.Items.Cast<RDFResource>())
+					{
+						//xsd:length
+						if (graph[facet, RDFVocabulary.XSD.LENGTH, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetLength
+							 && facetLength.HasDecimalDatatype() && uint.TryParse(facetLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetLengthValue))
+						{
+							targetDatatype.Facets.Add(new RDFLengthFacet(facetLengthValue));
+							continue;
+						}
+						//xsd:maxLength
+						if (graph[facet, RDFVocabulary.XSD.MAX_LENGTH, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxLength
+							 && facetMaxLength.HasDecimalDatatype() && uint.TryParse(facetMaxLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMaxLengthValue))
+						{
+							targetDatatype.Facets.Add(new RDFMaxLengthFacet(facetMaxLengthValue));
+							continue;
+						}
+						//xsd:minLength
+						if (graph[facet, RDFVocabulary.XSD.MIN_LENGTH, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMinLength
+							 && facetMinLength.HasDecimalDatatype() && uint.TryParse(facetMinLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMinLengthValue))
+						{
+							targetDatatype.Facets.Add(new RDFMinLengthFacet(facetMinLengthValue));
+							continue;
+						}
+						//xsd:pattern
+						if (graph[facet, RDFVocabulary.XSD.PATTERN, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetPattern
+							 && facetPattern.HasStringDatatype())
+						{
+							targetDatatype.Facets.Add(new RDFPatternFacet(facetPattern.Value));
+							continue;
+						}
+					}
+
+					//Finally send the datatype to the register
+					RDFDatatypeRegister.AddDatatype(new RDFDatatype(datatypeIRI.URI, targetDatatypeEnum, targetDatatype.Facets));
+				}
+
+				//Try detect an alias datatype
+				else if (graph[datatypeIRI, RDFVocabulary.OWL.EQUIVALENT_CLASS, null, null].FirstOrDefault()?.Object is RDFResource equivalentDatatype)
+				{
+					//Detect the target datatype (fallback to rdfs:Literal in case not found)
+					RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(equivalentDatatype.ToString()) ?? RDFDatatypeRegister.RDFSLiteral;
+					RDFModelEnums.RDFDatatypes targetDatatypeEnum = targetDatatype.ToString().GetEnumFromDatatype();
+
+					RDFDatatypeRegister.AddDatatype(new RDFDatatype(datatypeIRI.URI, targetDatatypeEnum, null));
+				}
+			}
+			return graph;
+		}
+		#endregion
 
         #region Collections
         /// <summary>
@@ -407,6 +476,22 @@ namespace RDFSharp.Model
 			=> ((DescriptionAttribute)datatype.GetType()
             		    					  .GetField(datatype.ToString())
         			    					  .GetCustomAttributes(typeof(DescriptionAttribute), false)[0]).Description;
+
+		/// <summary>
+        /// Gives the Enum representation of the given datatype
+        /// </summary>
+        public static RDFModelEnums.RDFDatatypes GetEnumFromDatatype(this string datatype)
+		{
+			Type enumType = typeof(RDFModelEnums.RDFDatatypes);
+			foreach (RDFModelEnums.RDFDatatypes enumValue in enumType.GetEnumValues())
+			{
+				MemberInfo enumValueInfo = enumType.GetMember(enumValue.ToString()).First();
+				DescriptionAttribute enumValueDescriptionAttribute = enumValueInfo.GetCustomAttribute<DescriptionAttribute>();
+				if (string.Equals(datatype, enumValueDescriptionAttribute.Description))
+					return enumValue;
+			}
+			return RDFModelEnums.RDFDatatypes.RDFS_LITERAL;
+		}
 
         /// <summary>
         /// Validates the value of the given typed literal against its datatype
