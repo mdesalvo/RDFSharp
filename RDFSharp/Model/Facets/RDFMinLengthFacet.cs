@@ -52,7 +52,7 @@ namespace RDFSharp.Model
         /// Validates the given literal value against the minlength facet
         /// </summary>
         public override bool Validate(string literalValue)
-          => literalValue?.Length >= Length;
+          => (string.IsNullOrEmpty(literalValue) && Length==0) || literalValue?.Length >= Length;
         #endregion
     }
 }

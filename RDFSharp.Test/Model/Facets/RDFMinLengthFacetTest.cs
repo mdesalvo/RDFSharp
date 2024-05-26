@@ -45,6 +45,12 @@ namespace RDFSharp.Test.Model
             Assert.IsFalse(facet.Validate(null));
 			Assert.IsFalse(facet.Validate(string.Empty));
 			Assert.IsFalse(facet.Validate("a"));
+
+			RDFMinLengthFacet facet0 = new RDFMinLengthFacet(0);
+			Assert.IsTrue(facet0.Validate("abcdef"));
+            Assert.IsTrue(facet0.Validate(null));
+			Assert.IsTrue(facet0.Validate(string.Empty));
+			Assert.IsTrue(facet0.Validate("a"));
         }
 
 		[TestMethod]
