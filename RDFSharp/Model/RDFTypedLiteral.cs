@@ -51,7 +51,7 @@ namespace RDFSharp.Model
 			: this(value, RDFDatatypeRegister.GetDatatype(datatype)) { }
 
         /// <summary>
-        /// Default-ctor to build a typed literal with given value and given custom datatype
+        /// Default-ctor to build a typed literal with given value and given custom datatype (rdfs:Literal in case null)
         /// </summary>
         public RDFTypedLiteral(string value, RDFDatatype datatype)
         {
