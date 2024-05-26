@@ -632,7 +632,18 @@ namespace RDFSharp.Test.Model
 		}
 
 		[TestMethod]
-		public void ShouldCreateInvalidCustomTypedLiteral()
+		public void ShouldCreateUndeclaredCustomTypedLiteral()
+		{
+			RDFTypedLiteral tlit = new RDFTypedLiteral("abcdefg", new RDFDatatype(new Uri("ex:length7"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+				new RDFLengthFacet(7) ]));
+
+			Assert.IsNotNull(tlit);
+			Assert.IsTrue(tlit.Value.Equals("abcdefg"));
+			Assert.IsTrue(tlit.Datatype.ToString().Equals("ex:length7"));
+		}
+
+		[TestMethod]
+		public void ShouldNotCreateInvalidCustomTypedLiteral()
 		{
 			RDFDatatypeRegister.AddDatatype(new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
 				new RDFLengthFacet(6) ]));
