@@ -698,16 +698,20 @@ namespace RDFSharp.Store
                 throw new RDFStoreException("Cannot read RDF memory store from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
             #endregion
 
+			RDFMemoryStore memStore = null; 
             switch (rdfFormat)
             {
                 case RDFStoreEnums.RDFFormats.NQuads:
-                    return RDFNQuads.Deserialize(filepath);
+                    memStore = RDFNQuads.Deserialize(filepath);
+					break;
                 case RDFStoreEnums.RDFFormats.TriX:
-                    return RDFTriX.Deserialize(filepath);
+                    memStore =  RDFTriX.Deserialize(filepath);
+					break;
                 case RDFStoreEnums.RDFFormats.TriG:
-                    return RDFTriG.Deserialize(filepath);
+                    memStore =  RDFTriG.Deserialize(filepath);
+					break;
             }
-            throw new RDFStoreException("Cannot read RDF memory store from file because given \"rdfFormat\" parameter is not supported.");
+            return memStore;
         }
 
         /// <summary>
@@ -726,16 +730,20 @@ namespace RDFSharp.Store
                 throw new RDFStoreException("Cannot read RDF memory store from stream because given \"inputStream\" parameter is null.");
             #endregion
 
+			RDFMemoryStore memStore = null; 
             switch (rdfFormat)
             {
                 case RDFStoreEnums.RDFFormats.NQuads:
-                    return RDFNQuads.Deserialize(inputStream);
+                    memStore = RDFNQuads.Deserialize(inputStream);
+					break;
                 case RDFStoreEnums.RDFFormats.TriX:
-                    return RDFTriX.Deserialize(inputStream);
+                    memStore =  RDFTriX.Deserialize(inputStream);
+					break;
                 case RDFStoreEnums.RDFFormats.TriG:
-                    return RDFTriG.Deserialize(inputStream);                    
+                    memStore =  RDFTriG.Deserialize(inputStream);
+					break;
             }
-            throw new RDFStoreException("Cannot read RDF memory store from stream because given \"rdfFormat\" parameter is not supported.");
+            return memStore;
         }
 
         /// <summary>
@@ -758,9 +766,7 @@ namespace RDFSharp.Store
                 throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter does not have the required columns \"?CONTEXT\", \"?SUBJECT\", \"?PREDICATE\", \"?OBJECT\".");
             #endregion
 
-            RDFMemoryStore result = new RDFMemoryStore();
-
-            //Iterate the rows of the datatable
+            RDFMemoryStore memStore = new RDFMemoryStore();
             foreach (DataRow tableRow in table.Rows)
             {
                 #region CONTEXT
@@ -800,13 +806,12 @@ namespace RDFSharp.Store
                 
                 RDFPatternMember rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?OBJECT"].ToString());
                 if (rowObj is RDFResource objRes)
-                    result.AddQuadruple(new RDFQuadruple(new RDFContext(rowCtx.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, objRes));
+                    memStore.AddQuadruple(new RDFQuadruple(new RDFContext(rowCtx.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, objRes));
                 else
-                    result.AddQuadruple(new RDFQuadruple(new RDFContext(rowCtx.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, (RDFLiteral)rowObj));
+                    memStore.AddQuadruple(new RDFQuadruple(new RDFContext(rowCtx.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, (RDFLiteral)rowObj));
                 #endregion
             }
-
-            return result;
+            return memStore;
         }
 
         /// <summary>
@@ -827,7 +832,7 @@ namespace RDFSharp.Store
                 throw new RDFStoreException("Cannot read RDF memory store from Uri because given \"uri\" parameter does not represent an absolute Uri.");
             #endregion
 
-            RDFMemoryStore result = new RDFMemoryStore();
+            RDFMemoryStore memStore = new RDFMemoryStore();
 
             try
             {
@@ -859,15 +864,15 @@ namespace RDFSharp.Store
 
                     //N-QUADS
                     if (responseContentType.Contains("application/n-quads"))
-                        result = FromStream(RDFStoreEnums.RDFFormats.NQuads, webResponse.GetResponseStream());
+                        memStore = FromStream(RDFStoreEnums.RDFFormats.NQuads, webResponse.GetResponseStream());
 
                     //TRIX
                     else if (responseContentType.Contains("application/trix"))
-                        result = FromStream(RDFStoreEnums.RDFFormats.TriX, webResponse.GetResponseStream());
+                        memStore = FromStream(RDFStoreEnums.RDFFormats.TriX, webResponse.GetResponseStream());
 
                     //TRIG
                     else if (responseContentType.Contains("application/trig"))
-                        result = FromStream(RDFStoreEnums.RDFFormats.TriG, webResponse.GetResponseStream());
+                        memStore = FromStream(RDFStoreEnums.RDFFormats.TriG, webResponse.GetResponseStream());
                 }
             }
             catch (Exception ex)
@@ -875,7 +880,7 @@ namespace RDFSharp.Store
                 throw new RDFStoreException("Cannot read RDF memory store from Uri because: " + ex.Message);
             }
 
-            return result;
+            return memStore;
         }
 
         /// <summary>
