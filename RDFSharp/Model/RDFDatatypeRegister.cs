@@ -89,18 +89,18 @@ namespace RDFSharp.Model
         /// </summary>
         public static void AddDatatype(RDFDatatype datatype)
         {
-            if (datatype != null && GetDatatype(datatype.URI.ToString()) == null)
+            if (datatype != null && GetDatatype(datatype.ToString()) == null)
 				Instance.Register.Add(datatype);
         }
 
         /// <summary>
-        /// Retrieves a datatype by seeking presence of its Uri
+        /// Retrieves a datatype by seeking presence of its Uri (null if not found)
         /// </summary>
         public static RDFDatatype GetDatatype(string datatypeUri)
 			=> Instance.Register.Find(dt => string.Equals(dt.ToString(), datatypeUri?.Trim()));
 
 		/// <summary>
-        /// Retrieves a datatype by seeking presence of its Uri
+        /// Retrieves a standard datatype by seeking presence of its Uri
         /// </summary>
         public static RDFDatatype GetDatatype(RDFModelEnums.RDFDatatypes datatype)
 			=> GetDatatype(datatype.GetDatatypeFromEnum());

@@ -35,14 +35,14 @@ namespace RDFSharp.Model
 		/// <summary>
         /// Default-ctor to build a datatype constraint with the given datatype
         /// </summary>
-        public RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes datatype)
-			=> Datatype = RDFDatatypeRegister.GetDatatype(datatype);
+        public RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes datatype) 
+			: this(RDFDatatypeRegister.GetDatatype(datatype)) { }
 
         /// <summary>
         /// Default-ctor to build a datatype constraint with the given datatype (rdfs:Literal in case of null)
         /// </summary>
         public RDFDatatypeConstraint(RDFDatatype datatype)
-			=> Datatype = datatype ?? RDFDatatypeRegister.GetDatatype(RDFVocabulary.RDFS.LITERAL.ToString());
+			=> Datatype = datatype ?? RDFDatatypeRegister.RDFSLiteral;
         #endregion
 
         #region Methods
