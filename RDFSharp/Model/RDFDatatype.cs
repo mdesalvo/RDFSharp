@@ -26,9 +26,9 @@ namespace RDFSharp.Model
     {
         #region Properties
         /// <summary>
-        /// Base datatype targeted by the facets
+        /// Datatype targeted by the facets
         /// </summary>
-        public RDFModelEnums.RDFDatatypes BaseDatatype { get; internal set; }
+        public RDFModelEnums.RDFDatatypes TargetDatatype { get; internal set; }
 
         /// <summary>
         /// Uri of the datatype
@@ -36,19 +36,19 @@ namespace RDFSharp.Model
         public Uri URI { get; internal set; }
 
         /// <summary>
-        /// Facets of the datatype
+        /// Facets applied on the target datatype
         /// </summary>
         internal List<RDFFacet> Facets { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Builds a datatype having the given URI, targeting the given base datatype with the given list of facets
+        /// Builds a datatype having the given URI, targeting the given datatype with the given list of facets
         /// </summary>
-        public RDFDatatype(Uri datatypeURI, RDFModelEnums.RDFDatatypes onDatatype, List<RDFFacet> facets)
+        public RDFDatatype(Uri datatypeURI, RDFModelEnums.RDFDatatypes targetDatatype, List<RDFFacet> facets)
         {
           URI = datatypeURI ?? throw new RDFModelException("Cannot create RDFDatatype because given \"datatypeURI\" parameter is null.");
-          BaseDatatype = onDatatype;
+          TargetDatatype = targetDatatype;
           Facets = facets ?? new List<RDFFacet>();
         }
 		#endregion
@@ -77,13 +77,13 @@ namespace RDFSharp.Model
 			{
 				RDFCollection facetsCollection = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
 				Facets.ForEach(constraint => facetsCollection.AddItem(constraint.URI));
-				datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.OWL.ON_DATATYPE, new RDFResource(RDFModelUtilities.GetDatatypeFromEnum(BaseDatatype))));
+				datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.OWL.ON_DATATYPE, new RDFResource(RDFModelUtilities.GetDatatypeFromEnum(TargetDatatype))));
 				datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.OWL.WITH_RESTRICTIONS, facetsCollection.ReificationSubject));
 				datatypeGraph.AddCollection(facetsCollection);
 				Facets.ForEach(facet => datatypeGraph = datatypeGraph.UnionWith(facet.ToRDFGraph()));
 			}
 			else
-				datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.OWL.EQUIVALENT_CLASS, new RDFResource(RDFModelUtilities.GetDatatypeFromEnum(BaseDatatype))));
+				datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.OWL.EQUIVALENT_CLASS, new RDFResource(RDFModelUtilities.GetDatatypeFromEnum(TargetDatatype))));
 
 			return datatypeGraph;
         }
@@ -93,7 +93,7 @@ namespace RDFSharp.Model
 		/// </summary>
 		internal (bool,string) Validate(string literalValue)
 			=> Facets.Count > 0 ? (Facets.TrueForAll(facet => facet.Validate(literalValue)), literalValue)
-								: RDFModelUtilities.ValidateTypedLiteral(literalValue, BaseDatatype);
+								: RDFModelUtilities.ValidateTypedLiteral(literalValue, TargetDatatype);
         #endregion
     }   
 }

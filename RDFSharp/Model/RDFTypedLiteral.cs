@@ -45,7 +45,7 @@ namespace RDFSharp.Model
 
         #region Ctors
 		/// <summary>
-        /// Default-ctor to build a typed literal with given value and given base datatype
+        /// Default-ctor to build a typed literal with given value and given standard datatype
         /// </summary>
         public RDFTypedLiteral(string value, RDFModelEnums.RDFDatatypes datatype)
 			: this(value, RDFDatatypeRegister.GetDatatype(datatype)) { }
@@ -55,13 +55,13 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFTypedLiteral(string value, RDFDatatype datatype)
         {
-            Value = value ?? string.Empty;
             Datatype = datatype ?? RDFDatatypeRegister.RDFSLiteral;
 
             //Validation against semantic of given datatype
-			(bool,string) validationResult = Datatype.Validate(Value);
-            Value = validationResult.Item1 ? validationResult.Item2
-										   : throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + Datatype.ToString() + ")");
+			(bool,string) validationResult = Datatype.Validate(value ?? string.Empty);
+			if (!validationResult.Item1)
+			    throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + Datatype + ")");
+			Value = validationResult.Item2; 
         }
         #endregion
 
@@ -78,14 +78,14 @@ namespace RDFSharp.Model
         /// Checks if the datatype of this typed literal is compatible with boolean
         /// </summary>
         public bool HasBooleanDatatype()
-            => Datatype.BaseDatatype == RDFModelEnums.RDFDatatypes.XSD_BOOLEAN;
+            => Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_BOOLEAN;
 
         /// <summary>
         /// Checks if the datatype of this typed literal is compatible with datetime
         /// </summary>
         public bool HasDatetimeDatatype()
         {
-            switch (Datatype.BaseDatatype)
+            switch (Datatype.TargetDatatype)
             {
                 case RDFModelEnums.RDFDatatypes.XSD_DATE:
                 case RDFModelEnums.RDFDatatypes.XSD_DATETIME:
@@ -108,14 +108,14 @@ namespace RDFSharp.Model
         /// Checks if the datatype of this typed literal is compatible with timespan
         /// </summary>
         public bool HasTimespanDatatype()
-            => Datatype.BaseDatatype == RDFModelEnums.RDFDatatypes.XSD_DURATION;
+            => Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DURATION;
 
         /// <summary>
         /// Checks if the datatype of this typed literal is compatible with string
         /// </summary>
         public bool HasStringDatatype()
         {
-            switch (Datatype.BaseDatatype)
+            switch (Datatype.TargetDatatype)
             {
                 case RDFModelEnums.RDFDatatypes.RDFS_LITERAL:
                 case RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL:
@@ -146,7 +146,7 @@ namespace RDFSharp.Model
         /// </summary>
         public bool HasDecimalDatatype()
         {
-            switch (Datatype.BaseDatatype)
+            switch (Datatype.TargetDatatype)
             {
                 case RDFModelEnums.RDFDatatypes.XSD_DECIMAL:
                 case RDFModelEnums.RDFDatatypes.XSD_DOUBLE:

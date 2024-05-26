@@ -32,7 +32,7 @@ namespace RDFSharp.Test.Model
 				new RDFLengthFacet(6) ]);
 
 			Assert.IsNotNull(length6);
-            Assert.IsTrue(length6.BaseDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+            Assert.IsTrue(length6.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
 			Assert.IsTrue(length6.URI.Equals(new Uri("ex:length6")));
 			Assert.IsTrue(length6.Facets.Single() is RDFLengthFacet lengthFacet && lengthFacet.Length == 6);
 			Assert.IsTrue(string.Equals(length6.ToString(), "ex:length6"));
@@ -72,7 +72,7 @@ namespace RDFSharp.Test.Model
 			RDFDatatype exString = new RDFDatatype(new Uri("ex:string"), RDFModelEnums.RDFDatatypes.XSD_STRING, []);
 
 			Assert.IsNotNull(exString);
-            Assert.IsTrue(exString.BaseDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+            Assert.IsTrue(exString.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
 			Assert.IsTrue(exString.URI.Equals(new Uri("ex:string")));
 			Assert.IsTrue(exString.Facets.Count == 0);
 		}
