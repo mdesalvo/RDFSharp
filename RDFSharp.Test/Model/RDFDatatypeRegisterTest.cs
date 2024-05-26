@@ -17,6 +17,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RDFSharp.Test.Model
@@ -25,7 +26,39 @@ namespace RDFSharp.Test.Model
     public class RDFDatatypeRegisterTest
     {
 		#region Tests
-		
+		[TestMethod]
+		public void ShouldInitializeRegister()
+		{
+			Assert.IsTrue(RDFDatatypeRegister.DatatypesCount >= 50);
+
+			int i=0;
+			IEnumerator<RDFDatatype> datatypes = RDFDatatypeRegister.DatatypesEnumerator;
+			while(datatypes.MoveNext())
+				i++;
+			Assert.IsTrue(i >= 50);
+		}
+
+		[TestMethod]
+		public void ShouldGetDatatype()
+		{
+			Assert.IsNotNull(RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.INTEGER.ToString()));
+			Assert.IsNotNull(RDFDatatypeRegister.GetDatatype(RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+			Assert.IsNull(RDFDatatypeRegister.GetDatatype(null));
+			Assert.IsNull(RDFDatatypeRegister.GetDatatype("ex:dt"));
+		}
+
+		[TestMethod]
+		public void ShouldAddDatatype()
+		{
+			RDFDatatypeRegister.AddDatatype(new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+				new RDFLengthFacet(6) ]));
+			RDFDatatypeRegister.AddDatatype(new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+				new RDFLengthFacet(6) ])); //This will not be added again, since we avoid duplicates
+			RDFDatatypeRegister.AddDatatype(null); //This will not be added, since we avoid nulls
+
+			Assert.IsTrue(RDFDatatypeRegister.DatatypesCount >= 51);
+			Assert.IsNotNull(RDFDatatypeRegister.GetDatatype("ex:length6"));
+		}
 		#endregion
 	}
 }
