@@ -48,7 +48,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a typed literal with given value and given base datatype
         /// </summary>
         public RDFTypedLiteral(string value, RDFModelEnums.RDFDatatypes datatype)
-			: this(value, RDFDatatypeRegister.GetDatatype(datatype.GetDatatypeFromEnum())) { }
+			: this(value, RDFDatatypeRegister.GetDatatype(datatype)) { }
 
         /// <summary>
         /// Default-ctor to build a typed literal with given value and given custom datatype
