@@ -309,8 +309,13 @@ namespace RDFSharp.Model
 		/// <summary>
 		/// Loads the datatype definitions contained in the given graphs and sends them to the datatype register
 		/// </summary>
-		internal static RDFGraph RegisterDatatypeDefinitions(this RDFGraph graph)
+		public static RDFGraph RegisterDatatypeDefinitions(this RDFGraph graph)
 		{
+			#region Guards
+			if (graph == null)
+				return graph;
+			#endregion
+
 			foreach (RDFTriple datatypeTriple in graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE, null])
 			{
 				RDFResource datatypeIRI = (RDFResource)datatypeTriple.Subject;
