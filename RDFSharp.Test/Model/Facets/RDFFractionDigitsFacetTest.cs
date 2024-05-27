@@ -51,6 +51,7 @@ namespace RDFSharp.Test.Model
             Assert.IsFalse(facet.Validate(string.Empty));
             Assert.IsFalse(facet.Validate("2.000"));
             Assert.IsFalse(facet.Validate("2.5773"));
+            Assert.IsFalse(facet.Validate("2.57.73"));
             Assert.IsFalse(facet.Validate("-2.009"));
             Assert.IsFalse(facet.Validate("abcdefgh"));
 
