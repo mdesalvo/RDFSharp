@@ -622,34 +622,24 @@ namespace RDFSharp.Test.Model
 		[TestMethod]
 		public void ShouldCreateCustomTypedLiteral()
 		{
-			RDFDatatypeRegister.AddDatatype(new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
-				new RDFLengthFacet(6) ]));
-			RDFTypedLiteral tlit = new RDFTypedLiteral("abcdef", RDFDatatypeRegister.GetDatatype("ex:length6"));
+			RDFTypedLiteral tlit = new RDFTypedLiteral("abcdef", new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                new RDFMinLengthFacet(6), new RDFMaxLengthFacet(14) ]));
 
 			Assert.IsNotNull(tlit);
 			Assert.IsTrue(tlit.Value.Equals("abcdef"));
 			Assert.IsTrue(tlit.Datatype.ToString().Equals("ex:length6"));
-		}
+            Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral("ab", new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                new RDFMinLengthFacet(6), new RDFMaxLengthFacet(14) ])));
 
-		[TestMethod]
-		public void ShouldCreateUndeclaredCustomTypedLiteral()
-		{
-			RDFTypedLiteral tlit = new RDFTypedLiteral("abcdefg", new RDFDatatype(new Uri("ex:length7"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
-				new RDFLengthFacet(7) ]));
+            RDFTypedLiteral tlit2 = new RDFTypedLiteral("36.6", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, [
+                new RDFMinInclusiveFacet(36), new RDFMaxInclusiveFacet(37) ]));
 
-			Assert.IsNotNull(tlit);
-			Assert.IsTrue(tlit.Value.Equals("abcdefg"));
-			Assert.IsTrue(tlit.Datatype.ToString().Equals("ex:length7"));
-		}
-
-		[TestMethod]
-		public void ShouldNotCreateInvalidCustomTypedLiteral()
-		{
-			RDFDatatypeRegister.AddDatatype(new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
-				new RDFLengthFacet(6) ]));
-
-			Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral("abcdefghi", RDFDatatypeRegister.GetDatatype("ex:length6")));
-		}
+            Assert.IsNotNull(tlit2);
+            Assert.IsTrue(tlit2.Value.Equals("36.6"));
+            Assert.IsTrue(tlit2.Datatype.ToString().Equals("ex:humanTemperature"));
+            Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral("37.6", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_DOUBLE, [
+                new RDFMinInclusiveFacet(36), new RDFMaxInclusiveFacet(37) ])));
+        }
 		#endregion
     }
 }
