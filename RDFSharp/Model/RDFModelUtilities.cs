@@ -483,19 +483,20 @@ namespace RDFSharp.Model
         /// Gives the string representation of the given datatype
         /// </summary>
         public static string GetDatatypeFromEnum(this RDFModelEnums.RDFDatatypes datatype)
-			=> ((DescriptionAttribute)datatype.GetType()
-            		    					  .GetField(datatype.ToString())
-        			    					  .GetCustomAttributes(typeof(DescriptionAttribute), false)[0]).Description;
+			=> ((DescriptionAttribute)RDFModelEnums_RDFDatatypes_EnumType
+                .GetField(datatype.ToString())
+        		.GetCustomAttributes(typeof(DescriptionAttribute), false)[0]).Description;
+        internal static Type RDFModelEnums_RDFDatatypes_EnumType = typeof(RDFModelEnums.RDFDatatypes);
+        internal static Array RDFModelEnums_RDFDatatypes_EnumValues = RDFModelEnums_RDFDatatypes_EnumType.GetEnumValues();
 
-		/// <summary>
+        /// <summary>
         /// Gives the Enum representation of the given datatype
         /// </summary>
         public static RDFModelEnums.RDFDatatypes GetEnumFromDatatype(this string datatype)
 		{
-			Type enumType = typeof(RDFModelEnums.RDFDatatypes);
-			foreach (RDFModelEnums.RDFDatatypes enumValue in enumType.GetEnumValues())
+			foreach (RDFModelEnums.RDFDatatypes enumValue in RDFModelEnums_RDFDatatypes_EnumValues)
 			{
-				MemberInfo enumValueInfo = enumType.GetMember(enumValue.ToString()).First();
+				MemberInfo enumValueInfo = RDFModelEnums_RDFDatatypes_EnumType.GetMember(enumValue.ToString())[0];
 				DescriptionAttribute enumValueDescriptionAttribute = enumValueInfo.GetCustomAttribute<DescriptionAttribute>();
 				if (string.Equals(datatype, enumValueDescriptionAttribute.Description))
 					return enumValue;

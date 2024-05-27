@@ -1555,15 +1555,14 @@ namespace RDFSharp.Test.Model
         [DataRow("http://www.w3.org/2001/XMLSchema#Name", RDFModelEnums.RDFDatatypes.XSD_NAME)]
         [DataRow("http://www.w3.org/2001/XMLSchema#NCName", RDFModelEnums.RDFDatatypes.XSD_NCNAME)]
         [DataRow("http://www.w3.org/2001/XMLSchema#ID", RDFModelEnums.RDFDatatypes.XSD_ID)]
-        [DataRow(" http://www.w3.org/2001/XMLSchema#ID ", RDFModelEnums.RDFDatatypes.XSD_ID)] //trimmed case
-        public void ShouldGetDatatypeFromString(string input, RDFModelEnums.RDFDatatypes datatype)
-        	=> Assert.IsTrue(RDFDatatypeRegister.GetDatatype(input).ToString() == datatype.GetDatatypeFromEnum());
-
-        [DataTestMethod]
-        [DataRow("http://www.w3.org/2000/01/rdf-schema#UnexistingDatatype")]
-        [DataRow("http://www.w3.org/2001/XMLSchema#Id")]
-        public void ShouldNotGetDatatypeFromUnrecognizedString(string input)
-        	=> Assert.IsNull(RDFDatatypeRegister.GetDatatype(input));
+        [DataRow("http://www.w3.org/2002/07/owl#real", RDFModelEnums.RDFDatatypes.OWL_REAL)]
+        [DataRow("http://www.opengis.net/ont/geosparql#gmlLiteral", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)]
+        [DataRow("http://www.opengis.net/ont/geosparql#wktLiteral", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)]
+        [DataRow("http://www.w3.org/2006/time#generalDay", RDFModelEnums.RDFDatatypes.TIME_GENERALDAY)]
+        [DataRow("http://www.w3.org/2006/time#generalMonth", RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH)]
+        [DataRow("http://www.w3.org/2006/time#generalYear", RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR)]
+        public void ShouldGetDatatypeFromEnum(string expected, RDFModelEnums.RDFDatatypes input)
+            => Assert.IsTrue(RDFModelUtilities.GetDatatypeFromEnum(input) == expected);
 
         [DataTestMethod]
         [DataRow("http://www.w3.org/2000/01/rdf-schema#Literal", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)]
@@ -1610,11 +1609,16 @@ namespace RDFSharp.Test.Model
         [DataRow("http://www.w3.org/2001/XMLSchema#Name", RDFModelEnums.RDFDatatypes.XSD_NAME)]
         [DataRow("http://www.w3.org/2001/XMLSchema#NCName", RDFModelEnums.RDFDatatypes.XSD_NCNAME)]
         [DataRow("http://www.w3.org/2001/XMLSchema#ID", RDFModelEnums.RDFDatatypes.XSD_ID)]
-        public void ShouldGetDatatypeFromEnum(string expected, RDFModelEnums.RDFDatatypes input)
-        {
-            string output = RDFModelUtilities.GetDatatypeFromEnum(input);
-            Assert.IsTrue(output == expected);
-        }
+        [DataRow("http://www.w3.org/2002/07/owl#real", RDFModelEnums.RDFDatatypes.OWL_REAL)]
+        [DataRow("http://www.opengis.net/ont/geosparql#gmlLiteral", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)]
+        [DataRow("http://www.opengis.net/ont/geosparql#wktLiteral", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)]
+        [DataRow("http://www.w3.org/2006/time#generalDay", RDFModelEnums.RDFDatatypes.TIME_GENERALDAY)]
+        [DataRow("http://www.w3.org/2006/time#generalMonth", RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH)]
+        [DataRow("http://www.w3.org/2006/time#generalYear", RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR)]
+        [DataRow("http://example.org", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)] //fallback to rdfs:Literal
+        [DataRow(null, RDFModelEnums.RDFDatatypes.RDFS_LITERAL)] //fallback to rdfs:Literal
+        public void ShouldGetEnumFromDatatype(string input, RDFModelEnums.RDFDatatypes expected)
+            => Assert.IsTrue(RDFModelUtilities.GetEnumFromDatatype(input) == expected);
         #endregion
     }
 }

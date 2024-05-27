@@ -43,11 +43,16 @@ namespace RDFSharp.Test.Model
 		{
 			Assert.IsNotNull(RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.INTEGER.ToString()));
 			Assert.IsNotNull(RDFDatatypeRegister.GetDatatype(RDFModelEnums.RDFDatatypes.XSD_INTEGER));
-			Assert.IsNull(RDFDatatypeRegister.GetDatatype(null));
-			Assert.IsNull(RDFDatatypeRegister.GetDatatype("ex:dt"));
 		}
 
-		[TestMethod]
+        [TestMethod]
+        public void ShouldNotGetDatatype()
+        {
+            Assert.IsNull(RDFDatatypeRegister.GetDatatype(null));
+            Assert.IsNull(RDFDatatypeRegister.GetDatatype("ex:dt"));
+        }
+
+        [TestMethod]
 		public void ShouldAddDatatype()
 		{
 			RDFDatatypeRegister.AddDatatype(new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
