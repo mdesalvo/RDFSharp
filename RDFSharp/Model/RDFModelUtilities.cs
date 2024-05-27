@@ -307,15 +307,16 @@ namespace RDFSharp.Model
         }
         
 		/// <summary>
-		/// Loads the datatype definitions contained in the given graphs and sends them to the datatype register
+		/// Extracts the datatype definitions contained in the given graphs (both faceted and aliases)
 		/// </summary>
-		public static RDFGraph RegisterDatatypeDefinitions(this RDFGraph graph)
+		public static List<RDFDatatype> ExtractDatatypeDefinitions(this RDFGraph graph)
 		{
 			#region Guards
 			if (graph == null)
-				return graph;
-			#endregion
+				return new List<RDFDatatype>();
+            #endregion
 
+            List<RDFDatatype> datatypes = new List<RDFDatatype>();
 			foreach (RDFTriple datatypeTriple in graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE, null])
 			{
 				RDFResource datatypeIRI = (RDFResource)datatypeTriple.Subject;
@@ -325,7 +326,8 @@ namespace RDFSharp.Model
 					 && graph[datatypeIRI, RDFVocabulary.OWL.ON_DATATYPE, null, null].FirstOrDefault()?.Object is RDFResource onDatatype)
 				{
 					//Detect the target datatype (fallback to rdfs:Literal in case not found)
-					RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(onDatatype.ToString()) ?? RDFDatatypeRegister.RDFSLiteral;
+					RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(onDatatype.ToString()) 
+                                                  ?? RDFDatatypeRegister.RDFSLiteral;
 					RDFModelEnums.RDFDatatypes targetDatatypeEnum = targetDatatype.ToString().GetEnumFromDatatype();
 
 					//Detect the constraining facets
@@ -363,21 +365,23 @@ namespace RDFSharp.Model
 						}
 					}
 
-					//Finally send the datatype to the register
-					RDFDatatypeRegister.AddDatatype(new RDFDatatype(datatypeIRI.URI, targetDatatypeEnum, targetFacets));
+                    //Finally collect the datatype
+                    datatypes.Add(new RDFDatatype(datatypeIRI.URI, targetDatatypeEnum, targetFacets));
 				}
 
 				//Try detect an alias datatype
 				else if (graph[datatypeIRI, RDFVocabulary.OWL.EQUIVALENT_CLASS, null, null].FirstOrDefault()?.Object is RDFResource equivalentDatatype)
 				{
 					//Detect the target datatype (fallback to rdfs:Literal in case not found)
-					RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(equivalentDatatype.ToString()) ?? RDFDatatypeRegister.RDFSLiteral;
+					RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(equivalentDatatype.ToString()) 
+                                                  ?? RDFDatatypeRegister.RDFSLiteral;
 					RDFModelEnums.RDFDatatypes targetDatatypeEnum = targetDatatype.ToString().GetEnumFromDatatype();
 
-					RDFDatatypeRegister.AddDatatype(new RDFDatatype(datatypeIRI.URI, targetDatatypeEnum, null));
+                    //Finally collect the datatype
+                    datatypes.Add(new RDFDatatype(datatypeIRI.URI, targetDatatypeEnum, null));
 				}
 			}
-			return graph;
+			return datatypes;
 		}
 		#endregion
 
