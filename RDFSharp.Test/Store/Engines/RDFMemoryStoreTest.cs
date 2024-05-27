@@ -1617,6 +1617,28 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
+        public async Task ShouldImportFromDataTableAsyncWithEnabledDatatypeDiscovery()
+        {
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            store1.AddQuadruple(quadruple1)
+                  .AddQuadruple(quadruple2)
+                  .MergeGraph(new RDFGraph()
+                    .AddDatatype(new RDFDatatype(new Uri("ex:mydtQG"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                      new RDFPatternFacet("^ex$") ])));
+            DataTable table = store1.ToDataTable();
+            RDFMemoryStore store2 = await RDFMemoryStore.FromDataTableAsync(table, true);
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 9);
+            Assert.IsTrue(store2.Equals(store1));
+            //Test that automatic datatype discovery happened successfully
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtQG").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtQG").Facets.Single() is RDFPatternFacet fct && fct.Pattern == "^ex$");
+        }
+
+        [TestMethod]
         public async Task ShouldImportEmptyFromDataTableAsync()
         {
             RDFMemoryStore store1 = new RDFMemoryStore();
