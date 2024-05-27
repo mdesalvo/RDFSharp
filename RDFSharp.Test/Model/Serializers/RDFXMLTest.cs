@@ -329,6 +329,20 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithRegisteredCustomDatatypeSPLTTriple()
+        {
+            RDFDatatypeRegister.AddDatatype(new RDFDatatype(new Uri("http://test.dt/"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, null));
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:datatype=\"http://test.dt/\">25</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred"), new RDFTypedLiteral("25", new RDFDatatype(new Uri("http://test.dt/"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, null)))));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeGraphWithSPLTripleHavingDTDEntityAsLiteral()
         {
             MemoryStream stream = new MemoryStream();
