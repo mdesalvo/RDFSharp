@@ -27,14 +27,14 @@ namespace RDFSharp.Model
     {
         #region Properties
         /// <summary>
-        /// Maximum number of fraction digits required by the facet
+        /// Maximum number of fraction digits allowed by the facet
         /// </summary>
         public uint AllowedDigits { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Builds a facet requiring the given maximum number of fraction digits
+        /// Builds a facet allowing the given maximum number of fraction digits
         /// </summary>
         public RDFFractionDigitsFacet(uint allowedDigits)
           => AllowedDigits = allowedDigits;
