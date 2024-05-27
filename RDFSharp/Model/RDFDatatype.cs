@@ -39,6 +39,11 @@ namespace RDFSharp.Model
         /// Facets applied on the target datatype
         /// </summary>
         internal List<RDFFacet> Facets { get; set; }
+
+		/// <summary>
+		/// Indicates that the datatype is built-in into RDFModelEnums.RDFDatatypes
+		/// </summary>
+		internal bool IsBuiltIn { get; set; }
         #endregion
 
         #region Ctors

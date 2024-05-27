@@ -43,7 +43,9 @@ namespace RDFSharp.Test.Model
 		{
 			Assert.IsNotNull(RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.INTEGER.ToString()));
 			Assert.IsNotNull(RDFDatatypeRegister.GetDatatype(RDFModelEnums.RDFDatatypes.XSD_INTEGER));
-		}
+			//Test that these are built-in datatypes
+			Assert.IsTrue(RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.INTEGER.ToString()).IsBuiltIn);
+        }
 
         [TestMethod]
         public void ShouldNotGetDatatype()
@@ -63,7 +65,9 @@ namespace RDFSharp.Test.Model
 
 			Assert.IsTrue(RDFDatatypeRegister.DatatypesCount >= 51);
 			Assert.IsNotNull(RDFDatatypeRegister.GetDatatype("ex:length6"));
-		}
+            //Test that this isn't built-in datatype
+            Assert.IsFalse(RDFDatatypeRegister.GetDatatype("ex:length6").IsBuiltIn);
+        }
 		#endregion
 	}
 }
