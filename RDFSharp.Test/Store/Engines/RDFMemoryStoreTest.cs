@@ -1145,6 +1145,31 @@ namespace RDFSharp.Test.Store
         [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
         [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
         [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
+        public void ShouldImportFromFileWithEnabledDatatypeDiscovery(string fileExtension, RDFStoreEnums.RDFFormats format)
+        {
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            store1.AddQuadruple(quadruple1)
+                  .AddQuadruple(quadruple2)
+                  .MergeGraph(new RDFGraph()
+                    .AddDatatype(new RDFDatatype(new Uri($"ex:mydtPP{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                      new RDFPatternFacet("^ex$") ])));
+            store1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFile{fileExtension}WithEnabledDatatypeDiscovery"));
+            RDFMemoryStore store2 = RDFMemoryStore.FromFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFile{fileExtension}WithEnabledDatatypeDiscovery"), true);
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 9);
+            Assert.IsTrue(store2.Equals(store1));
+            //Test that automatic datatype discovery happened successfully
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtPP{(int)format}").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtPP{(int)format}").Facets.Single() is RDFPatternFacet fct && fct.Pattern == "^ex$");
+        }
+
+        [DataTestMethod]
+        [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
+        [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
+        [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
         public void ShouldImportEmptyFromFile(string fileExtension, RDFStoreEnums.RDFFormats format)
         {
             RDFMemoryStore store1 = new RDFMemoryStore();
@@ -1174,8 +1199,8 @@ namespace RDFSharp.Test.Store
             RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
             RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
             store1.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
-            store1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFile{fileExtension}"));
-            RDFMemoryStore store2 = await RDFMemoryStore.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFile{fileExtension}"));
+            store1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFileAsync{fileExtension}"));
+            RDFMemoryStore store2 = await RDFMemoryStore.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFileAsync{fileExtension}"));
 
             Assert.IsNotNull(store2);
             Assert.IsTrue(store2.QuadruplesCount == 2);
@@ -1186,11 +1211,36 @@ namespace RDFSharp.Test.Store
         [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
         [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
         [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
+        public async Task ShouldImportFromFileAsyncWithEnabledDatatypeDiscovery(string fileExtension, RDFStoreEnums.RDFFormats format)
+        {
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            store1.AddQuadruple(quadruple1)
+                  .AddQuadruple(quadruple2)
+                  .MergeGraph(new RDFGraph()
+                    .AddDatatype(new RDFDatatype(new Uri($"ex:mydtP{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                      new RDFPatternFacet("^ex$") ])));
+            store1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFileAsync{fileExtension}WithEnabledDatatypeDiscovery"));
+            RDFMemoryStore store2 = await RDFMemoryStore.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFileAsync{fileExtension}WithEnabledDatatypeDiscovery"), true);
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 9);
+            Assert.IsTrue(store2.Equals(store1));
+            //Test that automatic datatype discovery happened successfully
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtP{(int)format}").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtP{(int)format}").Facets.Single() is RDFPatternFacet fct && fct.Pattern == "^ex$");
+        }
+
+        [DataTestMethod]
+        [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
+        [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
+        [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
         public async Task ShouldImportEmptyFromFileAsync(string fileExtension, RDFStoreEnums.RDFFormats format)
         {
             RDFMemoryStore store1 = new RDFMemoryStore();
-            store1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportEmptyFromFile{fileExtension}"));
-            RDFMemoryStore store2 = await RDFMemoryStore.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportEmptyFromFile{fileExtension}"));
+            store1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportEmptyFromFileAsync{fileExtension}"));
+            RDFMemoryStore store2 = await RDFMemoryStore.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportEmptyFromFileAsync{fileExtension}"));
 
             Assert.IsNotNull(store2);
             Assert.IsTrue(store2.QuadruplesCount == 0);
@@ -1222,6 +1272,32 @@ namespace RDFSharp.Test.Store
             Assert.IsNotNull(store2);
             Assert.IsTrue(store2.QuadruplesCount == 2);
             Assert.IsTrue(store2.Equals(store1));
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
+        [DataRow(RDFStoreEnums.RDFFormats.TriX)]
+        [DataRow(RDFStoreEnums.RDFFormats.TriG)]
+        public void ShouldImportFromStreamWithEnabledDatatypeDiscovery(RDFStoreEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            store1.AddQuadruple(quadruple1)
+                  .AddQuadruple(quadruple2)
+                  .MergeGraph(new RDFGraph()
+                    .AddDatatype(new RDFDatatype(new Uri($"ex:mydtQQ{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                      new RDFPatternFacet("^ex$") ])));
+            store1.ToStream(format, stream);
+            RDFMemoryStore store2 = RDFMemoryStore.FromStream(format, new MemoryStream(stream.ToArray()), true);
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 9);
+            Assert.IsTrue(store2.Equals(store1));
+            //Test that automatic datatype discovery happened successfully
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtQQ{(int)format}").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtQQ{(int)format}").Facets.Single() is RDFPatternFacet fct && fct.Pattern == "^ex$");
         }
 
         [DataTestMethod]
@@ -1266,6 +1342,32 @@ namespace RDFSharp.Test.Store
         [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
         [DataRow(RDFStoreEnums.RDFFormats.TriX)]
         [DataRow(RDFStoreEnums.RDFFormats.TriG)]
+        public async Task ShouldImportFromStreamAsyncWithEnabledDatatypeDiscovery(RDFStoreEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            store1.AddQuadruple(quadruple1)
+                  .AddQuadruple(quadruple2)
+                  .MergeGraph(new RDFGraph()
+                    .AddDatatype(new RDFDatatype(new Uri($"ex:mydtQ{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                      new RDFPatternFacet("^ex$") ])));
+            store1.ToStream(format, stream);
+            RDFMemoryStore store2 = await RDFMemoryStore.FromStreamAsync(format, new MemoryStream(stream.ToArray()), true);
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 9);
+            Assert.IsTrue(store2.Equals(store1));
+            //Test that automatic datatype discovery happened successfully
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtQ{(int)format}").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtQ{(int)format}").Facets.Single() is RDFPatternFacet fct && fct.Pattern == "^ex$");
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
+        [DataRow(RDFStoreEnums.RDFFormats.TriX)]
+        [DataRow(RDFStoreEnums.RDFFormats.TriG)]
         public async Task ShouldImportFromEmptyStreamAsync(RDFStoreEnums.RDFFormats format)
         {
             MemoryStream stream = new MemoryStream();
@@ -1294,6 +1396,28 @@ namespace RDFSharp.Test.Store
             Assert.IsNotNull(store2);
             Assert.IsTrue(store2.QuadruplesCount == 2);
             Assert.IsTrue(store2.Equals(store1));
+        }
+
+        [TestMethod]
+        public void ShouldImportFromDataTableWithEnabledDatatypeDiscovery()
+        {
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            store1.AddQuadruple(quadruple1)
+                  .AddQuadruple(quadruple2)
+                  .MergeGraph(new RDFGraph()
+                    .AddDatatype(new RDFDatatype(new Uri("ex:mydtQ"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                      new RDFPatternFacet("^ex$") ])));
+            DataTable table = store1.ToDataTable();
+            RDFMemoryStore store2 = RDFMemoryStore.FromDataTable(table, true);
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 9);
+            Assert.IsTrue(store2.Equals(store1));
+            //Test that automatic datatype discovery happened successfully
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtQ").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtQ").Facets.Single() is RDFPatternFacet fct && fct.Pattern == "^ex$");
         }
 
         [TestMethod]

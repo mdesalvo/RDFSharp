@@ -689,7 +689,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Reads a memory store from a file of the given RDF format.
         /// </summary>
-        public static RDFMemoryStore FromFile(RDFStoreEnums.RDFFormats rdfFormat, string filepath)
+        public static RDFMemoryStore FromFile(RDFStoreEnums.RDFFormats rdfFormat, string filepath, bool enableDatatypeDiscovery=false)
         {
             #region Guards
             if (string.IsNullOrWhiteSpace(filepath))
@@ -711,19 +711,29 @@ namespace RDFSharp.Store
                     memStore =  RDFTriG.Deserialize(filepath);
 					break;
             }
+
+            #region Datatype Discovery
+            if (enableDatatypeDiscovery)
+            {
+                foreach (RDFGraph graph in memStore.ExtractGraphs())
+                    foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
+                        RDFDatatypeRegister.AddDatatype(datatypeDefinition);
+            }
+            #endregion
+
             return memStore;
         }
 
         /// <summary>
         /// Asynchronously reads a memory store from a file of the given RDF format.
         /// </summary>
-        public static Task<RDFMemoryStore> FromFileAsync(RDFStoreEnums.RDFFormats rdfFormat, string filepath)
-            => Task.Run(() => FromFile(rdfFormat, filepath));
+        public static Task<RDFMemoryStore> FromFileAsync(RDFStoreEnums.RDFFormats rdfFormat, string filepath, bool enableDatatypeDiscovery=false)
+            => Task.Run(() => FromFile(rdfFormat, filepath, enableDatatypeDiscovery));
 
         /// <summary>
         /// Reads a memory store from a stream of the given RDF format.
         /// </summary>
-        public static RDFMemoryStore FromStream(RDFStoreEnums.RDFFormats rdfFormat, Stream inputStream)
+        public static RDFMemoryStore FromStream(RDFStoreEnums.RDFFormats rdfFormat, Stream inputStream, bool enableDatatypeDiscovery=false)
         {
             #region Guards
             if (inputStream == null)
@@ -743,19 +753,29 @@ namespace RDFSharp.Store
                     memStore =  RDFTriG.Deserialize(inputStream);
 					break;
             }
+
+            #region Datatype Discovery
+            if (enableDatatypeDiscovery)
+            {
+                foreach (RDFGraph graph in memStore.ExtractGraphs())
+                    foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
+                        RDFDatatypeRegister.AddDatatype(datatypeDefinition);
+            }
+            #endregion
+
             return memStore;
         }
 
         /// <summary>
         /// Asynchronously reads a memory store from a stream of the given RDF format.
         /// </summary>
-        public static Task<RDFMemoryStore> FromStreamAsync(RDFStoreEnums.RDFFormats rdfFormat, Stream inputStream)
-            => Task.Run(() => FromStream(rdfFormat, inputStream));
+        public static Task<RDFMemoryStore> FromStreamAsync(RDFStoreEnums.RDFFormats rdfFormat, Stream inputStream, bool enableDatatypeDiscovery=false)
+            => Task.Run(() => FromStream(rdfFormat, inputStream, enableDatatypeDiscovery));
 
         /// <summary>
         /// Reads a memory store from a datatable with "Context-Subject-Predicate-Object" columns.
         /// </summary>
-        public static RDFMemoryStore FromDataTable(DataTable table)
+        public static RDFMemoryStore FromDataTable(DataTable table, bool enableDatatypeDiscovery=false)
         {
             #region Guards
             if (table == null)
@@ -767,6 +787,8 @@ namespace RDFSharp.Store
             #endregion
 
             RDFMemoryStore memStore = new RDFMemoryStore();
+
+            #region Parse Table
             foreach (DataRow tableRow in table.Rows)
             {
                 #region CONTEXT
@@ -811,19 +833,30 @@ namespace RDFSharp.Store
                     memStore.AddQuadruple(new RDFQuadruple(new RDFContext(rowCtx.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, (RDFLiteral)rowObj));
                 #endregion
             }
+            #endregion
+
+            #region Datatype Discovery
+            if (enableDatatypeDiscovery)
+            {
+                foreach (RDFGraph graph in memStore.ExtractGraphs())
+                    foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
+                        RDFDatatypeRegister.AddDatatype(datatypeDefinition);
+            }
+            #endregion
+
             return memStore;
         }
 
         /// <summary>
         /// Asynchronously reads a memory store from a datatable with "Context-Subject-Predicate-Object" columns.
         /// </summary>
-        public static Task<RDFMemoryStore> FromDataTableAsync(DataTable table)
-            => Task.Run(() => FromDataTable(table));
+        public static Task<RDFMemoryStore> FromDataTableAsync(DataTable table, bool enableDatatypeDiscovery=false)
+            => Task.Run(() => FromDataTable(table, enableDatatypeDiscovery));
 
         /// <summary>
         /// Reads a memory store by trying to dereference the given Uri
         /// </summary>
-        public static RDFMemoryStore FromUri(Uri uri, int timeoutMilliseconds = 20000)
+        public static RDFMemoryStore FromUri(Uri uri, int timeoutMilliseconds=20000, bool enableDatatypeDiscovery=false)
         {
             #region Guards
             if (uri == null)
@@ -880,14 +913,23 @@ namespace RDFSharp.Store
                 throw new RDFStoreException("Cannot read RDF memory store from Uri because: " + ex.Message);
             }
 
+            #region Datatype Discovery
+            if (enableDatatypeDiscovery)
+            {
+                foreach (RDFGraph graph in memStore.ExtractGraphs())
+                    foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
+                        RDFDatatypeRegister.AddDatatype(datatypeDefinition);
+            }
+            #endregion
+
             return memStore;
         }
 
         /// <summary>
         /// Asynchronously reads a memory store by trying to dereference the given Uri
         /// </summary>
-        public static Task<RDFMemoryStore> FromUriAsync(Uri uri, int timeoutMilliseconds = 20000)
-            => Task.Run(() => FromUri(uri, timeoutMilliseconds));
+        public static Task<RDFMemoryStore> FromUriAsync(Uri uri, int timeoutMilliseconds=20000, bool enableDatatypeDiscovery=false)
+            => Task.Run(() => FromUri(uri, timeoutMilliseconds, enableDatatypeDiscovery));
         #endregion
 
         #endregion

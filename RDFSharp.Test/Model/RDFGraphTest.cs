@@ -1584,8 +1584,8 @@ namespace RDFSharp.Test.Model
                   .AddTriple(triple2)
                   .AddDatatype(new RDFDatatype(new Uri($"ex:mydt{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
                       new RDFPatternFacet("^ex$") ]));
-            graph1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFile{fileExtension}"));
-            RDFGraph graph2 = RDFGraph.FromFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFile{fileExtension}"), true);
+            graph1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFile{fileExtension}WithEnabledDatatypeDiscovery"));
+            RDFGraph graph2 = RDFGraph.FromFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFile{fileExtension}WithEnabledDatatypeDiscovery"), true);
 
             Assert.IsNotNull(graph2);
             Assert.IsTrue(graph2.TriplesCount == 9);

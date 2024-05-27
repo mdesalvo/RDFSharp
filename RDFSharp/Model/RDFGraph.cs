@@ -671,7 +671,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Reads a graph from a stream of the given RDF format.
         /// </summary>
-        public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, bool enableDatatypeDiscovery=false) => FromStream(rdfFormat, inputStream, null, enableDatatypeDiscovery);
+        public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, bool enableDatatypeDiscovery=false) 
+            => FromStream(rdfFormat, inputStream, null, enableDatatypeDiscovery);
         internal static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, Uri graphContext, bool enableDatatypeDiscovery=false)
         {
             #region Guards
