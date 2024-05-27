@@ -1924,7 +1924,6 @@ namespace RDFSharp.Test.Model
 		[TestMethod]
 		public void ShouldExtractDatatypeDefinitionsFromGraph()
 		{
-            RDFDatatype exFractionDigits6 = new RDFDatatype(new Uri("ex:fractiondigits6"), RDFModelEnums.RDFDatatypes.XSD_DOUBLE, [new RDFFractionDigitsFacet(6)]);
             RDFDatatype exLength6 = new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [	new RDFLengthFacet(6) ]);
 			RDFDatatype exMinLength6 = new RDFDatatype(new Uri("ex:minlength6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [ new RDFMinLengthFacet(6) ]);
 			RDFDatatype exMaxLength6 = new RDFDatatype(new Uri("ex:maxlength6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [ new RDFMaxLengthFacet(6) ]);
@@ -1935,7 +1934,6 @@ namespace RDFSharp.Test.Model
             RDFDatatype exPatternEx = new RDFDatatype(new Uri("ex:patternex"), RDFModelEnums.RDFDatatypes.XSD_STRING, [	new RDFPatternFacet("^ex") ]);
 			RDFDatatype exInteger = new RDFDatatype(new Uri("ex:integer"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, null);
             RDFGraph graph = new RDFGraph()
-              .AddDatatype(exFractionDigits6)
               .AddDatatype(exLength6)
               .AddDatatype(exMinLength6)
               .AddDatatype(exMaxLength6)
@@ -1947,10 +1945,6 @@ namespace RDFSharp.Test.Model
               .AddDatatype(exInteger);
             List<RDFDatatype> datatypes = graph.ExtractDatatypeDefinitions();
 
-            Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:fractiondigits6")
-                                               && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE
-                                               && dt.Facets.Single() is RDFFractionDigitsFacet fractiondigitsFacet
-                                               && fractiondigitsFacet.AllowedDigits == 6));
             Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:length6")
                                                && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
 							                   && dt.Facets.Single() is RDFLengthFacet lengthFacet 

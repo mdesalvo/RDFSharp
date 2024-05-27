@@ -284,11 +284,6 @@ namespace RDFSharp.Model
             /// xsd:minInclusive
             /// </summary>
             public static readonly RDFResource MIN_INCLUSIVE = new RDFResource(string.Concat(XSD.BASE_URI, "minInclusive"));
-
-            /// <summary>
-            /// xsd:fractionDigits
-            /// </summary>
-            public static readonly RDFResource FRACTION_DIGITS = new RDFResource(string.Concat(XSD.BASE_URI, "fractionDigits"));
             #endregion
         }
         #endregion
