@@ -631,7 +631,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Reads a graph from a file of the given RDF format.
         /// </summary>
-        public static RDFGraph FromFile(RDFModelEnums.RDFFormats rdfFormat, string filepath)
+        public static RDFGraph FromFile(RDFModelEnums.RDFFormats rdfFormat, string filepath, bool enableDatatypeDiscovery=false)
         {
             #region Guards
             if (string.IsNullOrEmpty(filepath))
@@ -656,14 +656,23 @@ namespace RDFSharp.Model
                     graph =  RDFTriX.Deserialize(filepath);
 					break;
             }
-			return graph;
+
+            #region Datatype Discovery
+            if (enableDatatypeDiscovery)
+            { 
+                foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
+                    RDFDatatypeRegister.AddDatatype(datatypeDefinition);
+            }
+            #endregion
+
+            return graph;
         }
 
         /// <summary>
         /// Reads a graph from a stream of the given RDF format.
         /// </summary>
-        public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream) => FromStream(rdfFormat, inputStream, null);
-        internal static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, Uri graphContext)
+        public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, bool enableDatatypeDiscovery=false) => FromStream(rdfFormat, inputStream, null, enableDatatypeDiscovery);
+        internal static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, Uri graphContext, bool enableDatatypeDiscovery=false)
         {
             #region Guards
             if (inputStream == null)
@@ -686,13 +695,22 @@ namespace RDFSharp.Model
                     graph =  RDFTriX.Deserialize(inputStream, graphContext);
 					break;
             }
-			return graph;
+
+            #region Datatype Discovery
+            if (enableDatatypeDiscovery)
+            {
+                foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
+                    RDFDatatypeRegister.AddDatatype(datatypeDefinition);
+            }
+            #endregion
+
+            return graph;
         }
 
         /// <summary>
         /// Reads a graph from a datatable with "Subject-Predicate-Object" columns.
         /// </summary>
-        public static RDFGraph FromDataTable(DataTable table)
+        public static RDFGraph FromDataTable(DataTable table, bool enableDatatypeDiscovery=false)
         {
             #region Guards
             if (table == null)
@@ -704,6 +722,8 @@ namespace RDFSharp.Model
             #endregion
 
             RDFGraph graph = new RDFGraph();
+
+            #region Parse Table
 
             #region CONTEXT
             //Parse the name of the datatable for Uri, in order to assign the graph name
@@ -745,7 +765,17 @@ namespace RDFSharp.Model
                     graph.AddTriple(new RDFTriple((RDFResource)rowSubj, (RDFResource)rowPred, (RDFLiteral)rowObj));
                 #endregion
             }
-			#endregion
+            #endregion
+
+            #endregion
+
+            #region Datatype Discovery
+            if (enableDatatypeDiscovery)
+            {
+                foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
+                    RDFDatatypeRegister.AddDatatype(datatypeDefinition);
+            }
+            #endregion
 
             return graph;
         }
@@ -753,7 +783,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Reads a graph by trying to dereference the given Uri
         /// </summary>
-        public static RDFGraph FromUri(Uri uri, int timeoutMilliseconds = 20000)
+        public static RDFGraph FromUri(Uri uri, int timeoutMilliseconds=20000, bool enableDatatypeDiscovery=false)
         {
             #region Guards
             if (uri == null)
@@ -818,6 +848,14 @@ namespace RDFSharp.Model
             {
                 throw new RDFModelException($"Cannot read RDF graph from Uri {uri} because: " + ex.Message);
             }
+
+            #region Datatype Discovery
+            if (enableDatatypeDiscovery)
+            {
+                foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
+                    RDFDatatypeRegister.AddDatatype(datatypeDefinition);
+            }
+            #endregion
 
             return graph;
         }

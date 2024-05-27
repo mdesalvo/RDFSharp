@@ -1548,7 +1548,8 @@ namespace RDFSharp.Test.Model
             RDFGraph graph1 = new RDFGraph();
             RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
             RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-            graph1.AddTriple(triple1).AddTriple(triple2);
+            graph1.AddTriple(triple1)
+                  .AddTriple(triple2);
             graph1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFile{fileExtension}"));
             RDFGraph graph2 = RDFGraph.FromFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFile{fileExtension}"));
 
@@ -1567,6 +1568,43 @@ namespace RDFSharp.Test.Model
             { 
                 Assert.IsTrue(graph2.Equals(graph1));
             }
+        }
+
+        [DataTestMethod]
+        [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(".ttl", RDFModelEnums.RDFFormats.Turtle)]
+        public void ShouldImportFromFileWithEnabledDatatypeDiscovery(string fileExtension, RDFModelEnums.RDFFormats format)
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            graph1.AddTriple(triple1)
+                  .AddTriple(triple2)
+                  .AddDatatype(new RDFDatatype(new Uri($"ex:mydt{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                      new RDFPatternFacet("^ex$") ]));
+            graph1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFile{fileExtension}"));
+            RDFGraph graph2 = RDFGraph.FromFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFile{fileExtension}"), true);
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 9);
+            //RDF/XML uses xsd:qname for encoding predicates. In this test we demonstrate that
+            //triples with a predicate ending with "/" will loose this character once abbreviated:
+            //this is correct (being a glitch of RDF/XML specs) so at the end the graphs will differ
+            if (format == RDFModelEnums.RDFFormats.RdfXml)
+            {
+                Assert.IsFalse(graph2.Equals(graph1));
+                Assert.IsTrue(graph2.SelectTriplesByPredicate(new RDFResource("http://ex/pred/")).TriplesCount == 0);
+                Assert.IsTrue(graph2.SelectTriplesByPredicate(new RDFResource("http://ex/pred")).TriplesCount == 2);
+            }
+            else
+            {
+                Assert.IsTrue(graph2.Equals(graph1));
+            }
+            //Test that automatic datatype discovery happened successfully
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydt{(int)format}").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydt{(int)format}").Facets.Single() is RDFPatternFacet fct && fct.Pattern == "^ex$");
         }
 
         [DataTestMethod]
@@ -1630,6 +1668,44 @@ namespace RDFSharp.Test.Model
         [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
         [DataRow(RDFModelEnums.RDFFormats.TriX)]
         [DataRow(RDFModelEnums.RDFFormats.Turtle)]
+        public void ShouldImportFromStreamWithEnabledDatatypeDiscovery(RDFModelEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            graph1.AddTriple(triple1)
+                  .AddTriple(triple2)
+                  .AddDatatype(new RDFDatatype(new Uri($"ex:mydtT{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                      new RDFPatternFacet("^ex$") ]));
+            graph1.ToStream(format, stream);
+            RDFGraph graph2 = RDFGraph.FromStream(format, new MemoryStream(stream.ToArray()), true);
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 9);
+            //RDF/XML uses xsd:qname for encoding predicates. In this test we demonstrate that
+            //triples with a predicate ending with "/" will loose this character once abbreviated:
+            //this is correct (being a glitch of RDF/XML specs) so at the end the graphs will differ
+            if (format == RDFModelEnums.RDFFormats.RdfXml)
+            {
+                Assert.IsFalse(graph2.Equals(graph1));
+                Assert.IsTrue(graph2.SelectTriplesByPredicate(new RDFResource("http://ex/pred/")).TriplesCount == 0);
+                Assert.IsTrue(graph2.SelectTriplesByPredicate(new RDFResource("http://ex/pred")).TriplesCount == 2);
+            }
+            else
+            {
+                Assert.IsTrue(graph2.Equals(graph1));
+            }
+            //Test that automatic datatype discovery happened successfully
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtT{(int)format}").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtT{(int)format}").Facets.Single() is RDFPatternFacet fct && fct.Pattern == "^ex$");
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(RDFModelEnums.RDFFormats.Turtle)]
         public void ShouldImportFromEmptyStream(RDFModelEnums.RDFFormats format)
         {
             MemoryStream stream = new MemoryStream();
@@ -1658,6 +1734,27 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(graph2);
             Assert.IsTrue(graph2.TriplesCount == 2);
             Assert.IsTrue(graph2.Equals(graph1));
+        }
+
+        [TestMethod]
+        public void ShouldImportFromDataTableWithEnabledDatatypeDiscovery()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph1.AddTriple(triple1)
+                  .AddTriple(triple2)
+                  .AddDatatype(new RDFDatatype(new Uri("ex:mydtZ"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                      new RDFPatternFacet("^ex$") ]));
+            DataTable table = graph1.ToDataTable();
+            RDFGraph graph2 = RDFGraph.FromDataTable(table, true);
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 9);
+            Assert.IsTrue(graph2.Equals(graph1));
+            //Test that automatic datatype discovery happened successfully
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtZ").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtZ").Facets.Single() is RDFPatternFacet fct && fct.Pattern == "^ex$");
         }
 
         [TestMethod]
