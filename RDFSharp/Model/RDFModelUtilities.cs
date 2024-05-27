@@ -335,8 +335,15 @@ namespace RDFSharp.Model
 					RDFCollection facetsCollection = DeserializeCollectionFromGraph(graph, facetsRepresentative, RDFModelEnums.RDFTripleFlavors.SPO);
 					foreach (RDFResource facet in facetsCollection.Items.Cast<RDFResource>())
 					{
-						//xsd:length
-						if (graph[facet, RDFVocabulary.XSD.LENGTH, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetLength
+                        //xsd:fractionDigits
+                        if (graph[facet, RDFVocabulary.XSD.FRACTION_DIGITS, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetFractionDigits
+                             && facetFractionDigits.HasDecimalDatatype() && uint.TryParse(facetFractionDigits.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetFractionDigitsValue))
+                        {
+                            targetFacets.Add(new RDFFractionDigitsFacet(facetFractionDigitsValue));
+                            continue;
+                        }
+                        //xsd:length
+                        if (graph[facet, RDFVocabulary.XSD.LENGTH, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetLength
 							 && facetLength.HasDecimalDatatype() && uint.TryParse(facetLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetLengthValue))
 						{
 							targetFacets.Add(new RDFLengthFacet(facetLengthValue));
