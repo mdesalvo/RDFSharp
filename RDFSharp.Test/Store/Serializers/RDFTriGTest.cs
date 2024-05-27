@@ -342,6 +342,19 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
+        public void ShouldDeserializeDefaultGraphWithCustomDatatypeSPLTTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> <http://pred/> \"25\"^^<http://www.w3.org/2001/XMLSchema#testdt>.");
+            RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeNamedGraphWithMultipleSPOTriples()
         {
             MemoryStream stream = new MemoryStream();

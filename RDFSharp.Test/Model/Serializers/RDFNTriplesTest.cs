@@ -639,6 +639,19 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithCustomDatatypeSPLTTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"25\"^^<http://www.w3.org/2001/XMLSchema#testdt> .{Environment.NewLine}");
+            RDFGraph graph = RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeGraphWithBPLTriple()
         {
             MemoryStream stream = new MemoryStream();
