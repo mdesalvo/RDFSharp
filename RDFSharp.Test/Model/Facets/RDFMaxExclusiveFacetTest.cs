@@ -21,49 +21,49 @@ using System.Linq;
 namespace RDFSharp.Test.Model
 {
     [TestClass]
-    public class RDFMaxInclusiveFacetTest
+    public class RDFMaxExclusiveFacetTest
     {
         #region Tests
         [TestMethod]
         
-        public void ShouldCreateMaxInclusiveFacet()
+        public void ShouldCreateMaxExclusiveFacet()
         {
-            RDFMaxInclusiveFacet facet = new RDFMaxInclusiveFacet(6.145);
+            RDFMaxExclusiveFacet facet = new RDFMaxExclusiveFacet(6.145);
 
             Assert.IsNotNull(facet);
-            Assert.IsTrue(facet.InclusiveUpperBound == 6.145d);
+            Assert.IsTrue(facet.ExclusiveUpperBound == 6.145d);
             Assert.IsTrue(facet.URI.IsBlank);
         }
 
 		[TestMethod]
         
-        public void ShouldValidateMaxInclusiveFacet()
+        public void ShouldValidateMaxExclusiveFacet()
         {
-            RDFMaxInclusiveFacet facet = new RDFMaxInclusiveFacet(6);
+            RDFMaxExclusiveFacet facet = new RDFMaxExclusiveFacet(6);
 
             Assert.IsTrue(facet.Validate("-2.0089"));
             Assert.IsTrue(facet.Validate("2.047"));
-            Assert.IsTrue(facet.Validate("6"));
             Assert.IsFalse(facet.Validate(null));
 			Assert.IsFalse(facet.Validate(string.Empty));
 			Assert.IsFalse(facet.Validate("14.5773"));
-			Assert.IsFalse(facet.Validate("abcdefgh"));
+            Assert.IsFalse(facet.Validate("6"));
+            Assert.IsFalse(facet.Validate("abcdefgh"));
 
-			RDFMaxInclusiveFacet facet0 = new RDFMaxInclusiveFacet(-12.45);
+			RDFMaxExclusiveFacet facet0 = new RDFMaxExclusiveFacet(-12.45);
 			Assert.IsTrue(facet0.Validate("-16.2442"));
 			Assert.IsFalse(facet0.Validate("-12.00"));
         }
 
 		[TestMethod]
         
-        public void ShouldConvertMaxInclusiveFacetToGraph()
+        public void ShouldConvertMaxExclusiveFacetToGraph()
         {
-            RDFMaxInclusiveFacet facet = new RDFMaxInclusiveFacet(6);
+            RDFMaxExclusiveFacet facet = new RDFMaxExclusiveFacet(6);
 			RDFGraph graph = facet.ToRDFGraph();
 
 			Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
-			Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.MAX_INCLUSIVE));
+			Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.MAX_EXCLUSIVE));
 			Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("6", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.DOUBLE.ToString()))));
         }
 		#endregion
