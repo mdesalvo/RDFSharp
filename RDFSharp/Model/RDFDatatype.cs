@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         public Uri URI { get; internal set; }
 
         /// <summary>
-        /// Indicates that the datatype is one of RDFModelEnums.RDFDatatypes
+        /// Indicates that the datatype is supported by RDFModelEnums.RDFDatatypes
         /// </summary>
         public bool IsBuiltIn { get; internal set; }
 
