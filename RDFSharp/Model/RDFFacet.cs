@@ -32,7 +32,7 @@ namespace RDFSharp.Model
 		/// <summary>
 		/// Builds a facet by initializing its blank URI
 		/// </summary>
-		public RDFFacet() 
+		internal RDFFacet() 
 			=> URI = new RDFResource();
 		#endregion
 
@@ -40,14 +40,12 @@ namespace RDFSharp.Model
 		/// <summary>
 		/// Validates the given literal against the facet
 		/// </summary>
-		public virtual bool Validate(string literalValue) 
-			=> false;
+		public abstract bool Validate(string literalValue);
 
 		/// <summary>
 		/// Gives a graph representation of the facet
 		/// </summary>
-		public virtual RDFGraph ToRDFGraph() 
-			=> null;
+		public abstract RDFGraph ToRDFGraph();
 		#endregion
 	}
 }
