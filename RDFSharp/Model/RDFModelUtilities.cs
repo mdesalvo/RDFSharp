@@ -342,18 +342,18 @@ namespace RDFSharp.Model
 							targetFacets.Add(new RDFLengthFacet(facetLengthValue));
 							continue;
 						}
-                        //xsd:maxInclusive
-                        if (graph[facet, RDFVocabulary.XSD.MAX_INCLUSIVE, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxInclusive
-                             && facetMaxInclusive.HasDecimalDatatype() && double.TryParse(facetMaxInclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMaxInclusiveValue))
-                        {
-                            targetFacets.Add(new RDFMaxInclusiveFacet(facetMaxInclusiveValue));
-                            continue;
-                        }
                         //xsd:maxExclusive
                         if (graph[facet, RDFVocabulary.XSD.MAX_EXCLUSIVE, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxExclusive
                              && facetMaxExclusive.HasDecimalDatatype() && double.TryParse(facetMaxExclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMaxExclusiveValue))
                         {
                             targetFacets.Add(new RDFMaxExclusiveFacet(facetMaxExclusiveValue));
+                            continue;
+                        }
+                        //xsd:maxInclusive
+                        if (graph[facet, RDFVocabulary.XSD.MAX_INCLUSIVE, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxInclusive
+                             && facetMaxInclusive.HasDecimalDatatype() && double.TryParse(facetMaxInclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMaxInclusiveValue))
+                        {
+                            targetFacets.Add(new RDFMaxInclusiveFacet(facetMaxInclusiveValue));
                             continue;
                         }
                         //xsd:maxLength
@@ -363,8 +363,15 @@ namespace RDFSharp.Model
 							targetFacets.Add(new RDFMaxLengthFacet(facetMaxLengthValue));
 							continue;
 						}
-						//xsd:minLength
-						if (graph[facet, RDFVocabulary.XSD.MIN_LENGTH, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMinLength
+                        //xsd:minExclusive
+                        if (graph[facet, RDFVocabulary.XSD.MIN_EXCLUSIVE, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMinExclusive
+                             && facetMinExclusive.HasDecimalDatatype() && double.TryParse(facetMinExclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMinExclusiveValue))
+                        {
+                            targetFacets.Add(new RDFMinExclusiveFacet(facetMinExclusiveValue));
+                            continue;
+                        }
+                        //xsd:minLength
+                        if (graph[facet, RDFVocabulary.XSD.MIN_LENGTH, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMinLength
 							 && facetMinLength.HasDecimalDatatype() && uint.TryParse(facetMinLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMinLengthValue))
 						{
 							targetFacets.Add(new RDFMinLengthFacet(facetMinLengthValue));

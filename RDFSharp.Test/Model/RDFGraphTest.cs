@@ -1832,6 +1832,7 @@ namespace RDFSharp.Test.Model
 			RDFDatatype exMaxLength6 = new RDFDatatype(new Uri("ex:maxlength6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [ new RDFMaxLengthFacet(6) ]);
             RDFDatatype exMaxInclusive6 = new RDFDatatype(new Uri("ex:maxinclusive6"), RDFModelEnums.RDFDatatypes.XSD_DOUBLE, [new RDFMaxInclusiveFacet(6)]);
             RDFDatatype exMaxExclusive6 = new RDFDatatype(new Uri("ex:maxexclusive6"), RDFModelEnums.RDFDatatypes.XSD_DOUBLE, [new RDFMaxExclusiveFacet(6)]);
+            RDFDatatype exMinExclusive6 = new RDFDatatype(new Uri("ex:minexclusive6"), RDFModelEnums.RDFDatatypes.XSD_DOUBLE, [new RDFMinExclusiveFacet(6)]);
             RDFDatatype exPatternEx = new RDFDatatype(new Uri("ex:patternex"), RDFModelEnums.RDFDatatypes.XSD_STRING, [	new RDFPatternFacet("^ex") ]);
 			RDFDatatype exInteger = new RDFDatatype(new Uri("ex:integer"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, null);
             RDFGraph graph = new RDFGraph()
@@ -1840,6 +1841,7 @@ namespace RDFSharp.Test.Model
               .AddDatatype(exMaxLength6)
               .AddDatatype(exMaxInclusive6)
               .AddDatatype(exMaxExclusive6)
+              .AddDatatype(exMinExclusive6)
               .AddDatatype(exPatternEx)
               .AddDatatype(exInteger);
             List<RDFDatatype> datatypes = graph.ExtractDatatypeDefinitions();
@@ -1864,6 +1866,10 @@ namespace RDFSharp.Test.Model
                                              && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE
                                              && dt.Facets.Single() is RDFMaxExclusiveFacet maxexclusiveFacet
                                              && maxexclusiveFacet.ExclusiveUpperBound == 6));
+            Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:minexclusive6")
+                                             && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE
+                                             && dt.Facets.Single() is RDFMinExclusiveFacet minexclusiveFacet
+                                             && minexclusiveFacet.ExclusiveLowerBound == 6));
             Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:patternex")
                                                && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
                                                && dt.Facets.Single() is RDFPatternFacet patternFacet

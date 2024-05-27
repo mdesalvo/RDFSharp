@@ -21,40 +21,40 @@ using System.Globalization;
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFMaxInclusiveFacet represents a constraint requiring the values of a literal to have a maximum numeric upper bound (included)
+    /// RDFMinExclusiveFacet represents a constraint requiring the values of a literal to have a minimum numeric lower bound (excluded)
     /// </summary>
-    public class RDFMaxInclusiveFacet : RDFFacet
+    public class RDFMinExclusiveFacet : RDFFacet
     {
         #region Properties
         /// <summary>
-        /// Maximum numeric upper bound (included) required by the facet
+        /// Minimum numeric lower bound (excluded) required by the facet
         /// </summary>
-        public double InclusiveUpperBound { get; internal set; }
+        public double ExclusiveLowerBound { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Builds a facet requiring the given inclusive upper bound
+        /// Builds a facet requiring the given exclusive lower bound
         /// </summary>
-        public RDFMaxInclusiveFacet(double inclusiveUpperBound)
-          => InclusiveUpperBound = inclusiveUpperBound;
+        public RDFMinExclusiveFacet(double exclusiveLowerBound)
+          => ExclusiveLowerBound = exclusiveLowerBound;
         #endregion
 
         #region Methods
         /// <summary>
-        /// Gives a graph representation of the MaxInclusive facet
+        /// Gives a graph representation of the MinExclusive facet
         /// </summary>
         public override RDFGraph ToRDFGraph()
           => new RDFGraph(new List<RDFTriple>() {
-              new RDFTriple(URI, RDFVocabulary.XSD.MAX_INCLUSIVE, new RDFTypedLiteral(Convert.ToString(InclusiveUpperBound, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE)) });
+              new RDFTriple(URI, RDFVocabulary.XSD.MIN_EXCLUSIVE, new RDFTypedLiteral(Convert.ToString(ExclusiveLowerBound, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE)) });
 
         /// <summary>
-        /// Validates the given literal value against the MaxInclusive facet
+        /// Validates the given literal value against the MinExclusive facet
         /// </summary>
         public override bool Validate(string literalValue)
         {
             if (double.TryParse(literalValue, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double parseLiteralValue))
-                return parseLiteralValue <= InclusiveUpperBound;
+                return parseLiteralValue > ExclusiveLowerBound;
             return false;
         }
         #endregion

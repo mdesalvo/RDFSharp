@@ -34,7 +34,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Builds a facet requiring the given exact MaxExclusive
+        /// Builds a facet requiring the given exclusive upper bound
         /// </summary>
         public RDFMaxExclusiveFacet(double exclusiveUpperBound)
           => ExclusiveUpperBound = exclusiveUpperBound;
