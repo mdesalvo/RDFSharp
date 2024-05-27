@@ -370,6 +370,13 @@ namespace RDFSharp.Model
                             targetFacets.Add(new RDFMinExclusiveFacet(facetMinExclusiveValue));
                             continue;
                         }
+                        //xsd:minInclusive
+                        if (graph[facet, RDFVocabulary.XSD.MIN_INCLUSIVE, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMinInclusive
+                             && facetMinInclusive.HasDecimalDatatype() && double.TryParse(facetMinInclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMinInclusiveValue))
+                        {
+                            targetFacets.Add(new RDFMinInclusiveFacet(facetMinInclusiveValue));
+                            continue;
+                        }
                         //xsd:minLength
                         if (graph[facet, RDFVocabulary.XSD.MIN_LENGTH, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMinLength
 							 && facetMinLength.HasDecimalDatatype() && uint.TryParse(facetMinLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMinLengthValue))
