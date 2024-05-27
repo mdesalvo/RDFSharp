@@ -93,16 +93,16 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
+        /// Retrieves a standard datatype by seeking presence of its Uri
+        /// </summary>
+        public static RDFDatatype GetDatatype(RDFModelEnums.RDFDatatypes datatype)
+            => GetDatatype(datatype.GetDatatypeFromEnum());
+
+        /// <summary>
         /// Retrieves a datatype by seeking presence of its Uri (null if not found)
         /// </summary>
         public static RDFDatatype GetDatatype(string datatypeUri)
 			=> Instance.Register.Find(dt => string.Equals(dt.ToString(), datatypeUri?.Trim()));
-
-		/// <summary>
-        /// Retrieves a standard datatype by seeking presence of its Uri
-        /// </summary>
-        public static RDFDatatype GetDatatype(RDFModelEnums.RDFDatatypes datatype)
-			=> GetDatatype(datatype.GetDatatypeFromEnum());
         #endregion
     }
 }
