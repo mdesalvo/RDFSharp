@@ -34,7 +34,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Builds a facet requiring the given exclusive upper bound
+        /// Builds a facet requiring the given maximum number of fraction digits
         /// </summary>
         public RDFFractionDigitsFacet(uint allowedDigits)
           => AllowedDigits = allowedDigits;
