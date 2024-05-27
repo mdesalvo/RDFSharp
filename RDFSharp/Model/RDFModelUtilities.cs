@@ -349,6 +349,13 @@ namespace RDFSharp.Model
                             targetFacets.Add(new RDFMaxInclusiveFacet(facetMaxInclusiveValue));
                             continue;
                         }
+                        //xsd:maxExclusive
+                        if (graph[facet, RDFVocabulary.XSD.MAX_EXCLUSIVE, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxExclusive
+                             && facetMaxExclusive.HasDecimalDatatype() && double.TryParse(facetMaxExclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMaxExclusiveValue))
+                        {
+                            targetFacets.Add(new RDFMaxExclusiveFacet(facetMaxExclusiveValue));
+                            continue;
+                        }
                         //xsd:maxLength
                         if (graph[facet, RDFVocabulary.XSD.MAX_LENGTH, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxLength
 							 && facetMaxLength.HasDecimalDatatype() && uint.TryParse(facetMaxLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMaxLengthValue))
