@@ -36,14 +36,14 @@ namespace RDFSharp.Model
         public Uri URI { get; internal set; }
 
         /// <summary>
+        /// Indicates that the datatype is one of RDFModelEnums.RDFDatatypes
+        /// </summary>
+        public bool IsBuiltIn { get; internal set; }
+
+        /// <summary>
         /// Facets applied on the target datatype
         /// </summary>
         internal List<RDFFacet> Facets { get; set; }
-
-		/// <summary>
-		/// Indicates that the datatype is built-in into RDFModelEnums.RDFDatatypes
-		/// </summary>
-		internal bool IsBuiltIn { get; set; }
         #endregion
 
         #region Ctors
