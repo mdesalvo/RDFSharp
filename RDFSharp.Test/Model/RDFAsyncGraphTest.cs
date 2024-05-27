@@ -22,6 +22,7 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 using Wmhelp.XPath2.yyParser;
+using System.Linq;
 
 namespace RDFSharp.Test.Model
 {
@@ -298,6 +299,17 @@ namespace RDFSharp.Test.Model
             await asyncGraph.AddCollectionAsync(null);
 
             Assert.IsTrue(asyncGraph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldAddDatatype()
+        {
+            RDFAsyncGraph asyncGraph = new RDFAsyncGraph();
+            RDFDatatype exlength6 = new RDFDatatype(new Uri("ex:exlength6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                new RDFLengthFacet(6), new RDFPatternFacet("^ex") ]);
+            await asyncGraph.AddDatatypeAsync(exlength6);
+
+            Assert.IsTrue(asyncGraph.TriplesCount == 11);
         }
 
         [TestMethod]
@@ -1556,8 +1568,8 @@ namespace RDFSharp.Test.Model
             RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
             await (await asyncGraph1.AddTripleAsync(triple1))
                 .AddTripleAsync(triple2);
-            await asyncGraph1.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFAsyncGraphTest_ShouldImportFromFile{fileExtension}"));
-            RDFAsyncGraph asyncGraph2 = await RDFAsyncGraph.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFAsyncGraphTest_ShouldImportFromFile{fileExtension}"));
+            await asyncGraph1.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFAsyncGraphTest_ShouldImportFromFileAsync{fileExtension}"));
+            RDFAsyncGraph asyncGraph2 = await RDFAsyncGraph.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFAsyncGraphTest_ShouldImportFromFileAsync{fileExtension}"));
 
             Assert.IsNotNull(asyncGraph2);
             Assert.IsTrue(asyncGraph2.TriplesCount == 2);
@@ -1581,11 +1593,48 @@ namespace RDFSharp.Test.Model
         [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
         [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
         [DataRow(".ttl", RDFModelEnums.RDFFormats.Turtle)]
+        public async Task ShouldImportFromFileAsyncWithEnabledDatatypeDiscovery(string fileExtension, RDFModelEnums.RDFFormats format)
+        {
+            RDFAsyncGraph asyncGraph1 = new RDFAsyncGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            await (await asyncGraph1.AddTripleAsync(triple1))
+                .AddTripleAsync(triple2);
+            await asyncGraph1.AddDatatypeAsync(new RDFDatatype(new Uri($"ex:mydtK{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                new RDFPatternFacet("^ex$") ]));
+            await asyncGraph1.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFAsyncGraphTest_ShouldImportFromFileAsync{fileExtension}WithEnabledDatatypeDiscovery"));
+            RDFAsyncGraph asyncGraph2 = await RDFAsyncGraph.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFAsyncGraphTest_ShouldImportFromFileAsync{fileExtension}WithEnabledDatatypeDiscovery"), true);
+
+            Assert.IsNotNull(asyncGraph2);
+            Assert.IsTrue(asyncGraph2.TriplesCount == 9);
+            //RDF/XML uses xsd:qname for encoding predicates. In this test we demonstrate that
+            //triples with a predicate ending with "/" will loose this character once abbreviated:
+            //this is correct (being a glitch of RDF/XML specs) so at the end the AsyncGraphs will differ
+            if (format == RDFModelEnums.RDFFormats.RdfXml)
+            {
+                Assert.IsFalse(asyncGraph2.Equals(asyncGraph1));
+                Assert.IsTrue((await asyncGraph2.SelectTriplesByPredicateAsync(new RDFResource("http://ex/pred/"))).TriplesCount == 0);
+                Assert.IsTrue((await asyncGraph2.SelectTriplesByPredicateAsync(new RDFResource("http://ex/pred"))).TriplesCount == 2);
+            }
+            else
+            {
+                Assert.IsTrue(asyncGraph2.Equals(asyncGraph1));
+            }
+            //Test that automatic datatype discovery happened successfully
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtK{(int)format}").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtK{(int)format}").Facets.Single() is RDFPatternFacet fct && fct.Pattern == "^ex$");
+        }
+
+        [DataTestMethod]
+        [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(".ttl", RDFModelEnums.RDFFormats.Turtle)]
         public async Task ShouldImportEmptyFromFileAsync(string fileExtension, RDFModelEnums.RDFFormats format)
         {
             RDFAsyncGraph asyncGraph1 = new RDFAsyncGraph();
-            await asyncGraph1.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFAsyncGraphTest_ShouldImportEmptyFromFile{fileExtension}"));
-            RDFAsyncGraph asyncGraph2 = await RDFAsyncGraph.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFAsyncGraphTest_ShouldImportEmptyFromFile{fileExtension}"));
+            await asyncGraph1.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFAsyncGraphTest_ShouldImportEmptyFromFileAsync{fileExtension}"));
+            RDFAsyncGraph asyncGraph2 = await RDFAsyncGraph.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFAsyncGraphTest_ShouldImportEmptyFromFileAsync{fileExtension}"));
 
             Assert.IsNotNull(asyncGraph2);
             Assert.IsTrue(asyncGraph2.TriplesCount == 0);
@@ -1638,6 +1687,44 @@ namespace RDFSharp.Test.Model
         [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
         [DataRow(RDFModelEnums.RDFFormats.TriX)]
         [DataRow(RDFModelEnums.RDFFormats.Turtle)]
+        public async Task ShouldImportFromStreamAsyncWithEnabledDatatypeDiscovery(RDFModelEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFAsyncGraph asyncGraph1 = new RDFAsyncGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            await (await asyncGraph1.AddTripleAsync(triple1))
+                .AddTripleAsync(triple2);
+            await asyncGraph1.AddDatatypeAsync(new RDFDatatype(new Uri($"ex:mydtKK{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                new RDFPatternFacet("^ex$") ]));
+            await asyncGraph1.ToStreamAsync(format, stream);
+            RDFAsyncGraph asyncGraph2 = await RDFAsyncGraph.FromStreamAsync(format, new MemoryStream(stream.ToArray()), true);
+
+            Assert.IsNotNull(asyncGraph2);
+            Assert.IsTrue(asyncGraph2.TriplesCount == 9);
+            //RDF/XML uses xsd:qname for encoding predicates. In this test we demonstrate that
+            //triples with a predicate ending with "/" will loose this character once abbreviated:
+            //this is correct (being a glitch of RDF/XML specs) so at the end the AsyncGraphs will differ
+            if (format == RDFModelEnums.RDFFormats.RdfXml)
+            {
+                Assert.IsFalse(asyncGraph2.Equals(asyncGraph1));
+                Assert.IsTrue((await asyncGraph2.SelectTriplesByPredicateAsync(new RDFResource("http://ex/pred/"))).TriplesCount == 0);
+                Assert.IsTrue((await asyncGraph2.SelectTriplesByPredicateAsync(new RDFResource("http://ex/pred"))).TriplesCount == 2);
+            }
+            else
+            {
+                Assert.IsTrue(asyncGraph2.Equals(asyncGraph1));
+            }
+            //Test that automatic datatype discovery happened successfully
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtKK{(int)format}").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtKK{(int)format}").Facets.Single() is RDFPatternFacet fct && fct.Pattern == "^ex$");
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(RDFModelEnums.RDFFormats.Turtle)]
         public async Task ShouldImportFromEmptyStream(RDFModelEnums.RDFFormats format)
         {
             MemoryStream stream = new MemoryStream();
@@ -1667,6 +1754,27 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(asyncGraph2);
             Assert.IsTrue(asyncGraph2.TriplesCount == 2);
             Assert.IsTrue(asyncGraph2.Equals(asyncGraph1));
+        }
+
+        [TestMethod]
+        public async Task ShouldImportFromDataTableAsyncWithEnabledDatatypeDiscovery()
+        {
+            RDFAsyncGraph asyncGraph1 = new RDFAsyncGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await asyncGraph1.AddTripleAsync(triple1))
+                .AddTripleAsync(triple2);
+            await asyncGraph1.AddDatatypeAsync(new RDFDatatype(new Uri("ex:mydtR"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                new RDFPatternFacet("^ex$") ]));
+            DataTable table = await asyncGraph1.ToDataTableAsync();
+            RDFAsyncGraph asyncGraph2 = await RDFAsyncGraph.FromDataTableAsync(table, true);
+
+            Assert.IsNotNull(asyncGraph2);
+            Assert.IsTrue(asyncGraph2.TriplesCount == 9);
+            Assert.IsTrue(asyncGraph2.Equals(asyncGraph1));
+            //Test that automatic datatype discovery happened successfully
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtR").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtR").Facets.Single() is RDFPatternFacet fct && fct.Pattern == "^ex$");
         }
 
         [TestMethod]

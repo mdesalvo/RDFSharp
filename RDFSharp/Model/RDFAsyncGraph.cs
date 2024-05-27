@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
 using System.Threading.Tasks;
@@ -162,6 +163,12 @@ namespace RDFSharp.Model
         /// </summary>
         public Task<RDFAsyncGraph> AddCollectionAsync(RDFCollection collection)
             => Task.Run(() => { WrappedGraph.AddCollection(collection); return this; });
+
+        /// <summary>
+        /// Adds the given datatype to the asynchronous graph
+        /// </summary>
+        public Task<RDFAsyncGraph> AddDatatypeAsync(RDFDatatype datatype)
+            => Task.Run(() => { WrappedGraph.AddDatatype(datatype); return this; });
         #endregion
 
         #region Remove
@@ -323,26 +330,26 @@ namespace RDFSharp.Model
         /// <summary>
         /// Reads an asynchronous graph from a file of the given RDF format
         /// </summary>
-        public static Task<RDFAsyncGraph> FromFileAsync(RDFModelEnums.RDFFormats rdfFormat, string filepath)
-            => Task.Run(() => new RDFAsyncGraph(RDFGraph.FromFile(rdfFormat, filepath)));
+        public static Task<RDFAsyncGraph> FromFileAsync(RDFModelEnums.RDFFormats rdfFormat, string filepath, bool enableDatatypeDiscovery=false)
+            => Task.Run(() => new RDFAsyncGraph(RDFGraph.FromFile(rdfFormat, filepath, enableDatatypeDiscovery)));
 
         /// <summary>
         /// Reads an asynchronous graph from a stream of the given RDF format
         /// </summary>
-        public static Task<RDFAsyncGraph> FromStreamAsync(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream)
-            => Task.Run(() => new RDFAsyncGraph(RDFGraph.FromStream(rdfFormat, inputStream)));
+        public static Task<RDFAsyncGraph> FromStreamAsync(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, bool enableDatatypeDiscovery=false)
+            => Task.Run(() => new RDFAsyncGraph(RDFGraph.FromStream(rdfFormat, inputStream, enableDatatypeDiscovery)));
 
         /// <summary>
         /// Reads an asynchronous graph from a datatable with "Subject-Predicate-Object" columns
         /// </summary>
-        public static Task<RDFAsyncGraph> FromDataTableAsync(DataTable table)
-            => Task.Run(() => new RDFAsyncGraph(RDFGraph.FromDataTable(table)));
+        public static Task<RDFAsyncGraph> FromDataTableAsync(DataTable table, bool enableDatatypeDiscovery=false)
+            => Task.Run(() => new RDFAsyncGraph(RDFGraph.FromDataTable(table, enableDatatypeDiscovery)));
 
         /// <summary>
         /// Reads an asynchronous graph by trying to dereference the given Uri
         /// </summary>
-        public static Task<RDFAsyncGraph> FromUriAsync(Uri uri, int timeoutMilliseconds = 20000)
-            => Task.Run(() => new RDFAsyncGraph(RDFGraph.FromUri(uri, timeoutMilliseconds)));
+        public static Task<RDFAsyncGraph> FromUriAsync(Uri uri, int timeoutMilliseconds=20000, bool enableDatatypeDiscovery=false)
+            => Task.Run(() => new RDFAsyncGraph(RDFGraph.FromUri(uri, timeoutMilliseconds, enableDatatypeDiscovery)));
         #endregion
 
         #endregion
