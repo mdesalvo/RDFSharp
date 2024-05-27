@@ -38,7 +38,7 @@ namespace RDFSharp.Model
 
 		#region Methods
 		/// <summary>
-		/// Validates the given literal against the facet
+		/// Validates the given literal value against the facet
 		/// </summary>
 		public abstract bool Validate(string literalValue);
 
