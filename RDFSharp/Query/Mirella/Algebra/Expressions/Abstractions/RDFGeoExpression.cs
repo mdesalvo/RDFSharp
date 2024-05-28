@@ -106,9 +106,8 @@ namespace RDFSharp.Query
                 Geometry leftGeometryLAZ = null;
                 Geometry rightGeometry = null;
                 Geometry rightGeometryLAZ = null;
-                if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
-                     && (leftArgumentTypedLiteral.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString()) || 
-                         leftArgumentTypedLiteral.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.GML_LITERAL.ToString())))
+                if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral 
+                     && leftArgumentTypedLiteral.HasGeographicDatatype())
                 {
                     //Parse WGS84 WKT/GML left geometry
                     leftGeometry = leftArgumentTypedLiteral.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString()) ?
@@ -126,9 +125,8 @@ namespace RDFSharp.Query
                     if (HasRightArgument)
                     {
                         //If so, it must be a well-formed GEO literal (WKT/GML)
-                        if (rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
-                             && (rightArgumentTypedLiteral.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString()) || 
-							 	 rightArgumentTypedLiteral.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.GML_LITERAL.ToString())))
+                        if (rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral 
+                             && rightArgumentTypedLiteral.HasGeographicDatatype())
                         {
                             //Parse WGS84 WKT/GML right geometry
                             rightGeometry = rightArgumentTypedLiteral.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString()) ?
@@ -217,7 +215,7 @@ namespace RDFSharp.Query
                             case RDFQueryEnums.RDFGeoEgenhoferRelations.Meet:
                                 sfEgenhoferRelate = leftGeometryLAZ.Relate(rightGeometryLAZ, "FT*******")
                                                      || leftGeometryLAZ.Relate(rightGeometryLAZ, "F**T*****")
-                                                      || leftGeometryLAZ.Relate(rightGeometryLAZ, "F***T****");
+                                                     || leftGeometryLAZ.Relate(rightGeometryLAZ, "F***T****");
                                 break;
                             case RDFQueryEnums.RDFGeoEgenhoferRelations.Overlap:
                                 sfEgenhoferRelate = leftGeometryLAZ.Relate(rightGeometryLAZ, "T*T***T**");

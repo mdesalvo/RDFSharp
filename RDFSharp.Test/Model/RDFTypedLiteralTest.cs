@@ -41,8 +41,6 @@ namespace RDFSharp.Test.Model
         [DataRow("{}", RDFModelEnums.RDFDatatypes.RDF_JSON)]
         [DataRow("[{\"value\":25}]", RDFModelEnums.RDFDatatypes.RDF_JSON)]
         [DataRow("[]", RDFModelEnums.RDFDatatypes.RDF_JSON)]
-        [DataRow("POINT(12.496365 41.902782)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)]
-        [DataRow("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)]
         [DataRow("http://hello/world#hi", RDFModelEnums.RDFDatatypes.XSD_ANYURI)]
         [DataRow("http://hello/world#", RDFModelEnums.RDFDatatypes.XSD_ANYURI)]
         [DataRow("http://hello/world/", RDFModelEnums.RDFDatatypes.XSD_ANYURI)]
@@ -85,6 +83,24 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(tl);
             Assert.IsTrue(tl.HasStringDatatype());
+            Assert.IsFalse(tl.HasGeographicDatatype());
+            Assert.IsFalse(tl.HasBooleanDatatype());
+            Assert.IsFalse(tl.HasDatetimeDatatype());
+            Assert.IsFalse(tl.HasDecimalDatatype());
+            Assert.IsFalse(tl.HasTimespanDatatype());
+            Assert.IsTrue(tl.ToString().Equals(string.Concat(value ?? "", "^^", RDFModelUtilities.GetDatatypeFromEnum(datatype))));
+        }
+
+        [DataTestMethod]
+        [DataRow("POINT(12.496365 41.902782)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)]
+        [DataRow("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)]
+        public void ShouldCreateTypedLiteralOfGeographicCategory(string value, RDFModelEnums.RDFDatatypes datatype)
+        {
+            RDFTypedLiteral tl = new RDFTypedLiteral(value, datatype);
+
+            Assert.IsNotNull(tl);
+            Assert.IsFalse(tl.HasStringDatatype());
+            Assert.IsTrue(tl.HasGeographicDatatype());
             Assert.IsFalse(tl.HasBooleanDatatype());
             Assert.IsFalse(tl.HasDatetimeDatatype());
             Assert.IsFalse(tl.HasDecimalDatatype());
@@ -119,6 +135,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(tl);
             Assert.IsFalse(tl.HasStringDatatype());
+            Assert.IsFalse(tl.HasGeographicDatatype());
             Assert.IsTrue(tl.HasBooleanDatatype());
             Assert.IsFalse(tl.HasDatetimeDatatype());
             Assert.IsFalse(tl.HasDecimalDatatype());
@@ -210,6 +227,7 @@ namespace RDFSharp.Test.Model
             
             Assert.IsNotNull(tl);
             Assert.IsFalse(tl.HasStringDatatype());
+            Assert.IsFalse(tl.HasGeographicDatatype());
             Assert.IsFalse(tl.HasBooleanDatatype());
             Assert.IsTrue(tl.HasDatetimeDatatype());
             Assert.IsFalse(tl.HasDecimalDatatype());
@@ -293,6 +311,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(tl);
             Assert.IsFalse(tl.HasStringDatatype());
+            Assert.IsFalse(tl.HasGeographicDatatype());
             Assert.IsFalse(tl.HasBooleanDatatype());
             Assert.IsFalse(tl.HasDatetimeDatatype());
             Assert.IsTrue(tl.HasDecimalDatatype());
@@ -309,6 +328,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(tl);
             Assert.IsFalse(tl.HasStringDatatype());
+            Assert.IsFalse(tl.HasGeographicDatatype());
             Assert.IsFalse(tl.HasBooleanDatatype());
             Assert.IsFalse(tl.HasDatetimeDatatype());
             Assert.IsFalse(tl.HasDecimalDatatype());
@@ -324,8 +344,6 @@ namespace RDFSharp.Test.Model
         [DataRow("value:", RDFModelEnums.RDFDatatypes.RDF_JSON)]
         [DataRow("[{value:}", RDFModelEnums.RDFDatatypes.RDF_JSON)]
         [DataRow("{value:}]", RDFModelEnums.RDFDatatypes.RDF_JSON)]
-        [DataRow("POINT(12.496365)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)]
-        [DataRow("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)]
         [DataRow("hello", RDFModelEnums.RDFDatatypes.XSD_ANYURI)]
         [DataRow("http:/hello#", RDFModelEnums.RDFDatatypes.XSD_ANYURI)]
         [DataRow("http:// ", RDFModelEnums.RDFDatatypes.XSD_ANYURI)]
@@ -387,6 +405,12 @@ namespace RDFSharp.Test.Model
         [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_HEXBINARY)]
         public void ShouldNotCreateTypedLiteralOfStringCategory(string value, RDFModelEnums.RDFDatatypes datatype)
             => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
+
+        [DataTestMethod]
+        [DataRow("POINT(12.496365)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)]
+        [DataRow("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)]
+        public void ShouldNotCreateTypedLiteralOfGeographicCategory(string value, RDFModelEnums.RDFDatatypes datatype)
+           => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
 
         [DataTestMethod]
         [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
@@ -624,21 +648,25 @@ namespace RDFSharp.Test.Model
 		{
 			RDFTypedLiteral tlit = new RDFTypedLiteral("abcdef", new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
                 new RDFMinLengthFacet(6), new RDFMaxLengthFacet(14) ]));
-
 			Assert.IsNotNull(tlit);
 			Assert.IsTrue(tlit.Value.Equals("abcdef"));
 			Assert.IsTrue(tlit.Datatype.ToString().Equals("ex:length6"));
             Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral("ab", new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
                 new RDFMinLengthFacet(6), new RDFMaxLengthFacet(14) ])));
 
-            RDFTypedLiteral tlit2 = new RDFTypedLiteral("36.6", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, [
-                new RDFMinInclusiveFacet(36), new RDFMaxInclusiveFacet(37) ]));
-
+            RDFTypedLiteral tlit2 = new RDFTypedLiteral("37", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, [
+                new RDFMinInclusiveFacet(36), new RDFMaxInclusiveFacet(39) ]));
             Assert.IsNotNull(tlit2);
-            Assert.IsTrue(tlit2.Value.Equals("36.6"));
+            Assert.IsTrue(tlit2.Value.Equals("37"));
             Assert.IsTrue(tlit2.Datatype.ToString().Equals("ex:humanTemperature"));
-            Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral("37.6", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_DOUBLE, [
-                new RDFMinInclusiveFacet(36), new RDFMaxInclusiveFacet(37) ])));
+            Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral("39.5", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_DOUBLE, [
+                new RDFMinInclusiveFacet(36), new RDFMaxInclusiveFacet(39) ])));
+
+            RDFTypedLiteral tlit3 = new RDFTypedLiteral("37", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, []));
+            Assert.IsNotNull(tlit3);
+            Assert.IsTrue(tlit3.Value.Equals("37"));
+            Assert.IsTrue(tlit3.Datatype.ToString().Equals("ex:humanTemperature"));
+            Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral("39.5", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, null)));
         }
 		#endregion
     }

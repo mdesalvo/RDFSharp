@@ -97,8 +97,16 @@ namespace RDFSharp.Model
 		/// Validates the given literal against the datatype
 		/// </summary>
 		internal (bool,string) Validate(string literalValue)
-			=> Facets.Count > 0 ? (Facets.TrueForAll(facet => facet.Validate(literalValue)), literalValue)
-								: RDFModelUtilities.ValidateTypedLiteral(literalValue, TargetDatatype);
+        {
+            //It should validate the target datatype
+            (bool,string) validatesTargetDatatype = RDFModelUtilities.ValidateTypedLiteral(literalValue, TargetDatatype);
+
+            //Then the eventual constraining facets
+            if (validatesTargetDatatype.Item1 && Facets.Count > 0)
+                return (Facets.TrueForAll(facet => facet.Validate(literalValue)), literalValue);
+            else
+                return validatesTargetDatatype;
+        }
         #endregion
     }   
 }

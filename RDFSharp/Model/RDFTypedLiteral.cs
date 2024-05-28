@@ -60,7 +60,7 @@ namespace RDFSharp.Model
             //Validation against semantic of given datatype
 			(bool,string) validationResult = Datatype.Validate(value ?? string.Empty);
 			if (!validationResult.Item1)
-			    throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + Datatype + ")");
+			    throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + Datatype + ") which is based on \"" + Datatype.TargetDatatype + "\" ");
 			Value = validationResult.Item2; 
         }
         #endregion
@@ -134,6 +134,18 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_TOKEN:
                 case RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY:
                 case RDFModelEnums.RDFDatatypes.XSD_HEXBINARY:
+                    return true;
+                default: return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks if the datatype of this typed literal is compatible with geosparql
+        /// </summary>
+        public bool HasGeographicDatatype()
+        {
+            switch (Datatype.TargetDatatype)
+            {
                 case RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT:
                 case RDFModelEnums.RDFDatatypes.GEOSPARQL_GML:
                     return true;

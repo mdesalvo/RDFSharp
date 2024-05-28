@@ -555,16 +555,6 @@ namespace RDFSharp.Model
                 default:
                     return (true, literalValue);
 
-                case RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT:
-                case RDFModelEnums.RDFDatatypes.GEOSPARQL_GML:
-                    try
-                    {
-                        _ = datatype.Equals(RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT) ? RDFGeoExpression.WKTReader.Read(literalValue) 
-																					  : RDFGeoExpression.GMLReader.Read(literalValue);
-                        return (true, literalValue);
-                    }
-                    catch { return (false, literalValue); }
-
                 case RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL:
                     try
                     {
@@ -658,6 +648,24 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_HEXBINARY:
 					bool isValidHexBinary = hexBinary.Value.Match(literalValue).Success;
                     return (isValidHexBinary, literalValue);
+                #endregion
+
+                #region GEOGRAPHIC CATEGORY
+                case RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT:
+                    try
+                    {
+                        _ = RDFGeoExpression.WKTReader.Read(literalValue);
+                        return (true, literalValue);
+                    }
+                    catch { return (false, literalValue); }
+
+                case RDFModelEnums.RDFDatatypes.GEOSPARQL_GML:
+                    try
+                    {
+                        _ = RDFGeoExpression.GMLReader.Read(literalValue);
+                        return (true, literalValue);
+                    }
+                    catch { return (false, literalValue); }
                 #endregion
 
                 #region BOOLEAN CATEGORY
