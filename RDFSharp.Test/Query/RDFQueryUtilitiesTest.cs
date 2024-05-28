@@ -162,6 +162,10 @@ namespace RDFSharp.Test.Query
         [DataRow("P1Y^^http://www.w3.org/2001/XMLSchema#duration", "lit@en-US", -99)]
         [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "P1Y^^http://www.w3.org/2001/XMLSchema#duration", -99)]
         [DataRow("P1Y^^http://www.w3.org/2001/XMLSchema#duration", "25^^http://www.w3.org/2001/XMLSchema#integer", -99)]
+        [DataRow("POINT (9.18854 45)^^http://www.opengis.net/ont/geosparql#wktLiteral", "POINT (9.18854 45)^^http://www.opengis.net/ont/geosparql#wktLiteral", 0)]
+        [DataRow("POINT (9.28854 50)^^http://www.opengis.net/ont/geosparql#wktLiteral", "POINT (9.18854 45)^^http://www.opengis.net/ont/geosparql#wktLiteral", 1)]
+        [DataRow("POINT (9.08854 40)^^http://www.opengis.net/ont/geosparql#wktLiteral", "POINT (9.18854 45)^^http://www.opengis.net/ont/geosparql#wktLiteral", -1)]
+        [DataRow("POINT (9.18854 45)^^http://www.opengis.net/ont/geosparql#wktLiteral", "25^^http://www.w3.org/2001/XMLSchema#integer", -99)]
         public void ShouldCompareNotNullPatternMembers(string leftVal, string rightVal, int expectedCompare)
         {
             RDFPatternMember leftPMember = RDFQueryUtilities.ParseRDFPatternMember(leftVal);

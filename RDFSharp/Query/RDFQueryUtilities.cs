@@ -22,6 +22,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net;
 using System.Xml;
+using NetTopologySuite.Geometries;
 
 namespace RDFSharp.Query
 {
@@ -168,6 +169,24 @@ namespace RDFSharp.Query
                             string leftValueString = ((RDFTypedLiteral)left).Value;
                             string rightValueString = ((RDFTypedLiteral)right).Value;
                             return string.Compare(leftValueString, rightValueString, StringComparison.Ordinal);
+                        }
+                        return -99; //Type Error
+                    }
+
+                    //GEOGRAPHIC
+                    if (((RDFTypedLiteral)left).HasGeographicDatatype())
+                    {
+                        if (((RDFTypedLiteral)right).HasGeographicDatatype())
+                        {
+                            Geometry leftGeometry = ((RDFTypedLiteral)left).Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString()) 
+                                                      ? RDFGeoExpression.WKTReader.Read(((RDFTypedLiteral)left).Value) 
+                                                      : RDFGeoExpression.GMLReader.Read(((RDFTypedLiteral)left).Value);
+                            leftGeometry.SRID = 4326;
+                            Geometry rightGeometry = ((RDFTypedLiteral)right).Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString())
+                                                      ? RDFGeoExpression.WKTReader.Read(((RDFTypedLiteral)right).Value)
+                                                      : RDFGeoExpression.GMLReader.Read(((RDFTypedLiteral)right).Value);
+                            rightGeometry.SRID = 4326;
+                            return leftGeometry.CompareTo(rightGeometry);
                         }
                         return -99; //Type Error
                     }
