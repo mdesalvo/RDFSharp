@@ -29,19 +29,19 @@ namespace RDFSharp.Model
         public enum RDFFormats
         {
             /// <summary>
-            /// N-Triples serialization
+            /// N-Triples serialization (https://www.w3.org/TR/n-triples/)
             /// </summary>
             NTriples = 0,
             /// <summary>
-            /// Turtle serialization
+            /// Turtle serialization (https://www.w3.org/TR/turtle/)
             /// </summary>
             Turtle = 1,
             /// <summary>
-            /// TriX serialization
+            /// TriX serialization (http://www.w3.org/2004/03/trix/trix-1/)
             /// </summary>
             TriX = 2,
             /// <summary>
-            /// XML serialization
+            /// XML serialization (https://www.w3.org/TR/rdf11-xml/)
             /// </summary>
             RdfXml = 3
         };

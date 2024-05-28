@@ -46,15 +46,15 @@ namespace RDFSharp.Store
         public enum RDFFormats
         {
             /// <summary>
-            /// N-Quads serialization
+            /// N-Quads serialization (https://www.w3.org/TR/n-quads/)
             /// </summary>
             NQuads = 1,
             /// <summary>
-            /// TriX serialization
+            /// TriX serialization (http://www.w3.org/2004/03/trix/trix-1/)
             /// </summary>
             TriX = 2,
             /// <summary>
-            /// TriG serialization
+            /// TriG serialization (https://www.w3.org/TR/trig/)
             /// </summary>
             TriG = 3
         };
