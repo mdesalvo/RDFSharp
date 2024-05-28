@@ -74,6 +74,11 @@ namespace RDFSharp.Model
             public static readonly RDFResource XML_LITERAL = new RDFResource(string.Concat(RDF.BASE_URI,"XMLLiteral"));
 
             /// <summary>
+            /// rdf:PlainLiteral
+            /// </summary>
+            public static readonly RDFResource PLAIN_LITERAL = new RDFResource(string.Concat(RDF.BASE_URI, "PlainLiteral"));
+
+            /// <summary>
             /// rdf:HTML
             /// </summary>
             public static readonly RDFResource HTML = new RDFResource(string.Concat(RDF.BASE_URI, "HTML"));
@@ -92,6 +97,16 @@ namespace RDFSharp.Model
             /// rdf:nil
             /// </summary>
             public static readonly RDFResource NIL = new RDFResource(string.Concat(RDF.BASE_URI,"nil"));
+
+            /// <summary>
+            /// rdf:first
+            /// </summary>
+            public static readonly RDFResource FIRST = new RDFResource(string.Concat(RDF.BASE_URI, "first"));
+
+            /// <summary>
+            /// rdf:rest
+            /// </summary>
+            public static readonly RDFResource REST = new RDFResource(string.Concat(RDF.BASE_URI, "rest"));
 
             /// <summary>
             /// rdf:li
@@ -129,19 +144,19 @@ namespace RDFSharp.Model
             public static readonly RDFResource LANGUAGE = new RDFResource(string.Concat(RDF.BASE_URI, "language"));
 
             /// <summary>
+            /// rdf:langRange
+            /// </summary>
+            public static readonly RDFResource LANG_RANGE = new RDFResource(string.Concat(RDF.BASE_URI, "langRange"));
+
+            /// <summary>
+            /// rdf:langString
+            /// </summary>
+            public static readonly RDFResource LANG_STRING = new RDFResource(string.Concat(RDF.BASE_URI, "langString"));
+
+            /// <summary>
             /// rdf:direction
             /// </summary>
             public static readonly RDFResource DIRECTION = new RDFResource(string.Concat(RDF.BASE_URI, "direction"));
-
-            /// <summary>
-            /// rdf:first
-            /// </summary>
-            public static readonly RDFResource FIRST = new RDFResource(string.Concat(RDF.BASE_URI,"first"));
-
-            /// <summary>
-            /// rdf:rest
-            /// </summary>
-            public static readonly RDFResource REST = new RDFResource(string.Concat(RDF.BASE_URI,"rest"));
             #endregion
         }
         #endregion
