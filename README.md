@@ -4,7 +4,7 @@ RDFSharp has a modular structure made up of 3 layers:
 
 <b><a href="https://github.com/mdesalvo/RDFSharp/releases/download/v3.11.0/RDFSharp.Model-3.11.0.pdf">RDFSharp.Model</a></b>
 <ul>
-    <li>Create and manage <b>RDF models</b> (resources, literals, triples, graphs, namespaces, ...)</li>
+    <li>Create and manage <b>RDF models</b> (resources, literals, triples, graphs, namespaces, datatypes, ...)</li>
     <li>Exchange them using standard <b>RDF formats</b> (N-Triples, TriX, Turtle, RDF/Xml)</li>
     <li>Create and validate <b>SHACL shapes</b> (shape graphs, shapes, targets, constraints, reports, ...)</b></li>
 </ul>
