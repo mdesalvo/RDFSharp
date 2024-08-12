@@ -22,5 +22,8 @@ RDFSharp has a modular structure made up of 3 layers:
     <li>Create and execute <b>SPARQL operations</b> on graphs, stores and SPARQL UPDATE endpoints</li>
 </ul>
 
+
+Current release is: <a href="https://github.com/mdesalvo/RDFSharp/releases/tag/v3.12.0"><b>3.12.0</b></a>
+
 <hr/>
 An additional <a href="https://github.com/mdesalvo/OWLSharp">layer</a> is available for working in native and powerful way with <b>OWL2 ontologies</b>
