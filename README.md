@@ -1,4 +1,4 @@
-# RDFSharp <a href="https://github.com/mdesalvo/RDFSharp/releases"><img src="https://img.shields.io/nuget/v/RDFSharp?style=flat-square&color=abcdef&logo=nuget&label=version"/></a> <a href="https://www.nuget.org/packages/RDFSharp"><img src="https://img.shields.io/nuget/dt/RDFSharp?style=flat-square&color=abcdef&logo=nuget&label=downloads"/></a> <a href="https://app.codecov.io/gh/mdesalvo/RDFSharp"><img src="https://img.shields.io/codecov/c/github/mdesalvo/RDFSharp?style=flat-square&color=04aa6d&logo=codecov&label=coverage"/></a>
+# RDFSharp <a href="https://www.nuget.org/packages/RDFSharp"><img src="https://img.shields.io/nuget/dt/RDFSharp?style=flat-square&color=abcdef&logo=nuget&label=downloads"/></a> <a href="https://app.codecov.io/gh/mdesalvo/RDFSharp"><img src="https://img.shields.io/codecov/c/github/mdesalvo/RDFSharp?style=flat-square&color=04aa6d&logo=codecov&label=coverage"/></a>
 
 RDFSharp has a modular structure made up of 3 layers: 
 
