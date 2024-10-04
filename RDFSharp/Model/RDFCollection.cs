@@ -115,14 +115,11 @@ namespace RDFSharp.Model
         /// </summary>
         internal void AddItemInternal(RDFPatternMember item)
         {
-            if (Items.Find(x => x.Equals(item)) == null)
-            {
-                //Add item to collection
-                Items.Add(item);
-                //Update ReificationSubject (if collection has left "rdf:nil" configuration)
-                if (ItemsCount == 1)
-                    ReificationSubject = InternalReificationSubject;
-            }
+            //Add item to collection
+            Items.Add(item);
+            //Update ReificationSubject (if collection has left "rdf:nil" configuration)
+            if (ItemsCount == 1)
+                ReificationSubject = InternalReificationSubject;
         }
         #endregion
 

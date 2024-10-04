@@ -86,7 +86,7 @@ namespace RDFSharp.Test.Model
                 coll.AddItem(new RDFResource("http://item/"));
             }
 
-            Assert.IsTrue(coll.ItemsCount == 1);
+            Assert.IsTrue(coll.ItemsCount == 2); //Duplicates are allowed (e.g.: OWL property chains)
             Assert.IsFalse(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
         }
 
@@ -162,7 +162,7 @@ namespace RDFSharp.Test.Model
                 coll.RemoveItem(new RDFPlainLiteral("lit"));
             }
 
-            Assert.IsTrue(coll.ItemsCount == 1);
+            Assert.IsTrue(coll.ItemsCount == 2);
             Assert.IsFalse(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
         }
 
@@ -185,7 +185,7 @@ namespace RDFSharp.Test.Model
                 coll.RemoveItem(null as RDFResource);
             }
 
-            Assert.IsTrue(coll.ItemsCount == 1);
+            Assert.IsTrue(coll.ItemsCount == 2);
             Assert.IsFalse(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
         }
 
