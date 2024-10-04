@@ -34,14 +34,14 @@ namespace RDFSharp.Model
             public static readonly string PREFIX = "swrl";
 
             /// <summary>
-            /// https://www.w3.org/2003/11/swrl#
+            /// http://www.w3.org/2003/11/swrl#
             /// </summary>
-            public static readonly string BASE_URI = "https://www.w3.org/2003/11/swrl#";
+            public static readonly string BASE_URI = "http://www.w3.org/2003/11/swrl#";
 
             /// <summary>
-            /// https://www.w3.org/2003/11/swrl#
+            /// http://www.w3.org/2003/11/swrl#
             /// </summary>
-            public static readonly string DEREFERENCE_URI = "https://www.w3.org/2003/11/swrl#";
+            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2003/11/swrl#";
             #endregion
 
             #region Extended Properties
@@ -57,14 +57,14 @@ namespace RDFSharp.Model
                 public static readonly string PREFIX = "swrlb";
 
                 /// <summary>
-                /// https://www.w3.org/2003/11/swrlb#
+                /// http://www.w3.org/2003/11/swrlb#
                 /// </summary>
-                public static readonly string BASE_URI = "https://www.w3.org/2003/11/swrlb#";
+                public static readonly string BASE_URI = "http://www.w3.org/2003/11/swrlb#";
 
                 /// <summary>
-                /// https://www.w3.org/2003/11/swrlb#
+                /// http://www.w3.org/2003/11/swrlb#
                 /// </summary>
-                public static readonly string DEREFERENCE_URI = "https://www.w3.org/2003/11/swrlb#";
+                public static readonly string DEREFERENCE_URI = "http://www.w3.org/2003/11/swrlb#";
                 #endregion
             }
             #endregion
