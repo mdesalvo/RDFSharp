@@ -34,14 +34,14 @@ namespace RDFSharp.Model
             public static readonly string PREFIX = "swrl";
 
             /// <summary>
-            /// https://www.w3.org/2003/11/swrl
+            /// https://www.w3.org/2003/11/swrl#
             /// </summary>
-            public static readonly string BASE_URI = "https://www.w3.org/2003/11/swrl";
+            public static readonly string BASE_URI = "https://www.w3.org/2003/11/swrl#";
 
             /// <summary>
-            /// https://www.w3.org/2003/11/swrl
+            /// https://www.w3.org/2003/11/swrl#
             /// </summary>
-            public static readonly string DEREFERENCE_URI = "https://www.w3.org/2003/11/swrl";
+            public static readonly string DEREFERENCE_URI = "https://www.w3.org/2003/11/swrl#";
             #endregion
 
             #region Extended Properties
@@ -50,7 +50,6 @@ namespace RDFSharp.Model
             /// </summary>
             public static class SWRLB
             {
-
                 #region Properties
                 /// <summary>
                 /// swrlb
@@ -58,16 +57,15 @@ namespace RDFSharp.Model
                 public static readonly string PREFIX = "swrlb";
 
                 /// <summary>
-                /// https://www.w3.org/2003/11/swrlb
+                /// https://www.w3.org/2003/11/swrlb#
                 /// </summary>
-                public static readonly string BASE_URI = "https://www.w3.org/2003/11/swrlb";
+                public static readonly string BASE_URI = "https://www.w3.org/2003/11/swrlb#";
 
                 /// <summary>
-                /// https://www.w3.org/2003/11/swrlb
+                /// https://www.w3.org/2003/11/swrlb#
                 /// </summary>
-                public static readonly string DEREFERENCE_URI = "https://www.w3.org/2003/11/swrlb";
+                public static readonly string DEREFERENCE_URI = "https://www.w3.org/2003/11/swrlb#";
                 #endregion
-
             }
             #endregion
         }
