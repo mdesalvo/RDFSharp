@@ -37,7 +37,6 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(coll.ItemsCount == 0);
             Assert.IsTrue(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
             Assert.IsTrue(coll.InternalReificationSubject.IsBlank);
-            Assert.IsFalse(coll.AcceptDuplicates);
 
             int i = 0;
             foreach (RDFPatternMember item in coll) i++;
