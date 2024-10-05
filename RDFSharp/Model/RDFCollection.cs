@@ -198,8 +198,8 @@ namespace RDFSharp.Model
                 reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
 
                 //  Subject -> rdf:first -> RDFCollection.ITEM[i]
-                if (ItemType == RDFModelEnums.RDFItemTypes.Resource)
-                    reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.FIRST, (RDFResource)collectionItem));
+                if (collectionItem is RDFResource collectionItemRes)
+                    reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.FIRST, collectionItemRes));
                 else
                     reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.FIRST, (RDFLiteral)collectionItem));
 
