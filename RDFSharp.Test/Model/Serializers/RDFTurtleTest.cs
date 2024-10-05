@@ -1968,6 +1968,24 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(fileContent.Equals($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> _:12345, _:54321; {Environment.NewLine}{" ",8}<http://pred2/> _:12345. {Environment.NewLine}_:54321 <http://pred1/> _:12345. {Environment.NewLine}"));
         }
 
+        [TestMethod]
+        public void ShouldSerializeGraphWithSPOTriplesHavingMixedCollectionInObject()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://haslist/"), new RDFResource("bnode:12345")));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.FIRST, new RDFPlainLiteral("item1")));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.REST, new RDFResource("bnode:54321")));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:54321"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:54321"), RDFVocabulary.RDF.FIRST, new RDFResource("http://item2/")));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:54321"), RDFVocabulary.RDF.REST, RDFVocabulary.RDF.NIL));
+            RDFTurtle.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingMixedCollectionInObject.ttl"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingMixedCollectionInObject.ttl")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingMixedCollectionInObject.ttl"));
+            Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:first \"item1\"; {Environment.NewLine}{" ",8}rdf:rest _:54321; {Environment.NewLine}{" ",8}a rdf:List. {Environment.NewLine}_:54321 rdf:first <http://item2/>; {Environment.NewLine}{" ",8}rdf:rest rdf:nil; {Environment.NewLine}{" ",8}a rdf:List. {Environment.NewLine}<http://subj/> <http://haslist/> _:12345. {Environment.NewLine}"));
+        }
+
         //DESERIALIZE
 
         [TestMethod]
@@ -8185,6 +8203,23 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(graph.Count(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFTypedLiteral.False)) == 1);
             Assert.IsTrue(graph.Count(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource objRes && objRes.IsBlank) == 1);
             Assert.IsTrue(graph.Count(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPOTriplesHavingMixedCollectionInObject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> ( \"item1\" <http://item2/> ).");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 7);
+            Assert.IsTrue(graph.Count(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
+            Assert.IsTrue(graph.Count(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("item1"))) == 1);
+            Assert.IsTrue(graph.Count(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item2/"))) == 1);
+            Assert.IsTrue(graph.Count(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+            Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource objRes && objRes.IsBlank) == 1);
         }
 
         [TestMethod]
