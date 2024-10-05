@@ -431,12 +431,16 @@ namespace RDFSharp.Model
             {
                 #region rdf:first
                 RDFTriple first = rdfFirst[itemRest, null, null, null].FirstOrDefault();
-                if (first != null && first.TripleFlavor == expectedFlavor)
+                if (first != null)
                 {
-                    if (expectedFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                        collection.AddItem((RDFResource)first.Object);
+                    if (first.Object is RDFResource firstObjRes)
+                    {
+                        //Avoid rdf:nil to be collected...
+                        if (!firstObjRes.Equals(RDFVocabulary.RDF.NIL))
+                            collection.AddItemInternal(firstObjRes);
+                    }
                     else
-                        collection.AddItem((RDFLiteral)first.Object);
+                        collection.AddItemInternal((RDFLiteral)first.Object);
                 }
                 else
                     nilFound = true;
