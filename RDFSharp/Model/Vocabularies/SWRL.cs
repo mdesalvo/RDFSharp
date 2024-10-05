@@ -69,6 +69,11 @@ namespace RDFSharp.Model
             public static readonly RDFResource ATOM = new RDFResource(string.Concat(SWRL.BASE_URI,"Atom"));
 
             /// <summary>
+            /// swrl:AtomList
+            /// </summary>
+            public static readonly RDFResource ATOMLIST = new RDFResource(string.Concat(SWRL.BASE_URI,"AtomList"));
+
+            /// <summary>
             /// swrl:Builtin
             /// </summary>
             public static readonly RDFResource BUILTIN_CLS = new RDFResource(string.Concat(SWRL.BASE_URI,"Builtin"));
