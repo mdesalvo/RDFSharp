@@ -37,6 +37,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(coll.ItemsCount == 0);
             Assert.IsTrue(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
             Assert.IsTrue(coll.InternalReificationSubject.IsBlank);
+            Assert.IsFalse(coll.AcceptDuplicates);
 
             int i = 0;
             foreach (RDFPatternMember item in coll) i++;
@@ -86,7 +87,7 @@ namespace RDFSharp.Test.Model
                 coll.AddItem(new RDFResource("http://item/"));
             }
 
-            Assert.IsTrue(coll.ItemsCount == 2);
+            Assert.IsTrue(coll.ItemsCount == 1);
             Assert.IsFalse(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
         }
 
@@ -162,7 +163,7 @@ namespace RDFSharp.Test.Model
                 coll.RemoveItem(new RDFPlainLiteral("lit"));
             }
 
-            Assert.IsTrue(coll.ItemsCount == 2);
+            Assert.IsTrue(coll.ItemsCount == 1);
             Assert.IsFalse(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
         }
 
@@ -185,7 +186,7 @@ namespace RDFSharp.Test.Model
                 coll.RemoveItem(null as RDFResource);
             }
 
-            Assert.IsTrue(coll.ItemsCount == 2);
+            Assert.IsTrue(coll.ItemsCount == 1);
             Assert.IsFalse(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
         }
 
@@ -267,25 +268,6 @@ namespace RDFSharp.Test.Model
                 coll.AddItem(new RDFResource("http://item1/"));
                 coll.AddItem(new RDFResource("http://item2/"));
             }
-            RDFGraph graph = coll.ReifyCollection();
-
-            Assert.IsNotNull(graph);
-            Assert.IsTrue(graph.TriplesCount == 6);
-            Assert.IsTrue(graph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
-                               .SelectTriplesByObject(RDFVocabulary.RDF.LIST)
-                               .TriplesCount == 2);
-            Assert.IsTrue(graph.SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST)
-                               .TriplesCount == 2);
-            Assert.IsTrue(graph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST)
-                               .TriplesCount == 2);
-        }
-
-        [TestMethod]
-        public void ShouldReifyCollectionWithInternallyMixedItems()
-        {
-            RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
-            coll.AddItemInternal(new RDFPlainLiteral("lit1"));
-            coll.AddItemInternal(new RDFResource("http://item1/"));
             RDFGraph graph = coll.ReifyCollection();
 
             Assert.IsNotNull(graph);
