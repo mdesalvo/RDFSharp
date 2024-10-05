@@ -417,9 +417,9 @@ namespace RDFSharp.Model
         /// <summary>
         /// Rebuilds the collection represented by the given resource within the given graph
         /// </summary>
-        internal static RDFCollection DeserializeCollectionFromGraph(RDFGraph graph, RDFResource collRepresentative, RDFModelEnums.RDFTripleFlavors expectedFlavor)
+        internal static RDFCollection DeserializeCollectionFromGraph(RDFGraph graph, RDFResource collRepresentative, RDFModelEnums.RDFTripleFlavors expectedFlavor, bool acceptDuplicates=false)
         {
-            RDFCollection collection = new RDFCollection(expectedFlavor == RDFModelEnums.RDFTripleFlavors.SPO ? RDFModelEnums.RDFItemTypes.Resource : RDFModelEnums.RDFItemTypes.Literal);
+            RDFCollection collection = new RDFCollection(expectedFlavor == RDFModelEnums.RDFTripleFlavors.SPO ? RDFModelEnums.RDFItemTypes.Resource : RDFModelEnums.RDFItemTypes.Literal, acceptDuplicates);
             RDFGraph rdfFirst = graph[null, RDFVocabulary.RDF.FIRST, null, null];
             RDFGraph rdfRest = graph[null, RDFVocabulary.RDF.REST, null, null];
 
