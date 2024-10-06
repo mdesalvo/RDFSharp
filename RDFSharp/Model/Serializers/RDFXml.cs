@@ -99,22 +99,10 @@ namespace RDFSharp.Model
                                             {
                                                 ContainerUri = (RDFResource)t.Subject,
                                                 ContainerType = t.Object.Equals(RDFVocabulary.RDF.ALT) ? RDFModelEnums.RDFContainerTypes.Alt :
-                                                                  t.Object.Equals(RDFVocabulary.RDF.BAG) ? RDFModelEnums.RDFContainerTypes.Bag :
-                                                                                                             RDFModelEnums.RDFContainerTypes.Seq,
+                                                                t.Object.Equals(RDFVocabulary.RDF.BAG) ? RDFModelEnums.RDFContainerTypes.Bag :
+                                                                                                         RDFModelEnums.RDFContainerTypes.Seq,
                                                 IsFloatingContainer = !graph.IndexedTriples.Any(v => v.Value.ObjectID.Equals(t.Subject.PatternMemberID))
                                             }).ToList();
-
-                    //Fetch data describing collections of the graph
-                    var collections = rdfType.SelectTriplesByObject(RDFVocabulary.RDF.LIST)
-                                             .Select(t => new
-                                             {
-                                                 CollectionUri = (RDFResource)t.Subject,
-                                                 CollectionValue = rdfFirst.SelectTriplesBySubject((RDFResource)t.Subject)
-                                                                           .FirstOrDefault()?.Object,
-                                                 CollectionNext = rdfRest.SelectTriplesBySubject((RDFResource)t.Subject)
-                                                                         .FirstOrDefault()?.Object,
-                                                 IsFloatingCollection = !graph.IndexedTriples.Any(v => v.Value.ObjectID.Equals(t.Subject.PatternMemberID))
-                                             }).ToList();
                     #endregion
 
                     #region linq
@@ -125,7 +113,7 @@ namespace RDFSharp.Model
 
                     #region graph
                     //Iterate over the calculated groups
-                    foreach (var triplesGroup in triplesGroupedBySubject)
+                    foreach (IGrouping<string, RDFTriple> triplesGroup in triplesGroupedBySubject)
                     {
                         #region subject
                         //Check if the current subject is a container/collection and it is not floating: if so,
@@ -134,7 +122,6 @@ namespace RDFSharp.Model
                         string subj = triplesGroup.Key;
                         long subjHash = RDFModelUtilities.CreateHash(subj);
                         var subjContainer = containers.Find(x => x.ContainerUri.PatternMemberID == subjHash);
-                        var subjCollection = collections.Find(x => x.CollectionUri.PatternMemberID == subjHash);
 
                         //It is a container subject and it is not floating => add it to the containersXML pool
                         if (subjContainer != null && !subjContainer.IsFloatingContainer)
@@ -153,11 +140,6 @@ namespace RDFSharp.Model
                             }
                             containersXML.Add(subjHash, subjNode);
                         }
-
-                        //It is a collection subject of resources and it is not floating => do not append its triples because
-                        //we will reconstruct the collection later and append it as "rdf:parseType=Collections"
-                        else if (subjCollection != null && subjCollection.CollectionValue is RDFResource && !subjCollection.IsFloatingCollection)
-                            continue;
                         
                         //It is a traditional subject
                         else
@@ -190,7 +172,7 @@ namespace RDFSharp.Model
                             if (!(triple.Predicate.Equals(RDFVocabulary.RDF.TYPE) &&
                                   (subjNode.Name.Equals("rdf:Bag", StringComparison.OrdinalIgnoreCase)
                                     || subjNode.Name.Equals("rdf:Seq", StringComparison.OrdinalIgnoreCase)
-                                       || subjNode.Name.Equals("rdf:Alt", StringComparison.OrdinalIgnoreCase))))
+                                    || subjNode.Name.Equals("rdf:Alt", StringComparison.OrdinalIgnoreCase))))
                             {
                                 #region predicate
                                 string predString = triple.Predicate.ToString();
@@ -216,57 +198,10 @@ namespace RDFSharp.Model
                                 if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                                 {
                                     var containerObj = containers.Find(x => x.ContainerUri.Equals(triple.Object));
-                                    var collectionObj = collections.Find(x => x.CollectionUri.Equals(triple.Object));
 
                                     //Object is a container subject and it is not floating => append its node saved in containersXML
                                     if (containerObj != null && !containerObj.IsFloatingContainer)
                                         predNode.AppendChild(containersXML[containerObj.ContainerUri.PatternMemberID]);
-                                    
-                                    //Object is a collection subject of resources and it is not floating => append its "rdf:parseType=Collection" representation
-                                    else if (collectionObj != null && collectionObj.CollectionValue is RDFResource && !collectionObj.IsFloatingCollection)
-                                    {
-                                        //Append "rdf:parseType=Collection" attribute
-                                        XmlAttribute rdfParseType = rdfDoc.CreateAttribute("rdf:parseType", RDFVocabulary.RDF.BASE_URI);
-                                        XmlText rdfParseTypeText = rdfDoc.CreateTextNode("Collection");
-                                        rdfParseType.AppendChild(rdfParseTypeText);
-                                        predNode.Attributes.Append(rdfParseType);
-
-                                        //Append "rdf:parseType=Collection" elements
-                                        bool nilFound = false;
-                                        RDFResource currentCollItem = (RDFResource)triple.Object;
-                                        List<XmlNode> collElements = new List<XmlNode>();
-                                        XmlNode collElementToAppend = null;
-                                        XmlAttribute collElementAttr = null;
-                                        XmlText collElementAttrText = null;
-                                        while (!nilFound)
-                                        {
-                                            var collElement = collections.Find(x => x.CollectionUri.Equals(currentCollItem));
-                                            if (collElement == null || collElement.CollectionValue == null || collElement.CollectionNext == null)
-                                                throw new RDFModelException(string.Format("Collection having '{0}' as subject is not well-formed. Please check presence of its 'rdf:type/rdf:first/rdf:rest' triples.", currentCollItem));
-
-                                            collElementToAppend = rdfDoc.CreateNode(XmlNodeType.Element, "rdf:Description", RDFVocabulary.RDF.BASE_URI);
-                                            if (collElement.CollectionValue.ToString().StartsWith("bnode:", StringComparison.Ordinal))
-                                            {
-                                                collElementAttrText = rdfDoc.CreateTextNode(collElement.CollectionValue.ToString().Replace("bnode:", string.Empty));
-                                                collElementAttr = rdfDoc.CreateAttribute("rdf:nodeID", RDFVocabulary.RDF.BASE_URI);
-                                            }
-                                            else
-                                            {
-                                                collElementAttrText = rdfDoc.CreateTextNode(collElement.CollectionValue.ToString());
-                                                collElementAttr = rdfDoc.CreateAttribute("rdf:about", RDFVocabulary.RDF.BASE_URI);
-                                            }
-                                            collElementAttr.AppendChild(collElementAttrText);
-                                            collElementToAppend.Attributes.Append(collElementAttr);
-                                            collElements.Add(collElementToAppend);
-
-                                            //Verify if this is the last element of the collection (pointing to next="rdf:nil")
-                                            if (collElement.CollectionNext.Equals(RDFVocabulary.RDF.NIL))
-                                                nilFound = true;
-                                            else
-                                                currentCollItem = (RDFResource)collElement.CollectionNext;
-                                        }
-                                        collElements.ForEach(c => predNode.AppendChild(c));
-                                    }
 
                                     //Object is traditional
                                     else
@@ -334,8 +269,8 @@ namespace RDFSharp.Model
                         //Raw containers must not be written as-is, instead they have to be saved
                         //and attached whenever their subject is found as object of a triple
                         if (!subjNode.Name.Equals("rdf:Bag", StringComparison.OrdinalIgnoreCase)
-                                && !subjNode.Name.Equals("rdf:Seq", StringComparison.OrdinalIgnoreCase)
-                                    && !subjNode.Name.Equals("rdf:Alt", StringComparison.OrdinalIgnoreCase))
+                              && !subjNode.Name.Equals("rdf:Seq", StringComparison.OrdinalIgnoreCase)
+                              && !subjNode.Name.Equals("rdf:Alt", StringComparison.OrdinalIgnoreCase))
                         {
                             rdfRoot.AppendChild(subjNode);
                         }
