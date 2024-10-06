@@ -1258,8 +1258,7 @@ namespace RDFSharp.Test.Model
             RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPO);
 
             Assert.IsNotNull(coll1);
-            Assert.IsTrue(coll1.ItemsCount == 1);
-            Assert.IsTrue(coll1.Items.Any(x => x.Equals(RDFVocabulary.RDF.NIL)));
+            Assert.IsTrue(coll1.ItemsCount == 0);
         }
 
         [TestMethod]
