@@ -99,8 +99,8 @@ namespace RDFSharp.Model
                                             {
                                                 ContainerUri = (RDFResource)t.Subject,
                                                 ContainerType = t.Object.Equals(RDFVocabulary.RDF.ALT) ? RDFModelEnums.RDFContainerTypes.Alt :
-                                                                  t.Object.Equals(RDFVocabulary.RDF.BAG) ? RDFModelEnums.RDFContainerTypes.Bag :
-                                                                                                             RDFModelEnums.RDFContainerTypes.Seq,
+                                                                t.Object.Equals(RDFVocabulary.RDF.BAG) ? RDFModelEnums.RDFContainerTypes.Bag :
+                                                                                                         RDFModelEnums.RDFContainerTypes.Seq,
                                                 IsFloatingContainer = !graph.IndexedTriples.Any(v => v.Value.ObjectID.Equals(t.Subject.PatternMemberID))
                                             }).ToList();
 
