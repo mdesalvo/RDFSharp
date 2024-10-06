@@ -1223,30 +1223,6 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldDeserializeSPOMixedCollectionFromGraph()
-        {
-            RDFGraph graph = new RDFGraph(
-                [
-                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
-                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item1/")),
-                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
-                    new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
-                    new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item2/")),
-                    new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll3/")),
-                    new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
-                    new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item3")),
-                    new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
-                ]);
-            RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPO);
-
-            Assert.IsNotNull(coll1);
-            Assert.IsTrue(coll1.ItemsCount == 3);
-            Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item1/"))));
-            Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item2/"))));
-            Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item3"))));
-        }
-
-        [TestMethod]
         public void ShouldDeserializeEmptySPOCollectionFromGraph()
         {
             RDFGraph graph = new RDFGraph(
@@ -1378,6 +1354,45 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeEmptySPLCollectionFromGraph()
+        {
+            RDFGraph graph = new RDFGraph(
+                [
+                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
+                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,RDFVocabulary.RDF.NIL),
+                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
+                ]);
+            RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPL);
+
+            Assert.IsNotNull(coll1);
+            Assert.IsTrue(coll1.ItemsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeSPOMixedCollectionFromGraph()
+        {
+            RDFGraph graph = new RDFGraph(
+                [
+                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
+                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item1/")),
+                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
+                    new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
+                    new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item2/")),
+                    new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll3/")),
+                    new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
+                    new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item3")),
+                    new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
+                ]);
+            RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPO);
+
+            Assert.IsNotNull(coll1);
+            Assert.IsTrue(coll1.ItemsCount == 3);
+            Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item1/"))));
+            Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item2/"))));
+            Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item3"))));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeSPLMixedCollectionFromGraph()
         {
             RDFGraph graph = new RDFGraph(
@@ -1399,21 +1414,6 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item1"))));
             Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item2"))));
             Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item3/"))));
-        }
-
-        [TestMethod]
-        public void ShouldDeserializeEmptySPLCollectionFromGraph()
-        {
-            RDFGraph graph = new RDFGraph(
-                [
-                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
-                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,RDFVocabulary.RDF.NIL),
-                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
-                ]);
-            RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPL);
-
-            Assert.IsNotNull(coll1);
-            Assert.IsTrue(coll1.ItemsCount == 0);
         }
 
         [TestMethod]
@@ -1473,7 +1473,7 @@ namespace RDFSharp.Test.Model
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item3/")),
                     new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
                 ]);
-            RDFModelEnums.RDFTripleFlavors tripleFlavor = RDFModelUtilities.DetectCollectionFlavorFromGraph(graph, new RDFResource("bnode://coll2/"));
+            RDFModelEnums.RDFTripleFlavors tripleFlavor = RDFModelUtilities.DetectCollectionFlavorFromGraph(graph, new RDFResource("bnode://coll6/"));
 
             Assert.IsNotNull(tripleFlavor);
             Assert.IsTrue(tripleFlavor.Equals(RDFModelEnums.RDFTripleFlavors.SPO));
