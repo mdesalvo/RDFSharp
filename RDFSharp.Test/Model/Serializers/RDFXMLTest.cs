@@ -268,6 +268,25 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldSerializeGraphWithSPBTripleHavingMixedCollectionAsObject()
+        {
+            RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
+            coll.AddItemInternal(new RDFResource("urn:swrl:var#V"));  
+            coll.AddItemInternal(new RDFPlainLiteral("item1"));
+            coll.AddItemInternal(new RDFResource("http://item2/"));
+            coll.ReificationSubject = new RDFResource("http://coll/");
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred/"), coll.ReificationSubject));
+            graph.AddCollection(coll);
+            RDFXml.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingMixedCollectionAsObject.rdf"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingMixedCollectionAsObject.rdf")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingMixedCollectionAsObject.rdf"));
+            Assert.IsNotNull(fileContent);
+            Assert.IsTrue(!fileContent.Contains("rdf:parseType"));      
+        }
+
+        [TestMethod]
         public void ShouldSerializeGraphWithBPOTripleHavingUnregisteredPredicate()
         {
             RDFGraph graph = new RDFGraph();

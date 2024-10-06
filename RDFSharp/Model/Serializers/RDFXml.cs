@@ -155,9 +155,13 @@ namespace RDFSharp.Model
                             containersXML.Add(subjHash, subjNode);
                         }
 
-                        //It is a collection subject of resources and it is not floating => do not append its triples because
-                        //we will reconstruct the collection later and append it as "rdf:parseType=Collections"
-                        else if (subjCollection != null && !subjCollection.IsFloatingCollection && subjCollection.CollectionItems.TrueForAll(item => item is RDFResource))
+                        //It is a collection subject of resources and it is not floating:
+                        //do not append its triples because we will reconstruct the collection 
+                        //later and shortcut it as "rdf:parseType=Collection"
+                        else if (subjCollection != null 
+                                  && !subjCollection.IsFloatingCollection
+                                  && subjCollection.CollectionItems.TrueForAll(item => item is RDFResource)
+                                  && !collections.Any(coll => coll.CollectionNext.Equals(subjCollection.CollectionUri)))
                             continue;
                         
                         //It is a traditional subject
@@ -223,8 +227,12 @@ namespace RDFSharp.Model
                                     if (containerObj != null && !containerObj.IsFloatingContainer)
                                         predNode.AppendChild(containersXML[containerObj.ContainerUri.PatternMemberID]);
                                     
-                                    //Object is a collection subject of resources and it is not floating => append its "rdf:parseType=Collection" representation
-                                    else if (collectionObj != null && !collectionObj.IsFloatingCollection && collectionObj.CollectionItems.TrueForAll(item => item is RDFResource))
+                                    //Object is a collection subject of resources and it is not floating:
+                                    //append its "rdf:parseType=Collection" shortcut representation
+                                    else if (collectionObj != null 
+                                              && !collectionObj.IsFloatingCollection
+                                              && collectionObj.CollectionItems.TrueForAll(item => item is RDFResource)
+                                              && !collections.Any(coll => coll.CollectionNext.Equals(collectionObj.CollectionUri)))
                                     {
                                         //Append "rdf:parseType=Collection" attribute
                                         XmlAttribute rdfParseType = rdfDoc.CreateAttribute("rdf:parseType", RDFVocabulary.RDF.BASE_URI);
