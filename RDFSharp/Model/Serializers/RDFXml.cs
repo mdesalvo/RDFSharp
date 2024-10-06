@@ -125,7 +125,7 @@ namespace RDFSharp.Model
 
                     #region graph
                     //Iterate over the calculated groups
-                    foreach (var triplesGroup in triplesGroupedBySubject)
+                    foreach (IGrouping<string, RDFTriple> triplesGroup in triplesGroupedBySubject)
                     {
                         #region subject
                         //Check if the current subject is a container/collection and it is not floating: if so,
