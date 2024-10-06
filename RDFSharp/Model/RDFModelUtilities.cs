@@ -450,7 +450,7 @@ namespace RDFSharp.Model
                 //Ensure considering exit signal from bad-formed rdf:first
                 if (!nilFound)
                 {
-                    RDFTriple rest = rdfRest.SelectTriplesBySubject(itemRest).FirstOrDefault();
+                    RDFTriple rest = rdfRest[itemRest, null, null, null].FirstOrDefault();
                     if (rest != null)
                     {
                         if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
