@@ -32,6 +32,11 @@ namespace RDFSharp.Query
         public RDFPatternMember Start { get; internal set; }
 
         /// <summary>
+        /// End of the path
+        /// </summary>
+        public RDFPatternMember End { get; internal set; }
+
+        /// <summary>
         /// Steps of the path
         /// </summary>
         internal List<RDFPropertyPathStep> Steps { get; set; }
@@ -40,11 +45,6 @@ namespace RDFSharp.Query
         /// Depth of the path
         /// </summary>
         internal int Depth { get; set; }
-
-        /// <summary>
-        /// End of the path
-        /// </summary>
-        public RDFPatternMember End { get; internal set; }
         #endregion
 
         #region Ctors
@@ -53,6 +53,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPropertyPath(RDFPatternMember start, RDFPatternMember end)
         {
+            #region Guards
             if (start == null)
                 throw new RDFQueryException("Cannot create RDFPropertyPath because given \"start\" parameter is null.");
             if (!(start is RDFResource || start is RDFVariable))
@@ -61,6 +62,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create RDFPropertyPath because given \"end\" parameter is null.");
             if (!(end is RDFResource || end is RDFVariable))
                 throw new RDFQueryException("Cannot create RDFPropertyPath because given \"end\" parameter is neither a resource or a variable.");
+            #endregion
 
             Start = start;
             End = end;
@@ -85,40 +87,31 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPropertyPath AddAlternativeSteps(List<RDFPropertyPathStep> alternativeSteps)
         {
+            #region Guards
             if (alternativeSteps == null || alternativeSteps.Count == 0)
                 throw new RDFQueryException("Cannot add alternative steps because the given list is null or it does not contain elements.");
             if (alternativeSteps.Any(step => step == null))
                 throw new RDFQueryException("Cannot add alternative steps because the given list contains a null element.");
+            #endregion
 
-            #region Depth Guard
+            //Update depth status of the property path
             if (Steps.Count == 0
-                    || alternativeSteps.Count == 1
-                        || Steps.LastOrDefault()?.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence)
-            {
+                 || alternativeSteps.Count == 1
+                 || Steps.LastOrDefault()?.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence)
                 Depth++;
-            }
-            #endregion
-
-            #region Steps Update
+            
+            //Collect the given steps into the property path
             if (alternativeSteps.Count == 1)
-            {
                 Steps.Add(alternativeSteps[0].SetOrdinal(Steps.Count)
-                                                  .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
-            }
+                                             .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
             else
-            {
-                alternativeSteps.ForEach(alternativeStep =>
-                {
+                foreach (RDFPropertyPathStep alternativeStep in alternativeSteps)
                     Steps.Add(alternativeStep.SetOrdinal(Steps.Count)
-                                                  .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative));
-                });
-            }
-            #endregion
-
-            #region Evaluability Guard
+                                             .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative));
+            
+            //Update evaluability status of the property path
             if (Start is RDFVariable || End is RDFVariable || Depth > 1)
                 IsEvaluable = true;
-            #endregion
             
             return this;
         }
@@ -128,19 +121,21 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPropertyPath AddSequenceStep(RDFPropertyPathStep sequenceStep)
         {
+            #region Guards
             if (sequenceStep == null)
                 throw new RDFQueryException("Cannot add sequence step because it is null.");
-
-            #region Steps Update
-            Depth++;
-            Steps.Add(sequenceStep.SetOrdinal(Steps.Count)
-                                       .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
             #endregion
 
-            #region Evaluability Guard
+            //Update depth status of the property path
+            Depth++;
+
+            //Collect the given step into the property path
+            Steps.Add(sequenceStep.SetOrdinal(Steps.Count)
+                                  .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
+
+            //Update evaluability status of the property path
             if (Start is RDFVariable || End is RDFVariable || Depth > 1)
                 IsEvaluable = true;
-            #endregion
 
             return this;
         }
