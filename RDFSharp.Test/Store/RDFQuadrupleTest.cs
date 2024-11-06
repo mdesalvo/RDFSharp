@@ -47,6 +47,28 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
+        public void ShouldCreateQuadrupleFromSPOTripleDefaultingContext()
+        {
+            RDFQuadruple quadruple = new RDFQuadruple(null, new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+            Assert.IsNotNull(quadruple);
+            Assert.IsTrue(quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO);
+            Assert.IsTrue(quadruple.Context.Equals(new RDFContext()));
+            Assert.IsTrue(quadruple.Subject.Equals(new RDFResource("http://subj/")));
+            Assert.IsTrue(quadruple.Predicate.Equals(new RDFResource("http://pred/")));
+            Assert.IsTrue(quadruple.Object.Equals(new RDFResource("http://obj/")));
+            Assert.IsTrue(quadruple.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", quadruple.QuadrupleID.ToString()))));
+
+            string quadrupleString = quadruple.ToString();
+            Assert.IsTrue(quadrupleString.Equals(string.Concat(quadruple.Context.ToString(), " ", quadruple.Subject.ToString(), " ", quadruple.Predicate.ToString(), " ", quadruple.Object.ToString())));
+
+            long quadrupleID = RDFModelUtilities.CreateHash(quadrupleString);
+            Assert.IsTrue(quadruple.QuadrupleID.Equals(quadrupleID));
+
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            Assert.IsTrue(quadruple.Equals(quadruple2));
+        }
+
+        [TestMethod]
         public void ShouldCreateQuadrupleFromSPLTriple()
         {
             RDFQuadruple quadruple = new RDFQuadruple(new RDFContext(), new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit")));
