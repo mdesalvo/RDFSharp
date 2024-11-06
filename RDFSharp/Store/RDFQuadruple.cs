@@ -66,6 +66,25 @@ namespace RDFSharp.Store
 
         #region Ctors
         /// <summary>
+        /// Triple-based ctor
+        /// </summary>
+        public RDFQuadruple(RDFContext context, RDFTriple triple)
+        {
+            #region Guards
+            if (triple == null)
+                throw new RDFStoreException("Cannot create RDFQuadruple because given \"triple\" parameter is null");
+            #endregion
+
+            Context = context ?? new RDFContext();
+            TripleFlavor = triple.TripleFlavor;
+            Subject = triple.Subject;
+            Predicate = triple.Predicate;
+            Object = triple.Object;
+            LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
+            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", QuadrupleID.ToString())));
+        }
+
+        /// <summary>
         /// SPO-flavor ctor
         /// </summary>
         public RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred, RDFResource obj)

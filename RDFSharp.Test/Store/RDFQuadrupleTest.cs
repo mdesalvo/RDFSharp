@@ -24,6 +24,54 @@ namespace RDFSharp.Test.Store
     public class RDFQuadrupleTest
     {
         #region Tests
+        [TestMethod]
+        public void ShouldCreateQuadrupleFromSPOTriple()
+        {
+            RDFQuadruple quadruple = new RDFQuadruple(new RDFContext(), new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+            Assert.IsNotNull(quadruple);
+            Assert.IsTrue(quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO);
+            Assert.IsTrue(quadruple.Context.Equals(new RDFContext()));
+            Assert.IsTrue(quadruple.Subject.Equals(new RDFResource("http://subj/")));
+            Assert.IsTrue(quadruple.Predicate.Equals(new RDFResource("http://pred/")));
+            Assert.IsTrue(quadruple.Object.Equals(new RDFResource("http://obj/")));
+            Assert.IsTrue(quadruple.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", quadruple.QuadrupleID.ToString()))));
+
+            string quadrupleString = quadruple.ToString();
+            Assert.IsTrue(quadrupleString.Equals(string.Concat(quadruple.Context.ToString(), " ", quadruple.Subject.ToString(), " ", quadruple.Predicate.ToString(), " ", quadruple.Object.ToString())));
+
+            long quadrupleID = RDFModelUtilities.CreateHash(quadrupleString);
+            Assert.IsTrue(quadruple.QuadrupleID.Equals(quadrupleID));
+
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            Assert.IsTrue(quadruple.Equals(quadruple2));
+        }
+
+        [TestMethod]
+        public void ShouldCreateQuadrupleFromSPLTriple()
+        {
+            RDFQuadruple quadruple = new RDFQuadruple(new RDFContext(), new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit")));
+            Assert.IsNotNull(quadruple);
+            Assert.IsTrue(quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL);
+            Assert.IsTrue(quadruple.Context.Equals(new RDFContext()));
+            Assert.IsTrue(quadruple.Subject.Equals(new RDFResource("http://subj/")));
+            Assert.IsTrue(quadruple.Predicate.Equals(new RDFResource("http://pred/")));
+            Assert.IsTrue(quadruple.Object.Equals(new RDFPlainLiteral("lit")));
+            Assert.IsTrue(quadruple.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", quadruple.QuadrupleID.ToString()))));
+
+            string quadrupleString = quadruple.ToString();
+            Assert.IsTrue(quadrupleString.Equals(string.Concat(quadruple.Context.ToString(), " ", quadruple.Subject.ToString(), " ", quadruple.Predicate.ToString(), " ", quadruple.Object.ToString())));
+
+            long quadrupleID = RDFModelUtilities.CreateHash(quadrupleString);
+            Assert.IsTrue(quadruple.QuadrupleID.Equals(quadrupleID));
+
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            Assert.IsTrue(quadruple.Equals(quadruple2));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingQuadrupleFromTripleBecauseOfNullTriple()
+            => Assert.ThrowsException<RDFStoreException>(() => new RDFQuadruple(new RDFContext("ex:ctx"), null));
+
         [DataTestMethod]
         [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]
         public void ShouldCreateSPOQuadruple(string s, string p, string o)
@@ -116,22 +164,22 @@ namespace RDFSharp.Test.Store
 
         [DataTestMethod]
         [DataRow("http://example.org/subj", "bnode:hdh744", "http://example.org/obj")]
-        public void ShouldNotCreateSPOQuadrupleBecauseOfBlankPredicate(string s, string p, string o)
+        public void ShouldThrowExceptionOnCreatingSPOQuadrupleBecauseOfBlankPredicate(string s, string p, string o)
             => Assert.ThrowsException<RDFStoreException>(() => new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource(s), new RDFResource(p), new RDFResource(o)));
 
         [DataTestMethod]
         [DataRow("http://example.org/subj", "http://example.org/obj")]
-        public void ShouldNotCreateSPOQuadrupleBecauseOfNullPredicate(string s, string o)
+        public void ShouldThrowExceptionOnCreatingSPOQuadrupleBecauseOfNullPredicate(string s, string o)
             => Assert.ThrowsException<RDFStoreException>(() => new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource(s), null, new RDFResource(o)));
 
         [DataTestMethod]
         [DataRow("http://example.org/subj", "bnode:hdh744", "test")]
-        public void ShouldNotCreateSPLQuadrupleBecauseOfBlankPredicate(string s, string p, string l)
+        public void ShouldThrowExceptionOnCreatingSPLQuadrupleBecauseOfBlankPredicate(string s, string p, string l)
             => Assert.ThrowsException<RDFStoreException>(() => new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource(s), new RDFResource(p), new RDFPlainLiteral(l)));
 
         [DataTestMethod]
         [DataRow("http://example.org/subj", "test")]
-        public void ShouldNotCreateSPLQuadrupleBecauseOfNullPredicate(string s, string l)
+        public void ShouldThrowExceptionOnCreatingSPLQuadrupleBecauseOfNullPredicate(string s, string l)
             => Assert.ThrowsException<RDFStoreException>(() => new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource(s), null, new RDFPlainLiteral(l)));
 
         [DataTestMethod]
