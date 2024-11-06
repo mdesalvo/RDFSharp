@@ -175,13 +175,8 @@ namespace RDFSharp.Store
             if (graph != null)
             {
                 RDFContext graphCtx = new RDFContext(graph.Context);
-                foreach (RDFTriple t in graph)
-                {
-                    if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                        AddQuadruple(new RDFQuadruple(graphCtx, (RDFResource)t.Subject, (RDFResource)t.Predicate, (RDFResource)t.Object));
-                    else
-                        AddQuadruple(new RDFQuadruple(graphCtx, (RDFResource)t.Subject, (RDFResource)t.Predicate, (RDFLiteral)t.Object));
-                }
+                foreach (RDFTriple triple in graph)
+                    AddQuadruple(new RDFQuadruple(graphCtx, triple));
             }
             return this;
         }
