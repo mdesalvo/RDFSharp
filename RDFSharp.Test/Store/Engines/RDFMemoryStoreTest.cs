@@ -1493,6 +1493,22 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
+        public void ShouldImportFromDataTableHavingRowWithoutContext()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://subj/", "http://pred/", "http://obj/");
+
+            RDFMemoryStore store = RDFMemoryStore.FromDataTable(table);
+            
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store[new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"), null].QuadruplesCount == 1);
+        }
+
+        [TestMethod]
         public void ShouldImportFromDataTableHavingRowWithValorizedContext()
         {
             DataTable table = new DataTable();
@@ -1507,6 +1523,19 @@ namespace RDFSharp.Test.Store
             Assert.IsNotNull(store);
             Assert.IsTrue(store.QuadruplesCount == 1);
             Assert.IsTrue(store[new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"), null].QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingBlankContext()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("bnode:12345", "http://subj/", "http://pred/", "http://obj/");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromDataTable(table));
         }
 
         [TestMethod]
