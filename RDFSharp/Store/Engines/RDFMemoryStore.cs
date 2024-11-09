@@ -775,26 +775,34 @@ namespace RDFSharp.Store
             #region Guards
             if (table == null)
                 throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter is null.");
-            if (table.Columns.Count != 4)
-                throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter does not have exactly 4 columns.");
-            if (!(table.Columns.Contains("?CONTEXT") && table.Columns.Contains("?SUBJECT") && table.Columns.Contains("?PREDICATE") && table.Columns.Contains("?OBJECT")))
-                throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter does not have the required columns \"?CONTEXT\", \"?SUBJECT\", \"?PREDICATE\", \"?OBJECT\".");
+            if (!(table.Columns.Contains("?SUBJECT") && table.Columns.Contains("?PREDICATE") && table.Columns.Contains("?OBJECT")))
+                throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter does not have the required columns \"?SUBJECT\", \"?PREDICATE\", \"?OBJECT\".");
             #endregion
 
             RDFMemoryStore memStore = new RDFMemoryStore();
+            RDFContext defaultContext = new RDFContext();
+            bool hasContextColumn = table.Columns.Contains("?CONTEXT");
 
             #region Parse Table
             foreach (DataRow tableRow in table.Rows)
             {
                 #region CONTEXT
-                if (tableRow.IsNull("?CONTEXT") || string.IsNullOrEmpty(tableRow["?CONTEXT"].ToString()))
-                    throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having null or empty value in the \"?CONTEXT\" column.");
-                
-                RDFPatternMember rowCtx = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?CONTEXT"].ToString());
-                if (!(rowCtx is RDFResource))
-                    throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row not having a resource in the \"?CONTEXT\" column.");
-                if (((RDFResource)rowCtx).IsBlank)
-                    throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having a blank resource in the \"?CONTEXT\" column.");
+                RDFPatternMember rowContext;
+                if (hasContextColumn)
+                {
+                    if (tableRow.IsNull("?CONTEXT") || string.IsNullOrEmpty(tableRow["?CONTEXT"].ToString()))
+                        rowContext = defaultContext;
+                    else
+                    {
+                        rowContext = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?CONTEXT"].ToString());
+                        if (!(rowContext is RDFResource))
+                            throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row not having a resource in the \"?CONTEXT\" column.");
+                        if (((RDFResource)rowContext).IsBlank)
+                            throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having a blank resource in the \"?CONTEXT\" column.");
+                    }
+                }
+                else
+                    rowContext = defaultContext;
                 #endregion
 
                 #region SUBJECT
@@ -823,9 +831,9 @@ namespace RDFSharp.Store
                 
                 RDFPatternMember rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?OBJECT"].ToString());
                 if (rowObj is RDFResource objRes)
-                    memStore.AddQuadruple(new RDFQuadruple(new RDFContext(rowCtx.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, objRes));
+                    memStore.AddQuadruple(new RDFQuadruple(new RDFContext(rowContext.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, objRes));
                 else
-                    memStore.AddQuadruple(new RDFQuadruple(new RDFContext(rowCtx.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, (RDFLiteral)rowObj));
+                    memStore.AddQuadruple(new RDFQuadruple(new RDFContext(rowContext.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, (RDFLiteral)rowObj));
                 #endregion
             }
             #endregion

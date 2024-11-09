@@ -1774,7 +1774,7 @@ namespace RDFSharp.Test.Model
             => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(null));
 
         [TestMethod]
-        public void ShouldRaiseExceptionOnImportingFromDataTableNotHaving3Columns()
+        public void ShouldRaiseExceptionOnImportingFromDataTableNotHavingMandatoryColumns()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?SUBJECT", typeof(string));

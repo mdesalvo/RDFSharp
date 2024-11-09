@@ -716,8 +716,6 @@ namespace RDFSharp.Model
             #region Guards
             if (table == null)
                 throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter is null.");
-            if (table.Columns.Count != 3)
-                throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter does not have exactly 3 columns.");
             if (!(table.Columns.Contains("?SUBJECT") && table.Columns.Contains("?PREDICATE") && table.Columns.Contains("?OBJECT")))
                 throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter does not have the required columns \"?SUBJECT\", \"?PREDICATE\", \"?OBJECT\".");
             #endregion
