@@ -303,17 +303,17 @@ namespace RDFSharp.Model
         /// </summary>
         internal static void ParseDirective(string turtleData, RDFTurtleContext turtleContext, RDFGraph result, string directive)
         {
-            switch (directive)
+            switch (directive.ToLowerInvariant())
             {
                 //Prefix directive exists in Turtle format or in SPARQL format
                 case "@prefix":
-                case "PREFIX":
+                case "prefix":
                     ParsePrefixID(turtleData, turtleContext, result);
                     break;
 
                 //Base directive exists in Turtle format or in SPARQL format
                 case "@base":
-                case "BASE":
+                case "base":
                     ParseBase(turtleData, turtleContext, result);
                     break;
 
