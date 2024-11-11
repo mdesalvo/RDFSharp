@@ -393,7 +393,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred"), new RDFPlainLiteral(string.Empty)))); //XXE entity will NOT be accessed, leading to an empty parsed value
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred"), RDFPlainLiteral.Empty))); //XXE entity will NOT be accessed, leading to an empty parsed value
         }
 
         [TestMethod]

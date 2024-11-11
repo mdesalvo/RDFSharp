@@ -77,7 +77,7 @@ namespace RDFSharp.Model
             : this(subj, pred)
         {
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
-            Object = lit ?? new RDFPlainLiteral(string.Empty);
+            Object = lit ?? RDFPlainLiteral.Empty;
         }
 
         /// <summary>

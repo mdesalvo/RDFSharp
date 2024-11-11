@@ -102,7 +102,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL);
             Assert.IsTrue(((RDFResource)triple.Subject).IsBlank);
             Assert.IsTrue(triple.Predicate.Equals(pred));
-            Assert.IsTrue(((RDFPlainLiteral)triple.Object).Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(((RDFPlainLiteral)triple.Object).Equals(RDFPlainLiteral.Empty));
             Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", triple.TripleID.ToString()))));
         }
 

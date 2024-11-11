@@ -535,7 +535,7 @@ namespace RDFSharp.Test.Store
 
             Assert.IsNotNull(store);
             Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), RDFPlainLiteral.Empty)));
         }
 
         [TestMethod]
@@ -675,7 +675,7 @@ namespace RDFSharp.Test.Store
 
             Assert.IsNotNull(store);
             Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), RDFPlainLiteral.Empty)));
         }
 
         [TestMethod]
@@ -1457,7 +1457,7 @@ namespace RDFSharp.Test.Store
 
             Assert.IsNotNull(store);
             Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), RDFPlainLiteral.Empty)));
         }
 
         [TestMethod]
@@ -1571,7 +1571,7 @@ namespace RDFSharp.Test.Store
 
             Assert.IsNotNull(store);
             Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), RDFPlainLiteral.Empty)));
         }
 
         [TestMethod]

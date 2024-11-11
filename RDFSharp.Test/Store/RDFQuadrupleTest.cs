@@ -180,7 +180,7 @@ namespace RDFSharp.Test.Store
             Assert.IsTrue(quadruple.Context.Equals(ctx));
             Assert.IsTrue(((RDFResource)quadruple.Subject).IsBlank);
             Assert.IsTrue(quadruple.Predicate.Equals(pred));
-            Assert.IsTrue(((RDFPlainLiteral)quadruple.Object).Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(((RDFPlainLiteral)quadruple.Object).Equals(RDFPlainLiteral.Empty));
             Assert.IsTrue(quadruple.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", quadruple.QuadrupleID.ToString()))));
         }
 
