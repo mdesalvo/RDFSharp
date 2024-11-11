@@ -22,25 +22,25 @@ using System.Text;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFLengthExpression represents a string length function to be applied on a query results table.
+    /// RDFLangExpression represents a language-extractor function to be applied on a query results table.
     /// </summary>
-    public class RDFLengthExpression : RDFExpression
+    public class RDFLangExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a string length function with given arguments
+        /// Default-ctor to build a lang function with given arguments
         /// </summary>
-        public RDFLengthExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFLangExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a string length function with given arguments
+        /// Default-ctor to build a lang function with given arguments
         /// </summary>
-        public RDFLengthExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFLangExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the string length function
+        /// Gives the string representation of the lang function
         /// </summary>
         public override string ToString()
             => ToString(new List<RDFNamespace>());
@@ -48,8 +48,8 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(STRLEN(L))
-            sb.Append("(STRLEN(");
+            //(LANG(L))
+            sb.Append("(LANG(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
@@ -62,11 +62,11 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the string length function on the given datarow
+        /// Applies the lang function on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {
-            RDFTypedLiteral expressionResult = null;
+            RDFPlainLiteral expressionResult = null;
 
             #region Guards
             if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
@@ -85,12 +85,8 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                if (leftArgumentPMember is RDFResource leftArgumentPMemberResource)
-                    expressionResult = new RDFTypedLiteral(leftArgumentPMember.ToString().Length.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                else if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLiteral)
-                    expressionResult = new RDFTypedLiteral(leftArgumentPMemberPLiteral.Value.Length.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                else if (leftArgumentPMember is RDFTypedLiteral leftArgumentPMemberTLiteral && leftArgumentPMemberTLiteral.HasStringDatatype())
-                    expressionResult = new RDFTypedLiteral(leftArgumentPMemberTLiteral.Value.Length.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLiteral)
+                    expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLiteral.Language);
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }

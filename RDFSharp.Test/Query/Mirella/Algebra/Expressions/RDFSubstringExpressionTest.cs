@@ -217,7 +217,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -235,7 +235,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -271,7 +271,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -289,7 +289,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -307,7 +307,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -325,7 +325,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -379,7 +379,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -520,7 +520,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -538,7 +538,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -574,7 +574,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -880,7 +880,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -898,7 +898,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -934,7 +934,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -1060,7 +1060,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -1078,7 +1078,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -1114,7 +1114,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -1132,7 +1132,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -1150,7 +1150,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -1168,7 +1168,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -1222,7 +1222,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -1346,7 +1346,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -1364,7 +1364,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -1400,7 +1400,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -1706,7 +1706,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -1724,7 +1724,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]
@@ -1760,7 +1760,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
         }
 
         [TestMethod]

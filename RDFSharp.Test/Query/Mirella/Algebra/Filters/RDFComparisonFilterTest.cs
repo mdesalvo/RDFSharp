@@ -296,7 +296,7 @@ namespace RDFSharp.Test.Query
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFPlainLiteral(string.Empty).ToString();
+            row["?A"] = RDFPlainLiteral.Empty.ToString();
             row["?B"] = null;
             table.Rows.Add(row);
             table.AcceptChanges();
