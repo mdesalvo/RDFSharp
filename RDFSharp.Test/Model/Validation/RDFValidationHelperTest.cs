@@ -926,7 +926,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(shape2.Names.Count == 1);
             Assert.IsTrue(shape2.Names.Single().Equals(new RDFPlainLiteral("name", "en-US")));
             Assert.IsNotNull(shape2.Order);
-            Assert.IsTrue(shape2.Order.Equals(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            Assert.IsTrue(shape2.Order.Equals(RDFTypedLiteral.One));
             Assert.IsNotNull(shape2.Group);
             Assert.IsTrue(shape2.Group.Equals(new RDFResource("ex:shapeGroup")));
 

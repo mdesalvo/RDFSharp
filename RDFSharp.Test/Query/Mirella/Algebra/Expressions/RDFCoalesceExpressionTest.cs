@@ -141,7 +141,7 @@ namespace RDFSharp.Test.Query
 
             RDFCoalesceExpression expression = new RDFCoalesceExpression(
                 new RDFVariableExpression(new RDFVariable("?A")),
-                new RDFAddExpression(new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)), new RDFVariable("?B")));
+                new RDFAddExpression(new RDFConstantExpression(RDFTypedLiteral.One), new RDFVariable("?B")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
@@ -161,7 +161,7 @@ namespace RDFSharp.Test.Query
             table.AcceptChanges();
 
             RDFCoalesceExpression expression = new RDFCoalesceExpression(
-                new RDFAddExpression(new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)), new RDFVariable("?B")),
+                new RDFAddExpression(new RDFConstantExpression(RDFTypedLiteral.One), new RDFVariable("?B")),
                 new RDFVariableExpression(new RDFVariable("?A")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -183,7 +183,7 @@ namespace RDFSharp.Test.Query
 
             RDFCoalesceExpression expression = new RDFCoalesceExpression(
                 new RDFAddExpression(new RDFConstantExpression(new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)), new RDFVariable("?A")),
-                new RDFAddExpression(new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)), new RDFVariable("?B")));
+                new RDFAddExpression(new RDFConstantExpression(RDFTypedLiteral.One), new RDFVariable("?B")));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNull(expressionResult);
@@ -262,10 +262,10 @@ namespace RDFSharp.Test.Query
             RDFCoalesceExpression expression = new RDFCoalesceExpression(
                 new RDFCoalesceExpression(
                     new RDFSubstringExpression(new RDFVariable("?C"), 1),
-                    new RDFAddExpression(new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)), new RDFVariable("?B"))),
+                    new RDFAddExpression(new RDFConstantExpression(RDFTypedLiteral.One), new RDFVariable("?B"))),
                 new RDFCoalesceExpression(
                     new RDFVariableExpression(new RDFVariable("?A")),
-                    new RDFAddExpression(new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)), new RDFVariable("?B"))));
+                    new RDFAddExpression(new RDFConstantExpression(RDFTypedLiteral.One), new RDFVariable("?B"))));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
@@ -289,7 +289,7 @@ namespace RDFSharp.Test.Query
             RDFCoalesceExpression expression = new RDFCoalesceExpression(
                 new RDFCoalesceExpression(
                     new RDFSubstringExpression(new RDFVariable("?C"), 1),
-                    new RDFAddExpression(new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)), new RDFVariable("?B"))),
+                    new RDFAddExpression(new RDFConstantExpression(RDFTypedLiteral.One), new RDFVariable("?B"))),
                 new RDFCoalesceExpression(
                     new RDFVariableExpression(new RDFVariable("?Q")),
                     new RDFVariable("?Y")));
@@ -316,7 +316,7 @@ namespace RDFSharp.Test.Query
                 new RDFCoalesceExpression(
                     new RDFCoalesceExpression(
                         new RDFSubstringExpression(new RDFVariable("?C"), 1),
-                        new RDFAddExpression(new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)), new RDFVariable("?B"))),
+                        new RDFAddExpression(new RDFConstantExpression(RDFTypedLiteral.One), new RDFVariable("?B"))),
                     new RDFCoalesceExpression(
                         new RDFVariableExpression(new RDFVariable("?T")),
                         new RDFAddExpression(new RDFVariable("?C"), new RDFVariable("?B")))),
@@ -345,7 +345,7 @@ namespace RDFSharp.Test.Query
                 new RDFCoalesceExpression(
                     new RDFCoalesceExpression(
                         new RDFSubstringExpression(new RDFVariable("?C"), 1),
-                        new RDFAddExpression(new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)), new RDFVariable("?B"))),
+                        new RDFAddExpression(new RDFConstantExpression(RDFTypedLiteral.One), new RDFVariable("?B"))),
                     new RDFCoalesceExpression(
                         new RDFVariableExpression(new RDFVariable("?T")),
                         new RDFAddExpression(new RDFVariable("?C"), new RDFVariable("?B")))),

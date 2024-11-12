@@ -93,7 +93,7 @@ namespace RDFSharp.Test.Query
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.One));
         }
 
         [TestMethod]

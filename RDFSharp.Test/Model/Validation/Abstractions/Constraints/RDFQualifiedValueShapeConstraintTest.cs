@@ -70,7 +70,7 @@ namespace RDFSharp.Test.Model
                                                         && t.Value.ObjectID.Equals(new RDFResource("ex:QVShape").PatternMemberID)));
             Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT.PatternMemberID)
-                                                        && t.Value.ObjectID.Equals(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER).PatternMemberID)));
+                                                        && t.Value.ObjectID.Equals(RDFTypedLiteral.One.PatternMemberID)));
             Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT.PatternMemberID)
                                                         && t.Value.ObjectID.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER).PatternMemberID)));

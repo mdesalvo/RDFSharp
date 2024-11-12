@@ -7095,7 +7095,7 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?X"))
                 .AddProjectionVariable(new RDFVariable("?AGEX2"), new RDFMultiplyExpression(new RDFVariable("?A"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)))
                 .AddProjectionVariable(new RDFVariable("?AGEX4"), new RDFMultiplyExpression(new RDFVariable("?AGEX2"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)))
-                .AddProjectionVariable(new RDFVariable("?AGEX4PLUS1"), new RDFVariableExpression(new RDFAddExpression(new RDFVariable("?AGEX4"), new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+                .AddProjectionVariable(new RDFVariable("?AGEX4PLUS1"), new RDFVariableExpression(new RDFAddExpression(new RDFVariable("?AGEX4"), RDFTypedLiteral.One)));
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
             Assert.IsNotNull(result.SelectResults);
