@@ -3,7 +3,7 @@
     <AssemblyTitle>RDFSharp</AssemblyTitle>
     <AssemblyName>RDFSharp</AssemblyName>
     <AssemblyVersion>$(Version)</AssemblyVersion>
-    <Version>3.13.0</Version>
+    <Version>3.14.0</Version>
     <Authors>Marco De Salvo</Authors>
     <Copyright>Marco De Salvo</Copyright>
     <Description>Lightweight and friendly .NET library for realizing Semantic Web applications</Description>
@@ -21,6 +21,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -48,5 +49,11 @@
 	  <PackageReference Include="NetTopologySuite" Version="2.5.0" />
 	  <PackageReference Include="ProjNet" Version="2.0.0" />
 	  <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 </Project>
