@@ -270,21 +270,13 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintAskQuery(RDFAskQuery askQuery)
         {
-            StringBuilder sb = new StringBuilder();
             if (askQuery == null)
-                return sb.ToString();
+                return string.Empty;
 
-            #region PREFIXES
+            StringBuilder sb = new StringBuilder();
             List<RDFNamespace> prefixes = PrintPrefixes(askQuery, sb, true);
-            #endregion
-
-            #region ASK
             sb.AppendLine("ASK");
-            #endregion
-
-            #region WHERE
             PrintWhereClause(askQuery, sb, prefixes, string.Empty, 0, false);
-            #endregion
 
             return sb.ToString();
         }
@@ -451,6 +443,7 @@ namespace RDFSharp.Query
                     {
                         //Begin new UNION block
                         printingUnion = true;
+
                         result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
                         result.AppendLine(string.Concat(spaces, "    UNION"));
                     }
@@ -458,10 +451,11 @@ namespace RDFSharp.Query
                     //Pattern is set as INTERSECT with the next pg member or it IS the last one => do not append UNION
                     else
                     {
-                        //End active UNION block
                         if (printingUnion)
                         {
+                            //End active UNION block
                             printingUnion = false;
+
                             result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
                         }
                         else
@@ -473,10 +467,11 @@ namespace RDFSharp.Query
                 #region PROPERTY PATH
                 else if (pgMember is RDFPropertyPath ppPgMember && ppPgMember.IsEvaluable)
                 {
-                    //End active UNION block
                     if (printingUnion)
                     {
+                        //End active UNION block
                         printingUnion = false;
+
                         result.AppendLine(string.Concat(spaces, "    { ", PrintPropertyPath(ppPgMember, prefixes), " }"));
                     }
                     else
@@ -487,10 +482,11 @@ namespace RDFSharp.Query
                 #region VALUES
                 else if (pgMember is RDFValues vlPgMember && vlPgMember.IsEvaluable && !vlPgMember.IsInjected)
                 {
-                    //End active UNION block
                     if (printingUnion)
                     {
+                        //End active UNION block
                         printingUnion = false;
+
                         result.AppendLine(string.Concat(spaces, "    { ", PrintValues(vlPgMember, prefixes, spaces), " }"));
                     }
                     else
@@ -502,8 +498,8 @@ namespace RDFSharp.Query
                 else if (pgMember is RDFBind bdPgMember)
                 {
                     //End active UNION block
-                    if (printingUnion)
-                        printingUnion = false;
+                    printingUnion = false;
+
                     result.AppendLine(string.Concat(spaces, "    ", PrintBind(bdPgMember, prefixes), " ."));
                 }
                 #endregion
