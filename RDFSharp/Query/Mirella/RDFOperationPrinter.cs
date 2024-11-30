@@ -61,22 +61,14 @@ namespace RDFSharp.Query
 
             if (insertWhereOperation != null)
             {
-                #region PREFIXES
                 List<RDFNamespace> prefixes = insertWhereOperation.GetPrefixes();
                 sb.Append(PrintPrefixes(prefixes));
-                #endregion
-
-                #region TEMPLATES
+                
                 sb.AppendLine("INSERT {");
                 insertWhereOperation.InsertTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
                 sb.AppendLine("}");
-                #endregion
-
-                #region BODY
-                sb.AppendLine("WHERE {");
-                sb.Append(PrintBodyMembers(prefixes, insertWhereOperation));
-                sb.Append("}");
-                #endregion
+                
+                RDFQueryPrinter.PrintWhereClause(insertWhereOperation, sb, prefixes, string.Empty, 0, false);
             }
 
             return sb.ToString();
@@ -91,16 +83,12 @@ namespace RDFSharp.Query
 
             if (deleteDataOperation != null)
             {
-                #region PREFIXES
                 List<RDFNamespace> prefixes = deleteDataOperation.GetPrefixes();
                 sb.Append(PrintPrefixes(prefixes));
-                #endregion
-
-                #region TEMPLATES
+                
                 sb.AppendLine("DELETE DATA {");
                 deleteDataOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
                 sb.Append("}");
-                #endregion
             }
 
             return sb.ToString();
@@ -115,22 +103,14 @@ namespace RDFSharp.Query
 
             if (deleteWhereOperation != null)
             {
-                #region PREFIXES
                 List<RDFNamespace> prefixes = deleteWhereOperation.GetPrefixes();
                 sb.Append(PrintPrefixes(prefixes));
-                #endregion
 
-                #region TEMPLATES
                 sb.AppendLine("DELETE {");
                 deleteWhereOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
                 sb.AppendLine("}");
-                #endregion
 
-                #region BODY
-                sb.AppendLine("WHERE {");
-                sb.Append(PrintBodyMembers(prefixes, deleteWhereOperation));
-                sb.Append("}");
-                #endregion
+                RDFQueryPrinter.PrintWhereClause(deleteWhereOperation, sb, prefixes, string.Empty, 0, false);
             }
 
             return sb.ToString();
@@ -145,25 +125,18 @@ namespace RDFSharp.Query
 
             if (deleteInsertWhereOperation != null)
             {
-                #region PREFIXES
                 List<RDFNamespace> prefixes = deleteInsertWhereOperation.GetPrefixes();
                 sb.Append(PrintPrefixes(prefixes));
-                #endregion
 
-                #region TEMPLATES
                 sb.AppendLine("DELETE {");
                 deleteInsertWhereOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
                 sb.AppendLine("}");
+
                 sb.AppendLine("INSERT {");
                 deleteInsertWhereOperation.InsertTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
                 sb.AppendLine("}");
-                #endregion
 
-                #region BODY
-                sb.AppendLine("WHERE {");
-                sb.Append(PrintBodyMembers(prefixes, deleteInsertWhereOperation));
-                sb.Append("}");
-                #endregion
+                RDFQueryPrinter.PrintWhereClause(deleteInsertWhereOperation, sb, prefixes, string.Empty, 0, false);
             }
 
             return sb.ToString();
@@ -252,128 +225,6 @@ namespace RDFSharp.Query
                 tpString = tpString.Replace("OPTIONAL { ", string.Empty).TrimEnd(new char[] { ' ', '}' });
 
             return string.Concat("  ", tpString, " .", Environment.NewLine);
-        }
-
-        private static string PrintBodyMembers(List<RDFNamespace> operationPrefixes, RDFOperation operation)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            #region MEMBERS
-            bool printingUnion = false;
-            List<RDFQueryMember> evaluableQueryMembers = operation.GetEvaluableQueryMembers().ToList();
-            RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
-            foreach (RDFQueryMember queryMember in evaluableQueryMembers)
-            {
-                #region PATTERNGROUPS
-                if (queryMember is RDFPatternGroup pGroup)
-                {
-                    //Current pattern group is set as UNION with the next one
-                    if (pGroup.JoinAsUnion)
-                    {
-                        //Current pattern group IS NOT the last of the query
-                        //(so UNION keyword must be appended at last)
-                        if (!queryMember.Equals(lastQueryMbr))
-                        {
-                            //Begin a new Union block
-                            if (!printingUnion)
-                            {
-                                printingUnion = true;
-                                sb.AppendLine("  {");
-                            }
-                            sb.Append(RDFQueryPrinter.PrintPatternGroup(pGroup, 2, true, operationPrefixes));
-                            sb.AppendLine("    UNION");
-                        }
-
-                        //Current pattern group IS the last of the query
-                        //(so UNION keyword must not be appended at last)
-                        else
-                        {
-                            //End the Union block
-                            if (printingUnion)
-                            {
-                                printingUnion = false;
-                                sb.Append(RDFQueryPrinter.PrintPatternGroup(pGroup, 2, true, operationPrefixes));
-                                sb.AppendLine("  }");
-                            }
-                            else
-                                sb.Append(RDFQueryPrinter.PrintPatternGroup(pGroup, 0, false, operationPrefixes));
-                        }
-                    }
-
-                    //Current pattern group is set as INTERSECT with the next one
-                    else
-                    {
-                        //End the Union block
-                        if (printingUnion)
-                        {
-                            printingUnion = false;
-                            sb.Append(RDFQueryPrinter.PrintPatternGroup(pGroup, 2, true, operationPrefixes));
-                            sb.AppendLine("  }");
-                        }
-                        else
-                            sb.Append(RDFQueryPrinter.PrintPatternGroup(pGroup, 0, false, operationPrefixes));
-                    }
-                }
-                #endregion
-
-                #region SUBQUERY
-                else if (queryMember is RDFSelectQuery sqQueryMember)
-                {
-                    //Merge main query prefixes
-                    operation.GetPrefixes().ForEach(pf1 => sqQueryMember.AddPrefix(pf1));
-
-                    //Current subquery is set as UNION with the next one
-                    if (sqQueryMember.JoinAsUnion)
-                    {
-                        //Current subquery IS NOT the last of the query
-                        //(so UNION keyword must be appended at last)
-                        if (!sqQueryMember.Equals(lastQueryMbr))
-                        {
-                            //Begin a new Union block
-                            if (!printingUnion)
-                            {
-                                printingUnion = true;
-                                sb.AppendLine("  {");
-                            }
-                            sb.Append(RDFQueryPrinter.PrintSelectQuery(sqQueryMember, 1, true));
-                            sb.AppendLine("    UNION");
-                        }
-
-                        //Current query IS the last of the query
-                        //(so UNION keyword must not be appended at last)
-                        else
-                        {
-                            //End the Union block
-                            if (printingUnion)
-                            {
-                                printingUnion = false;
-                                sb.Append(RDFQueryPrinter.PrintSelectQuery(sqQueryMember, 1, true));
-                                sb.AppendLine("  }");
-                            }
-                            else
-                                sb.Append(RDFQueryPrinter.PrintSelectQuery(sqQueryMember, 1, false));
-                        }
-                    }
-
-                    //Current query is set as INTERSECT with the next one
-                    else
-                    {
-                        //End the Union block
-                        if (printingUnion)
-                        {
-                            printingUnion = false;
-                            sb.Append(RDFQueryPrinter.PrintSelectQuery(sqQueryMember, 1, true));
-                            sb.AppendLine("  }");
-                        }
-                        else
-                            sb.Append(RDFQueryPrinter.PrintSelectQuery(sqQueryMember, 1, false));
-                    }
-                }
-                #endregion
-            }
-            #endregion
-
-            return sb.ToString();
         }
         #endregion
     }
