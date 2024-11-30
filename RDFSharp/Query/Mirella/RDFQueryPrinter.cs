@@ -83,9 +83,9 @@ namespace RDFSharp.Query
                          .ToList()
                          .ForEach(gm =>
                          {
-                             sb.Append(" ");
+                             sb.Append(' ');
                              sb.Append(string.Join(" ", gm.PartitionVariables));
-                             sb.Append(" ");
+                             sb.Append(' ');
                              sb.Append(string.Join(" ", gm.Aggregators.Where(ag => !(ag is RDFPartitionAggregator))));
                          });
             }
@@ -562,14 +562,14 @@ namespace RDFSharp.Query
         {
             StringBuilder result = new StringBuilder();
             result.Append(PrintPatternMember(propertyPath.Start, prefixes));
-            result.Append(" ");
+            result.Append(' ');
 
             #region Single Property
             if (propertyPath.Steps.Count == 1)
             {
                 //InversePath (will swap start/end)
                 if (propertyPath.Steps[0].IsInverseStep)
-                    result.Append("^");
+                    result.Append('^');
 
                 RDFResource propPath = propertyPath.Steps[0].StepProperty;
                 result.Append(PrintPatternMember(propPath, prefixes));
@@ -591,12 +591,12 @@ namespace RDFSharp.Query
                         if (!openedParenthesis)
                         {
                             openedParenthesis = true;
-                            result.Append("(");
+                            result.Append('(');
                         }
 
                         //InversePath (will swap start/end)
                         if (propertyPath.Steps[i].IsInverseStep)
-                            result.Append("^");
+                            result.Append('^');
 
                         var propPath = propertyPath.Steps[i].StepProperty;
                         if (i < propertyPath.Steps.Count - 1)
@@ -607,7 +607,7 @@ namespace RDFSharp.Query
                         else
                         {
                             result.Append(PrintPatternMember(propPath, prefixes));
-                            result.Append(")");
+                            result.Append(')');
                         }
                     }
 
@@ -623,7 +623,7 @@ namespace RDFSharp.Query
 
                         //InversePath (will swap start/end)
                         if (propertyPath.Steps[i].IsInverseStep)
-                            result.Append("^");
+                            result.Append('^');
 
                         var propPath = propertyPath.Steps[i].StepProperty;
                         if (i < propertyPath.Steps.Count - 1)
@@ -638,7 +638,7 @@ namespace RDFSharp.Query
             }
             #endregion
 
-            result.Append(" ");
+            result.Append(' ');
             result.Append(PrintPatternMember(propertyPath.End, prefixes));
             return result.ToString();
         }
@@ -661,9 +661,9 @@ namespace RDFSharp.Query
                         result.Append("UNDEF");
                     else
                         result.Append(RDFQueryPrinter.PrintPatternMember(binding, prefixes));
-                    result.Append(" ");
+                    result.Append(' ');
                 }
-                result.Append("}");
+                result.Append('}');
             }
 
             //Extended representation
@@ -681,7 +681,7 @@ namespace RDFSharp.Query
                             result.Append("UNDEF");
                         else
                             result.Append(RDFQueryPrinter.PrintPatternMember(bindingValue, prefixes));
-                        result.Append(" ");
+                        result.Append(' ');
                     });
                     result.AppendLine(")");
                 }

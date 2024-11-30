@@ -136,7 +136,7 @@ namespace RDFSharp.Query
             StringBuilder result = new StringBuilder();
             if (HavingClause.Item1)
             {
-                result.Append("(");
+                result.Append('(');
                 result.Append(ToString().Substring(1, ToString().LastIndexOf(" AS ?")));
                 switch (HavingClause.Item2)
                 {
@@ -160,7 +160,7 @@ namespace RDFSharp.Query
                         break;
                 }
                 result.Append(RDFQueryPrinter.PrintPatternMember(HavingClause.Item3, prefixes));
-                result.Append(")");
+                result.Append(')');
             }
             return result.ToString();
         }

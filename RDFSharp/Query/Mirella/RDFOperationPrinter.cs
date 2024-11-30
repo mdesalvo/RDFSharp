@@ -45,7 +45,7 @@ namespace RDFSharp.Query
                 #region TEMPLATES
                 sb.AppendLine("INSERT DATA {");
                 insertDataOperation.InsertTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
-                sb.Append("}");
+                sb.Append('}');
                 #endregion
             }
 
@@ -88,7 +88,7 @@ namespace RDFSharp.Query
                 
                 sb.AppendLine("DELETE DATA {");
                 deleteDataOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
-                sb.Append("}");
+                sb.Append('}');
             }
 
             return sb.ToString();
