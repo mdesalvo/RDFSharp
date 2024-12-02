@@ -549,23 +549,19 @@ namespace RDFSharp.Query
                     {
                         if (printingUnion || printingMinus)
                         {
-                            bool printingBoth = printingUnion && printingMinus;
-
-                            //End active UNION block
-                            if (printingUnion)
-                                printingUnion = false;
-                            //End active MINUS block
-                            if (printingMinus)
-                                printingMinus = false;
-
                             result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
 
                             //Restore indentation level in case of active UNION+MINUS
-                            if (printingBoth)
+                            if (printingUnion && printingMinus)
                             {
                                 result.AppendLine(string.Concat(spaces, "  }"));
                                 spaces = new string(' ', spaces.Length - 2);
                             }
+
+                            //End active UNION block
+                            printingUnion = false;
+                            //End active MINUS block
+                            printingMinus = false;
                         }
                         else
                             result.AppendLine(string.Concat(spaces, "    ", PrintPattern(ptPgMember, prefixes), " ."));
@@ -578,14 +574,12 @@ namespace RDFSharp.Query
                 {
                     if (printingUnion || printingMinus)
                     {
-                        //End active UNION block
-                        if (printingUnion)
-                            printingUnion = false;
-                        //End active MINUS block
-                        if (printingMinus)
-                            printingMinus = false;
-
                         result.AppendLine(string.Concat(spaces, "    { ", PrintPropertyPath(ppPgMember, prefixes), " }"));
+
+                        //End active UNION block
+                        printingUnion = false;
+                        //End active MINUS block
+                        printingMinus = false;
                     }
                     else
                         result.AppendLine(string.Concat(spaces, "    ", PrintPropertyPath(ppPgMember, prefixes), " ."));
@@ -597,14 +591,12 @@ namespace RDFSharp.Query
                 {
                     if (printingUnion || printingMinus)
                     {
-                        //End active UNION block
-                        if (printingUnion)
-                            printingUnion = false;
-                        //End active MINUS block
-                        if (printingMinus)
-                            printingMinus = false;
-
                         result.AppendLine(string.Concat(spaces, "    { ", PrintValues(vlPgMember, prefixes, spaces), " }"));
+
+                        //End active UNION block
+                        printingUnion = false;
+                        //End active MINUS block
+                        printingMinus = false;
                     }
                     else
                         result.AppendLine(string.Concat(spaces, "    ", PrintValues(vlPgMember, prefixes, spaces), " ."));
@@ -614,14 +606,12 @@ namespace RDFSharp.Query
                 #region BIND
                 else if (pgMember is RDFBind bdPgMember)
                 {
-                    //End active UNION block
-                    if (printingUnion)
-                        printingUnion = false;
-                    //End active MINUS block
-                    if (printingMinus)
-                        printingMinus = false;
-
                     result.AppendLine(string.Concat(spaces, "    ", PrintBind(bdPgMember, prefixes), " ."));
+
+                    //End active UNION block
+                    printingUnion = false;
+                    //End active MINUS block
+                    printingMinus = false;
                 }
                 #endregion
             }
