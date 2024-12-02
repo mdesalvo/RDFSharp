@@ -4749,6 +4749,43 @@ WHERE {
         }
 
         [TestMethod]
+        public void ShouldPrintComplexSelectQueryHavingMixedUnionMinusInPatterns5()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+              .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?S7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+              );
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"SELECT *
+WHERE {
+  {
+    { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    UNION
+    { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    UNION
+    { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    MINUS
+    { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    MINUS
+    {
+      { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+      UNION
+      { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    }
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
         public void ShouldPrintComplexSelectQueryHavingBinds1()
         {
             RDFSelectQuery query = new RDFSelectQuery()

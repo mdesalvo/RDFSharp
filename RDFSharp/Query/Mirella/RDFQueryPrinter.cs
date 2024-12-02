@@ -541,6 +541,8 @@ namespace RDFSharp.Query
 
                         //Begin new MINUS block
                         printingMinus = true;
+                        //End active UNION block
+                        printingUnion = false;
                     }
 
                     //Pattern is set as INTERSECT with the next pg member or it IS the last one => do not append UNION/MINUS
@@ -554,7 +556,8 @@ namespace RDFSharp.Query
                             if (printingUnion && printingMinus)
                             {
                                 result.AppendLine(string.Concat(spaces, "  }"));
-                                spaces = new string(' ', spaces.Length - 2);
+                                if (spaces.Length >= 2)
+                                    spaces = new string(' ', spaces.Length - 2);
                             }
 
                             //End active UNION block
