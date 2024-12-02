@@ -1850,6 +1850,12 @@ namespace RDFSharp.Query
         /// </summary>
         internal static DataTable DiffJoinTables(DataTable leftTable, DataTable rightTable)
         {
+            #region Utilities
+            bool CheckJoin(DataRow leftRow, DataRow rightRow, string commonColumn)
+                => leftRow.IsNull(commonColumn)
+                    || string.Equals(leftRow[commonColumn]?.ToString(), rightRow[commonColumn]?.ToString(), StringComparison.Ordinal);
+            #endregion
+
             DataTable diffTable = new DataTable();
 
             //Determine common columns
@@ -1881,7 +1887,7 @@ namespace RDFSharp.Query
                 //(this helps at slightly reducing O(N^2) complexity to O(N*K) where K << N)
                 EnumerableRowCollection<DataRow> relatedRows = rightTable.AsEnumerable();
                 foreach (DataColumn commonColumn in commonColumns)
-                    relatedRows = relatedRows.Where(relatedRow => string.Equals(leftRow[commonColumn.ColumnName]?.ToString(), relatedRow[commonColumn.ColumnName]?.ToString(), StringComparison.Ordinal));
+                    relatedRows = relatedRows.Where(relatedRow => CheckJoin(leftRow, relatedRow, commonColumn.ColumnName));
                 List<DataRow> relatedRowsList = relatedRows.ToList();
 
                 //Take left row only if it HASN'T any right matches
