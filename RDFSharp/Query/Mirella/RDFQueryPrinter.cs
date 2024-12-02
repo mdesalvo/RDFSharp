@@ -33,7 +33,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a SPARQL SELECT query
         /// </summary>
-        internal static string PrintSelectQuery(RDFSelectQuery selectQuery, double indentLevel, bool fromUnion)
+        internal static string PrintSelectQuery(RDFSelectQuery selectQuery, double indentLevel, bool fromUnionOrMinus)
         {
             StringBuilder sb = new StringBuilder();
             if (selectQuery == null)
@@ -44,11 +44,11 @@ namespace RDFSharp.Query
                 => subqueryBodySpacesFunc(indentLevel) - 2 < 0 ? 0 : subqueryBodySpacesFunc(indentLevel) - 2;
             int subqueryBodySpacesFunc(double indLevel)
                 => Convert.ToInt32(4.0d * indentLevel);
-            int subqueryUnionSpacesFunc(bool union)
-                => union ? 2 : 0;
+            int subqueryUnionOrMinusSpacesFunc(bool unionOrMinus)
+                => unionOrMinus ? 2 : 0;
 
-            string subquerySpaces = new string(' ', subqueryHeaderSpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
-            string subqueryBodySpaces = new string(' ', subqueryBodySpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
+            string subquerySpaces = new string(' ', subqueryHeaderSpacesFunc(indentLevel) + subqueryUnionOrMinusSpacesFunc(fromUnionOrMinus));
+            string subqueryBodySpaces = new string(' ', subqueryBodySpacesFunc(indentLevel) + subqueryUnionOrMinusSpacesFunc(fromUnionOrMinus));
             #endregion
 
             #region PREFIX
@@ -58,7 +58,7 @@ namespace RDFSharp.Query
             #region SELECT
             if (selectQuery.IsSubQuery)
             {
-                if (selectQuery.IsOptional && !fromUnion)
+                if (selectQuery.IsOptional && !fromUnionOrMinus)
                     sb.AppendLine(string.Concat(subquerySpaces, "OPTIONAL {"));
                 else
                     sb.AppendLine(string.Concat(subquerySpaces, "{"));
@@ -113,7 +113,7 @@ namespace RDFSharp.Query
             #endregion
 
             #region WHERE
-            PrintWhereClause(selectQuery, sb, prefixes, subqueryBodySpaces, indentLevel, fromUnion);
+            PrintWhereClause(selectQuery, sb, prefixes, subqueryBodySpaces, indentLevel, fromUnionOrMinus);
             #endregion
 
             #region MODIFIERS
@@ -282,7 +282,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Prints the string representation of a SPARQL query's WHERE clause
+        /// Prints the string representation of a SPARQL query's prefixes
         /// </summary>
         internal static List<RDFNamespace> PrintPrefixes(RDFQuery query, StringBuilder sb, bool enablePrinting)
         {
@@ -299,7 +299,7 @@ namespace RDFSharp.Query
         /// Prints the string representation of a SPARQL query's WHERE clause
         /// </summary>
         internal static void PrintWhereClause(RDFQuery query, StringBuilder sb, List<RDFNamespace> prefixes, 
-            string subqueryBodySpaces, double indentLevel, bool fromUnion)
+            string subqueryBodySpaces, double indentLevel, bool fromUnionOrMinus)
         {
             #region Facilities
             void PrintWrappedPatternGroup(RDFPatternGroup patternGroup)
@@ -317,7 +317,9 @@ namespace RDFSharp.Query
 
             sb.AppendLine(string.Concat(subqueryBodySpaces, "WHERE {"));
 
+            #region WhereBody
             bool printingUnion = false;
+            bool printingMinus = false;
             List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
             RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
             foreach (RDFQueryMember queryMember in evaluableQueryMembers)
@@ -326,12 +328,16 @@ namespace RDFSharp.Query
                 if (queryMember is RDFPatternGroup pgQueryMember)
                 {
                     //PatternGroup is set as UNION with the next query member and it IS NOT the last one => append UNION
-                    if (pgQueryMember.JoinAsUnion && !pgQueryMember.Equals(lastQueryMbr)) 
+                    if (pgQueryMember.JoinAsUnion && !pgQueryMember.Equals(lastQueryMbr))
                     {
                         if (!printingUnion)
                         {
                             //Begin new UNION block
                             printingUnion = true;
+
+                            //Adjust indentation level in case of active MINUS
+                            if (printingMinus)
+                                subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
 
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                         }
@@ -339,15 +345,45 @@ namespace RDFSharp.Query
                         sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
                     }
 
-                    //PatternGroup is set as INTERSECT with the next query member or it IS the last one => do not append UNION
+                    //PatternGroup is set as MINUS with the next query member and it IS NOT the last one => append MINUS
+                    else if (pgQueryMember.JoinAsMinus && !pgQueryMember.Equals(lastQueryMbr))
+                    {
+                        if (!printingMinus)
+                        {
+                            //Begin new MINUS block
+                            printingMinus = true;
+
+                            //Adjust indentation level in case of active UNION
+                            if (printingUnion)
+                                subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
+
+                            sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
+                        }
+                        PrintWrappedPatternGroup(pgQueryMember);
+                        sb.AppendLine(string.Concat(subqueryBodySpaces, "    MINUS"));
+                    }
+
+                    //PatternGroup is set as INTERSECT with the next query member or it IS the last one => do not append UNION/MINUS
                     else
                     {
-                        if (printingUnion)
+                        if (printingUnion || printingMinus)
                         {
+                            bool printingBoth = printingUnion && printingMinus;
+
                             //End active UNION block
                             printingUnion = false;
+                            //End active MINUS block
+                            printingMinus = false;
 
                             PrintWrappedPatternGroup(pgQueryMember);
+
+                            //Restore indentation level in case of active UNION+MINUS
+                            if (printingBoth)
+                            {
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
+                                subqueryBodySpaces = new string(' ', subqueryBodySpaces.Length - 2);
+                            }
+
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                         }
                         else
@@ -360,8 +396,7 @@ namespace RDFSharp.Query
                 else if (queryMember is RDFSelectQuery sqQueryMember)
                 {
                     //Merge main query prefixes
-                    query.GetPrefixes()
-                         .ForEach(pf1 => sqQueryMember.AddPrefix(pf1));
+                    prefixes.ForEach(pf1 => sqQueryMember.AddPrefix(pf1));
 
                     //SubQuery is set as UNION with the next query member and it IS NOT the last one => append UNION
                     if (sqQueryMember.JoinAsUnion && !sqQueryMember.Equals(lastQueryMbr))
@@ -371,29 +406,72 @@ namespace RDFSharp.Query
                             //Begin new UNION block
                             printingUnion = true;
 
+                            //Adjust indentation level in case of active MINUS
+                            if (printingMinus)
+                            {
+                                subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
+                                indentLevel += 0.5;
+                            }
+
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                         }
-                        sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
+                        sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnionOrMinus ? 0.5 : 0), true));
                         sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
                     }
 
-                    //SubQuery is set as INTERSECT with the next query member or it IS the last one => do not append UNION
+                    //SubQuery is set as MINUS with the next query member and it IS NOT the last one => append MINUS
+                    else if (sqQueryMember.JoinAsMinus && !sqQueryMember.Equals(lastQueryMbr))
+                    {
+                        if (!printingMinus)
+                        {
+                            //Begin new MINUS block
+                            printingMinus = true;
+
+                            //Adjust indentation level in case of active UNION
+                            if (printingUnion)
+                            {
+                                subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
+                                indentLevel += 0.5;
+                            }
+
+                            sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
+                        }
+                        sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnionOrMinus ? 0.5 : 0), true));
+                        sb.AppendLine(string.Concat(subqueryBodySpaces, "    MINUS"));
+                    }
+
+                    //SubQuery is set as INTERSECT with the next query member or it IS the last one => do not append UNION/MINUS
                     else
                     {
-                        if (printingUnion)
+                        if (printingUnion || printingMinus)
                         {
+                            bool printingBoth = printingUnion && printingMinus;
+
                             //End active UNION block
                             printingUnion = false;
+                            //End active MINUS block
+                            printingMinus = false;
 
-                            sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
+                            sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnionOrMinus ? 0.5 : 0), true));
+
+                            //Restore indentation level in case of active UNION+MINUS
+                            if (printingBoth)
+                            {
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
+                                subqueryBodySpaces = new string(' ', subqueryBodySpaces.Length - 2);
+                                indentLevel -= 0.5;
+                            }
+
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                         }
                         else
-                            sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), false));
+                            sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnionOrMinus ? 0.5 : 0), false));
                     }
                 }
                 #endregion
-            }            
+            }
+            #endregion
+
             sb.Append(string.Concat(subqueryBodySpaces, "}"));
         }
 
@@ -428,6 +506,7 @@ namespace RDFSharp.Query
 
             #region MEMBERS
             bool printingUnion = false;
+            bool printingMinus = false;
             List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
             for (int i=0; i<evaluablePGMembers.Count; i++)
             {
@@ -448,13 +527,27 @@ namespace RDFSharp.Query
                         result.AppendLine(string.Concat(spaces, "    UNION"));
                     }
 
-                    //Pattern is set as INTERSECT with the next pg member or it IS the last one => do not append UNION
+                    //Pattern is set as MINUS with the next pg member and it IS NOT the last one => append MINUS
+                    else if (ptPgMember.JoinAsMinus && !thisIsLastPgMemberOrNextPgMemberIsBind)
+                    {
+                        //Begin new MINUS block
+                        printingMinus = true;
+
+                        result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
+                        result.AppendLine(string.Concat(spaces, "    MINUS"));
+                    }
+
+                    //Pattern is set as INTERSECT with the next pg member or it IS the last one => do not append UNION/MINUS
                     else
                     {
-                        if (printingUnion)
+                        if (printingUnion || printingMinus)
                         {
                             //End active UNION block
-                            printingUnion = false;
+                            if (printingUnion)
+                                printingUnion = false;
+                            //End active MINUS block
+                            if (printingMinus)
+                                printingMinus = false;
 
                             result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
                         }
@@ -467,10 +560,14 @@ namespace RDFSharp.Query
                 #region PROPERTY PATH
                 else if (pgMember is RDFPropertyPath ppPgMember && ppPgMember.IsEvaluable)
                 {
-                    if (printingUnion)
+                    if (printingUnion || printingMinus)
                     {
                         //End active UNION block
-                        printingUnion = false;
+                        if (printingUnion)
+                            printingUnion = false;
+                        //End active MINUS block
+                        if (printingMinus)
+                            printingMinus = false;
 
                         result.AppendLine(string.Concat(spaces, "    { ", PrintPropertyPath(ppPgMember, prefixes), " }"));
                     }
@@ -482,10 +579,14 @@ namespace RDFSharp.Query
                 #region VALUES
                 else if (pgMember is RDFValues vlPgMember && vlPgMember.IsEvaluable && !vlPgMember.IsInjected)
                 {
-                    if (printingUnion)
+                    if (printingUnion || printingMinus)
                     {
                         //End active UNION block
-                        printingUnion = false;
+                        if (printingUnion)
+                            printingUnion = false;
+                        //End active MINUS block
+                        if (printingMinus)
+                            printingMinus = false;
 
                         result.AppendLine(string.Concat(spaces, "    { ", PrintValues(vlPgMember, prefixes, spaces), " }"));
                     }
@@ -498,7 +599,11 @@ namespace RDFSharp.Query
                 else if (pgMember is RDFBind bdPgMember)
                 {
                     //End active UNION block
-                    printingUnion = false;
+                    if (printingUnion)
+                        printingUnion = false;
+                    //End active MINUS block
+                    if (printingMinus)
+                        printingMinus = false;
 
                     result.AppendLine(string.Concat(spaces, "    ", PrintBind(bdPgMember, prefixes), " ."));
                 }

@@ -48,14 +48,19 @@ namespace RDFSharp.Query
         public RDFPatternMember Object { get; internal set; }
 
         /// <summary>
-        /// Flag indicating the pattern as optional
+        /// Flag indicating the pattern as Optional
         /// </summary>
         internal bool IsOptional { get; set; }
 
         /// <summary>
-        /// Flag indicating the pattern to be joined as union
+        /// Flag indicating the pattern to be joined as Union
         /// </summary>
         internal bool JoinAsUnion { get; set; }
+
+        /// <summary>
+        /// Flag indicating the pattern to be joined as Minus
+        /// </summary>
+        internal bool JoinAsMinus { get; set; }
 
         /// <summary>
         /// List of variables carried by the pattern
@@ -90,6 +95,7 @@ namespace RDFSharp.Query
             IsEvaluable = true;
             IsOptional = false;
             JoinAsUnion = false;
+            JoinAsMinus = false;
             
             //Subject
             Subject = subject;
@@ -144,6 +150,7 @@ namespace RDFSharp.Query
         {
             IsOptional = true;
             JoinAsUnion = false;
+            JoinAsMinus = false;
             return this;
         }
 
@@ -154,6 +161,18 @@ namespace RDFSharp.Query
         {
             IsOptional = false;
             JoinAsUnion = true;
+            JoinAsMinus = false;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the pattern to be joined as minus with the next pattern
+        /// </summary>
+        public RDFPattern MinusWithNext()
+        {
+            IsOptional = false;
+            JoinAsUnion = false;
+            JoinAsMinus = true;
             return this;
         }
         #endregion

@@ -23,7 +23,7 @@ using System.Text;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFOperationPrinter is responsible for getting string representation of SPARQL UPDATE operation entities
+    /// RDFOperationPrinter is responsible for getting string representation of SPARQL UPDATE operations
     /// </summary>
     internal static class RDFOperationPrinter
     {
@@ -205,6 +205,9 @@ namespace RDFSharp.Query
         #endregion
 
         #region Utilities
+        /// <summary>
+        /// Prints the string representation of a SPARQL operation's prefixes
+        /// </summary>
         private static string PrintPrefixes(List<RDFNamespace> operationPrefixes)
         {
             StringBuilder sb = new StringBuilder();
@@ -216,6 +219,9 @@ namespace RDFSharp.Query
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Prints the string representation of a SPARQL operation's patterns
+        /// </summary>
         private static string PrintPattern(List<RDFNamespace> operationPrefixes, RDFPattern tp)
         {
             string tpString = RDFQueryPrinter.PrintPattern(tp, operationPrefixes);

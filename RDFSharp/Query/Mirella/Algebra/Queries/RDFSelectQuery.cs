@@ -45,6 +45,11 @@ namespace RDFSharp.Query
         internal bool JoinAsUnion { get; set; }
 
         /// <summary>
+        /// Flag indicating the query to be joined as Minus
+        /// </summary>
+        internal bool JoinAsMinus { get; set; }
+
+        /// <summary>
         /// Flag indicating that the query is a subquery
         /// </summary>
         internal bool IsSubQuery { get; set; }
@@ -256,6 +261,7 @@ namespace RDFSharp.Query
         {
             IsOptional = true;
             JoinAsUnion = false;
+            JoinAsMinus = false;
             return this;
         }
 
@@ -266,6 +272,18 @@ namespace RDFSharp.Query
         {
             IsOptional = false;
             JoinAsUnion = true;
+            JoinAsMinus = false;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the query to be joined as Minus with the next query member
+        /// </summary>
+        public RDFSelectQuery MinusWithNext()
+        {
+            IsOptional = false;
+            JoinAsUnion = false;
+            JoinAsMinus = true;
             return this;
         }
 

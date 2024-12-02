@@ -56,6 +56,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.IsEvaluable);
             Assert.IsFalse(query.IsOptional);
             Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.JoinAsMinus);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -82,6 +83,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.IsEvaluable);
             Assert.IsTrue(query.IsOptional);
             Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.JoinAsMinus);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -108,6 +110,34 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.IsEvaluable);
             Assert.IsFalse(query.IsOptional);
             Assert.IsTrue(query.JoinAsUnion);
+            Assert.IsFalse(query.JoinAsMinus);
+            Assert.IsFalse(query.IsSubQuery);
+            Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
+            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
+            Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
+            Assert.IsTrue(query.GetPatternGroups().Count() == 0);
+            Assert.IsTrue(query.GetSubQueries().Count() == 0);
+            Assert.IsTrue(query.GetValues().Count() == 0);
+            Assert.IsTrue(query.GetModifiers().Count() == 0);
+            Assert.IsTrue(query.GetPrefixes().Count() == 0);
+        }
+
+        [TestMethod]
+        public void ShouldCreateMinusSelectQuery()
+        {
+            RDFSelectQuery query = new RDFSelectQuery().MinusWithNext();
+
+            Assert.IsNotNull(query);
+            Assert.IsNotNull(query.QueryMembers);
+            Assert.IsTrue(query.QueryMembers.Count == 0);
+            Assert.IsNotNull(query.Prefixes);
+            Assert.IsTrue(query.Prefixes.Count == 0);
+            Assert.IsNotNull(query.ProjectionVars);
+            Assert.IsTrue(query.ProjectionVars.Count == 0);
+            Assert.IsTrue(query.IsEvaluable);
+            Assert.IsFalse(query.IsOptional);
+            Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsTrue(query.JoinAsMinus);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -134,6 +164,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.IsEvaluable);
             Assert.IsFalse(query.IsOptional);
             Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.JoinAsMinus);
             Assert.IsTrue(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("{" + Environment.NewLine + "SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine + "}" + Environment.NewLine));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -280,6 +311,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.IsEvaluable);
             Assert.IsFalse(query.IsOptional);
             Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.JoinAsMinus);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("SELECT ((?V + 2) AS ?SUM)" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -309,6 +341,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.IsEvaluable);
             Assert.IsFalse(query.IsOptional);
             Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.JoinAsMinus);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("SELECT ?V1 ((?V + 2) AS ?SUM) ?V2" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -337,6 +370,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.IsEvaluable);
             Assert.IsFalse(query.IsOptional);
             Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.JoinAsMinus);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("SELECT ((?V + 2) AS ?SUM) (((?V1 + ?V2) * ?V3) AS ?MULTIPLY)" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -366,6 +400,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.IsEvaluable);
             Assert.IsFalse(query.IsOptional);
             Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.JoinAsMinus);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("SELECT ?V1 ?V2" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));

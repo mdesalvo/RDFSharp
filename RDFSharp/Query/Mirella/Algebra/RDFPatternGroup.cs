@@ -37,6 +37,11 @@ namespace RDFSharp.Query
         internal bool JoinAsUnion { get; set; }
 
         /// <summary>
+        /// Flag indicating the pattern group to be joined as Minus
+        /// </summary>
+        internal bool JoinAsMinus { get; set; }
+
+        /// <summary>
         /// Tuple indicating that the pattern group should be evaluated according to SPARQL SERVICE
         /// </summary>
         internal (RDFSPARQLEndpoint,RDFSPARQLEndpointQueryOptions)? EvaluateAsService { get; set; }
@@ -61,6 +66,7 @@ namespace RDFSharp.Query
             IsEvaluable = true;
             IsOptional = false;
             JoinAsUnion = false;
+            JoinAsMinus = false;
             GroupMembers = new List<RDFPatternGroupMember>();
             Variables = new List<RDFVariable>();
         }
@@ -186,22 +192,35 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the pattern group to be joined as Optional with the previous query member
+        /// Sets the pattern group to be joined as optional with the previous query member
         /// </summary>
         public RDFPatternGroup Optional()
         {
             IsOptional = true;
             JoinAsUnion = false;
+            JoinAsMinus = false;
             return this;
         }
 
         /// <summary>
-        /// Sets the pattern group to be joined as Union with the next query member
+        /// Sets the pattern group to be joined as union with the next query member
         /// </summary>
         public RDFPatternGroup UnionWithNext()
         {
             IsOptional = false;
             JoinAsUnion = true;
+            JoinAsMinus = false;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the pattern group to be joined as minus with the next query member
+        /// </summary>
+        public RDFPatternGroup MinusWithNext()
+        {
+            IsOptional = false;
+            JoinAsUnion = false;
+            JoinAsMinus = true;
             return this;
         }
 
