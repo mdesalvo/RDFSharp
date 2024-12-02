@@ -523,6 +523,13 @@ namespace RDFSharp.Query
                         //Begin new UNION block
                         printingUnion = true;
 
+                        //Adjust indentation level in case of active MINUS
+                        if (printingMinus)
+                        {
+                            spaces = string.Concat(spaces, "  ");
+                            result.AppendLine(string.Concat(spaces, "  {"));
+                        }
+
                         result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
                         result.AppendLine(string.Concat(spaces, "    UNION"));
                     }
@@ -542,6 +549,8 @@ namespace RDFSharp.Query
                     {
                         if (printingUnion || printingMinus)
                         {
+                            bool printingBoth = printingUnion && printingMinus;
+
                             //End active UNION block
                             if (printingUnion)
                                 printingUnion = false;
@@ -550,6 +559,13 @@ namespace RDFSharp.Query
                                 printingMinus = false;
 
                             result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
+
+                            //Restore indentation level in case of active UNION+MINUS
+                            if (printingBoth)
+                            {
+                                result.AppendLine(string.Concat(spaces, "  }"));
+                                spaces = new string(' ', spaces.Length - 2);
+                            }
                         }
                         else
                             result.AppendLine(string.Concat(spaces, "    ", PrintPattern(ptPgMember, prefixes), " ."));

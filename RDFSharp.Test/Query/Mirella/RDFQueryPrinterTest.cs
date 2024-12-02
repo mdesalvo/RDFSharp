@@ -4623,9 +4623,11 @@ WHERE {
     MINUS
     { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
     MINUS
-    { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    UNION
-    { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    {
+      { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+      UNION
+      { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    }
   }
 }
 ";
