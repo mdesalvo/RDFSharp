@@ -325,14 +325,17 @@ namespace RDFSharp.Query
             bool printingUnion = false;
             bool printingMinus = false;
             List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
-            RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
-            foreach (RDFQueryMember queryMember in evaluableQueryMembers)
+            for (int i=0; i<evaluableQueryMembers.Count; i++)
             {
+                RDFQueryMember queryMember = evaluableQueryMembers[i];
+                RDFQueryMember nextQueryMember = i < evaluableQueryMembers.Count-1 ? evaluableQueryMembers[i+1] : null;
+                bool isLastQueryMember = nextQueryMember == null;
+
                 #region PATTERNGROUP
                 if (queryMember is RDFPatternGroup pgQueryMember)
                 {
                     //PatternGroup is set as UNION with the next query member and it IS NOT the last one => append UNION
-                    if (pgQueryMember.JoinAsUnion && !pgQueryMember.Equals(lastQueryMbr))
+                    if (pgQueryMember.JoinAsUnion && !isLastQueryMember)
                     {
                         if (!printingUnion)
                         {
@@ -350,7 +353,7 @@ namespace RDFSharp.Query
                     }
 
                     //PatternGroup is set as MINUS with the next query member and it IS NOT the last one => append MINUS
-                    else if (pgQueryMember.JoinAsMinus && !pgQueryMember.Equals(lastQueryMbr))
+                    else if (pgQueryMember.JoinAsMinus && !isLastQueryMember)
                     {
                         if (!printingMinus)
                         {
@@ -403,7 +406,7 @@ namespace RDFSharp.Query
                     prefixes.ForEach(pf1 => sqQueryMember.AddPrefix(pf1));
 
                     //SubQuery is set as UNION with the next query member and it IS NOT the last one => append UNION
-                    if (sqQueryMember.JoinAsUnion && !sqQueryMember.Equals(lastQueryMbr))
+                    if (sqQueryMember.JoinAsUnion && !isLastQueryMember)
                     {
                         if (!printingUnion)
                         {
@@ -424,7 +427,7 @@ namespace RDFSharp.Query
                     }
 
                     //SubQuery is set as MINUS with the next query member and it IS NOT the last one => append MINUS
-                    else if (sqQueryMember.JoinAsMinus && !sqQueryMember.Equals(lastQueryMbr))
+                    else if (sqQueryMember.JoinAsMinus && !isLastQueryMember)
                     {
                         if (!printingMinus)
                         {
@@ -541,7 +544,7 @@ namespace RDFSharp.Query
             for (int i=0; i<evaluablePGMembers.Count; i++)
             {
                 RDFPatternGroupMember pgMember = evaluablePGMembers[i];
-                RDFPatternGroupMember nextPgMember = (i < evaluablePGMembers.Count-1 ? evaluablePGMembers[i+1] : null);
+                RDFPatternGroupMember nextPgMember = i < evaluablePGMembers.Count-1 ? evaluablePGMembers[i+1] : null;
                 bool isLastPgMemberOrNextPgMemberIsBind = (nextPgMember == null || nextPgMember is RDFBind);
 
                 #region PATTERN
