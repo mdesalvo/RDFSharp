@@ -4606,14 +4606,17 @@ WHERE {
         }
 
         [TestMethod]
-        public void ShouldPrintComplexSelectQueryHavingMixedUnionMinusInPatterns()
+        public void ShouldPrintComplexSelectQueryHavingMixedUnionMinusInPatterns1()
         {
             RDFSelectQuery query = new RDFSelectQuery()
               .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
                 .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
                 .AddPattern(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-                .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext()));
+                .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+                .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+              );
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
 @"SELECT *
@@ -4627,7 +4630,117 @@ WHERE {
       { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
       UNION
       { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+      UNION
+      { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
     }
+    ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintComplexSelectQueryHavingMixedUnionMinusInPatterns2()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+              .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+                .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
+              );
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"SELECT *
+WHERE {
+  {
+    { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    MINUS
+    { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    MINUS
+    {
+      { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+      UNION
+      { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+      UNION
+      { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    }
+    OPTIONAL { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } .
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintComplexSelectQueryHavingMixedUnionMinusInPatterns3()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+              .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
+                .AddPattern(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+                .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
+              );
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"SELECT *
+WHERE {
+  {
+    { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    MINUS
+    { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    MINUS
+    {
+      { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+      UNION
+      { OPTIONAL { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } }
+    }
+    ?S5 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
+    OPTIONAL { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } .
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
+        public void ShouldPrintComplexSelectQueryHavingMixedUnionMinusInPatterns4()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+              .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
+                .AddPattern(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
+              );
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"SELECT *
+WHERE {
+  {
+    { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    MINUS
+    { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    MINUS
+    {
+      { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+      UNION
+      { OPTIONAL { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } }
+    }
+    { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    MINUS
+    { OPTIONAL { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } }
   }
 }
 ";

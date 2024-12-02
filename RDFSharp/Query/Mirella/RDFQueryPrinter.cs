@@ -520,28 +520,27 @@ namespace RDFSharp.Query
                     //Pattern is set as UNION with the next pg member and it IS NOT the last one => append UNION
                     if (ptPgMember.JoinAsUnion && !thisIsLastPgMemberOrNextPgMemberIsBind)
                     {
-                        //Begin new UNION block
-                        printingUnion = true;
-
                         //Adjust indentation level in case of active MINUS
-                        if (printingMinus)
+                        if (!printingUnion && printingMinus)
                         {
                             spaces = string.Concat(spaces, "  ");
                             result.AppendLine(string.Concat(spaces, "  {"));
                         }
-
                         result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
                         result.AppendLine(string.Concat(spaces, "    UNION"));
+
+                        //Begin new UNION block
+                        printingUnion = true;
                     }
 
                     //Pattern is set as MINUS with the next pg member and it IS NOT the last one => append MINUS
                     else if (ptPgMember.JoinAsMinus && !thisIsLastPgMemberOrNextPgMemberIsBind)
                     {
-                        //Begin new MINUS block
-                        printingMinus = true;
-
                         result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
                         result.AppendLine(string.Concat(spaces, "    MINUS"));
+
+                        //Begin new MINUS block
+                        printingMinus = true;
                     }
 
                     //Pattern is set as INTERSECT with the next pg member or it IS the last one => do not append UNION/MINUS
