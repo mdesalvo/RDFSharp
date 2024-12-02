@@ -301,6 +301,13 @@ namespace RDFSharp.Query
         internal static void PrintWhereClause(RDFQuery query, StringBuilder sb, List<RDFNamespace> prefixes, 
             string subqueryBodySpaces, double indentLevel, bool fromUnionOrMinus)
         {
+            sb.AppendLine(string.Concat(subqueryBodySpaces, "WHERE {"));
+            PrintWhereClauseMembers(query, sb, prefixes, subqueryBodySpaces, indentLevel, fromUnionOrMinus);
+            sb.Append(string.Concat(subqueryBodySpaces, "}"));
+        }
+        private static void PrintWhereClauseMembers(RDFQuery query, StringBuilder sb, List<RDFNamespace> prefixes,
+            string subqueryBodySpaces, double indentLevel, bool fromUnionOrMinus)
+        {
             #region Facilities
             void PrintWrappedPatternGroup(RDFPatternGroup patternGroup)
             {
@@ -315,9 +322,6 @@ namespace RDFSharp.Query
             }
             #endregion
 
-            sb.AppendLine(string.Concat(subqueryBodySpaces, "WHERE {"));
-
-            #region WhereBody
             bool printingUnion = false;
             bool printingMinus = false;
             List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
@@ -473,9 +477,6 @@ namespace RDFSharp.Query
                 }
                 #endregion
             }
-            #endregion
-
-            sb.Append(string.Concat(subqueryBodySpaces, "}"));
         }
 
         /// <summary>
@@ -483,10 +484,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintPatternGroup(RDFPatternGroup patternGroup, int spaceIndent, bool skipOptional, List<RDFNamespace> prefixes)
         {
-            string spaces = new StringBuilder().Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
-
-            #region HEADER
             StringBuilder result = new StringBuilder();
+            string spaces = new StringBuilder().Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
             
             //OPTIONAL
             if (patternGroup.IsOptional && !skipOptional)
@@ -504,10 +503,38 @@ namespace RDFSharp.Query
                 spaces = string.Concat(spaces, "  ");
             }
 
+            //OPEN-BRACKET
             result.AppendLine(string.Concat(spaces, "  {"));
-            #endregion
+            
+            //MEMBERS
+            PrintPatternGroupMembers(patternGroup, result, spaces, prefixes);
 
-            #region MEMBERS
+            //FILTERS
+            patternGroup.GetFilters().Where(f => !(f is RDFValuesFilter))
+                                     .ToList()
+                                     .ForEach(f => result.AppendLine(string.Concat(spaces, "    ", f.ToString(prefixes), " ")));
+            
+            //CLOSE-BRACKET
+            result.AppendLine(string.Concat(spaces, "  }"));
+            
+            //SERVICE
+            if (patternGroup.EvaluateAsService.HasValue)
+            { 
+                result.AppendLine(string.Concat(spaces, "}"));
+                if (spaces.Length > 2)
+                    spaces = spaces.Substring(2);
+            }
+
+            //OPTIONAL
+            if (patternGroup.IsOptional && !skipOptional)
+            {
+                result.AppendLine(string.Concat(spaces, "}"));
+            }
+
+            return result.ToString();
+        }
+        private static void PrintPatternGroupMembers(RDFPatternGroup patternGroup, StringBuilder result, string spaces, List<RDFNamespace> prefixes)
+        {
             bool printingUnion = false;
             bool printingMinus = false;
             List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
@@ -620,32 +647,8 @@ namespace RDFSharp.Query
                 }
                 #endregion
             }
-            #endregion
-
-            #region FILTERS
-            patternGroup.GetFilters().Where(f => !(f is RDFValuesFilter))
-                                     .ToList()
-                                     .ForEach(f => result.AppendLine(string.Concat(spaces, "    ", f.ToString(prefixes), " ")));
-            #endregion
-
-            #region CLOSURE
-            result.AppendLine(string.Concat(spaces, "  }"));
-
-            //SERVICE
-            if (patternGroup.EvaluateAsService.HasValue)
-            { 
-                result.AppendLine(string.Concat(spaces, "}"));
-                if (spaces.Length > 2)
-                    spaces = spaces.Substring(2);
-            }
-
-            //OPTIONAL
-            if (patternGroup.IsOptional && !skipOptional)
-                result.AppendLine(string.Concat(spaces, "}"));
-            #endregion
-
-            return result.ToString();
         }
+
 
         /// <summary>
         /// Prints the string representation of a pattern
