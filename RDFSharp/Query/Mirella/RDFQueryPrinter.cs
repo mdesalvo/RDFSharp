@@ -458,8 +458,11 @@ namespace RDFSharp.Query
                             if (printingBoth)
                             {
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
-                                subqueryBodySpaces = new string(' ', subqueryBodySpaces.Length - 2);
-                                indentLevel -= 0.5;
+                                if (subqueryBodySpaces.Length >= 2)
+                                {
+                                    subqueryBodySpaces = new string(' ', subqueryBodySpaces.Length - 2);
+                                    indentLevel -= 0.5;
+                                }
                             }
 
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
@@ -512,13 +515,13 @@ namespace RDFSharp.Query
             {
                 RDFPatternGroupMember pgMember = evaluablePGMembers[i];
                 RDFPatternGroupMember nextPgMember = (i < evaluablePGMembers.Count-1 ? evaluablePGMembers[i+1] : null);
-                bool thisIsLastPgMemberOrNextPgMemberIsBind = (nextPgMember == null || nextPgMember is RDFBind);
+                bool isLastPgMemberOrNextPgMemberIsBind = (nextPgMember == null || nextPgMember is RDFBind);
 
                 #region PATTERN
                 if (pgMember is RDFPattern ptPgMember)
                 {
                     //Pattern is set as UNION with the next pg member and it IS NOT the last one => append UNION
-                    if (ptPgMember.JoinAsUnion && !thisIsLastPgMemberOrNextPgMemberIsBind)
+                    if (ptPgMember.JoinAsUnion && !isLastPgMemberOrNextPgMemberIsBind)
                     {
                         //Adjust indentation level in case of active MINUS
                         if (!printingUnion && printingMinus)
@@ -534,7 +537,7 @@ namespace RDFSharp.Query
                     }
 
                     //Pattern is set as MINUS with the next pg member and it IS NOT the last one => append MINUS
-                    else if (ptPgMember.JoinAsMinus && !thisIsLastPgMemberOrNextPgMemberIsBind)
+                    else if (ptPgMember.JoinAsMinus && !isLastPgMemberOrNextPgMemberIsBind)
                     {
                         result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
                         result.AppendLine(string.Concat(spaces, "    MINUS"));
