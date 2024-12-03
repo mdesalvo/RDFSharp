@@ -263,7 +263,7 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldEvaluateSelectQueryOnGraph_Minus()
+        public void ShouldEvaluateSelectQueryOnGraph_MinusPatternGroup()
         {
             RDFGraph graph = new RDFGraph(
             [
@@ -309,6 +309,44 @@ WHERE {
   }
 }
 ORDER BY ASC(?X)
+"));
+        }
+
+        [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraph_MinusPattern()
+        {
+            RDFGraph graph = new RDFGraph(
+            [
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
+            ]);
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).Minus())
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFResource("ex:paperino"))));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 2);
+            Assert.IsTrue(result.SelectResultsCount == 2);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:whoever"));
+            Assert.IsTrue(string.Equals(query.ToString(),
+@"SELECT *
+WHERE {
+  {
+    { ?Y <ex:dogOf> ?X }
+    MINUS
+    { ?Y <ex:dogOf> <ex:paperino> }
+  }
+}
 "));
         }
 
