@@ -4909,6 +4909,58 @@ WHERE {
         }
 
         [TestMethod]
+        public void ShouldPrintComplexSelectQueryHavingMixedUnionMinusInPatternsHavingPropertyPath()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+              .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus())
+                .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union())
+                .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S5A"), new RDFVariable("?S6A"))
+                    .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:step1")))
+                    .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:step2"))))
+                .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus())
+                .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S5B"), new RDFVariable("?S6B"))
+                    .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:step1")))
+                    .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:step2"))))
+                .AddPattern(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus())
+                .AddPattern(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union())
+                .AddPattern(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union())
+                .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S5C"), new RDFVariable("?S6C"))
+                    .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:step1")))
+                    .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:step2"))))
+            );
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"SELECT *
+WHERE {
+  {
+    { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    MINUS
+    {
+      { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+      UNION
+      { ?S5A <ex:step1>/<ex:step2> ?S6A }
+    }
+    { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    MINUS
+    { ?S5B <ex:step1>/<ex:step2> ?S6B }
+    { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    MINUS
+    {
+      { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+      UNION
+      { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+      UNION
+      { ?S5C <ex:step1>/<ex:step2> ?S6C }
+    }
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
         public void ShouldPrintComplexSelectQueryHavingMixedUnionMinusInPatternsAndPatternGroups1()
         {
             RDFSelectQuery query = new RDFSelectQuery()
