@@ -4962,6 +4962,53 @@ WHERE {
         }
 
         [TestMethod]
+        public void ShouldPrintComplexSelectQueryHavingMixedUnionMinusInPatternsHavingValues()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+              .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus())
+                .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union())
+                .AddValues(new RDFValues().AddColumn(new RDFVariable("?V"), [ null ]))
+                .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus())
+                .AddValues(new RDFValues().AddColumn(new RDFVariable("?V"), [ null ]))
+                .AddPattern(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus())
+                .AddPattern(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union())
+                .AddPattern(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union())
+                .AddValues(new RDFValues().AddColumn(new RDFVariable("?V"), [null]))
+                .AddPattern(new RDFPattern(new RDFVariable("?S11"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))));
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"SELECT *
+WHERE {
+  {
+    { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    MINUS
+    {
+      { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+      UNION
+      { VALUES ?V { UNDEF } }
+    }
+    { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    MINUS
+    { VALUES ?V { UNDEF } }
+    { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+    MINUS
+    {
+      { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+      UNION
+      { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+      UNION
+      { VALUES ?V { UNDEF } }
+    }
+    ?S11 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
         public void ShouldPrintComplexSelectQueryHavingMixedUnionMinusInPatternsAndPatternGroups1()
         {
             RDFSelectQuery query = new RDFSelectQuery()
