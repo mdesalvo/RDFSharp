@@ -98,7 +98,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldCreateUnionSelectQuery()
         {
-            RDFSelectQuery query = new RDFSelectQuery().UnionWithNext();
+            RDFSelectQuery query = new RDFSelectQuery().Union();
 
             Assert.IsNotNull(query);
             Assert.IsNotNull(query.QueryMembers);
@@ -125,7 +125,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldCreateMinusSelectQuery()
         {
-            RDFSelectQuery query = new RDFSelectQuery().MinusWithNext();
+            RDFSelectQuery query = new RDFSelectQuery().Minus();
 
             Assert.IsNotNull(query);
             Assert.IsNotNull(query.QueryMembers);
@@ -269,7 +269,7 @@ namespace RDFSharp.Test.Query
                             .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
                             .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
                     .AddProjectionVariable(new RDFVariable("?S"))
-                    .UnionWithNext());
+                    .Union());
             query.AddSubQuery(
                 new RDFSelectQuery()
                     .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))

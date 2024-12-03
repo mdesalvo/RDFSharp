@@ -268,7 +268,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Sets the query to be joined as Union with the next query member
         /// </summary>
-        public RDFSelectQuery UnionWithNext()
+        public RDFSelectQuery Union()
         {
             IsOptional = false;
             JoinAsUnion = true;
@@ -279,7 +279,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Sets the query to be joined as Minus with the next query member
         /// </summary>
-        public RDFSelectQuery MinusWithNext()
+        public RDFSelectQuery Minus()
         {
             IsOptional = false;
             JoinAsUnion = false;
