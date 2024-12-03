@@ -421,7 +421,7 @@ namespace RDFSharp.Query
                 else
                     QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties[JoinAsUnion] = patternGroup.JoinAsUnion;
 
-                //Populate its metadata (JoinAsUnion)
+                //Populate its metadata (JoinAsMinus)
                 if (!QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey(JoinAsMinus))
                     QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add(JoinAsMinus, patternGroup.JoinAsMinus);
                 else
