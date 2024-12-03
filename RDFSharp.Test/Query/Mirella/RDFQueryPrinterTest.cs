@@ -5444,6 +5444,121 @@ WHERE {
         }
 
         [TestMethod]
+        public void ShouldPrintComplexSelectQueryHavingSubQueryWithMixedUnionMinusInPatterns2()
+        {
+            RDFSelectQuery query = new RDFSelectQuery()
+              .AddSubQuery(new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                  .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus())
+                  .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus())
+                  .AddPattern(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union())
+                  .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union())
+                  .AddPattern(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+                  .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+                .Union())
+              .AddSubQuery(new RDFSelectQuery()
+                .AddSubQuery(new RDFSelectQuery()
+                  .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                      .AddPattern(new RDFPattern(new RDFVariable("?S7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus())
+                      .AddPattern(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union())
+                      .AddPattern(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus())
+                      .AddPattern(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus())
+                      .AddPattern(new RDFPattern(new RDFVariable("?S11"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union())
+                      .AddPattern(new RDFPattern(new RDFVariable("?S12"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+                    .Minus())
+                    .AddPatternGroup(new RDFPatternGroup()
+                      .AddPattern(new RDFPattern(new RDFVariable("?S7B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union())
+                      .AddPattern(new RDFPattern(new RDFVariable("?S8B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union())
+                      .AddPattern(new RDFPattern(new RDFVariable("?S9B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union())
+                      .AddPattern(new RDFPattern(new RDFVariable("?S10B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus())
+                      .AddPattern(new RDFPattern(new RDFVariable("?S11B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional()))
+                    .Union()
+                    .AddPatternGroup(new RDFPatternGroup()
+                      .AddPattern(new RDFPattern(new RDFVariable("?S7B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))))
+                );
+            string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+            string expectedQueryString =
+@"SELECT *
+WHERE {
+  {
+    {
+      SELECT *
+      WHERE {
+        {
+          { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+          MINUS
+          { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+          MINUS
+          {
+            { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+            UNION
+            { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+            UNION
+            { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+          }
+          ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
+        }
+      }
+    }
+    UNION
+    {
+      SELECT *
+      WHERE {
+        {
+          SELECT *
+          WHERE {
+            {
+              SELECT *
+              WHERE {
+                {
+                  {
+                    { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+                    MINUS
+                    {
+                      { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+                      UNION
+                      { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+                      MINUS
+                      { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+                      MINUS
+                      {
+                        { ?S11 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+                        UNION
+                        { ?S12 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+                      }
+                    }
+                  }
+                  MINUS
+                  {
+                    { ?S7B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+                    UNION
+                    { ?S8B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+                    UNION
+                    { ?S9B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+                    UNION
+                    { ?S10B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+                    MINUS
+                    { OPTIONAL { ?S11B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } }
+                  }
+                }
+                {
+                  ?S7B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+";
+            Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+            Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
+        }
+
+        [TestMethod]
         public void ShouldPrintComplexSelectQueryHavingBinds1()
         {
             RDFSelectQuery query = new RDFSelectQuery()
