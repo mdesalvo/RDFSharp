@@ -337,17 +337,18 @@ namespace RDFSharp.Query
                     //PatternGroup is set as UNION with the next query member and it IS NOT the last one => append UNION
                     if (pgQueryMember.JoinAsUnion && !isLastQueryMember)
                     {
+                        //In case we are opening UNION semantic, we need to print its opening bracket
                         if (!printingUnion)
                         {
-                            //Begin new UNION block
                             printingUnion = true;
 
-                            //Adjust indentation level in case of active MINUS
+                            //In case we are already under MINUS semantic, keep care of reflecting this in the indentation spaces (+2)
                             if (printingMinus)
                                 subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
-
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                         }
+
+                        //Then we can print the pattern group, along with its UNION operator
                         PrintWrappedPatternGroup(pgQueryMember);
                         sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
                     }
@@ -355,17 +356,18 @@ namespace RDFSharp.Query
                     //PatternGroup is set as MINUS with the next query member and it IS NOT the last one => append MINUS
                     else if (pgQueryMember.JoinAsMinus && !isLastQueryMember)
                     {
+                        //In case we are opening MINUS semantic, we need to print its opening bracket
                         if (!printingMinus)
                         {
-                            //Begin new MINUS block
                             printingMinus = true;
 
-                            //Adjust indentation level in case of active UNION
+                            //In case we are already under UNION semantic, keep care of reflecting this in the indentation spaces (+2)
                             if (printingUnion)
                                 subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
-
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                         }
+
+                        //Then we can print the pattern group, along with its MINUS operator
                         PrintWrappedPatternGroup(pgQueryMember);
                         sb.AppendLine(string.Concat(subqueryBodySpaces, "    MINUS"));
                     }
@@ -373,24 +375,23 @@ namespace RDFSharp.Query
                     //PatternGroup is set as INTERSECT with the next query member or it IS the last one => do not append UNION/MINUS
                     else
                     {
+                        //In case we are under MINUS or UNION semantic, we need to print their closing brackets to complete the grammar
                         if (printingUnion || printingMinus)
                         {
                             bool printingBoth = printingUnion && printingMinus;
-
-                            //End active UNION block
                             printingUnion = false;
-                            //End active MINUS block
                             printingMinus = false;
 
+                            //At first we can print the pattern group
                             PrintWrappedPatternGroup(pgQueryMember);
 
-                            //Restore indentation level in case of active UNION+MINUS
+                            //In case we are under both MINUS and UNION semantic, keep care of reflecting this in the closing brackets and indentation spaces (-2)
                             if (printingBoth)
                             {
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
-                                subqueryBodySpaces = new string(' ', subqueryBodySpaces.Length - 2);
+                                if (subqueryBodySpaces.Length >= 2)
+                                    subqueryBodySpaces = new string(' ', subqueryBodySpaces.Length - 2);
                             }
-
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                         }
                         else
@@ -410,18 +411,19 @@ namespace RDFSharp.Query
                     {
                         if (!printingUnion)
                         {
-                            //Begin new UNION block
+                            //In case we are opening UNION semantic, we need to print its opening bracket
                             printingUnion = true;
 
-                            //Adjust indentation level in case of active MINUS
+                            //In case we are already under MINUS semantic, keep care of reflecting this in the indentation spaces (+2)
                             if (printingMinus)
                             {
                                 subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
                                 indentLevel += 0.5;
                             }
-
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                         }
+
+                        //Then we can print the subquery, along with its UNION operator
                         sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnionOrMinus ? 0.5 : 0), true));
                         sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
                     }
@@ -429,20 +431,21 @@ namespace RDFSharp.Query
                     //SubQuery is set as MINUS with the next query member and it IS NOT the last one => append MINUS
                     else if (sqQueryMember.JoinAsMinus && !isLastQueryMember)
                     {
+                        //In case we are opening MINUS semantic, we need to print its opening bracket
                         if (!printingMinus)
                         {
-                            //Begin new MINUS block
                             printingMinus = true;
 
-                            //Adjust indentation level in case of active UNION
+                            //In case we are already under UNION semantic, keep care of reflecting this in the indentation spaces (+2)
                             if (printingUnion)
                             {
                                 subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
                                 indentLevel += 0.5;
                             }
-
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                         }
+
+                        //Then we can print the subquery, along with its MINUS operator
                         sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnionOrMinus ? 0.5 : 0), true));
                         sb.AppendLine(string.Concat(subqueryBodySpaces, "    MINUS"));
                     }
@@ -450,18 +453,17 @@ namespace RDFSharp.Query
                     //SubQuery is set as INTERSECT with the next query member or it IS the last one => do not append UNION/MINUS
                     else
                     {
+                        //In case we are under MINUS or UNION semantic, we need to print their closing brackets to complete the grammar
                         if (printingUnion || printingMinus)
                         {
                             bool printingBoth = printingUnion && printingMinus;
-
-                            //End active UNION block
                             printingUnion = false;
-                            //End active MINUS block
                             printingMinus = false;
 
+                            //At first we can print the subquery
                             sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnionOrMinus ? 0.5 : 0), true));
 
-                            //Restore indentation level in case of active UNION+MINUS
+                            //In case we are under both MINUS and UNION semantic, keep care of reflecting this in the closing brackets and indentation spaces (-2)
                             if (printingBoth)
                             {
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
@@ -471,7 +473,6 @@ namespace RDFSharp.Query
                                     indentLevel -= 0.5;
                                 }
                             }
-
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                         }
                         else
