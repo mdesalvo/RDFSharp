@@ -4928,7 +4928,7 @@ WHERE {
                 .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S5C"), new RDFVariable("?S6C"))
                     .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:step1")))
                     .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:step2"))))
-            );
+                .AddPattern(new RDFPattern(new RDFVariable("?S11"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
 @"SELECT *
@@ -4953,6 +4953,7 @@ WHERE {
       UNION
       { ?S5C <ex:step1>/<ex:step2> ?S6C }
     }
+    ?S11 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
   }
 }
 ";
