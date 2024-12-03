@@ -153,7 +153,7 @@ namespace RDFSharp.Test.Query
                 new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
                     .AddFilter(new RDFIsUriFilter(new RDFVariable("?S")))
-                    .UnionWithNext());
+                    .Union());
             query.AddSubQuery(
                 new RDFSelectQuery()
                     .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))

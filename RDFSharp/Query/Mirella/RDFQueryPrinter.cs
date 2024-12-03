@@ -538,6 +538,7 @@ namespace RDFSharp.Query
         }
         private static void PrintPatternGroupMembers(RDFPatternGroup patternGroup, StringBuilder result, string spaces, List<RDFNamespace> prefixes)
         {
+            int openedBrackets = 0;
             bool printingUnion = false;
             bool printingMinus = false;
             List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
@@ -556,6 +557,7 @@ namespace RDFSharp.Query
                         //Adjust indentation level in case of active MINUS
                         if (!printingUnion && printingMinus)
                         {
+                            openedBrackets++;
                             spaces = string.Concat(spaces, "  ");
                             result.AppendLine(string.Concat(spaces, "  {"));
                         }
@@ -586,8 +588,9 @@ namespace RDFSharp.Query
                             result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
 
                             //Restore indentation level in case of active UNION+MINUS
-                            if (printingUnion && printingMinus)
+                            while (openedBrackets > 0)
                             {
+                                openedBrackets--;
                                 result.AppendLine(string.Concat(spaces, "  }"));
                                 if (spaces.Length >= 2)
                                     spaces = new string(' ', spaces.Length - 2);
@@ -611,6 +614,15 @@ namespace RDFSharp.Query
                     {
                         result.AppendLine(string.Concat(spaces, "    { ", PrintPropertyPath(ppPgMember, prefixes), " }"));
 
+                        //Restore indentation level in case of active UNION+MINUS
+                        while (openedBrackets > 0)
+                        {
+                            openedBrackets--;
+                            result.AppendLine(string.Concat(spaces, "  }"));
+                            if (spaces.Length >= 2)
+                                spaces = new string(' ', spaces.Length - 2);
+                        }
+
                         //End active UNION block
                         printingUnion = false;
                         //End active MINUS block
@@ -628,6 +640,15 @@ namespace RDFSharp.Query
                     {
                         result.AppendLine(string.Concat(spaces, "    { ", PrintValues(vlPgMember, prefixes, spaces), " }"));
 
+                        //Restore indentation level in case of active UNION+MINUS
+                        while (openedBrackets > 0)
+                        {
+                            openedBrackets--;
+                            result.AppendLine(string.Concat(spaces, "  }"));
+                            if (spaces.Length >= 2)
+                                spaces = new string(' ', spaces.Length - 2);
+                        }
+
                         //End active UNION block
                         printingUnion = false;
                         //End active MINUS block
@@ -642,6 +663,15 @@ namespace RDFSharp.Query
                 else if (pgMember is RDFBind bdPgMember)
                 {
                     result.AppendLine(string.Concat(spaces, "    ", PrintBind(bdPgMember, prefixes), " ."));
+
+                    //Restore indentation level in case of active UNION+MINUS
+                    while (openedBrackets > 0)
+                    {
+                        openedBrackets--;
+                        result.AppendLine(string.Concat(spaces, "  }"));
+                        if (spaces.Length >= 2)
+                            spaces = new string(' ', spaces.Length - 2);
+                    }
 
                     //End active UNION block
                     printingUnion = false;

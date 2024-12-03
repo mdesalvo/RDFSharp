@@ -209,7 +209,7 @@ WHERE {
         public void ShouldAddPatternGroupWithBindAfterUnion()
         {
             RDFPatternGroup patternGroup = new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).Union())
                 .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND")));
             RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
             operation.AddPatternGroup(patternGroup);
@@ -238,9 +238,9 @@ WHERE {
         public void ShouldAddPatternGroupWithBindAfterUnionAndThenPattern()
         {
             RDFPatternGroup patternGroup = new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).Union())
                 .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND")))
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X")).UnionWithNext());
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X")).Union());
             RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
             operation.AddPatternGroup(patternGroup);
             operation.AddPatternGroup(patternGroup); //Will be discarded, since duplicate patternGroups are not allowed
@@ -309,9 +309,9 @@ WHERE {
                 .AddInsertTemplate(new RDFPattern(new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")).Optional())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))
-                        .UnionWithNext())
+                        .Union())
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X")))
-                    .UnionWithNext())
+                    .Union())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X"))))
                 .AddSubQuery(new RDFSelectQuery()
@@ -382,16 +382,16 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND3")))
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))
-                        .UnionWithNext())
+                        .Union())
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X")))
                     .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND")))
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDoggyOf"), new RDFVariable("?X")))
-                    .UnionWithNext())
+                    .Union())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X")))
                     .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND2")))
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))
-                        .UnionWithNext())
+                        .Union())
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDoggyOf"), new RDFVariable("?X"))))
                 .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
@@ -468,16 +468,16 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND3")))
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))
-                        .UnionWithNext())
+                        .Union())
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X")))
                     .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND")))
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDoggyOf"), new RDFVariable("?X")))
-                    .UnionWithNext())
+                    .Union())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X")))
                     .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND2")))
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))
-                        .UnionWithNext())
+                        .Union())
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDoggyOf"), new RDFVariable("?X"))))
                 .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
@@ -485,7 +485,7 @@ WHERE {
                             .AddAlternativeSteps([
                                 new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
                                 new RDFPropertyPathStep(RDFVocabulary.RDFS.COMMENT)]))
-                        .UnionWithNext())
+                        .Union())
                     .AddProjectionVariable(new RDFVariable("?Y"))
                     .UnionWithNext())
                 .AddSubQuery(new RDFSelectQuery()

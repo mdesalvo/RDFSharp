@@ -157,7 +157,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Sets the pattern to be joined as union with the next pattern
         /// </summary>
-        public RDFPattern UnionWithNext()
+        public RDFPattern Union()
         {
             IsOptional = false;
             JoinAsUnion = true;
@@ -168,7 +168,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Sets the pattern to be joined as minus with the next pattern
         /// </summary>
-        public RDFPattern MinusWithNext()
+        public RDFPattern Minus()
         {
             IsOptional = false;
             JoinAsUnion = false;
