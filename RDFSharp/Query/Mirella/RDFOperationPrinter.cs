@@ -37,16 +37,12 @@ namespace RDFSharp.Query
 
             if (insertDataOperation != null)
             {
-                #region PREFIXES
                 List<RDFNamespace> prefixes = insertDataOperation.GetPrefixes();
                 sb.Append(PrintPrefixes(prefixes));
-                #endregion
 
-                #region TEMPLATES
                 sb.AppendLine("INSERT DATA {");
                 insertDataOperation.InsertTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
                 sb.Append('}');
-                #endregion
             }
 
             return sb.ToString();
@@ -131,7 +127,6 @@ namespace RDFSharp.Query
                 sb.AppendLine("DELETE {");
                 deleteInsertWhereOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
                 sb.AppendLine("}");
-
                 sb.AppendLine("INSERT {");
                 deleteInsertWhereOperation.InsertTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
                 sb.AppendLine("}");
