@@ -53,12 +53,12 @@ namespace RDFSharp.Query
         internal bool IsOptional { get; set; }
 
         /// <summary>
-        /// Flag indicating the pattern to be joined as UnionWithNext
+        /// Flag indicating the pattern to be joined as Union
         /// </summary>
         internal bool JoinAsUnion { get; set; }
 
         /// <summary>
-        /// Flag indicating the pattern to be joined as MinusWithNext
+        /// Flag indicating the pattern to be joined as Minus
         /// </summary>
         internal bool JoinAsMinus { get; set; }
 
