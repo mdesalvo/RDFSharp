@@ -1006,6 +1006,54 @@ WHERE {
         }
 
         [TestMethod]
+        public void ShouldEvaluateSelectQueryOnGraphWithComplexQuery4()
+        {
+            RDFGraph graph = new RDFGraph(
+            [
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
+                new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
+                new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
+                new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
+                new RDFTriple(new RDFResource("ex:baubau"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperoga")),
+                new RDFTriple(new RDFResource("ex:paperoga"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("white")),
+                new RDFTriple(new RDFResource("ex:snoopie"),new RDFResource("ex:dogOf"),new RDFResource("ex:linus"))
+            ]);
+
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
+                    .MinusWithNext())
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                        .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))))
+                .AddModifier(new RDFOrderByModifier(new RDFVariable("?X"), RDFQueryEnums.RDFOrderByFlavors.ASC))
+                .AddProjectionVariable(new RDFVariable("?X"))
+                .AddProjectionVariable(new RDFVariable("?Y"))
+                .AddProjectionVariable(new RDFVariable("?N"));
+            RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 3);
+            Assert.IsTrue(result.SelectResultsCount == 4);
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:snoopie"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:linus"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:pluto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:topolino"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), "Mickey Mouse@EN-US"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?Y"].ToString(), "ex:balto"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?X"].ToString(), "ex:whoever"));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?N"].ToString(), DBNull.Value.ToString()));
+        }
+
+        [TestMethod]
         public void ShouldEvaluateSelectQueryOnGraphWithNoResults()
         {
             RDFGraph graph = new RDFGraph(
