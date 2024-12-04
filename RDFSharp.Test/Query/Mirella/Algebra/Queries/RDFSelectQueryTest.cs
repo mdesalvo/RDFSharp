@@ -19,7 +19,6 @@ using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Store;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -483,6 +482,29 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?V"));
             Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?VLENGTH"));
             Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?VLENGTHISMORETHAN7"));
+        }
+
+        [TestMethod]
+        public void ShouldApplySelectQueryToGraphAndHaveResultsWithValues()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:grass"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS))
+                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [ new RDFResource("ex:flower") ])))
+                .AddProjectionVariable(new RDFVariable("?S"));
+            RDFSelectQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
         [TestMethod]
