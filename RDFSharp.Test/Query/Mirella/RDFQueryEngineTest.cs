@@ -1031,11 +1031,11 @@ WHERE {
                         .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasColor"), new RDFVariable("?C"))))
                     .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:balto")), new RDFVariable("?Y")))
-                    .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:whoever")), new RDFVariable("?X"))))
+                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [ new RDFResource("ex:balto") ])
+                                              .AddColumn(new RDFVariable("?X"), [ new RDFResource("ex:whoever") ])))
                 .AddModifier(new RDFOrderByModifier(new RDFVariable("?X"), RDFQueryEnums.RDFOrderByFlavors.ASC))
-                .AddProjectionVariable(new RDFVariable("?X"))
                 .AddProjectionVariable(new RDFVariable("?Y"))
+                .AddProjectionVariable(new RDFVariable("?X"))
                 .AddProjectionVariable(new RDFVariable("?N"));
             RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
@@ -1053,7 +1053,7 @@ WHERE {
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), "Mickey Mouse@EN-US"));
             Assert.IsTrue(string.Equals(query.ToString(),
-@"SELECT ?X ?Y ?N
+@"SELECT ?Y ?X ?N
 WHERE {
   {
     {
@@ -1073,8 +1073,9 @@ WHERE {
       }
       UNION
       {
-        BIND(<ex:balto> AS ?Y) .
-        BIND(<ex:whoever> AS ?X) .
+        VALUES (?Y ?X) {
+          ( <ex:balto> <ex:whoever> )
+        } .
       }
     }
   }

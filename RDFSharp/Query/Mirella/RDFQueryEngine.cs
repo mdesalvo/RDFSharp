@@ -90,9 +90,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFSelectQueryResult EvaluateSelectQuery(RDFSelectQuery selectQuery, RDFDataSource datasource)
         {
-            //Inject SPARQL values within every evaluable member
-            selectQuery.InjectValues(selectQuery.GetValues());
-
             DataTable queryResultTable = new DataTable();
             RDFSelectQueryResult queryResult = new RDFSelectQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = selectQuery.GetEvaluableQueryMembers().ToList();
@@ -136,9 +133,6 @@ namespace RDFSharp.Query
                 return resultTable;
             }
 
-            //Inject SPARQL values within every evaluable member
-            describeQuery.InjectValues(describeQuery.GetValues());
-
             DataTable queryResultTable = new DataTable();
             RDFDescribeQueryResult queryResult = new RDFDescribeQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers().ToList();
@@ -165,9 +159,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFConstructQueryResult EvaluateConstructQuery(RDFConstructQuery constructQuery, RDFDataSource datasource)
         {
-            //Inject SPARQL values within every evaluable member
-            constructQuery.InjectValues(constructQuery.GetValues());
-
             DataTable queryResultTable = new DataTable();
             RDFConstructQueryResult constructResult = new RDFConstructQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = constructQuery.GetEvaluableQueryMembers().ToList();
@@ -194,9 +185,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFAskQueryResult EvaluateAskQuery(RDFAskQuery askQuery, RDFDataSource datasource)
         {
-            //Inject SPARQL values within every evaluable member
-            askQuery.InjectValues(askQuery.GetValues());
-
             RDFAskQueryResult askResult = new RDFAskQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = askQuery.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Any())
