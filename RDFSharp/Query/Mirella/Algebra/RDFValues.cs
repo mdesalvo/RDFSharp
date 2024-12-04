@@ -95,6 +95,7 @@ namespace RDFSharp.Query
             DataTable result = new DataTable();
             result.ExtendedProperties.Add(RDFQueryEngine.IsOptional, false);
             result.ExtendedProperties.Add(RDFQueryEngine.JoinAsUnion, false);
+            result.ExtendedProperties.Add(RDFQueryEngine.JoinAsMinus, false);
 
             //Create the columns of the SPARQL values
             Bindings.ToList()

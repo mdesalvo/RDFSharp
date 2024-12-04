@@ -166,22 +166,6 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Injects the given list of SPARQL values to patterngroups and subqueries of the query
-        /// </summary>
-        internal RDFQuery InjectValues(List<RDFValues> values)
-        {
-            //Inject SPARQL values into pattern groups
-            foreach (RDFPatternGroup patternGroup in GetPatternGroups())
-                values?.ForEach(v => patternGroup.AddInjectedValues(v));
-
-            //Inject SPARQL values into subqueries
-            foreach (RDFQuery subQuery in GetSubQueries())
-                subQuery.InjectValues(values);
-
-            return this;
-        }
-
-        /// <summary>
         /// Gets the prefixes of the query, including those from subqueries
         /// </summary>
         internal List<RDFNamespace> GetPrefixes()

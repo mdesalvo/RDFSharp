@@ -19,7 +19,6 @@ using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Store;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -56,6 +55,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.IsEvaluable);
             Assert.IsFalse(query.IsOptional);
             Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.JoinAsMinus);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -82,6 +82,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.IsEvaluable);
             Assert.IsTrue(query.IsOptional);
             Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.JoinAsMinus);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -108,6 +109,34 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.IsEvaluable);
             Assert.IsFalse(query.IsOptional);
             Assert.IsTrue(query.JoinAsUnion);
+            Assert.IsFalse(query.JoinAsMinus);
+            Assert.IsFalse(query.IsSubQuery);
+            Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
+            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
+            Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
+            Assert.IsTrue(query.GetPatternGroups().Count() == 0);
+            Assert.IsTrue(query.GetSubQueries().Count() == 0);
+            Assert.IsTrue(query.GetValues().Count() == 0);
+            Assert.IsTrue(query.GetModifiers().Count() == 0);
+            Assert.IsTrue(query.GetPrefixes().Count() == 0);
+        }
+
+        [TestMethod]
+        public void ShouldCreateMinusSelectQuery()
+        {
+            RDFSelectQuery query = new RDFSelectQuery().MinusWithNext();
+
+            Assert.IsNotNull(query);
+            Assert.IsNotNull(query.QueryMembers);
+            Assert.IsTrue(query.QueryMembers.Count == 0);
+            Assert.IsNotNull(query.Prefixes);
+            Assert.IsTrue(query.Prefixes.Count == 0);
+            Assert.IsNotNull(query.ProjectionVars);
+            Assert.IsTrue(query.ProjectionVars.Count == 0);
+            Assert.IsTrue(query.IsEvaluable);
+            Assert.IsFalse(query.IsOptional);
+            Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsTrue(query.JoinAsMinus);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -134,6 +163,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.IsEvaluable);
             Assert.IsFalse(query.IsOptional);
             Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.JoinAsMinus);
             Assert.IsTrue(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("{" + Environment.NewLine + "SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine + "}" + Environment.NewLine));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -280,6 +310,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.IsEvaluable);
             Assert.IsFalse(query.IsOptional);
             Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.JoinAsMinus);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("SELECT ((?V + 2) AS ?SUM)" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -309,6 +340,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.IsEvaluable);
             Assert.IsFalse(query.IsOptional);
             Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.JoinAsMinus);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("SELECT ?V1 ((?V + 2) AS ?SUM) ?V2" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -337,6 +369,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.IsEvaluable);
             Assert.IsFalse(query.IsOptional);
             Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.JoinAsMinus);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("SELECT ((?V + 2) AS ?SUM) (((?V1 + ?V2) * ?V3) AS ?MULTIPLY)" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -366,6 +399,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.IsEvaluable);
             Assert.IsFalse(query.IsOptional);
             Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.JoinAsMinus);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals("SELECT ?V1 ?V2" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
             Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -448,6 +482,166 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?V"));
             Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?VLENGTH"));
             Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?VLENGTHISMORETHAN7"));
+        }
+
+        [TestMethod]
+        public void ShouldApplySelectQueryToGraphAndHaveResultsWithValuesAfter()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:grass"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS))
+                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [ new RDFResource("ex:flower") ])))
+                .AddProjectionVariable(new RDFVariable("?S"));
+            RDFSelectQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
+        }
+
+        [TestMethod]
+        public void ShouldApplySelectQueryToGraphAndHaveResultsWithValuesFromSubQuery()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:grass"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:flower")]))))
+                .AddProjectionVariable(new RDFVariable("?S"));
+            RDFSelectQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
+        }
+
+        [TestMethod]
+        public void ShouldApplySelectQueryToGraphAndHaveResultsWithValuesFromMinusSubQuery()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:grass"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDFS.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS))
+                    .MinusWithNext())
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:fruit"), new RDFResource("ex:tree")]))
+                        .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS).Optional()))
+                    .UnionWithNext())
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:grass"), new RDFResource("ex:lemon")]))));
+            RDFSelectQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 2);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?P"));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?P"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+        }
+
+        [TestMethod]
+        public void ShouldApplySelectQueryToGraphAndHaveResultsWithUnprojectedValuesFromSubQuery()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:grass"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:flower")]))
+                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?X"), [new RDFResource("ex:flower")])))
+                    .AddProjectionVariable(new RDFVariable("?X")))
+                .AddProjectionVariable(new RDFVariable("?S"));
+            RDFSelectQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 3);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
+            Assert.IsTrue(result.SelectResults.Rows[1]["?S"].Equals("ex:tree"));
+            Assert.IsTrue(result.SelectResults.Rows[2]["?S"].Equals("ex:grass"));
+        }
+
+        [TestMethod]
+        public void ShouldApplySelectQueryToGraphAndHaveResultsWithMinusValuesFromSubQuery()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:grass"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS))
+                    .MinusWithNext())
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:flower")]))))
+                .AddProjectionVariable(new RDFVariable("?S"));
+            RDFSelectQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 2);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:tree"));
+            Assert.IsTrue(result.SelectResults.Rows[1]["?S"].Equals("ex:grass"));
+        }
+
+        [TestMethod]
+        public void ShouldApplySelectQueryToGraphAndHaveResultsWithValuesBefore()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:grass"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:flower")]))
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)))
+                .AddProjectionVariable(new RDFVariable("?S"));
+            RDFSelectQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
         [TestMethod]

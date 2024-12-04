@@ -61,6 +61,11 @@ namespace RDFSharp.Query
         internal static readonly string JoinAsUnion = "JoinAsUnion";
 
         /// <summary>
+        /// Attribute denoting a pattern/patternGroup/query to be joined as minus
+        /// </summary>
+        internal static readonly string JoinAsMinus = "JoinAsMinus";
+
+        /// <summary>
         /// Attribute denoting a logically deleted intermediate results table
         /// </summary>
         internal static readonly string LogicallyDeleted = "LogicallyDeleted";
@@ -85,9 +90,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFSelectQueryResult EvaluateSelectQuery(RDFSelectQuery selectQuery, RDFDataSource datasource)
         {
-            //Inject SPARQL values within every evaluable member
-            selectQuery.InjectValues(selectQuery.GetValues());
-
             DataTable queryResultTable = new DataTable();
             RDFSelectQueryResult queryResult = new RDFSelectQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = selectQuery.GetEvaluableQueryMembers().ToList();
@@ -97,7 +99,7 @@ namespace RDFSharp.Query
                 EvaluateQueryMembers(evaluableQueryMembers, datasource);
 
                 //Get the result table of the query
-                queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList(), false);
+                queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList());
             }
 
             //Apply the modifiers of the query to the result table
@@ -131,9 +133,6 @@ namespace RDFSharp.Query
                 return resultTable;
             }
 
-            //Inject SPARQL values within every evaluable member
-            describeQuery.InjectValues(describeQuery.GetValues());
-
             DataTable queryResultTable = new DataTable();
             RDFDescribeQueryResult queryResult = new RDFDescribeQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers().ToList();
@@ -143,7 +142,7 @@ namespace RDFSharp.Query
                 EvaluateQueryMembers(evaluableQueryMembers, datasource);
 
                 //Get the result table of the query
-                queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList(), false);
+                queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList());
             }
 
             //Describe the terms from the result table
@@ -160,9 +159,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFConstructQueryResult EvaluateConstructQuery(RDFConstructQuery constructQuery, RDFDataSource datasource)
         {
-            //Inject SPARQL values within every evaluable member
-            constructQuery.InjectValues(constructQuery.GetValues());
-
             DataTable queryResultTable = new DataTable();
             RDFConstructQueryResult constructResult = new RDFConstructQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = constructQuery.GetEvaluableQueryMembers().ToList();
@@ -172,7 +168,7 @@ namespace RDFSharp.Query
                 EvaluateQueryMembers(evaluableQueryMembers, datasource);
 
                 //Get the result table of the query
-                queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList(), false);
+                queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList());
             }
 
             //Fill the templates from the result table
@@ -189,9 +185,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFAskQueryResult EvaluateAskQuery(RDFAskQuery askQuery, RDFDataSource datasource)
         {
-            //Inject SPARQL values within every evaluable member
-            askQuery.InjectValues(askQuery.GetValues());
-
             RDFAskQueryResult askResult = new RDFAskQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = askQuery.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Any())
@@ -200,7 +193,7 @@ namespace RDFSharp.Query
                 EvaluateQueryMembers(evaluableQueryMembers, datasource);
 
                 //Get the result table of the query
-                DataTable queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList(), false);
+                DataTable queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList());
 
                 //Transform the result into a boolean response
                 askResult.AskResult = (queryResultTable.Rows.Count > 0);
@@ -252,6 +245,12 @@ namespace RDFSharp.Query
                             QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties.Add(JoinAsUnion, subQuery.JoinAsUnion);
                         else
                             QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties[JoinAsUnion] = subQuery.JoinAsUnion;
+
+                        //Populate its metadata (JoinAsMinus)
+                        if (!QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties.ContainsKey(JoinAsMinus))
+                            QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties.Add(JoinAsMinus, subQuery.JoinAsMinus);
+                        else
+                            QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties[JoinAsMinus] = subQuery.JoinAsMinus;
                     }
                 }
                 #endregion
@@ -271,9 +270,11 @@ namespace RDFSharp.Query
                 //Cleanup pattern group in order to stringify into vanilla "SELECT *"
                 bool isOptional = patternGroup.IsOptional;
                 bool joinAsUnion = patternGroup.JoinAsUnion;
+                bool joinAsMinus = patternGroup.JoinAsMinus;
                 (RDFSPARQLEndpoint, RDFSPARQLEndpointQueryOptions)? asService = patternGroup.EvaluateAsService;
                 patternGroup.IsOptional = false;
                 patternGroup.JoinAsUnion = false;
+                patternGroup.JoinAsMinus = false;
                 patternGroup.EvaluateAsService = null;
 
                 //Send query to SPARQL endpoint
@@ -285,11 +286,13 @@ namespace RDFSharp.Query
                 //Restore pattern group to its official state
                 patternGroup.IsOptional = isOptional;
                 patternGroup.JoinAsUnion = joinAsUnion;
+                patternGroup.JoinAsMinus = joinAsMinus;
                 patternGroup.EvaluateAsService = asService;
 
                 //Set name and metadata of result datatable
                 serviceResultsTable.ExtendedProperties.Add(IsOptional, patternGroup.IsOptional);
                 serviceResultsTable.ExtendedProperties.Add(JoinAsUnion, patternGroup.JoinAsUnion);
+                serviceResultsTable.ExtendedProperties.Add(JoinAsMinus, patternGroup.JoinAsMinus);
 
                 //Save result datatable
                 PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(serviceResultsTable);
@@ -309,6 +312,7 @@ namespace RDFSharp.Query
                         //Set name and metadata of result datatable
                         patternResultsTable.ExtendedProperties.Add(IsOptional, pattern.IsOptional);
                         patternResultsTable.ExtendedProperties.Add(JoinAsUnion, pattern.JoinAsUnion);
+                        patternResultsTable.ExtendedProperties.Add(JoinAsMinus, pattern.JoinAsMinus);
 
                         //Save result datatable
                         PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
@@ -348,7 +352,7 @@ namespace RDFSharp.Query
                         // finally we drop all tables collected until this moment, except the comprehensive bind table
 
                         //Populate current patternGroup result table
-                        DataTable currentPatternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID], false);
+                        DataTable currentPatternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID]);
 
                         //Evaluate bind operator on the current patternGroup result table
                         ProjectBind(bind, currentPatternGroupResultTable);
@@ -367,6 +371,7 @@ namespace RDFSharp.Query
                         //Set name and metadata of result datatable
                         existsFilterResultsTable.ExtendedProperties.Add(IsOptional, false);
                         existsFilterResultsTable.ExtendedProperties.Add(JoinAsUnion, false);
+                        existsFilterResultsTable.ExtendedProperties.Add(JoinAsMinus, false);
 
                         //Save result datatable (directly into the filter)
                         existsFilter.PatternResults?.Clear();
@@ -386,7 +391,7 @@ namespace RDFSharp.Query
             if (evaluablePGMembers.Any())
             {
                 //Populate patternGroup result table
-                DataTable patternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID], false);
+                DataTable patternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID]);
 
                 //Add it to the list of query member result tables
                 QueryMemberResultTables.Add(patternGroup.QueryMemberID, patternGroupResultTable);
@@ -396,13 +401,19 @@ namespace RDFSharp.Query
                     QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add(IsOptional, patternGroup.IsOptional);
                 else
                     QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties[IsOptional] = patternGroup.IsOptional
-                                                                                                            || (bool)QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties[IsOptional];
+                                                                                                          || (bool)QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties[IsOptional];
 
                 //Populate its metadata (JoinAsUnion)
                 if (!QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey(JoinAsUnion))
                     QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add(JoinAsUnion, patternGroup.JoinAsUnion);
                 else
                     QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties[JoinAsUnion] = patternGroup.JoinAsUnion;
+
+                //Populate its metadata (JoinAsMinus)
+                if (!QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey(JoinAsMinus))
+                    QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add(JoinAsMinus, patternGroup.JoinAsMinus);
+                else
+                    QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties[JoinAsMinus] = patternGroup.JoinAsMinus;
             }
         }
 
@@ -516,7 +527,7 @@ namespace RDFSharp.Query
             //Iterate on the templates
             string defaultContext = RDFNamespaceRegister.DefaultNamespace.ToString();
             foreach (RDFPattern template in templates.Where(tp => tp.Variables.Count == 0
-                                                                    || tp.Variables.TrueForAll(v => resultTable.Columns.Contains(v.ToString()))))
+                                                                   || tp.Variables.TrueForAll(v => resultTable.Columns.Contains(v.ToString()))))
             {
                 string templateCtx = template.Context?.ToString();
                 string templateSubj = template.Subject.ToString();
@@ -1216,13 +1227,14 @@ namespace RDFSharp.Query
                 //Set extended properties
                 patternTable.ExtendedProperties.Add(IsOptional, pattern.IsOptional);
                 patternTable.ExtendedProperties.Add(JoinAsUnion, pattern.JoinAsUnion);
+                patternTable.ExtendedProperties.Add(JoinAsMinus, pattern.JoinAsMinus);
 
                 //Add produced table
                 patternTables.Add(patternTable);
             }
 
             //Merge produced list of tables
-            resultTable = CombineTables(patternTables, false);
+            resultTable = CombineTables(patternTables);
 
             //Remove property path variables
             List<string> propPathCols = new List<string>();
@@ -1593,7 +1605,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Joins two datatables WITHOUT support for OPTIONAL data
+        /// Joins two datatables WITHOUT support for OPTIONAL/UNION
         /// </summary>
         internal static DataTable InnerJoinTables(DataTable leftTable, DataTable rightTable)
         {
@@ -1697,21 +1709,22 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Joins two datatables WITH support for OPTIONAL data
+        /// Joins two datatables WITH support for OPTIONAL/UNION
         /// </summary>
         internal static DataTable OuterJoinTables(DataTable leftTable, DataTable rightTable)
         {
             #region Utilities
             bool CheckJoin(DataRow leftRow, DataRow rightRow, string commonColumn)
                 => leftRow.IsNull(commonColumn)
-                     || rightRow.IsNull(commonColumn)
-                       || string.Equals(leftRow[commonColumn]?.ToString(), rightRow[commonColumn]?.ToString(), StringComparison.Ordinal);
+                    || rightRow.IsNull(commonColumn)
+                    || string.Equals(leftRow[commonColumn]?.ToString(), rightRow[commonColumn]?.ToString(), StringComparison.Ordinal);
             #endregion
 
             DataTable joinTable = new DataTable();
 
             //Determine common columns
-            bool rightIsOptionalTable = (rightTable.ExtendedProperties.ContainsKey(IsOptional) && rightTable.ExtendedProperties[IsOptional].Equals(true));
+            bool rightIsOptionalTable = rightTable.ExtendedProperties.ContainsKey(IsOptional) 
+                                          && rightTable.ExtendedProperties[IsOptional].Equals(true);
             DataColumn[] leftColumns = leftTable.Columns.OfType<DataColumn>().ToArray();
             DataColumn[] rightColumns = rightTable.Columns.OfType<DataColumn>().ToArray();
             DataColumn[] commonColumns = leftColumns.Intersect(rightColumns, dtComparer)
@@ -1740,7 +1753,7 @@ namespace RDFSharp.Query
             joinTable.BeginLoadData();
             foreach (DataRow leftRow in leftTable.Rows)
             {
-                //Leverage a relation between left row and right table based on common columns.
+                //Leverage a relation between left row and right table based on common columns
                 //(this helps at slightly reducing O(N^2) complexity to O(N*K) where K << N)
                 EnumerableRowCollection<DataRow> relatedRows = rightTable.AsEnumerable();
                 foreach (DataColumn commonColumn in commonColumns)
@@ -1819,61 +1832,182 @@ namespace RDFSharp.Query
 
             return joinTable;
         }
+        
+        /// <summary>
+        /// Computes the difference between left datatable and right datatable
+        /// </summary>
+        internal static DataTable DiffJoinTables(DataTable leftTable, DataTable rightTable)
+        {
+            #region Utilities
+            bool CheckJoin(DataRow leftRow, DataRow rightRow, string commonColumn)
+                => leftRow.IsNull(commonColumn)
+                    || rightRow.IsNull(commonColumn)
+                    || string.Equals(leftRow[commonColumn]?.ToString(), rightRow[commonColumn]?.ToString(), StringComparison.Ordinal);
+            #endregion
+
+            DataTable diffTable = new DataTable();
+
+            //Determine common columns
+            DataColumn[] leftColumns = leftTable.Columns.OfType<DataColumn>().ToArray();
+            DataColumn[] rightColumns = rightTable.Columns.OfType<DataColumn>().ToArray();
+            DataColumn[] commonColumns = leftColumns.Intersect(rightColumns, dtComparer)
+                                                    .Select(c => new DataColumn(c.ColumnName, c.DataType))
+                                                    .ToArray();
+            int commonColumnsCount = commonColumns.Count();
+
+            //Create structure of diff table
+            diffTable.Columns.AddRange(leftColumns.Select(c => new DataColumn(c.ColumnName, c.DataType))
+                                                  .ToArray());
+
+            //Loop left table
+            diffTable.BeginLoadData();
+            foreach (DataRow leftRow in leftTable.Rows)
+            {
+                //In case of no common columns, just take left row
+                if (commonColumnsCount == 0)
+                {
+                    DataRow diffRow = diffTable.NewRow();
+                    diffRow.ItemArray = leftRow.ItemArray;
+                    diffTable.Rows.Add(diffRow);
+                    continue;
+                }
+
+                //Leverage a relation between left row and right table based on common columns
+                //(this helps at slightly reducing O(N^2) complexity to O(N*K) where K << N)
+                EnumerableRowCollection<DataRow> relatedRows = rightTable.AsEnumerable();
+                foreach (DataColumn commonColumn in commonColumns)
+                    relatedRows = relatedRows.Where(relatedRow => CheckJoin(leftRow, relatedRow, commonColumn.ColumnName));
+                List<DataRow> relatedRowsList = relatedRows.ToList();
+
+                //Take left row only if it HASN'T any right matches
+                if (relatedRowsList.Count == 0)
+                {
+                    DataRow diffRow = diffTable.NewRow();
+                    diffRow.ItemArray = leftRow.ItemArray;
+                    diffTable.Rows.Add(diffRow);
+                }
+            }
+            diffTable.EndLoadData();
+
+            return diffTable;
+        }
 
         /// <summary>
-        /// Combines the given list of data tables, depending on presence of common columns and dynamic detection of Optional / Union operators
+        /// Combines the given list of data tables, depending on presence of common columns and dynamic detection of Optional / Union / Minus operators
         /// </summary>
-        internal static DataTable CombineTables(List<DataTable> dataTables, bool isMerge)
+        internal static DataTable CombineTables(List<DataTable> dataTables)
         {
             DataTable finalTable = new DataTable();
+            if (dataTables.Count == 0)
+                return finalTable;
+            if (dataTables.Count == 1)
+                return dataTables[0];
 
-            bool switchToOuterJoin = false;
-            if (dataTables.Count > 0)
+            #region Utilities
+            bool ProcessUnions()
             {
-                //Process Unions
+                bool hasProcessedUnion = false;
                 for (int i = 1; i < dataTables.Count; i++)
                 {
-                    bool previousTableRequiresUnion = dataTables[i-1].ExtendedProperties.ContainsKey(JoinAsUnion) && dataTables[i-1].ExtendedProperties[JoinAsUnion].Equals(true);
-                    if (isMerge || previousTableRequiresUnion)
+                    bool previousTableRequiresUnion = dataTables[i-1].ExtendedProperties.ContainsKey(JoinAsUnion) 
+                                                        && dataTables[i-1].ExtendedProperties[JoinAsUnion].Equals(true);
+                    if (previousTableRequiresUnion)
                     {
                         //Backup extended attributes of the current table
-                        bool currentTableRequiresUnion = dataTables[i].ExtendedProperties.ContainsKey(JoinAsUnion) && dataTables[i].ExtendedProperties[JoinAsUnion].Equals(true);
-                        bool currentTableRequiresOptional = dataTables[i].ExtendedProperties.ContainsKey(IsOptional) && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
+                        bool currentTableRequiresOptional = dataTables[i].ExtendedProperties.ContainsKey(IsOptional) 
+                                                              && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
+                        bool currentTableRequiresUnion = dataTables[i].ExtendedProperties.ContainsKey(JoinAsUnion) 
+                                                           && dataTables[i].ExtendedProperties[JoinAsUnion].Equals(true);
+                        bool currentTableRequiresMinus = dataTables[i].ExtendedProperties.ContainsKey(JoinAsMinus) 
+                                                           && dataTables[i].ExtendedProperties[JoinAsMinus].Equals(true);
 
                         //Merge the previous table into the current one
                         dataTables[i].Merge(dataTables[i-1], true, MissingSchemaAction.Add);
 
                         //Restore extended attributes of the current table
                         dataTables[i].ExtendedProperties.Clear();
-                        dataTables[i].ExtendedProperties.Add(JoinAsUnion, currentTableRequiresUnion);
                         dataTables[i].ExtendedProperties.Add(IsOptional, currentTableRequiresOptional);
+                        dataTables[i].ExtendedProperties.Add(JoinAsUnion, currentTableRequiresUnion);
+                        dataTables[i].ExtendedProperties.Add(JoinAsMinus, currentTableRequiresMinus);
 
                         //Clear the previous table and flag it as logically deleted
                         dataTables[i-1].Rows.Clear();
+                        dataTables[i-1].ExtendedProperties.Clear();
                         dataTables[i-1].ExtendedProperties.Add(LogicallyDeleted, true);
 
-                        //Set automatic switch to OuterJoin (because we have done Unions, so null values must be preserved)
-                        switchToOuterJoin = true;
+                        //Signal that at least one UnionWithNext has been performed
+                        hasProcessedUnion = true;
                     }
                 }
+                return hasProcessedUnion;
+            }
+            bool ProcessMinus()
+            {
+                bool hasProcessedMinus = false;
+                for (int i = 1; i < dataTables.Count; i++)
+                {
+                    bool previousTableRequiresMinus = dataTables[i-1].ExtendedProperties.ContainsKey(JoinAsMinus) 
+                                                        && dataTables[i-1].ExtendedProperties[JoinAsMinus].Equals(true);
+                    if (previousTableRequiresMinus)
+                    {
+                        //Backup extended attributes of the current table
+                        bool currentTableRequiresOptional = dataTables[i].ExtendedProperties.ContainsKey(IsOptional) 
+                                                              && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
+                        bool currentTableRequiresUnion = dataTables[i].ExtendedProperties.ContainsKey(JoinAsUnion) 
+                                                           && dataTables[i].ExtendedProperties[JoinAsUnion].Equals(true);
+                        bool currentTableRequiresMinus = dataTables[i].ExtendedProperties.ContainsKey(JoinAsMinus) 
+                                                           && dataTables[i].ExtendedProperties[JoinAsMinus].Equals(true);
 
-                //Remove logically deleted tables from the pool
-                if (switchToOuterJoin)
-                    dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
+                        //Diff the previous table against the current one (which is replaced)
+                        dataTables[i] = DiffJoinTables(dataTables[i-1], dataTables[i]);
 
-                //Process Joins
+                        //Restore extended attributes of the current table
+                        dataTables[i].ExtendedProperties.Clear();
+                        dataTables[i].ExtendedProperties.Add(IsOptional, currentTableRequiresOptional);
+                        dataTables[i].ExtendedProperties.Add(JoinAsUnion, currentTableRequiresUnion);
+                        dataTables[i].ExtendedProperties.Add(JoinAsMinus, currentTableRequiresMinus);
+
+                        //Clear the previous table and flag it as logically deleted
+                        dataTables[i-1].Rows.Clear();
+                        dataTables[i-1].ExtendedProperties.Clear();
+                        dataTables[i-1].ExtendedProperties.Add(LogicallyDeleted, true);
+
+                        //Signal that at least one MinusWithNext has been performed
+                        hasProcessedMinus = true;
+                    }
+                }
+                return hasProcessedMinus;
+            }
+            void ComputeJoins(bool needsOuterJoin)
+            {
                 finalTable = dataTables[0];
                 for (int i = 1; i < dataTables.Count; i++)
                 {
-                    //Set automatic switch to OuterJoin in case of "Optional" detected
-                    switchToOuterJoin |= dataTables[i].ExtendedProperties.ContainsKey(IsOptional)
-                                           && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
+                    //Switch to OuterJoin when encountering Optional behavior (or always, in case we come from Union behavior)
+                    needsOuterJoin |= dataTables[i].ExtendedProperties.ContainsKey(IsOptional)
+                                       && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
 
                     //Proceed with most proper join strategy for current table
-                    finalTable = switchToOuterJoin ? OuterJoinTables(finalTable, dataTables[i])
-                                                   : InnerJoinTables(finalTable, dataTables[i]);
+                    finalTable = needsOuterJoin ? OuterJoinTables(finalTable, dataTables[i]) 
+                                                : InnerJoinTables(finalTable, dataTables[i]);
                 }
             }
+            #endregion
+
+            //Step 1: process Union operators
+            bool hasDoneUnions = ProcessUnions();
+            if (hasDoneUnions)
+                dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) 
+                                            && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
+
+            //Step 2: process Minus operators
+            bool hasDoneMinus = ProcessMinus();
+            if (hasDoneMinus)
+                dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) 
+                                            && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
+
+            //Step 3: compute joins
+            ComputeJoins(hasDoneUnions);
 
             return finalTable;
         }

@@ -366,9 +366,6 @@ namespace RDFSharp.Query
         /// </summary>
         private RDFConstructQueryResult ExecuteConstructQueryFromOperation(RDFOperation operation, RDFDataSource datasource, string deleteInsertCommand = null)
         {
-            //Inject SPARQL values within every evaluable member
-            operation.InjectValues(operation.GetValues());
-
             DataTable resultTable = new DataTable();
             RDFConstructQueryResult constructResult = new RDFConstructQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = operation.GetEvaluableQueryMembers().ToList();
@@ -378,7 +375,7 @@ namespace RDFSharp.Query
                 EvaluateQueryMembers(evaluableQueryMembers, datasource);
 
                 //Get the result table of the operation
-                resultTable = CombineTables(QueryMemberResultTables.Values.ToList(), false);
+                resultTable = CombineTables(QueryMemberResultTables.Values.ToList());
             }
 
             //Fill the templates from the result table

@@ -37,6 +37,11 @@ namespace RDFSharp.Query
         internal bool JoinAsUnion { get; set; }
 
         /// <summary>
+        /// Flag indicating the pattern group to be joined as Minus
+        /// </summary>
+        internal bool JoinAsMinus { get; set; }
+
+        /// <summary>
         /// Tuple indicating that the pattern group should be evaluated according to SPARQL SERVICE
         /// </summary>
         internal (RDFSPARQLEndpoint,RDFSPARQLEndpointQueryOptions)? EvaluateAsService { get; set; }
@@ -61,6 +66,7 @@ namespace RDFSharp.Query
             IsEvaluable = true;
             IsOptional = false;
             JoinAsUnion = false;
+            JoinAsMinus = false;
             GroupMembers = new List<RDFPatternGroupMember>();
             Variables = new List<RDFVariable>();
         }
@@ -192,6 +198,7 @@ namespace RDFSharp.Query
         {
             IsOptional = true;
             JoinAsUnion = false;
+            JoinAsMinus = false;
             return this;
         }
 
@@ -202,6 +209,18 @@ namespace RDFSharp.Query
         {
             IsOptional = false;
             JoinAsUnion = true;
+            JoinAsMinus = false;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the pattern group to be joined as Minus with the next query member
+        /// </summary>
+        public RDFPatternGroup MinusWithNext()
+        {
+            IsOptional = false;
+            JoinAsUnion = false;
+            JoinAsMinus = true;
             return this;
         }
 
@@ -245,26 +264,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal IEnumerable<RDFFilter> GetFilters()
             => GroupMembers.OfType<RDFFilter>();
-
-        /// <summary>
-        /// Adds the given injected SPARQL values to the pattern group
-        /// </summary>
-        internal RDFPatternGroup AddInjectedValues(RDFValues values)
-        {
-            if (values != null)
-            {
-                //Clone the SPARQL values and set as injected
-                RDFValues clonedValues = new RDFValues()
-                {
-                    Bindings = values.Bindings,
-                    IsEvaluable = values.IsEvaluable,
-                    IsInjected = true
-                };
-
-                AddValues(clonedValues);
-            }
-            return this;
-        }
 
         /// <summary>
         /// Gets the group members which can be evaluated

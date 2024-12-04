@@ -33,7 +33,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a SPARQL SELECT query
         /// </summary>
-        internal static string PrintSelectQuery(RDFSelectQuery selectQuery, double indentLevel, bool fromUnion)
+        internal static string PrintSelectQuery(RDFSelectQuery selectQuery, double indentLevel, bool fromUnionOrMinus)
         {
             StringBuilder sb = new StringBuilder();
             if (selectQuery == null)
@@ -44,11 +44,11 @@ namespace RDFSharp.Query
                 => subqueryBodySpacesFunc(indentLevel) - 2 < 0 ? 0 : subqueryBodySpacesFunc(indentLevel) - 2;
             int subqueryBodySpacesFunc(double indLevel)
                 => Convert.ToInt32(4.0d * indentLevel);
-            int subqueryUnionSpacesFunc(bool union)
-                => union ? 2 : 0;
+            int subqueryUnionOrMinusSpacesFunc(bool unionOrMinus)
+                => unionOrMinus ? 2 : 0;
 
-            string subquerySpaces = new string(' ', subqueryHeaderSpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
-            string subqueryBodySpaces = new string(' ', subqueryBodySpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
+            string subquerySpaces = new string(' ', subqueryHeaderSpacesFunc(indentLevel) + subqueryUnionOrMinusSpacesFunc(fromUnionOrMinus));
+            string subqueryBodySpaces = new string(' ', subqueryBodySpacesFunc(indentLevel) + subqueryUnionOrMinusSpacesFunc(fromUnionOrMinus));
             #endregion
 
             #region PREFIX
@@ -58,7 +58,7 @@ namespace RDFSharp.Query
             #region SELECT
             if (selectQuery.IsSubQuery)
             {
-                if (selectQuery.IsOptional && !fromUnion)
+                if (selectQuery.IsOptional && !fromUnionOrMinus)
                     sb.AppendLine(string.Concat(subquerySpaces, "OPTIONAL {"));
                 else
                     sb.AppendLine(string.Concat(subquerySpaces, "{"));
@@ -113,7 +113,7 @@ namespace RDFSharp.Query
             #endregion
 
             #region WHERE
-            PrintWhereClause(selectQuery, sb, prefixes, subqueryBodySpaces, indentLevel, fromUnion);
+            PrintWhereClause(selectQuery, sb, prefixes, subqueryBodySpaces, indentLevel, fromUnionOrMinus);
             #endregion
 
             #region MODIFIERS
@@ -282,7 +282,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Prints the string representation of a SPARQL query's WHERE clause
+        /// Prints the string representation of a SPARQL query's prefixes
         /// </summary>
         internal static List<RDFNamespace> PrintPrefixes(RDFQuery query, StringBuilder sb, bool enablePrinting)
         {
@@ -299,7 +299,14 @@ namespace RDFSharp.Query
         /// Prints the string representation of a SPARQL query's WHERE clause
         /// </summary>
         internal static void PrintWhereClause(RDFQuery query, StringBuilder sb, List<RDFNamespace> prefixes, 
-            string subqueryBodySpaces, double indentLevel, bool fromUnion)
+            string subqueryBodySpaces, double indentLevel, bool fromUnionOrMinus)
+        {
+            sb.AppendLine(string.Concat(subqueryBodySpaces, "WHERE {"));
+            PrintWhereClauseMembers(query, sb, prefixes, subqueryBodySpaces, indentLevel, fromUnionOrMinus);
+            sb.Append(string.Concat(subqueryBodySpaces, "}"));
+        }
+        private static void PrintWhereClauseMembers(RDFQuery query, StringBuilder sb, List<RDFNamespace> prefixes,
+            string subqueryBodySpaces, double indentLevel, bool fromUnionOrMinus)
         {
             #region Facilities
             void PrintWrappedPatternGroup(RDFPatternGroup patternGroup)
@@ -315,40 +322,79 @@ namespace RDFSharp.Query
             }
             #endregion
 
-            sb.AppendLine(string.Concat(subqueryBodySpaces, "WHERE {"));
-
             bool printingUnion = false;
+            bool printingMinus = false;
             List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
-            RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
-            foreach (RDFQueryMember queryMember in evaluableQueryMembers)
+            for (int i=0; i<evaluableQueryMembers.Count; i++)
             {
+                RDFQueryMember queryMember = evaluableQueryMembers[i];
+                RDFQueryMember nextQueryMember = i < evaluableQueryMembers.Count-1 ? evaluableQueryMembers[i+1] : null;
+                bool isLastQueryMember = nextQueryMember == null;
+
                 #region PATTERNGROUP
                 if (queryMember is RDFPatternGroup pgQueryMember)
                 {
                     //PatternGroup is set as UNION with the next query member and it IS NOT the last one => append UNION
-                    if (pgQueryMember.JoinAsUnion && !pgQueryMember.Equals(lastQueryMbr)) 
+                    if (pgQueryMember.JoinAsUnion && !isLastQueryMember)
                     {
+                        //In case we are opening UNION semantic, we need to print its opening bracket
                         if (!printingUnion)
                         {
-                            //Begin new UNION block
+                            //Signal UNION semantic
                             printingUnion = true;
 
+                            //In case we are already under MINUS semantic, keep care of reflecting this in the indentation spaces (+2)
+                            if (printingMinus)
+                                subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                         }
+
+                        //Then we can print the pattern group, along with its UNION operator
                         PrintWrappedPatternGroup(pgQueryMember);
                         sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
                     }
 
-                    //PatternGroup is set as INTERSECT with the next query member or it IS the last one => do not append UNION
+                    //PatternGroup is set as MINUS with the next query member and it IS NOT the last one => append MINUS
+                    else if (pgQueryMember.JoinAsMinus && !isLastQueryMember)
+                    {
+                        //In case we are opening MINUS semantic, we need to print its opening bracket
+                        if (!printingMinus)
+                        {
+                            //Signal MINUS semantic
+                            printingMinus = true;
+
+                            //In case we are already under UNION semantic, keep care of reflecting this in the indentation spaces (+2)
+                            if (printingUnion)
+                                subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
+                            sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
+                        }
+
+                        //Then we can print the pattern group, along with its MINUS operator
+                        PrintWrappedPatternGroup(pgQueryMember);
+                        sb.AppendLine(string.Concat(subqueryBodySpaces, "    MINUS"));
+                    }
+
+                    //PatternGroup is set as INTERSECT with the next query member or it IS the last one => do not append UNION/MINUS
                     else
                     {
-                        if (printingUnion)
+                        //In case we are under MINUS or UNION semantic, we need to print their closing brackets to complete the grammar
+                        if (printingUnion || printingMinus)
                         {
-                            //End active UNION block
-                            printingUnion = false;
-
+                            //At first we can print the pattern group
                             PrintWrappedPatternGroup(pgQueryMember);
+
+                            //In case we are under both MINUS and UNION semantic, keep care of reflecting this in the closing brackets and indentation spaces (-2)
+                            if (printingUnion && printingMinus)
+                            {
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
+                                if (subqueryBodySpaces.Length >= 2)
+                                    subqueryBodySpaces = new string(' ', subqueryBodySpaces.Length - 2);
+                            }
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
+                        
+                            //Unsignal UNION/MINUS semantic
+                            printingUnion = false;
+                            printingMinus = false;
                         }
                         else
                             sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length, false, prefixes));
@@ -360,41 +406,85 @@ namespace RDFSharp.Query
                 else if (queryMember is RDFSelectQuery sqQueryMember)
                 {
                     //Merge main query prefixes
-                    query.GetPrefixes()
-                         .ForEach(pf1 => sqQueryMember.AddPrefix(pf1));
+                    prefixes.ForEach(pf1 => sqQueryMember.AddPrefix(pf1));
 
                     //SubQuery is set as UNION with the next query member and it IS NOT the last one => append UNION
-                    if (sqQueryMember.JoinAsUnion && !sqQueryMember.Equals(lastQueryMbr))
+                    if (sqQueryMember.JoinAsUnion && !isLastQueryMember)
                     {
+                        //In case we are opening UNION semantic, we need to print its opening bracket
                         if (!printingUnion)
                         {
-                            //Begin new UNION block
+                            //Signal UNION semantic
                             printingUnion = true;
 
+                            //In case we are already under MINUS semantic, keep care of reflecting this in the indentation spaces (+2)
+                            if (printingMinus)
+                            {
+                                subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
+                                indentLevel += 0.5;
+                            }
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                         }
-                        sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
+
+                        //Then we can print the subquery, along with its UNION operator
+                        sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnionOrMinus ? 0.5 : 0), true));
                         sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
                     }
 
-                    //SubQuery is set as INTERSECT with the next query member or it IS the last one => do not append UNION
+                    //SubQuery is set as MINUS with the next query member and it IS NOT the last one => append MINUS
+                    else if (sqQueryMember.JoinAsMinus && !isLastQueryMember)
+                    {
+                        //In case we are opening MINUS semantic, we need to print its opening bracket
+                        if (!printingMinus)
+                        {
+                            //Signal MINUS semantic
+                            printingMinus = true;
+
+                            //In case we are already under UNION semantic, keep care of reflecting this in the indentation spaces (+2)
+                            if (printingUnion)
+                            {
+                                subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
+                                indentLevel += 0.5;
+                            }
+                            sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
+                        }
+
+                        //Then we can print the subquery, along with its MINUS operator
+                        sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnionOrMinus ? 0.5 : 0), true));
+                        sb.AppendLine(string.Concat(subqueryBodySpaces, "    MINUS"));
+                    }
+
+                    //SubQuery is set as INTERSECT with the next query member or it IS the last one => do not append UNION/MINUS
                     else
                     {
-                        if (printingUnion)
+                        //In case we are under MINUS or UNION semantic, we need to print their closing brackets to complete the grammar
+                        if (printingUnion || printingMinus)
                         {
-                            //End active UNION block
-                            printingUnion = false;
+                            //At first we can print the subquery
+                            sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnionOrMinus ? 0.5 : 0), true));
 
-                            sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
+                            //In case we are under both MINUS and UNION semantic, keep care of reflecting this in the closing brackets and indentation spaces (-2)
+                            if (printingUnion && printingMinus)
+                            {
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
+                                if (subqueryBodySpaces.Length >= 2)
+                                {
+                                    subqueryBodySpaces = new string(' ', subqueryBodySpaces.Length - 2);
+                                    indentLevel -= 0.5;
+                                }
+                            }
                             sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
+
+                            //Unsignal UNION/MINUS semantic
+                            printingUnion = false;
+                            printingMinus = false;
                         }
                         else
-                            sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), false));
+                            sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnionOrMinus ? 0.5 : 0), false));
                     }
                 }
                 #endregion
-            }            
-            sb.Append(string.Concat(subqueryBodySpaces, "}"));
+            }
         }
 
         /// <summary>
@@ -402,10 +492,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintPatternGroup(RDFPatternGroup patternGroup, int spaceIndent, bool skipOptional, List<RDFNamespace> prefixes)
         {
-            string spaces = new StringBuilder().Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
-
-            #region HEADER
             StringBuilder result = new StringBuilder();
+            string spaces = new StringBuilder().Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
             
             //OPTIONAL
             if (patternGroup.IsOptional && !skipOptional)
@@ -423,98 +511,20 @@ namespace RDFSharp.Query
                 spaces = string.Concat(spaces, "  ");
             }
 
+            //OPEN-BRACKET
             result.AppendLine(string.Concat(spaces, "  {"));
-            #endregion
+            
+            //MEMBERS
+            PrintPatternGroupMembers(patternGroup, result, spaces, prefixes);
 
-            #region MEMBERS
-            bool printingUnion = false;
-            List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
-            for (int i=0; i<evaluablePGMembers.Count; i++)
-            {
-                RDFPatternGroupMember pgMember = evaluablePGMembers[i];
-                RDFPatternGroupMember nextPgMember = (i < evaluablePGMembers.Count-1 ? evaluablePGMembers[i+1] : null);
-                bool thisIsLastPgMemberOrNextPgMemberIsBind = (nextPgMember == null || nextPgMember is RDFBind);
-
-                #region PATTERN
-                if (pgMember is RDFPattern ptPgMember)
-                {
-                    //Pattern is set as UNION with the next pg member and it IS NOT the last one => append UNION
-                    if (ptPgMember.JoinAsUnion && !thisIsLastPgMemberOrNextPgMemberIsBind)
-                    {
-                        //Begin new UNION block
-                        printingUnion = true;
-
-                        result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
-                        result.AppendLine(string.Concat(spaces, "    UNION"));
-                    }
-
-                    //Pattern is set as INTERSECT with the next pg member or it IS the last one => do not append UNION
-                    else
-                    {
-                        if (printingUnion)
-                        {
-                            //End active UNION block
-                            printingUnion = false;
-
-                            result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
-                        }
-                        else
-                            result.AppendLine(string.Concat(spaces, "    ", PrintPattern(ptPgMember, prefixes), " ."));
-                    }
-                }
-                #endregion
-
-                #region PROPERTY PATH
-                else if (pgMember is RDFPropertyPath ppPgMember && ppPgMember.IsEvaluable)
-                {
-                    if (printingUnion)
-                    {
-                        //End active UNION block
-                        printingUnion = false;
-
-                        result.AppendLine(string.Concat(spaces, "    { ", PrintPropertyPath(ppPgMember, prefixes), " }"));
-                    }
-                    else
-                        result.AppendLine(string.Concat(spaces, "    ", PrintPropertyPath(ppPgMember, prefixes), " ."));
-                }
-                #endregion
-
-                #region VALUES
-                else if (pgMember is RDFValues vlPgMember && vlPgMember.IsEvaluable && !vlPgMember.IsInjected)
-                {
-                    if (printingUnion)
-                    {
-                        //End active UNION block
-                        printingUnion = false;
-
-                        result.AppendLine(string.Concat(spaces, "    { ", PrintValues(vlPgMember, prefixes, spaces), " }"));
-                    }
-                    else
-                        result.AppendLine(string.Concat(spaces, "    ", PrintValues(vlPgMember, prefixes, spaces), " ."));
-                }
-                #endregion
-
-                #region BIND
-                else if (pgMember is RDFBind bdPgMember)
-                {
-                    //End active UNION block
-                    printingUnion = false;
-
-                    result.AppendLine(string.Concat(spaces, "    ", PrintBind(bdPgMember, prefixes), " ."));
-                }
-                #endregion
-            }
-            #endregion
-
-            #region FILTERS
+            //FILTERS
             patternGroup.GetFilters().Where(f => !(f is RDFValuesFilter))
                                      .ToList()
                                      .ForEach(f => result.AppendLine(string.Concat(spaces, "    ", f.ToString(prefixes), " ")));
-            #endregion
-
-            #region CLOSURE
+            
+            //CLOSE-BRACKET
             result.AppendLine(string.Concat(spaces, "  }"));
-
+            
             //SERVICE
             if (patternGroup.EvaluateAsService.HasValue)
             { 
@@ -525,11 +535,169 @@ namespace RDFSharp.Query
 
             //OPTIONAL
             if (patternGroup.IsOptional && !skipOptional)
+            {
                 result.AppendLine(string.Concat(spaces, "}"));
-            #endregion
+            }
 
             return result.ToString();
         }
+        private static void PrintPatternGroupMembers(RDFPatternGroup patternGroup, StringBuilder result, string spaces, List<RDFNamespace> prefixes)
+        {
+            int openedBrackets = 0;
+            bool printingUnion = false;
+            bool printingMinus = false;
+            List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
+            for (int i=0; i<evaluablePGMembers.Count; i++)
+            {
+                RDFPatternGroupMember pgMember = evaluablePGMembers[i];
+                RDFPatternGroupMember nextPgMember = i < evaluablePGMembers.Count-1 ? evaluablePGMembers[i+1] : null;
+                bool isLastPgMemberOrNextPgMemberIsBind = (nextPgMember == null || nextPgMember is RDFBind);
+
+                #region PATTERN
+                if (pgMember is RDFPattern ptPgMember)
+                {
+                    //Pattern is set as UNION with the next pg member and it IS NOT the last one => append UNION
+                    if (ptPgMember.JoinAsUnion && !isLastPgMemberOrNextPgMemberIsBind)
+                    {
+                        //In case we are opening UNION semantic, but we are also under MINUS semantic, we need to print its opening bracket
+                        //and to keep care of reflecting this in the indentation spaces (+2) 
+                        if (!printingUnion && printingMinus)
+                        {
+                            openedBrackets++;
+                            spaces = string.Concat(spaces, "  ");
+                            result.AppendLine(string.Concat(spaces, "  {"));
+                        }
+
+                        //Then we can print the bracketed pattern, along with its UNION operator
+                        result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
+                        result.AppendLine(string.Concat(spaces, "    UNION"));
+
+                        //Signal UNION semantic
+                        printingUnion = true;
+                    }
+
+                    //Pattern is set as MINUS with the next pg member and it IS NOT the last one => append MINUS
+                    else if (ptPgMember.JoinAsMinus && !isLastPgMemberOrNextPgMemberIsBind)
+                    {
+                        //We can directly print the bracketed pattern, along with its MINUS operator
+                        result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
+                        result.AppendLine(string.Concat(spaces, "    MINUS"));
+
+                        //Signal MINUS semantic
+                        printingMinus = true;
+                        //Unsignal UNION semantic
+                        printingUnion = false;
+                    }
+
+                    //Pattern is set as INTERSECT with the next pg member or it IS the last one => do not append UNION/MINUS
+                    else
+                    {
+                        //In case we are under MINUS or UNION semantic, we need to print all their closing brackets to complete the grammar
+                        if (printingUnion || printingMinus)
+                        {
+                            //We can directly print the bracketed pattern
+                            result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
+
+                            //Then we need to print all the pending brackets and to keep care of
+                            //reflecting this in the indentation spaces (-2) which must be consumed
+                            while (openedBrackets > 0)
+                            {
+                                openedBrackets--;
+                                result.AppendLine(string.Concat(spaces, "  }"));
+                                if (spaces.Length >= 2)
+                                    spaces = new string(' ', spaces.Length - 2);
+                            }
+
+                            //Unsignal UNION/MINUS semantic
+                            printingUnion = false;
+                            printingMinus = false;
+                        }
+                        else
+                            result.AppendLine(string.Concat(spaces, "    ", PrintPattern(ptPgMember, prefixes), " ."));
+                    }
+                }
+                #endregion
+
+                #region PROPERTY PATH
+                else if (pgMember is RDFPropertyPath ppPgMember && ppPgMember.IsEvaluable)
+                {
+                    //In case we are under MINUS or UNION semantic, we need to print all their closing brackets to complete the grammar
+                    if (printingUnion || printingMinus)
+                    {
+                        //We can directly print the bracketed property path
+                        result.AppendLine(string.Concat(spaces, "    { ", PrintPropertyPath(ppPgMember, prefixes), " }"));
+
+                        //Then we need to print all the pending brackets and to keep care of
+                        //reflecting this in the indentation spaces (-2) which must be consumed
+                        while (openedBrackets > 0)
+                        {
+                            openedBrackets--;
+                            result.AppendLine(string.Concat(spaces, "  }"));
+                            if (spaces.Length >= 2)
+                                spaces = new string(' ', spaces.Length - 2);
+                        }
+
+                        //Unsignal UNION/MINUS semantic
+                        printingUnion = false;
+                        printingMinus = false;
+                    }
+                    else
+                        result.AppendLine(string.Concat(spaces, "    ", PrintPropertyPath(ppPgMember, prefixes), " ."));
+                }
+                #endregion
+
+                #region VALUES
+                else if (pgMember is RDFValues vlPgMember && vlPgMember.IsEvaluable && !vlPgMember.IsInjected)
+                {
+                    //In case we are under MINUS or UNION semantic, we need to print all their closing brackets to complete the grammar
+                    if (printingUnion || printingMinus)
+                    {
+                        //We can directly print the bracketed values
+                        result.AppendLine(string.Concat(spaces, "    { ", PrintValues(vlPgMember, prefixes, spaces), " }"));
+
+                        //Then we need to print all the pending brackets and to keep care of
+                        //reflecting this in the indentation spaces (-2) which must be consumed
+                        while (openedBrackets > 0)
+                        {
+                            openedBrackets--;
+                            result.AppendLine(string.Concat(spaces, "  }"));
+                            if (spaces.Length >= 2)
+                                spaces = new string(' ', spaces.Length - 2);
+                        }
+
+                        //Unsignal UNION/MINUS semantic
+                        printingUnion = false;
+                        printingMinus = false;
+                    }
+                    else
+                        result.AppendLine(string.Concat(spaces, "    ", PrintValues(vlPgMember, prefixes, spaces), " ."));
+                }
+                #endregion
+
+                #region BIND
+                else if (pgMember is RDFBind bdPgMember)
+                {
+                    //We can directly print the bind
+                    result.AppendLine(string.Concat(spaces, "    ", PrintBind(bdPgMember, prefixes), " ."));
+
+                    //Then we need to print all the pending brackets and to keep care of
+                    //reflecting this in the indentation spaces (-2) which must be consumed
+                    while (openedBrackets > 0)
+                    {
+                        openedBrackets--;
+                        result.AppendLine(string.Concat(spaces, "  }"));
+                        if (spaces.Length >= 2)
+                            spaces = new string(' ', spaces.Length - 2);
+                    }
+
+                    //Unsignal UNION/MINUS semantic
+                    printingUnion = false;
+                    printingMinus = false;
+                }
+                #endregion
+            }
+        }
+
 
         /// <summary>
         /// Prints the string representation of a pattern
