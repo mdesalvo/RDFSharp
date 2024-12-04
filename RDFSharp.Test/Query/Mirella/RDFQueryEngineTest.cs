@@ -1028,7 +1028,11 @@ WHERE {
                 .AddSubQuery(new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
                         .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                        .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))))
+                        .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasColor"), new RDFVariable("?C"))))
+                    .UnionWithNext())
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:balto")), new RDFVariable("?Y")))
+                    .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:whoever")), new RDFVariable("?X"))))
                 .AddModifier(new RDFOrderByModifier(new RDFVariable("?X"), RDFQueryEnums.RDFOrderByFlavors.ASC))
                 .AddProjectionVariable(new RDFVariable("?X"))
                 .AddProjectionVariable(new RDFVariable("?Y"))
@@ -1038,7 +1042,7 @@ WHERE {
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.SelectResults);
             Assert.IsTrue(result.SelectResults.Columns.Count == 3);
-            Assert.IsTrue(result.SelectResultsCount == 4);
+            Assert.IsTrue(result.SelectResultsCount == 3);
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:snoopie"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:linus"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), DBNull.Value.ToString()));
@@ -1048,9 +1052,35 @@ WHERE {
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:pluto"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), "Mickey Mouse@EN-US"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?Y"].ToString(), "ex:balto"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?X"].ToString(), "ex:whoever"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(query.ToString(),
+@"SELECT ?X ?Y ?N
+WHERE {
+  {
+    {
+      ?Y <ex:dogOf> ?X .
+      OPTIONAL { ?X <ex:hasName> ?N } .
+    }
+    MINUS
+    {
+      {
+        SELECT *
+        WHERE {
+          {
+            ?Y <ex:dogOf> ?X .
+            ?X <ex:hasColor> ?C .
+          }
+        }
+      }
+      UNION
+      {
+        BIND(<ex:balto> AS ?Y) .
+        BIND(<ex:whoever> AS ?X) .
+      }
+    }
+  }
+}
+ORDER BY ASC(?X)
+"));
         }
 
         [TestMethod]
