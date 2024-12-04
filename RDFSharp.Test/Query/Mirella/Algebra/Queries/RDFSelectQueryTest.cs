@@ -98,7 +98,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldCreateUnionSelectQuery()
         {
-            RDFSelectQuery query = new RDFSelectQuery().Union();
+            RDFSelectQuery query = new RDFSelectQuery().UnionWithNext();
 
             Assert.IsNotNull(query);
             Assert.IsNotNull(query.QueryMembers);
@@ -125,7 +125,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldCreateMinusSelectQuery()
         {
-            RDFSelectQuery query = new RDFSelectQuery().Minus();
+            RDFSelectQuery query = new RDFSelectQuery().MinusWithNext();
 
             Assert.IsNotNull(query);
             Assert.IsNotNull(query.QueryMembers);
@@ -269,7 +269,7 @@ namespace RDFSharp.Test.Query
                             .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
                             .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
                     .AddProjectionVariable(new RDFVariable("?S"))
-                    .Union());
+                    .UnionWithNext());
             query.AddSubQuery(
                 new RDFSelectQuery()
                     .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))
@@ -568,7 +568,7 @@ namespace RDFSharp.Test.Query
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")))
-                    .Union())
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                     .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(250, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)));
@@ -630,7 +630,7 @@ namespace RDFSharp.Test.Query
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")))
-                    .Union())
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                     .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(250, 
@@ -694,7 +694,7 @@ namespace RDFSharp.Test.Query
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")))
-                    .Union())
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                     .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(250, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult)));
@@ -755,7 +755,7 @@ namespace RDFSharp.Test.Query
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")))
-                    .Union())
+                    .UnionWithNext())
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                     .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(250, 

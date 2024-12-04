@@ -40,12 +40,12 @@ namespace RDFSharp.Query
         internal bool IsOptional { get; set; }
 
         /// <summary>
-        /// Flag indicating the query to be joined as Union
+        /// Flag indicating the query to be joined as UnionWithNext
         /// </summary>
         internal bool JoinAsUnion { get; set; }
 
         /// <summary>
-        /// Flag indicating the query to be joined as Minus
+        /// Flag indicating the query to be joined as MinusWithNext
         /// </summary>
         internal bool JoinAsMinus { get; set; }
 
@@ -266,9 +266,9 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the query to be joined as Union with the next query member
+        /// Sets the query to be joined as UnionWithNext with the next query member
         /// </summary>
-        public RDFSelectQuery Union()
+        public RDFSelectQuery UnionWithNext()
         {
             IsOptional = false;
             JoinAsUnion = true;
@@ -277,9 +277,9 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the query to be joined as Minus with the next query member
+        /// Sets the query to be joined as MinusWithNext with the next query member
         /// </summary>
-        public RDFSelectQuery Minus()
+        public RDFSelectQuery MinusWithNext()
         {
             IsOptional = false;
             JoinAsUnion = false;

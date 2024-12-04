@@ -709,12 +709,12 @@ namespace RDFSharp.Query
                 => describeResource.IsBlank 
                    ? new RDFSelectQuery()
                         .AddPatternGroup(new RDFPatternGroup()
-                          .AddPattern(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).Union())
+                          .AddPattern(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
                           .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource)))
                    : new RDFSelectQuery()
                         .AddPatternGroup(new RDFPatternGroup()
-                          .AddPattern(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).Union())
-                          .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), describeResource, new RDFVariable("?OBJECT")).Union())
+                          .AddPattern(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
+                          .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), describeResource, new RDFVariable("?OBJECT")).UnionWithNext())
                           .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource)));
             #endregion
 
@@ -1904,7 +1904,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Combines the given list of data tables, depending on presence of common columns and dynamic detection of Optional / Union / Minus operators
+        /// Combines the given list of data tables, depending on presence of common columns and dynamic detection of Optional / UnionWithNext / MinusWithNext operators
         /// </summary>
         internal static DataTable CombineTables(List<DataTable> dataTables)
         {
@@ -1944,7 +1944,7 @@ namespace RDFSharp.Query
                         dataTables[i-1].ExtendedProperties.Clear();
                         dataTables[i-1].ExtendedProperties.Add(LogicallyDeleted, true);
 
-                        //Signal that at least one Union has been performed
+                        //Signal that at least one UnionWithNext has been performed
                         hasProcessedUnion = true;
                     }
                 }
@@ -1981,7 +1981,7 @@ namespace RDFSharp.Query
                         dataTables[i-1].ExtendedProperties.Clear();
                         dataTables[i-1].ExtendedProperties.Add(LogicallyDeleted, true);
 
-                        //Signal that at least one Minus has been performed
+                        //Signal that at least one MinusWithNext has been performed
                         hasProcessedMinus = true;
                     }
                 }
@@ -1992,7 +1992,7 @@ namespace RDFSharp.Query
                 finalTable = dataTables[0];
                 for (int i = 1; i < dataTables.Count; i++)
                 {
-                    //Switch to OuterJoin when encountering Optional behavior (or always, in case we come from Union behavior)
+                    //Switch to OuterJoin when encountering Optional behavior (or always, in case we come from UnionWithNext behavior)
                     needsOuterJoin |= dataTables[i].ExtendedProperties.ContainsKey(IsOptional)
                                        && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
 
@@ -2003,13 +2003,13 @@ namespace RDFSharp.Query
             }
             #endregion
 
-            //Union
+            //UnionWithNext
             bool hasDoneUnions = ExecUnion();
             if (hasDoneUnions)
                 dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) 
                                             && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
 
-            //Minus
+            //MinusWithNext
             bool hasDoneMinus = ExecMinus();
             if (hasDoneMinus)
                 dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) 

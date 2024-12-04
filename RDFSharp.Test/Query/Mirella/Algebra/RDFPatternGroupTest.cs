@@ -78,7 +78,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldCreateUnionWithNextPatternGroup()
         {
-            RDFPatternGroup pGroup = new RDFPatternGroup().Union();
+            RDFPatternGroup pGroup = new RDFPatternGroup().UnionWithNext();
 
             Assert.IsNotNull(pGroup);
             Assert.IsTrue(pGroup.IsEvaluable);
@@ -103,7 +103,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldCreateMinusWithNextPatternGroup()
         {
-            RDFPatternGroup pGroup = new RDFPatternGroup().Minus();
+            RDFPatternGroup pGroup = new RDFPatternGroup().MinusWithNext();
 
             Assert.IsNotNull(pGroup);
             Assert.IsTrue(pGroup.IsEvaluable);

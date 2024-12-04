@@ -1008,7 +1008,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldSetUnionWithNextPattern()
         {
-            RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFVariable("pred"), new RDFVariable("obj")).Union();
+            RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFVariable("pred"), new RDFVariable("obj")).UnionWithNext();
 
             Assert.IsNotNull(pattern);
             Assert.IsNull(pattern.Context);
@@ -1031,7 +1031,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldSetMinusWithNextPattern()
         {
-            RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFVariable("subj"), new RDFVariable("obj")).Minus();
+            RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFVariable("subj"), new RDFVariable("obj")).MinusWithNext();
 
             Assert.IsNotNull(pattern);
             Assert.IsNull(pattern.Context);

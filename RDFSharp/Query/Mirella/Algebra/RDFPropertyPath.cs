@@ -178,10 +178,10 @@ namespace RDFSharp.Query
 
                             //InversePath (swap start/end)
                             if (Steps[i].IsInverseStep)
-                                patterns.Add(new RDFPattern(currEnd, Steps[i].StepProperty, currStart).Union());
+                                patterns.Add(new RDFPattern(currEnd, Steps[i].StepProperty, currStart).UnionWithNext());
                             //Path
                             else
-                                patterns.Add(new RDFPattern(currStart, Steps[i].StepProperty, currEnd).Union());
+                                patterns.Add(new RDFPattern(currStart, Steps[i].StepProperty, currEnd).UnionWithNext());
                         }
                         //Translate to pattern (item is the last alternative)
                         else
