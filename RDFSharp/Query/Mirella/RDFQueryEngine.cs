@@ -1983,7 +1983,7 @@ namespace RDFSharp.Query
                 finalTable = dataTables[0];
                 for (int i = 1; i < dataTables.Count; i++)
                 {
-                    //Switch to OuterJoin when encountering Optional behavior (or always, in case we come from UnionWithNext behavior)
+                    //Switch to OuterJoin when encountering Optional behavior (or always, in case we come from Union behavior)
                     needsOuterJoin |= dataTables[i].ExtendedProperties.ContainsKey(IsOptional)
                                        && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
 
