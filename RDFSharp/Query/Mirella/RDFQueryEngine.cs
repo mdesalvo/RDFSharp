@@ -1904,7 +1904,7 @@ namespace RDFSharp.Query
                 return dataTables[0];
 
             #region Utilities
-            bool ExecUnion()
+            bool ProcessUnions()
             {
                 bool hasProcessedUnion = false;
                 for (int i = 1; i < dataTables.Count; i++)
@@ -1941,7 +1941,7 @@ namespace RDFSharp.Query
                 }
                 return hasProcessedUnion;
             }
-            bool ExecMinus()
+            bool ProcessMinus()
             {
                 bool hasProcessedMinus = false;
                 for (int i = 1; i < dataTables.Count; i++)
@@ -1978,7 +1978,7 @@ namespace RDFSharp.Query
                 }
                 return hasProcessedMinus;
             }
-            void ExecJoin(bool needsOuterJoin)
+            void ProcessJoins(bool needsOuterJoin)
             {
                 finalTable = dataTables[0];
                 for (int i = 1; i < dataTables.Count; i++)
@@ -1994,20 +1994,20 @@ namespace RDFSharp.Query
             }
             #endregion
 
-            //UnionWithNext
-            bool hasDoneUnions = ExecUnion();
+            //Step 1: process union operators
+            bool hasDoneUnions = ProcessUnions();
             if (hasDoneUnions)
                 dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) 
                                             && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
 
-            //MinusWithNext
-            bool hasDoneMinus = ExecMinus();
+            //Step 2: process minus operators
+            bool hasDoneMinus = ProcessMinus();
             if (hasDoneMinus)
                 dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) 
                                             && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
 
-            //Join
-            ExecJoin(hasDoneUnions);
+            //Step 3: finalize by processing joins
+            ProcessJoins(hasDoneUnions);
 
             return finalTable;
         }
