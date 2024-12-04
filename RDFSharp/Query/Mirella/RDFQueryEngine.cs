@@ -1893,7 +1893,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Combines the given list of data tables, depending on presence of common columns and dynamic detection of Optional / UnionWithNext / MinusWithNext operators
+        /// Combines the given list of data tables, depending on presence of common columns and dynamic detection of Optional / Union / Minus operators
         /// </summary>
         internal static DataTable CombineTables(List<DataTable> dataTables)
         {
