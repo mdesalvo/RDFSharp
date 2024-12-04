@@ -2006,7 +2006,7 @@ namespace RDFSharp.Query
                 dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) 
                                             && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
 
-            //Step 3: finalize by processing joins
+            //Step 3: process joins
             ProcessJoins(hasDoneUnions);
 
             return finalTable;
