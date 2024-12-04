@@ -533,6 +533,35 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldApplySelectQueryToGraphAndHaveResultsWithUnprojectedValuesFromSubQuery()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:grass"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFSelectQuery query = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddSubQuery(new RDFSelectQuery()
+                    .AddPatternGroup(new RDFPatternGroup()
+                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:flower")]))
+                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?X"), [new RDFResource("ex:flower")])))
+                    .AddProjectionVariable(new RDFVariable("?X")))
+                .AddProjectionVariable(new RDFVariable("?S"));
+            RDFSelectQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 3);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
+            Assert.IsTrue(result.SelectResults.Rows[1]["?S"].Equals("ex:tree"));
+            Assert.IsTrue(result.SelectResults.Rows[2]["?S"].Equals("ex:grass"));
+        }
+
+        [TestMethod]
         public void ShouldApplySelectQueryToGraphAndHaveResultsWithValuesBefore()
         {
             RDFGraph graph = new RDFGraph();
