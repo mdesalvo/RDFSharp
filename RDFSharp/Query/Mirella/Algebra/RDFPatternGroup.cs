@@ -192,7 +192,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the pattern group to be joined as optional with the previous query member
+        /// Sets the pattern group to be joined as Optional with the previous query member
         /// </summary>
         public RDFPatternGroup Optional()
         {
@@ -203,7 +203,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the pattern group to be joined as union with the next query member
+        /// Sets the pattern group to be joined as Union with the next query member
         /// </summary>
         public RDFPatternGroup UnionWithNext()
         {
@@ -214,7 +214,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the pattern group to be joined as minus with the next query member
+        /// Sets the pattern group to be joined as Minus with the next query member
         /// </summary>
         public RDFPatternGroup MinusWithNext()
         {
@@ -264,26 +264,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal IEnumerable<RDFFilter> GetFilters()
             => GroupMembers.OfType<RDFFilter>();
-
-        /// <summary>
-        /// Adds the given injected SPARQL values to the pattern group
-        /// </summary>
-        internal RDFPatternGroup AddInjectedValues(RDFValues values)
-        {
-            if (values != null)
-            {
-                //Clone the SPARQL values and set as injected
-                RDFValues clonedValues = new RDFValues()
-                {
-                    Bindings = values.Bindings,
-                    IsEvaluable = values.IsEvaluable,
-                    IsInjected = true
-                };
-
-                AddValues(clonedValues);
-            }
-            return this;
-        }
 
         /// <summary>
         /// Gets the group members which can be evaluated

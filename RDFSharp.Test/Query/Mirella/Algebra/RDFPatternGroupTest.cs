@@ -385,35 +385,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pGroup.GetBinds().Count() == 1);
             Assert.IsTrue(pGroup.GetEvaluablePatternGroupMembers().Count() == 1);
         }
-
-        [TestMethod]
-        public void ShouldAddInjectedValues()
-        {
-            RDFValues values = new RDFValues().AddColumn(new RDFVariable("s"), [new RDFPlainLiteral("lit")]);
-            RDFPatternGroup pGroup = new RDFPatternGroup();
-            pGroup.AddInjectedValues(values);
-            pGroup.AddInjectedValues(null); //Will not be added, since null is not allowed
-
-            Assert.IsNotNull(pGroup);
-            Assert.IsTrue(pGroup.IsEvaluable);
-            Assert.IsFalse(pGroup.IsOptional);
-            Assert.IsFalse(pGroup.JoinAsUnion);
-            Assert.IsFalse(pGroup.JoinAsMinus);
-            Assert.IsNotNull(pGroup.GroupMembers);
-            Assert.IsTrue(pGroup.GroupMembers.Count == 1);
-            Assert.IsNotNull(pGroup.Variables);
-            Assert.IsTrue(pGroup.Variables.Count == 1);
-            Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "  }", Environment.NewLine))); //Injected values are not printed since they are hidden
-            Assert.IsTrue(pGroup.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals(string.Concat("  {", Environment.NewLine, "  }", Environment.NewLine)));
-            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
-            Assert.IsTrue(pGroup.GetPatterns().Count() == 0);
-            Assert.IsTrue(pGroup.GetFilters().Count() == 0);
-            Assert.IsTrue(pGroup.GetPropertyPaths().Count() == 0);
-            Assert.IsTrue(pGroup.GetValues().Count() == 1);
-            Assert.IsTrue(pGroup.GetValues().ToList().TrueForAll(v => v.IsInjected));
-            Assert.IsTrue(pGroup.GetBinds().Count() == 0);
-            Assert.IsTrue(pGroup.GetEvaluablePatternGroupMembers().Count() == 1);
-        }
         #endregion
     }
 }

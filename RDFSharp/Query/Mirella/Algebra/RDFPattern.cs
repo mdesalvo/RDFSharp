@@ -144,7 +144,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Sets the pattern to be joined as optional with the previous pattern
+        /// Sets the pattern to be joined as Optional with the previous pattern
         /// </summary>
         public RDFPattern Optional()
         {
@@ -155,7 +155,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the pattern to be joined as union with the next pattern
+        /// Sets the pattern to be joined as Union with the next pattern
         /// </summary>
         public RDFPattern UnionWithNext()
         {
@@ -166,7 +166,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the pattern to be joined as minus with the next pattern
+        /// Sets the pattern to be joined as Minus with the next pattern
         /// </summary>
         public RDFPattern MinusWithNext()
         {
