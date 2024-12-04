@@ -1978,7 +1978,7 @@ namespace RDFSharp.Query
                 }
                 return hasProcessedMinus;
             }
-            void ProcessJoins(bool needsOuterJoin)
+            void ComputeJoins(bool needsOuterJoin)
             {
                 finalTable = dataTables[0];
                 for (int i = 1; i < dataTables.Count; i++)
@@ -1994,20 +1994,20 @@ namespace RDFSharp.Query
             }
             #endregion
 
-            //Step 1: process union operators
+            //Step 1: process Union operators
             bool hasDoneUnions = ProcessUnions();
             if (hasDoneUnions)
                 dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) 
                                             && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
 
-            //Step 2: process minus operators
+            //Step 2: process Minus operators
             bool hasDoneMinus = ProcessMinus();
             if (hasDoneMinus)
                 dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) 
                                             && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
 
-            //Step 3: process joins
-            ProcessJoins(hasDoneUnions);
+            //Step 3: compute joins
+            ComputeJoins(hasDoneUnions);
 
             return finalTable;
         }
