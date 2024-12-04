@@ -1841,6 +1841,7 @@ namespace RDFSharp.Query
             #region Utilities
             bool CheckJoin(DataRow leftRow, DataRow rightRow, string commonColumn)
                 => leftRow.IsNull(commonColumn)
+                    || rightRow.IsNull(commonColumn)
                     || string.Equals(leftRow[commonColumn]?.ToString(), rightRow[commonColumn]?.ToString(), StringComparison.Ordinal);
             #endregion
 
@@ -1899,6 +1900,8 @@ namespace RDFSharp.Query
             DataTable finalTable = new DataTable();
             if (dataTables.Count == 0)
                 return finalTable;
+            if (dataTables.Count == 1)
+                return dataTables[0];
 
             #region Utilities
             bool ExecUnion()
