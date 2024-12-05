@@ -408,10 +408,10 @@ namespace RDFSharp.Query
         {
             DataTable resultTable = new DataTable("INSERT_RESULTS");
             if (datasource.IsStore())
-                resultTable.Columns.Add("?CONTEXT", SystemString);
-            resultTable.Columns.Add("?SUBJECT", SystemString);
-            resultTable.Columns.Add("?PREDICATE", SystemString);
-            resultTable.Columns.Add("?OBJECT", SystemString);
+                resultTable.Columns.Add("?CONTEXT", typeof(string));
+            resultTable.Columns.Add("?SUBJECT", typeof(string));
+            resultTable.Columns.Add("?PREDICATE", typeof(string));
+            resultTable.Columns.Add("?OBJECT", typeof(string));
 
             Dictionary<string, string> bindings = new Dictionary<string, string>();
             insertDataTemplates.ForEach(insertTemplate =>
@@ -469,10 +469,10 @@ namespace RDFSharp.Query
         {
             DataTable resultTable = new DataTable("DELETE_RESULTS");
             if (datasource.IsStore())
-                resultTable.Columns.Add("?CONTEXT", SystemString);
-            resultTable.Columns.Add("?SUBJECT", SystemString);
-            resultTable.Columns.Add("?PREDICATE", SystemString);
-            resultTable.Columns.Add("?OBJECT", SystemString);
+                resultTable.Columns.Add("?CONTEXT", typeof(string));
+            resultTable.Columns.Add("?SUBJECT", typeof(string));
+            resultTable.Columns.Add("?PREDICATE", typeof(string));
+            resultTable.Columns.Add("?OBJECT", typeof(string));
 
             Dictionary<string, string> bindings = new Dictionary<string, string>();
             deleteDataTemplates.ForEach(deleteTemplate =>

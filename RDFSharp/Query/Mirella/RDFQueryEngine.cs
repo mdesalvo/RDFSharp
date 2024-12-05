@@ -46,11 +46,6 @@ namespace RDFSharp.Query
         internal Dictionary<long, DataTable> QueryMemberResultTables { get; set; }
 
         /// <summary>
-        /// Default column type used for Mirella tables
-        /// </summary>
-        internal static readonly Type SystemString = typeof(string);
-
-        /// <summary>
         /// Attribute denoting an optional pattern/patternGroup/query
         /// </summary>
         internal static readonly string IsOptional = "IsOptional";
@@ -1405,7 +1400,7 @@ namespace RDFSharp.Query
         {
             string colName = columnName.Trim().ToUpperInvariant();
             if (!table.Columns.Contains(colName))
-                table.Columns.Add(colName, SystemString);
+                table.Columns.Add(colName, typeof(string));
         }
 
         /// <summary>

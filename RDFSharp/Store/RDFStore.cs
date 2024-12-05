@@ -380,10 +380,10 @@ namespace RDFSharp.Store
         {
             //Create the structure of the result datatable
             DataTable result = new DataTable(ToString());
-            result.Columns.Add("?CONTEXT", RDFQueryEngine.SystemString);
-            result.Columns.Add("?SUBJECT", RDFQueryEngine.SystemString);
-            result.Columns.Add("?PREDICATE", RDFQueryEngine.SystemString);
-            result.Columns.Add("?OBJECT", RDFQueryEngine.SystemString);
+            result.Columns.Add("?CONTEXT", typeof(string));
+            result.Columns.Add("?SUBJECT", typeof(string));
+            result.Columns.Add("?PREDICATE", typeof(string));
+            result.Columns.Add("?OBJECT", typeof(string));
 
             //Iterate the quadruples of the store to populate the result datatable
             result.BeginLoadData();

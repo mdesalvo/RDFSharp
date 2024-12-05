@@ -52,7 +52,6 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(queryEngine);
             Assert.IsNotNull(queryEngine.PatternGroupMemberResultTables);
             Assert.IsNotNull(queryEngine.QueryMemberResultTables);
-            Assert.IsTrue(RDFQueryEngine.SystemString.Equals(typeof(string)));
         }
 
         [TestMethod]
@@ -5405,7 +5404,7 @@ WHERE {
 
             Assert.IsTrue(table.Columns.Count == 1);
             Assert.IsTrue(string.Equals(table.Columns[0].ColumnName, "?COL"));
-            Assert.IsTrue(table.Columns[0].DataType.Equals(RDFQueryEngine.SystemString));
+            Assert.IsTrue(table.Columns[0].DataType.Equals(typeof(string)));
         }
 
         [TestMethod]
