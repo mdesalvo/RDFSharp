@@ -22,4 +22,4 @@ RDFSharp is a modular framework made up of 3 layers:
     <li>Create and execute <b><a href="https://www.w3.org/TR/sparql11-update/">SPARQL operations</a></b> on graphs, stores and SPARQL UPDATE endpoints</li>
 </ul>
 <hr/>
-An additional <a href="https://github.com/mdesalvo/OWLSharp">API</a> is available for working in expressive way with <b>OWL2 ontologies</b>
+An additional <a href="https://github.com/mdesalvo/OWLSharp">framework</a> is available for working with <b>OWL2 ontologies</b>
