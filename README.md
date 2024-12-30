@@ -13,7 +13,7 @@ RDFSharp is a modular .NET library made up of 3 layers:
 <ul>
     <li>Create and manage <b>RDF stores</b> for context-aware modeling of RDF data (contexts, quadruples, ...)</li>
     <li>Exchange them using standard <b>RDF formats</b> (N-Quads, TriX, TriG)</li>
-    <li>Pick a store <a href="https://github.com/mdesalvo/RDFSharp.Extensions">extension</a> to save and query RDF data on many supported providers</li>
+    <li>Pick a store <a href="https://github.com/mdesalvo/RDFSharp.Extensions">extension</a> to save and query big RDF data on many supported providers</li>
 </ul>
 
 <b><a href="https://github.com/mdesalvo/RDFSharp/releases/download/v3.14.0/RDFSharp.Query-3.14.0.pdf">RDFSharp.Query</a></b>
