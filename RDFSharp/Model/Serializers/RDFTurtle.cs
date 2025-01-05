@@ -726,7 +726,7 @@ namespace RDFSharp.Model
 
         /// <summary>
         /// Parses an RDF value. This method parses uriref, qname, node ID, quoted
-	    /// literal, integer, double and boolean.
+        /// literal, integer, double and boolean.
         /// </summary>
         internal static object ParseValue(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
         {

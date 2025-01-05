@@ -235,27 +235,27 @@ namespace RDFSharp.Store
         /// </summary>
         internal static void ParseGraph(string trigData, RDFTriGContext trigContext)
         { 
-	        RDFResource contextOrSubject = null;
-	        bool foundContextOrSubject = false;
+            RDFResource contextOrSubject = null;
+            bool foundContextOrSubject = false;
             int c = ReadCodePoint(trigData, trigContext);
             int c2 = PeekCodePoint(trigData, trigContext);
 
             if (c == '[')
             {
-		        SkipWhitespace(trigData, trigContext);
-		        c2 = ReadCodePoint(trigData, trigContext);
+                SkipWhitespace(trigData, trigContext);
+                c2 = ReadCodePoint(trigData, trigContext);
                 if (c2 == ']')
                 {
                     contextOrSubject = new RDFResource(); //createNode()
-			        foundContextOrSubject = true;
+                    foundContextOrSubject = true;
                     SkipWhitespace(trigData, trigContext);
                 }
                 else
                 {
-			        UnreadCodePoint(trigContext, c2);
+                    UnreadCodePoint(trigContext, c2);
                     UnreadCodePoint(trigContext, c);
                 }
-		        c = ReadCodePoint(trigData, trigContext);
+                c = ReadCodePoint(trigData, trigContext);
             }
             else if (c == '<' || IsPrefixStartChar(c) || (c == ':' && c2 != '-') || (c == '_' && c2 == ':'))
             {
@@ -263,17 +263,17 @@ namespace RDFSharp.Store
 
                 object value = ParseValue(trigData, trigContext, trigContext.Graph);
 
-		        if (value is Uri || (value is RDFResource resValue && !resValue.IsBlank)) //We don't accept blank contexts
+                if (value is Uri || (value is RDFResource resValue && !resValue.IsBlank)) //We don't accept blank contexts
                 {
-			        contextOrSubject = new RDFResource(value.ToString(), trigContext.HashContext);
-			        foundContextOrSubject = true;
-		        }
+                    contextOrSubject = new RDFResource(value.ToString(), trigContext.HashContext);
+                    foundContextOrSubject = true;
+                }
                 else
                 {
-			        // NOTE: If a user parses Turtle using TriG, then the following
-			        // could actually be "Illegal subject name", but it should still hold
-			        throw new RDFStoreException("Illegal (or blank-node) graph name: " + value);
-		        }
+                    // NOTE: If a user parses Turtle using TriG, then the following
+                    // could actually be "Illegal subject name", but it should still hold
+                    throw new RDFStoreException("Illegal (or blank-node) graph name: " + value);
+                }
 
                 SkipWhitespace(trigData, trigContext);
                 c = ReadCodePoint(trigData, trigContext);
@@ -285,44 +285,44 @@ namespace RDFSharp.Store
             {
                 trigContext.Context = contextOrSubject;
 
-		        c = SkipWhitespace(trigData, trigContext);
-		        if (c != '}')
+                c = SkipWhitespace(trigData, trigContext);
+                if (c != '}')
                 {
-			        ParseTriples(trigData, trigContext);
-			        c = SkipWhitespace(trigData, trigContext);
+                    ParseTriples(trigData, trigContext);
+                    c = SkipWhitespace(trigData, trigContext);
 
                     while (c == '.')
                     {
                         ReadCodePoint(trigData, trigContext);
                         c = SkipWhitespace(trigData, trigContext);
                         if (c == '}')
-					        break;
+                            break;
 
                         ParseTriples(trigData, trigContext);
                         c = SkipWhitespace(trigData, trigContext);
                     }
                 }
 
-			    VerifyCharacterOrFail(trigContext, c, "}");
+                VerifyCharacterOrFail(trigContext, c, "}");
             }
-	        else
+            else
             {
                 trigContext.Context = null;
 
-		        // Did not turn out to be a graph, so assign it to subject instead
-		        // and parse from here to triples
-		        if (foundContextOrSubject)
+                // Did not turn out to be a graph, so assign it to subject instead
+                // and parse from here to triples
+                if (foundContextOrSubject)
                 {
-			        trigContext.Subject = contextOrSubject;
-			        UnreadCodePoint(trigContext, c);
-			        ParsePredicateObjectList(trigData, trigContext, trigContext.Graph);
-		        }
-		        // Or if we didn't recognise anything, just parse as Turtle
-		        else
+                    trigContext.Subject = contextOrSubject;
+                    UnreadCodePoint(trigContext, c);
+                    ParsePredicateObjectList(trigData, trigContext, trigContext.Graph);
+                }
+                // Or if we didn't recognise anything, just parse as Turtle
+                else
                 {
                     UnreadCodePoint(trigContext, c);
                     ParseTriples(trigData, trigContext);
-		        }
+                }
             }
 
             //Finalize collection of the current graph into the TriG store

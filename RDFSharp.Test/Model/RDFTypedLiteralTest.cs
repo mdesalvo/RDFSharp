@@ -643,14 +643,14 @@ namespace RDFSharp.Test.Model
         public void ShouldNotCreateTypedLiteralOfTimeSpanCategory(string value, RDFModelEnums.RDFDatatypes datatype)
             => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
         
-		[TestMethod]
-		public void ShouldCreateCustomTypedLiteral()
-		{
-			RDFTypedLiteral tlit = new RDFTypedLiteral("abcdef", new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+        [TestMethod]
+        public void ShouldCreateCustomTypedLiteral()
+        {
+            RDFTypedLiteral tlit = new RDFTypedLiteral("abcdef", new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
                 new RDFMinLengthFacet(6), new RDFMaxLengthFacet(14) ]));
-			Assert.IsNotNull(tlit);
-			Assert.IsTrue(tlit.Value.Equals("abcdef"));
-			Assert.IsTrue(tlit.Datatype.ToString().Equals("ex:length6"));
+            Assert.IsNotNull(tlit);
+            Assert.IsTrue(tlit.Value.Equals("abcdef"));
+            Assert.IsTrue(tlit.Datatype.ToString().Equals("ex:length6"));
             Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral("ab", new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
                 new RDFMinLengthFacet(6), new RDFMaxLengthFacet(14) ])));
 
@@ -668,6 +668,6 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(tlit3.Datatype.ToString().Equals("ex:humanTemperature"));
             Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral("39.5", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, null)));
         }
-		#endregion
+        #endregion
     }
 }

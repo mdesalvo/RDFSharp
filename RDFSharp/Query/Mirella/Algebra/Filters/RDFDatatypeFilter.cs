@@ -48,9 +48,9 @@ namespace RDFSharp.Query
         /// Default-ctor to build a filter on the given variable for the given standard datatype
         /// </summary>
         public RDFDatatypeFilter(RDFVariable variable, RDFModelEnums.RDFDatatypes datatype)
-			: this(variable, RDFDatatypeRegister.GetDatatype(datatype)) { }
+            : this(variable, RDFDatatypeRegister.GetDatatype(datatype)) { }
 
-		/// <summary>
+        /// <summary>
         /// Default-ctor to build a filter on the given variable for the given datatype (rdfs:Literal if null)
         /// </summary>
         public RDFDatatypeFilter(RDFVariable variable, RDFDatatype datatype)

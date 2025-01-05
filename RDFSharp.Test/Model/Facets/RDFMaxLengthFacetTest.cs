@@ -35,7 +35,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(facet.URI.IsBlank);
         }
 
-		[TestMethod]
+        [TestMethod]
         
         public void ShouldValidateMaxLengthFacet()
         {
@@ -43,30 +43,30 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(facet.Validate("abcdef"));
             Assert.IsTrue(facet.Validate(null));
-			Assert.IsTrue(facet.Validate(string.Empty));
-			Assert.IsTrue(facet.Validate("a"));
-			Assert.IsFalse(facet.Validate("abcdefgh"));
+            Assert.IsTrue(facet.Validate(string.Empty));
+            Assert.IsTrue(facet.Validate("a"));
+            Assert.IsFalse(facet.Validate("abcdefgh"));
 
-			RDFMaxLengthFacet facet0 = new RDFMaxLengthFacet(0);
-			Assert.IsFalse(facet0.Validate("abcdef"));
+            RDFMaxLengthFacet facet0 = new RDFMaxLengthFacet(0);
+            Assert.IsFalse(facet0.Validate("abcdef"));
             Assert.IsTrue(facet0.Validate(null));
-			Assert.IsTrue(facet0.Validate(string.Empty));
-			Assert.IsFalse(facet0.Validate("a"));
-			Assert.IsFalse(facet0.Validate("abcdefgh"));
+            Assert.IsTrue(facet0.Validate(string.Empty));
+            Assert.IsFalse(facet0.Validate("a"));
+            Assert.IsFalse(facet0.Validate("abcdefgh"));
         }
 
-		[TestMethod]
+        [TestMethod]
         
         public void ShouldConvertMaxLengthFacetToGraph()
         {
             RDFMaxLengthFacet facet = new RDFMaxLengthFacet(6);
-			RDFGraph graph = facet.ToRDFGraph();
+            RDFGraph graph = facet.ToRDFGraph();
 
-			Assert.IsNotNull(graph);
+            Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
-			Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.MAX_LENGTH));
-			Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("6", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.NON_NEGATIVE_INTEGER.ToString()))));
+            Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.MAX_LENGTH));
+            Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("6", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.NON_NEGATIVE_INTEGER.ToString()))));
         }
-		#endregion
+        #endregion
     }
 }

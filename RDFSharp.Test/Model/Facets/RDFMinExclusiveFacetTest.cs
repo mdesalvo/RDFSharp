@@ -35,7 +35,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(facet.URI.IsBlank);
         }
 
-		[TestMethod]
+        [TestMethod]
         
         public void ShouldValidateMinExclusiveFacet()
         {
@@ -44,29 +44,29 @@ namespace RDFSharp.Test.Model
             Assert.IsFalse(facet.Validate("-2.0089"));
             Assert.IsFalse(facet.Validate("2.047"));
             Assert.IsFalse(facet.Validate(null));
-			Assert.IsFalse(facet.Validate(string.Empty));
-			Assert.IsTrue(facet.Validate("14.5773"));
+            Assert.IsFalse(facet.Validate(string.Empty));
+            Assert.IsTrue(facet.Validate("14.5773"));
             Assert.IsFalse(facet.Validate("6"));
             Assert.IsFalse(facet.Validate("abcdefgh"));
 
-			RDFMinExclusiveFacet facet0 = new RDFMinExclusiveFacet(-12.45);
-			Assert.IsFalse(facet0.Validate("-16.2442"));
-			Assert.IsFalse(facet0.Validate("-12.45"));
+            RDFMinExclusiveFacet facet0 = new RDFMinExclusiveFacet(-12.45);
+            Assert.IsFalse(facet0.Validate("-16.2442"));
+            Assert.IsFalse(facet0.Validate("-12.45"));
             Assert.IsTrue(facet0.Validate("-12"));
         }
 
-		[TestMethod]
+        [TestMethod]
         
         public void ShouldConvertMinExclusiveFacetToGraph()
         {
             RDFMinExclusiveFacet facet = new RDFMinExclusiveFacet(6);
-			RDFGraph graph = facet.ToRDFGraph();
+            RDFGraph graph = facet.ToRDFGraph();
 
-			Assert.IsNotNull(graph);
+            Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
-			Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.MIN_EXCLUSIVE));
-			Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("6", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.DOUBLE.ToString()))));
+            Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.MIN_EXCLUSIVE));
+            Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("6", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.DOUBLE.ToString()))));
         }
-		#endregion
+        #endregion
     }
 }

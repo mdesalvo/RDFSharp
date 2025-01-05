@@ -16,36 +16,36 @@
 
 namespace RDFSharp.Model
 {
-	/// <summary>
-	/// RDFFacet represents a constraint applied on the literal values of a target datatype
-	/// </summary>
-	public abstract class RDFFacet
-	{
-		#region Properties
-		/// <summary>
-		/// (Blank) URI of the facet
-		/// </summary>
-		public RDFResource URI { get; internal set; }
-		#endregion
+    /// <summary>
+    /// RDFFacet represents a constraint applied on the literal values of a target datatype
+    /// </summary>
+    public abstract class RDFFacet
+    {
+        #region Properties
+        /// <summary>
+        /// (Blank) URI of the facet
+        /// </summary>
+        public RDFResource URI { get; internal set; }
+        #endregion
 
-		#region Ctors
-		/// <summary>
-		/// Builds a facet by initializing its blank URI
-		/// </summary>
-		internal RDFFacet() 
-			=> URI = new RDFResource();
-		#endregion
+        #region Ctors
+        /// <summary>
+        /// Builds a facet by initializing its blank URI
+        /// </summary>
+        internal RDFFacet() 
+            => URI = new RDFResource();
+        #endregion
 
-		#region Methods
-		/// <summary>
-		/// Validates the given literal value against the facet
-		/// </summary>
-		public abstract bool Validate(string literalValue);
+        #region Methods
+        /// <summary>
+        /// Validates the given literal value against the facet
+        /// </summary>
+        public abstract bool Validate(string literalValue);
 
-		/// <summary>
-		/// Gives a graph representation of the facet
-		/// </summary>
-		public abstract RDFGraph ToRDFGraph();
-		#endregion
-	}
+        /// <summary>
+        /// Gives a graph representation of the facet
+        /// </summary>
+        public abstract RDFGraph ToRDFGraph();
+        #endregion
+    }
 }

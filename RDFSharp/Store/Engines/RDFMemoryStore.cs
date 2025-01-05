@@ -693,18 +693,18 @@ namespace RDFSharp.Store
                 throw new RDFStoreException("Cannot read RDF memory store from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
             #endregion
 
-			RDFMemoryStore memStore = null; 
+            RDFMemoryStore memStore = null; 
             switch (rdfFormat)
             {
                 case RDFStoreEnums.RDFFormats.NQuads:
                     memStore = RDFNQuads.Deserialize(filepath);
-					break;
+                    break;
                 case RDFStoreEnums.RDFFormats.TriX:
                     memStore =  RDFTriX.Deserialize(filepath);
-					break;
+                    break;
                 case RDFStoreEnums.RDFFormats.TriG:
                     memStore =  RDFTriG.Deserialize(filepath);
-					break;
+                    break;
             }
 
             #region Datatype Discovery
@@ -735,18 +735,18 @@ namespace RDFSharp.Store
                 throw new RDFStoreException("Cannot read RDF memory store from stream because given \"inputStream\" parameter is null.");
             #endregion
 
-			RDFMemoryStore memStore = null; 
+            RDFMemoryStore memStore = null; 
             switch (rdfFormat)
             {
                 case RDFStoreEnums.RDFFormats.NQuads:
                     memStore = RDFNQuads.Deserialize(inputStream);
-					break;
+                    break;
                 case RDFStoreEnums.RDFFormats.TriX:
                     memStore =  RDFTriX.Deserialize(inputStream);
-					break;
+                    break;
                 case RDFStoreEnums.RDFFormats.TriG:
                     memStore =  RDFTriG.Deserialize(inputStream);
-					break;
+                    break;
             }
 
             #region Datatype Discovery

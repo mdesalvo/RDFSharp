@@ -240,15 +240,15 @@ exns:Child.Parent-cardinality
             string graphData =
 @"<?xml version=""1.0"" encoding=""utf-8""?>
 <rdf:RDF
-	xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
-	xmlns:exns=""http://ex.com/ns#"">
+    xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
+    xmlns:exns=""http://ex.com/ns#"">
 
-	<exns:Child rdf:about=""http://ex.com/ns#child"">
-		<exns:Child.Parent rdf:resource=""http://ex.com/ns#parent0"" />
-	</exns:Child>
+    <exns:Child rdf:about=""http://ex.com/ns#child"">
+        <exns:Child.Parent rdf:resource=""http://ex.com/ns#parent0"" />
+    </exns:Child>
 
-	<exns:Parent rdf:about=""http://ex.com/ns#parent0"" />
-	<exns:Parent rdf:about=""http://ex.com/ns#parent1"" />
+    <exns:Parent rdf:about=""http://ex.com/ns#parent0"" />
+    <exns:Parent rdf:about=""http://ex.com/ns#parent1"" />
 </rdf:RDF>";
             MemoryStream dataStream = new MemoryStream();
             using (StreamWriter dataStreamWriter = new StreamWriter(dataStream))
@@ -305,23 +305,23 @@ exns:Person.mobile-landline-cardinality
             string graphData =
 @"<?xml version=""1.0"" encoding=""utf-8""?>
 <rdf:RDF
-	xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
-	xmlns:exns=""http://ex.com/ns#"">
+    xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
+    xmlns:exns=""http://ex.com/ns#"">
 
-	<exns:Person rdf:about=""http://ex.com/ns#person0"">
+    <exns:Person rdf:about=""http://ex.com/ns#person0"">
         <exns:Person.mobilePhone>0123456789</exns:Person.mobilePhone>
     </exns:Person>
 
-	<exns:Person rdf:about=""http://ex.com/ns#person1"">
+    <exns:Person rdf:about=""http://ex.com/ns#person1"">
         <exns:Person.landLine>0123456789</exns:Person.landLine>
     </exns:Person>
 
-	<exns:Person rdf:about=""http://ex.com/ns#person2"">
+    <exns:Person rdf:about=""http://ex.com/ns#person2"">
         <exns:Person.mobilePhone>0123456789</exns:Person.mobilePhone>
         <exns:Person.landLine>0123456789</exns:Person.landLine>
     </exns:Person>
 
-	<exns:Person rdf:about=""http://ex.com/ns#person3""/>
+    <exns:Person rdf:about=""http://ex.com/ns#person3""/>
 </rdf:RDF>";
             MemoryStream dataStream = new MemoryStream();
             using (StreamWriter dataStreamWriter = new StreamWriter(dataStream))
@@ -378,24 +378,24 @@ exns:Person.Uncle-cardinality
             string graphData =
 @"<?xml version=""1.0"" encoding=""utf-8""?>
 <rdf:RDF
-	xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
-	xmlns:exns=""http://ex.com/ns#"">
+    xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
+    xmlns:exns=""http://ex.com/ns#"">
 
-	<exns:Person rdf:about=""http://ex.com/ns#person0"">
+    <exns:Person rdf:about=""http://ex.com/ns#person0"">
         <exns:Person.Father rdf:resource=""http://ex.com/ns#person1""/>
     </exns:Person>
 
-	<exns:Person rdf:about=""http://ex.com/ns#person1"">
+    <exns:Person rdf:about=""http://ex.com/ns#person1"">
         <exns:Person.Father rdf:resource=""http://ex.com/ns#person2""/>
         <exns:Person.Brother rdf:resource=""http://ex.com/ns#person3""/>
     </exns:Person>
 
-	<exns:Person rdf:about=""http://ex.com/ns#person2"">
+    <exns:Person rdf:about=""http://ex.com/ns#person2"">
         <exns:Person.Father rdf:resource=""http://ex.com/ns#person4""/>
         <exns:Person.Brother rdf:resource=""http://ex.com/ns#person3""/>
     </exns:Person>
 
-	<exns:Person rdf:about=""http://ex.com/ns#person3""/>
+    <exns:Person rdf:about=""http://ex.com/ns#person3""/>
 
     <exns:Person rdf:about=""http://ex.com/ns#person4"">
         <exns:Person.Father rdf:resource=""http://ex.com/ns#person1""/>
@@ -473,16 +473,16 @@ exns:Child.Parent-cardinality
 @"<?xml version=""1.0"" encoding=""utf-8""?>
 <rdf:RDF
     xml:base=""http://test.com/""
-	xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
-	xmlns:exns=""http://ex.com/ns#""
-	>
+    xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
+    xmlns:exns=""http://ex.com/ns#""
+    >
 
-	<exns:Child rdf:ID=""child"">
-		<exns:Child.Parent rdf:resource=""#parent0"" />
-	</exns:Child>
+    <exns:Child rdf:ID=""child"">
+        <exns:Child.Parent rdf:resource=""#parent0"" />
+    </exns:Child>
 
-	<exns:Parent rdf:ID=""parent0"" />
-	<exns:Parent rdf:ID=""#parent1"" />
+    <exns:Parent rdf:ID=""parent0"" />
+    <exns:Parent rdf:ID=""#parent1"" />
 </rdf:RDF>";
             MemoryStream dataStream = new MemoryStream();
             using (StreamWriter dataStreamWriter = new StreamWriter(dataStream))
@@ -553,16 +553,16 @@ exns:Child.Parent-cardinality
 @"<?xml version=""1.0"" encoding=""utf-8""?>
 <rdf:RDF
     xml:base=""http://test.com/#""
-	xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
-	xmlns:exns=""http://ex.com/ns#""
-	>
+    xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
+    xmlns:exns=""http://ex.com/ns#""
+    >
 
-	<exns:Child rdf:ID=""child"">
-		<exns:Child.Parent rdf:resource=""#parent0"" />
-	</exns:Child>
+    <exns:Child rdf:ID=""child"">
+        <exns:Child.Parent rdf:resource=""#parent0"" />
+    </exns:Child>
 
-	<exns:Parent rdf:ID=""parent0"" />
-	<exns:Parent rdf:ID=""#parent1"" />
+    <exns:Parent rdf:ID=""parent0"" />
+    <exns:Parent rdf:ID=""#parent1"" />
 </rdf:RDF>";
             MemoryStream dataStream = new MemoryStream();
             using (StreamWriter dataStreamWriter = new StreamWriter(dataStream))

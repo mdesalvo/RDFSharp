@@ -306,42 +306,42 @@ namespace RDFSharp.Model
             return matchResult;
         }
         
-		/// <summary>
-		/// Extracts the datatype definitions contained in the given graphs (both faceted and aliases)
-		/// </summary>
-		public static List<RDFDatatype> ExtractDatatypeDefinitions(this RDFGraph graph)
-		{
-			#region Guards
-			if (graph == null)
-				return new List<RDFDatatype>();
+        /// <summary>
+        /// Extracts the datatype definitions contained in the given graphs (both faceted and aliases)
+        /// </summary>
+        public static List<RDFDatatype> ExtractDatatypeDefinitions(this RDFGraph graph)
+        {
+            #region Guards
+            if (graph == null)
+                return new List<RDFDatatype>();
             #endregion
 
             List<RDFDatatype> datatypes = new List<RDFDatatype>();
-			foreach (RDFTriple datatypeTriple in graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE, null])
-			{
-				RDFResource datatypeIRI = (RDFResource)datatypeTriple.Subject;
+            foreach (RDFTriple datatypeTriple in graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE, null])
+            {
+                RDFResource datatypeIRI = (RDFResource)datatypeTriple.Subject;
 
-				//Try detect a faceted datatype
-				if (graph[datatypeIRI, RDFVocabulary.OWL.WITH_RESTRICTIONS, null, null].FirstOrDefault()?.Object is RDFResource facetsRepresentative
-					 && graph[datatypeIRI, RDFVocabulary.OWL.ON_DATATYPE, null, null].FirstOrDefault()?.Object is RDFResource onDatatype)
-				{
-					//Detect the target datatype (fallback to rdfs:Literal in case not found)
-					RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(onDatatype.ToString()) 
+                //Try detect a faceted datatype
+                if (graph[datatypeIRI, RDFVocabulary.OWL.WITH_RESTRICTIONS, null, null].FirstOrDefault()?.Object is RDFResource facetsRepresentative
+                     && graph[datatypeIRI, RDFVocabulary.OWL.ON_DATATYPE, null, null].FirstOrDefault()?.Object is RDFResource onDatatype)
+                {
+                    //Detect the target datatype (fallback to rdfs:Literal in case not found)
+                    RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(onDatatype.ToString()) 
                                                   ?? RDFDatatypeRegister.RDFSLiteral;
-					RDFModelEnums.RDFDatatypes targetDatatypeEnum = targetDatatype.ToString().GetEnumFromDatatype();
+                    RDFModelEnums.RDFDatatypes targetDatatypeEnum = targetDatatype.ToString().GetEnumFromDatatype();
 
-					//Detect the constraining facets
-					List<RDFFacet> targetFacets = new List<RDFFacet>();
-					RDFCollection facetsCollection = DeserializeCollectionFromGraph(graph, facetsRepresentative, RDFModelEnums.RDFTripleFlavors.SPO);
-					foreach (RDFResource facet in facetsCollection.Items.Cast<RDFResource>())
-					{
+                    //Detect the constraining facets
+                    List<RDFFacet> targetFacets = new List<RDFFacet>();
+                    RDFCollection facetsCollection = DeserializeCollectionFromGraph(graph, facetsRepresentative, RDFModelEnums.RDFTripleFlavors.SPO);
+                    foreach (RDFResource facet in facetsCollection.Items.Cast<RDFResource>())
+                    {
                         //xsd:length
                         if (graph[facet, RDFVocabulary.XSD.LENGTH, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetLength
-							 && facetLength.HasDecimalDatatype() && uint.TryParse(facetLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetLengthValue))
-						{
-							targetFacets.Add(new RDFLengthFacet(facetLengthValue));
-							continue;
-						}
+                             && facetLength.HasDecimalDatatype() && uint.TryParse(facetLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetLengthValue))
+                        {
+                            targetFacets.Add(new RDFLengthFacet(facetLengthValue));
+                            continue;
+                        }
                         //xsd:maxExclusive
                         if (graph[facet, RDFVocabulary.XSD.MAX_EXCLUSIVE, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxExclusive
                              && facetMaxExclusive.HasDecimalDatatype() && double.TryParse(facetMaxExclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMaxExclusiveValue))
@@ -358,11 +358,11 @@ namespace RDFSharp.Model
                         }
                         //xsd:maxLength
                         if (graph[facet, RDFVocabulary.XSD.MAX_LENGTH, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxLength
-							 && facetMaxLength.HasDecimalDatatype() && uint.TryParse(facetMaxLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMaxLengthValue))
-						{
-							targetFacets.Add(new RDFMaxLengthFacet(facetMaxLengthValue));
-							continue;
-						}
+                             && facetMaxLength.HasDecimalDatatype() && uint.TryParse(facetMaxLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMaxLengthValue))
+                        {
+                            targetFacets.Add(new RDFMaxLengthFacet(facetMaxLengthValue));
+                            continue;
+                        }
                         //xsd:minExclusive
                         if (graph[facet, RDFVocabulary.XSD.MIN_EXCLUSIVE, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMinExclusive
                              && facetMinExclusive.HasDecimalDatatype() && double.TryParse(facetMinExclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMinExclusiveValue))
@@ -379,39 +379,39 @@ namespace RDFSharp.Model
                         }
                         //xsd:minLength
                         if (graph[facet, RDFVocabulary.XSD.MIN_LENGTH, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMinLength
-							 && facetMinLength.HasDecimalDatatype() && uint.TryParse(facetMinLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMinLengthValue))
-						{
-							targetFacets.Add(new RDFMinLengthFacet(facetMinLengthValue));
-							continue;
-						}
-						//xsd:pattern
-						if (graph[facet, RDFVocabulary.XSD.PATTERN, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetPattern
-							 && facetPattern.HasStringDatatype())
-						{
-							targetFacets.Add(new RDFPatternFacet(facetPattern.Value));
-							continue;
-						}
-					}
+                             && facetMinLength.HasDecimalDatatype() && uint.TryParse(facetMinLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMinLengthValue))
+                        {
+                            targetFacets.Add(new RDFMinLengthFacet(facetMinLengthValue));
+                            continue;
+                        }
+                        //xsd:pattern
+                        if (graph[facet, RDFVocabulary.XSD.PATTERN, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetPattern
+                             && facetPattern.HasStringDatatype())
+                        {
+                            targetFacets.Add(new RDFPatternFacet(facetPattern.Value));
+                            continue;
+                        }
+                    }
 
                     //Finally collect the datatype
                     datatypes.Add(new RDFDatatype(datatypeIRI.URI, targetDatatypeEnum, targetFacets));
-				}
+                }
 
-				//Try detect an alias datatype
-				else if (graph[datatypeIRI, RDFVocabulary.OWL.EQUIVALENT_CLASS, null, null].FirstOrDefault()?.Object is RDFResource equivalentDatatype)
-				{
-					//Detect the target datatype (fallback to rdfs:Literal in case not found)
-					RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(equivalentDatatype.ToString()) 
+                //Try detect an alias datatype
+                else if (graph[datatypeIRI, RDFVocabulary.OWL.EQUIVALENT_CLASS, null, null].FirstOrDefault()?.Object is RDFResource equivalentDatatype)
+                {
+                    //Detect the target datatype (fallback to rdfs:Literal in case not found)
+                    RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(equivalentDatatype.ToString()) 
                                                   ?? RDFDatatypeRegister.RDFSLiteral;
-					RDFModelEnums.RDFDatatypes targetDatatypeEnum = targetDatatype.ToString().GetEnumFromDatatype();
+                    RDFModelEnums.RDFDatatypes targetDatatypeEnum = targetDatatype.ToString().GetEnumFromDatatype();
 
                     //Finally collect the datatype
                     datatypes.Add(new RDFDatatype(datatypeIRI.URI, targetDatatypeEnum, null));
-				}
-			}
-			return datatypes;
-		}
-		#endregion
+                }
+            }
+            return datatypes;
+        }
+        #endregion
 
         #region Collections
         /// <summary>
@@ -495,7 +495,7 @@ namespace RDFSharp.Model
                 string pred = triple.Predicate.ToString();
                 string obj = triple.Object is RDFResource ? triple.Object.ToString() 
                                                           : triple.Object is RDFTypedLiteral tlitObj ? tlitObj.Datatype.URI.ToString() 
-														  : string.Empty;
+                                                          : string.Empty;
 
                 //Resolve subject Uri
                 result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => subj.StartsWith(ns.ToString())));
@@ -515,9 +515,9 @@ namespace RDFSharp.Model
         /// Gives the string representation of the given datatype
         /// </summary>
         public static string GetDatatypeFromEnum(this RDFModelEnums.RDFDatatypes datatype)
-			=> ((DescriptionAttribute)RDFModelEnums_RDFDatatypes_EnumType
+            => ((DescriptionAttribute)RDFModelEnums_RDFDatatypes_EnumType
                 .GetField(datatype.ToString())
-        		.GetCustomAttributes(typeof(DescriptionAttribute), false)[0]).Description;
+                .GetCustomAttributes(typeof(DescriptionAttribute), false)[0]).Description;
         internal static Type RDFModelEnums_RDFDatatypes_EnumType = typeof(RDFModelEnums.RDFDatatypes);
         internal static Array RDFModelEnums_RDFDatatypes_EnumValues = RDFModelEnums_RDFDatatypes_EnumType.GetEnumValues();
 
@@ -525,16 +525,16 @@ namespace RDFSharp.Model
         /// Gives the Enum representation of the given datatype
         /// </summary>
         public static RDFModelEnums.RDFDatatypes GetEnumFromDatatype(this string datatype)
-		{
-			foreach (RDFModelEnums.RDFDatatypes enumValue in RDFModelEnums_RDFDatatypes_EnumValues)
-			{
-				MemberInfo enumValueInfo = RDFModelEnums_RDFDatatypes_EnumType.GetMember(enumValue.ToString())[0];
-				DescriptionAttribute enumValueDescriptionAttribute = enumValueInfo.GetCustomAttribute<DescriptionAttribute>();
-				if (string.Equals(datatype, enumValueDescriptionAttribute.Description))
-					return enumValue;
-			}
-			return RDFModelEnums.RDFDatatypes.RDFS_LITERAL;
-		}
+        {
+            foreach (RDFModelEnums.RDFDatatypes enumValue in RDFModelEnums_RDFDatatypes_EnumValues)
+            {
+                MemberInfo enumValueInfo = RDFModelEnums_RDFDatatypes_EnumType.GetMember(enumValue.ToString())[0];
+                DescriptionAttribute enumValueDescriptionAttribute = enumValueInfo.GetCustomAttribute<DescriptionAttribute>();
+                if (string.Equals(datatype, enumValueDescriptionAttribute.Description))
+                    return enumValue;
+            }
+            return RDFModelEnums.RDFDatatypes.RDFS_LITERAL;
+        }
 
         /// <summary>
         /// Validates the value of the given typed literal against its datatype
@@ -568,8 +568,8 @@ namespace RDFSharp.Model
                     catch { return (false, literalValue); }
 
                 case RDFModelEnums.RDFDatatypes.RDF_JSON:
-					bool isValidJson = (literalValue.StartsWith("{") && literalValue.EndsWith("}"))
-                                		 || (literalValue.StartsWith("[") && literalValue.EndsWith("]"));
+                    bool isValidJson = (literalValue.StartsWith("{") && literalValue.EndsWith("}"))
+                                         || (literalValue.StartsWith("[") && literalValue.EndsWith("]"));
                     return (isValidJson, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_ANYURI:
@@ -635,10 +635,10 @@ namespace RDFSharp.Model
 
                 case RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING:
                     bool isValidNormalizedString = literalValue.IndexOfAny(new char[] { '\n', '\r', '\t' }) == -1;
-					return (isValidNormalizedString, literalValue);
+                    return (isValidNormalizedString, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_LANGUAGE:
-					bool isValidLanguage = RDFPlainLiteral.LangTagRegex.Match(literalValue).Success;
+                    bool isValidLanguage = RDFPlainLiteral.LangTagRegex.Match(literalValue).Success;
                     return (isValidLanguage, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY:
@@ -650,7 +650,7 @@ namespace RDFSharp.Model
                     catch { return (false, literalValue); }
 
                 case RDFModelEnums.RDFDatatypes.XSD_HEXBINARY:
-					bool isValidHexBinary = hexBinary.Value.Match(literalValue).Success;
+                    bool isValidHexBinary = hexBinary.Value.Match(literalValue).Success;
                     return (isValidHexBinary, literalValue);
                 #endregion
 
@@ -691,8 +691,8 @@ namespace RDFSharp.Model
 
                 #region DATETIME CATEGORY
                 case RDFModelEnums.RDFDatatypes.XSD_DATETIME:
-					(bool,string) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss", "yyyy-MM-ddTHH:mm:ssZ");
-					if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ssZ", "yyyy-MM-ddTHH:mm:ssZ");
+                    (bool,string) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss", "yyyy-MM-ddTHH:mm:ssZ");
+                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ssZ", "yyyy-MM-ddTHH:mm:ssZ");
                     if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:sszzz", "yyyy-MM-ddTHH:mm:ssZ");
                     if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.f", "yyyy-MM-ddTHH:mm:ss.fZ");
                     if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fZ", "yyyy-MM-ddTHH:mm:ss.fZ");
@@ -712,7 +712,7 @@ namespace RDFSharp.Model
                     if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffff", "yyyy-MM-ddTHH:mm:ss.ffffffZ");
                     if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffffZ", "yyyy-MM-ddTHH:mm:ss.ffffffZ");
                     if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffffZ");
-					return isValidDateTime;
+                    return isValidDateTime;
 
                 case RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP:
                     (bool,string) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ssZ", "yyyy-MM-ddTHH:mm:ssZ");
@@ -729,13 +729,13 @@ namespace RDFSharp.Model
                     if (!isValidDateTimeStamp.Item1) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffffzzz", "yyyy-MM-ddTHH:mm:ss.fffffZ");
                     if (!isValidDateTimeStamp.Item1) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffffZ", "yyyy-MM-ddTHH:mm:ss.ffffffZ");
                     if (!isValidDateTimeStamp.Item1) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffffZ");
-					return isValidDateTimeStamp;
+                    return isValidDateTimeStamp;
 
                 case RDFModelEnums.RDFDatatypes.XSD_DATE:
                     (bool,string) isValidDate = TryParseDateTime(literalValue, "yyyy-MM-dd", "yyyy-MM-ddZ");
                     if (!isValidDate.Item1) isValidDate = TryParseDateTime(literalValue, "yyyy-MM-ddZ", "yyyy-MM-ddZ");
                     if (!isValidDate.Item1) isValidDate = TryParseDateTime(literalValue, "yyyy-MM-ddzzz", "yyyy-MM-ddZ");
-					return isValidDate;
+                    return isValidDate;
 
                 case RDFModelEnums.RDFDatatypes.XSD_TIME:
                     (bool,string) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss", "HH:mm:ssZ");
@@ -759,48 +759,48 @@ namespace RDFSharp.Model
                     if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.ffffff", "HH:mm:ss.ffffffZ");
                     if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.ffffffZ", "HH:mm:ss.ffffffZ");
                     if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.ffffffzzz", "HH:mm:ss.ffffffZ");
-					return isValidTime;
+                    return isValidTime;
 
                 case RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY:
                     (bool,string) isValidGMonthDay = TryParseDateTime(literalValue, "--MM-dd", "--MM-ddZ");
                     if (!isValidGMonthDay.Item1) isValidGMonthDay = TryParseDateTime(literalValue, "--MM-ddZ", "--MM-ddZ");
                     if (!isValidGMonthDay.Item1) isValidGMonthDay = TryParseDateTime(literalValue, "--MM-ddzzz", "--MM-ddZ");
-					return isValidGMonthDay;
+                    return isValidGMonthDay;
 
                 case RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH:
                     (bool,string) isValidGYearMonth = TryParseDateTime(literalValue, "yyyy-MM", "yyyy-MMZ");
                     if (!isValidGYearMonth.Item1) isValidGYearMonth = TryParseDateTime(literalValue, "yyyy-MMZ", "yyyy-MMZ");
                     if (!isValidGYearMonth.Item1) isValidGYearMonth = TryParseDateTime(literalValue, "yyyy-MMzzz", "yyyy-MMZ");
-					return isValidGYearMonth;
+                    return isValidGYearMonth;
 
                 case RDFModelEnums.RDFDatatypes.XSD_GYEAR:
                     (bool,string) isValidGYear = TryParseDateTime(literalValue, "yyyy", "yyyyZ");
                     if (!isValidGYear.Item1) isValidGYear = TryParseDateTime(literalValue, "yyyyZ", "yyyyZ");
                     if (!isValidGYear.Item1) isValidGYear = TryParseDateTime(literalValue, "yyyyzzz", "yyyyZ");
-					return isValidGYear;
+                    return isValidGYear;
 
                 case RDFModelEnums.RDFDatatypes.XSD_GMONTH:
                     (bool,string) isValidGMonth = TryParseDateTime(literalValue, "--MM", "--MMZ");
                     if (!isValidGMonth.Item1) isValidGMonth = TryParseDateTime(literalValue, "--MMZ", "--MMZ");
                     if (!isValidGMonth.Item1) isValidGMonth = TryParseDateTime(literalValue, "--MMzzz", "--MMZ");
-					return isValidGMonth;
+                    return isValidGMonth;
 
                 case RDFModelEnums.RDFDatatypes.XSD_GDAY:
                     (bool,string) isValidGDay = TryParseDateTime(literalValue, "---dd", "---ddZ");
                     if (!isValidGDay.Item1) isValidGDay = TryParseDateTime(literalValue, "---ddZ", "---ddZ");
                     if (!isValidGDay.Item1) isValidGDay = TryParseDateTime(literalValue, "---ddzzz", "---ddZ");
-					return isValidGDay;
+                    return isValidGDay;
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALDAY:
-					bool isValidGeneralDay = Regex.IsMatch(literalValue, "---(0[1-9]|[1-9][0-9])(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
+                    bool isValidGeneralDay = Regex.IsMatch(literalValue, "---(0[1-9]|[1-9][0-9])(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
                     return (isValidGeneralDay, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH:
-					bool isValidGeneralMonth = Regex.IsMatch(literalValue, "--(0[1-9]|1[0-9]|20)(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
+                    bool isValidGeneralMonth = Regex.IsMatch(literalValue, "--(0[1-9]|1[0-9]|20)(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
                     return (isValidGeneralMonth, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR:
-					bool isValidGeneralYear = Regex.IsMatch(literalValue, "-?([1-9][0-9]{3,}|0[0-9]{3})(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
+                    bool isValidGeneralYear = Regex.IsMatch(literalValue, "-?([1-9][0-9]{3,}|0[0-9]{3})(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
                     return (isValidGeneralYear, literalValue);
                 #endregion
 
@@ -836,55 +836,55 @@ namespace RDFSharp.Model
 
                 case RDFModelEnums.RDFDatatypes.XSD_INTEGER:
                     if (decimal.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outInteger))
-                    	return (true, Convert.ToString(outInteger, CultureInfo.InvariantCulture));
+                        return (true, Convert.ToString(outInteger, CultureInfo.InvariantCulture));
                     else
                         return (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_LONG:
                     if (long.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out long outLong))
-                    	return (true, Convert.ToString(outLong, CultureInfo.InvariantCulture));
+                        return (true, Convert.ToString(outLong, CultureInfo.InvariantCulture));
                     else
                         return (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_INT:
                     if (int.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out int outInt))
-                    	return (true, Convert.ToString(outInt, CultureInfo.InvariantCulture));
+                        return (true, Convert.ToString(outInt, CultureInfo.InvariantCulture));
                     else
                         return (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_SHORT:
                     if (short.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out short outShort))
-                    	return (true, Convert.ToString(outShort, CultureInfo.InvariantCulture));
+                        return (true, Convert.ToString(outShort, CultureInfo.InvariantCulture));
                     else
                         return (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_BYTE:
                     if (sbyte.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out sbyte outSByte))
-                    	return (true, Convert.ToString(outSByte, CultureInfo.InvariantCulture));
+                        return (true, Convert.ToString(outSByte, CultureInfo.InvariantCulture));
                     else
                         return (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG:
                     if (ulong.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out ulong outULong))
-                    	return (true, Convert.ToString(outULong, CultureInfo.InvariantCulture));
+                        return (true, Convert.ToString(outULong, CultureInfo.InvariantCulture));
                     else
                         return (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT:
                     if (uint.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint outUInt))
-                    	return (true, Convert.ToString(outUInt, CultureInfo.InvariantCulture));
+                        return (true, Convert.ToString(outUInt, CultureInfo.InvariantCulture));
                     else
                         return (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT:
                     if (ushort.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out ushort outUShort))
-                    	return (true, Convert.ToString(outUShort, CultureInfo.InvariantCulture));
+                        return (true, Convert.ToString(outUShort, CultureInfo.InvariantCulture));
                     else
                         return (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE:
                     if (byte.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out byte outByte))
-                    	return (true, Convert.ToString(outByte, CultureInfo.InvariantCulture));
+                        return (true, Convert.ToString(outByte, CultureInfo.InvariantCulture));
                     else
                         return (false, literalValue);
 

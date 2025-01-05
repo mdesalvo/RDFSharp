@@ -69,252 +69,252 @@ namespace RDFSharp.Model
             /// <summary>
             /// http://www.w3.org/2000/01/rdf-schema#Literal
             /// </summary>
-			[Description("http://www.w3.org/2000/01/rdf-schema#Literal")]
+            [Description("http://www.w3.org/2000/01/rdf-schema#Literal")]
             RDFS_LITERAL = 0,
             /// <summary>
             /// http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral
             /// </summary>
-			[Description("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral")]
+            [Description("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral")]
             RDF_XMLLITERAL = 1,
             /// <summary>
             /// http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML
             /// </summary>
-			[Description("http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML")]
+            [Description("http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML")]
             RDF_HTML = 2,
             /// <summary>
             /// http://www.w3.org/1999/02/22-rdf-syntax-ns#JSON
             /// </summary>
-			[Description("http://www.w3.org/1999/02/22-rdf-syntax-ns#JSON")]
+            [Description("http://www.w3.org/1999/02/22-rdf-syntax-ns#JSON")]
             RDF_JSON = 3,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#string
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#string")]
+            [Description("http://www.w3.org/2001/XMLSchema#string")]
             XSD_STRING = 4,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#boolean
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#boolean")]
+            [Description("http://www.w3.org/2001/XMLSchema#boolean")]
             XSD_BOOLEAN = 5,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#decimal
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#decimal")]
+            [Description("http://www.w3.org/2001/XMLSchema#decimal")]
             XSD_DECIMAL = 6,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#float
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#float")]
+            [Description("http://www.w3.org/2001/XMLSchema#float")]
             XSD_FLOAT = 7,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#double
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#double")]
+            [Description("http://www.w3.org/2001/XMLSchema#double")]
             XSD_DOUBLE = 8,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#positiveInteger
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#positiveInteger")]
+            [Description("http://www.w3.org/2001/XMLSchema#positiveInteger")]
             XSD_POSITIVEINTEGER = 9,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#negativeInteger
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#negativeInteger")]
+            [Description("http://www.w3.org/2001/XMLSchema#negativeInteger")]
             XSD_NEGATIVEINTEGER = 10,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#nonPositiveInteger
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#nonPositiveInteger")]
+            [Description("http://www.w3.org/2001/XMLSchema#nonPositiveInteger")]
             XSD_NONPOSITIVEINTEGER = 11,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#nonNegativeInteger
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#nonNegativeInteger")]
+            [Description("http://www.w3.org/2001/XMLSchema#nonNegativeInteger")]
             XSD_NONNEGATIVEINTEGER = 12,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#integer
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#integer")]
+            [Description("http://www.w3.org/2001/XMLSchema#integer")]
             XSD_INTEGER = 13,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#long
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#long")]
+            [Description("http://www.w3.org/2001/XMLSchema#long")]
             XSD_LONG = 14,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#int
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#int")]
+            [Description("http://www.w3.org/2001/XMLSchema#int")]
             XSD_INT = 15,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#short
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#short")]
+            [Description("http://www.w3.org/2001/XMLSchema#short")]
             XSD_SHORT = 16,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#byte
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#byte")]
+            [Description("http://www.w3.org/2001/XMLSchema#byte")]
             XSD_BYTE = 17,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#unsignedLong
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#unsignedLong")]
+            [Description("http://www.w3.org/2001/XMLSchema#unsignedLong")]
             XSD_UNSIGNEDLONG = 18,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#unsignedInt
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#unsignedInt")]
+            [Description("http://www.w3.org/2001/XMLSchema#unsignedInt")]
             XSD_UNSIGNEDINT = 19,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#unsignedShort
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#unsignedShort")]
+            [Description("http://www.w3.org/2001/XMLSchema#unsignedShort")]
             XSD_UNSIGNEDSHORT = 20,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#unsignedByte
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#unsignedByte")]
+            [Description("http://www.w3.org/2001/XMLSchema#unsignedByte")]
             XSD_UNSIGNEDBYTE = 21,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#duration
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#duration")]
+            [Description("http://www.w3.org/2001/XMLSchema#duration")]
             XSD_DURATION = 22,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#dateTime
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#dateTime")]
+            [Description("http://www.w3.org/2001/XMLSchema#dateTime")]
             XSD_DATETIME = 23,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#dateTimeStamp
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#dateTimeStamp")]
+            [Description("http://www.w3.org/2001/XMLSchema#dateTimeStamp")]
             XSD_DATETIMESTAMP = 24,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#date
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#date")]
+            [Description("http://www.w3.org/2001/XMLSchema#date")]
             XSD_DATE = 25,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#time
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#time")]
+            [Description("http://www.w3.org/2001/XMLSchema#time")]
             XSD_TIME = 26,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gYear
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#gYear")]
+            [Description("http://www.w3.org/2001/XMLSchema#gYear")]
             XSD_GYEAR = 27,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gMonth
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#gMonth")]
+            [Description("http://www.w3.org/2001/XMLSchema#gMonth")]
             XSD_GMONTH = 28,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gDay
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#gDay")]
+            [Description("http://www.w3.org/2001/XMLSchema#gDay")]
             XSD_GDAY = 29,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gYearMonth
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#gYearMonth")]
+            [Description("http://www.w3.org/2001/XMLSchema#gYearMonth")]
             XSD_GYEARMONTH = 30,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gMonthDay
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#gMonthDay")]
+            [Description("http://www.w3.org/2001/XMLSchema#gMonthDay")]
             XSD_GMONTHDAY = 31,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#hexBinary
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#hexBinary")]
+            [Description("http://www.w3.org/2001/XMLSchema#hexBinary")]
             XSD_HEXBINARY = 32,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#base64Binary
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#base64Binary")]
+            [Description("http://www.w3.org/2001/XMLSchema#base64Binary")]
             XSD_BASE64BINARY = 33,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#anyURI
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#anyURI")]
+            [Description("http://www.w3.org/2001/XMLSchema#anyURI")]
             XSD_ANYURI = 34,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#QName
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#QName")]
+            [Description("http://www.w3.org/2001/XMLSchema#QName")]
             XSD_QNAME = 35,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#NOTATION
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#NOTATION")]
+            [Description("http://www.w3.org/2001/XMLSchema#NOTATION")]
             XSD_NOTATION = 36,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#language
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#language")]
+            [Description("http://www.w3.org/2001/XMLSchema#language")]
             XSD_LANGUAGE = 37,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#normalizedString
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#normalizedString")]
+            [Description("http://www.w3.org/2001/XMLSchema#normalizedString")]
             XSD_NORMALIZEDSTRING = 38,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#token
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#token")]
+            [Description("http://www.w3.org/2001/XMLSchema#token")]
             XSD_TOKEN = 39,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#NMToken
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#NMToken")]
+            [Description("http://www.w3.org/2001/XMLSchema#NMToken")]
             XSD_NMTOKEN = 40,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#Name
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#Name")]
+            [Description("http://www.w3.org/2001/XMLSchema#Name")]
             XSD_NAME = 41,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#NCName
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#NCName")]
+            [Description("http://www.w3.org/2001/XMLSchema#NCName")]
             XSD_NCNAME = 42,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#ID
             /// </summary>
-			[Description("http://www.w3.org/2001/XMLSchema#ID")]
+            [Description("http://www.w3.org/2001/XMLSchema#ID")]
             XSD_ID = 43,
             /// <summary>
             /// http://www.opengis.net/ont/geosparql#wktLiteral
             /// </summary>
-			[Description("http://www.opengis.net/ont/geosparql#wktLiteral")]
+            [Description("http://www.opengis.net/ont/geosparql#wktLiteral")]
             GEOSPARQL_WKT = 44,
             /// <summary>
             /// http://www.opengis.net/ont/geosparql#gmlLiteral
             /// </summary>
-			[Description("http://www.opengis.net/ont/geosparql#gmlLiteral")]
+            [Description("http://www.opengis.net/ont/geosparql#gmlLiteral")]
             GEOSPARQL_GML = 45,
             /// <summary>
             /// http://www.w3.org/2006/time#generalDay
             /// </summary>
-			[Description("http://www.w3.org/2006/time#generalDay")]
+            [Description("http://www.w3.org/2006/time#generalDay")]
             TIME_GENERALDAY = 46,
             /// <summary>
             /// http://www.w3.org/2006/time#generalMonth
             /// </summary>
-			[Description("http://www.w3.org/2006/time#generalMonth")]
+            [Description("http://www.w3.org/2006/time#generalMonth")]
             TIME_GENERALMONTH = 47,
             /// <summary>
             /// http://www.w3.org/2006/time#generalYear
             /// </summary>
-			[Description("http://www.w3.org/2006/time#generalYear")]
+            [Description("http://www.w3.org/2006/time#generalYear")]
             TIME_GENERALYEAR = 48,
             /// <summary>
             /// http://www.w3.org/2002/07/owl#real
             /// </summary>
-			[Description("http://www.w3.org/2002/07/owl#real")]
+            [Description("http://www.w3.org/2002/07/owl#real")]
             OWL_REAL = 49
         };
 

@@ -302,13 +302,13 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(graph.TriplesCount == 0);
         }
 
-		[TestMethod]
+        [TestMethod]
         public void ShouldAddDatatype()
         {
             RDFGraph graph = new RDFGraph();
-			RDFDatatype exlength6 = new RDFDatatype(new Uri("ex:exlength6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
-				new RDFLengthFacet(6), new RDFPatternFacet("^ex") ]);
-			graph.AddDatatype(exlength6);
+            RDFDatatype exlength6 = new RDFDatatype(new Uri("ex:exlength6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                new RDFLengthFacet(6), new RDFPatternFacet("^ex") ]);
+            graph.AddDatatype(exlength6);
 
             Assert.IsTrue(graph.TriplesCount == 11);
         }
@@ -1921,18 +1921,18 @@ namespace RDFSharp.Test.Model
         public void ShouldRaiseExceptionOnImportingFromRelativeUri()
             => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromUri(new Uri("/file/system", UriKind.Relative)));
 
-		[TestMethod]
-		public void ShouldExtractDatatypeDefinitionsFromGraph()
-		{
-            RDFDatatype exLength6 = new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [	new RDFLengthFacet(6) ]);
-			RDFDatatype exMinLength6 = new RDFDatatype(new Uri("ex:minlength6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [ new RDFMinLengthFacet(6) ]);
-			RDFDatatype exMaxLength6 = new RDFDatatype(new Uri("ex:maxlength6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [ new RDFMaxLengthFacet(6) ]);
+        [TestMethod]
+        public void ShouldExtractDatatypeDefinitionsFromGraph()
+        {
+            RDFDatatype exLength6 = new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [    new RDFLengthFacet(6) ]);
+            RDFDatatype exMinLength6 = new RDFDatatype(new Uri("ex:minlength6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [ new RDFMinLengthFacet(6) ]);
+            RDFDatatype exMaxLength6 = new RDFDatatype(new Uri("ex:maxlength6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [ new RDFMaxLengthFacet(6) ]);
             RDFDatatype exMaxInclusive6 = new RDFDatatype(new Uri("ex:maxinclusive6"), RDFModelEnums.RDFDatatypes.XSD_DOUBLE, [new RDFMaxInclusiveFacet(6)]);
             RDFDatatype exMinInclusive6 = new RDFDatatype(new Uri("ex:mininclusive6"), RDFModelEnums.RDFDatatypes.XSD_DOUBLE, [new RDFMinInclusiveFacet(6)]);
             RDFDatatype exMaxExclusive6 = new RDFDatatype(new Uri("ex:maxexclusive6"), RDFModelEnums.RDFDatatypes.XSD_DOUBLE, [new RDFMaxExclusiveFacet(6)]);
             RDFDatatype exMinExclusive6 = new RDFDatatype(new Uri("ex:minexclusive6"), RDFModelEnums.RDFDatatypes.XSD_DOUBLE, [new RDFMinExclusiveFacet(6)]);
-            RDFDatatype exPatternEx = new RDFDatatype(new Uri("ex:patternex"), RDFModelEnums.RDFDatatypes.XSD_STRING, [	new RDFPatternFacet("^ex") ]);
-			RDFDatatype exInteger = new RDFDatatype(new Uri("ex:integer"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, null);
+            RDFDatatype exPatternEx = new RDFDatatype(new Uri("ex:patternex"), RDFModelEnums.RDFDatatypes.XSD_STRING, [    new RDFPatternFacet("^ex") ]);
+            RDFDatatype exInteger = new RDFDatatype(new Uri("ex:integer"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, null);
             RDFGraph graph = new RDFGraph()
               .AddDatatype(exLength6)
               .AddDatatype(exMinLength6)
@@ -1947,7 +1947,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:length6")
                                                && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
-							                   && dt.Facets.Single() is RDFLengthFacet lengthFacet 
+                                               && dt.Facets.Single() is RDFLengthFacet lengthFacet 
                                                && lengthFacet.Length == 6));
             Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:minlength6")
                                                && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING

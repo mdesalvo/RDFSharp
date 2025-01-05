@@ -221,16 +221,16 @@ namespace RDFSharp.Model
             return this;
         }
 
-		/// <summary>
+        /// <summary>
         /// Adds the given datatype to the graph
         /// </summary>
         public RDFGraph AddDatatype(RDFDatatype datatype)
         {
             if (datatype != null)
             {
-				//Reify the datatype to get its graph representation
+                //Reify the datatype to get its graph representation
                 foreach (RDFTriple t in datatype.ToRDFGraph())
-					AddTriple(t);
+                    AddTriple(t);
             }
             return this;
         }
@@ -640,21 +640,21 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
             #endregion
 
-			RDFGraph graph = null;
+            RDFGraph graph = null;
             switch (rdfFormat)
             {
                 case RDFModelEnums.RDFFormats.RdfXml:
                     graph = RDFXml.Deserialize(filepath);
-					break;
+                    break;
                 case RDFModelEnums.RDFFormats.Turtle:
                     graph =  RDFTurtle.Deserialize(filepath);
-					break;
+                    break;
                 case RDFModelEnums.RDFFormats.NTriples:
                     graph =  RDFNTriples.Deserialize(filepath);
-					break;
+                    break;
                 case RDFModelEnums.RDFFormats.TriX:
                     graph =  RDFTriX.Deserialize(filepath);
-					break;
+                    break;
             }
 
             #region Datatype Discovery
@@ -680,21 +680,21 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot read RDF graph from stream because given \"inputStream\" parameter is null.");
             #endregion
 
-			RDFGraph graph = null;
+            RDFGraph graph = null;
             switch (rdfFormat)
             {
                 case RDFModelEnums.RDFFormats.RdfXml:
                     graph = RDFXml.Deserialize(inputStream, graphContext);
-					break;
+                    break;
                 case RDFModelEnums.RDFFormats.Turtle:
                     graph =  RDFTurtle.Deserialize(inputStream, graphContext);
-					break;
+                    break;
                 case RDFModelEnums.RDFFormats.NTriples:
                     graph =  RDFNTriples.Deserialize(inputStream, graphContext);
-					break;
+                    break;
                 case RDFModelEnums.RDFFormats.TriX:
                     graph =  RDFTriX.Deserialize(inputStream, graphContext);
-					break;
+                    break;
             }
 
             #region Datatype Discovery

@@ -35,7 +35,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(facet.URI.IsBlank);
         }
 
-		[TestMethod]
+        [TestMethod]
         
         public void ShouldValidatePatternFacet()
         {
@@ -43,27 +43,27 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(facet.Validate("example"));
             Assert.IsFalse(facet.Validate(null));
-			Assert.IsFalse(facet.Validate(string.Empty));
-			Assert.IsFalse(facet.Validate("a"));
+            Assert.IsFalse(facet.Validate(string.Empty));
+            Assert.IsFalse(facet.Validate("a"));
 
-			RDFPatternFacet facet0 = new RDFPatternFacet(null);
-			Assert.IsTrue(facet0.Validate("abcdef"));
+            RDFPatternFacet facet0 = new RDFPatternFacet(null);
+            Assert.IsTrue(facet0.Validate("abcdef"));
             Assert.IsTrue(facet0.Validate(null));
-			Assert.IsTrue(facet0.Validate(string.Empty));
+            Assert.IsTrue(facet0.Validate(string.Empty));
         }
 
-		[TestMethod]
+        [TestMethod]
         
         public void ShouldConvertPatternFacetToGraph()
         {
             RDFPatternFacet facet = new RDFPatternFacet("^ex");
-			RDFGraph graph = facet.ToRDFGraph();
+            RDFGraph graph = facet.ToRDFGraph();
 
-			Assert.IsNotNull(graph);
+            Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
-			Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.PATTERN));
-			Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("^ex", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.STRING.ToString()))));
+            Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.PATTERN));
+            Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("^ex", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.STRING.ToString()))));
         }
-		#endregion
+        #endregion
     }
 }

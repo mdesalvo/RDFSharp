@@ -26,9 +26,9 @@ namespace RDFSharp.Model
     /// </summary>
     public sealed class RDFDatatypeRegister : IEnumerable<RDFDatatype>
     {
-		#region Statics
-		internal static RDFDatatype RDFSLiteral = new RDFDatatype(RDFVocabulary.RDFS.LITERAL.URI, RDFModelEnums.RDFDatatypes.RDFS_LITERAL, null);
-		#endregion
+        #region Statics
+        internal static RDFDatatype RDFSLiteral = new RDFDatatype(RDFVocabulary.RDFS.LITERAL.URI, RDFModelEnums.RDFDatatypes.RDFS_LITERAL, null);
+        #endregion
 
         #region Properties
         /// <summary>
@@ -60,12 +60,12 @@ namespace RDFSharp.Model
         /// </summary>
         static RDFDatatypeRegister()
         {
-			Instance = new RDFDatatypeRegister { 
-				Register = new List<RDFDatatype>() };
+            Instance = new RDFDatatypeRegister { 
+                Register = new List<RDFDatatype>() };
 
-			foreach (RDFModelEnums.RDFDatatypes datatype in Enum.GetValues(typeof(RDFModelEnums.RDFDatatypes)).Cast<RDFModelEnums.RDFDatatypes>())
-				Instance.Register.Add(new RDFDatatype(new Uri(RDFModelUtilities.GetDatatypeFromEnum(datatype)), datatype, null) { IsBuiltIn = true });
-		}
+            foreach (RDFModelEnums.RDFDatatypes datatype in Enum.GetValues(typeof(RDFModelEnums.RDFDatatypes)).Cast<RDFModelEnums.RDFDatatypes>())
+                Instance.Register.Add(new RDFDatatype(new Uri(RDFModelUtilities.GetDatatypeFromEnum(datatype)), datatype, null) { IsBuiltIn = true });
+        }
         #endregion
 
         #region Interfaces
@@ -89,7 +89,7 @@ namespace RDFSharp.Model
         public static void AddDatatype(RDFDatatype datatype)
         {
             if (datatype != null && GetDatatype(datatype.ToString()) == null)
-				Instance.Register.Add(datatype);
+                Instance.Register.Add(datatype);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace RDFSharp.Model
         /// Retrieves a datatype by seeking presence of its Uri (null if not found)
         /// </summary>
         public static RDFDatatype GetDatatype(string datatypeUri)
-			=> Instance.Register.Find(dt => string.Equals(dt.ToString(), datatypeUri?.Trim()));
+            => Instance.Register.Find(dt => string.Equals(dt.ToString(), datatypeUri?.Trim()));
         #endregion
     }
 }

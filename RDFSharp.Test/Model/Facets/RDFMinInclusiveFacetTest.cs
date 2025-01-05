@@ -35,7 +35,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(facet.URI.IsBlank);
         }
 
-		[TestMethod]
+        [TestMethod]
         
         public void ShouldValidateMinInclusiveFacet()
         {
@@ -46,26 +46,26 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(facet.Validate("6"));
             Assert.IsTrue(facet.Validate("14.5773"));
             Assert.IsFalse(facet.Validate(null));
-			Assert.IsFalse(facet.Validate(string.Empty));
-			Assert.IsFalse(facet.Validate("abcdefgh"));
+            Assert.IsFalse(facet.Validate(string.Empty));
+            Assert.IsFalse(facet.Validate("abcdefgh"));
 
-			RDFMinInclusiveFacet facet0 = new RDFMinInclusiveFacet(-12.45);
-			Assert.IsFalse(facet0.Validate("-16.2442"));
-			Assert.IsTrue(facet0.Validate("-12.45"));
+            RDFMinInclusiveFacet facet0 = new RDFMinInclusiveFacet(-12.45);
+            Assert.IsFalse(facet0.Validate("-16.2442"));
+            Assert.IsTrue(facet0.Validate("-12.45"));
         }
 
-		[TestMethod]
+        [TestMethod]
         
         public void ShouldConvertMinInclusiveFacetToGraph()
         {
             RDFMinInclusiveFacet facet = new RDFMinInclusiveFacet(6);
-			RDFGraph graph = facet.ToRDFGraph();
+            RDFGraph graph = facet.ToRDFGraph();
 
-			Assert.IsNotNull(graph);
+            Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
-			Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.MIN_INCLUSIVE));
-			Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("6", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.DOUBLE.ToString()))));
+            Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.MIN_INCLUSIVE));
+            Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("6", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.DOUBLE.ToString()))));
         }
-		#endregion
+        #endregion
     }
 }

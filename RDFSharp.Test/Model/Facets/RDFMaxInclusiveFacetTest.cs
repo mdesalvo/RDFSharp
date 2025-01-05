@@ -35,7 +35,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(facet.URI.IsBlank);
         }
 
-		[TestMethod]
+        [TestMethod]
         
         public void ShouldValidateMaxInclusiveFacet()
         {
@@ -45,27 +45,27 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(facet.Validate("2.047"));
             Assert.IsTrue(facet.Validate("6"));
             Assert.IsFalse(facet.Validate(null));
-			Assert.IsFalse(facet.Validate(string.Empty));
-			Assert.IsFalse(facet.Validate("14.5773"));
-			Assert.IsFalse(facet.Validate("abcdefgh"));
+            Assert.IsFalse(facet.Validate(string.Empty));
+            Assert.IsFalse(facet.Validate("14.5773"));
+            Assert.IsFalse(facet.Validate("abcdefgh"));
 
-			RDFMaxInclusiveFacet facet0 = new RDFMaxInclusiveFacet(-12.45);
-			Assert.IsTrue(facet0.Validate("-16.2442"));
-			Assert.IsFalse(facet0.Validate("-12.00"));
+            RDFMaxInclusiveFacet facet0 = new RDFMaxInclusiveFacet(-12.45);
+            Assert.IsTrue(facet0.Validate("-16.2442"));
+            Assert.IsFalse(facet0.Validate("-12.00"));
         }
 
-		[TestMethod]
+        [TestMethod]
         
         public void ShouldConvertMaxInclusiveFacetToGraph()
         {
             RDFMaxInclusiveFacet facet = new RDFMaxInclusiveFacet(6);
-			RDFGraph graph = facet.ToRDFGraph();
+            RDFGraph graph = facet.ToRDFGraph();
 
-			Assert.IsNotNull(graph);
+            Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
-			Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.MAX_INCLUSIVE));
-			Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("6", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.DOUBLE.ToString()))));
+            Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.MAX_INCLUSIVE));
+            Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("6", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.DOUBLE.ToString()))));
         }
-		#endregion
+        #endregion
     }
 }

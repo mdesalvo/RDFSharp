@@ -56,47 +56,47 @@ namespace RDFSharp.Model
           TargetDatatype = targetDatatype;
           Facets = facets ?? new List<RDFFacet>();
         }
-		#endregion
+        #endregion
 
-		#region Interfaces
-		/// <summary>
-		/// Gives the string representation of the datatype
-		/// </summary>
-		/// <returns></returns>
-		public override string ToString()
-			=> URI.ToString();
-		#endregion
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the datatype
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+            => URI.ToString();
+        #endregion
 
-		#region Methods
-		/// <summary>
-		/// Gives a graph representation of the datatype
-		/// </summary>
-		public RDFGraph ToRDFGraph()
+        #region Methods
+        /// <summary>
+        /// Gives a graph representation of the datatype
+        /// </summary>
+        public RDFGraph ToRDFGraph()
         {
-			RDFGraph datatypeGraph = new RDFGraph();
+            RDFGraph datatypeGraph = new RDFGraph();
 
-			RDFResource datatypeURI = new RDFResource(URI.ToString());
-			datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE));
+            RDFResource datatypeURI = new RDFResource(URI.ToString());
+            datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE));
 
-			if (Facets.Count > 0)
-			{
-				RDFCollection facetsCollection = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
-				Facets.ForEach(constraint => facetsCollection.AddItem(constraint.URI));
-				datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.OWL.ON_DATATYPE, new RDFResource(TargetDatatype.GetDatatypeFromEnum())));
-				datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.OWL.WITH_RESTRICTIONS, facetsCollection.ReificationSubject));
-				datatypeGraph.AddCollection(facetsCollection);
-				Facets.ForEach(facet => datatypeGraph = datatypeGraph.UnionWith(facet.ToRDFGraph()));
-			}
-			else
-				datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.OWL.EQUIVALENT_CLASS, new RDFResource(TargetDatatype.GetDatatypeFromEnum())));
+            if (Facets.Count > 0)
+            {
+                RDFCollection facetsCollection = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
+                Facets.ForEach(constraint => facetsCollection.AddItem(constraint.URI));
+                datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.OWL.ON_DATATYPE, new RDFResource(TargetDatatype.GetDatatypeFromEnum())));
+                datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.OWL.WITH_RESTRICTIONS, facetsCollection.ReificationSubject));
+                datatypeGraph.AddCollection(facetsCollection);
+                Facets.ForEach(facet => datatypeGraph = datatypeGraph.UnionWith(facet.ToRDFGraph()));
+            }
+            else
+                datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.OWL.EQUIVALENT_CLASS, new RDFResource(TargetDatatype.GetDatatypeFromEnum())));
 
-			return datatypeGraph;
+            return datatypeGraph;
         }
 
-		/// <summary>
-		/// Validates the given literal against the datatype
-		/// </summary>
-		internal (bool,string) Validate(string literalValue)
+        /// <summary>
+        /// Validates the given literal against the datatype
+        /// </summary>
+        internal (bool,string) Validate(string literalValue)
         {
             //It should validate the target datatype
             (bool,string) validatesTargetDatatype = RDFModelUtilities.ValidateTypedLiteral(literalValue, TargetDatatype);

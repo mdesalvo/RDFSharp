@@ -22,7 +22,7 @@ namespace RDFSharp.Store
 {
     /// <summary>
     /// RDFContext represents an object which can act as C-token of a pattern.
-	/// It cannot start with "bnode:" because blank contexts are not supported.
+    /// It cannot start with "bnode:" because blank contexts are not supported.
     /// </summary>
     public class RDFContext : RDFPatternMember
     {

@@ -43,7 +43,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 
-		[TestMethod]
+        [TestMethod]
         public void ShouldCreateDatatypeFilterWithOfficialDatatype()
         {
             RDFDatatypeFilter filter = new RDFDatatypeFilter(new RDFVariable("?VAR"), RDFDatatypeRegister.GetDatatype(RDFModelEnums.RDFDatatypes.XSD_FLOAT));

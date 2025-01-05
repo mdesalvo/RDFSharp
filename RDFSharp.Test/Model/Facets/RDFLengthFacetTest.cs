@@ -35,7 +35,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(facet.URI.IsBlank);
         }
 
-		[TestMethod]
+        [TestMethod]
         
         public void ShouldValidateLengthFacet()
         {
@@ -43,29 +43,29 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(facet.Validate("abcdef"));
             Assert.IsFalse(facet.Validate(null));
-			Assert.IsFalse(facet.Validate(string.Empty));
-			Assert.IsFalse(facet.Validate("a"));
-			Assert.IsFalse(facet.Validate("abcdefgh"));
+            Assert.IsFalse(facet.Validate(string.Empty));
+            Assert.IsFalse(facet.Validate("a"));
+            Assert.IsFalse(facet.Validate("abcdefgh"));
 
-			RDFLengthFacet facet0 = new RDFLengthFacet(0);
-			Assert.IsFalse(facet0.Validate("abcdef"));
+            RDFLengthFacet facet0 = new RDFLengthFacet(0);
+            Assert.IsFalse(facet0.Validate("abcdef"));
             Assert.IsTrue(facet0.Validate(null));
-			Assert.IsTrue(facet0.Validate(string.Empty));
-			Assert.IsFalse(facet0.Validate("a"));
+            Assert.IsTrue(facet0.Validate(string.Empty));
+            Assert.IsFalse(facet0.Validate("a"));
         }
 
-		[TestMethod]
+        [TestMethod]
         
         public void ShouldConvertLengthFacetToGraph()
         {
             RDFLengthFacet facet = new RDFLengthFacet(6);
-			RDFGraph graph = facet.ToRDFGraph();
+            RDFGraph graph = facet.ToRDFGraph();
 
-			Assert.IsNotNull(graph);
+            Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
-			Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.LENGTH));
-			Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("6", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.NON_NEGATIVE_INTEGER.ToString()))));
+            Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.LENGTH));
+            Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("6", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.NON_NEGATIVE_INTEGER.ToString()))));
         }
-		#endregion
+        #endregion
     }
 }

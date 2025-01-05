@@ -98,8 +98,8 @@ namespace RDFSharp.Test.Model
                     break;
             }
         }
-		
-		[DataTestMethod]
+        
+        [DataTestMethod]
         [DataRow(RDFValidationEnums.RDFShapeSeverity.Info)]
         [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning)]
         [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation)]

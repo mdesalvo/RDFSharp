@@ -220,11 +220,11 @@ namespace RDFSharp.Test.Model
                 [new RDFPlainLiteral("resultMessage2")],
                 RDFValidationEnums.RDFShapeSeverity.Violation
             );
-			RDFValidationReport vRep1 = new RDFValidationReport(new RDFResource("ex:validationReport"));
+            RDFValidationReport vRep1 = new RDFValidationReport(new RDFResource("ex:validationReport"));
             vRep1.AddResult(vRes1);
-			RDFValidationReport vRep2 = new RDFValidationReport(new RDFResource("ex:validationReport2"));
+            RDFValidationReport vRep2 = new RDFValidationReport(new RDFResource("ex:validationReport2"));
             vRep2.AddResult(vRes2);
-			vRep2.MergeResults(vRep1);
+            vRep2.MergeResults(vRep1);
             vRep2.MergeResults(null); //This won't be accepted
 
             Assert.IsNotNull(vRep2);

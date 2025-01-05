@@ -21,24 +21,24 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFTypedLiteral : RDFLiteral
     {
-		#region Statics
-		/// <summary>
-		/// Represents an handy typed literal for boolean True
-		/// </summary>
-		public static RDFTypedLiteral True = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
-		/// <summary>
-		/// Represents an handy typed literal for boolean False
-		/// </summary>
-		public static RDFTypedLiteral False = new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
-		/// <summary>
-		/// Represents an handy typed literal for integer Zero
-		/// </summary>
-		public static RDFTypedLiteral Zero = new RDFTypedLiteral("0", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+        #region Statics
         /// <summary>
-		/// Represents an handy typed literal for integer One
-		/// </summary>
-		public static RDFTypedLiteral One = new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-		#endregion
+        /// Represents an handy typed literal for boolean True
+        /// </summary>
+        public static RDFTypedLiteral True = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
+        /// <summary>
+        /// Represents an handy typed literal for boolean False
+        /// </summary>
+        public static RDFTypedLiteral False = new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
+        /// <summary>
+        /// Represents an handy typed literal for integer Zero
+        /// </summary>
+        public static RDFTypedLiteral Zero = new RDFTypedLiteral("0", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+        /// <summary>
+        /// Represents an handy typed literal for integer One
+        /// </summary>
+        public static RDFTypedLiteral One = new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+        #endregion
 
         #region Properties
         /// <summary>
@@ -48,11 +48,11 @@ namespace RDFSharp.Model
         #endregion
 
         #region Ctors
-		/// <summary>
+        /// <summary>
         /// Default-ctor to build a typed literal with given value and given standard datatype
         /// </summary>
         public RDFTypedLiteral(string value, RDFModelEnums.RDFDatatypes datatype)
-			: this(value, RDFDatatypeRegister.GetDatatype(datatype)) { }
+            : this(value, RDFDatatypeRegister.GetDatatype(datatype)) { }
 
         /// <summary>
         /// Default-ctor to build a typed literal with given value and given custom datatype (rdfs:Literal in case null)
@@ -62,10 +62,10 @@ namespace RDFSharp.Model
             Datatype = datatype ?? RDFDatatypeRegister.RDFSLiteral;
 
             //Validation against semantic of given datatype
-			(bool,string) validationResult = Datatype.Validate(value ?? string.Empty);
-			if (!validationResult.Item1)
-			    throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + Datatype + ") which is based on \"" + Datatype.TargetDatatype + "\" ");
-			Value = validationResult.Item2; 
+            (bool,string) validationResult = Datatype.Validate(value ?? string.Empty);
+            if (!validationResult.Item1)
+                throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + Datatype + ") which is based on \"" + Datatype.TargetDatatype + "\" ");
+            Value = validationResult.Item2; 
         }
         #endregion
 
