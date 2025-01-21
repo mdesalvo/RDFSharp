@@ -90,7 +90,7 @@ namespace RDFSharp.Test.Store
             Assert.IsTrue(await store.ContainsQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
             Assert.IsTrue(await store.ContainsQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit"))));
 
-            await store.MergeGraphAsync(null as RDFAsyncGraph);
+            await store.MergeGraphAsync(null as RDFGraph);
             Assert.IsTrue(store.WrappedStore is RDFMemoryStore memStore2 && memStore2.QuadruplesCount == 2);
         }
 

@@ -160,7 +160,7 @@ namespace RDFSharp.Test.Query
             graph.AddTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
             graph.AddTriple(new RDFTriple(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
             RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
-            RDFOperationResult result = await operation.ApplyToGraphAsync(new RDFAsyncGraph(graph)); //When applied to a graph, CLEAR behavior is ALL
+            RDFOperationResult result = await operation.ApplyToGraphAsync(graph); //When applied to a graph, CLEAR behavior is ALL
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.DeleteResults);

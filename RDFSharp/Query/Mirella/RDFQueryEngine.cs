@@ -711,12 +711,6 @@ namespace RDFSharp.Query
                     result.Merge(graph.ToDataTable(), true, MissingSchemaAction.Add);
                     break;
 
-                //ASYNC GRAPH
-                case RDFAsyncGraph dataSourceAsyncGraph:
-                    RDFGraph grapha = QueryGraph(dataSourceAsyncGraph.WrappedGraph);
-                    result.Merge(grapha.ToDataTable(), true, MissingSchemaAction.Add);
-                    break;
-
                 //STORE
                 case RDFStore dataSourceStore:
                     RDFMemoryStore store = QueryStore(dataSourceStore);
@@ -767,12 +761,6 @@ namespace RDFSharp.Query
                 case RDFGraph dataSourceGraph:
                     RDFGraph graph = QueryGraph(dataSourceGraph);
                     result.Merge(graph.ToDataTable(), true, MissingSchemaAction.Add);
-                    break;
-
-                //ASYNC GRAPH
-                case RDFAsyncGraph dataSourceAsyncGraph:
-                    RDFGraph grapha = QueryGraph(dataSourceAsyncGraph.WrappedGraph);
-                    result.Merge(grapha.ToDataTable(), true, MissingSchemaAction.Add);
                     break;
 
                 //STORE
@@ -869,9 +857,6 @@ namespace RDFSharp.Query
             {
                 case RDFGraph graph:
                     return ApplyPatternToGraph(pattern, graph);
-
-                case RDFAsyncGraph asyncGraph:
-                    return ApplyPatternToGraph(pattern, asyncGraph.WrappedGraph);
 
                 case RDFStore store:
                     return ApplyPatternToStore(pattern, store);
@@ -1166,11 +1151,6 @@ namespace RDFSharp.Query
                     case RDFGraph dataSourceGraph:
                         DataTable graphTable = ApplyPatternToGraph(pattern, dataSourceGraph);
                         resultTable.Merge(graphTable, true, MissingSchemaAction.Add);
-                        break;
-
-                    case RDFAsyncGraph dataSourceAsyncGraph:
-                        DataTable asyncGraphTable = ApplyPatternToGraph(pattern, dataSourceAsyncGraph.WrappedGraph);
-                        resultTable.Merge(asyncGraphTable, true, MissingSchemaAction.Add);
                         break;
 
                     case RDFStore dataSourceStore:

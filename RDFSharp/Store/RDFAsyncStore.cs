@@ -67,12 +67,6 @@ namespace RDFSharp.Store
 
         #region Add
         /// <summary>
-        /// Merges the given asynchronous graph into the asynchronous store, avoiding duplicate insertions
-        /// </summary>
-        public Task<RDFAsyncStore> MergeGraphAsync(RDFAsyncGraph asyncGraph)
-            => Task.Run(() => new RDFAsyncStore(WrappedStore.MergeGraph(asyncGraph?.WrappedGraph)));
-
-        /// <summary>
         /// Merges the given graph into the asynchronous store, avoiding duplicate insertions
         /// </summary>
         public Task<RDFAsyncStore> MergeGraphAsync(RDFGraph graph)

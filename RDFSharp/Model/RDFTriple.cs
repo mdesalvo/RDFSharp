@@ -149,10 +149,10 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Builds the reification asynchronous graph of the triple
+        /// Asynchronously builds the reification graph of the triple
         /// </summary>
-        public Task<RDFAsyncGraph> ReifyTripleAsync()
-            => Task.Run(() => new RDFAsyncGraph(ReifyTriple()));
+        public Task<RDFGraph> ReifyTripleAsync()
+            => Task.Run(() => ReifyTriple());
         #endregion
     }
 

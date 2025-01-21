@@ -3729,7 +3729,7 @@ WHERE {
             [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino"))
             ]);
-            RDFAsyncGraph asyncGraph = new RDFAsyncGraph(new List<RDFTriple>()
+            RDFGraph graph2 = new RDFGraph(new List<RDFTriple>()
             {
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
@@ -3747,7 +3747,7 @@ WHERE {
                     new RDFQuadruple(new RDFContext(), new RDFResource("ex:linus"),new RDFResource("ex:hasName"),new RDFTypedLiteral("Linus", RDFModelEnums.RDFDatatypes.XSD_STRING))
                 ]));
             RDFFederation federation = new RDFFederation().AddGraph(graph)
-                                                          .AddAsyncGraph(asyncGraph)
+                                                          .AddGraph(graph2)
                                                           .AddStore(store)
                                                           .AddAsyncStore(asyncStore);
 
@@ -3939,7 +3939,7 @@ WHERE {
             [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino"))
             ]);
-            RDFAsyncGraph agraph = new RDFAsyncGraph(new List<RDFTriple>()
+            RDFGraph graph2 = new RDFGraph(new List<RDFTriple>()
             {
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
@@ -3947,7 +3947,7 @@ WHERE {
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
             });
-            RDFFederation federation = new RDFFederation().AddGraph(graph).AddAsyncGraph(agraph);
+            RDFFederation federation = new RDFFederation().AddGraph(graph).AddGraph(graph2);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?Y"))
@@ -4108,7 +4108,7 @@ WHERE {
         [TestMethod]
         public void ShouldDescribeLiteralBoundVariableTermsOnAsyncGraph()
         {
-            RDFAsyncGraph agraph = new RDFAsyncGraph(new List<RDFTriple>()
+            RDFGraph agraph = new RDFGraph(new List<RDFTriple>()
             {
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
@@ -4222,7 +4222,7 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternToDataSourceAsyncGraph()
         {
-            RDFAsyncGraph agraph = new RDFAsyncGraph(new List<RDFTriple>()
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
             {
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
@@ -4232,7 +4232,7 @@ WHERE {
             });
             RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
-            DataTable result = queryEngine.ApplyPattern(pattern, agraph);
+            DataTable result = queryEngine.ApplyPattern(pattern, graph);
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Columns.Count == 2);

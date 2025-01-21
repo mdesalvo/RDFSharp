@@ -162,7 +162,7 @@ INSERT DATA {
             RDFInsertDataOperation operation = new RDFInsertDataOperation();
             operation.AddInsertTemplate(new RDFPattern(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
             operation.AddInsertTemplate(new RDFPattern(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
-            RDFOperationResult result = await operation.ApplyToGraphAsync(new RDFAsyncGraph(graph));
+            RDFOperationResult result = await operation.ApplyToGraphAsync(graph);
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.InsertResults);

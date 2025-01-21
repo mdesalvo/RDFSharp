@@ -153,13 +153,13 @@ namespace RDFSharp.Test.Model
             RDFResource obj = new RDFResource(o);
 
             RDFTriple triple = new RDFTriple(subj, pred, obj);
-            RDFAsyncGraph asyncGraph = await triple.ReifyTripleAsync();
-            Assert.IsNotNull(asyncGraph);
-            Assert.IsTrue(asyncGraph.TriplesCount == 4);
-            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT)));
-            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)triple.Subject)));
-            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate)));
-            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)triple.Object)));
+            RDFGraph graph = await triple.ReifyTripleAsync();
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 4);
+            Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT)));
+            Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)triple.Subject)));
+            Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate)));
+            Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)triple.Object)));
         }
 
         [DataTestMethod]
@@ -189,13 +189,13 @@ namespace RDFSharp.Test.Model
             RDFPlainLiteral lit = new RDFPlainLiteral(l);
 
             RDFTriple triple = new RDFTriple(subj, pred, lit);
-            RDFAsyncGraph asyncGraph = await triple.ReifyTripleAsync();
-            Assert.IsNotNull(asyncGraph);
-            Assert.IsTrue(asyncGraph.TriplesCount == 4);
-            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT)));
-            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)triple.Subject)));
-            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate)));
-            Assert.IsTrue(await asyncGraph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)triple.Object)));
+            RDFGraph graph = await triple.ReifyTripleAsync();
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 4);
+            Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT)));
+            Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)triple.Subject)));
+            Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate)));
+            Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)triple.Object)));
         }
         #endregion
     }

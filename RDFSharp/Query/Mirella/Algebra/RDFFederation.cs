@@ -102,16 +102,6 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Adds the given async graph to the federation
-        /// </summary>
-        public RDFFederation AddAsyncGraph(RDFAsyncGraph graph)
-        {
-            if (graph != null)
-                DataSources.Add(graph);
-            return this;
-        }
-
-        /// <summary>
         /// Adds the given store to the federation
         /// </summary>
         public RDFFederation AddStore(RDFStore store)

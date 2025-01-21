@@ -21,13 +21,14 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Test.Model
 {
     [TestClass]
     public class RDFGraphTest
     {
-        #region Tests
+        #region Tests (Sync)
         [TestMethod]
         public void ShouldCreateEmptyGraph()
         {
@@ -1988,6 +1989,1529 @@ namespace RDFSharp.Test.Model
             foreach (string file in Directory.EnumerateFiles(Environment.CurrentDirectory, "RDFGraphTest_Should*"))
                 File.Delete(file);
         }
+        #endregion
+
+        #region Tests (Async)
+        [DataTestMethod]
+        [DataRow("http://example.org/")]
+        public async Task ShouldSetContextAsync(string input)
+        {
+            RDFGraph graph = await new RDFGraph().SetContextAsync(new Uri(input));
+            Assert.IsTrue(graph.Context.Equals(new Uri(input)));
+        }
+
+        [TestMethod]
+        public async Task ShouldNotSetContextBecauseNullUriAsync()
+        {
+            RDFGraph graph = await new RDFGraph().SetContextAsync(null);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+        }
+
+        [TestMethod]
+        public async Task ShouldNotSetContextBecauseRelativeUriAsync()
+        {
+            RDFGraph graph = await new RDFGraph().SetContextAsync(new Uri("file/system", UriKind.Relative));
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+        }
+
+        [TestMethod]
+        public async Task ShouldNotSetContextBecauseBlankNodeUriAsync()
+        {
+            RDFGraph graph = await new RDFGraph().SetContextAsync(new Uri("bnode:12345"));
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+        }
+
+        [TestMethod]
+        public async Task ShouldGetCustomStringRepresentationAsync()
+        {
+            RDFGraph graph = await new RDFGraph().SetContextAsync(new Uri("http://example.org/"));
+            Assert.IsTrue(graph.ToString().Equals("http://example.org/"));
+        }
+
+        [TestMethod]
+        public async Task ShouldAddTripleAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotAddDuplicateTriplesAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph.AddTripleAsync(triple)).AddTripleAsync(triple);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotAddNullTripleAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            await graph.AddTripleAsync(null);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldAddContainerAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFContainer cont = new RDFContainer(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal);
+            cont.AddItem(new RDFPlainLiteral("hello"));
+            await graph.AddContainerAsync(cont);
+
+            Assert.IsTrue(graph.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public async Task ShouldAddEmptyContainerAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFContainer cont = new RDFContainer(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal);
+            await graph.AddContainerAsync(cont);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotAddNullContainerAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            await graph.AddContainerAsync(null);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldAddFilledCollectionAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal);
+            coll.AddItem(new RDFPlainLiteral("hello"));
+            await graph.AddCollectionAsync(coll);
+
+            Assert.IsTrue(graph.TriplesCount == 3);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotAddEmptyCollectionAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal);
+            await graph.AddCollectionAsync(coll);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotAddNullCollectionAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            await graph.AddCollectionAsync(null);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldAddDatatypeAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFDatatype exlength6 = new RDFDatatype(new Uri("ex:exlength6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                new RDFLengthFacet(6), new RDFPatternFacet("^ex") ]);
+            await graph.AddDatatypeAsync(exlength6);
+
+            Assert.IsTrue(graph.TriplesCount == 11);
+        }
+
+        [TestMethod]
+        public async Task ShouldRemoveTripleAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTripleAsync(triple);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveUnexistingTripleAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"));
+            await graph.AddTripleAsync(triple1);
+            await graph.RemoveTripleAsync(triple2);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveNullTripleAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTripleAsync(null);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldRemoveTriplesBySubjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectAsync((RDFResource)triple.Subject);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesBySubjectBecauseUnexistingAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectAsync(new RDFResource("http://subj2/"));
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesBySubjectBecauseNullAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectAsync(null);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldRemoveTriplesByPredicateAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByPredicateAsync((RDFResource)triple.Predicate);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesByPredicateBecauseUnexistingAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByPredicateAsync(new RDFResource("http://pred2/"));
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesByPredicateBecauseNullAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByPredicateAsync(null);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldRemoveTriplesByObjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByObjectAsync((RDFResource)triple.Object);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesByObjectBecauseUnexistingAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByObjectAsync(new RDFResource("http://obj2/"));
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesByObjectBecauseNullAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByObjectAsync(null);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldRemoveTriplesByLiteralAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("en", "US"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByLiteralAsync((RDFLiteral)triple.Object);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesByLiteralBecauseUnexistingAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("en", "US"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByLiteralAsync(new RDFPlainLiteral("en"));
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesByLiteralBecauseNullAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("en", "US"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByLiteralAsync(null);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldRemoveTriplesBySubjectPredicateAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectPredicateAsync((RDFResource)triple.Subject, (RDFResource)triple.Predicate);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesBySubjectPredicateBecauseUnexistingSubjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectPredicateAsync(new RDFResource("http://subj2/"), (RDFResource)triple.Predicate);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesBySubjectPredicateBecauseUnexistingPredicateAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectPredicateAsync((RDFResource)triple.Subject, new RDFResource("http://pred2/"));
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesBySubjectPredicateBecauseNullSubjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectPredicateAsync(null, (RDFResource)triple.Predicate);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesBySubjectPredicateBecauseNullPredicateAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectPredicateAsync((RDFResource)triple.Subject, null);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldRemoveTriplesBySubjectObjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectObjectAsync((RDFResource)triple.Subject, (RDFResource)triple.Object);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesBySubjectObjectBecauseUnexistingSubjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectObjectAsync(new RDFResource("http://subj2/"), (RDFResource)triple.Object);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesBySubjectObjectBecauseUnexistingObjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectObjectAsync((RDFResource)triple.Subject, new RDFResource("http://obj2/"));
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesBySubjectObjectBecauseNullSubjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectObjectAsync(null, (RDFResource)triple.Object);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesBySubjectObjectBecauseNullObjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectObjectAsync((RDFResource)triple.Subject, null);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldRemoveTriplesBySubjectLiteralAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectLiteralAsync((RDFResource)triple.Subject, (RDFLiteral)triple.Object);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesBySubjectLiteralBecauseUnexistingSubjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectLiteralAsync(new RDFResource("http://subj2/"), (RDFLiteral)triple.Object);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesBySubjectLiteralBecauseUnexistingLiteralAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectLiteralAsync((RDFResource)triple.Subject, new RDFPlainLiteral("lit2"));
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesBySubjectLiteralBecauseNullSubjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectLiteralAsync(null, (RDFLiteral)triple.Object);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesBySubjectLiteralBecauseNullLiteralAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesBySubjectLiteralAsync((RDFResource)triple.Subject, null);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldRemoveTriplesByPredicateObjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByPredicateObjectAsync((RDFResource)triple.Predicate, (RDFResource)triple.Object);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesByPredicateObjectBecauseUnexistingPredicateAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByPredicateObjectAsync(new RDFResource("http://pred2/"), (RDFResource)triple.Object);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesByPredicateObjectBecauseUnexistingObjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByPredicateObjectAsync((RDFResource)triple.Predicate, new RDFResource("http://obj2/"));
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesByPredicateObjectBecauseNullPredicateAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByPredicateObjectAsync(null, (RDFResource)triple.Object);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesByPredicateObjectBecauseNullObjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByPredicateObjectAsync((RDFResource)triple.Predicate, null);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldRemoveTriplesByPredicateLiteralAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByPredicateLiteralAsync((RDFResource)triple.Predicate, (RDFLiteral)triple.Object);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesByPredicateLiteralBecauseUnexistingPredicateAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByPredicateLiteralAsync(new RDFResource("http://pred2/"), (RDFLiteral)triple.Object);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesByPredicateLiteralBecauseUnexistingLiteralAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByPredicateLiteralAsync((RDFResource)triple.Predicate, new RDFPlainLiteral("lit2"));
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesByPredicateLiteralBecauseNullPredicateAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByPredicateLiteralAsync(null, (RDFLiteral)triple.Object);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotRemoveTriplesByPredicateLiteralBecauseNullLiteralAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            await graph.AddTripleAsync(triple);
+            await graph.RemoveTriplesByPredicateLiteralAsync((RDFResource)triple.Predicate, null);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldClearTriplesAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            await graph.AddTripleAsync(triple);
+            await graph.ClearTriplesAsync();
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldUnreifySPOTriplesAsync()
+        {
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFGraph graph = await triple.ReifyTripleAsync();
+            await graph.UnreifyTriplesAsync();
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldUnreifySPLTriplesAsync()
+        {
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFGraph graph = await triple.ReifyTripleAsync();
+            await graph.UnreifyTriplesAsync();
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldContainTripleAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            await graph.AddTripleAsync(triple);
+
+            Assert.IsTrue(await graph.ContainsTripleAsync(triple));
+        }
+
+        [TestMethod]
+        public async Task ShouldNotContainTripleAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFPlainLiteral("lit"));
+            await graph.AddTripleAsync(triple1);
+
+            Assert.IsFalse(await graph.ContainsTripleAsync(triple2));
+        }
+
+        [TestMethod]
+        public async Task ShouldNotContainNullTripleAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            await graph.AddTripleAsync(triple);
+
+            Assert.IsFalse(await graph.ContainsTripleAsync(null));
+        }
+
+        [TestMethod]
+        public async Task ShouldSelectTriplesBySubjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await (await graph.AddTripleAsync(triple1))
+                .AddTripleAsync(triple2))
+                .AddTripleAsync(triple3);
+
+            RDFGraph select = await graph.SelectTriplesBySubjectAsync(new RDFResource("http://subj/"));
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public async Task ShouldSelectTriplesBySubjectEvenIfNullAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+
+            RDFGraph select = await graph.SelectTriplesBySubjectAsync(null);
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotSelectTriplesBySubjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+
+            RDFGraph select = await graph.SelectTriplesBySubjectAsync(new RDFResource("http://subj2/"));
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldSelectTriplesByPredicateAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj/"));
+            await (await (await graph.AddTripleAsync(triple1))
+                .AddTripleAsync(triple2))
+                .AddTripleAsync(triple3);
+
+            RDFGraph select = await graph.SelectTriplesByPredicateAsync(new RDFResource("http://pred/"));
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public async Task ShouldSelectTriplesByPredicateEvenIfNullAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+
+            RDFGraph select = await graph.SelectTriplesByPredicateAsync(null);
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotSelectTriplesByPredicateAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+
+            RDFGraph select = await graph.SelectTriplesByPredicateAsync(new RDFResource("http://pred2/"));
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldSelectTriplesByObjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await (await graph.AddTripleAsync(triple1))
+                .AddTripleAsync(triple2))
+                .AddTripleAsync(triple3);
+
+            RDFGraph select = await graph.SelectTriplesByObjectAsync(new RDFResource("http://obj/"));
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public async Task ShouldSelectTriplesByObjectEvenIfNullAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+
+            RDFGraph select = await graph.SelectTriplesByObjectAsync(null);
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotSelectTriplesByObjectAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+
+            RDFGraph select = await graph.SelectTriplesByObjectAsync(new RDFResource("http://obj2/"));
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldSelectTriplesByLiteralAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await (await graph.AddTripleAsync(triple1))
+                .AddTripleAsync(triple2))
+                .AddTripleAsync(triple3);
+
+            RDFGraph select = await graph.SelectTriplesByLiteralAsync(new RDFPlainLiteral("lit"));
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldSelectTriplesByLiteralEvenIfNullAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+
+            RDFGraph select = await graph.SelectTriplesByLiteralAsync(null);
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public async Task ShouldNotSelectTriplesByLiteralAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+
+            RDFGraph select = await graph.SelectTriplesByLiteralAsync(new RDFPlainLiteral("lit", "en-US"));
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldIntersectGraphsAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+            RDFGraph graph2 = new RDFGraph();
+            await graph2.AddTripleAsync(triple1);
+
+            RDFGraph intersect12 = await graph1.IntersectWithAsync(graph2);
+            Assert.IsNotNull(intersect12);
+            Assert.IsTrue(intersect12.TriplesCount == 1);
+            RDFGraph intersect21 = await graph2.IntersectWithAsync(graph1);
+            Assert.IsNotNull(intersect21);
+            Assert.IsTrue(intersect21.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldIntersectGraphWithEmptyAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+            RDFGraph graph2 = new RDFGraph();
+
+            RDFGraph intersect12 = await graph1.IntersectWithAsync(graph2);
+            Assert.IsNotNull(intersect12);
+            Assert.IsTrue(intersect12.TriplesCount == 0);
+            RDFGraph intersect21 = await graph2.IntersectWithAsync(graph1);
+            Assert.IsNotNull(intersect21);
+            Assert.IsTrue(intersect21.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldIntersectEmptyWithGraphAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFGraph graph2 = new RDFGraph();
+            await (await graph2.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+
+            RDFGraph intersect12 = await graph1.IntersectWithAsync(graph2);
+            Assert.IsNotNull(intersect12);
+            Assert.IsTrue(intersect12.TriplesCount == 0);
+            RDFGraph intersect21 = await graph2.IntersectWithAsync(graph1);
+            Assert.IsNotNull(intersect21);
+            Assert.IsTrue(intersect21.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldIntersectEmptyWithEmptyAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFGraph graph2 = new RDFGraph();
+
+            RDFGraph intersect12 = await graph1.IntersectWithAsync(graph2);
+            Assert.IsNotNull(intersect12);
+            Assert.IsTrue(intersect12.TriplesCount == 0);
+            RDFGraph intersect21 = await graph2.IntersectWithAsync(graph1);
+            Assert.IsNotNull(intersect21);
+            Assert.IsTrue(intersect21.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldIntersectGraphWithNullAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+
+            RDFGraph intersect12 = await graph1.IntersectWithAsync(null);
+            Assert.IsNotNull(intersect12);
+            Assert.IsTrue(intersect12.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldIntersectGraphWithSelfAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+
+            RDFGraph intersect12 = await graph1.IntersectWithAsync(graph1);
+            Assert.IsNotNull(intersect12);
+            Assert.IsTrue(intersect12.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public async Task ShouldUnionGraphsAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj3/"), new RDFResource("http://pred3/"), new RDFResource("http://obj3/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+            RDFGraph graph2 = new RDFGraph();
+            await (await graph2.AddTripleAsync(triple1)).AddTripleAsync(triple3);
+
+            RDFGraph union12 = await graph1.UnionWithAsync(graph2);
+            Assert.IsNotNull(union12);
+            Assert.IsTrue(union12.TriplesCount == 3);
+            RDFGraph union21 = await graph2.UnionWithAsync(graph1);
+            Assert.IsNotNull(union21);
+            Assert.IsTrue(union21.TriplesCount == 3);
+        }
+
+        [TestMethod]
+        public async Task ShouldUnionGraphWithEmptyAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+            RDFGraph graph2 = new RDFGraph();
+
+            RDFGraph union12 = await graph1.UnionWithAsync(graph2);
+            Assert.IsNotNull(union12);
+            Assert.IsTrue(union12.TriplesCount == 2);
+            RDFGraph union21 = await graph2.UnionWithAsync(graph1);
+            Assert.IsNotNull(union21);
+            Assert.IsTrue(union21.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public async Task ShouldUnionEmptyWithGraphAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFGraph graph2 = new RDFGraph();
+            await (await graph2.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+
+            RDFGraph union12 = await graph1.UnionWithAsync(graph2);
+            Assert.IsNotNull(union12);
+            Assert.IsTrue(union12.TriplesCount == 2);
+            RDFGraph union21 = await graph2.UnionWithAsync(graph1);
+            Assert.IsNotNull(union21);
+            Assert.IsTrue(union21.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public async Task ShouldUnionGraphWithNullAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+
+            RDFGraph union12 = await graph1.UnionWithAsync(null);
+            Assert.IsNotNull(union12);
+            Assert.IsTrue(union12.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public async Task ShouldUnionGraphWithSelfAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+
+            RDFGraph union12 = await graph1.UnionWithAsync(graph1);
+            Assert.IsNotNull(union12);
+            Assert.IsTrue(union12.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public async Task ShouldDifferenceGraphsAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj3/"), new RDFResource("http://pred3/"), new RDFResource("http://obj3/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+            RDFGraph graph2 = new RDFGraph();
+            await (await graph2.AddTripleAsync(triple1)).AddTripleAsync(triple3);
+
+            RDFGraph difference12 = await graph1.DifferenceWithAsync(graph2);
+            Assert.IsNotNull(difference12);
+            Assert.IsTrue(difference12.TriplesCount == 1);
+            RDFGraph difference21 = await graph2.DifferenceWithAsync(graph1);
+            Assert.IsNotNull(difference21);
+            Assert.IsTrue(difference21.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public async Task ShouldDifferenceGraphWithEmptyAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+            RDFGraph graph2 = new RDFGraph();
+
+            RDFGraph difference12 = await graph1.DifferenceWithAsync(graph2);
+            Assert.IsNotNull(difference12);
+            Assert.IsTrue(difference12.TriplesCount == 2);
+            RDFGraph difference21 = await graph2.DifferenceWithAsync(graph1);
+            Assert.IsNotNull(difference21);
+            Assert.IsTrue(difference21.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldDifferenceEmptyWithGraphAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFGraph graph2 = new RDFGraph();
+            await (await graph2.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+
+            RDFGraph difference12 = await graph1.DifferenceWithAsync(graph2);
+            Assert.IsNotNull(difference12);
+            Assert.IsTrue(difference12.TriplesCount == 0);
+            RDFGraph difference21 = await graph2.DifferenceWithAsync(graph1);
+            Assert.IsNotNull(difference21);
+            Assert.IsTrue(difference21.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public async Task ShouldDifferenceGraphWithNullAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+
+            RDFGraph difference12 = await graph1.DifferenceWithAsync(null);
+            Assert.IsNotNull(difference12);
+            Assert.IsTrue(difference12.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public async Task ShouldDifferenceGraphWithSelfAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+
+            RDFGraph difference12 = await graph1.DifferenceWithAsync(graph1);
+            Assert.IsNotNull(difference12);
+            Assert.IsTrue(difference12.TriplesCount == 0);
+        }
+
+        [DataTestMethod]
+        [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(".ttl", RDFModelEnums.RDFFormats.Turtle)]
+        public async Task ShouldExportToFileAsync(string fileExtension, RDFModelEnums.RDFFormats format)
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            await (await graph.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+            await graph.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFileAsync{fileExtension}"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFileAsync{fileExtension}")));
+            Assert.IsTrue(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFileAsync{fileExtension}")).Length > 100);
+        }
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnExportingToNullOrEmptyFilepathAsync()
+            => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await new RDFGraph().ToFileAsync(RDFModelEnums.RDFFormats.NTriples, null));
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(RDFModelEnums.RDFFormats.Turtle)]
+        public async Task ShouldExportToStreamAsync(RDFModelEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            await (await graph.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+            await graph.ToStreamAsync(format, stream);
+
+            Assert.IsTrue(stream.ToArray().Length > 100);
+        }
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnExportingToNullStreamAsync()
+            => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await new RDFGraph().ToStreamAsync(RDFModelEnums.RDFFormats.NTriples, null));
+
+        [TestMethod]
+        public async Task ShouldExportToDataTableAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+            DataTable table = await graph.ToDataTableAsync();
+
+            Assert.IsNotNull(table);
+            Assert.IsTrue(table.Columns.Count == 3);
+            Assert.IsTrue(table.Columns[0].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(table.Columns[1].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(table.Columns[2].ColumnName.Equals("?OBJECT"));
+            Assert.IsTrue(table.Rows.Count == 2);
+            Assert.IsTrue(table.Rows[0]["?SUBJECT"].ToString().Equals("http://subj/"));
+            Assert.IsTrue(table.Rows[0]["?PREDICATE"].ToString().Equals("http://pred/"));
+            Assert.IsTrue(table.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
+            Assert.IsTrue(table.Rows[1]["?SUBJECT"].ToString().Equals("http://subj/"));
+            Assert.IsTrue(table.Rows[1]["?PREDICATE"].ToString().Equals("http://pred/"));
+            Assert.IsTrue(table.Rows[1]["?OBJECT"].ToString().Equals("http://obj/"));
+        }
+
+        [TestMethod]
+        public async Task ShouldExportEmptyToDataTableAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            DataTable table = await graph.ToDataTableAsync();
+
+            Assert.IsNotNull(table);
+            Assert.IsTrue(table.Columns.Count == 3);
+            Assert.IsTrue(table.Columns[0].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(table.Columns[1].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(table.Columns[2].ColumnName.Equals("?OBJECT"));
+            Assert.IsTrue(table.Rows.Count == 0);
+        }
+
+        [DataTestMethod]
+        [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(".ttl", RDFModelEnums.RDFFormats.Turtle)]
+        public async Task ShouldImportFromFileAsync(string fileExtension, RDFModelEnums.RDFFormats format)
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+            await graph1.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFileAsync{fileExtension}"));
+            RDFGraph graph2 = await RDFGraph.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFileAsync{fileExtension}"));
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 2);
+            //RDF/XML uses xsd:qname for encoding predicates. In this test we demonstrate that
+            //triples with a predicate ending with "/" will loose this character once abbreviated:
+            //this is correct (being a glitch of RDF/XML specs) so at the end the graphs will differ
+            if (format == RDFModelEnums.RDFFormats.RdfXml)
+            {
+                Assert.IsFalse(graph2.Equals(graph1));
+                Assert.IsTrue((await graph2.SelectTriplesByPredicateAsync(new RDFResource("http://ex/pred/"))).TriplesCount == 0);
+                Assert.IsTrue((await graph2.SelectTriplesByPredicateAsync(new RDFResource("http://ex/pred"))).TriplesCount == 2);
+            }
+            else
+            {
+                Assert.IsTrue(graph2.Equals(graph1));
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(".ttl", RDFModelEnums.RDFFormats.Turtle)]
+        public async Task ShouldImportFromFileAsyncWithEnabledDatatypeDiscovery(string fileExtension, RDFModelEnums.RDFFormats format)
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+            await graph1.AddDatatypeAsync(new RDFDatatype(new Uri($"ex:mydtK{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                new RDFPatternFacet("^ex$") ]));
+            await graph1.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFileAsync{fileExtension}WithEnabledDatatypeDiscovery"));
+            RDFGraph graph2 = await RDFGraph.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFileAsync{fileExtension}WithEnabledDatatypeDiscovery"), true);
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 9);
+            //RDF/XML uses xsd:qname for encoding predicates. In this test we demonstrate that
+            //triples with a predicate ending with "/" will loose this character once abbreviated:
+            //this is correct (being a glitch of RDF/XML specs) so at the end the graphs will differ
+            if (format == RDFModelEnums.RDFFormats.RdfXml)
+            {
+                Assert.IsFalse(graph2.Equals(graph1));
+                Assert.IsTrue((await graph2.SelectTriplesByPredicateAsync(new RDFResource("http://ex/pred/"))).TriplesCount == 0);
+                Assert.IsTrue((await graph2.SelectTriplesByPredicateAsync(new RDFResource("http://ex/pred"))).TriplesCount == 2);
+            }
+            else
+            {
+                Assert.IsTrue(graph2.Equals(graph1));
+            }
+            //Test that automatic datatype discovery happened successfully
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtK{(int)format}").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtK{(int)format}").Facets.Single() is RDFPatternFacet fct && fct.Pattern == "^ex$");
+        }
+
+        [DataTestMethod]
+        [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(".ttl", RDFModelEnums.RDFFormats.Turtle)]
+        public async Task ShouldImportEmptyFromFileAsync(string fileExtension, RDFModelEnums.RDFFormats format)
+        {
+            RDFGraph graph1 = new RDFGraph();
+            await graph1.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportEmptyFromFileAsync{fileExtension}"));
+            RDFGraph graph2 = await RDFGraph.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportEmptyFromFileAsync{fileExtension}"));
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 0);
+            Assert.IsTrue(graph2.Equals(graph1));
+        }
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnImportingFromNullOrEmptyFilepathAsync()
+            => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.NTriples, null));
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnImportingFromUnexistingFilepathAsync()
+            => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.NTriples, "blablabla"));
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(RDFModelEnums.RDFFormats.Turtle)]
+        public async Task ShouldImportFromStreamAsync(RDFModelEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+            await graph1.ToStreamAsync(format, stream);
+            RDFGraph graph2 = await RDFGraph.FromStreamAsync(format, new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 2);
+            //RDF/XML uses xsd:qname for encoding predicates. In this test we demonstrate that
+            //triples with a predicate ending with "/" will loose this character once abbreviated:
+            //this is correct (being a glitch of RDF/XML specs) so at the end the graphs will differ
+            if (format == RDFModelEnums.RDFFormats.RdfXml)
+            {
+                Assert.IsFalse(graph2.Equals(graph1));
+                Assert.IsTrue((await graph2.SelectTriplesByPredicateAsync(new RDFResource("http://ex/pred/"))).TriplesCount == 0);
+                Assert.IsTrue((await graph2.SelectTriplesByPredicateAsync(new RDFResource("http://ex/pred"))).TriplesCount == 2);
+            }
+            else
+            {
+                Assert.IsTrue(graph2.Equals(graph1));
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(RDFModelEnums.RDFFormats.Turtle)]
+        public async Task ShouldImportFromStreamAsyncWithEnabledDatatypeDiscovery(RDFModelEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+            await graph1.AddDatatypeAsync(new RDFDatatype(new Uri($"ex:mydtKK{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                new RDFPatternFacet("^ex$") ]));
+            await graph1.ToStreamAsync(format, stream);
+            RDFGraph graph2 = await RDFGraph.FromStreamAsync(format, new MemoryStream(stream.ToArray()), true);
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 9);
+            //RDF/XML uses xsd:qname for encoding predicates. In this test we demonstrate that
+            //triples with a predicate ending with "/" will loose this character once abbreviated:
+            //this is correct (being a glitch of RDF/XML specs) so at the end the graphs will differ
+            if (format == RDFModelEnums.RDFFormats.RdfXml)
+            {
+                Assert.IsFalse(graph2.Equals(graph1));
+                Assert.IsTrue((await graph2.SelectTriplesByPredicateAsync(new RDFResource("http://ex/pred/"))).TriplesCount == 0);
+                Assert.IsTrue((await graph2.SelectTriplesByPredicateAsync(new RDFResource("http://ex/pred"))).TriplesCount == 2);
+            }
+            else
+            {
+                Assert.IsTrue(graph2.Equals(graph1));
+            }
+            //Test that automatic datatype discovery happened successfully
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtKK{(int)format}").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtKK{(int)format}").Facets.Single() is RDFPatternFacet fct && fct.Pattern == "^ex$");
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(RDFModelEnums.RDFFormats.Turtle)]
+        public async Task ShouldImportFromEmptyStreamAsync(RDFModelEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFGraph graph1 = new RDFGraph();
+            await graph1.ToStreamAsync(format, stream);
+            RDFGraph graph2 = await RDFGraph.FromStreamAsync(format, new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnImportingFromNullStreamAsync()
+            => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromStreamAsync(RDFModelEnums.RDFFormats.NTriples, null));
+
+        [TestMethod]
+        public async Task ShouldImportFromDataTableAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+            DataTable table = await graph1.ToDataTableAsync();
+            RDFGraph graph2 = await RDFGraph.FromDataTableAsync(table);
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 2);
+            Assert.IsTrue(graph2.Equals(graph1));
+        }
+
+        [TestMethod]
+        public async Task ShouldImportFromDataTableAsyncWithEnabledDatatypeDiscovery()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+            await graph1.AddDatatypeAsync(new RDFDatatype(new Uri("ex:mydtR"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+                new RDFPatternFacet("^ex$") ]));
+            DataTable table = await graph1.ToDataTableAsync();
+            RDFGraph graph2 = await RDFGraph.FromDataTableAsync(table, true);
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 9);
+            Assert.IsTrue(graph2.Equals(graph1));
+            //Test that automatic datatype discovery happened successfully
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtR").TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+            Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtR").Facets.Single() is RDFPatternFacet fct && fct.Pattern == "^ex$");
+        }
+
+        [TestMethod]
+        public async Task ShouldImportEmptyFromDataTableAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            DataTable table = await graph1.ToDataTableAsync();
+            RDFGraph graph2 = await RDFGraph.FromDataTableAsync(table);
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 0);
+            Assert.IsTrue(graph2.Equals(graph1));
+        }
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnImportingFromNullDataTableAsync()
+            => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(null));
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnImportingFromDataTableNotHaving3ColumnsAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+
+            await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnImportingFromDataTableNotHavingExactColumnsAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECTTTTT", typeof(string));
+
+            await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullSubjectAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add(null, "http://pred/", "http://obj/");
+
+            await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithEmptySubjectAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("", "http://pred/", "http://obj/");
+
+            await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithLiteralSubjectAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("hello@en", "http://pred/", "http://obj/");
+
+            await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullPredicateAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://subj/", null, "http://obj/");
+
+            await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithEmptyPredicateAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://subj/", "", "http://obj/");
+
+            await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithBlankPredicateAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://subj/", "bnode:12345", "http://obj/");
+
+            await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithLiteralPredicateAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://subj/", "hello@en", "http://obj/");
+
+            await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullObjectAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://subj/", "http://pred/", null);
+
+            await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public async Task ShouldImportEmptyFromDataTableButGivingNameTographAsync()
+        {
+            RDFGraph graph1 = await new RDFGraph().SetContextAsync(new Uri("http://context/"));
+            DataTable table = await graph1.ToDataTableAsync();
+            RDFGraph graph2 = await RDFGraph.FromDataTableAsync(table);
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 0);
+            Assert.IsTrue(graph2.Equals(graph1));
+            Assert.IsTrue(graph2.Context.Equals(new Uri("http://context/")));
+        }
+
+        [TestMethod]
+        public async Task ShouldImportFromUriAsync()
+        {
+            RDFGraph graph = await RDFGraph.FromUriAsync(new Uri(RDFVocabulary.RDFS.BASE_URI));
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(new Uri(RDFVocabulary.RDFS.BASE_URI)));
+            Assert.IsTrue(graph.TriplesCount > 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnImportingFromNullUriAsync()
+            => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromUriAsync(null));
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnImportingFromRelativeUriAsync()
+            => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromUriAsync(new Uri("/file/system", UriKind.Relative)));
+
+        [TestMethod]
+        public async Task ShouldRaiseExceptionOnImportingFromUnreacheableUriAsync()
+            => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromUriAsync(new Uri("http://rdfsharp.test/")));
         #endregion
     }
 }
