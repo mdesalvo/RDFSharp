@@ -717,12 +717,6 @@ namespace RDFSharp.Query
                     result.Merge(store.ToDataTable(), true, MissingSchemaAction.Add);
                     break;
 
-                //ASYNC STORE
-                case RDFAsyncStore dataSourceAsyncStore:
-                    RDFMemoryStore storea = QueryStore(dataSourceAsyncStore.WrappedStore);
-                    result.Merge(storea.ToDataTable(), true, MissingSchemaAction.Add);
-                    break;
-
                 //FEDERATION / SPARQL ENDPOINT
                 default:
                     RDFSelectQuery query = BuildFederationOrSPARQLEndpointQuery();
@@ -767,12 +761,6 @@ namespace RDFSharp.Query
                 case RDFStore dataSourceStore:
                     RDFMemoryStore store = QueryStore(dataSourceStore);
                     result.Merge(store.ToDataTable(), true, MissingSchemaAction.Add);
-                    break;
-
-                //ASYNC STORE
-                case RDFAsyncStore dataSourceAsyncStore:
-                    RDFMemoryStore storea = QueryStore(dataSourceAsyncStore.WrappedStore);
-                    result.Merge(storea.ToDataTable(), true, MissingSchemaAction.Add);
                     break;
 
                 //FEDERATION / SPARQL ENDPOINT
@@ -860,9 +848,6 @@ namespace RDFSharp.Query
 
                 case RDFStore store:
                     return ApplyPatternToStore(pattern, store);
-
-                case RDFAsyncStore asyncStore:
-                    return ApplyPatternToStore(pattern, asyncStore.WrappedStore);
 
                 case RDFFederation federation:
                     return ApplyPatternToFederation(pattern, federation);
@@ -1156,11 +1141,6 @@ namespace RDFSharp.Query
                     case RDFStore dataSourceStore:
                         DataTable storeTable = ApplyPatternToStore(pattern, dataSourceStore);
                         resultTable.Merge(storeTable, true, MissingSchemaAction.Add);
-                        break;
-
-                    case RDFAsyncStore dataSourceAsyncStore:
-                        DataTable asyncStoreTable = ApplyPatternToStore(pattern, dataSourceAsyncStore.WrappedStore);
-                        resultTable.Merge(asyncStoreTable, true, MissingSchemaAction.Add);
                         break;
 
                     case RDFFederation dataSourceFederation:

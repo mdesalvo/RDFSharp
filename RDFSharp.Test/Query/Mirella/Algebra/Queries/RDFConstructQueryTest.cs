@@ -1667,7 +1667,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public async Task ShouldApplyConstructQueryToStoreAsyncAndHaveResults()
         {
-            RDFAsyncStore store = new RDFAsyncStore();
+            RDFMemoryStore store = new RDFMemoryStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             RDFConstructQuery query = new RDFConstructQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -1688,7 +1688,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public async Task ShouldApplyConstructQueryToStoreAsyncAndNotHaveResults()
         {
-            RDFAsyncStore store = new RDFAsyncStore();
+            RDFMemoryStore store = new RDFMemoryStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             RDFConstructQuery query = new RDFConstructQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))

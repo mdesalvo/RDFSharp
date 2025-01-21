@@ -2079,7 +2079,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public async Task ShouldApplySelectQueryToStoreAsyncAndHaveResults()
         {
-            RDFAsyncStore store = new RDFAsyncStore();
+            RDFMemoryStore store = new RDFMemoryStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -2102,7 +2102,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public async Task ShouldApplySelectQueryToStoreAsyncAndNotHaveResults()
         {
-            RDFAsyncStore store = new RDFAsyncStore();
+            RDFMemoryStore store = new RDFMemoryStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))

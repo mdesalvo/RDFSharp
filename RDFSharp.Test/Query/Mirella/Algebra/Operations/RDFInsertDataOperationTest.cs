@@ -252,7 +252,7 @@ INSERT DATA {
         [TestMethod]
         public async Task ShouldApplyToStoreAsync()
         {
-            RDFAsyncStore store = new RDFAsyncStore();
+            RDFMemoryStore store = new RDFMemoryStore();
             RDFInsertDataOperation operation = new RDFInsertDataOperation();
             operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
             operation.AddInsertTemplate(new RDFPattern(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
@@ -278,7 +278,7 @@ INSERT DATA {
             Assert.IsNotNull(result.DeleteResults);
             Assert.IsTrue(result.DeleteResults.Columns.Count == 0);
             Assert.IsTrue(result.DeleteResultsCount == 0);
-            Assert.IsTrue(store.WrappedStore is RDFMemoryStore memStore && memStore.QuadruplesCount == 2);
+            Assert.IsTrue(store.QuadruplesCount == 2);
         }
 
         [TestMethod]

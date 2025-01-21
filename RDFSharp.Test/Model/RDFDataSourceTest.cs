@@ -34,10 +34,6 @@ namespace RDFSharp.Test.Model
             => Assert.IsTrue(new RDFMemoryStore().IsStore());
 
         [TestMethod]
-        public void ShouldCreateDataSourceOfTypeAsyncStore()
-            => Assert.IsTrue(new RDFAsyncStore().IsAsyncStore());
-
-        [TestMethod]
         public void ShouldCreateDataSourceOfTypeFederation()
             => Assert.IsTrue(new RDFFederation().IsFederation());
 

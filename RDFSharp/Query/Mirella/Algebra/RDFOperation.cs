@@ -80,8 +80,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the operation to the given asynchronous store
         /// </summary>
-        public Task<RDFOperationResult> ApplyToStoreAsync(RDFAsyncStore asyncStore)
-            => Task.Run(() => ApplyToStore(asyncStore?.WrappedStore));
+        public Task<RDFOperationResult> ApplyToStoreAsync(RDFStore store)
+            => Task.Run(() => ApplyToStore(store));
 
         /// <summary>
         /// Applies the operation to the given SPARQL UPDATE endpoint

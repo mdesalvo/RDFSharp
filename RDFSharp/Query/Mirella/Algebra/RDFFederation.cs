@@ -112,16 +112,6 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Adds the given async store to the federation
-        /// </summary>
-        public RDFFederation AddAsyncStore(RDFAsyncStore asyncStore)
-        {
-            if (asyncStore != null)
-                DataSources.Add(asyncStore);
-            return this;
-        }
-
-        /// <summary>
         /// Adds the given federation to the federation
         /// </summary>
         public RDFFederation AddFederation(RDFFederation federation)

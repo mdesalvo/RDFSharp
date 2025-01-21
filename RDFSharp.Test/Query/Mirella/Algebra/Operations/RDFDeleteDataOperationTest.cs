@@ -259,7 +259,7 @@ DELETE DATA {
         [TestMethod]
         public async Task ShouldApplyToStoreAsync()
         {
-            RDFAsyncStore store = new RDFAsyncStore();
+            RDFMemoryStore store = new RDFMemoryStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
             RDFDeleteDataOperation operation = new RDFDeleteDataOperation();
@@ -287,7 +287,7 @@ DELETE DATA {
             Assert.IsNotNull(result.InsertResults);
             Assert.IsTrue(result.InsertResults.Columns.Count == 0);
             Assert.IsTrue(result.InsertResultsCount == 0);
-            Assert.IsTrue(store.WrappedStore is RDFMemoryStore memStore && memStore.QuadruplesCount == 0);
+            Assert.IsTrue(store.QuadruplesCount == 0);
         }
 
         [TestMethod]

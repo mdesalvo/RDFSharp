@@ -3740,16 +3740,15 @@ WHERE {
                 new RDFQuadruple(new RDFContext(), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFQuadruple(new RDFContext(), new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
             ]);
-            RDFAsyncStore asyncStore = new RDFAsyncStore(
-                new RDFMemoryStore(
+            RDFMemoryStore store2 = new RDFMemoryStore(
                 [
                     new RDFQuadruple(new RDFContext(), new RDFResource("ex:snoopy"),new RDFResource("ex:dogOf"),new RDFResource("ex:linus")),
                     new RDFQuadruple(new RDFContext(), new RDFResource("ex:linus"),new RDFResource("ex:hasName"),new RDFTypedLiteral("Linus", RDFModelEnums.RDFDatatypes.XSD_STRING))
-                ]));
+                ]);
             RDFFederation federation = new RDFFederation().AddGraph(graph)
                                                           .AddGraph(graph2)
                                                           .AddStore(store)
-                                                          .AddAsyncStore(asyncStore);
+                                                          .AddStore(store2);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFResource("ex:balto"))
@@ -4152,7 +4151,7 @@ WHERE {
         [TestMethod]
         public void ShouldDescribeLiteralBoundVariableTermsOnAsyncStore()
         {
-            RDFAsyncStore astore = new RDFAsyncStore(new RDFMemoryStore(
+            RDFMemoryStore astore = new RDFMemoryStore(
             [
                 new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
@@ -4160,7 +4159,7 @@ WHERE {
                 new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
                 new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")),
                 new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
-            ]));
+            ]);
 
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddDescribeTerm(new RDFVariable("?C"))
@@ -4274,15 +4273,15 @@ WHERE {
         [TestMethod]
         public async Task ShouldApplyPatternToDataSourceAsyncStore()
         {
-            RDFAsyncStore astore = new RDFAsyncStore();
-            await astore.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")));
-            await astore.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")));
-            await astore.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")));
-            await astore.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")));
-            await astore.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")));
+            RDFMemoryStore store = new RDFMemoryStore();
+            await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")));
+            await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")));
+            await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")));
+            await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")));
+            await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever")));
             RDFPattern pattern = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
             RDFQueryEngine queryEngine = new RDFQueryEngine();
-            DataTable result = queryEngine.ApplyPattern(pattern, astore);
+            DataTable result = queryEngine.ApplyPattern(pattern, store);
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Columns.Count == 2);

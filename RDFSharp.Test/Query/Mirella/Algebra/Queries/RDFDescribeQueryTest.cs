@@ -880,8 +880,8 @@ namespace RDFSharp.Test.Query
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
-            RDFAsyncStore asyncStore = new RDFAsyncStore(
-                new RDFMemoryStore().AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:shrub"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFMemoryStore store2 = new RDFMemoryStore([
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:shrub"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)]);
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("ex:grass"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             RDFGraph graph2 = new RDFGraph();
@@ -890,7 +890,7 @@ namespace RDFSharp.Test.Query
             federation.AddStore(store);
             federation.AddGraph(graph);
             federation.AddGraph(graph2);
-            federation.AddAsyncStore(asyncStore);
+            federation.AddStore(store2);
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup()
@@ -938,13 +938,13 @@ namespace RDFSharp.Test.Query
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
-            RDFAsyncStore asyncStore = new RDFAsyncStore(
-                new RDFMemoryStore().AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.DC.CREATOR, new RDFResource("ex:God"))));
+            RDFMemoryStore store2 = new RDFMemoryStore([
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.DC.CREATOR, new RDFResource("ex:God"))]);
             RDFGraph graph2 = new RDFGraph();
             graph2.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("flower","en"))).GetAwaiter().GetResult();
             RDFFederation federation = new RDFFederation();
             federation.AddStore(store);
-            federation.AddAsyncStore(asyncStore);
+            federation.AddStore(store2);
             federation.AddGraph(graph2);
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -986,11 +986,11 @@ namespace RDFSharp.Test.Query
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
-            RDFAsyncStore asyncStore = new RDFAsyncStore(
-                new RDFMemoryStore().AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:flower"), RDFVocabulary.DC.CREATOR, new RDFResource("ex:God"))));
+            RDFMemoryStore store2 = new RDFMemoryStore([
+                new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:flower"), RDFVocabulary.DC.CREATOR, new RDFResource("ex:God"))]);
             RDFFederation federation = new RDFFederation();
             federation.AddStore(store);
-            federation.AddAsyncStore(asyncStore);
+            federation.AddStore(store2);
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFResource("ex:ctx2"))
@@ -1061,12 +1061,12 @@ namespace RDFSharp.Test.Query
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
             RDFGraph graph = new RDFGraph();
             graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("flower","en"))).GetAwaiter().GetResult();
-            RDFAsyncStore asyncStore = new RDFAsyncStore(
-                new RDFMemoryStore().AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.DC.CREATOR, new RDFResource("ex:God"))));
+            RDFMemoryStore store2 = new RDFMemoryStore([
+                new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.DC.CREATOR, new RDFResource("ex:God"))]);
             RDFFederation federation = new RDFFederation();
             federation.AddStore(store);
             federation.AddGraph(graph);
-            federation.AddAsyncStore(asyncStore);
+            federation.AddStore(store2);
             RDFDescribeQuery query = new RDFDescribeQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddDescribeTerm(new RDFVariable("?S"))
@@ -1799,7 +1799,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public async Task ShouldApplyDescribeQueryToStoreAsyncAndHaveResults()
         {
-            RDFAsyncStore store = new RDFAsyncStore();
+            RDFMemoryStore store = new RDFMemoryStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
@@ -1835,7 +1835,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public async Task ShouldApplyDescribeQueryToStoreAsyncAndNotHaveResults()
         {
-            RDFAsyncStore store = new RDFAsyncStore();
+            RDFMemoryStore store = new RDFMemoryStore();
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), new RDFResource("ex:color"), new RDFPlainLiteral("white","en")));
             await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));

@@ -91,26 +91,6 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldAddAsyncStoreToFederation()
-        {
-            RDFFederation federation = new RDFFederation();
-            federation.AddAsyncStore(new RDFAsyncStore());
-            federation.AddAsyncStore(null); //Will be discarded, since null is not allowed
-
-            Assert.IsTrue(federation.DataSourcesCount == 1);
-            Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.Count == 0);
-
-            int i = 0;
-            foreach (RDFDataSource s in federation) i++;
-            Assert.IsTrue(i == 1);
-
-            int j = 0;
-            IEnumerator<RDFDataSource> datasourcesEnumerator = federation.DataSourcesEnumerator;
-            while (datasourcesEnumerator.MoveNext()) j++;
-            Assert.IsTrue(j == 1);
-        }
-
-        [TestMethod]
         public void ShouldAddFederationToFederation()
         {
             RDFFederation federation = new RDFFederation();
