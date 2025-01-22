@@ -180,11 +180,23 @@ namespace RDFSharp.Query
                 #region Calculate Result
                 if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
                      && leftArgumentTypedLiteral.HasDecimalDatatype()
-                      && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
-                       && rightArgumentTypedLiteral.HasDecimalDatatype())
+                     && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
+                     && rightArgumentTypedLiteral.HasDecimalDatatype())
                 {
-                    if (double.TryParse(leftArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double leftArgumentNumericValue)
-                          && double.TryParse(rightArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double rightArgumentNumericValue))
+                    double leftArgumentNumericValue = double.NaN, rightArgumentNumericValue = double.NaN;
+
+                    //owl:rational needs parsing and evaluation before being compared (LEFT)
+                    if (leftArgumentTypedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
+                        leftArgumentNumericValue = Convert.ToDouble(RDFModelUtilities.ComputeOWLRationalValue(leftArgumentTypedLiteral), CultureInfo.InvariantCulture);
+                    //owl:rational needs parsing and evaluation before being compared (RIGHT)
+                    if (rightArgumentTypedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
+                        rightArgumentNumericValue = Convert.ToDouble(RDFModelUtilities.ComputeOWLRationalValue(rightArgumentTypedLiteral), CultureInfo.InvariantCulture);
+
+                    //Compute the arithmetical expression if we have valid double values from the arguments
+                    bool isRationalLeftArgument = leftArgumentNumericValue != double.NaN;
+                    bool isRationalRightArgument = rightArgumentNumericValue != double.NaN;
+                    if ((isRationalLeftArgument || double.TryParse(leftArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out leftArgumentNumericValue))
+                         && (isRationalRightArgument || double.TryParse(rightArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out rightArgumentNumericValue)))
                     {
                         //Execute the arithmetical expression's comparison logics
                         if (this is RDFAddExpression)

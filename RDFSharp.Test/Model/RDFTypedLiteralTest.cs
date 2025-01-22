@@ -305,6 +305,10 @@ namespace RDFSharp.Test.Model
         [DataRow("1", RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)]
         [DataRow(" 1 ", RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)]
         [DataRow("4", RDFModelEnums.RDFDatatypes.OWL_REAL)]
+        [DataRow("4", RDFModelEnums.RDFDatatypes.OWL_RATIONAL)]
+        [DataRow("4/9", RDFModelEnums.RDFDatatypes.OWL_RATIONAL)]
+        [DataRow("-4", RDFModelEnums.RDFDatatypes.OWL_RATIONAL)]
+        [DataRow("-4/9", RDFModelEnums.RDFDatatypes.OWL_RATIONAL)]
         public void ShouldCreateTypedLiteralOfDecimalCategory(string value, RDFModelEnums.RDFDatatypes datatype)
         {
             RDFTypedLiteral tl = new RDFTypedLiteral(value, datatype);
@@ -631,6 +635,17 @@ namespace RDFSharp.Test.Model
         [DataRow("", RDFModelEnums.RDFDatatypes.OWL_REAL)]
         [DataRow(null, RDFModelEnums.RDFDatatypes.OWL_REAL)]
         [DataRow("4,00", RDFModelEnums.RDFDatatypes.OWL_REAL)]
+        [DataRow("4/", RDFModelEnums.RDFDatatypes.OWL_RATIONAL)]
+        [DataRow("4/0", RDFModelEnums.RDFDatatypes.OWL_RATIONAL)]
+        [DataRow("4/-9", RDFModelEnums.RDFDatatypes.OWL_RATIONAL)]
+        [DataRow("-4/", RDFModelEnums.RDFDatatypes.OWL_RATIONAL)]
+        [DataRow("-4/0", RDFModelEnums.RDFDatatypes.OWL_RATIONAL)]
+        [DataRow("/", RDFModelEnums.RDFDatatypes.OWL_RATIONAL)]
+        [DataRow("-/", RDFModelEnums.RDFDatatypes.OWL_RATIONAL)]
+        [DataRow("/-", RDFModelEnums.RDFDatatypes.OWL_RATIONAL)]
+        [DataRow("/9", RDFModelEnums.RDFDatatypes.OWL_RATIONAL)]
+        [DataRow("/-9", RDFModelEnums.RDFDatatypes.OWL_RATIONAL)]
+        [DataRow("4/02", RDFModelEnums.RDFDatatypes.OWL_RATIONAL)]
         public void ShouldNotCreateTypedLiteralOfDecimalCategory(string value, RDFModelEnums.RDFDatatypes datatype)
             => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
 

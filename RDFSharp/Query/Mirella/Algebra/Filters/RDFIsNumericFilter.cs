@@ -74,8 +74,8 @@ namespace RDFSharp.Query
                 //Successful match if a numeric typed literal can be created with the variable value
                 RDFPatternMember variableValuePMember = RDFQueryUtilities.ParseRDFPatternMember(variableValue);
                 if (variableValuePMember is RDFResource 
-                      || variableValuePMember is RDFPlainLiteral
-                        || (variableValuePMember is RDFTypedLiteral variableValuePMemberTLit && !variableValuePMemberTLit.HasDecimalDatatype()))
+                     || variableValuePMember is RDFPlainLiteral
+                     || (variableValuePMember is RDFTypedLiteral variableValuePMemberTLit && !variableValuePMemberTLit.HasDecimalDatatype()))
                     keepRow = false;
 
                 //Apply the eventual negation

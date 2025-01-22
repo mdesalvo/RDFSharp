@@ -181,6 +181,7 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER:
                 case RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER:
                 case RDFModelEnums.RDFDatatypes.OWL_REAL:
+                case RDFModelEnums.RDFDatatypes.OWL_RATIONAL:
                     return true;
                 default: return false;
             }
