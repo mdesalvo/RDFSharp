@@ -21,7 +21,7 @@ using System;
 namespace RDFSharp.Store
 {
     /// <summary>
-    /// RDFQuadruple represents a quadruple in the RDF store.
+    /// RDFQuadruple represents a quadruple (context-aware triple) in the RDF store.
     /// </summary>
     public class RDFQuadruple : IEquatable<RDFQuadruple>
     {
@@ -177,7 +177,7 @@ namespace RDFSharp.Store
     }
 
     /// <summary>
-    /// RDFIndexedQuadruple represents the internal hashed representation of a quadruple in the library
+    /// RDFIndexedQuadruple represents the internal hashed representation of a quadruple
     /// </summary>
     internal class RDFIndexedQuadruple : IEquatable<RDFIndexedQuadruple>
     {

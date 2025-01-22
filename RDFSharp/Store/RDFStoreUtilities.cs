@@ -36,13 +36,13 @@ namespace RDFSharp.Store
         {
             if (fetchedQuadruples == null)
                 throw new RDFStoreException("Cannot parse quadruple because given \"fetchedQuadruples\" parameter is null.");
-            
+       
             RDFContext qContext = new RDFContext(fetchedQuadruples["Context"].ToString());
             RDFResource qSubject = new RDFResource(fetchedQuadruples["Subject"].ToString());
             RDFResource qPredicate = new RDFResource(fetchedQuadruples["Predicate"].ToString());
 
             //SPO-flavour quadruple
-            if (fetchedQuadruples["TripleFlavor"].ToString().Equals("1"))
+            if (string.Equals(fetchedQuadruples["TripleFlavor"].ToString(), "1"))
             {
                 RDFResource qObject = new RDFResource(fetchedQuadruples["Object"].ToString());
                 return new RDFQuadruple(qContext, qSubject, qPredicate, qObject);

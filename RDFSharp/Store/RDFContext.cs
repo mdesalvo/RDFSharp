@@ -21,8 +21,8 @@ using System;
 namespace RDFSharp.Store
 {
     /// <summary>
-    /// RDFContext represents an object which can act as C-token of a pattern.
-    /// It cannot start with "bnode:" because blank contexts are not supported.
+    /// RDFContext is an Uri representing the "provenance" of a triple in the worldwide LinkedData network.<br/>
+    /// It cannot be a blank resource, since its meaning is to answer "where does this triple come from?".
     /// </summary>
     public class RDFContext : RDFPatternMember
     {
@@ -66,8 +66,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Gives the string representation of the store context
         /// </summary>
-        public override string ToString()
-            => Context.ToString();
+        public override string ToString() => Context.ToString();
         #endregion
     }
 }
