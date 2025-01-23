@@ -188,7 +188,7 @@ namespace RDFSharp.Test.Query
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row["?A"] = new RDFTypedLiteral("54/2", RDFModelEnums.RDFDatatypes.OWL_RATIONAL).ToString();
             row["?B"] = new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
@@ -207,7 +207,25 @@ namespace RDFSharp.Test.Query
             table.Columns.Add("?B", typeof(string));
             DataRow row = table.NewRow();
             row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-            row["?B"] = new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            row["?B"] = new RDFTypedLiteral("60/2", RDFModelEnums.RDFDatatypes.OWL_RATIONAL).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFComparisonFilter filter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFVariable("?B"), new RDFVariable("?A"));
+            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
+
+            Assert.IsTrue(keepRow);
+        }
+
+        [TestMethod]
+        public void ShouldCreateComparisonFilterWithVariableVsVariablehavingOwlRationalsAndKeepRow2()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("2/5", RDFModelEnums.RDFDatatypes.OWL_RATIONAL).ToString();
+            row["?B"] = new RDFTypedLiteral("1/2", RDFModelEnums.RDFDatatypes.OWL_RATIONAL).ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 

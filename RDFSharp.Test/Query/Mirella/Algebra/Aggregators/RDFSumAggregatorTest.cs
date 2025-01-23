@@ -75,7 +75,7 @@ namespace RDFSharp.Test.Query
             table.Columns.Add("?B", typeof(string));
             table.Columns.Add("?C", typeof(string));
             DataRow row0 = table.NewRow();
-            row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row0["?A"] = new RDFTypedLiteral("54/2", RDFModelEnums.RDFDatatypes.OWL_RATIONAL).ToString();
             row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
             row0["?C"] = new RDFResource("ex:value1").ToString();
             table.Rows.Add(row0);

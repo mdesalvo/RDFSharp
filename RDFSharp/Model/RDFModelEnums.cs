@@ -315,7 +315,12 @@ namespace RDFSharp.Model
             /// http://www.w3.org/2002/07/owl#real
             /// </summary>
             [Description("http://www.w3.org/2002/07/owl#real")]
-            OWL_REAL = 49
+            OWL_REAL = 49,
+            /// <summary>
+            /// http://www.w3.org/2002/07/owl#rational
+            /// </summary>
+            [Description("http://www.w3.org/2002/07/owl#rational")]
+            OWL_RATIONAL = 50
         };
 
         /// <summary>

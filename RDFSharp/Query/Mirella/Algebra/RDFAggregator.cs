@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Model;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -105,7 +106,10 @@ namespace RDFSharp.Query
                     //Only numeric typedliterals are suitable for processing
                     if (rowAggregatorValue is RDFTypedLiteral rowAggregatorValueTLit && rowAggregatorValueTLit.HasDecimalDatatype())
                     {
-                        if (double.TryParse(rowAggregatorValueTLit.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double result))
+                        //owl:rational needs parsing and evaluation before being compared
+                        if (rowAggregatorValueTLit.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
+                            return Convert.ToDouble(RDFModelUtilities.ComputeOWLRationalValue(rowAggregatorValueTLit), CultureInfo.InvariantCulture);
+                        else if (double.TryParse(rowAggregatorValueTLit.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double result))
                             return result;
                     }
                 }

@@ -154,8 +154,17 @@ namespace RDFSharp.Query
                     {
                         if (((RDFTypedLiteral)right).HasDecimalDatatype())
                         {
-                            decimal leftValueDecimal = decimal.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture);
-                            decimal rightValueDecimal = decimal.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
+                            decimal leftValueDecimal, rightValueDecimal;
+                            //owl:rational needs parsing and evaluation before being compared (LEFT)
+                            if (((RDFTypedLiteral)left).Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
+                                leftValueDecimal = RDFModelUtilities.ComputeOWLRationalValue((RDFTypedLiteral)left);
+                            else
+                                leftValueDecimal = decimal.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture);
+                            //owl:rational needs parsing and evaluation before being compared (RIGHT)
+                            if (((RDFTypedLiteral)right).Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
+                                rightValueDecimal = RDFModelUtilities.ComputeOWLRationalValue((RDFTypedLiteral)right);
+                            else
+                                rightValueDecimal = decimal.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
                             return leftValueDecimal.CompareTo(rightValueDecimal);
                         }
                         return -99; //Type Error
