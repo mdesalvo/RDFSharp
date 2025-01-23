@@ -350,14 +350,13 @@ namespace RDFSharp.Model
                         if (graph[facet, RDFVocabulary.XSD.MAX_EXCLUSIVE, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxExclusive
                              && facetMaxExclusive.HasDecimalDatatype())
                         {
-                            double facetMaxExclusiveValue = double.NaN;
-
                             //owl:rational needs parsing and evaluation before being compared
                             if (facetMaxExclusive.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                                facetMaxExclusiveValue = Convert.ToDouble(ComputeOWLRationalValue(facetMaxExclusive), CultureInfo.InvariantCulture);
-
-                            bool isRationalValue = facetMaxExclusiveValue != double.NaN;
-                            if (isRationalValue || double.TryParse(facetMaxExclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out facetMaxExclusiveValue))
+                            {
+                                targetFacets.Add(new RDFMaxExclusiveFacet(Convert.ToDouble(ComputeOWLRationalValue(facetMaxExclusive), CultureInfo.InvariantCulture)));
+                                continue;
+                            }
+                            if (double.TryParse(facetMaxExclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMaxExclusiveValue))
                             {
                                 targetFacets.Add(new RDFMaxExclusiveFacet(facetMaxExclusiveValue));
                                 continue;
@@ -367,14 +366,13 @@ namespace RDFSharp.Model
                         if (graph[facet, RDFVocabulary.XSD.MAX_INCLUSIVE, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxInclusive
                              && facetMaxInclusive.HasDecimalDatatype())
                         {
-                            double facetMaxInclusiveValue = double.NaN;
-
                             //owl:rational needs parsing and evaluation before being compared
                             if (facetMaxInclusive.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                                facetMaxInclusiveValue = Convert.ToDouble(ComputeOWLRationalValue(facetMaxInclusive), CultureInfo.InvariantCulture);
-
-                            bool isRationalValue = facetMaxInclusiveValue != double.NaN;
-                            if (isRationalValue || double.TryParse(facetMaxInclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out facetMaxInclusiveValue))
+                            {
+                                targetFacets.Add(new RDFMaxInclusiveFacet(Convert.ToDouble(ComputeOWLRationalValue(facetMaxInclusive), CultureInfo.InvariantCulture)));
+                                continue;
+                            }
+                            if (double.TryParse(facetMaxInclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMaxInclusiveValue))
                             {
                                 targetFacets.Add(new RDFMaxInclusiveFacet(facetMaxInclusiveValue));
                                 continue;
@@ -391,14 +389,13 @@ namespace RDFSharp.Model
                         if (graph[facet, RDFVocabulary.XSD.MIN_EXCLUSIVE, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMinExclusive
                              && facetMinExclusive.HasDecimalDatatype())
                         {
-                            double facetMinExclusiveValue = double.NaN;
-
                             //owl:rational needs parsing and evaluation before being compared
                             if (facetMinExclusive.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                                facetMinExclusiveValue = Convert.ToDouble(ComputeOWLRationalValue(facetMinExclusive), CultureInfo.InvariantCulture);
-
-                            bool isRationalValue = facetMinExclusiveValue != double.NaN;
-                            if (isRationalValue || double.TryParse(facetMinExclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out facetMinExclusiveValue))
+                            {
+                                targetFacets.Add(new RDFMinExclusiveFacet(Convert.ToDouble(ComputeOWLRationalValue(facetMinExclusive), CultureInfo.InvariantCulture)));
+                                continue;
+                            }
+                            if (double.TryParse(facetMinExclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMinExclusiveValue))
                             {
                                 targetFacets.Add(new RDFMinExclusiveFacet(facetMinExclusiveValue));
                                 continue;
@@ -408,14 +405,13 @@ namespace RDFSharp.Model
                         if (graph[facet, RDFVocabulary.XSD.MIN_INCLUSIVE, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetMinInclusive
                              && facetMinInclusive.HasDecimalDatatype())
                         {
-                            double facetMinInclusiveValue = double.NaN;
-
                             //owl:rational needs parsing and evaluation before being compared
                             if (facetMinInclusive.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                                facetMinInclusiveValue = Convert.ToDouble(ComputeOWLRationalValue(facetMinInclusive), CultureInfo.InvariantCulture);
-
-                            bool isRationalValue = facetMinInclusiveValue != double.NaN;
-                            if (isRationalValue || double.TryParse(facetMinInclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out facetMinInclusiveValue))
+                            {
+                                targetFacets.Add(new RDFMinInclusiveFacet(Convert.ToDouble(ComputeOWLRationalValue(facetMinInclusive), CultureInfo.InvariantCulture)));
+                                continue;
+                            }
+                            if (double.TryParse(facetMinInclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMinInclusiveValue))
                             {
                                 targetFacets.Add(new RDFMinInclusiveFacet(facetMinInclusiveValue));
                                 continue;

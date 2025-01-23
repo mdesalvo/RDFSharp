@@ -92,9 +92,11 @@ namespace RDFSharp.Query
                 {
                     //owl:rational needs parsing and evaluation before being compared
                     if (leftArgumentTypedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                        expressionResult = new RDFTypedLiteral(Convert.ToString(Math.Round(RDFModelUtilities.ComputeOWLRationalValue(leftArgumentTypedLiteral)), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                        expressionResult = new RDFTypedLiteral(
+                                            Convert.ToString(Math.Round(RDFModelUtilities.ComputeOWLRationalValue(leftArgumentTypedLiteral)), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
                     else if (double.TryParse(leftArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double leftArgumentNumericValue))
-                        expressionResult = new RDFTypedLiteral(Convert.ToString(Math.Round(leftArgumentNumericValue), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                        expressionResult = new RDFTypedLiteral(
+                                            Convert.ToString(Math.Round(leftArgumentNumericValue), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
                 }
                 #endregion
             }

@@ -183,37 +183,46 @@ namespace RDFSharp.Query
                      && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
                      && rightArgumentTypedLiteral.HasDecimalDatatype())
                 {
-                    double leftArgumentNumericValue = double.NaN, rightArgumentNumericValue = double.NaN;
+                    double? leftArgumentNumericValueFinal = null;
+                    double? rightArgumentNumericValueFinal = null;
 
                     //owl:rational needs parsing and evaluation before being compared (LEFT)
                     if (leftArgumentTypedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                        leftArgumentNumericValue = Convert.ToDouble(RDFModelUtilities.ComputeOWLRationalValue(leftArgumentTypedLiteral), CultureInfo.InvariantCulture);
+                        leftArgumentNumericValueFinal = Convert.ToDouble(RDFModelUtilities.ComputeOWLRationalValue(leftArgumentTypedLiteral), CultureInfo.InvariantCulture);
                     //owl:rational needs parsing and evaluation before being compared (RIGHT)
                     if (rightArgumentTypedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                        rightArgumentNumericValue = Convert.ToDouble(RDFModelUtilities.ComputeOWLRationalValue(rightArgumentTypedLiteral), CultureInfo.InvariantCulture);
+                        rightArgumentNumericValueFinal = Convert.ToDouble(RDFModelUtilities.ComputeOWLRationalValue(rightArgumentTypedLiteral), CultureInfo.InvariantCulture);
 
                     //Compute the arithmetical expression if we have valid double values from the arguments
-                    bool isRationalLeftArgument = leftArgumentNumericValue != double.NaN;
-                    bool isRationalRightArgument = rightArgumentNumericValue != double.NaN;
-                    if ((isRationalLeftArgument || double.TryParse(leftArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out leftArgumentNumericValue))
-                         && (isRationalRightArgument || double.TryParse(rightArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out rightArgumentNumericValue)))
-                    {
-                        //Execute the arithmetical expression's comparison logics
-                        if (this is RDFAddExpression)
-                            expressionResult = new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue + rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                        else if (this is RDFSubtractExpression)
-                            expressionResult = new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue - rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                        else if (this is RDFMultiplyExpression)
-                            expressionResult = new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue * rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                        else if (this is RDFDivideExpression && rightArgumentNumericValue != 0d)
-                            expressionResult = new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue / rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                    }
+                    if (!leftArgumentNumericValueFinal.HasValue && double.TryParse(leftArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double leftArgumentNumericValue))
+                        leftArgumentNumericValueFinal = leftArgumentNumericValue;
+                    if (!rightArgumentNumericValueFinal.HasValue && double.TryParse(rightArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double rightArgumentNumericValue))
+                        rightArgumentNumericValueFinal = rightArgumentNumericValue;
+                    if (leftArgumentNumericValueFinal.HasValue && rightArgumentNumericValueFinal.HasValue)
+                        expressionResult = EvaluateMathExpression(leftArgumentNumericValueFinal.Value, rightArgumentNumericValueFinal.Value);
                 }
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
 
             return expressionResult;
+        }
+
+        /// <summary>
+        /// Compute the arithmetical expression on the given numeric parameters
+        /// </summary>
+        private RDFTypedLiteral EvaluateMathExpression(double leftArgumentNumericValue, double rightArgumentNumericValue)
+        {
+            if (this is RDFAddExpression)
+                return new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue + rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+            else if (this is RDFSubtractExpression)
+                return new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue - rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+            else if (this is RDFMultiplyExpression)
+                return new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue * rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+            else if (this is RDFDivideExpression && rightArgumentNumericValue != 0d)
+                return new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue / rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+            //Just to keep the compiler happy...
+            else return null;
         }
         #endregion
     }
