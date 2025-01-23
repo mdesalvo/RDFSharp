@@ -15,7 +15,6 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
 using System.Data;
 using RDFSharp.Model;
 using RDFSharp.Query;
@@ -67,8 +66,8 @@ namespace RDFSharp.Test.Query
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            row["?A"] = new RDFTypedLiteral("10/2", RDFModelEnums.RDFDatatypes.OWL_RATIONAL).ToString();
+            row["?B"] = new RDFTypedLiteral("25.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
@@ -88,16 +87,16 @@ namespace RDFSharp.Test.Query
             table.Columns.Add("?B", typeof(string));
             DataRow row = table.NewRow();
             row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            row["?B"] = new RDFTypedLiteral("50/2", RDFModelEnums.RDFDatatypes.OWL_RATIONAL).ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
             RDFFloorExpression expression = new RDFFloorExpression(
-                new RDFVariable("?A"));
+                new RDFVariable("?B"));
             RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
             Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+            Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
         }
 
         [TestMethod]
