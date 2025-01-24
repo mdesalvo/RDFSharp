@@ -22,7 +22,7 @@ using static RDFSharp.Query.RDFQueryUtilities;
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFNamespaceRegister is a singleton in-memory container for registered RDF namespaces.
+    /// RDFNamespaceRegister is a singleton in-memory container for registered RDF namespaces
     /// </summary>
     public sealed class RDFNamespaceRegister : IEnumerable<RDFNamespace>
     {
