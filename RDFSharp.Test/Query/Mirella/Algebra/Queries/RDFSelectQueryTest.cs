@@ -444,7 +444,7 @@ namespace RDFSharp.Test.Query
                 .AddProjectionVariable(new RDFVariable("?V"))
                 .AddProjectionVariable(new RDFVariable("?VLENGTH"))
                 .AddProjectionVariable(new RDFVariable("?VLENGTHISMORETHAN7"), 
-                    new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFVariable("?VLENGTH"), new RDFConstantExpression(new RDFTypedLiteral("7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
+                    new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFVariable("?VLENGTH"), new RDFConstantExpression(new RDFTypedLiteral("14/2", RDFModelEnums.RDFDatatypes.OWL_RATIONAL))));
             RDFSelectQueryResult result = query.ApplyToGraph(graph);
 
             Assert.IsNotNull(result);
