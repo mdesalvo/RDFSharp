@@ -71,7 +71,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to catch owl:rational typed literals
         /// </summary>
-        internal static readonly Lazy<Regex> owlRational = new Lazy<Regex>(() => new Regex(@"^(-)?([0-9])+(/([1-9])+([0-9])*)?$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> owlRational = new Lazy<Regex>(() => new Regex(@"^(0|(-)?([1-9])+([0-9])*)(/([1-9])+([0-9])*)?$", RegexOptions.Compiled));
 
         /// <summary>
         /// Alternative representations of boolean True
