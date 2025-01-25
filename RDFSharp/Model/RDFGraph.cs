@@ -602,7 +602,7 @@ namespace RDFSharp.Model
 
         /// <summary>
         /// Gets the subgraph containing triples with the specified combination of SPOL accessors<br/>
-        /// (null values are threated as * selectors. Ensure to keep object and literal mutually exclusive!)
+        /// (null values are handled as * selectors. Ensure to keep object and literal mutually exclusive!)
         /// </summary>
         public RDFGraph this[RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
             => (obj != null && lit != null) ? throw new RDFModelException("Cannot access a graph when both object and literals are given: they must be mutually exclusive!")

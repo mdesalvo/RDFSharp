@@ -594,14 +594,6 @@ namespace RDFSharp.Store
             => quadruple != null && IndexedQuadruples.ContainsKey(quadruple.QuadrupleID);
 
         /// <summary>
-        /// Gets a store containing quadruples with the specified combination of CSPOL accessors<br/>
-        /// (null values are threated as * selectors. Ensure to keep object and literal mutually exclusive!)
-        /// </summary>
-        public RDFMemoryStore this[RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
-            => (obj != null && lit != null) ? throw new RDFStoreException("Cannot access a memory store when both object and literals are given: they must be mutually exclusive!")
-                                            : SelectQuadruples(ctx, subj, pred, obj, lit);
-
-        /// <summary>
         /// Gets a store containing quadruples satisfying the given pattern
         /// </summary>
         public override RDFMemoryStore SelectQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)

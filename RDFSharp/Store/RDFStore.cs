@@ -384,6 +384,14 @@ namespace RDFSharp.Store
 
         #region Select
         /// <summary>
+        /// Gets a memory store containing quadruples with the specified combination of CSPOL accessors<br/>
+        /// (null values are handled as * selectors. Ensure to keep object and literal mutually exclusive!)
+        /// </summary>
+        public RDFMemoryStore this[RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
+            => (obj != null && lit != null) ? throw new RDFStoreException("Cannot access a store when both object and literals are given: they must be mutually exclusive!")
+                                            : SelectQuadruples(ctx, subj, pred, obj, lit);
+
+        /// <summary>
         /// Checks if the store contains the given quadruple
         /// </summary>
         public abstract bool ContainsQuadruple(RDFQuadruple quadruple);
