@@ -154,9 +154,19 @@ namespace RDFSharp.Model
             public static readonly RDFResource LANG_STRING = new RDFResource(string.Concat(RDF.BASE_URI, "langString"));
 
             /// <summary>
+            /// rdf:dirLangString
+            /// </summary>
+            public static readonly RDFResource DIR_LANG_STRING = new RDFResource(string.Concat(RDF.BASE_URI, "dirLangString"));
+
+            /// <summary>
             /// rdf:direction
             /// </summary>
             public static readonly RDFResource DIRECTION = new RDFResource(string.Concat(RDF.BASE_URI, "direction"));
+
+            /// <summary>
+            /// rdf:reifies
+            /// </summary>
+            public static readonly RDFResource REIFIES = new RDFResource(string.Concat(RDF.BASE_URI, "reifies"));
             #endregion
         }
         #endregion
