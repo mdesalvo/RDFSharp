@@ -87,10 +87,8 @@ namespace RDFSharp.Query
                 #region Calculate Result
                 if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLiteral)
                 {
-                    if (leftArgumentPMemberPLiteral.Language.EndsWith("--ltr", System.StringComparison.OrdinalIgnoreCase))
-                        expressionResult = new RDFPlainLiteral("ltr");
-                    else if (leftArgumentPMemberPLiteral.Language.EndsWith("--rtl", System.StringComparison.OrdinalIgnoreCase))
-                        expressionResult = new RDFPlainLiteral("rtl");
+                    if (leftArgumentPMemberPLiteral.HasDirection())
+                        expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLiteral.Language.Substring(leftArgumentPMemberPLiteral.Language.Length-3).ToLower()); //ltr / rtl
                     else
                         expressionResult = RDFPlainLiteral.Empty;
                 }

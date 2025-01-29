@@ -76,6 +76,14 @@ namespace RDFSharp.Model
         /// </summary>
         public bool HasLanguage()
             => !string.IsNullOrEmpty(Language);
+
+        /// <summary>
+        /// Checks if the plain literal has a language tag with base direction
+        /// </summary>
+        public bool HasDirection()
+            => HasLanguage() 
+                && (Language.EndsWith("--ltr", System.StringComparison.OrdinalIgnoreCase)
+                    || Language.EndsWith("--rtl", System.StringComparison.OrdinalIgnoreCase));
         #endregion
     }
 }

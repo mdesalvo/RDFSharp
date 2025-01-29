@@ -37,6 +37,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(pl);
             Assert.IsFalse(pl.HasLanguage());
+            Assert.IsFalse(pl.HasDirection());
             Assert.IsTrue(pl.ToString().Equals(value ?? ""));
         }
 
@@ -65,6 +66,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(pl);
             Assert.IsFalse(pl.HasLanguage());
+            Assert.IsFalse(pl.HasDirection());
             Assert.IsTrue(pl.ToString().Equals(value ?? ""));
         }
 
@@ -82,6 +84,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(pl);
             Assert.IsTrue(pl.HasLanguage());
+            Assert.IsFalse(pl.HasDirection());
             Assert.IsTrue(pl.ToString().Equals(string.Concat(value, "@", language.ToUpperInvariant())));
         }
 
@@ -93,14 +96,15 @@ namespace RDFSharp.Test.Model
         [DataRow("donal duck@en-US", "en-US--rtl")]
         [DataRow("donal duck@", "en--rtl")]
         [DataRow("donal duck@", "en--rTL")]
-        [DataRow("", "en")]
-        [DataRow(null, "en")]
+        [DataRow("", "en--ltr")]
+        [DataRow(null, "en--rtl")]
         public void ShouldCreatePlainLiteralWithLanguageDirection(string value, string language)
         {
             RDFPlainLiteral pl = new RDFPlainLiteral(value, language);
 
             Assert.IsNotNull(pl);
             Assert.IsTrue(pl.HasLanguage());
+            Assert.IsTrue(pl.HasDirection());
             Assert.IsTrue(pl.ToString().Equals(string.Concat(value, "@", language.ToUpperInvariant())));
         }
         #endregion
