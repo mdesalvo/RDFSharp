@@ -86,7 +86,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to detect presence of a plain literal with language tag within a given N-Triple
         /// </summary>
-        internal static readonly Lazy<Regex> regexLPL = new Lazy<Regex>(() => new Regex(string.Concat(@"@", RDFPlainLiteral.LangTagMask, "$"), RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> regexLPL = new Lazy<Regex>(() => new Regex(string.Concat(@"@", RDFPlainLiteral.LangTagMask, "$"), RegexOptions.Compiled | RegexOptions.IgnoreCase));
 
         /// <summary>
         /// Regex to detect presence of starting " in the value of a given N-Triple literal
