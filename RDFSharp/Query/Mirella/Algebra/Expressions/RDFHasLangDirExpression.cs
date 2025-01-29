@@ -22,25 +22,25 @@ using System.Text;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFLangDirExpression represents a direction-extractor function to be applied on a query results table.
+    /// RDFHasLangDirExpression represents a direction-detector function to be applied on a query results table.
     /// </summary>
-    public class RDFLangDirExpression : RDFExpression
+    public class RDFHasLangDirExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a langDir function with given arguments
+        /// Default-ctor to build a hasLangDir function with given arguments
         /// </summary>
-        public RDFLangDirExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFHasLangDirExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a langDir function with given arguments
+        /// Default-ctor to build a hasLangDir function with given arguments
         /// </summary>
-        public RDFLangDirExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFHasLangDirExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the langDir function
+        /// Gives the string representation of the hasLangDir function
         /// </summary>
         public override string ToString()
             => ToString(new List<RDFNamespace>());
@@ -48,8 +48,8 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(LANGDIR(L))
-            sb.Append("(LANGDIR(");
+            //(HASLANGDIR(L))
+            sb.Append("(HASLANGDIR(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
@@ -62,11 +62,11 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the langDir function on the given datarow
+        /// Applies the hasLangDir function on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {
-            RDFPlainLiteral expressionResult = null;
+            RDFTypedLiteral expressionResult = null;
 
             #region Guards
             if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
@@ -85,13 +85,10 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLiteral)
-                {
-                    if (leftArgumentPMemberPLiteral.HasDirection())
-                        expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLiteral.Language.Substring(leftArgumentPMemberPLiteral.Language.Length-3).ToLower()); //ltr / rtl
-                    else
-                        expressionResult = RDFPlainLiteral.Empty;
-                }
+                if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLiteral && leftArgumentPMemberPLiteral.HasDirection())
+                    expressionResult = RDFTypedLiteral.True;
+                else
+                    expressionResult = RDFTypedLiteral.False;
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
