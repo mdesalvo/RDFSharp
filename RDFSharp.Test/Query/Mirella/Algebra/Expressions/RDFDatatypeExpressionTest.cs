@@ -131,6 +131,24 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldApplyExpressionWithExpressionAndCalculateResultOnPlainLiteralWithDirectionedLanguage()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFPlainLiteral("hello", "en-US--ltr").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFDatatypeExpression expression = new RDFDatatypeExpression(
+                new RDFVariableExpression(new RDFVariable("?A")));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNotNull(expressionResult);
+            Assert.IsTrue(expressionResult.Equals(RDFVocabulary.RDF.DIR_LANG_STRING));
+        }
+
+        [TestMethod]
         public void ShouldApplyExpressionWithExpressionAndCalculateResultOnTypedLiteral()
         {
             DataTable table = new DataTable();
@@ -216,6 +234,24 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(expressionResult);
             Assert.IsTrue(expressionResult.Equals(RDFVocabulary.RDF.LANG_STRING));
+        }
+
+        [TestMethod]
+        public void ShouldApplyExpressionWithVariableAndCalculateResultOnPlainLiteralWithDirectionedLanguage()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFPlainLiteral("hello", "en-US--rtl").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFDatatypeExpression expression = new RDFDatatypeExpression(
+                new RDFVariable("?A"));
+            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+            Assert.IsNotNull(expressionResult);
+            Assert.IsTrue(expressionResult.Equals(RDFVocabulary.RDF.DIR_LANG_STRING));
         }
 
         [TestMethod]

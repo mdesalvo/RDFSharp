@@ -59,11 +59,11 @@ namespace RDFSharp.Query
                 #region Calculate Result
                 if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
                      && leftArgumentTypedLiteral.HasBooleanDatatype()
-                      && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
-                       && rightArgumentTypedLiteral.HasBooleanDatatype())
+                     && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
+                     && rightArgumentTypedLiteral.HasBooleanDatatype())
                 {
                     if (bool.TryParse(leftArgumentTypedLiteral.Value, out bool leftArgumentBooleanValue)
-                          && bool.TryParse(rightArgumentTypedLiteral.Value, out bool rightArgumentBooleanValue))
+                         && bool.TryParse(rightArgumentTypedLiteral.Value, out bool rightArgumentBooleanValue))
                     {
                         //Execute the boolean expression's comparison logics
                         if (this is RDFBooleanAndExpression)
