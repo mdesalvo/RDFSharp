@@ -229,23 +229,26 @@ namespace RDFSharp.Query
                         QueryMemberResultTables.Add(subQuery.QueryMemberID, subQueryResult.SelectResults);
 
                         //Populate its metadata (IsOptional)
-                        if (!QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties.ContainsKey(IsOptional))
-                            QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties.Add(IsOptional, subQuery.IsOptional);
+                        if (!subQueryResult.SelectResults.ExtendedProperties.ContainsKey(IsOptional))
+                            subQueryResult.SelectResults.ExtendedProperties.Add(IsOptional, subQuery.IsOptional);
                         else
-                            QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties[IsOptional] = subQuery.IsOptional
-                                                                                                                || (bool)QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties[IsOptional];
+                            subQueryResult.SelectResults.ExtendedProperties[IsOptional] = subQuery.IsOptional
+                                                                                           || (bool)subQueryResult.SelectResults.ExtendedProperties[IsOptional];
 
                         //Populate its metadata (JoinAsUnion)
-                        if (!QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties.ContainsKey(JoinAsUnion))
-                            QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties.Add(JoinAsUnion, subQuery.JoinAsUnion);
+                        if (!subQueryResult.SelectResults.ExtendedProperties.ContainsKey(JoinAsUnion))
+                            subQueryResult.SelectResults.ExtendedProperties.Add(JoinAsUnion, subQuery.JoinAsUnion);
                         else
-                            QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties[JoinAsUnion] = subQuery.JoinAsUnion;
+                            subQueryResult.SelectResults.ExtendedProperties[JoinAsUnion] = subQuery.JoinAsUnion;
 
                         //Populate its metadata (JoinAsMinus)
-                        if (!QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties.ContainsKey(JoinAsMinus))
-                            QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties.Add(JoinAsMinus, subQuery.JoinAsMinus);
+                        if (!subQueryResult.SelectResults.ExtendedProperties.ContainsKey(JoinAsMinus))
+                            subQueryResult.SelectResults.ExtendedProperties.Add(JoinAsMinus, subQuery.JoinAsMinus);
                         else
-                            QueryMemberResultTables[subQuery.QueryMemberID].ExtendedProperties[JoinAsMinus] = subQuery.JoinAsMinus;
+                            subQueryResult.SelectResults.ExtendedProperties[JoinAsMinus] = subQuery.JoinAsMinus;
+
+                        //Save updates
+                        QueryMemberResultTables[subQuery.QueryMemberID] = subQueryResult.SelectResults;
                     }
                 }
                 #endregion
