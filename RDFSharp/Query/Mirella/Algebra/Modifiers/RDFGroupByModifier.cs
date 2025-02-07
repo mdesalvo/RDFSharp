@@ -119,19 +119,19 @@ namespace RDFSharp.Query
             //Every partition variable must be found in the working table as a column
             IEnumerable<string> unavailablePartitionVariables = PartitionVariables.Where(pv => !table.Columns.Contains(pv.ToString()))
                                                                                   .Select(pv => pv.ToString());
-            if (unavailablePartitionVariables.Any())
+            if (unavailablePartitionVariables.Count() > 0)
                 throw new RDFQueryException(string.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: {0}", string.Join(",", unavailablePartitionVariables.Distinct())));
             
             //Every aggregator variable must be found in the working table as a column
             IEnumerable<string> unavailableAggregatorVariables = Aggregators.Where(ag => !table.Columns.Contains(ag.AggregatorVariable.ToString()))
                                                                             .Select(ag => ag.AggregatorVariable.ToString());
-            if (unavailableAggregatorVariables.Any())
+            if (unavailableAggregatorVariables.Count() > 0)
                 throw new RDFQueryException(string.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: {0}", string.Join(",", unavailableAggregatorVariables.Distinct())));
             
             //There should NOT be intersection between partition variables (GroupBy) and projection variables (Aggregators)
             IEnumerable<string> commonPartitionProjectionVariables = PartitionVariables.Where(pv => Aggregators.Any(ag => (!(ag is RDFPartitionAggregator)) && pv.Equals(ag.ProjectionVariable)))
                                                                                        .Select(pav => pav.ToString());
-            if (commonPartitionProjectionVariables.Any())
+            if (commonPartitionProjectionVariables.Count() > 0)
                 throw new RDFQueryException(string.Format("Cannot apply GroupBy modifier because the following variables have been specified both for partitioning (in GroupBy) and projection (in Aggregator): {0}", string.Join(",", commonPartitionProjectionVariables.Distinct())));
         }
 

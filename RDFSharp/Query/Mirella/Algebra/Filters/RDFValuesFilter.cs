@@ -68,7 +68,7 @@ namespace RDFSharp.Query
 
             //Check is performed only on columns found as bindings in the filter
             List<string> filterColumns = Values.Bindings.Keys.Where(k => row.Table.Columns.Contains(k)).ToList();
-            if (filterColumns.Any())
+            if (filterColumns.Count > 0)
             {
                 //Get the enumerable representation of the filter table
                 EnumerableRowCollection<DataRow> valuesTableEnumerable = ValuesTable.AsEnumerable();
@@ -85,7 +85,7 @@ namespace RDFSharp.Query
                 });
 
                 //Analyze the response of the check
-                keepRow = valuesTableEnumerable.Any();
+                keepRow = valuesTableEnumerable.Count() > 0;
             }
 
             //Apply the eventual negation

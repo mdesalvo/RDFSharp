@@ -369,7 +369,7 @@ namespace RDFSharp.Query
             DataTable resultTable = new DataTable();
             RDFConstructQueryResult constructResult = new RDFConstructQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = operation.GetEvaluableQueryMembers().ToList();
-            if (evaluableQueryMembers.Any())
+            if (evaluableQueryMembers.Count > 0)
             {
                 //Iterate the evaluable members of the operation
                 EvaluateQueryMembers(evaluableQueryMembers, datasource);

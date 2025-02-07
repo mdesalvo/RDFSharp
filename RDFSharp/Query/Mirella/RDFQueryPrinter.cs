@@ -93,7 +93,7 @@ namespace RDFSharp.Query
             //Query hasn't GroupBy modifier => respect given projections
             else
             {
-                if (!selectQuery.ProjectionVars.Any())
+                if (selectQuery.ProjectionVars.Count == 0)
                     sb.Append(" *");
                 else
                 {
@@ -181,7 +181,7 @@ namespace RDFSharp.Query
 
             #region DESCRIBE
             sb.Append("DESCRIBE");
-            if (describeQuery.DescribeTerms.Any())
+            if (describeQuery.DescribeTerms.Count > 0)
                 describeQuery.DescribeTerms.ForEach(dt => sb.Append(string.Concat(" ", PrintPatternMember(dt, describeQuery.Prefixes))));
             else
                 sb.Append(" *");
@@ -287,7 +287,7 @@ namespace RDFSharp.Query
         internal static List<RDFNamespace> PrintPrefixes(RDFQuery query, StringBuilder sb, bool enablePrinting)
         {
             List<RDFNamespace> prefixes = query.GetPrefixes();
-            if (enablePrinting && prefixes.Any())
+            if (enablePrinting && prefixes.Count > 0)
             {
                 prefixes.ForEach(pf => sb.AppendLine(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">")));
                 sb.AppendLine();

@@ -88,7 +88,7 @@ namespace RDFSharp.Query
             DataTable queryResultTable = new DataTable();
             RDFSelectQueryResult queryResult = new RDFSelectQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = selectQuery.GetEvaluableQueryMembers().ToList();
-            if (evaluableQueryMembers.Any())
+            if (evaluableQueryMembers.Count > 0)
             {
                 //Iterate the evaluable members of the query
                 EvaluateQueryMembers(evaluableQueryMembers, datasource);
@@ -131,7 +131,7 @@ namespace RDFSharp.Query
             DataTable queryResultTable = new DataTable();
             RDFDescribeQueryResult queryResult = new RDFDescribeQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers().ToList();
-            if (evaluableQueryMembers.Any())
+            if (evaluableQueryMembers.Count > 0)
             {
                 //Iterate the evaluable members of the query
                 EvaluateQueryMembers(evaluableQueryMembers, datasource);
@@ -157,7 +157,7 @@ namespace RDFSharp.Query
             DataTable queryResultTable = new DataTable();
             RDFConstructQueryResult constructResult = new RDFConstructQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = constructQuery.GetEvaluableQueryMembers().ToList();
-            if (evaluableQueryMembers.Any())
+            if (evaluableQueryMembers.Count > 0)
             {
                 //Iterate the evaluable members of the query
                 EvaluateQueryMembers(evaluableQueryMembers, datasource);
@@ -182,7 +182,7 @@ namespace RDFSharp.Query
         {
             RDFAskQueryResult askResult = new RDFAskQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = askQuery.GetEvaluableQueryMembers().ToList();
-            if (evaluableQueryMembers.Any())
+            if (evaluableQueryMembers.Count > 0)
             {
                 //Iterate the evaluable members of the query
                 EvaluateQueryMembers(evaluableQueryMembers, datasource);
@@ -386,7 +386,7 @@ namespace RDFSharp.Query
         internal void FinalizePatternGroup(RDFPatternGroup patternGroup)
         {
             List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
-            if (evaluablePGMembers.Any())
+            if (evaluablePGMembers.Count > 0)
             {
                 //Populate patternGroup result table
                 DataTable patternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID]);
@@ -422,7 +422,7 @@ namespace RDFSharp.Query
         {
             List<RDFPatternGroupMember> evaluablePatternGroupMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
             List<RDFFilter> filters = patternGroup.GetFilters().ToList();
-            if (evaluablePatternGroupMembers.Any() && filters.Any())
+            if (evaluablePatternGroupMembers.Count > 0 && filters.Count > 0)
             {
                 DataTable filteredTable = QueryMemberResultTables[patternGroup.QueryMemberID].Clone();
                 IEnumerator rowsEnum = QueryMemberResultTables[patternGroup.QueryMemberID].Rows.GetEnumerator();
@@ -656,7 +656,7 @@ namespace RDFSharp.Query
             AddColumn(result, "?OBJECT");
 
             //In case of "DESCRIBE *" query, all the variables must be considered describe terms
-            if (!describeQuery.DescribeTerms.Any())
+            if (describeQuery.DescribeTerms.Count == 0)
                 FetchDescribeVariablesFromQueryMembers(describeQuery, describeQuery.GetEvaluableQueryMembers());
 
             //Iterate the describe terms of the query
@@ -1719,7 +1719,7 @@ namespace RDFSharp.Query
                 List<DataRow> relatedRowsList = relatedRows.ToList();
 
                 //Relation HAS found data => proceed with outer-join
-                if (relatedRowsList.Any())
+                if (relatedRowsList.Count > 0)
                 {
                     foreach (DataRow relatedRow in relatedRowsList)
                     {
@@ -1979,15 +1979,15 @@ namespace RDFSharp.Query
             ProjectExpressions(query, table);
 
             //Execute configured sort modifiers
-            IEnumerable<RDFOrderByModifier> orderbyModifiers = query.GetModifiers().OfType<RDFOrderByModifier>();
-            if (orderbyModifiers.Any())
+            RDFOrderByModifier[] orderbyModifiers = query.GetModifiers().OfType<RDFOrderByModifier>().ToArray();
+            if (orderbyModifiers.Length > 0)
             {
                 table = orderbyModifiers.Aggregate(table, (current, modifier) => modifier.ApplyModifier(current));
                 table = table.DefaultView.ToTable();
             }
 
             //Execute projection algorythm
-            if (query.ProjectionVars.Any())
+            if (query.ProjectionVars.Count > 0)
             {
                 //Remove non-projection variables
                 DataColumn[] tableColumns = table.Columns.OfType<DataColumn>().ToArray();

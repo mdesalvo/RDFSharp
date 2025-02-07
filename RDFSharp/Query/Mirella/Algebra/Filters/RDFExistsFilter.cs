@@ -90,13 +90,13 @@ namespace RDFSharp.Query
             else
             {
                 EnumerableRowCollection<DataRow> patternResultsEnumerable = PatternResults?.AsEnumerable();
-                if (patternResultsEnumerable?.Any() ?? false)
+                if (patternResultsEnumerable?.Count() > 0)
                 {
                     #region Subject
                     bool subjectCompared = false;                    
                     if (Pattern.Subject is RDFVariable
-                            && PatternResults.Columns.Contains(subjectString)
-                                && row.Table.Columns.Contains(subjectString))
+                         && PatternResults.Columns.Contains(subjectString)
+                         && row.Table.Columns.Contains(subjectString))
                     {
                         //In case of emptiness the solution is compatible, otherwise proceed with comparison
                         if (!row.IsNull(subjectString))
@@ -114,8 +114,8 @@ namespace RDFSharp.Query
                     #region Predicate
                     bool predicateCompared = false;
                     if (Pattern.Predicate is RDFVariable
-                            && PatternResults.Columns.Contains(predicateString)
-                                && row.Table.Columns.Contains(predicateString))
+                         && PatternResults.Columns.Contains(predicateString)
+                         && row.Table.Columns.Contains(predicateString))
                     {
                         //In case of emptiness the solution is compatible, otherwise proceed with comparison
                         if (!row.IsNull(predicateString))
@@ -133,8 +133,8 @@ namespace RDFSharp.Query
                     #region Object
                     bool objectCompared = false;
                     if (Pattern.Object is RDFVariable
-                            && PatternResults.Columns.Contains(objectString)
-                                && row.Table.Columns.Contains(objectString))
+                         && PatternResults.Columns.Contains(objectString)
+                         && row.Table.Columns.Contains(objectString))
                     {
                         //In case of emptiness the solution is compatible, otherwise proceed with comparison
                         if (!row.IsNull(objectString))
@@ -150,7 +150,7 @@ namespace RDFSharp.Query
                     #endregion
 
                     //Verify filter's response on the pattern resultset
-                    if ((subjectCompared || predicateCompared || objectCompared) && patternResultsEnumerable.Any())
+                    if ((subjectCompared || predicateCompared || objectCompared) && patternResultsEnumerable.Count() > 0)
                         keepRow = true;
                 }
             }

@@ -206,7 +206,7 @@ namespace RDFSharp.Query
         private static string PrintPrefixes(List<RDFNamespace> operationPrefixes)
         {
             StringBuilder sb = new StringBuilder();
-            if (operationPrefixes.Any())
+            if (operationPrefixes.Count > 0)
             {
                 operationPrefixes.ForEach(pf => sb.AppendLine(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">")));
                 sb.AppendLine();
