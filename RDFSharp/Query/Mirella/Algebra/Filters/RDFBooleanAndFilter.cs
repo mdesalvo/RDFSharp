@@ -43,19 +43,24 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFBooleanAndFilter(RDFFilter leftFilter, RDFFilter rightFilter)
         {
-            #region Guards
-            if (leftFilter == null)
-                throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"leftFilter\" parameter is null.");
-            if (leftFilter is RDFExistsFilter)
-                throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"leftFilter\" parameter is of type RDFExistsFilter: this is not allowed.");
-            if (rightFilter == null)
-                throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"rightFilter\" parameter is null.");
-            if (rightFilter is RDFExistsFilter)
-                throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"rightFilter\" parameter is of type RDFExistsFilter: this is not allowed.");
-            #endregion
-
-            LeftFilter = leftFilter;
-            RightFilter = rightFilter;
+            switch (leftFilter)
+            {
+                case null:
+                    throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"leftFilter\" parameter is null.");
+                case RDFExistsFilter _:
+                    throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"leftFilter\" parameter is of type RDFExistsFilter: this is not allowed.");
+            }
+            switch (rightFilter)
+            {
+                case null:
+                    throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"rightFilter\" parameter is null.");
+                case RDFExistsFilter _:
+                    throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"rightFilter\" parameter is of type RDFExistsFilter: this is not allowed.");
+                default:
+                    LeftFilter = leftFilter;
+                    RightFilter = rightFilter;
+                    break;
+            }
         }
         #endregion
 

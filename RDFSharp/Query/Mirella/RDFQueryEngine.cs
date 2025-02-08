@@ -204,54 +204,52 @@ namespace RDFSharp.Query
         {
             foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
             {
-                #region PATTERN GROUP
-                if (evaluableQueryMember is RDFPatternGroup patternGroup)
+                switch (evaluableQueryMember)
                 {
-                    //Get the intermediate result tables of the pattern group
-                    EvaluatePatternGroup(patternGroup, datasource);
+                    case RDFPatternGroup patternGroup:
+                        //Get the intermediate result tables of the pattern group
+                        EvaluatePatternGroup(patternGroup, datasource);
 
-                    //Get the result table of the pattern group
-                    FinalizePatternGroup(patternGroup);
+                        //Get the result table of the pattern group
+                        FinalizePatternGroup(patternGroup);
 
-                    //Apply the filters of the pattern group to its result table
-                    ApplyFilters(patternGroup);
-                }
-                #endregion
-
-                #region SUBQUERY
-                else if (evaluableQueryMember is RDFSelectQuery subQuery)
-                {
-                    //Get the result table of the subquery
-                    RDFSelectQueryResult subQueryResult = subQuery.ApplyToDataSource(datasource);
-                    if (!QueryMemberResultTables.ContainsKey(subQuery.QueryMemberID))
+                        //Apply the filters of the pattern group to its result table
+                        ApplyFilters(patternGroup);
+                        break;
+                    case RDFSelectQuery subQuery:
                     {
-                        //Populate its name
-                        QueryMemberResultTables.Add(subQuery.QueryMemberID, subQueryResult.SelectResults);
+                        //Get the result table of the subquery
+                        RDFSelectQueryResult subQueryResult = subQuery.ApplyToDataSource(datasource);
+                        if (!QueryMemberResultTables.ContainsKey(subQuery.QueryMemberID))
+                        {
+                            //Populate its name
+                            QueryMemberResultTables.Add(subQuery.QueryMemberID, subQueryResult.SelectResults);
 
-                        //Populate its metadata (IsOptional)
-                        if (!subQueryResult.SelectResults.ExtendedProperties.ContainsKey(IsOptional))
-                            subQueryResult.SelectResults.ExtendedProperties.Add(IsOptional, subQuery.IsOptional);
-                        else
-                            subQueryResult.SelectResults.ExtendedProperties[IsOptional] = subQuery.IsOptional
-                                                                                           || (bool)subQueryResult.SelectResults.ExtendedProperties[IsOptional];
+                            //Populate its metadata (IsOptional)
+                            if (!subQueryResult.SelectResults.ExtendedProperties.ContainsKey(IsOptional))
+                                subQueryResult.SelectResults.ExtendedProperties.Add(IsOptional, subQuery.IsOptional);
+                            else
+                                subQueryResult.SelectResults.ExtendedProperties[IsOptional] = subQuery.IsOptional
+                                    || (bool)subQueryResult.SelectResults.ExtendedProperties[IsOptional];
 
-                        //Populate its metadata (JoinAsUnion)
-                        if (!subQueryResult.SelectResults.ExtendedProperties.ContainsKey(JoinAsUnion))
-                            subQueryResult.SelectResults.ExtendedProperties.Add(JoinAsUnion, subQuery.JoinAsUnion);
-                        else
-                            subQueryResult.SelectResults.ExtendedProperties[JoinAsUnion] = subQuery.JoinAsUnion;
+                            //Populate its metadata (JoinAsUnion)
+                            if (!subQueryResult.SelectResults.ExtendedProperties.ContainsKey(JoinAsUnion))
+                                subQueryResult.SelectResults.ExtendedProperties.Add(JoinAsUnion, subQuery.JoinAsUnion);
+                            else
+                                subQueryResult.SelectResults.ExtendedProperties[JoinAsUnion] = subQuery.JoinAsUnion;
 
-                        //Populate its metadata (JoinAsMinus)
-                        if (!subQueryResult.SelectResults.ExtendedProperties.ContainsKey(JoinAsMinus))
-                            subQueryResult.SelectResults.ExtendedProperties.Add(JoinAsMinus, subQuery.JoinAsMinus);
-                        else
-                            subQueryResult.SelectResults.ExtendedProperties[JoinAsMinus] = subQuery.JoinAsMinus;
+                            //Populate its metadata (JoinAsMinus)
+                            if (!subQueryResult.SelectResults.ExtendedProperties.ContainsKey(JoinAsMinus))
+                                subQueryResult.SelectResults.ExtendedProperties.Add(JoinAsMinus, subQuery.JoinAsMinus);
+                            else
+                                subQueryResult.SelectResults.ExtendedProperties[JoinAsMinus] = subQuery.JoinAsMinus;
 
-                        //Save updates
-                        QueryMemberResultTables[subQuery.QueryMemberID] = subQueryResult.SelectResults;
+                            //Save updates
+                            QueryMemberResultTables[subQuery.QueryMemberID] = subQueryResult.SelectResults;
+                        }
+                        break;
                     }
                 }
-                #endregion
             }
         }
 
@@ -302,80 +300,74 @@ namespace RDFSharp.Query
                 List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().Distinct().ToList();
                 foreach (RDFPatternGroupMember evaluablePGMember in evaluablePGMembers)
                 {
-                    #region Pattern
-                    if (evaluablePGMember is RDFPattern pattern)
+                    switch (evaluablePGMember)
                     {
-                        DataTable patternResultsTable = ApplyPattern(pattern, dataSource);
+                        case RDFPattern pattern:
+                        {
+                            DataTable patternResultsTable = ApplyPattern(pattern, dataSource);
 
-                        //Set name and metadata of result datatable
-                        patternResultsTable.ExtendedProperties.Add(IsOptional, pattern.IsOptional);
-                        patternResultsTable.ExtendedProperties.Add(JoinAsUnion, pattern.JoinAsUnion);
-                        patternResultsTable.ExtendedProperties.Add(JoinAsMinus, pattern.JoinAsMinus);
+                            //Set name and metadata of result datatable
+                            patternResultsTable.ExtendedProperties.Add(IsOptional, pattern.IsOptional);
+                            patternResultsTable.ExtendedProperties.Add(JoinAsUnion, pattern.JoinAsUnion);
+                            patternResultsTable.ExtendedProperties.Add(JoinAsMinus, pattern.JoinAsMinus);
 
-                        //Save result datatable
-                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
+                            //Save result datatable
+                            PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
+                            break;
+                        }
+                        case RDFPropertyPath propertyPath:
+                        {
+                            DataTable pPathResultsTable = ApplyPropertyPath(propertyPath, dataSource);
+
+                            //Save result datatable
+                            PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
+                            break;
+                        }
+                        case RDFValues values:
+                        {
+                            //Transform SPARQL values into an equivalent filter
+                            RDFValuesFilter valuesFilter = values.GetValuesFilter();
+
+                            //Save result datatable
+                            PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(valuesFilter.ValuesTable);
+
+                            //Inject SPARQL values filter
+                            patternGroup.AddFilter(valuesFilter);
+                            break;
+                        }
+                        case RDFBind bind:
+                        {
+                            //Bind operator is evaluated like an artificial ending of the pattern group:
+                            // first we combine the tables collected until this moment
+                            // then we evaluate the bind expression and project the bind variable, producing the comprehensive bind table
+                            // finally we drop all tables collected until this moment, except the comprehensive bind table
+
+                            //Populate current patternGroup result table
+                            DataTable currentPatternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID]);
+
+                            //Evaluate bind operator on the current patternGroup result table
+                            ProjectBind(bind, currentPatternGroupResultTable);
+
+                            //Delete previous patternGroup result tables and replace them with bind operator's one
+                            PatternGroupMemberResultTables[patternGroup.QueryMemberID].Clear();
+                            PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(currentPatternGroupResultTable);
+                            break;
+                        }
+                        case RDFExistsFilter existsFilter:
+                        {
+                            DataTable existsFilterResultsTable = ApplyPattern(existsFilter.Pattern, dataSource);
+
+                            //Set name and metadata of result datatable
+                            existsFilterResultsTable.ExtendedProperties.Add(IsOptional, false);
+                            existsFilterResultsTable.ExtendedProperties.Add(JoinAsUnion, false);
+                            existsFilterResultsTable.ExtendedProperties.Add(JoinAsMinus, false);
+
+                            //Save result datatable (directly into the filter)
+                            existsFilter.PatternResults?.Clear();
+                            existsFilter.PatternResults = existsFilterResultsTable;
+                            break;
+                        }
                     }
-                    #endregion
-
-                    #region PropertyPath
-                    else if (evaluablePGMember is RDFPropertyPath propertyPath)
-                    {
-                        DataTable pPathResultsTable = ApplyPropertyPath(propertyPath, dataSource);
-
-                        //Save result datatable
-                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
-                    }
-                    #endregion
-
-                    #region Values
-                    else if (evaluablePGMember is RDFValues values)
-                    {
-                        //Transform SPARQL values into an equivalent filter
-                        RDFValuesFilter valuesFilter = values.GetValuesFilter();
-
-                        //Save result datatable
-                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(valuesFilter.ValuesTable);
-
-                        //Inject SPARQL values filter
-                        patternGroup.AddFilter(valuesFilter);
-                    }
-                    #endregion
-
-                    #region Bind
-                    else if (evaluablePGMember is RDFBind bind)
-                    {
-                        //Bind operator is evaluated like an artificial ending of the pattern group:
-                        // first we combine the tables collected until this moment
-                        // then we evaluate the bind expression and project the bind variable, producing the comprehensive bind table
-                        // finally we drop all tables collected until this moment, except the comprehensive bind table
-
-                        //Populate current patternGroup result table
-                        DataTable currentPatternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID]);
-
-                        //Evaluate bind operator on the current patternGroup result table
-                        ProjectBind(bind, currentPatternGroupResultTable);
-
-                        //Delete previous patternGroup result tables and replace them with bind operator's one
-                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Clear();
-                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(currentPatternGroupResultTable);
-                    }
-                    #endregion
-
-                    #region Filter (Exists/Not Exists)
-                    else if (evaluablePGMember is RDFExistsFilter existsFilter)
-                    {
-                        DataTable existsFilterResultsTable = ApplyPattern(existsFilter.Pattern, dataSource);
-
-                        //Set name and metadata of result datatable
-                        existsFilterResultsTable.ExtendedProperties.Add(IsOptional, false);
-                        existsFilterResultsTable.ExtendedProperties.Add(JoinAsUnion, false);
-                        existsFilterResultsTable.ExtendedProperties.Add(JoinAsMinus, false);
-
-                        //Save result datatable (directly into the filter)
-                        existsFilter.PatternResults?.Clear();
-                        existsFilter.PatternResults = existsFilterResultsTable;
-                    }
-                    #endregion
                 }
             }
         }
@@ -662,10 +654,15 @@ namespace RDFSharp.Query
             //Iterate the describe terms of the query
             foreach (RDFPatternMember describeTerm in describeQuery.DescribeTerms)
             {
-                if (describeTerm is RDFResource describeResource)
-                    result.Merge(DescribeResourceTerm(describeResource, dataSource, result), true, MissingSchemaAction.Add);
-                else if (describeTerm is RDFVariable describeVariable)
-                    result.Merge(DescribeVariableTerm(describeVariable, dataSource, result, resultTable), true, MissingSchemaAction.Add);
+                switch (describeTerm)
+                {
+                    case RDFResource describeResource:
+                        result.Merge(DescribeResourceTerm(describeResource, dataSource, result), true, MissingSchemaAction.Add);
+                        break;
+                    case RDFVariable describeVariable:
+                        result.Merge(DescribeVariableTerm(describeVariable, dataSource, result, resultTable), true, MissingSchemaAction.Add);
+                        break;
+                }
             }
 
             return result;
@@ -828,15 +825,17 @@ namespace RDFSharp.Query
         internal void FetchDescribeVariablesFromQueryMembers(RDFDescribeQuery describeQuery, IEnumerable<RDFQueryMember> evaluableQueryMembers)
         {
             foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
-            {
-                //PATTERN GROUP
-                if (evaluableQueryMember is RDFPatternGroup pgEvaluableQueryMember)
-                    pgEvaluableQueryMember.Variables.ForEach(v => describeQuery.AddDescribeTerm(v));
-                
-                //SUBQUERY
-                else if (evaluableQueryMember is RDFSelectQuery sqEvaluableQueryMember)
-                    FetchDescribeVariablesFromQueryMembers(describeQuery, sqEvaluableQueryMember.GetEvaluableQueryMembers());
-            }
+                switch (evaluableQueryMember)
+                {
+                    //PATTERN GROUP
+                    case RDFPatternGroup pgEvaluableQueryMember:
+                        pgEvaluableQueryMember.Variables.ForEach(v => describeQuery.AddDescribeTerm(v));
+                        break;
+                    //SUBQUERY
+                    case RDFSelectQuery sqEvaluableQueryMember:
+                        FetchDescribeVariablesFromQueryMembers(describeQuery, sqEvaluableQueryMember.GetEvaluableQueryMembers());
+                        break;
+                }
         }
 
         /// <summary>
@@ -1856,10 +1855,13 @@ namespace RDFSharp.Query
         internal static DataTable CombineTables(List<DataTable> dataTables)
         {
             DataTable finalTable = new DataTable();
-            if (dataTables.Count == 0)
-                return finalTable;
-            if (dataTables.Count == 1)
-                return dataTables[0];
+            switch (dataTables.Count)
+            {
+                case 0:
+                    return finalTable;
+                case 1:
+                    return dataTables[0];
+            }
 
             #region Utilities
             bool ProcessUnions()
@@ -1956,13 +1958,13 @@ namespace RDFSharp.Query
             bool hasDoneUnions = ProcessUnions();
             if (hasDoneUnions)
                 dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) 
-                                            && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
+                                                    && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
 
             //Step 2: process Minus operators
             bool hasDoneMinus = ProcessMinus();
             if (hasDoneMinus)
                 dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) 
-                                            && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
+                                                    && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
 
             //Step 3: compute joins
             ComputeJoins(hasDoneUnions);

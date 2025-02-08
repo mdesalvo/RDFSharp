@@ -74,17 +74,21 @@ namespace RDFSharp.Model
                         HashSet<string>.Enumerator langTagsEnumerator = LanguageTags.GetEnumerator();
                         while (langTagsEnumerator.MoveNext() && !langMatches)
                         {
-                            //NO language is found in the variable
-                            if (langTagsEnumerator.Current == string.Empty)
-                                langMatches = !Regex.IsMatch(valueNodePlainLiteral.ToString(), string.Concat("@", RDFPlainLiteral.LangTagMask, "$"), RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-                            //ANY language is found in the variable
-                            else if (langTagsEnumerator.Current == "*")
-                                langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), string.Concat("@", RDFPlainLiteral.LangTagMask, "$"), RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-                            //GIVEN language is found in the variable
-                            else
-                                langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), string.Concat("@", langTagsEnumerator.Current, RDFPlainLiteral.LangTagSubMask, "$"), RegexOptions.IgnoreCase);
+                            switch (langTagsEnumerator.Current)
+                            {
+                                //NO language is found in the variable
+                                case "":
+                                    langMatches = !Regex.IsMatch(valueNodePlainLiteral.ToString(), string.Concat("@", RDFPlainLiteral.LangTagMask, "$"), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                                    break;
+                                //ANY language is found in the variable
+                                case "*":
+                                    langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), string.Concat("@", RDFPlainLiteral.LangTagMask, "$"), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                                    break;
+                                //GIVEN language is found in the variable
+                                default:
+                                    langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), string.Concat("@", langTagsEnumerator.Current, RDFPlainLiteral.LangTagSubMask, "$"), RegexOptions.IgnoreCase);
+                                    break;
+                            }
                         }
                         if (!langMatches)
                             report.AddResult(new RDFValidationResult(shape,

@@ -89,54 +89,40 @@ namespace RDFSharp.Query
                 return 1;
             #endregion
             
-            #region RESOURCE/CONTEXT
-            if (left is RDFResource || left is RDFContext)
+            switch (left)
             {
-                //RESOURCE/CONTEXT VS RESOURCE/CONTEXT/PLAINLITERAL
-                if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
-                    return string.Compare(left.ToString(), right.ToString(), StringComparison.Ordinal);
-                
-                //RESOURCE/CONTEXT VS TYPEDLITERAL
-                else
+                case RDFResource _:
+                case RDFContext _:
                 {
+                    //RESOURCE/CONTEXT VS RESOURCE/CONTEXT/PLAINLITERAL
+                    if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
+                        return string.Compare(left.ToString(), right.ToString(), StringComparison.Ordinal);
+                
+                    //RESOURCE/CONTEXT VS TYPEDLITERAL
                     if (((RDFTypedLiteral)right).HasStringDatatype())
                         return string.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
                     return -99; //Type Error
                 }
-            }
-            #endregion
-
-            #region PLAINLITERAL
-            else if (left is RDFPlainLiteral)
-            {
                 //PLAINLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
-                if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
+                case RDFPlainLiteral _ when right is RDFResource || right is RDFContext || right is RDFPlainLiteral:
                     return string.Compare(left.ToString(), right.ToString(), StringComparison.Ordinal);
-                
                 //PLAINLITERAL VS TYPEDLITERAL
-                else
-                {
-                    if (((RDFTypedLiteral)right).HasStringDatatype())
-                        return string.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
+                case RDFPlainLiteral _ when ((RDFTypedLiteral)right).HasStringDatatype():
+                    return string.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
+                case RDFPlainLiteral _:
                     return -99; //Type Error
-                }
-            }
-            #endregion
-
-            #region TYPEDLITERAL
-            else
-            {
-                //TYPEDLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
-                if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
+                default:
                 {
-                    if (((RDFTypedLiteral)left).HasStringDatatype())
-                        return string.Compare(((RDFTypedLiteral)left).Value, right.ToString(), StringComparison.Ordinal);
-                    return -99; //Type Error
-                }
+                    //TYPEDLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
+                    if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
+                    {
+                        if (((RDFTypedLiteral)left).HasStringDatatype())
+                            return string.Compare(((RDFTypedLiteral)left).Value, right.ToString(), StringComparison.Ordinal);
+                        return -99; //Type Error
+                    }
 
-                //TYPEDLITERAL VS TYPEDLITERAL
-                else
-                {
+                    //TYPEDLITERAL VS TYPEDLITERAL
+
                     //DATETIME
                     if (((RDFTypedLiteral)left).HasDatetimeDatatype())
                     {
@@ -156,12 +142,12 @@ namespace RDFSharp.Query
                         {
                             //owl:rational needs parsing and evaluation before being compared (LEFT)
                             decimal leftValueDecimal = ((RDFTypedLiteral)left).Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL 
-                                                        ? RDFModelUtilities.ComputeOWLRationalValue((RDFTypedLiteral)left) 
-                                                        : decimal.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture);
+                                ? RDFModelUtilities.ComputeOWLRationalValue((RDFTypedLiteral)left) 
+                                : decimal.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture);
                             //owl:rational needs parsing and evaluation before being compared (RIGHT)
                             decimal rightValueDecimal = ((RDFTypedLiteral)right).Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL 
-                                                         ? RDFModelUtilities.ComputeOWLRationalValue((RDFTypedLiteral)right) 
-                                                         : decimal.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
+                                ? RDFModelUtilities.ComputeOWLRationalValue((RDFTypedLiteral)right) 
+                                : decimal.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
                             return leftValueDecimal.CompareTo(rightValueDecimal);
                         }
                         return -99; //Type Error
@@ -185,12 +171,12 @@ namespace RDFSharp.Query
                         if (((RDFTypedLiteral)right).HasGeographicDatatype())
                         {
                             Geometry leftGeometry = ((RDFTypedLiteral)left).Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString()) 
-                                                      ? RDFGeoExpression.WKTReader.Read(((RDFTypedLiteral)left).Value) 
-                                                      : RDFGeoExpression.GMLReader.Read(((RDFTypedLiteral)left).Value);
+                                ? RDFGeoExpression.WKTReader.Read(((RDFTypedLiteral)left).Value) 
+                                : RDFGeoExpression.GMLReader.Read(((RDFTypedLiteral)left).Value);
                             leftGeometry.SRID = 4326;
                             Geometry rightGeometry = ((RDFTypedLiteral)right).Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString())
-                                                      ? RDFGeoExpression.WKTReader.Read(((RDFTypedLiteral)right).Value)
-                                                      : RDFGeoExpression.GMLReader.Read(((RDFTypedLiteral)right).Value);
+                                ? RDFGeoExpression.WKTReader.Read(((RDFTypedLiteral)right).Value)
+                                : RDFGeoExpression.GMLReader.Read(((RDFTypedLiteral)right).Value);
                             rightGeometry.SRID = 4326;
                             return leftGeometry.CompareTo(rightGeometry);
                         }
@@ -225,7 +211,6 @@ namespace RDFSharp.Query
                     return -99; //Type Error
                 }
             }
-            #endregion
         }
 
         /// <summary>

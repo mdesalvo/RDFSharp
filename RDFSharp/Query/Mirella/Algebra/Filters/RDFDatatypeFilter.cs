@@ -62,7 +62,7 @@ namespace RDFSharp.Query
 
             VariableName = variable.ToString();
             Datatype = datatype ?? RDFDatatypeRegister.RDFSLiteral;
-            DatatypeRegex = new Regex($"\\^\\^{Datatype}$", RegexOptions.Compiled);
+            DatatypeRegex = new Regex($@"\^\^{Datatype}$", RegexOptions.Compiled);
         }
         #endregion
 

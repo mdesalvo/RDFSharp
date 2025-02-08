@@ -41,20 +41,30 @@ namespace RDFSharp.Query
         {
             RDFOperationResult result = new RDFOperationResult();
 
-            if (operation is RDFDeleteDataOperation deleteDataOperation)
-                result = EvaluateDeleteDataOperation(deleteDataOperation, datasource);
-            else if (operation is RDFDeleteWhereOperation deleteWhereOperation)
-                result = EvaluateDeleteWhereOperation(deleteWhereOperation, datasource);
-            else if (operation is RDFInsertDataOperation insertDataOperation)
-                result = EvaluateInsertDataOperation(insertDataOperation, datasource);
-            else if (operation is RDFInsertWhereOperation insertWhereOperation)
-                result = EvaluateInsertWhereOperation(insertWhereOperation, datasource);
-            else if (operation is RDFDeleteInsertWhereOperation deleteInsertWhereOperation)
-                result = EvaluateDeleteInsertWhereOperation(deleteInsertWhereOperation, datasource);
-            else if (operation is RDFLoadOperation loadOperation)
-                result = EvaluateLoadOperation(loadOperation, datasource);
-            else if (operation is RDFClearOperation clearOperation)
-                result = EvaluateClearOperation(clearOperation, datasource);
+            switch (operation)
+            {
+                case RDFDeleteDataOperation deleteDataOperation:
+                    result = EvaluateDeleteDataOperation(deleteDataOperation, datasource);
+                    break;
+                case RDFDeleteWhereOperation deleteWhereOperation:
+                    result = EvaluateDeleteWhereOperation(deleteWhereOperation, datasource);
+                    break;
+                case RDFInsertDataOperation insertDataOperation:
+                    result = EvaluateInsertDataOperation(insertDataOperation, datasource);
+                    break;
+                case RDFInsertWhereOperation insertWhereOperation:
+                    result = EvaluateInsertWhereOperation(insertWhereOperation, datasource);
+                    break;
+                case RDFDeleteInsertWhereOperation deleteInsertWhereOperation:
+                    result = EvaluateDeleteInsertWhereOperation(deleteInsertWhereOperation, datasource);
+                    break;
+                case RDFLoadOperation loadOperation:
+                    result = EvaluateLoadOperation(loadOperation, datasource);
+                    break;
+                case RDFClearOperation clearOperation:
+                    result = EvaluateClearOperation(clearOperation, datasource);
+                    break;
+            }
 
             return result;
         }

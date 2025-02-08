@@ -1144,13 +1144,15 @@ namespace RDFSharp.Model
                 int bufChar = ReadCodePoint(turtleData, turtleContext);
                 if (bufChar == closingCharacter)
                     break;
-                if (bufChar == -1)
-                    throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
-
-                //Unquoted literals cannot contain carriage return
-                if (bufChar == '\r' || bufChar == '\n')
-                    throw new RDFModelException("Illegal carriage return or new line in literal");
-                
+                switch (bufChar)
+                {
+                    case -1:
+                        throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
+                    //Unquoted literals cannot contain carriage return
+                    case '\r':
+                    case '\n':
+                        throw new RDFModelException("Illegal carriage return or new line in literal");
+                }
                 sb.Append(char.ConvertFromUtf32(bufChar));
 
                 if (bufChar == '\\')
@@ -1174,7 +1176,6 @@ namespace RDFSharp.Model
             StringBuilder sb = new StringBuilder();
 
             int doubleQuoteCount = 0;
-
             while (doubleQuoteCount < 3)
             {
                 int bufChar = ReadCodePoint(turtleData, turtleContext);
@@ -1612,12 +1613,12 @@ namespace RDFSharp.Model
                             string dtype = RDFQueryPrinter.PrintPatternMember(
                                             RDFQueryUtilities.ParseRDFPatternMember(
                                              tlitObj.Datatype.URI.ToString()), prefixes);
-                            string tLit = string.Concat(litValDelim, tlitObj.Value.Replace("\\", "\\\\"), litValDelim, "^^", dtype);
+                            string tLit = string.Concat(litValDelim, tlitObj.Value.Replace("\\", @"\\"), litValDelim, "^^", dtype);
                             result.Append(tLit);
                         }
                         else
                         {
-                            string pLit = string.Concat(litValDelim, ((RDFPlainLiteral)triple.Object).Value.Replace("\\", "\\\\"), litValDelim);
+                            string pLit = string.Concat(litValDelim, ((RDFPlainLiteral)triple.Object).Value.Replace("\\", @"\\"), litValDelim);
                             if (((RDFPlainLiteral)triple.Object).HasLanguage())
                                 pLit = string.Concat(pLit, "@", ((RDFPlainLiteral)triple.Object).Language);
                             result.Append(pLit);

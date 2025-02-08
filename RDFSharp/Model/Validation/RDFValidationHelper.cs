@@ -456,10 +456,15 @@ namespace RDFSharp.Model
             RDFGraph shapeHasValueConstraints = shapeDefinition[null, RDFVocabulary.SHACL.HAS_VALUE, null, null];
             foreach (RDFTriple shapeHasValueConstraint in shapeHasValueConstraints)
             {
-                if (shapeHasValueConstraint.Object is RDFResource shapeHasValueConstraintObject)
-                    shape.AddConstraint(new RDFHasValueConstraint(shapeHasValueConstraintObject));
-                else if (shapeHasValueConstraint.Object is RDFLiteral shapeHasValueConstraintLiteral)
-                    shape.AddConstraint(new RDFHasValueConstraint(shapeHasValueConstraintLiteral));
+                switch (shapeHasValueConstraint.Object)
+                {
+                    case RDFResource shapeHasValueConstraintObject:
+                        shape.AddConstraint(new RDFHasValueConstraint(shapeHasValueConstraintObject));
+                        break;
+                    case RDFLiteral shapeHasValueConstraintLiteral:
+                        shape.AddConstraint(new RDFHasValueConstraint(shapeHasValueConstraintLiteral));
+                        break;
+                }
             }
 
             //sh:in (accepted occurrences: N)
@@ -471,10 +476,15 @@ namespace RDFSharp.Model
                 RDFInConstraint inConstraint = new RDFInConstraint(shapeInConstraintCollection.ItemType);
                 shapeInConstraintCollection.Items.ForEach(item =>
                 {
-                    if (item is RDFResource itemRes)
-                        inConstraint.AddValue(itemRes);
-                    else if (item is RDFLiteral itemLit)
-                        inConstraint.AddValue(itemLit);
+                    switch (item)
+                    {
+                        case RDFResource itemRes:
+                            inConstraint.AddValue(itemRes);
+                            break;
+                        case RDFLiteral itemLit:
+                            inConstraint.AddValue(itemLit);
+                            break;
+                    }
                 });
                 shape.AddConstraint(inConstraint);
             }
@@ -505,17 +515,27 @@ namespace RDFSharp.Model
 
             //sh:maxExclusive (accepted occurrences: 1)
             RDFTriple shapeMaxExclusiveConstraint = shapeDefinition[null, RDFVocabulary.SHACL.MAX_EXCLUSIVE, null, null].FirstOrDefault();
-            if (shapeMaxExclusiveConstraint?.Object is RDFResource shapeMaxExclusiveConstraintObject)
-                shape.AddConstraint(new RDFMaxExclusiveConstraint(shapeMaxExclusiveConstraintObject));
-            else if (shapeMaxExclusiveConstraint?.Object is RDFLiteral shapeMaxExclusiveConstraintLiteral)
-                shape.AddConstraint(new RDFMaxExclusiveConstraint(shapeMaxExclusiveConstraintLiteral));
+            switch (shapeMaxExclusiveConstraint?.Object)
+            {
+                case RDFResource shapeMaxExclusiveConstraintObject:
+                    shape.AddConstraint(new RDFMaxExclusiveConstraint(shapeMaxExclusiveConstraintObject));
+                    break;
+                case RDFLiteral shapeMaxExclusiveConstraintLiteral:
+                    shape.AddConstraint(new RDFMaxExclusiveConstraint(shapeMaxExclusiveConstraintLiteral));
+                    break;
+            }
 
             //sh:maxInclusive (accepted occurrences: 1)
             RDFTriple shapeMaxInclusiveConstraint = shapeDefinition[null, RDFVocabulary.SHACL.MAX_INCLUSIVE, null, null].FirstOrDefault();
-            if (shapeMaxInclusiveConstraint?.Object is RDFResource)
-                shape.AddConstraint(new RDFMaxInclusiveConstraint((RDFResource)shapeMaxInclusiveConstraint.Object));
-            else if (shapeMaxInclusiveConstraint?.Object is RDFLiteral)
-                shape.AddConstraint(new RDFMaxInclusiveConstraint((RDFLiteral)shapeMaxInclusiveConstraint.Object));
+            switch (shapeMaxInclusiveConstraint?.Object)
+            {
+                case RDFResource resource:
+                    shape.AddConstraint(new RDFMaxInclusiveConstraint(resource));
+                    break;
+                case RDFLiteral literal:
+                    shape.AddConstraint(new RDFMaxInclusiveConstraint(literal));
+                    break;
+            }
 
             //sh:maxLength (accepted occurrences: 1)
             RDFTriple shapeMaxLengthConstraint = shapeDefinition[null, RDFVocabulary.SHACL.MAX_LENGTH, null, null].FirstOrDefault();
@@ -531,17 +551,27 @@ namespace RDFSharp.Model
 
             //sh:minExclusive (accepted occurrences: 1)
             RDFTriple shapeMinExclusiveConstraint = shapeDefinition[null, RDFVocabulary.SHACL.MIN_EXCLUSIVE, null, null].FirstOrDefault();
-            if (shapeMinExclusiveConstraint?.Object is RDFResource shapeMinExclusiveConstraintObject)
-                shape.AddConstraint(new RDFMinExclusiveConstraint(shapeMinExclusiveConstraintObject));
-            else if (shapeMinExclusiveConstraint?.Object is RDFLiteral shapeMinExclusiveConstraintLiteral)
-                shape.AddConstraint(new RDFMinExclusiveConstraint(shapeMinExclusiveConstraintLiteral));
+            switch (shapeMinExclusiveConstraint?.Object)
+            {
+                case RDFResource shapeMinExclusiveConstraintObject:
+                    shape.AddConstraint(new RDFMinExclusiveConstraint(shapeMinExclusiveConstraintObject));
+                    break;
+                case RDFLiteral shapeMinExclusiveConstraintLiteral:
+                    shape.AddConstraint(new RDFMinExclusiveConstraint(shapeMinExclusiveConstraintLiteral));
+                    break;
+            }
 
             //sh:minInclusive (accepted occurrences: 1)
             RDFTriple shapeMinInclusiveConstraint = shapeDefinition[null, RDFVocabulary.SHACL.MIN_INCLUSIVE, null, null].FirstOrDefault();
-            if (shapeMinInclusiveConstraint?.Object is RDFResource shapeMinInclusiveConstraintObject)
-                shape.AddConstraint(new RDFMinInclusiveConstraint(shapeMinInclusiveConstraintObject));
-            else if (shapeMinInclusiveConstraint?.Object is RDFLiteral shapeMinInclusiveConstraintLiteral)
-                shape.AddConstraint(new RDFMinInclusiveConstraint(shapeMinInclusiveConstraintLiteral));
+            switch (shapeMinInclusiveConstraint?.Object)
+            {
+                case RDFResource shapeMinInclusiveConstraintObject:
+                    shape.AddConstraint(new RDFMinInclusiveConstraint(shapeMinInclusiveConstraintObject));
+                    break;
+                case RDFLiteral shapeMinInclusiveConstraintLiteral:
+                    shape.AddConstraint(new RDFMinInclusiveConstraint(shapeMinInclusiveConstraintLiteral));
+                    break;
+            }
 
             //sh:minLength (accepted occurrences: 1)
             RDFTriple shapeMinLengthConstraint = shapeDefinition[null, RDFVocabulary.SHACL.MIN_LENGTH, null, null].FirstOrDefault();

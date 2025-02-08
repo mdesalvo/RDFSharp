@@ -70,7 +70,7 @@ namespace RDFSharp.Query
 
             #region Guards
             if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return expressionResult;
+                return null;
             #endregion
 
             try
@@ -85,12 +85,18 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                if (leftArgumentPMember is RDFResource)
-                    expressionResult = new RDFTypedLiteral(leftArgumentPMember.ToString().Length.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                else if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLiteral)
-                    expressionResult = new RDFTypedLiteral(leftArgumentPMemberPLiteral.Value.Length.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                else if (leftArgumentPMember is RDFTypedLiteral leftArgumentPMemberTLiteral && leftArgumentPMemberTLiteral.HasStringDatatype())
-                    expressionResult = new RDFTypedLiteral(leftArgumentPMemberTLiteral.Value.Length.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                switch (leftArgumentPMember)
+                {
+                    case RDFResource _:
+                        expressionResult = new RDFTypedLiteral(leftArgumentPMember.ToString().Length.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                        break;
+                    case RDFPlainLiteral leftArgumentPMemberPLiteral:
+                        expressionResult = new RDFTypedLiteral(leftArgumentPMemberPLiteral.Value.Length.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                        break;
+                    case RDFTypedLiteral leftArgumentPMemberTLiteral when leftArgumentPMemberTLiteral.HasStringDatatype():
+                        expressionResult = new RDFTypedLiteral(leftArgumentPMemberTLiteral.Value.Length.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                        break;
+                }
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }

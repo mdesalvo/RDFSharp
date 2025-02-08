@@ -58,8 +58,7 @@ namespace RDFSharp.Query
                 if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
                     return;
                 //Cache-Miss: distinctness passed
-                else
-                    AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
+                AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
             }
             //Get aggregator value
             double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d);

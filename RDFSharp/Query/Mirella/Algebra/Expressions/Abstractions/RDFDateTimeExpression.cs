@@ -50,19 +50,28 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(DATETIMEOP(L))
-            if (this is RDFYearExpression)
-                sb.Append("(YEAR(");
-            else if (this is RDFMonthExpression)
-                sb.Append("(MONTH(");
-            else if (this is RDFDayExpression)
-                sb.Append("(DAY(");
-            else if (this is RDFHoursExpression)
-                sb.Append("(HOURS(");
-            else if (this is RDFMinutesExpression)
-                sb.Append("(MINUTES(");
-            else if (this is RDFSecondsExpression)
-                sb.Append("(SECONDS(");
+            switch (this)
+            {
+                //(DATETIMEOP(L))
+                case RDFYearExpression _:
+                    sb.Append("(YEAR(");
+                    break;
+                case RDFMonthExpression _:
+                    sb.Append("(MONTH(");
+                    break;
+                case RDFDayExpression _:
+                    sb.Append("(DAY(");
+                    break;
+                case RDFHoursExpression _:
+                    sb.Append("(HOURS(");
+                    break;
+                case RDFMinutesExpression _:
+                    sb.Append("(MINUTES(");
+                    break;
+                case RDFSecondsExpression _:
+                    sb.Append("(SECONDS(");
+                    break;
+            }
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
@@ -83,7 +92,7 @@ namespace RDFSharp.Query
 
             #region Guards
             if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return expressionResult;
+                return null;
             #endregion
 
             try
@@ -103,19 +112,28 @@ namespace RDFSharp.Query
                 {
                     if (DateTime.TryParse(leftArgumentTypedLiteral.Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out DateTime leftArgumentDateTimeValue))
                     {
-                        //Execute the datetime expression's comparison logics
-                        if (this is RDFYearExpression)
-                            expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Year.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                        else if (this is RDFMonthExpression)
-                            expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Month.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                        else if (this is RDFDayExpression)
-                            expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Day.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                        else if (this is RDFHoursExpression)
-                            expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Hour.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                        else if (this is RDFMinutesExpression)
-                            expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Minute.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                        else if (this is RDFSecondsExpression)
-                            expressionResult = new RDFTypedLiteral($"{leftArgumentDateTimeValue.Second}.{leftArgumentDateTimeValue.Millisecond}", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+                        switch (this)
+                        {
+                            //Execute the datetime expression's comparison logics
+                            case RDFYearExpression _:
+                                expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Year.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                                break;
+                            case RDFMonthExpression _:
+                                expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Month.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                                break;
+                            case RDFDayExpression _:
+                                expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Day.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                                break;
+                            case RDFHoursExpression _:
+                                expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Hour.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                                break;
+                            case RDFMinutesExpression _:
+                                expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Minute.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                                break;
+                            case RDFSecondsExpression _:
+                                expressionResult = new RDFTypedLiteral($"{leftArgumentDateTimeValue.Second}.{leftArgumentDateTimeValue.Millisecond}", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+                                break;
+                        }
                     }
                 }
                 #endregion

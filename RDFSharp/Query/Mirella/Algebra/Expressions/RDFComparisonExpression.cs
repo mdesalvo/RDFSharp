@@ -142,9 +142,9 @@ namespace RDFSharp.Query
 
             #region Guards
             if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return expressionResult;
+                return null;
             if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
-                return expressionResult;
+                return null;
             #endregion
 
             try
@@ -166,7 +166,7 @@ namespace RDFSharp.Query
 
                 //Binding error from arguments
                 if (leftArgumentPMember == null || rightArgumentPMember == null)
-                    return expressionResult;
+                    return null;
                 #endregion
 
                 #region Calculate Result
@@ -174,32 +174,29 @@ namespace RDFSharp.Query
 
                 //Type Error
                 if (comparison == -99)
-                    return expressionResult;
+                    return null;
 
                 //Type Correct
-                else
+                switch (ComparisonFlavor)
                 {
-                    switch (ComparisonFlavor)
-                    {
-                        case RDFQueryEnums.RDFComparisonFlavors.LessThan:
-                            expressionResult = (comparison  < 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
-                            break;
-                        case RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan:
-                            expressionResult = (comparison <= 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
-                            break;
-                        case RDFQueryEnums.RDFComparisonFlavors.EqualTo:
-                            expressionResult = (comparison == 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
-                            break;
-                        case RDFQueryEnums.RDFComparisonFlavors.NotEqualTo:
-                            expressionResult = (comparison != 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
-                            break;
-                        case RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan:
-                            expressionResult = (comparison >= 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
-                            break;
-                        case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
-                            expressionResult = (comparison  > 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
-                            break;
-                    }
+                    case RDFQueryEnums.RDFComparisonFlavors.LessThan:
+                        expressionResult = (comparison  < 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
+                        break;
+                    case RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan:
+                        expressionResult = (comparison <= 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
+                        break;
+                    case RDFQueryEnums.RDFComparisonFlavors.EqualTo:
+                        expressionResult = (comparison == 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
+                        break;
+                    case RDFQueryEnums.RDFComparisonFlavors.NotEqualTo:
+                        expressionResult = (comparison != 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
+                        break;
+                    case RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan:
+                        expressionResult = (comparison >= 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
+                        break;
+                    case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
+                        expressionResult = (comparison  > 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
+                        break;
                 }
                 #endregion
             }

@@ -86,9 +86,9 @@ namespace RDFSharp.Query
 
             #region Guards
             if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return expressionResult;
+                return null;
             if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
-                return expressionResult;
+                return null;
             #endregion
 
             try
@@ -110,25 +110,40 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                //Transform left argument result into a plain literal
-                if (leftArgumentPMember is RDFResource)
-                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMember.ToString());
-                else if (leftArgumentPMember is RDFPlainLiteral plitLeftArgumentPMember)
-                    leftArgumentPMember = new RDFPlainLiteral(plitLeftArgumentPMember.Value);
-                else if (leftArgumentPMember is RDFTypedLiteral tlitLeftArgumentPMember && tlitLeftArgumentPMember.HasStringDatatype())
-                    leftArgumentPMember = new RDFPlainLiteral(tlitLeftArgumentPMember.Value);
-                else
-                    leftArgumentPMember = null; //binding error => cleanup
 
-                //Transform right argument result into a plain literal
-                if (rightArgumentPMember is RDFResource)
-                    rightArgumentPMember = new RDFPlainLiteral(rightArgumentPMember.ToString());
-                else if (rightArgumentPMember is RDFPlainLiteral plitRightArgumentPMember)
-                    rightArgumentPMember = new RDFPlainLiteral(plitRightArgumentPMember.Value);
-                else if (rightArgumentPMember is RDFTypedLiteral tlitRightArgumentPMember && tlitRightArgumentPMember.HasStringDatatype())
-                    rightArgumentPMember = new RDFPlainLiteral(tlitRightArgumentPMember.Value);
-                else
-                    rightArgumentPMember = null; //binding error => cleanup
+                switch (leftArgumentPMember)
+                {
+                    //Transform left argument result into a plain literal
+                    case RDFResource _:
+                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMember.ToString());
+                        break;
+                    case RDFPlainLiteral plitLeftArgumentPMember:
+                        leftArgumentPMember = new RDFPlainLiteral(plitLeftArgumentPMember.Value);
+                        break;
+                    case RDFTypedLiteral tlitLeftArgumentPMember when tlitLeftArgumentPMember.HasStringDatatype():
+                        leftArgumentPMember = new RDFPlainLiteral(tlitLeftArgumentPMember.Value);
+                        break;
+                    default:
+                        leftArgumentPMember = null; //binding error => cleanup
+                        break;
+                }
+
+                switch (rightArgumentPMember)
+                {
+                    //Transform right argument result into a plain literal
+                    case RDFResource _:
+                        rightArgumentPMember = new RDFPlainLiteral(rightArgumentPMember.ToString());
+                        break;
+                    case RDFPlainLiteral plitRightArgumentPMember:
+                        rightArgumentPMember = new RDFPlainLiteral(plitRightArgumentPMember.Value);
+                        break;
+                    case RDFTypedLiteral tlitRightArgumentPMember when tlitRightArgumentPMember.HasStringDatatype():
+                        rightArgumentPMember = new RDFPlainLiteral(tlitRightArgumentPMember.Value);
+                        break;
+                    default:
+                        rightArgumentPMember = null; //binding error => cleanup
+                        break;
+                }
 
                 if (leftArgumentPMember != null && rightArgumentPMember != null)
                     expressionResult = leftArgumentPMember.ToString().StartsWith(rightArgumentPMember.ToString(), StringComparison.Ordinal) ? RDFTypedLiteral.True : RDFTypedLiteral.False;

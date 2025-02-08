@@ -191,10 +191,8 @@ namespace RDFSharp.Query
 
                 return filteredTable;
             }
-            else
-            {
-                return resultTable;
-            }
+
+            return resultTable;
         }
 
         /// <summary>
@@ -205,10 +203,9 @@ namespace RDFSharp.Query
             List<string> partitionKey = new List<string>();
             PartitionVariables.ForEach(pv =>
             {
-                if (tableRow.IsNull(pv.VariableName))
-                    partitionKey.Add(string.Concat(pv.VariableName, "§PV§", string.Empty));
-                else
-                    partitionKey.Add(string.Concat(pv.VariableName, "§PV§", tableRow[pv.VariableName].ToString()));
+                partitionKey.Add(tableRow.IsNull(pv.VariableName)
+                    ? string.Concat(pv.VariableName, "§PV§", string.Empty)
+                    : string.Concat(pv.VariableName, "§PV§", tableRow[pv.VariableName].ToString()));
             });
             return string.Join("§PK§", partitionKey);
         }

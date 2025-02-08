@@ -85,13 +85,18 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                if (leftArgumentPMember is RDFTypedLiteral leftArgumentPMemberTLiteral)
-                    expressionResult = new RDFResource(leftArgumentPMemberTLiteral.Datatype.ToString());
-                else if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLiteral)
-                    expressionResult = leftArgumentPMemberPLiteral.HasLanguage() ?
-                                        leftArgumentPMemberPLiteral.HasDirection() ? RDFVocabulary.RDF.DIR_LANG_STRING 
-                                                                                   : RDFVocabulary.RDF.LANG_STRING
-                                                                                 : RDFVocabulary.XSD.STRING;
+                switch (leftArgumentPMember)
+                {
+                    case RDFTypedLiteral leftArgumentPMemberTLiteral:
+                        expressionResult = new RDFResource(leftArgumentPMemberTLiteral.Datatype.ToString());
+                        break;
+                    case RDFPlainLiteral leftArgumentPMemberPLiteral:
+                        expressionResult = leftArgumentPMemberPLiteral.HasLanguage() ?
+                            leftArgumentPMemberPLiteral.HasDirection() ? RDFVocabulary.RDF.DIR_LANG_STRING 
+                                                                       : RDFVocabulary.RDF.LANG_STRING
+                                                                       : RDFVocabulary.XSD.STRING;
+                        break;
+                }
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }

@@ -65,11 +65,16 @@ namespace RDFSharp.Query
                     if (bool.TryParse(leftArgumentTypedLiteral.Value, out bool leftArgumentBooleanValue)
                          && bool.TryParse(rightArgumentTypedLiteral.Value, out bool rightArgumentBooleanValue))
                     {
-                        //Execute the boolean expression's comparison logics
-                        if (this is RDFBooleanAndExpression)
-                            expressionResult = leftArgumentBooleanValue && rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False;
-                        else if (this is RDFBooleanOrExpression)
-                            expressionResult = leftArgumentBooleanValue || rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        switch (this)
+                        {
+                            //Execute the boolean expression's comparison logics
+                            case RDFBooleanAndExpression _:
+                                expressionResult = leftArgumentBooleanValue && rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                                break;
+                            case RDFBooleanOrExpression _:
+                                expressionResult = leftArgumentBooleanValue || rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                                break;
+                        }
                     }
                 }
                 #endregion

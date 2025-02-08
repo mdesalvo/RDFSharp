@@ -133,7 +133,7 @@ namespace RDFSharp.Store
                         #region literal
                         else
                         {
-                            quadrupleTemplate = quadrupleTemplate.Replace("{VAL}", RDFModelUtilities.EscapeControlCharsForXML(RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)q.Object).Value.Replace("\\", "\\\\").Replace("\"", "\\\""))));
+                            quadrupleTemplate = quadrupleTemplate.Replace("{VAL}", RDFModelUtilities.EscapeControlCharsForXML(RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)q.Object).Value.Replace("\\", @"\\").Replace("\"", "\\\""))));
                             quadrupleTemplate = quadrupleTemplate.Replace("\n", "\\n")
                                                                  .Replace("\t", "\\t")
                                                                  .Replace("\r", "\\r");
@@ -253,7 +253,7 @@ namespace RDFSharp.Store
                             #region sanitize
                             tokens[2] = RDFNTriples.regexSqt.Value.Replace(tokens[2], string.Empty);
                             tokens[2] = RDFNTriples.regexEqt.Value.Replace(tokens[2], string.Empty);
-                            tokens[2] = tokens[2].Replace("\\\\", "\\")
+                            tokens[2] = tokens[2].Replace(@"\\", "\\")
                                                  .Replace("\\\"", "\"")
                                                  .Replace("\\n", "\n")
                                                  .Replace("\\t", "\t")
@@ -575,245 +575,243 @@ namespace RDFSharp.Store
                 throw new Exception("found illegal N-Quad, unrecognized 'S->->->' structure");
             }
             //B->->-> quadruple
-            else
+
+            //B->P->O->C
+            if (BPOC.Value.Match(nquad).Success)
             {
-                //B->P->O->C
-                if (BPOC.Value.Match(nquad).Success)
-                {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                nquad = nquad.Trim('.', ' ', '\t');
 
-                    //subject
-                    tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                //subject
+                tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
+                nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                tokens[0] = tokens[0].Trim(' ', '\t');
 
-                    //predicate
-                    tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                //predicate
+                tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                tokens[1] = tokens[1].Trim(' ', '\t');
 
-                    //object
-                    tokens[2] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
-                    tokens[2] = tokens[2].Trim(' ', '\t');
+                //object
+                tokens[2] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
+                tokens[2] = tokens[2].Trim(' ', '\t');
 
-                    //context
-                    tokens[3] = nquad.Trim(' ', '\t');
+                //context
+                tokens[3] = nquad.Trim(' ', '\t');
 
-                    return tokens;
-                }
-
-                //B->P->O->
-                if (RDFNTriples.BPO.Value.Match(nquad).Success)
-                {
-                    nquad = nquad.Trim('.', ' ', '\t');
-
-                    //subject
-                    tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
-
-                    //predicate
-                    tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
-
-                    //object
-                    tokens[2] = nquad.Trim(' ', '\t');
-
-                    return tokens;
-                }
-
-                //B->P->L(PLAIN)->C
-                if (BPLC_PLAIN.Value.Match(nquad).Success)
-                {
-                    nquad = nquad.Trim('.', ' ', '\t');
-
-                    //subject
-                    tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
-
-                    //predicate
-                    tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
-
-                    //plain literal
-                    tokens[2] = nquad.Substring(0, nquad.LastIndexOf('<'));
-                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
-                    tokens[2] = tokens[2].Trim(' ', '\t');
-
-                    //context
-                    tokens[3] = nquad.Trim(' ', '\t');
-
-                    return tokens;
-                }
-
-                //B->P->L(PLAIN)->
-                if (RDFNTriples.BPL_PLAIN.Value.Match(nquad).Success)
-                {
-                    nquad = nquad.Trim('.', ' ', '\t');
-
-                    //subject
-                    tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
-
-                    //predicate
-                    tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
-
-                    //plain literal
-                    tokens[2] = nquad.Trim(' ', '\t');
-
-                    return tokens;
-                }
-
-                //B->P->L(PLANG)->C
-                if (BPLC_PLANG.Value.Match(nquad).Success)
-                {
-                    nquad = nquad.Trim('.', ' ', '\t');
-
-                    //subject
-                    tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
-
-                    //predicate
-                    tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
-
-                    //plain literal with language
-                    tokens[2] = nquad.Substring(0, nquad.LastIndexOf('<'));
-                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
-                    tokens[2] = tokens[2].Trim(' ', '\t');
-
-                    //context
-                    tokens[3] = nquad.Trim(' ', '\t');
-
-                    return tokens;
-                }
-
-                //B->P->L(PLANG)->
-                if (RDFNTriples.BPL_PLANG.Value.Match(nquad).Success)
-                {
-                    nquad = nquad.Trim('.', ' ', '\t');
-
-                    //subject
-                    tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
-
-                    //predicate
-                    tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
-
-                    //plain literal with language
-                    tokens[2] = nquad.Trim(' ', '\t');
-
-                    return tokens;
-                }
-
-                //B->P->L(TLIT)->C
-                if (BPLC_TLIT.Value.Match(nquad).Success)
-                {
-                    nquad = nquad.Trim('.', ' ', '\t', '>');
-
-                    //subject
-                    tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
-
-                    //predicate
-                    tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
-
-                    //typed literal
-                    tokens[2] = nquad.Substring(0, nquad.LastIndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
-                    tokens[2] = tokens[2].Trim(' ', '\t');
-
-                    //context
-                    tokens[3] = nquad.Trim(' ', '\t');
-
-                    return tokens;
-                }
-
-                //B->P->L(TLIT)->
-                if (RDFNTriples.BPL_TLIT.Value.Match(nquad).Success)
-                {
-                    nquad = nquad.Trim('.', ' ', '\t');
-
-                    //subject
-                    tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
-
-                    //predicate
-                    tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
-
-                    //typed literal
-                    tokens[2] = nquad.Trim(' ', '\t');
-
-                    return tokens;
-                }
-
-                //B->P->B->C
-                if (BPBC.Value.Match(nquad).Success)
-                {
-                    nquad = nquad.Trim('.', ' ', '\t');
-
-                    //subject
-                    tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
-
-                    //predicate
-                    tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
-
-                    //object
-                    tokens[2] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
-                    tokens[2] = tokens[2].Trim(' ', '\t');
-
-                    //context
-                    tokens[3] = nquad.Trim(' ', '\t');
-
-                    return tokens;
-                }
-
-                //B->P->B->
-                if (RDFNTriples.BPB.Value.Match(nquad).Success)
-                {
-                    nquad = nquad.Trim('.', ' ', '\t');
-
-                    //subject
-                    tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
-
-                    //predicate
-                    tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
-
-                    //object
-                    tokens[2] = nquad.Trim(' ', '\t');
-
-                    return tokens;
-                }
-
-                throw new Exception("found illegal N-Quad, unrecognized 'B->->->' structure");
+                return tokens;
             }
+
+            //B->P->O->
+            if (RDFNTriples.BPO.Value.Match(nquad).Success)
+            {
+                nquad = nquad.Trim('.', ' ', '\t');
+
+                //subject
+                tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
+                nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                tokens[0] = tokens[0].Trim(' ', '\t');
+
+                //predicate
+                tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                tokens[1] = tokens[1].Trim(' ', '\t');
+
+                //object
+                tokens[2] = nquad.Trim(' ', '\t');
+
+                return tokens;
+            }
+
+            //B->P->L(PLAIN)->C
+            if (BPLC_PLAIN.Value.Match(nquad).Success)
+            {
+                nquad = nquad.Trim('.', ' ', '\t');
+
+                //subject
+                tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
+                nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                tokens[0] = tokens[0].Trim(' ', '\t');
+
+                //predicate
+                tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                tokens[1] = tokens[1].Trim(' ', '\t');
+
+                //plain literal
+                tokens[2] = nquad.Substring(0, nquad.LastIndexOf('<'));
+                nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
+                tokens[2] = tokens[2].Trim(' ', '\t');
+
+                //context
+                tokens[3] = nquad.Trim(' ', '\t');
+
+                return tokens;
+            }
+
+            //B->P->L(PLAIN)->
+            if (RDFNTriples.BPL_PLAIN.Value.Match(nquad).Success)
+            {
+                nquad = nquad.Trim('.', ' ', '\t');
+
+                //subject
+                tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
+                nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                tokens[0] = tokens[0].Trim(' ', '\t');
+
+                //predicate
+                tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                tokens[1] = tokens[1].Trim(' ', '\t');
+
+                //plain literal
+                tokens[2] = nquad.Trim(' ', '\t');
+
+                return tokens;
+            }
+
+            //B->P->L(PLANG)->C
+            if (BPLC_PLANG.Value.Match(nquad).Success)
+            {
+                nquad = nquad.Trim('.', ' ', '\t');
+
+                //subject
+                tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
+                nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                tokens[0] = tokens[0].Trim(' ', '\t');
+
+                //predicate
+                tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                tokens[1] = tokens[1].Trim(' ', '\t');
+
+                //plain literal with language
+                tokens[2] = nquad.Substring(0, nquad.LastIndexOf('<'));
+                nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
+                tokens[2] = tokens[2].Trim(' ', '\t');
+
+                //context
+                tokens[3] = nquad.Trim(' ', '\t');
+
+                return tokens;
+            }
+
+            //B->P->L(PLANG)->
+            if (RDFNTriples.BPL_PLANG.Value.Match(nquad).Success)
+            {
+                nquad = nquad.Trim('.', ' ', '\t');
+
+                //subject
+                tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
+                nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                tokens[0] = tokens[0].Trim(' ', '\t');
+
+                //predicate
+                tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                tokens[1] = tokens[1].Trim(' ', '\t');
+
+                //plain literal with language
+                tokens[2] = nquad.Trim(' ', '\t');
+
+                return tokens;
+            }
+
+            //B->P->L(TLIT)->C
+            if (BPLC_TLIT.Value.Match(nquad).Success)
+            {
+                nquad = nquad.Trim('.', ' ', '\t', '>');
+
+                //subject
+                tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
+                nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                tokens[0] = tokens[0].Trim(' ', '\t');
+
+                //predicate
+                tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                tokens[1] = tokens[1].Trim(' ', '\t');
+
+                //typed literal
+                tokens[2] = nquad.Substring(0, nquad.LastIndexOf('>') + 1);
+                nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
+                tokens[2] = tokens[2].Trim(' ', '\t');
+
+                //context
+                tokens[3] = nquad.Trim(' ', '\t');
+
+                return tokens;
+            }
+
+            //B->P->L(TLIT)->
+            if (RDFNTriples.BPL_TLIT.Value.Match(nquad).Success)
+            {
+                nquad = nquad.Trim('.', ' ', '\t');
+
+                //subject
+                tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
+                nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                tokens[0] = tokens[0].Trim(' ', '\t');
+
+                //predicate
+                tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                tokens[1] = tokens[1].Trim(' ', '\t');
+
+                //typed literal
+                tokens[2] = nquad.Trim(' ', '\t');
+
+                return tokens;
+            }
+
+            //B->P->B->C
+            if (BPBC.Value.Match(nquad).Success)
+            {
+                nquad = nquad.Trim('.', ' ', '\t');
+
+                //subject
+                tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
+                nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                tokens[0] = tokens[0].Trim(' ', '\t');
+
+                //predicate
+                tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                tokens[1] = tokens[1].Trim(' ', '\t');
+
+                //object
+                tokens[2] = nquad.Substring(0, nquad.IndexOf('<'));
+                nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
+                tokens[2] = tokens[2].Trim(' ', '\t');
+
+                //context
+                tokens[3] = nquad.Trim(' ', '\t');
+
+                return tokens;
+            }
+
+            //B->P->B->
+            if (RDFNTriples.BPB.Value.Match(nquad).Success)
+            {
+                nquad = nquad.Trim('.', ' ', '\t');
+
+                //subject
+                tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
+                nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                tokens[0] = tokens[0].Trim(' ', '\t');
+
+                //predicate
+                tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                tokens[1] = tokens[1].Trim(' ', '\t');
+
+                //object
+                tokens[2] = nquad.Trim(' ', '\t');
+
+                return tokens;
+            }
+
+            throw new Exception("found illegal N-Quad, unrecognized 'B->->->' structure");
         }
         #endregion
 

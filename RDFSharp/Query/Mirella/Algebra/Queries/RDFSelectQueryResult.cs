@@ -113,48 +113,51 @@ namespace RDFSharp.Query
 
                                 #region RDFTerm
                                 RDFPatternMember rdfTerm = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)[resultColumns.Current.ToString()].ToString());
-                                if (rdfTerm is RDFResource)
+                                switch (rdfTerm)
                                 {
-                                    if (rdfTerm.ToString().StartsWith("bnode:"))
+                                    case RDFResource _ when rdfTerm.ToString().StartsWith("bnode:"):
                                     {
                                         XmlNode bnodeElement = sparqlDoc.CreateNode(XmlNodeType.Element, "bnode", null);
                                         XmlText bnodeElText = sparqlDoc.CreateTextNode(rdfTerm.ToString());
                                         bnodeElement.AppendChild(bnodeElText);
                                         bindingElement.AppendChild(bnodeElement);
+                                        break;
                                     }
-                                    else
+                                    case RDFResource _:
                                     {
                                         XmlNode uriElement = sparqlDoc.CreateNode(XmlNodeType.Element, "uri", null);
                                         XmlText uriElText = sparqlDoc.CreateTextNode(rdfTerm.ToString());
                                         uriElement.AppendChild(uriElText);
                                         bindingElement.AppendChild(uriElement);
+                                        break;
                                     }
-                                }
-                                else if (rdfTerm is RDFLiteral rdfTermLit)
-                                {
-                                    XmlNode litElement = sparqlDoc.CreateNode(XmlNodeType.Element, "literal", null);
-                                    if (rdfTermLit is RDFPlainLiteral rdfTermPLit)
+                                    case RDFLiteral rdfTermLit:
                                     {
-                                        if (rdfTermPLit.HasLanguage())
+                                        XmlNode litElement = sparqlDoc.CreateNode(XmlNodeType.Element, "literal", null);
+                                        if (rdfTermLit is RDFPlainLiteral rdfTermPLit)
                                         {
-                                            XmlAttribute xmlLang = sparqlDoc.CreateAttribute(string.Concat(RDFVocabulary.XML.PREFIX, ":lang"), RDFVocabulary.XML.BASE_URI);
-                                            XmlText xmlLangText = sparqlDoc.CreateTextNode(rdfTermPLit.Language);
-                                            xmlLang.AppendChild(xmlLangText);
-                                            litElement.Attributes.Append(xmlLang);
+                                            if (rdfTermPLit.HasLanguage())
+                                            {
+                                                XmlAttribute xmlLang = sparqlDoc.CreateAttribute(string.Concat(RDFVocabulary.XML.PREFIX, ":lang"), RDFVocabulary.XML.BASE_URI);
+                                                XmlText xmlLangText = sparqlDoc.CreateTextNode(rdfTermPLit.Language);
+                                                xmlLang.AppendChild(xmlLangText);
+                                                litElement.Attributes.Append(xmlLang);
+                                            }
+                                            XmlText plainLiteralText = sparqlDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(rdfTermLit.Value)));
+                                            litElement.AppendChild(plainLiteralText);
                                         }
-                                        XmlText plainLiteralText = sparqlDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(rdfTermLit.Value)));
-                                        litElement.AppendChild(plainLiteralText);
+                                        else
+                                        {
+                                            XmlAttribute datatype = sparqlDoc.CreateAttribute("datatype");
+                                            XmlText datatypeText = sparqlDoc.CreateTextNode(((RDFTypedLiteral)rdfTermLit).Datatype.URI.ToString());
+                                            datatype.AppendChild(datatypeText);
+                                            litElement.Attributes.Append(datatype);
+                                            XmlText typedLiteralText = sparqlDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(rdfTermLit.Value)));
+                                            litElement.AppendChild(typedLiteralText);
+                                        }
+                                        bindingElement.AppendChild(litElement);
+                                        break;
                                     }
-                                    else
-                                    {
-                                        XmlAttribute datatype = sparqlDoc.CreateAttribute("datatype");
-                                        XmlText datatypeText = sparqlDoc.CreateTextNode(((RDFTypedLiteral)rdfTermLit).Datatype.URI.ToString());
-                                        datatype.AppendChild(datatypeText);
-                                        litElement.Attributes.Append(datatype);
-                                        XmlText typedLiteralText = sparqlDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(rdfTermLit.Value)));
-                                        litElement.AppendChild(typedLiteralText);
-                                    }
-                                    bindingElement.AppendChild(litElement);
                                 }
                                 #endregion
 

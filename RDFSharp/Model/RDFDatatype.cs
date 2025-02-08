@@ -104,8 +104,7 @@ namespace RDFSharp.Model
             //Then the eventual constraining facets
             if (validatesTargetDatatype.Item1 && Facets.Count > 0)
                 return (Facets.TrueForAll(facet => facet.Validate(literalValue)), literalValue);
-            else
-                return validatesTargetDatatype;
+            return validatesTargetDatatype;
         }
         #endregion
     }   

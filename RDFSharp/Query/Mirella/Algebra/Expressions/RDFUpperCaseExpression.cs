@@ -70,7 +70,7 @@ namespace RDFSharp.Query
 
             #region Guards
             if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return expressionResult;
+                return null;
             #endregion
 
             try
@@ -85,10 +85,15 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLiteral)
-                    expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLiteral.Value.ToUpperInvariant(), leftArgumentPMemberPLiteral.Language);
-                else if (leftArgumentPMember is RDFTypedLiteral leftArgumentPMemberTLiteral && leftArgumentPMemberTLiteral.HasStringDatatype())
-                    expressionResult = new RDFTypedLiteral(leftArgumentPMemberTLiteral.Value.ToUpperInvariant(), leftArgumentPMemberTLiteral.Datatype);
+                switch (leftArgumentPMember)
+                {
+                    case RDFPlainLiteral leftArgumentPMemberPLiteral:
+                        expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLiteral.Value.ToUpperInvariant(), leftArgumentPMemberPLiteral.Language);
+                        break;
+                    case RDFTypedLiteral leftArgumentPMemberTLiteral when leftArgumentPMemberTLiteral.HasStringDatatype():
+                        expressionResult = new RDFTypedLiteral(leftArgumentPMemberTLiteral.Value.ToUpperInvariant(), leftArgumentPMemberTLiteral.Datatype);
+                        break;
+                }
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }

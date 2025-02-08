@@ -122,20 +122,33 @@ namespace RDFSharp.Query
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
                 sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            if (this is RDFAddExpression)
-                sb.Append(" + ");
-            else if (this is RDFSubtractExpression)
-                sb.Append(" - ");
-            else if (this is RDFMultiplyExpression)
-                sb.Append(" * ");
-            else if (this is RDFDivideExpression)
-                sb.Append(" / ");
-            if (RightArgument is RDFExpression expRightArgument)
-                sb.Append(expRightArgument.ToString(prefixes));
-            else if (RightArgument is RDFTypedLiteral tlRightArgument)
-                sb.Append(tlRightArgument.Value.ToString(CultureInfo.InvariantCulture));
-            else
-                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
+            switch (this)
+            {
+                case RDFAddExpression _:
+                    sb.Append(" + ");
+                    break;
+                case RDFSubtractExpression _:
+                    sb.Append(" - ");
+                    break;
+                case RDFMultiplyExpression _:
+                    sb.Append(" * ");
+                    break;
+                case RDFDivideExpression _:
+                    sb.Append(" / ");
+                    break;
+            }
+            switch (RightArgument)
+            {
+                case RDFExpression expRightArgument:
+                    sb.Append(expRightArgument.ToString(prefixes));
+                    break;
+                case RDFTypedLiteral tlRightArgument:
+                    sb.Append(tlRightArgument.Value.ToString(CultureInfo.InvariantCulture));
+                    break;
+                default:
+                    sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
+                    break;
+            }
             sb.Append(')');
 
             return sb.ToString();
@@ -152,9 +165,9 @@ namespace RDFSharp.Query
 
             #region Guards
             if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return expressionResult;
+                return null;
             if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
-                return expressionResult;
+                return null;
             #endregion
 
             try
@@ -169,12 +182,18 @@ namespace RDFSharp.Query
 
                 //Evaluate right argument (Expression VS Variable VS TypedLiteral)
                 RDFPatternMember rightArgumentPMember = null;
-                if (RightArgument is RDFExpression rightArgumentExpression)
-                    rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
-                else if (RightArgument is RDFVariable)
-                    rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
-                else
-                    rightArgumentPMember = (RDFTypedLiteral)RightArgument;
+                switch (RightArgument)
+                {
+                    case RDFExpression rightArgumentExpression:
+                        rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
+                        break;
+                    case RDFVariable _:
+                        rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
+                        break;
+                    default:
+                        rightArgumentPMember = (RDFTypedLiteral)RightArgument;
+                        break;
+                }
                 #endregion
 
                 #region Calculate Result
@@ -213,16 +232,20 @@ namespace RDFSharp.Query
         /// </summary>
         private RDFTypedLiteral EvaluateMathExpression(double leftArgumentNumericValue, double rightArgumentNumericValue)
         {
-            if (this is RDFAddExpression)
-                return new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue + rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-            else if (this is RDFSubtractExpression)
-                return new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue - rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-            else if (this is RDFMultiplyExpression)
-                return new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue * rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-            else if (this is RDFDivideExpression && rightArgumentNumericValue != 0d)
-                return new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue / rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-            //Just to keep the compiler happy...
-            else return null;
+            switch (this)
+            {
+                case RDFAddExpression _:
+                    return new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue + rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                case RDFSubtractExpression _:
+                    return new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue - rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                case RDFMultiplyExpression _:
+                    return new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue * rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                case RDFDivideExpression _ when rightArgumentNumericValue != 0d:
+                    return new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue / rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                default:
+                    //Just to keep the compiler happy...
+                    return null;
+            }
         }
         #endregion
     }

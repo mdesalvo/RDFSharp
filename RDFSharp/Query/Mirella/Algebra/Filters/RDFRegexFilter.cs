@@ -68,10 +68,8 @@ namespace RDFSharp.Query
             if (RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
                 regexFlags.Append('x');
 
-            if (!string.IsNullOrEmpty(regexFlags.ToString()))
-                return string.Concat("FILTER ( REGEX(STR(", VariableName, "), \"", RegEx, "\", \"", regexFlags, "\") )");
-            else
-                return string.Concat("FILTER ( REGEX(STR(", VariableName, "), \"", RegEx, "\") )");
+            return !string.IsNullOrEmpty(regexFlags.ToString()) ? string.Concat("FILTER ( REGEX(STR(", VariableName, "), \"", RegEx, "\", \"", regexFlags, "\") )") 
+                                                                : string.Concat("FILTER ( REGEX(STR(", VariableName, "), \"", RegEx, "\") )");
         }
         #endregion
 

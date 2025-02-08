@@ -110,18 +110,26 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                //Transform left argument result into a plain literal
-                if (leftArgumentPMember is RDFResource)
-                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMember.ToString());
-                else if (leftArgumentPMember is RDFPlainLiteral plitLeftArgumentPMember)
-                    leftArgumentPMember = new RDFPlainLiteral(plitLeftArgumentPMember.Value, plitLeftArgumentPMember.Language);
-                else if (leftArgumentPMember is RDFTypedLiteral tlitLeftArgumentPMember && tlitLeftArgumentPMember.HasStringDatatype())
-                    leftArgumentPMember = new RDFPlainLiteral(tlitLeftArgumentPMember.Value);
-                else
-                    leftArgumentPMember = null; //binding error => cleanup
+
+                switch (leftArgumentPMember)
+                {
+                    //Transform left argument result into a plain literal
+                    case RDFResource _:
+                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMember.ToString());
+                        break;
+                    case RDFPlainLiteral plitLeftArgumentPMember:
+                        leftArgumentPMember = new RDFPlainLiteral(plitLeftArgumentPMember.Value, plitLeftArgumentPMember.Language);
+                        break;
+                    case RDFTypedLiteral tlitLeftArgumentPMember when tlitLeftArgumentPMember.HasStringDatatype():
+                        leftArgumentPMember = new RDFPlainLiteral(tlitLeftArgumentPMember.Value);
+                        break;
+                    default:
+                        leftArgumentPMember = null; //binding error => cleanup
+                        break;
+                }
 
                 if (leftArgumentPMember == null)
-                    return expressionResult;
+                    return null;
 
                 //Calculate substring on the working plain literal
                 RDFPlainLiteral workingPLit = (RDFPlainLiteral)leftArgumentPMember;
@@ -138,10 +146,8 @@ namespace RDFSharp.Query
                 }
                 else
                 {
-                    if (start >= workingPLit.Value.Length)
-                        expressionResult = new RDFPlainLiteral(string.Empty, workingPLit.Language);
-                    else
-                        expressionResult = new RDFPlainLiteral(workingPLit.Value.Substring(start), workingPLit.Language);
+                    expressionResult = start >= workingPLit.Value.Length ? new RDFPlainLiteral(string.Empty, workingPLit.Language) 
+                                                                         : new RDFPlainLiteral(workingPLit.Value.Substring(start), workingPLit.Language);
                 }
                 #endregion
             }

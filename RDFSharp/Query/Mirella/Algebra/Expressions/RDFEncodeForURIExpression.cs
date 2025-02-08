@@ -86,17 +86,24 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                if (leftArgumentPMember is RDFResource leftArgumentPMemberResource)
-                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberResource.ToString());
-                else if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLiteral)
-                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberPLiteral.Value);
-                else if (leftArgumentPMember is RDFTypedLiteral leftArgumentPMemberTLiteral && leftArgumentPMemberTLiteral.HasStringDatatype())
-                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberTLiteral.Value);
-                else
-                    leftArgumentPMember = null; //binding error => cleanup
+                switch (leftArgumentPMember)
+                {
+                    case RDFResource leftArgumentPMemberResource:
+                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberResource.ToString());
+                        break;
+                    case RDFPlainLiteral leftArgumentPMemberPLiteral:
+                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberPLiteral.Value);
+                        break;
+                    case RDFTypedLiteral leftArgumentPMemberTLiteral when leftArgumentPMemberTLiteral.HasStringDatatype():
+                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberTLiteral.Value);
+                        break;
+                    default:
+                        leftArgumentPMember = null; //binding error => cleanup
+                        break;
+                }
 
                 if (leftArgumentPMember == null)
-                    return expressionResult;
+                    return null;
                 expressionResult = new RDFPlainLiteral(Uri.EscapeDataString(leftArgumentPMember.ToString()));
                 #endregion
             }

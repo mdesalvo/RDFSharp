@@ -71,7 +71,7 @@ namespace RDFSharp.Query
 
             #region Guards
             if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return expressionResult;
+                return null;
             #endregion
 
             try
@@ -86,13 +86,18 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                if (leftArgumentPMember is RDFLiteral leftArgumentPMemberLiteral)
-                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberLiteral.Value);
-                else if (leftArgumentPMember is RDFResource leftArgumentPMemberResource)
-                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberResource.ToString());
+                switch (leftArgumentPMember)
+                {
+                    case RDFLiteral leftArgumentPMemberLiteral:
+                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberLiteral.Value);
+                        break;
+                    case RDFResource leftArgumentPMemberResource:
+                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberResource.ToString());
+                        break;
+                }
 
                 if (leftArgumentPMember == null)
-                    return expressionResult;
+                    return null;
                 using (SHA512CryptoServiceProvider SHA512Encryptor = new SHA512CryptoServiceProvider())
                 {
                     byte[] hashBytes = SHA512Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(leftArgumentPMember.ToString()));

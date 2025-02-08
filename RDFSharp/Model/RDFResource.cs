@@ -59,19 +59,16 @@ namespace RDFSharp.Model
             if (hashContext != null)
             {
                 uriString = URI.ToString();
-                LazyPatternMemberID = new Lazy<long>(() => 
+                LazyPatternMemberID = new Lazy<long>(() =>
                 {
                     //Cache-Hit
                     if (hashContext.TryGetValue(uriString, out long hashValue))
                         return hashValue;
 
                     //Cache-Miss
-                    else
-                    {
-                        hashValue = RDFModelUtilities.CreateHash(uriString);
-                        hashContext.Add(uriString, hashValue);
-                        return hashValue;
-                    }    
+                    hashValue = RDFModelUtilities.CreateHash(uriString);
+                    hashContext.Add(uriString, hashValue);
+                    return hashValue;
                 });
             }
         }
