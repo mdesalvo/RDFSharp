@@ -226,7 +226,7 @@ namespace RDFSharp.Query
         internal void AddPartitionKey<T>(string partitionKey, T initValue)
         {
             if (!ExecutionRegistry.ContainsKey(partitionKey))
-                ExecutionRegistry.Add(partitionKey, new Dictionary<string, object>()
+                ExecutionRegistry.Add(partitionKey, new Dictionary<string, object>
                 {
                     { "ExecutionResult", initValue },
                     { "ExecutionCounter", 0d }

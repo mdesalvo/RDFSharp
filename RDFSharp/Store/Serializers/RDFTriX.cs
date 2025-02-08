@@ -103,7 +103,7 @@ namespace RDFSharp.Store
                     using (XmlTextReader trixReader = new XmlTextReader(streamReader)
                         { DtdProcessing = DtdProcessing.Parse, XmlResolver = null, Normalization = false })
                     {
-                        XmlDocument trixDoc = new XmlDocument() { XmlResolver = null };
+                        XmlDocument trixDoc = new XmlDocument { XmlResolver = null };
                         trixDoc.Load(trixReader);
 
                         #region <TriX>

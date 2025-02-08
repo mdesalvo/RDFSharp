@@ -2045,7 +2045,7 @@ namespace RDFSharp.Query
                     //(otherwise in this scenario we would always answer true for ASK queries due to this row)
                     RDFPatternMember bindResult = expression.ApplyExpression(table.NewRow());
                     if (bindResult != null)
-                        AddRow(table, new Dictionary<string, string>() { { bindVariable, bindResult.ToString() } });
+                        AddRow(table, new Dictionary<string, string> { { bindVariable, bindResult.ToString() } });
                 }
                 else
                 {

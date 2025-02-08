@@ -64,7 +64,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFOperationResult EvaluateInsertDataOperation(RDFInsertDataOperation insertDataOperation, RDFDataSource datasource)
         {
-            RDFOperationResult operationResult = new RDFOperationResult()
+            RDFOperationResult operationResult = new RDFOperationResult
             {
                 InsertResults = PopulateInsertOperationResults(insertDataOperation.InsertTemplates, datasource)
             };
@@ -105,7 +105,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFOperationResult EvaluateDeleteDataOperation(RDFDeleteDataOperation deleteDataOperation, RDFDataSource datasource)
         {
-            RDFOperationResult operationResult = new RDFOperationResult()
+            RDFOperationResult operationResult = new RDFOperationResult
             {
                 DeleteResults = PopulateDeleteOperationResults(deleteDataOperation.DeleteTemplates, datasource)
             };

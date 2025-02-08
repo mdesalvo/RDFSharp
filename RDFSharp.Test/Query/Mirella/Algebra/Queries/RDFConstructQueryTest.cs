@@ -1242,7 +1242,7 @@ namespace RDFSharp.Test.Query
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFConstructQueryTest/ShouldApplyConstructQueryToSPARQLEndpointAndHaveResultsViaPost/sparql"));
-            RDFConstructQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions() { 
+            RDFConstructQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions { 
                 QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
 
             Assert.IsNotNull(result);
@@ -1303,7 +1303,7 @@ namespace RDFSharp.Test.Query
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFConstructQueryTest/ShouldApplyConstructQueryToSPARQLEndpointAndNotHaveResultsViaPost/sparql"));
-            RDFConstructQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions() { 
+            RDFConstructQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions { 
                 QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
 
             Assert.IsNotNull(result);
@@ -1364,7 +1364,7 @@ namespace RDFSharp.Test.Query
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFConstructQueryTest/ShouldApplyRawConstructQueryToSPARQLEndpointViaPost/sparql"));
-            RDFConstructQueryResult result = RDFConstructQuery.ApplyRawToSPARQLEndpoint(query.ToString(), endpoint, new RDFSPARQLEndpointQueryOptions() { 
+            RDFConstructQueryResult result = RDFConstructQuery.ApplyRawToSPARQLEndpoint(query.ToString(), endpoint, new RDFSPARQLEndpointQueryOptions { 
                 QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
 
             Assert.IsNotNull(result);

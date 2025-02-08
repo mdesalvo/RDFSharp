@@ -152,7 +152,7 @@ namespace RDFSharp.Store
                 ContextsRegister.Add(quadruple.Context.PatternMemberID, (RDFContext)quadruple.Context);
             //Context (Index)
             if (!ContextsIndex.TryGetValue(quadruple.Context.PatternMemberID, out HashSet<long> contextsIndex))
-                ContextsIndex.Add(quadruple.Context.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
+                ContextsIndex.Add(quadruple.Context.PatternMemberID, new HashSet<long> { quadruple.QuadrupleID });
             else
                 contextsIndex.Add(quadruple.QuadrupleID);
 
@@ -161,7 +161,7 @@ namespace RDFSharp.Store
                 ResourcesRegister.Add(quadruple.Subject.PatternMemberID, (RDFResource)quadruple.Subject);
             //Subject (Index)
             if (!SubjectsIndex.TryGetValue(quadruple.Subject.PatternMemberID, out HashSet<long> subjectsIndex))
-                SubjectsIndex.Add(quadruple.Subject.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
+                SubjectsIndex.Add(quadruple.Subject.PatternMemberID, new HashSet<long> { quadruple.QuadrupleID });
             else
                 subjectsIndex.Add(quadruple.QuadrupleID);
 
@@ -170,7 +170,7 @@ namespace RDFSharp.Store
                 ResourcesRegister.Add(quadruple.Predicate.PatternMemberID, (RDFResource)quadruple.Predicate);
             //Predicate (Index)
             if (!PredicatesIndex.TryGetValue(quadruple.Predicate.PatternMemberID, out HashSet<long> predicatesIndex))
-                PredicatesIndex.Add(quadruple.Predicate.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
+                PredicatesIndex.Add(quadruple.Predicate.PatternMemberID, new HashSet<long> { quadruple.QuadrupleID });
             else
                 predicatesIndex.Add(quadruple.QuadrupleID);
 
@@ -182,7 +182,7 @@ namespace RDFSharp.Store
                     ResourcesRegister.Add(quadruple.Object.PatternMemberID, (RDFResource)quadruple.Object);
                 //Index
                 if (!ObjectsIndex.TryGetValue(quadruple.Object.PatternMemberID, out HashSet<long> objectsIndex))
-                    ObjectsIndex.Add(quadruple.Object.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
+                    ObjectsIndex.Add(quadruple.Object.PatternMemberID, new HashSet<long> { quadruple.QuadrupleID });
                 else
                     objectsIndex.Add(quadruple.QuadrupleID);
             }
@@ -195,7 +195,7 @@ namespace RDFSharp.Store
                     LiteralsRegister.Add(quadruple.Object.PatternMemberID, (RDFLiteral)quadruple.Object);
                 //Index
                 if (!LiteralsIndex.TryGetValue(quadruple.Object.PatternMemberID, out HashSet<long> literalsIndex))
-                    LiteralsIndex.Add(quadruple.Object.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
+                    LiteralsIndex.Add(quadruple.Object.PatternMemberID, new HashSet<long> { quadruple.QuadrupleID });
                 else
                     literalsIndex.Add(quadruple.QuadrupleID);
             }

@@ -385,7 +385,7 @@ namespace RDFSharp.Model
                             { DtdProcessing = DtdProcessing.Parse, XmlResolver = null, Normalization = false })
                     {
                         #region document
-                        XmlDocument xmlDoc = new XmlDocument() { XmlResolver = null };
+                        XmlDocument xmlDoc = new XmlDocument { XmlResolver = null };
                         xmlDoc.Load(xmlReader);
                         #endregion
 

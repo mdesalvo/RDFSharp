@@ -349,11 +349,11 @@ namespace RDFSharp.Store
             while (reifiedQuadruples.MoveNext())
             {
                 //Get reification data (T, C, S, P, O)
-                RDFPatternMember tRepresent = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?T"].ToString());
-                RDFPatternMember tContext = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?C"].ToString());
-                RDFPatternMember tSubject = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?S"].ToString());
-                RDFPatternMember tPredicate = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?P"].ToString());
-                RDFPatternMember tObject = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?O"].ToString());
+                RDFPatternMember tRepresent = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)?["?T"].ToString());
+                RDFPatternMember tContext = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)?["?C"].ToString());
+                RDFPatternMember tSubject = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)?["?S"].ToString());
+                RDFPatternMember tPredicate = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)?["?P"].ToString());
+                RDFPatternMember tObject = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)?["?O"].ToString());
 
                 //Cleanup store from detected reifications
                 if (tObject is RDFResource objRes)
@@ -379,7 +379,7 @@ namespace RDFSharp.Store
         /// Asynchronously compacts the reified quadruples by removing their 4 standard statements
         /// </summary>
         public Task UnreifyQuadruplesAsync()
-            => Task.Run(() => UnreifyQuadruples());
+            => Task.Run(UnreifyQuadruples);
         #endregion
 
         #region Select

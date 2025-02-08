@@ -66,9 +66,9 @@ namespace RDFSharp.Model
         /// </summary>
         static RDFNamespaceRegister()
         {
-            Instance = new RDFNamespaceRegister()
+            Instance = new RDFNamespaceRegister
             {
-                Register = new List<RDFNamespace>()
+                Register = new List<RDFNamespace>
                 {
                     RDFSharpNS,
 

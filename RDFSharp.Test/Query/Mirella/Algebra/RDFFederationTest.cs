@@ -118,7 +118,7 @@ namespace RDFSharp.Test.Query
             federation.AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri("ex:sparqlEndpoint1")));
             federation.AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri("ex:sparqlEndpoint1"))); //Will be discarded, since duplicate endpoints are not allowed
             federation.AddSPARQLEndpoint(null); //Will be discarded, since null is not allowed
-            federation.AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri("ex:sparqlEndpoint2")), new RDFSPARQLEndpointQueryOptions() { 
+            federation.AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri("ex:sparqlEndpoint2")), new RDFSPARQLEndpointQueryOptions { 
                 ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult, 
                 QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post, 
                 TimeoutMilliseconds = 25000});
@@ -143,7 +143,7 @@ namespace RDFSharp.Test.Query
         {
             RDFFederation federation = new RDFFederation();
             federation.AddGraph(new RDFGraph());
-            federation.AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri("ex:sparqlEndpoint")), new RDFSPARQLEndpointQueryOptions() { TimeoutMilliseconds = 12500 });
+            federation.AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri("ex:sparqlEndpoint")), new RDFSPARQLEndpointQueryOptions { TimeoutMilliseconds = 12500 });
             federation.ClearDataSources();
 
             Assert.IsNotNull(federation);

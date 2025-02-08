@@ -224,7 +224,7 @@ namespace RDFSharp.Query
                             { DtdProcessing = DtdProcessing.Parse, XmlResolver = null, Normalization = false })
                     {
                         #region document
-                        XmlDocument srxDoc = new XmlDocument() { XmlResolver = null };
+                        XmlDocument srxDoc = new XmlDocument { XmlResolver = null };
                         srxDoc.Load(xmlReader);
                         #endregion
 

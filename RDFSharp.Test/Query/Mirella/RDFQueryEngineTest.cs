@@ -1660,9 +1660,9 @@ ORDER BY ASC(?X)
                             .WithCallback(req => 
                             { 
                                 receivedQuery1 = req.RawQuery;
-                                return new WireMock.ResponseMessage()
+                                return new WireMock.ResponseMessage
                                 {
-                                    BodyData = new BodyData() 
+                                    BodyData = new BodyData
                                     {
                                         BodyAsString = mockedResponseXml1,
                                         Encoding = Encoding.UTF8,
@@ -1682,9 +1682,9 @@ ORDER BY ASC(?X)
                             .WithCallback(req => 
                             { 
                                 receivedQuery2 = req.Body;
-                                return new WireMock.ResponseMessage()
+                                return new WireMock.ResponseMessage
                                 {
-                                    BodyData = new BodyData() 
+                                    BodyData = new BodyData
                                     {
                                         BodyAsString = mockedResponseXml2,
                                         Encoding = Encoding.UTF8,
@@ -1698,7 +1698,7 @@ ORDER BY ASC(?X)
             RDFSPARQLEndpoint endpoint2 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpoints2/sparql"));
             RDFFederation federation = new RDFFederation()
                 .AddSPARQLEndpoint(endpoint1)
-                .AddSPARQLEndpoint(endpoint2, new RDFSPARQLEndpointQueryOptions() { QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
+                .AddSPARQLEndpoint(endpoint2, new RDFSPARQLEndpointQueryOptions { QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))));
@@ -1784,9 +1784,9 @@ ORDER BY ASC(?X)
                             .WithCallback(req => 
                             { 
                                 receivedQuery1 = req.RawQuery;
-                                return new WireMock.ResponseMessage()
+                                return new WireMock.ResponseMessage
                                 {
-                                    BodyData = new BodyData() 
+                                    BodyData = new BodyData
                                     {
                                         BodyAsString = mockedResponseXml1,
                                         Encoding = Encoding.UTF8,
@@ -1806,9 +1806,9 @@ ORDER BY ASC(?X)
                             .WithCallback(req => 
                             { 
                                 receivedQuery2 = req.Body;
-                                return new WireMock.ResponseMessage()
+                                return new WireMock.ResponseMessage
                                 {
-                                    BodyData = new BodyData() 
+                                    BodyData = new BodyData
                                     {
                                         BodyAsString = mockedResponseXml2,
                                         Encoding = Encoding.UTF8,
@@ -1823,7 +1823,7 @@ ORDER BY ASC(?X)
             RDFSPARQLEndpoint endpoint2 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneGivingEmptyResult2/sparql"));
             RDFFederation federation = new RDFFederation()
                 .AddSPARQLEndpoint(endpoint1)
-                .AddSPARQLEndpoint(endpoint2, new RDFSPARQLEndpointQueryOptions() { 
+                .AddSPARQLEndpoint(endpoint2, new RDFSPARQLEndpointQueryOptions { 
                     ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult, 
                     QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post,
                     TimeoutMilliseconds = 250 });
@@ -1910,9 +1910,9 @@ ORDER BY ASC(?X)
                             .WithCallback(req => 
                             { 
                                 receivedQuery1 = req.RawQuery;
-                                return new WireMock.ResponseMessage()
+                                return new WireMock.ResponseMessage
                                 {
-                                    BodyData = new BodyData() 
+                                    BodyData = new BodyData
                                     {
                                         BodyAsString = mockedResponseXml1,
                                         Encoding = Encoding.UTF8,
@@ -1932,9 +1932,9 @@ ORDER BY ASC(?X)
                             .WithCallback(req => 
                             { 
                                 receivedQuery2 = req.Body;
-                                return new WireMock.ResponseMessage()
+                                return new WireMock.ResponseMessage
                                 {
-                                    BodyData = new BodyData() 
+                                    BodyData = new BodyData
                                     {
                                         BodyAsString = mockedResponseXml2,
                                         Encoding = Encoding.UTF8,
@@ -1949,7 +1949,7 @@ ORDER BY ASC(?X)
             RDFSPARQLEndpoint endpoint2 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneThrowingException2/sparql"));
             RDFFederation federation = new RDFFederation()
                 .AddSPARQLEndpoint(endpoint1)
-                .AddSPARQLEndpoint(endpoint2, new RDFSPARQLEndpointQueryOptions() { 
+                .AddSPARQLEndpoint(endpoint2, new RDFSPARQLEndpointQueryOptions { 
                     ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException, 
                     QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post,
                     TimeoutMilliseconds = 250 });
@@ -2011,9 +2011,9 @@ ORDER BY ASC(?X)
                             .WithCallback(req =>
                             {
                                 receivedQuery = req.RawQuery;
-                                return new WireMock.ResponseMessage()
+                                return new WireMock.ResponseMessage
                                 {
-                                    BodyData = new BodyData()
+                                    BodyData = new BodyData
                                     {
                                         BodyAsString = mockedResponseXml,
                                         Encoding = Encoding.UTF8,
@@ -2106,9 +2106,9 @@ WHERE {
                             .WithCallback(req =>
                             {
                                 receivedQuery = req.RawQuery;
-                                return new WireMock.ResponseMessage()
+                                return new WireMock.ResponseMessage
                                 {
-                                    BodyData = new BodyData()
+                                    BodyData = new BodyData
                                     {
                                         BodyAsString = mockedResponseXml,
                                         Encoding = Encoding.UTF8,
@@ -2194,9 +2194,9 @@ WHERE {
                             .WithCallback(req =>
                             {
                                 receivedQuery = req.RawQuery;
-                                return new WireMock.ResponseMessage()
+                                return new WireMock.ResponseMessage
                                 {
-                                    BodyData = new BodyData()
+                                    BodyData = new BodyData
                                     {
                                         BodyAsString = mockedResponseXml,
                                         Encoding = Encoding.UTF8,
@@ -2297,9 +2297,9 @@ WHERE {
                             .WithCallback(req =>
                             {
                                 receivedQuery1 = req.RawQuery;
-                                return new WireMock.ResponseMessage()
+                                return new WireMock.ResponseMessage
                                 {
-                                    BodyData = new BodyData()
+                                    BodyData = new BodyData
                                     {
                                         BodyAsString = mockedResponse1Xml,
                                         Encoding = Encoding.UTF8,
@@ -2321,9 +2321,9 @@ WHERE {
                             .WithCallback(req =>
                             {
                                 receivedQuery2 = req.RawQuery;
-                                return new WireMock.ResponseMessage()
+                                return new WireMock.ResponseMessage
                                 {
-                                    BodyData = new BodyData()
+                                    BodyData = new BodyData
                                     {
                                         BodyAsString = mockedResponse2Xml,
                                         Encoding = Encoding.UTF8,
@@ -3729,7 +3729,7 @@ WHERE {
             [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino"))
             ]);
-            RDFGraph graph2 = new RDFGraph(new List<RDFTriple>()
+            RDFGraph graph2 = new RDFGraph(new List<RDFTriple>
             {
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
@@ -3938,7 +3938,7 @@ WHERE {
             [
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino"))
             ]);
-            RDFGraph graph2 = new RDFGraph(new List<RDFTriple>()
+            RDFGraph graph2 = new RDFGraph(new List<RDFTriple>
             {
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
                 new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
@@ -4107,7 +4107,7 @@ WHERE {
         [TestMethod]
         public void ShouldDescribeLiteralBoundVariableTermsOnAsyncGraph()
         {
-            RDFGraph agraph = new RDFGraph(new List<RDFTriple>()
+            RDFGraph agraph = new RDFGraph(new List<RDFTriple>
             {
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
@@ -4221,7 +4221,7 @@ WHERE {
         [TestMethod]
         public void ShouldApplyPatternToDataSourceAsyncGraph()
         {
-            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>
             {
                 new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
                 new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
@@ -5412,7 +5412,7 @@ WHERE {
             DataTable table = new DataTable();
             RDFQueryEngine.AddColumn(table, "?Y");
             RDFQueryEngine.AddColumn(table, "?X");
-            Dictionary<string, string> bindings = new Dictionary<string, string>()
+            Dictionary<string, string> bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" }
@@ -5430,7 +5430,7 @@ WHERE {
             DataTable table = new DataTable();
             RDFQueryEngine.AddColumn(table, "?Y");
             RDFQueryEngine.AddColumn(table, "?X");
-            Dictionary<string, string> bindings = new Dictionary<string, string>()
+            Dictionary<string, string> bindings = new Dictionary<string, string>
             {
                 { "?Z", "ex:pluto" } //Will not be added to the table, because it is not a column
             };
@@ -5856,7 +5856,7 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" }
@@ -5866,7 +5866,7 @@ WHERE {
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?Z");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?Z", "ex:topolino" },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -5894,7 +5894,7 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" }
@@ -5925,7 +5925,7 @@ WHERE {
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?Z");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?Z", "ex:topolino" },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -5971,7 +5971,7 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" }
@@ -5981,7 +5981,7 @@ WHERE {
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?X", "ex:topolino" },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6007,7 +6007,7 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" }
@@ -6017,7 +6017,7 @@ WHERE {
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?X", "ex:minnie" },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6040,7 +6040,7 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" }
@@ -6050,7 +6050,7 @@ WHERE {
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?X", DBNull.Value.ToString() },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6073,7 +6073,7 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" }
@@ -6104,7 +6104,7 @@ WHERE {
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?X", "ex:minnie" },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6148,7 +6148,7 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" }
@@ -6158,7 +6158,7 @@ WHERE {
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?X", "ex:topolino" },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6184,7 +6184,7 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", null }
@@ -6194,7 +6194,7 @@ WHERE {
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?X", "ex:topolino" },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6220,7 +6220,7 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" }
@@ -6230,7 +6230,7 @@ WHERE {
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?X", null },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6256,7 +6256,7 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", null }
@@ -6266,7 +6266,7 @@ WHERE {
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?X", null },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6292,7 +6292,7 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:minnie" }
@@ -6303,7 +6303,7 @@ WHERE {
             dt2.ExtendedProperties.Add(RDFQueryEngine.IsOptional, true); //Need to simulate Mirella here, since right-optionality will keep at least left row
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?X", "ex:topolino" },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6329,7 +6329,7 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:minnie" }
@@ -6339,7 +6339,7 @@ WHERE {
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?X", "ex:topolino" },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6366,7 +6366,7 @@ WHERE {
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?X", "ex:topolino" },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6389,7 +6389,7 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:minnie" }
@@ -6437,12 +6437,12 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            RDFQueryEngine.AddRow(dt1, new Dictionary<string, string>()
+            RDFQueryEngine.AddRow(dt1, new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" }
             });
-            RDFQueryEngine.AddRow(dt1, new Dictionary<string, string>()
+            RDFQueryEngine.AddRow(dt1, new Dictionary<string, string>
             {
                 { "?Y", "ex:fido" },
                 { "?X", "ex:gastone" }
@@ -6451,7 +6451,7 @@ WHERE {
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            RDFQueryEngine.AddRow(dt2, new Dictionary<string, string>()
+            RDFQueryEngine.AddRow(dt2, new Dictionary<string, string>
             {
                 { "?X", "ex:topolino" },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6474,12 +6474,12 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            RDFQueryEngine.AddRow(dt1, new Dictionary<string, string>()
+            RDFQueryEngine.AddRow(dt1, new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" }
             });
-            RDFQueryEngine.AddRow(dt1, new Dictionary<string, string>()
+            RDFQueryEngine.AddRow(dt1, new Dictionary<string, string>
             {
                 { "?Y", "ex:fido" },
                 { "?X", "ex:gastone" }
@@ -6487,7 +6487,7 @@ WHERE {
 
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?Z");
-            RDFQueryEngine.AddRow(dt2, new Dictionary<string, string>()
+            RDFQueryEngine.AddRow(dt2, new Dictionary<string, string>
             {
                 { "?Z", "ex:topolino" }
             });
@@ -6514,7 +6514,7 @@ WHERE {
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            RDFQueryEngine.AddRow(dt2, new Dictionary<string, string>()
+            RDFQueryEngine.AddRow(dt2, new Dictionary<string, string>
             {
                 { "?X", "ex:topolino" },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6535,12 +6535,12 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            RDFQueryEngine.AddRow(dt1, new Dictionary<string, string>()
+            RDFQueryEngine.AddRow(dt1, new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" }
             });
-            RDFQueryEngine.AddRow(dt1, new Dictionary<string, string>()
+            RDFQueryEngine.AddRow(dt1, new Dictionary<string, string>
             {
                 { "?Y", "ex:fido" },
                 { "?X", "ex:gastone" }
@@ -6569,7 +6569,7 @@ WHERE {
             dt1.ExtendedProperties.Add(RDFQueryEngine.JoinAsUnion, true); //Need to simulate Mirella here, since left-union will merge tables
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:minnie" }
@@ -6580,7 +6580,7 @@ WHERE {
             dt2.ExtendedProperties.Add(RDFQueryEngine.JoinAsUnion, true); //Need to simulate Mirella here, since left-union will merge tables
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?X", "ex:topolino" },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6589,7 +6589,7 @@ WHERE {
 
             DataTable dt3 = new DataTable();
             RDFQueryEngine.AddColumn(dt3, "?Q");
-            Dictionary<string, string> dt3Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt3Bindings = new Dictionary<string, string>
             {
                 { "?Q", null }
             };
@@ -6626,7 +6626,7 @@ WHERE {
             dt1.ExtendedProperties.Add(RDFQueryEngine.JoinAsUnion, true); //Need to simulate Mirella here, since left-union will merge tables
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:minnie" }
@@ -6637,7 +6637,7 @@ WHERE {
             dt2.ExtendedProperties.Add(RDFQueryEngine.JoinAsUnion, true); //Need to simulate Mirella here, since left-union will merge tables
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?X", "ex:topolino" },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6673,7 +6673,7 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:minnie" }
@@ -6684,7 +6684,7 @@ WHERE {
             dt2.ExtendedProperties.Add(RDFQueryEngine.IsOptional, true); //Need to simulate Mirella here, since right-optionality  will keep at least left rows
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?X", null },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6693,7 +6693,7 @@ WHERE {
 
             DataTable dt3 = new DataTable();
             RDFQueryEngine.AddColumn(dt3, "?Q");
-            Dictionary<string, string> dt3Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt3Bindings = new Dictionary<string, string>
             {
                 { "?Q", null }
             };
@@ -6721,7 +6721,7 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:minnie" }
@@ -6731,7 +6731,7 @@ WHERE {
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?X", "ex:minnie" },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6758,7 +6758,7 @@ WHERE {
             DataTable dt1 = new DataTable();
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" }
@@ -6768,7 +6768,7 @@ WHERE {
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?X", "ex:minnie" },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6793,7 +6793,7 @@ WHERE {
             dt1.ExtendedProperties.Add(RDFQueryEngine.JoinAsUnion, true); //Need to simulate Mirella here, since left-union will merge tables
             RDFQueryEngine.AddColumn(dt1, "?Y");
             RDFQueryEngine.AddColumn(dt1, "?X");
-            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt1Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:minnie" }
@@ -6803,7 +6803,7 @@ WHERE {
             DataTable dt2 = new DataTable();
             RDFQueryEngine.AddColumn(dt2, "?X");
             RDFQueryEngine.AddColumn(dt2, "?N");
-            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
                 { "?X", "ex:topolino" },
                 { "?N", "Mickey Mouse@EN-US" }
@@ -6815,7 +6815,7 @@ WHERE {
             RDFQueryEngine.AddColumn(dt3, "?Y");
             RDFQueryEngine.AddColumn(dt3, "?X");
             RDFQueryEngine.AddColumn(dt3, "?Q");
-            Dictionary<string, string> dt3Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt3Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", null },
@@ -6826,7 +6826,7 @@ WHERE {
             DataTable dt4 = new DataTable();
             dt4.ExtendedProperties.Add(RDFQueryEngine.JoinAsUnion, true); //Need to simulate Mirella here, since left-union will merge tables
             RDFQueryEngine.AddColumn(dt4, "?Y");
-            Dictionary<string, string> dt4Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt4Bindings = new Dictionary<string, string>
             {
                 { "?Y", "ex:paperino" }
             };
@@ -6834,7 +6834,7 @@ WHERE {
 
             DataTable dt5 = new DataTable();
             RDFQueryEngine.AddColumn(dt5, "?X");
-            Dictionary<string, string> dt5Bindings = new Dictionary<string, string>()
+            Dictionary<string, string> dt5Bindings = new Dictionary<string, string>
             {
                 { "?X", "ex:topolino" }
             };
@@ -7106,7 +7106,7 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?X");
             RDFQueryEngine.AddColumn(table, "?N");
             RDFQueryEngine.AddColumn(table, "?A");
-            Dictionary<string, string> tableBindings1 = new Dictionary<string, string>()
+            Dictionary<string, string> tableBindings1 = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" },
@@ -7114,7 +7114,7 @@ WHERE {
                 { "?A", $"85^^{RDFVocabulary.XSD.INTEGER}" },
             };
             RDFQueryEngine.AddRow(table, tableBindings1);
-            Dictionary<string, string> tableBindings2 = new Dictionary<string, string>()
+            Dictionary<string, string> tableBindings2 = new Dictionary<string, string>
             {
                 { "?Y", "ex:fido" },
                 { "?X", "ex:paperino" },
@@ -7122,7 +7122,7 @@ WHERE {
                 { "?A", $"83^^{RDFVocabulary.XSD.INTEGER}" },
             };
             RDFQueryEngine.AddRow(table, tableBindings2);
-            Dictionary<string, string> tableBindings3 = new Dictionary<string, string>()
+            Dictionary<string, string> tableBindings3 = new Dictionary<string, string>
             {
                 { "?Y", "ex:balto" },
                 { "?X", "ex:whoever" },
@@ -7154,7 +7154,7 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?X");
             RDFQueryEngine.AddColumn(table, "?N");
             RDFQueryEngine.AddColumn(table, "?A");
-            Dictionary<string, string> tableBindings1 = new Dictionary<string, string>()
+            Dictionary<string, string> tableBindings1 = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" },
@@ -7162,7 +7162,7 @@ WHERE {
                 { "?A", $"85^^{RDFVocabulary.XSD.INTEGER}" },
             };
             RDFQueryEngine.AddRow(table, tableBindings1);
-            Dictionary<string, string> tableBindings2 = new Dictionary<string, string>()
+            Dictionary<string, string> tableBindings2 = new Dictionary<string, string>
             {
                 { "?Y", "ex:fido" },
                 { "?X", "ex:paperino" },
@@ -7170,7 +7170,7 @@ WHERE {
                 { "?A", $"83^^{RDFVocabulary.XSD.INTEGER}" },
             };
             RDFQueryEngine.AddRow(table, tableBindings2);
-            Dictionary<string, string> tableBindings3 = new Dictionary<string, string>()
+            Dictionary<string, string> tableBindings3 = new Dictionary<string, string>
             {
                 { "?Y", "ex:balto" },
                 { "?X", "ex:whoever" },
@@ -7201,7 +7201,7 @@ WHERE {
             RDFQueryEngine.AddColumn(table, "?X");
             RDFQueryEngine.AddColumn(table, "?N");
             RDFQueryEngine.AddColumn(table, "?A");
-            Dictionary<string, string> tableBindings1 = new Dictionary<string, string>()
+            Dictionary<string, string> tableBindings1 = new Dictionary<string, string>
             {
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" },
@@ -7209,7 +7209,7 @@ WHERE {
                 { "?A", $"85^^{RDFVocabulary.XSD.INTEGER}" },
             };
             RDFQueryEngine.AddRow(table, tableBindings1);
-            Dictionary<string, string> tableBindings2 = new Dictionary<string, string>()
+            Dictionary<string, string> tableBindings2 = new Dictionary<string, string>
             {
                 { "?Y", "ex:fido" },
                 { "?X", "ex:paperino" },
@@ -7217,7 +7217,7 @@ WHERE {
                 { "?A", $"83^^{RDFVocabulary.XSD.INTEGER}" },
             };
             RDFQueryEngine.AddRow(table, tableBindings2);
-            Dictionary<string, string> tableBindings3 = new Dictionary<string, string>()
+            Dictionary<string, string> tableBindings3 = new Dictionary<string, string>
             {
                 { "?Y", "ex:balto" },
                 { "?X", "ex:whoever" },

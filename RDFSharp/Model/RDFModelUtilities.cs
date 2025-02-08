@@ -466,7 +466,7 @@ namespace RDFSharp.Model
             #region Deserialization
             bool nilFound = false;
             RDFResource itemRest = collRepresentative;
-            HashSet<long> itemRestVisitCache = new HashSet<long>() { itemRest.PatternMemberID };
+            HashSet<long> itemRestVisitCache = new HashSet<long> { itemRest.PatternMemberID };
             while (!nilFound)
             {
                 #region rdf:first

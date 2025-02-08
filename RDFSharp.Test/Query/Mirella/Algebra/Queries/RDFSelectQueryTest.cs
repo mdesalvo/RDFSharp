@@ -709,9 +709,9 @@ namespace RDFSharp.Test.Query
                             .WithCallback(req =>
                             {
                                 receivedQuery = req.RawQuery;
-                                return new WireMock.ResponseMessage()
+                                return new WireMock.ResponseMessage
                                 {
-                                    BodyData = new BodyData()
+                                    BodyData = new BodyData
                                     {
                                         BodyAsString = mockedResponseXml,
                                         Encoding = Encoding.UTF8,
@@ -771,9 +771,9 @@ namespace RDFSharp.Test.Query
                             .WithCallback(req =>
                             {
                                 receivedQuery = req.RawQuery;
-                                return new WireMock.ResponseMessage()
+                                return new WireMock.ResponseMessage
                                 {
-                                    BodyData = new BodyData()
+                                    BodyData = new BodyData
                                     {
                                         BodyAsString = mockedResponseXml,
                                         Encoding = Encoding.UTF8,
@@ -835,9 +835,9 @@ namespace RDFSharp.Test.Query
                             .WithCallback(req =>
                             {
                                 receivedQuery = req.RawQuery;
-                                return new WireMock.ResponseMessage()
+                                return new WireMock.ResponseMessage
                                 {
-                                    BodyData = new BodyData()
+                                    BodyData = new BodyData
                                     {
                                         BodyAsString = mockedResponseXml,
                                         Encoding = Encoding.UTF8,
@@ -896,9 +896,9 @@ namespace RDFSharp.Test.Query
                             .WithCallback(req =>
                             {
                                 receivedQuery = req.RawQuery;
-                                return new WireMock.ResponseMessage()
+                                return new WireMock.ResponseMessage
                                 {
-                                    BodyData = new BodyData()
+                                    BodyData = new BodyData
                                     {
                                         BodyAsString = mockedResponseXml,
                                         Encoding = Encoding.UTF8,
@@ -1119,7 +1119,7 @@ namespace RDFSharp.Test.Query
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAndHaveResultsViaPost/sparql"));
-            RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions() { 
+            RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions { 
                 QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
 
             Assert.IsNotNull(result);
@@ -1205,7 +1205,7 @@ namespace RDFSharp.Test.Query
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplyRawSelectQueryToSPARQLEndpointViaPost/sparql"));
-            RDFSelectQueryResult result = RDFSelectQuery.ApplyRawToSPARQLEndpoint(query.ToString(), endpoint, new RDFSPARQLEndpointQueryOptions() {
+            RDFSelectQueryResult result = RDFSelectQuery.ApplyRawToSPARQLEndpoint(query.ToString(), endpoint, new RDFSPARQLEndpointQueryOptions {
                  QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
 
             Assert.IsNotNull(result);
@@ -1301,7 +1301,7 @@ namespace RDFSharp.Test.Query
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAndHaveResultsWithBasicAuthorizationHeaderViaPost/sparql"));
             endpoint.SetBasicAuthorizationHeader(authHeaderValue);
 
-            RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions() { 
+            RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions { 
                 QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
 
             Assert.IsNotNull(result);
@@ -1322,7 +1322,7 @@ namespace RDFSharp.Test.Query
                 .AddModifier(new RDFLimitModifier(2));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri("http://statistics.gov.scot/sparql"));
 
-            RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions() { 
+            RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions { 
                 QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Get });
 
             Assert.IsNotNull(result);
@@ -1344,7 +1344,7 @@ namespace RDFSharp.Test.Query
                 .AddModifier(new RDFLimitModifier(2));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri("http://statistics.gov.scot/sparql"));
 
-            RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions() { 
+            RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions { 
                 QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
 
             Assert.IsNotNull(result);
@@ -1441,7 +1441,7 @@ namespace RDFSharp.Test.Query
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAndHaveResultsWithBearerAuthorizationHeaderViaPost/sparql"));
             endpoint.SetBearerAuthorizationHeader(authHeaderValue);
 
-            RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions() {
+            RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions {
                 QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
 
             Assert.IsNotNull(result);
@@ -1527,7 +1527,7 @@ namespace RDFSharp.Test.Query
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAndHaveResultsAdjustingVariableNamesViaPost/sparql"));
-            RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions() {
+            RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions {
                 QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
 
             Assert.IsNotNull(result);
@@ -1600,7 +1600,7 @@ namespace RDFSharp.Test.Query
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAndNotHaveResultsViaPost/sparql"));
-            RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions() { 
+            RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions { 
                 QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
 
             Assert.IsNotNull(result);

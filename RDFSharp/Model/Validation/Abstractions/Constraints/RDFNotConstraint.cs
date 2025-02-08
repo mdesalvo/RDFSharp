@@ -61,7 +61,7 @@ namespace RDFSharp.Model
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
             {
-                RDFValidationReport notShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, notShape, new List<RDFPatternMember>() { valueNode });
+                RDFValidationReport notShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, notShape, new List<RDFPatternMember> { valueNode });
                 if (notShapeReport.Conforms)
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.NOT_CONSTRAINT_COMPONENT,

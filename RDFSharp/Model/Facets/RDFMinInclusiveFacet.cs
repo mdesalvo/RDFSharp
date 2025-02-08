@@ -45,7 +45,7 @@ namespace RDFSharp.Model
         /// Gives a graph representation of the MinInclusive facet
         /// </summary>
         public override RDFGraph ToRDFGraph()
-          => new RDFGraph(new List<RDFTriple>() {
+          => new RDFGraph(new List<RDFTriple> {
               new RDFTriple(URI, RDFVocabulary.XSD.MIN_INCLUSIVE, new RDFTypedLiteral(Convert.ToString(InclusiveLowerBound, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE)) });
 
         /// <summary>

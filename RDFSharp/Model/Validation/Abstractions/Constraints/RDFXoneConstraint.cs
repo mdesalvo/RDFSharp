@@ -78,7 +78,7 @@ namespace RDFSharp.Model
                 int valueNodeConformsCounter = 0;
                 foreach (RDFShape xoneShape in xoneShapes)
                 {
-                    RDFValidationReport xoneShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, xoneShape, new List<RDFPatternMember>() { valueNode });
+                    RDFValidationReport xoneShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, xoneShape, new List<RDFPatternMember> { valueNode });
                     if (xoneShapeReport.Conforms)
                     {
                         valueNodeConformsCounter++;

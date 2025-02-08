@@ -44,7 +44,7 @@ namespace RDFSharp.Model
         /// Gives a graph representation of the pattern facet
         /// </summary>
         public override RDFGraph ToRDFGraph()
-            => new RDFGraph(new List<RDFTriple>() {
+            => new RDFGraph(new List<RDFTriple> {
                 new RDFTriple(URI, RDFVocabulary.XSD.PATTERN, new RDFTypedLiteral(Pattern, RDFModelEnums.RDFDatatypes.XSD_STRING)) });
 
         /// <summary>

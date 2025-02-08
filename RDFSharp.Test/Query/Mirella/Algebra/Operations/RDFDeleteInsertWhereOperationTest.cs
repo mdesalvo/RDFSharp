@@ -196,7 +196,7 @@ WHERE {
         {
             RDFPatternGroup patternGroup = new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions() { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult});
+                .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult});
             RDFDeleteInsertWhereOperation operation = new RDFDeleteInsertWhereOperation();
             operation.AddPatternGroup(patternGroup);
             operation.AddPatternGroup(patternGroup); //Will be discarded, since duplicate patternGroups are not allowed

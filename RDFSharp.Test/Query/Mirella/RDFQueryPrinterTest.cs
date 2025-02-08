@@ -662,7 +662,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-                    .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions() { ErrorBehavior= RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult }));
+                    .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions { ErrorBehavior= RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult }));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
 @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -715,7 +715,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-                    .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions() { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult })
+                    .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult })
                     .Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
@@ -769,7 +769,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-                    .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions() { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult })
+                    .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult })
                     .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
@@ -1204,7 +1204,7 @@ WHERE {
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-                    .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions() { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult })
+                    .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult })
                     .MinusWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =

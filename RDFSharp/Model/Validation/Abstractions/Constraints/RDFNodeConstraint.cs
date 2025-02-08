@@ -60,7 +60,7 @@ namespace RDFSharp.Model
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
             {
-                RDFValidationReport nodeShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, nodeShape, new List<RDFPatternMember>() { valueNode });
+                RDFValidationReport nodeShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, nodeShape, new List<RDFPatternMember> { valueNode });
                 if (!nodeShapeReport.Conforms)
                 {
                     //Report evidences from linked node shape

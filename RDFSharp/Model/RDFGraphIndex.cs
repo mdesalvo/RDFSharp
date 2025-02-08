@@ -137,7 +137,7 @@ namespace RDFSharp.Model
                 ResourcesRegister.Add(triple.Subject.PatternMemberID, (RDFResource)triple.Subject);
             //Subject (Index)
             if (!SubjectsIndex.TryGetValue(triple.Subject.PatternMemberID, out HashSet<long> subjectsIndex))
-                SubjectsIndex.Add(triple.Subject.PatternMemberID, new HashSet<long>() { triple.TripleID });
+                SubjectsIndex.Add(triple.Subject.PatternMemberID, new HashSet<long> { triple.TripleID });
             else
                 subjectsIndex.Add(triple.TripleID);
 
@@ -146,7 +146,7 @@ namespace RDFSharp.Model
                 ResourcesRegister.Add(triple.Predicate.PatternMemberID, (RDFResource)triple.Predicate);
             //Predicate (Index)
             if (!PredicatesIndex.TryGetValue(triple.Predicate.PatternMemberID, out HashSet<long> predicatesIndex))
-                PredicatesIndex.Add(triple.Predicate.PatternMemberID, new HashSet<long>() { triple.TripleID });
+                PredicatesIndex.Add(triple.Predicate.PatternMemberID, new HashSet<long> { triple.TripleID });
             else
                 predicatesIndex.Add(triple.TripleID);
 
@@ -158,7 +158,7 @@ namespace RDFSharp.Model
                     ResourcesRegister.Add(triple.Object.PatternMemberID, (RDFResource)triple.Object);
                 //Index
                 if (!ObjectsIndex.TryGetValue(triple.Object.PatternMemberID, out HashSet<long> objectsIndex))
-                    ObjectsIndex.Add(triple.Object.PatternMemberID, new HashSet<long>() { triple.TripleID });
+                    ObjectsIndex.Add(triple.Object.PatternMemberID, new HashSet<long> { triple.TripleID });
                 else
                     objectsIndex.Add(triple.TripleID);
             }
@@ -171,7 +171,7 @@ namespace RDFSharp.Model
                     LiteralsRegister.Add(triple.Object.PatternMemberID, (RDFLiteral)triple.Object);
                 //Index
                 if (!LiteralsIndex.TryGetValue(triple.Object.PatternMemberID, out HashSet<long> literalsIndex))
-                    LiteralsIndex.Add(triple.Object.PatternMemberID, new HashSet<long>() { triple.TripleID });
+                    LiteralsIndex.Add(triple.Object.PatternMemberID, new HashSet<long> { triple.TripleID });
                 else
                     literalsIndex.Add(triple.TripleID);
             }
