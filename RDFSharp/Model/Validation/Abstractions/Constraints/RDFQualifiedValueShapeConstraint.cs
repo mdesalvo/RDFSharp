@@ -92,7 +92,7 @@ namespace RDFSharp.Model
                         conformingValues++;
                 }
 
-                if (QualifiedValueMinCount.HasValue && conformingValues < QualifiedValueMinCount)
+                if (conformingValues < QualifiedValueMinCount)
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT_CONSTRAINT_COMPONENT,
                                                              focusNode,
@@ -101,7 +101,7 @@ namespace RDFSharp.Model
                                                              shapeMessages,
                                                              shape.Severity));
 
-                if (QualifiedValueMaxCount.HasValue && conformingValues > QualifiedValueMaxCount)
+                if (conformingValues > QualifiedValueMaxCount)
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT_CONSTRAINT_COMPONENT,
                                                              focusNode,

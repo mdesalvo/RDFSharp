@@ -152,7 +152,7 @@ namespace RDFSharp.Model
         /// Asynchronously builds the reification graph of the triple
         /// </summary>
         public Task<RDFGraph> ReifyTripleAsync()
-            => Task.Run(() => ReifyTriple());
+            => Task.Run(ReifyTriple);
         #endregion
     }
 

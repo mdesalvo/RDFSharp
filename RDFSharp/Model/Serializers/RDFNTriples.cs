@@ -86,7 +86,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to detect presence of a plain literal with language tag within a given N-Triple
         /// </summary>
-        internal static readonly Lazy<Regex> regexLPL = new Lazy<Regex>(() => new Regex(string.Concat(@"@", RDFPlainLiteral.LangTagMask, "$"), RegexOptions.Compiled | RegexOptions.IgnoreCase));
+        internal static readonly Lazy<Regex> regexLPL = new Lazy<Regex>(() => new Regex(string.Concat("@", RDFPlainLiteral.LangTagMask, "$"), RegexOptions.Compiled | RegexOptions.IgnoreCase));
 
         /// <summary>
         /// Regex to detect presence of starting " in the value of a given N-Triple literal
@@ -202,9 +202,9 @@ namespace RDFSharp.Model
                     RDFResource O = null;
                     RDFLiteral L = null;
                     Dictionary<string, long> hashContext = new Dictionary<string, long>();
-                    char[] openingBrackets = new char[] { '<' };
-                    char[] closingBrackets = new char[] { '>' };
-                    char[] trimmableChars  = new char[] { ' ', '\t', '\r', '\n' };
+                    char[] openingBrackets = { '<' };
+                    char[] closingBrackets = { '>' };
+                    char[] trimmableChars  = { ' ', '\t', '\r', '\n' };
 
                     while ((ntriple = sr.ReadLine()) != null)
                     {

@@ -27,7 +27,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Represents an handy plain literal for empty strings
         /// </summary>
-        public static RDFPlainLiteral Empty = new RDFPlainLiteral(string.Empty);
+        public static readonly RDFPlainLiteral Empty = new RDFPlainLiteral(string.Empty);
         internal static readonly string LangTagDirection = "(--ltr|--rtl)?";
         internal static readonly string LangTagSubMask = string.Concat("(-[a-zA-Z0-9]{1,8})*", LangTagDirection);
         internal static readonly string LangTagMask = string.Concat("[a-zA-Z]{1,8}", LangTagSubMask);

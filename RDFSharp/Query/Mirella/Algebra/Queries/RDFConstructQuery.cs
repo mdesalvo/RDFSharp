@@ -69,7 +69,7 @@ namespace RDFSharp.Query
                 Templates.Add(template);
 
                 //Context
-                if (template.Context != null && template.Context is RDFVariable ctxVar)
+                if (template.Context is RDFVariable ctxVar)
                 {
                     if (!Variables.Any(v => v.Equals(template.Context)))
                         Variables.Add(ctxVar);

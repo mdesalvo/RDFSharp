@@ -76,7 +76,7 @@ namespace RDFSharp.Query
         /// Asynchronously gets a graph corresponding to the query result
         /// </summary>
         public Task<RDFGraph> ToRDFGraphAsync()
-            => Task.Run(() => ToRDFGraph());
+            => Task.Run(ToRDFGraph);
 
         /// <summary>
         /// Gets a query result corresponding to the given graph

@@ -141,7 +141,7 @@ namespace RDFSharp.Query
             if (HavingClause.Item1)
             {
                 result.Append('(');
-                result.Append(ToString().Substring(1, ToString().LastIndexOf(" AS ?")));
+                result.Append(ToString().Substring(1, ToString().LastIndexOf(" AS ?", StringComparison.Ordinal)));
                 switch (HavingClause.Item2)
                 {
                     case RDFQueryEnums.RDFComparisonFlavors.LessThan:
@@ -239,7 +239,7 @@ namespace RDFSharp.Query
         internal T GetPartitionKeyExecutionResult<T>(string partitionKey, T initValue)
         {
             if (!ExecutionRegistry.ContainsKey(partitionKey))
-                AddPartitionKey<T>(partitionKey, initValue);
+                AddPartitionKey(partitionKey, initValue);
 
             return (T)ExecutionRegistry[partitionKey]["ExecutionResult"];
         }

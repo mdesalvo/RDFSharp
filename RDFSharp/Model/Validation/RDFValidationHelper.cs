@@ -143,7 +143,7 @@ namespace RDFSharp.Model
             {
                 #region visitContext
                 if (visitContext == null)
-                    visitContext = new HashSet<long> { { className.PatternMemberID } };
+                    visitContext = new HashSet<long> { className.PatternMemberID };
                 else
                 {
                     if (!visitContext.Add(className.PatternMemberID))
@@ -261,7 +261,6 @@ namespace RDFSharp.Model
                         DetectShapeConstraints(graph, propertyShape);
 
                         shapesGraph.AddShape(propertyShape);
-                        continue;
                         #endregion
                     }
                     else
@@ -275,7 +274,6 @@ namespace RDFSharp.Model
                         DetectShapeConstraints(graph, propertyShape);
 
                         shapesGraph.AddShape(propertyShape);
-                        continue;
                         #endregion
                     }
                 }
@@ -359,12 +357,10 @@ namespace RDFSharp.Model
 
             //sh:deactivated (accepted occurrences: 1)
             RDFTriple shapeDeactivated = shapeDefinition[null, RDFVocabulary.SHACL.DEACTIVATED, null, null].FirstOrDefault();
-            if (shapeDeactivated != null)
-            {
-                if (shapeDeactivated.Object is RDFTypedLiteral shapeDeactivatedLiteral
-                        && shapeDeactivatedLiteral.HasBooleanDatatype() && bool.Parse(shapeDeactivatedLiteral.Value))
-                    shape.Deactivate();
-            }
+            if (shapeDeactivated?.Object is RDFTypedLiteral shapeDeactivatedLiteral
+                    && shapeDeactivatedLiteral.HasBooleanDatatype() 
+                    && bool.Parse(shapeDeactivatedLiteral.Value))
+                shape.Deactivate();
 
             //sh:message (accepted occurrences: N)
             RDFGraph shapeMessages = shapeDefinition[null, RDFVocabulary.SHACL.MESSAGE, null, null];

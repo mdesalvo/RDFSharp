@@ -67,20 +67,20 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to catch xsd:hexBinary typed literals
         /// </summary>
-        internal static readonly Lazy<Regex> hexBinary = new Lazy<Regex>(() => new Regex(@"^([0-9a-fA-F]{2})*$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> hexBinary = new Lazy<Regex>(() => new Regex("^([0-9a-fA-F]{2})*$", RegexOptions.Compiled));
         /// <summary>
         /// Regex to catch owl:rational typed literals
         /// </summary>
-        internal static readonly Lazy<Regex> owlRational = new Lazy<Regex>(() => new Regex(@"^(0|(-)?([1-9])+([0-9])*)(/([1-9])+([0-9])*)?$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> owlRational = new Lazy<Regex>(() => new Regex("^(0|(-)?([1-9])+([0-9])*)(/([1-9])+([0-9])*)?$", RegexOptions.Compiled));
 
         /// <summary>
         /// Alternative representations of boolean True
         /// </summary>
-        internal static readonly string[] AlternativesBoolTrue  = new string[] { "1", "one", "yes", "y", "t", "on", "ok", "up" };
+        internal static readonly string[] AlternativesBoolTrue  = { "1", "one", "yes", "y", "t", "on", "ok", "up" };
         /// <summary>
         /// Alternative representations of boolean False
         /// </summary>
-        internal static readonly string[] AlternativesBoolFalse = new string[] { "0", "zero", "no", "n", "f", "off", "ko", "down" };
+        internal static readonly string[] AlternativesBoolFalse = { "0", "zero", "no", "n", "f", "off", "ko", "down" };
 
         /// <summary>
         /// Gets the Uri corresponding to the given string
@@ -195,7 +195,7 @@ namespace RDFSharp.Model
                  || !source.EndsWith(value))
                 return source;
 
-            return source.Remove(source.LastIndexOf(value));
+            return source.Remove(source.LastIndexOf(value, StringComparison.Ordinal));
         }
         
         /// <summary>
@@ -429,7 +429,6 @@ namespace RDFSharp.Model
                              && facetPattern.HasStringDatatype())
                         {
                             targetFacets.Add(new RDFPatternFacet(facetPattern.Value));
-                            continue;
                         }
                     }
 
@@ -556,8 +555,8 @@ namespace RDFSharp.Model
             => ((DescriptionAttribute)RDFModelEnums_RDFDatatypes_EnumType
                 .GetField(datatype.ToString())
                 .GetCustomAttributes(typeof(DescriptionAttribute), false)[0]).Description;
-        internal static Type RDFModelEnums_RDFDatatypes_EnumType = typeof(RDFModelEnums.RDFDatatypes);
-        internal static Array RDFModelEnums_RDFDatatypes_EnumValues = RDFModelEnums_RDFDatatypes_EnumType.GetEnumValues();
+        internal static readonly Type RDFModelEnums_RDFDatatypes_EnumType = typeof(RDFModelEnums.RDFDatatypes);
+        internal static readonly Array RDFModelEnums_RDFDatatypes_EnumValues = RDFModelEnums_RDFDatatypes_EnumType.GetEnumValues();
 
         /// <summary>
         /// Gives the Enum representation of the given datatype
@@ -672,7 +671,7 @@ namespace RDFSharp.Model
                     catch { return (false, literalValue); }
 
                 case RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING:
-                    bool isValidNormalizedString = literalValue.IndexOfAny(new char[] { '\n', '\r', '\t' }) == -1;
+                    bool isValidNormalizedString = literalValue.IndexOfAny(new[] { '\n', '\r', '\t' }) == -1;
                     return (isValidNormalizedString, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_LANGUAGE:

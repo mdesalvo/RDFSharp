@@ -25,19 +25,19 @@ namespace RDFSharp.Model
         /// <summary>
         /// Represents an handy typed literal for boolean True
         /// </summary>
-        public static RDFTypedLiteral True = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
+        public static readonly RDFTypedLiteral True = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
         /// <summary>
         /// Represents an handy typed literal for boolean False
         /// </summary>
-        public static RDFTypedLiteral False = new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
+        public static readonly RDFTypedLiteral False = new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
         /// <summary>
         /// Represents an handy typed literal for integer Zero
         /// </summary>
-        public static RDFTypedLiteral Zero = new RDFTypedLiteral("0", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+        public static readonly RDFTypedLiteral Zero = new RDFTypedLiteral("0", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
         /// <summary>
         /// Represents an handy typed literal for integer One
         /// </summary>
-        public static RDFTypedLiteral One = new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+        public static readonly RDFTypedLiteral One = new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
         #endregion
 
         #region Properties

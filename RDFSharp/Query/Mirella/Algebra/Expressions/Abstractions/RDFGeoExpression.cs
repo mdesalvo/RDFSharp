@@ -40,22 +40,22 @@ namespace RDFSharp.Query
         /// <summary>
         /// Reader for WKT spatial representation
         /// </summary>
-        internal static WKTReader WKTReader = new WKTReader();
+        internal static readonly WKTReader WKTReader = new WKTReader();
 
         /// <summary>
         /// Writer for WKT spatial representation
         /// </summary>
-        internal static WKTWriter WKTWriter = new WKTWriter();
+        internal static readonly WKTWriter WKTWriter = new WKTWriter();
 
         /// <summary>
         /// Reader for GML spatial representation
         /// </summary>
-        internal static GMLReader GMLReader = new GMLReader();
+        internal static readonly GMLReader GMLReader = new GMLReader();
 
         /// <summary>
         /// Writer for GML spatial representation
         /// </summary>
-        internal static GMLWriter GMLWriter = new GMLWriter();
+        internal static readonly GMLWriter GMLWriter = new GMLWriter();
         #endregion
 
         #region Ctors

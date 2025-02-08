@@ -480,7 +480,7 @@ namespace RDFSharp.Model
         /// Asynchronously clears the triples and metadata of the graph
         /// </summary>
         public Task ClearTriplesAsync()
-            => Task.Run(() => ClearTriples());
+            => Task.Run(ClearTriples);
 
         /// <summary>
         /// Turns back the reified triples into their compact representation
@@ -536,7 +536,7 @@ namespace RDFSharp.Model
         /// Asynchronously turns back the reified triples of the graph into their compact representation
         /// </summary>
         public Task UnreifyTriplesAsync()
-            => Task.Run(() => UnreifyTriples());
+            => Task.Run(UnreifyTriples);
         #endregion
 
         #region Select
@@ -792,7 +792,7 @@ namespace RDFSharp.Model
         /// Asynchronously writes the graph into a datatable with "Subject-Predicate-Object" columns
         /// </summary>
         public Task<DataTable> ToDataTableAsync()
-            => Task.Run(() => ToDataTable());
+            => Task.Run(ToDataTable);
         #endregion
 
         #region Import

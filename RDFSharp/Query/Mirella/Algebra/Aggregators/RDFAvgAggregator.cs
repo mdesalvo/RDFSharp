@@ -39,8 +39,8 @@ namespace RDFSharp.Query
         /// Gets the string representation of the AVG aggregator
         /// </summary>
         public override string ToString()
-            => IsDistinct ? string.Format("(AVG(DISTINCT {0}) AS {1})", AggregatorVariable, ProjectionVariable)
-                          : string.Format("(AVG({0}) AS {1})", AggregatorVariable, ProjectionVariable);
+            => IsDistinct ? $"(AVG(DISTINCT {AggregatorVariable}) AS {ProjectionVariable})"
+                          : $"(AVG({AggregatorVariable}) AS {ProjectionVariable})";
         #endregion
 
         #region Methods
@@ -54,20 +54,20 @@ namespace RDFSharp.Query
             if (IsDistinct)
             {
                 //Cache-Hit: distinctness failed
-                if (AggregatorContext.CheckPartitionKeyRowValueCache<double>(partitionKey, rowValue))
+                if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
                     return;
                 //Cache-Miss: distinctness passed
                 else
-                    AggregatorContext.UpdatePartitionKeyRowValueCache<double>(partitionKey, rowValue);
+                    AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
             }
             //Get aggregator value
-            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<double>(partitionKey, 0d);
+            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d);
             //In case of non-numeric values, consider partitioning failed
             double newAggregatorValue = double.NaN;
             if (!aggregatorValue.Equals(double.NaN) && !rowValue.Equals(double.NaN))
                 newAggregatorValue = rowValue + aggregatorValue;
             //Update aggregator context (sum, count)
-            AggregatorContext.UpdatePartitionKeyExecutionResult<double>(partitionKey, newAggregatorValue);
+            AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, newAggregatorValue);
             AggregatorContext.UpdatePartitionKeyExecutionCounter(partitionKey);
         }
 
@@ -87,7 +87,7 @@ namespace RDFSharp.Query
             foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
             {
                 //Get aggregator value
-                double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<double>(partitionKey, 0d);
+                double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d);
                 //Get aggregator counter
                 double aggregatorCounter = AggregatorContext.GetPartitionKeyExecutionCounter(partitionKey);
                 //In case of non-numeric values, consider partition failed
@@ -95,7 +95,7 @@ namespace RDFSharp.Query
                 if (!aggregatorValue.Equals(double.NaN))
                     finalAggregatorValue = aggregatorValue / aggregatorCounter;
                 //Update aggregator context (sum, count)
-                AggregatorContext.UpdatePartitionKeyExecutionResult<double>(partitionKey, finalAggregatorValue);
+                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, finalAggregatorValue);
                 //Update result's table
                 UpdateProjectionTable(partitionKey, projFuncTable);
             }
@@ -110,14 +110,14 @@ namespace RDFSharp.Query
         {
             //Get bindings from context
             Dictionary<string, string> bindings = new Dictionary<string, string>();
-            foreach (string pkValue in partitionKey.Split(new string[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string pkValue in partitionKey.Split(new[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
             {
-                string[] pValues = pkValue.Split(new string[] { "§PV§" }, StringSplitOptions.None);
+                string[] pValues = pkValue.Split(new[] { "§PV§" }, StringSplitOptions.None);
                 bindings.Add(pValues[0], pValues[1]);
             }
 
             //Add aggregator value to bindings
-            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<double>(partitionKey, 0d);
+            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d);
             if (aggregatorValue.Equals(double.NaN))
                 bindings.Add(ProjectionVariable.VariableName, string.Empty);
             else

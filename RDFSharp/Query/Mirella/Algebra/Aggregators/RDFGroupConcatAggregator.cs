@@ -46,8 +46,8 @@ namespace RDFSharp.Query
         /// Gets the string representation of the GROUP_CONCAT aggregator
         /// </summary>
         public override string ToString()
-            => IsDistinct ? string.Format("(GROUP_CONCAT(DISTINCT {0}; SEPARATOR=\"{1}\") AS {2})", AggregatorVariable, Separator, ProjectionVariable)
-                          : string.Format("(GROUP_CONCAT({0}; SEPARATOR=\"{1}\") AS {2})", AggregatorVariable, Separator, ProjectionVariable);
+            => IsDistinct ? $"(GROUP_CONCAT(DISTINCT {AggregatorVariable}; SEPARATOR=\"{Separator}\") AS {ProjectionVariable})"
+                          : $"(GROUP_CONCAT({AggregatorVariable}; SEPARATOR=\"{Separator}\") AS {ProjectionVariable})";
         #endregion
 
         #region Methods
@@ -61,16 +61,16 @@ namespace RDFSharp.Query
             if (IsDistinct)
             {
                 //Cache-Hit: distinctness failed
-                if (AggregatorContext.CheckPartitionKeyRowValueCache<string>(partitionKey, rowValue))
+                if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
                     return;
                 //Cache-Miss: distinctness passed
                 else
-                    AggregatorContext.UpdatePartitionKeyRowValueCache<string>(partitionKey, rowValue);
+                    AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
             }
             //Get aggregator value
-            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, string.Empty) ?? string.Empty;
+            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty) ?? string.Empty;
             //Update aggregator context (group_concat)
-            AggregatorContext.UpdatePartitionKeyExecutionResult<string>(partitionKey, string.Concat(aggregatorValue, rowValue, Separator));
+            AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, string.Concat(aggregatorValue, rowValue, Separator));
         }
 
         /// <summary>
@@ -102,14 +102,14 @@ namespace RDFSharp.Query
         {
             //Get bindings from context
             Dictionary<string, string> bindings = new Dictionary<string, string>();
-            foreach (string pkValue in partitionKey.Split(new string[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string pkValue in partitionKey.Split(new[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
             {
-                string[] pValues = pkValue.Split(new string[] { "§PV§" }, StringSplitOptions.None);
+                string[] pValues = pkValue.Split(new[] { "§PV§" }, StringSplitOptions.None);
                 bindings.Add(pValues[0], pValues[1]);
             }
 
             //Add aggregator value to bindings
-            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, string.Empty);
+            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty);
             bindings.Add(ProjectionVariable.VariableName, aggregatorValue.TrimEnd(Separator));
 
             //Add bindings to result's table

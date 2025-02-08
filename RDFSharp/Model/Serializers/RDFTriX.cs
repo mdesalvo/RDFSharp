@@ -100,8 +100,8 @@ namespace RDFSharp.Model
 
                 #region subject
 
-                XmlNode subjElement = (((RDFResource)t.Subject).IsBlank ? trixDoc.CreateNode(XmlNodeType.Element, "id", null) :
-                                                                                trixDoc.CreateNode(XmlNodeType.Element, "uri", null));
+                XmlNode subjElement = (((RDFResource)t.Subject).IsBlank ? trixDoc.CreateNode(XmlNodeType.Element, "id", null) 
+                                                                        : trixDoc.CreateNode(XmlNodeType.Element, "uri", null));
                 XmlText subjElementText = trixDoc.CreateTextNode(t.Subject.ToString());
                 subjElement.AppendChild(subjElementText);
                 tripleElement.AppendChild(subjElement);
@@ -146,7 +146,7 @@ namespace RDFSharp.Model
                             xmlLang.AppendChild(xmlLangText);
                             plainLiteralElement.Attributes.Append(xmlLang);
                         }
-                        XmlText plainLiteralText = trixDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(((RDFLiteral)t.Object).Value)));
+                        XmlText plainLiteralText = trixDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(objLit.Value)));
                         plainLiteralElement.AppendChild(plainLiteralText);
                         tripleElement.AppendChild(plainLiteralElement);
                     }

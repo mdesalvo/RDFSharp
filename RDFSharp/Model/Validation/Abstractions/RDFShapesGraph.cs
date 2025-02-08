@@ -116,8 +116,8 @@ namespace RDFSharp.Model
             if (shapeName != null)
             {
                 long shapeID = RDFModelUtilities.CreateHash(shapeName);
-                if (Shapes.ContainsKey(shapeID))
-                    return Shapes[shapeID];
+                if (Shapes.TryGetValue(shapeID, out RDFShape shape))
+                    return shape;
             }
             return null;
         }
@@ -142,7 +142,7 @@ namespace RDFSharp.Model
         /// Asynchronously gets a graph representation of this shapes graph
         /// </summary>
         public Task<RDFGraph> ToRDFGraphAsync()
-            => Task.Run(() => ToRDFGraph());
+            => Task.Run(ToRDFGraph);
 
         /// <summary>
         /// Gets a shapes graph representation of the given graph

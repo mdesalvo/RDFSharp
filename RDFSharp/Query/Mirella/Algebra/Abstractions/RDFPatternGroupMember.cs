@@ -28,13 +28,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Unique identifier of the pattern group member
         /// </summary>
-        public long PatternGroupMemberID
-            => LazyPatternGroupMemberID.Value;
+        public long PatternGroupMemberID => LazyPatternGroupMemberID.Value;
 
         /// <summary>
         /// Lazy evaluation of the pattern group member identifier
         /// </summary>
-        protected Lazy<long> LazyPatternGroupMemberID;
+        protected readonly Lazy<long> LazyPatternGroupMemberID;
 
         /// <summary>
         /// Unique identifier of the pattern group member (string)

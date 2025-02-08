@@ -90,7 +90,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal void MergeResults(RDFValidationReport report)
         {
-            if (report != null && report.Results != null)
+            if (report?.Results != null)
                 Results.AddRange(report.Results);
         }
         #endregion
@@ -127,7 +127,7 @@ namespace RDFSharp.Model
         /// Asynchronously gets a graph representation of this validation report
         /// </summary>
         public Task<RDFGraph> ToRDFGraphAsync()
-            => Task.Run(() => ToRDFGraph());
+            => Task.Run(ToRDFGraph);
         #endregion
 
         #endregion

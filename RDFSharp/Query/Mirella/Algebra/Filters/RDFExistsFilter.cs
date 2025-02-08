@@ -150,7 +150,7 @@ namespace RDFSharp.Query
                     #endregion
 
                     //Verify filter's response on the pattern resultset
-                    if ((subjectCompared || predicateCompared || objectCompared) && patternResultsEnumerable.Count() > 0)
+                    if ((subjectCompared || predicateCompared || objectCompared) && patternResultsEnumerable.Any())
                         keepRow = true;
                 }
             }

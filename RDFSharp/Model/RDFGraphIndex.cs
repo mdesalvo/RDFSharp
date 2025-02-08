@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFGraphIndex represents an automatically managed in-memory index structure for the triples of a graph.
     /// </summary>
-    internal class RDFGraphIndex : IDisposable
+    internal sealed class RDFGraphIndex : IDisposable
     {
         #region Properties
         /// <summary>
@@ -101,7 +101,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Disposes the graph index 
         /// </summary>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (Disposed)
                 return;

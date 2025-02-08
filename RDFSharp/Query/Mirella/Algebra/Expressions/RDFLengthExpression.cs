@@ -85,7 +85,7 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                if (leftArgumentPMember is RDFResource leftArgumentPMemberResource)
+                if (leftArgumentPMember is RDFResource)
                     expressionResult = new RDFTypedLiteral(leftArgumentPMember.ToString().Length.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
                 else if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLiteral)
                     expressionResult = new RDFTypedLiteral(leftArgumentPMemberPLiteral.Value.Length.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);

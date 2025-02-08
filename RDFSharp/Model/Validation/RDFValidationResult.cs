@@ -117,7 +117,7 @@ namespace RDFSharp.Model
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.SOURCE_CONSTRAINT_COMPONENT, SourceConstraintComponent));
 
             //FocusNode
-            if (FocusNode != null && FocusNode is RDFResource focusNodeResource)
+            if (FocusNode is RDFResource focusNodeResource)
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.FOCUS_NODE, focusNodeResource));
 
             //ResultPath

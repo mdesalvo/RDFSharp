@@ -28,13 +28,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Unique identifier of the query member
         /// </summary>
-        public long QueryMemberID
-            => LazyQueryMemberID.Value;
+        public long QueryMemberID => LazyQueryMemberID.Value;
 
         /// <summary>
         /// Lazy evaluation of the query member identifier
         /// </summary>
-        protected Lazy<long> LazyQueryMemberID;
+        protected readonly Lazy<long> LazyQueryMemberID;
 
         /// <summary>
         /// Unique identifier of the query member (string)

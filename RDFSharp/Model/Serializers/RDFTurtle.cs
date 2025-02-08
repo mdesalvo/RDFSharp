@@ -258,12 +258,11 @@ namespace RDFSharp.Model
         internal static void ParseStatement(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
         {
             StringBuilder sb = new StringBuilder(8);
-            int codePoint;
 
             // longest valid directive @prefix
             do
             {
-                codePoint = ReadCodePoint(turtleData, turtleContext);
+                int codePoint = ReadCodePoint(turtleData, turtleContext);
                 if (codePoint == -1 || IsWhitespace(codePoint))
                 {
                     UnreadCodePoint(turtleContext, codePoint);
@@ -382,19 +381,35 @@ namespace RDFSharp.Model
         internal static void ParseSubject(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
         {
             int bufChar = PeekCodePoint(turtleData, turtleContext);
-            if (bufChar == '(')
-                turtleContext.Subject = ParseCollection(turtleData, turtleContext, result);
-            else if (bufChar == '[')
-                turtleContext.Subject = ParseImplicitBlank(turtleData, turtleContext, result);
-            else
+            switch (bufChar)
             {
-                object value = ParseValue(turtleData, turtleContext, result);
-                if (value is Uri)
-                    turtleContext.Subject = new RDFResource(value.ToString(), turtleContext.HashContext);
-                else if (value is RDFResource valueResource)
-                    turtleContext.Subject = valueResource;
-                else if (value != null)
-                    throw new RDFModelException("Illegal subject value: " + value + GetTurtleContextCoordinates(turtleContext));
+                case '(':
+                    turtleContext.Subject = ParseCollection(turtleData, turtleContext, result);
+                    break;
+                case '[':
+                    turtleContext.Subject = ParseImplicitBlank(turtleData, turtleContext, result);
+                    break;
+                default:
+                {
+                    object value = ParseValue(turtleData, turtleContext, result);
+                    switch (value)
+                    {
+                        case Uri _:
+                            turtleContext.Subject = new RDFResource(value.ToString(), turtleContext.HashContext);
+                            break;
+                        case RDFResource valueResource:
+                            turtleContext.Subject = valueResource;
+                            break;
+                        default:
+                        {
+                            if (value != null)
+                                throw new RDFModelException("Illegal subject value: " + value + GetTurtleContextCoordinates(turtleContext));
+                            break;
+                        }
+                    }
+
+                    break;
+                }
             }
         }
 
@@ -422,12 +437,15 @@ namespace RDFSharp.Model
 
             // Predicate is a normal resource
             object predicate = ParseValue(turtleData, turtleContext, result);
-            if (predicate is Uri)
-                return new RDFResource(predicate.ToString(), turtleContext.HashContext);
-            else if (predicate is RDFResource predRes)
-                return predRes;
-            else
-                throw new RDFModelException("Illegal predicate value: " + predicate + GetTurtleContextCoordinates(turtleContext));
+            switch (predicate)
+            {
+                case Uri _:
+                    return new RDFResource(predicate.ToString(), turtleContext.HashContext);
+                case RDFResource predRes:
+                    return predRes;
+                default: 
+                    throw new RDFModelException("Illegal predicate value: " + predicate + GetTurtleContextCoordinates(turtleContext));
+            }
         }
 
         /// <summary>
@@ -450,7 +468,8 @@ namespace RDFSharp.Model
                 {
                     break;
                 }
-                else if (bufChar == ';')
+
+                if (bufChar == ';')
                 {
                     // empty predicateObjectList, skip to next
                     continue;
@@ -495,10 +514,15 @@ namespace RDFSharp.Model
                     break;
                 default:
                     object value = ParseValue(turtleData, turtleContext, result); //Uri or RDFPatternMember
-                    if (value is Uri)
-                        turtleContext.Object = new RDFResource(value.ToString(), turtleContext.HashContext);
-                    else if (value is RDFPatternMember pmemberValue)
-                        turtleContext.Object = pmemberValue;
+                    switch (value)
+                    {
+                        case Uri _:
+                            turtleContext.Object = new RDFResource(value.ToString(), turtleContext.HashContext);
+                            break;
+                        case RDFPatternMember pmemberValue:
+                            turtleContext.Object = pmemberValue;
+                            break;
+                    }
                     break;
             }
 
@@ -523,51 +547,49 @@ namespace RDFSharp.Model
                 ReadCodePoint(turtleData, turtleContext);
                 return RDFVocabulary.RDF.NIL;
             }
-            else
+
+            //report statement
+            RDFResource listRoot = new RDFResource();
+            result.AddTriple(new RDFTriple(listRoot, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
+
+            // Remember current subject and predicate
+            RDFResource oldSubject = turtleContext.Subject;
+            RDFResource oldPredicate = turtleContext.Predicate;
+
+            // generated bNode becomes subject, predicate becomes rdf:first
+            turtleContext.Subject = listRoot;
+            turtleContext.Predicate = RDFVocabulary.RDF.FIRST;
+
+            ParseObject(turtleData, turtleContext, result);
+
+            RDFResource bNode = listRoot;
+            while (SkipWhitespace(turtleData, turtleContext) != ')')
             {
+                // Create another list node and link it to the previous
+                RDFResource newNode = new RDFResource();
+
                 //report statement
-                RDFResource listRoot = new RDFResource();
-                result.AddTriple(new RDFTriple(listRoot, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
+                result.AddTriple(new RDFTriple(bNode, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
+                result.AddTriple(new RDFTriple(bNode, RDFVocabulary.RDF.REST, newNode));
 
-                // Remember current subject and predicate
-                RDFResource oldSubject = turtleContext.Subject;
-                RDFResource oldPredicate = turtleContext.Predicate;
-
-                // generated bNode becomes subject, predicate becomes rdf:first
-                turtleContext.Subject = listRoot;
-                turtleContext.Predicate = RDFVocabulary.RDF.FIRST;
+                // New node becomes the current
+                turtleContext.Subject = bNode = newNode;
 
                 ParseObject(turtleData, turtleContext, result);
-
-                RDFResource bNode = listRoot;
-                while (SkipWhitespace(turtleData, turtleContext) != ')')
-                {
-                    // Create another list node and link it to the previous
-                    RDFResource newNode = new RDFResource();
-
-                    //report statement
-                    result.AddTriple(new RDFTriple(bNode, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
-                    result.AddTriple(new RDFTriple(bNode, RDFVocabulary.RDF.REST, newNode));
-
-                    // New node becomes the current
-                    turtleContext.Subject = bNode = newNode;
-
-                    ParseObject(turtleData, turtleContext, result);
-                }
-
-                // Skip ')'
-                ReadCodePoint(turtleData, turtleContext);
-
-                // Close the list
-                result.AddTriple(new RDFTriple(bNode, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
-                result.AddTriple(new RDFTriple(bNode, RDFVocabulary.RDF.REST, RDFVocabulary.RDF.NIL));
-
-                // Restore previous subject and predicate
-                turtleContext.Subject = oldSubject;
-                turtleContext.Predicate = oldPredicate;
-
-                return listRoot;
             }
+
+            // Skip ')'
+            ReadCodePoint(turtleData, turtleContext);
+
+            // Close the list
+            result.AddTriple(new RDFTriple(bNode, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
+            result.AddTriple(new RDFTriple(bNode, RDFVocabulary.RDF.REST, RDFVocabulary.RDF.NIL));
+
+            // Restore previous subject and predicate
+            turtleContext.Subject = oldSubject;
+            turtleContext.Predicate = oldPredicate;
+
+            return listRoot;
         }
 
         /// <summary>
@@ -586,8 +608,8 @@ namespace RDFSharp.Model
                 UnreadCodePoint(turtleContext, bufChar);
 
                 // Remember current subject and predicate
-                RDFResource oldSubject = (RDFResource)turtleContext.Subject;
-                RDFResource oldPredicate = (RDFResource)turtleContext.Predicate;
+                RDFResource oldSubject = turtleContext.Subject;
+                RDFResource oldPredicate = turtleContext.Predicate;
 
                 // generated bNode becomes subject
                 turtleContext.Subject = bNode;
@@ -625,9 +647,10 @@ namespace RDFSharp.Model
                     UnreadCodePoint(turtleContext, bufChar);
                     break;
                 }
-                else if (IsWhitespace(bufChar))
+
+                if (IsWhitespace(bufChar))
                     break;
-                else if (bufChar == -1)
+                if (bufChar == -1)
                     throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
                 prefixID.Append(char.ConvertFromUtf32(bufChar));
             }
@@ -645,7 +668,7 @@ namespace RDFSharp.Model
             // If prefix is empty it must be considered default context of the graph
             if (string.IsNullOrEmpty(prefixStr))
             {
-                prefixStr = string.Format("AutoNS{0}{1}", DateTime.UtcNow.Minute, DateTime.UtcNow.Second);
+                prefixStr = $"AutoNS{DateTime.UtcNow.Minute}{DateTime.UtcNow.Second}";
                 result.SetContext(new Uri(namespaceStr));
             }
 
@@ -690,10 +713,13 @@ namespace RDFSharp.Model
                 bufChar = ReadCodePoint(turtleData, turtleContext);
                 if (bufChar == '>')
                     break;
-                else if (bufChar == -1)
-                    throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
-                else if (bufChar == ' ')
-                    throw new RDFModelException("Uri included an unencoded space: '" + bufChar + "'" + GetTurtleContextCoordinates(turtleContext));
+                switch (bufChar)
+                {
+                    case -1:
+                        throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
+                    case ' ':
+                        throw new RDFModelException("Uri included an unencoded space: '" + bufChar + "'" + GetTurtleContextCoordinates(turtleContext));
+                }
 
                 uriBuf.Append(char.ConvertFromUtf32(bufChar));
 
@@ -714,14 +740,13 @@ namespace RDFSharp.Model
             if (Uri.IsWellFormedUriString(uriString, UriKind.Absolute))
                 return new Uri(uriString);
             //Relative: append to graph context
-            else if (Uri.IsWellFormedUriString(uriString, UriKind.Relative))
+            if (Uri.IsWellFormedUriString(uriString, UriKind.Relative))
                 return new Uri(string.Concat(result.ToString(), uriString));
             //PureFragment: append to graph context
-            else if (uriString.Equals("#"))
+            if (uriString.Equals("#"))
                 return new Uri(string.Concat(result.ToString().TrimEnd('#'), uriString));
             //Error: not well-formed, so throw exception
-            else
-                throw new RDFModelException("Uri is not well-formed" + GetTurtleContextCoordinates(turtleContext));
+            throw new RDFModelException("Uri is not well-formed" + GetTurtleContextCoordinates(turtleContext));
         }
 
         /// <summary>
@@ -733,18 +758,21 @@ namespace RDFSharp.Model
             int bufChar = PeekCodePoint(turtleData, turtleContext);
             if (bufChar == '<')
                 return ParseURI(turtleData, turtleContext, result); // uriref, e.g. <foo://bar>
-            else if (bufChar == ':' || IsPrefixStartChar(bufChar))
+            if (bufChar == ':' || IsPrefixStartChar(bufChar))
                 return ParseQNameOrBoolean(turtleData, turtleContext, result); // qname or boolean
-            else if (bufChar == '_')
-                return ParseNodeID(turtleData, turtleContext); // node ID, e.g. _:n1
-            else if (bufChar == '"' || bufChar == '\'')
-                return ParseQuotedLiteral(turtleData, turtleContext, result); // quoted literal, e.g. "foo" or """foo""" or 'foo' or '''foo'''
-            else if (IsNumber(bufChar) || bufChar == '.' || bufChar == '+' || bufChar == '-')
+            switch (bufChar)
+            {
+                case '_':
+                    return ParseNodeID(turtleData, turtleContext); // node ID, e.g. _:n1
+                case '"':
+                case '\'':
+                    return ParseQuotedLiteral(turtleData, turtleContext, result); // quoted literal, e.g. "foo" or """foo""" or 'foo' or '''foo'''
+            }
+            if (IsNumber(bufChar) || bufChar == '.' || bufChar == '+' || bufChar == '-')
                 return ParseNumber(turtleData, turtleContext); // integer or double, e.g. 123 or 1.2e3
-            else if (bufChar == -1)
+            if (bufChar == -1)
                 throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
-            else
-                throw new RDFModelException("Expected an RDF value here, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(turtleContext));
+            throw new RDFModelException("Expected an RDF value here, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(turtleContext));
         }
 
         /// <summary>
@@ -760,7 +788,7 @@ namespace RDFSharp.Model
             int bufChar = ReadCodePoint(turtleData, turtleContext);
             if (bufChar == -1)
                 throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
-            else if (!IsBLANK_NODE_LABEL_StartChar(bufChar))
+            if (!IsBLANK_NODE_LABEL_StartChar(bufChar))
                 throw new RDFModelException("Expected a letter, found '" + (char)bufChar + "'" + GetTurtleContextCoordinates(turtleContext));
 
             StringBuilder name = new StringBuilder(32);
@@ -995,18 +1023,11 @@ namespace RDFSharp.Model
             }
 
             string localNameString = localName.ToString();
-            for (int i = 0; i < localNameString.Length; i++)
-            {
-                if (localNameString[i] == '%')
-                {
-                    if (i > localNameString.Length - 3
-                             || !Uri.IsHexDigit(localNameString[i + 1])
-                             || !Uri.IsHexDigit(localNameString[i + 2]))
-                    {
-                        throw new RDFModelException("Found incomplete percent-encoded sequence: " + localNameString + GetTurtleContextCoordinates(turtleContext));
-                    }
-                }
-            }
+            if (localNameString.Where((t, i) => t == '%' 
+                                                         && (i > localNameString.Length - 3
+                                                              || !Uri.IsHexDigit(localNameString[i + 1])
+                                                              || !Uri.IsHexDigit(localNameString[i + 2]))).Any())
+                throw new RDFModelException("Found incomplete percent-encoded sequence: " + localNameString + GetTurtleContextCoordinates(turtleContext));
 
             // Note: namespace has already been resolved
             return new Uri(string.Concat(nspace ?? result.Context.ToString(), localNameString));
@@ -1021,56 +1042,58 @@ namespace RDFSharp.Model
 
             // Check for presence of a language tag or datatype
             int bufChar = PeekCodePoint(turtleData, turtleContext);
-            if (bufChar == '@')
+            switch (bufChar)
             {
-                ReadCodePoint(turtleData, turtleContext);
-
-                // Read language
-                StringBuilder lang = new StringBuilder();
-
-                bufChar = ReadCodePoint(turtleData, turtleContext);
-                if (bufChar == -1)
-                    throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
-                if (!IsLanguageStartChar(bufChar))
-                    throw new RDFModelException("Expected a letter, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(turtleContext));
-                
-                lang.Append(char.ConvertFromUtf32(bufChar));
-
-                bufChar = ReadCodePoint(turtleData, turtleContext);
-                while (!IsWhitespace(bufChar))
+                case '@':
                 {
-                    if (bufChar == '.' || bufChar == ';' || bufChar == ',' || bufChar == ')' || bufChar == ']' || bufChar == -1)
-                        break;
+                    ReadCodePoint(turtleData, turtleContext);
 
-                    if (!IsLanguageChar(bufChar))
-                        throw new RDFModelException("Illegal language tag char: '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(turtleContext));
+                    // Read language
+                    StringBuilder lang = new StringBuilder();
 
-                    lang.Append(char.ConvertFromUtf32(bufChar));
                     bufChar = ReadCodePoint(turtleData, turtleContext);
+                    if (bufChar == -1)
+                        throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
+                    if (!IsLanguageStartChar(bufChar))
+                        throw new RDFModelException("Expected a letter, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(turtleContext));
+                
+                    lang.Append(char.ConvertFromUtf32(bufChar));
+
+                    bufChar = ReadCodePoint(turtleData, turtleContext);
+                    while (!IsWhitespace(bufChar))
+                    {
+                        if (bufChar == '.' || bufChar == ';' || bufChar == ',' || bufChar == ')' || bufChar == ']' || bufChar == -1)
+                            break;
+
+                        if (!IsLanguageChar(bufChar))
+                            throw new RDFModelException("Illegal language tag char: '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(turtleContext));
+
+                        lang.Append(char.ConvertFromUtf32(bufChar));
+                        bufChar = ReadCodePoint(turtleData, turtleContext);
+                    }
+
+                    UnreadCodePoint(turtleContext, bufChar);
+
+                    return new RDFPlainLiteral(label, lang.ToString());
                 }
+                case '^':
+                {
+                    ReadCodePoint(turtleData, turtleContext);
 
-                UnreadCodePoint(turtleContext, bufChar);
+                    // next character should be another '^'
+                    VerifyCharacterOrFail(turtleContext, ReadCodePoint(turtleData, turtleContext), "^");
 
-                return new RDFPlainLiteral(label, lang.ToString());
-            }
-            else if (bufChar == '^')
-            {
-                ReadCodePoint(turtleData, turtleContext);
+                    SkipWhitespace(turtleData, turtleContext);
 
-                // next character should be another '^'
-                VerifyCharacterOrFail(turtleContext, ReadCodePoint(turtleData, turtleContext), "^");
-
-                SkipWhitespace(turtleData, turtleContext);
-
-                // Read datatype
-                object datatype = ParseValue(turtleData, turtleContext, result);
-                if (datatype is Uri datatypeUri)
-                    return new RDFTypedLiteral(label, RDFDatatypeRegister.GetDatatype(datatypeUri.ToString()));
-                else
+                    // Read datatype
+                    object datatype = ParseValue(turtleData, turtleContext, result);
+                    if (datatype is Uri datatypeUri)
+                        return new RDFTypedLiteral(label, RDFDatatypeRegister.GetDatatype(datatypeUri.ToString()));
                     throw new RDFModelException("Illegal datatype value: " + datatype + GetTurtleContextCoordinates(turtleContext));
+                }
+                default:
+                    return new RDFPlainLiteral(label);
             }
-            else
-                return new RDFPlainLiteral(label);
         }
 
         /// <summary>
@@ -1121,9 +1144,9 @@ namespace RDFSharp.Model
                 int bufChar = ReadCodePoint(turtleData, turtleContext);
                 if (bufChar == closingCharacter)
                     break;
-                else if (bufChar == -1)
+                if (bufChar == -1)
                     throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
-                
+
                 //Unquoted literals cannot contain carriage return
                 if (bufChar == '\r' || bufChar == '\n')
                     throw new RDFModelException("Illegal carriage return or new line in literal");
@@ -1151,18 +1174,17 @@ namespace RDFSharp.Model
             StringBuilder sb = new StringBuilder();
 
             int doubleQuoteCount = 0;
-            int bufChar;
 
             while (doubleQuoteCount < 3)
             {
-                bufChar = ReadCodePoint(turtleData, turtleContext);
+                int bufChar = ReadCodePoint(turtleData, turtleContext);
                 if (bufChar == -1)
                     throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
-                else if (bufChar == closingCharacter)
+                if (bufChar == closingCharacter)
                     doubleQuoteCount++;
                 else
                     doubleQuoteCount = 0;
-                
+
                 sb.Append(char.ConvertFromUtf32(bufChar));
 
                 if (bufChar == '\\')
@@ -1199,90 +1221,84 @@ namespace RDFSharp.Model
                     throw new RDFModelException("Unescaped backslash in: " + s + GetTurtleContextCoordinates(turtleContext));
                 
                 char bufChar = s[backSlashIdx + 1];
-                if (bufChar == 't')
+                switch (bufChar)
                 {
-                    sb.Append('\t');
-                    startIdx = backSlashIdx + 2;
-                }
-                else if (bufChar == 'r')
-                {
-                    sb.Append('\r');
-                    startIdx = backSlashIdx + 2;
-                }
-                else if (bufChar == 'n')
-                {
-                    sb.Append('\n');
-                    startIdx = backSlashIdx + 2;
-                }
-                else if (bufChar == 'b')
-                {
-                    sb.Append('\b');
-                    startIdx = backSlashIdx + 2;
-                }
-                else if (bufChar == 'f')
-                {
-                    sb.Append('\f');
-                    startIdx = backSlashIdx + 2;
-                }
-                else if (bufChar == '"')
-                {
-                    sb.Append('"');
-                    startIdx = backSlashIdx + 2;
-                }
-                else if (bufChar == '\'')
-                {
-                    sb.Append('\'');
-                    startIdx = backSlashIdx + 2;
-                }
-                else if (bufChar == '>')
-                {
-                    sb.Append('>');
-                    startIdx = backSlashIdx + 2;
-                }
-                else if (bufChar == '\\')
-                {
-                    sb.Append('\\');
-                    startIdx = backSlashIdx + 2;
-                }
-                else if (bufChar == 'u')
-                {
+                    case 't':
+                        sb.Append('\t');
+                        startIdx = backSlashIdx + 2;
+                        break;
+                    case 'r':
+                        sb.Append('\r');
+                        startIdx = backSlashIdx + 2;
+                        break;
+                    case 'n':
+                        sb.Append('\n');
+                        startIdx = backSlashIdx + 2;
+                        break;
+                    case 'b':
+                        sb.Append('\b');
+                        startIdx = backSlashIdx + 2;
+                        break;
+                    case 'f':
+                        sb.Append('\f');
+                        startIdx = backSlashIdx + 2;
+                        break;
+                    case '"':
+                        sb.Append('"');
+                        startIdx = backSlashIdx + 2;
+                        break;
+                    case '\'':
+                        sb.Append('\'');
+                        startIdx = backSlashIdx + 2;
+                        break;
+                    case '>':
+                        sb.Append('>');
+                        startIdx = backSlashIdx + 2;
+                        break;
+                    case '\\':
+                        sb.Append('\\');
+                        startIdx = backSlashIdx + 2;
+                        break;
                     /*  \\uxxxx  */
-                    if (backSlashIdx + 5 >= sLength)
+                    case 'u' when backSlashIdx + 5 >= sLength:
                         throw new RDFModelException("Incomplete Unicode escape sequence in: " + s + GetTurtleContextCoordinates(turtleContext));
-                    
-                    string uValue = s.Substring(backSlashIdx + 2, 4/*backSlashIdx + 6*/);
-                    try
+                    case 'u':
                     {
-                        int cp = int.Parse(uValue, NumberStyles.AllowHexSpecifier);
-                        sb.Append(char.ConvertFromUtf32(cp));
-                        startIdx = backSlashIdx + 6;
+                        string uValue = s.Substring(backSlashIdx + 2, 4/*backSlashIdx + 6*/);
+                        try
+                        {
+                            int cp = int.Parse(uValue, NumberStyles.AllowHexSpecifier);
+                            sb.Append(char.ConvertFromUtf32(cp));
+                            startIdx = backSlashIdx + 6;
+                        }
+                        catch
+                        {
+                            throw new RDFModelException("Illegal Unicode escape sequence '\\u" + uValue + "' in: " + s + GetTurtleContextCoordinates(turtleContext));
+                        }
+
+                        break;
                     }
-                    catch
-                    {
-                        throw new RDFModelException("Illegal Unicode escape sequence '\\u" + uValue + "' in: " + s + GetTurtleContextCoordinates(turtleContext));
-                    }
-                }
-                else if (bufChar == 'U')
-                {
                     /*  \\Uxxxxxxxx  */
-                    if (backSlashIdx + 9 >= sLength)
+                    case 'U' when backSlashIdx + 9 >= sLength:
                         throw new RDFModelException("Incomplete Unicode escape sequence in: " + s + GetTurtleContextCoordinates(turtleContext));
-                    
-                    string UValue = s.Substring(backSlashIdx + 2, 8/*backSlashIdx + 10*/);
-                    try
+                    case 'U':
                     {
-                        int cp = int.Parse(UValue, NumberStyles.AllowHexSpecifier);
-                        sb.Append(char.ConvertFromUtf32(cp));
-                        startIdx = backSlashIdx + 10;
+                        string UValue = s.Substring(backSlashIdx + 2, 8/*backSlashIdx + 10*/);
+                        try
+                        {
+                            int cp = int.Parse(UValue, NumberStyles.AllowHexSpecifier);
+                            sb.Append(char.ConvertFromUtf32(cp));
+                            startIdx = backSlashIdx + 10;
+                        }
+                        catch
+                        {
+                            throw new RDFModelException("Illegal Unicode escape sequence '\\U" + UValue + "' in: " + s + GetTurtleContextCoordinates(turtleContext));
+                        }
+
+                        break;
                     }
-                    catch
-                    {
-                        throw new RDFModelException("Illegal Unicode escape sequence '\\U" + UValue + "' in: " + s + GetTurtleContextCoordinates(turtleContext));
-                    }
-                }
-                else
-                {
-                    throw new RDFModelException("Unescaped backslash in: " + s + GetTurtleContextCoordinates(turtleContext));
+                    default:
+                        throw new RDFModelException("Unescaped backslash in: " + s + GetTurtleContextCoordinates(turtleContext));
                 }
 
                 backSlashIdx = s.IndexOf('\\', startIdx);
@@ -1339,7 +1355,7 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
 
             string supplied = char.ConvertFromUtf32(codePoint);
-            if (expected.IndexOf(supplied) == -1)
+            if (expected.IndexOf(supplied, StringComparison.Ordinal) == -1)
             {
                 StringBuilder msg = new StringBuilder();
                 msg.Append("Unexpected character found" + GetTurtleContextCoordinates(turtleContext) + ": expected ");
@@ -1365,8 +1381,7 @@ namespace RDFSharp.Model
             int bufChar = ReadCodePoint(turtleData, turtleContext);
             if (IsLocalEscapedChar(bufChar))
                 return (char)bufChar;
-            else
-                throw new RDFModelException("Found '" + char.ConvertFromUtf32(bufChar) + "', expected one of: _~.-!$&\'()*+,;=/?#@%" + GetTurtleContextCoordinates(turtleContext));
+            throw new RDFModelException("Found '" + char.ConvertFromUtf32(bufChar) + "', expected one of: _~.-!$&\'()*+,;=/?#@%" + GetTurtleContextCoordinates(turtleContext));
         }
         #endregion
 
@@ -1388,7 +1403,7 @@ namespace RDFSharp.Model
         /// requires 2 characters to be represented in UTF-16 (as a surrogate pair).
         /// </summary>
         internal static bool IsSupplementaryCodePoint(int codePoint)
-            => (codePoint & ~((int)char.MaxValue)) != 0;
+            => (codePoint & ~char.MaxValue) != 0;
 
         /// <summary>
         /// Check if the supplied code point represents a valid name start character

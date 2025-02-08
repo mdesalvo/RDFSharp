@@ -27,7 +27,7 @@ namespace RDFSharp.Model
     public sealed class RDFDatatypeRegister : IEnumerable<RDFDatatype>
     {
         #region Statics
-        internal static RDFDatatype RDFSLiteral = new RDFDatatype(RDFVocabulary.RDFS.LITERAL.URI, RDFModelEnums.RDFDatatypes.RDFS_LITERAL, null);
+        internal static readonly RDFDatatype RDFSLiteral = new RDFDatatype(RDFVocabulary.RDFS.LITERAL.URI, RDFModelEnums.RDFDatatypes.RDFS_LITERAL, null);
         #endregion
 
         #region Properties
@@ -64,7 +64,7 @@ namespace RDFSharp.Model
                 Register = new List<RDFDatatype>() };
 
             foreach (RDFModelEnums.RDFDatatypes datatype in Enum.GetValues(typeof(RDFModelEnums.RDFDatatypes)).Cast<RDFModelEnums.RDFDatatypes>())
-                Instance.Register.Add(new RDFDatatype(new Uri(RDFModelUtilities.GetDatatypeFromEnum(datatype)), datatype, null) { IsBuiltIn = true });
+                Instance.Register.Add(new RDFDatatype(new Uri(datatype.GetDatatypeFromEnum()), datatype, null) { IsBuiltIn = true });
         }
         #endregion
 

@@ -79,7 +79,7 @@ namespace RDFSharp.Query
         /// Asynchronously gets a graph corresponding to the query result
         /// </summary>
         public Task<RDFGraph> ToRDFGraphAsync()
-            => Task.Run(() => ToRDFGraph());
+            => Task.Run(ToRDFGraph);
 
         /// <summary>
         /// Gets a memory store corresponding to the query result
@@ -118,7 +118,7 @@ namespace RDFSharp.Query
         /// Asynchronously gets a memory store corresponding to the query result
         /// </summary>
         public Task<RDFMemoryStore> ToRDFMemoryStoreAsync()
-            => Task.Run(() => ToRDFMemoryStore());
+            => Task.Run(ToRDFMemoryStore);
 
         /// <summary>
         /// Gets a query result corresponding to the given graph

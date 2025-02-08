@@ -47,8 +47,8 @@ namespace RDFSharp.Query
         /// Gets the string representation of the MAX aggregator
         /// </summary>
         public override string ToString()
-            => IsDistinct ? string.Format("(MAX(DISTINCT {0}) AS {1})", AggregatorVariable, ProjectionVariable)
-                          : string.Format("(MAX({0}) AS {1})", AggregatorVariable, ProjectionVariable);
+            => IsDistinct ? $"(MAX(DISTINCT {AggregatorVariable}) AS {ProjectionVariable})"
+                          : $"(MAX({AggregatorVariable}) AS {ProjectionVariable})";
         #endregion
 
         #region Methods
@@ -77,20 +77,20 @@ namespace RDFSharp.Query
             if (IsDistinct)
             {
                 //Cache-Hit: distinctness failed
-                if (AggregatorContext.CheckPartitionKeyRowValueCache<double>(partitionKey, rowValue))
+                if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
                     return;
                 //Cache-Miss: distinctness passed
                 else
-                    AggregatorContext.UpdatePartitionKeyRowValueCache<double>(partitionKey, rowValue);
+                    AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
             }
             //Get aggregator value
-            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<double>(partitionKey, double.NegativeInfinity);
+            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, double.NegativeInfinity);
             //In case of non-numeric values, consider partitioning failed
             double newAggregatorValue = double.NaN;
             if (!aggregatorValue.Equals(double.NaN) && !rowValue.Equals(double.NaN))
                 newAggregatorValue = Math.Max(rowValue, aggregatorValue);
             //Update aggregator context (max)
-            AggregatorContext.UpdatePartitionKeyExecutionResult<double>(partitionKey, newAggregatorValue);
+            AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, newAggregatorValue);
         }
         /// <summary>
         /// Executes the partition on the given tablerow (STRING)
@@ -102,19 +102,19 @@ namespace RDFSharp.Query
             if (IsDistinct)
             {
                 //Cache-Hit: distinctness failed
-                if (AggregatorContext.CheckPartitionKeyRowValueCache<string>(partitionKey, rowValue))
+                if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
                     return;
                 //Cache-Miss: distinctness passed
                 else
-                    AggregatorContext.UpdatePartitionKeyRowValueCache<string>(partitionKey, rowValue);
+                    AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
             }
             //Get aggregator value
             string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, null);
             //Update aggregator context (max)
             if (aggregatorValue == null)
-                AggregatorContext.UpdatePartitionKeyExecutionResult<string>(partitionKey, rowValue);
+                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, rowValue);
             else
-                AggregatorContext.UpdatePartitionKeyExecutionResult<string>(partitionKey, string.Compare(rowValue, aggregatorValue, false, CultureInfo.InvariantCulture) == 1 ? rowValue : aggregatorValue);
+                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, string.Compare(rowValue, aggregatorValue, false, CultureInfo.InvariantCulture) == 1 ? rowValue : aggregatorValue);
         }
 
         /// <summary>
@@ -161,14 +161,14 @@ namespace RDFSharp.Query
         {
             //Get bindings from context
             Dictionary<string, string> bindings = new Dictionary<string, string>();
-            foreach (string pkValue in partitionKey.Split(new string[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string pkValue in partitionKey.Split(new[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
             {
-                string[] pValues = pkValue.Split(new string[] { "§PV§" }, StringSplitOptions.None);
+                string[] pValues = pkValue.Split(new[] { "§PV§" }, StringSplitOptions.None);
                 bindings.Add(pValues[0], pValues[1]);
             }
 
             //Add aggregator value to bindings
-            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<double>(partitionKey, double.NegativeInfinity);
+            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, double.NegativeInfinity);
             if (aggregatorValue.Equals(double.NaN))
                 bindings.Add(ProjectionVariable.VariableName, string.Empty);
             else
@@ -184,14 +184,14 @@ namespace RDFSharp.Query
         {
             //Get bindings from context
             Dictionary<string, string> bindings = new Dictionary<string, string>();
-            foreach (string pkValue in partitionKey.Split(new string[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string pkValue in partitionKey.Split(new[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
             {
-                string[] pValues = pkValue.Split(new string[] { "§PV§" }, StringSplitOptions.None);
+                string[] pValues = pkValue.Split(new[] { "§PV§" }, StringSplitOptions.None);
                 bindings.Add(pValues[0], pValues[1]);
             }
 
             //Add aggregator value to bindings
-            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, string.Empty);
+            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty);
             bindings.Add(ProjectionVariable.VariableName, aggregatorValue);
 
             //Add bindings to result's table

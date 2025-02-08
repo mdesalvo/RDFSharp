@@ -207,11 +207,11 @@ namespace RDFSharp.Model
                                                         .TrimEnd(':', '/');
                                 try
                                 {
-                                    RDFTypedLiteral predUriQName = new RDFTypedLiteral(predUri, RDFModelEnums.RDFDatatypes.XSD_QNAME);
+                                    new RDFTypedLiteral(predUri, RDFModelEnums.RDFDatatypes.XSD_QNAME);
                                 }
                                 catch
                                 {
-                                    throw new RDFModelException(string.Format("found '{0}' predicate which cannot be abbreviated to a valid QName", predUri));
+                                    throw new RDFModelException($"found '{predUri}' predicate which cannot be abbreviated to a valid QName");
                                 }
                                 XmlNode predNode = rdfDoc.CreateNode(XmlNodeType.Element, predUri, predNS.ToString());
                                 #endregion
@@ -241,16 +241,15 @@ namespace RDFSharp.Model
                                         bool nilFound = false;
                                         RDFResource currentCollItem = (RDFResource)triple.Object;
                                         List<XmlNode> collElements = new List<XmlNode>();
-                                        XmlNode collElementToAppend = null;
-                                        XmlAttribute collElementAttr = null;
-                                        XmlText collElementAttrText = null;
                                         while (!nilFound)
                                         {
                                             var collElement = collections.Find(x => x.CollectionUri.Equals(currentCollItem));
-                                            if (collElement == null || collElement.CollectionValue == null || collElement.CollectionNext == null)
-                                                throw new RDFModelException(string.Format("Collection having '{0}' as subject is not well-formed. Please check presence of its 'rdf:type/rdf:first/rdf:rest' triples.", currentCollItem));
+                                            if (collElement?.CollectionValue == null || collElement.CollectionNext == null)
+                                                throw new RDFModelException($"Collection having '{currentCollItem}' as subject is not well-formed. Please check presence of its 'rdf:type/rdf:first/rdf:rest' triples.");
 
-                                            collElementToAppend = rdfDoc.CreateNode(XmlNodeType.Element, "rdf:Description", RDFVocabulary.RDF.BASE_URI);
+                                            XmlNode collElementToAppend = rdfDoc.CreateNode(XmlNodeType.Element, "rdf:Description", RDFVocabulary.RDF.BASE_URI);
+                                            XmlAttribute collElementAttr = null;
+                                            XmlText collElementAttrText = null;
                                             if (collElement.CollectionValue.ToString().StartsWith("bnode:", StringComparison.Ordinal))
                                             {
                                                 collElementAttrText = rdfDoc.CreateTextNode(collElement.CollectionValue.ToString().Replace("bnode:", string.Empty));
@@ -723,13 +722,12 @@ namespace RDFSharp.Model
                 //Extract the prefixable part from the Uri
                 Uri uriNS = RDFModelUtilities.GetUriFromString(namespaceString) 
                              ?? throw new RDFModelException("Cannot create RDFNamespace because given \"namespaceString\" (" + namespaceString + ") parameter cannot be converted to a valid Uri");
-                string fragment;
                 string nspace = uriNS.AbsoluteUri;
 
                 // e.g.:  "http://www.w3.org/2001/XMLSchema#integer"
                 if (uriNS.Fragment != string.Empty)
                 {
-                    fragment = uriNS.Fragment.Replace("#", string.Empty);                           //"integer"
+                    string fragment = uriNS.Fragment.Replace("#", string.Empty);
                     if (fragment != string.Empty)
                         nspace = Regex.Replace(nspace, string.Concat(fragment, "$"), string.Empty); //"http://www.w3.org/2001/XMLSchema#"
                 }
@@ -763,7 +761,7 @@ namespace RDFSharp.Model
                         result.Add(new RDFNamespace(string.Concat("autoNS", (result.Count + 1).ToString()), nspace.NamespaceUri.ToString()));
                 }
                 else
-                    throw new RDFModelException(string.Format("found '{0}' predicate which cannot be abbreviated to a valid QName.", pred));
+                    throw new RDFModelException($"found '{pred}' predicate which cannot be abbreviated to a valid QName.");
             }
             return result.ToList();
         }
@@ -795,11 +793,8 @@ namespace RDFSharp.Model
             //the case we can directly build a triple with "rdf:type" pred
             if (!CheckIfRdfDescriptionNode(subjNode))
             {
-                RDFResource obj;
-                if (subjNode.NamespaceURI == string.Empty)
-                    obj = new RDFResource(string.Concat(xmlBase, subjNode.LocalName), hashContext);
-                else
-                    obj = new RDFResource(string.Concat(subjNode.NamespaceURI, subjNode.LocalName), hashContext);
+                RDFResource obj = subjNode.NamespaceURI == string.Empty ? new RDFResource(string.Concat(xmlBase, subjNode.LocalName), hashContext) 
+                                                                        : new RDFResource(string.Concat(subjNode.NamespaceURI, subjNode.LocalName), hashContext);
                 result.AddTriple(new RDFTriple(subj, RDFVocabulary.RDF.TYPE, obj));
             }
 
@@ -973,10 +968,9 @@ namespace RDFSharp.Model
             reifGraph.AddTriple(new RDFTriple(reificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
             reifGraph.AddTriple(new RDFTriple(reificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)triple.Subject));
             reifGraph.AddTriple(new RDFTriple(reificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate));
-            if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                reifGraph.AddTriple(new RDFTriple(reificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)triple.Object));
-            else
-                reifGraph.AddTriple(new RDFTriple(reificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)triple.Object));
+            reifGraph.AddTriple(triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
+                ? new RDFTriple(reificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)triple.Object)
+                : new RDFTriple(reificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)triple.Object));
 
             return reifGraph;
         }
@@ -1074,7 +1068,7 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFContainerTypes.Seq:
                     result.AddTriple(new RDFTriple(obj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.SEQ));
                     break;
-                default:
+                case RDFModelEnums.RDFContainerTypes.Alt:
                     result.AddTriple(new RDFTriple(obj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT));
                     break;
             }

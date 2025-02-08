@@ -85,7 +85,7 @@ namespace RDFSharp.Query
                 });
 
                 //Analyze the response of the check
-                keepRow = valuesTableEnumerable.Count() > 0;
+                keepRow = valuesTableEnumerable.Any();
             }
 
             //Apply the eventual negation

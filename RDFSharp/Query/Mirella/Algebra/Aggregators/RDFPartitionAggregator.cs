@@ -47,10 +47,10 @@ namespace RDFSharp.Query
         internal override void ExecutePartition(string partitionKey, DataRow tableRow)
         {
             //Get aggregator value
-            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, string.Empty) ?? string.Empty;
+            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty) ?? string.Empty;
             //Update aggregator context (partition)
             if (string.IsNullOrEmpty(aggregatorValue))
-                AggregatorContext.UpdatePartitionKeyExecutionResult<string>(partitionKey, partitionKey);
+                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, partitionKey);
         }
 
         /// <summary>
@@ -82,14 +82,14 @@ namespace RDFSharp.Query
         {
             //Get bindings from context
             Dictionary<string, string> bindings = new Dictionary<string, string>();
-            foreach (string pkValue in partitionKey.Split(new string[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string pkValue in partitionKey.Split(new[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
             {
-                string[] pValues = pkValue.Split(new string[] { "§PV§" }, StringSplitOptions.None);
+                string[] pValues = pkValue.Split(new[] { "§PV§" }, StringSplitOptions.None);
                 bindings.Add(pValues[0], pValues[1]);
             }
 
             //Add aggregator value to bindings
-            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, string.Empty);
+            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty);
             if (!bindings.ContainsKey(ProjectionVariable.VariableName))
                 bindings.Add(ProjectionVariable.VariableName, aggregatorValue);
 

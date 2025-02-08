@@ -820,7 +820,7 @@ namespace RDFSharp.Query
             //Compact representation
             if (values.Bindings.Keys.Count == 1)
             {
-                result.Append(string.Format("VALUES {0}", values.Bindings.Keys.ElementAt(0)));
+                result.Append($"VALUES {values.Bindings.Keys.ElementAt(0)}");
                 result.Append(" { ");
                 foreach (RDFPatternMember binding in values.Bindings.ElementAt(0).Value)
                 {
@@ -836,7 +836,7 @@ namespace RDFSharp.Query
             //Extended representation
             else
             {
-                result.Append(string.Format("VALUES ({0})", string.Join(" ", values.Bindings.Keys)));
+                result.Append($"VALUES ({string.Join(" ", values.Bindings.Keys)})");
                 result.AppendLine(" {");
                 for (int i = 0; i < values.MaxBindingsLength(); i++)
                 {

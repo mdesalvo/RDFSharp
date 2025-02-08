@@ -39,8 +39,8 @@ namespace RDFSharp.Query
         /// Gets the string representation of the COUNT aggregator
         /// </summary>
         public override string ToString()
-            => IsDistinct ? string.Format("(COUNT(DISTINCT {0}) AS {1})", AggregatorVariable, ProjectionVariable)
-                          : string.Format("(COUNT({0}) AS {1})", AggregatorVariable, ProjectionVariable);
+            => IsDistinct ? $"(COUNT(DISTINCT {AggregatorVariable}) AS {ProjectionVariable})"
+                          : $"(COUNT({AggregatorVariable}) AS {ProjectionVariable})";
         #endregion
 
         #region Methods
@@ -54,17 +54,17 @@ namespace RDFSharp.Query
             if (IsDistinct)
             {
                 //Cache-Hit: distinctness failed
-                if (AggregatorContext.CheckPartitionKeyRowValueCache<string>(partitionKey, rowValue))
+                if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
                     return;
                 //Cache-Miss: distinctness passed
                 else
-                    AggregatorContext.UpdatePartitionKeyRowValueCache<string>(partitionKey, rowValue);
+                    AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
             }
             //Get aggregator value
-            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<double>(partitionKey, 0d);
+            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d);
             //Update aggregator context (count)
             if (!string.IsNullOrEmpty(rowValue))
-                AggregatorContext.UpdatePartitionKeyExecutionResult<double>(partitionKey, aggregatorValue + 1d);
+                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, aggregatorValue + 1d);
         }
 
         /// <summary>
@@ -96,14 +96,14 @@ namespace RDFSharp.Query
         {
             //Get bindings from context
             Dictionary<string, string> bindings = new Dictionary<string, string>();
-            foreach (string pkValue in partitionKey.Split(new string[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string pkValue in partitionKey.Split(new[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
             {
-                string[] pValues = pkValue.Split(new string[] { "§PV§" }, StringSplitOptions.None);
+                string[] pValues = pkValue.Split(new[] { "§PV§" }, StringSplitOptions.None);
                 bindings.Add(pValues[0], pValues[1]);
             }
 
             //Add aggregator value to bindings
-            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<double>(partitionKey, 0d);
+            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d);
             bindings.Add(ProjectionVariable.VariableName, new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString());
 
             //Add bindings to result's table

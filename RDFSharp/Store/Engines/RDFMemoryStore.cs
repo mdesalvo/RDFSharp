@@ -30,7 +30,7 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFMemoryStore represents an in-memory RDF store engine.
     /// </summary>
-    public class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDisposable
+    public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDisposable
     {
         #region Properties
         /// <summary>
@@ -139,7 +139,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Disposes the memory store
         /// </summary>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (Disposed)
                 return;
