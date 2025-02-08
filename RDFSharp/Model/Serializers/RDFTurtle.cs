@@ -718,7 +718,7 @@ namespace RDFSharp.Model
                 return new Uri(string.Concat(result.ToString(), uriString));
             //PureFragment: append to graph context
             else if (uriString.Equals("#"))
-                return new Uri(string.Concat(result.ToString().TrimEnd(new char[] { '#' }), uriString));
+                return new Uri(string.Concat(result.ToString().TrimEnd('#'), uriString));
             //Error: not well-formed, so throw exception
             else
                 throw new RDFModelException("Uri is not well-formed" + GetTurtleContextCoordinates(turtleContext));

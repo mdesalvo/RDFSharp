@@ -232,12 +232,12 @@ namespace RDFSharp.Query
                 if (tp.Context != null)
                 {
                     string tpContext = PrintPatternMember(tp.Context, constructQuery.Prefixes);
-                    tpString = tpString.Replace(string.Concat("GRAPH ", tpContext, " { "), string.Empty).TrimEnd(new char[] { ' ', '}' });
+                    tpString = tpString.Replace(string.Concat("GRAPH ", tpContext, " { "), string.Empty).TrimEnd(' ', '}');
                 }
 
                 //Remove Optional indicator from the template print (since it is not supported by CONSTRUCT query)
                 if (tp.IsOptional)
-                    tpString = tpString.Replace("OPTIONAL { ", string.Empty).TrimEnd(new char[] { ' ', '}' });
+                    tpString = tpString.Replace("OPTIONAL { ", string.Empty).TrimEnd(' ', '}');
 
                 sb.AppendLine(string.Concat("  ", tpString, " ."));
             });

@@ -296,8 +296,8 @@ namespace RDFSharp.Model
                                 int lastIndexOfDatatype = tokens[2].LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
                                 string tLitValue = tokens[2].Substring(0, lastIndexOfDatatype);
                                 string tLitDatatype = tokens[2].Substring(lastIndexOfDatatype + 2)
-                                                               .TrimStart(new char[] { '<' })
-                                                               .TrimEnd(new char[] { '>' });
+                                                               .TrimStart('<')
+                                                               .TrimEnd('>');
                                 L = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), RDFDatatypeRegister.GetDatatype(tLitDatatype));
                             }
                             #endregion
@@ -342,20 +342,20 @@ namespace RDFSharp.Model
                 //S->P->O
                 if (SPO.Value.Match(ntriple).Success)
                 {
-                    ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
+                    ntriple = ntriple.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //object
-                    tokens[2] = ntriple.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = ntriple.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -363,20 +363,20 @@ namespace RDFSharp.Model
                 //S->P->L(PLAIN)
                 if (SPL_PLAIN.Value.Match(ntriple).Success)
                 {
-                    ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
+                    ntriple = ntriple.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //plain literal
-                    tokens[2] = ntriple.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = ntriple.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -384,20 +384,20 @@ namespace RDFSharp.Model
                 //S->P->L(PLANG)
                 if (SPL_PLANG.Value.Match(ntriple).Success)
                 {
-                    ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
+                    ntriple = ntriple.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //plain literal with language
-                    tokens[2] = ntriple.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = ntriple.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -405,20 +405,20 @@ namespace RDFSharp.Model
                 //S->P->L(TLIT)
                 if (SPL_TLIT.Value.Match(ntriple).Success)
                 {
-                    ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
+                    ntriple = ntriple.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //typed literal
-                    tokens[2] = ntriple.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = ntriple.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -426,20 +426,20 @@ namespace RDFSharp.Model
                 //S->P->B
                 if (SPB.Value.Match(ntriple).Success)
                 {
-                    ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
+                    ntriple = ntriple.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //object
-                    tokens[2] = ntriple.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = ntriple.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -452,20 +452,20 @@ namespace RDFSharp.Model
                 //B->P->O
                 if (BPO.Value.Match(ntriple).Success)
                 {
-                    ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
+                    ntriple = ntriple.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //object
-                    tokens[2] = ntriple.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = ntriple.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -473,20 +473,20 @@ namespace RDFSharp.Model
                 //B->P->L(PLAIN)
                 if (BPL_PLAIN.Value.Match(ntriple).Success)
                 {
-                    ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
+                    ntriple = ntriple.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //plain literal
-                    tokens[2] = ntriple.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = ntriple.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -494,20 +494,20 @@ namespace RDFSharp.Model
                 //B->P->L(PLANG)
                 if (BPL_PLANG.Value.Match(ntriple).Success)
                 {
-                    ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
+                    ntriple = ntriple.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //plain literal with language
-                    tokens[2] = ntriple.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = ntriple.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -515,20 +515,20 @@ namespace RDFSharp.Model
                 //B->P->L(TLIT)
                 if (BPL_TLIT.Value.Match(ntriple).Success)
                 {
-                    ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
+                    ntriple = ntriple.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //typed literal
-                    tokens[2] = ntriple.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = ntriple.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -536,20 +536,20 @@ namespace RDFSharp.Model
                 //B->P->B
                 if (BPB.Value.Match(ntriple).Success)
                 {
-                    ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
+                    ntriple = ntriple.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //object
-                    tokens[2] = ntriple.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = ntriple.Trim(' ', '\t');
 
                     return tokens;
                 }

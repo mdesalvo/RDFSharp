@@ -217,7 +217,7 @@ namespace RDFSharp.Store
                         tokens[3] = string.Empty;
 
                         //Preliminary sanitizations: clean trailing space-like chars
-                        nquad = nquad.Trim(new char[] { ' ', '\t', '\r', '\n' });
+                        nquad = nquad.Trim(' ', '\t', '\r', '\n');
 
                         //Skip empty or comment lines
                         if (nquad == string.Empty || nquad.StartsWith("#"))
@@ -228,15 +228,15 @@ namespace RDFSharp.Store
                         #endregion
 
                         #region subj
-                        string subj = tokens[0].TrimStart(new char[] { '<' })
-                                               .TrimEnd(new char[] { '>' })
+                        string subj = tokens[0].TrimStart('<')
+                                               .TrimEnd('>')
                                                .Replace("_:", "bnode:");
                         S = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(subj), hashContext);
                         #endregion
 
                         #region pred
-                        string pred = tokens[1].TrimStart(new char[] { '<' })
-                                               .TrimEnd(new char[] { '>' });
+                        string pred = tokens[1].TrimStart('<')
+                                               .TrimEnd('>');
                         P = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(pred), hashContext);
                         #endregion
 
@@ -245,10 +245,10 @@ namespace RDFSharp.Store
                             tokens[2].StartsWith("bnode:") ||
                             tokens[2].StartsWith("_:"))
                         {
-                            string obj = tokens[2].TrimStart(new char[] { '<' })
-                                                  .TrimEnd(new char[] { '>' })
+                            string obj = tokens[2].TrimStart('<')
+                                                  .TrimEnd('>')
                                                   .Replace("_:", "bnode:")
-                                                  .Trim(new char[] { ' ', '\n', '\t', '\r' });
+                                                  .Trim(' ', '\n', '\t', '\r');
                             O = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(obj), hashContext);
                         }
                         #endregion
@@ -292,8 +292,8 @@ namespace RDFSharp.Store
                                 int lastIndexOfDatatype = tokens[2].LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
                                 string tLitValue = tokens[2].Substring(0, lastIndexOfDatatype);
                                 string tLitDatatype = tokens[2].Substring(lastIndexOfDatatype + 2)
-                                                               .TrimStart(new char[] { '<' })
-                                                               .TrimEnd(new char[] { '>' });
+                                                               .TrimStart('<')
+                                                               .TrimEnd('>');
                                 L = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), RDFDatatypeRegister.GetDatatype(tLitDatatype));
                             }
                             #endregion
@@ -303,8 +303,8 @@ namespace RDFSharp.Store
                         #region context
                         if (!string.IsNullOrEmpty(tokens[3]))
                         {
-                            string ctx = tokens[3].TrimStart(new char[] { '<' })
-                                                  .TrimEnd(new char[] { '>' });
+                            string ctx = tokens[3].TrimStart('<')
+                                                  .TrimEnd('>');
                             C = new RDFContext(RDFModelUtilities.ASCII_To_Unicode(ctx));
                         }
                         #endregion
@@ -346,25 +346,25 @@ namespace RDFSharp.Store
                 //S->P->O->C
                 if (SPOC.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //object
                     tokens[2] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[2].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[2] = tokens[2].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
+                    tokens[2] = tokens[2].Trim(' ', '\t');
 
                     //context
-                    tokens[3] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[3] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -372,20 +372,20 @@ namespace RDFSharp.Store
                 //S->P->O->
                 if (RDFNTriples.SPO.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //object
-                    tokens[2] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -393,25 +393,25 @@ namespace RDFSharp.Store
                 //S->P->L(PLAIN)->C
                 if (SPLC_PLAIN.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //plain literal
                     tokens[2] = nquad.Substring(0, nquad.LastIndexOf('<'));
-                    nquad = nquad.Substring(tokens[2].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[2] = tokens[2].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
+                    tokens[2] = tokens[2].Trim(' ', '\t');
 
                     //context
-                    tokens[3] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[3] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -419,20 +419,20 @@ namespace RDFSharp.Store
                 //S->P->L(PLAIN)->
                 if (RDFNTriples.SPL_PLAIN.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //plain literal
-                    tokens[2] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -440,25 +440,25 @@ namespace RDFSharp.Store
                 //S->P->L(PLANG)->C
                 if (SPLC_PLANG.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //plain literal with language
                     tokens[2] = nquad.Substring(0, nquad.LastIndexOf('<'));
-                    nquad = nquad.Substring(tokens[2].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[2] = tokens[2].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
+                    tokens[2] = tokens[2].Trim(' ', '\t');
 
                     //context
-                    tokens[3] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[3] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -466,20 +466,20 @@ namespace RDFSharp.Store
                 //S->P->L(PLANG)->
                 if (RDFNTriples.SPL_PLANG.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //plain literal with language
-                    tokens[2] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -487,25 +487,25 @@ namespace RDFSharp.Store
                 //S->P->L(TLIT)->C
                 if (SPLC_TLIT.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t', '>' });
+                    nquad = nquad.Trim('.', ' ', '\t', '>');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //typed literal
                     tokens[2] = nquad.Substring(0, nquad.LastIndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[2].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[2] = tokens[2].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
+                    tokens[2] = tokens[2].Trim(' ', '\t');
 
                     //context
-                    tokens[3] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[3] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -513,20 +513,20 @@ namespace RDFSharp.Store
                 //S->P->L(TLIT)->
                 if (RDFNTriples.SPL_TLIT.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //typed literal
-                    tokens[2] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -534,25 +534,25 @@ namespace RDFSharp.Store
                 //S->P->B->C
                 if (SPBC.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //object
                     tokens[2] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[2].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[2] = tokens[2].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
+                    tokens[2] = tokens[2].Trim(' ', '\t');
 
                     //context
-                    tokens[3] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[3] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -560,20 +560,20 @@ namespace RDFSharp.Store
                 //S->P->B->
                 if (RDFNTriples.SPB.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //object
-                    tokens[2] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -586,25 +586,25 @@ namespace RDFSharp.Store
                 //B->P->O->C
                 if (BPOC.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //object
                     tokens[2] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[2].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[2] = tokens[2].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
+                    tokens[2] = tokens[2].Trim(' ', '\t');
 
                     //context
-                    tokens[3] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[3] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -612,20 +612,20 @@ namespace RDFSharp.Store
                 //B->P->O->
                 if (RDFNTriples.BPO.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //object
-                    tokens[2] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -633,25 +633,25 @@ namespace RDFSharp.Store
                 //B->P->L(PLAIN)->C
                 if (BPLC_PLAIN.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //plain literal
                     tokens[2] = nquad.Substring(0, nquad.LastIndexOf('<'));
-                    nquad = nquad.Substring(tokens[2].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[2] = tokens[2].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
+                    tokens[2] = tokens[2].Trim(' ', '\t');
 
                     //context
-                    tokens[3] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[3] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -659,20 +659,20 @@ namespace RDFSharp.Store
                 //B->P->L(PLAIN)->
                 if (RDFNTriples.BPL_PLAIN.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //plain literal
-                    tokens[2] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -680,25 +680,25 @@ namespace RDFSharp.Store
                 //B->P->L(PLANG)->C
                 if (BPLC_PLANG.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //plain literal with language
                     tokens[2] = nquad.Substring(0, nquad.LastIndexOf('<'));
-                    nquad = nquad.Substring(tokens[2].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[2] = tokens[2].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
+                    tokens[2] = tokens[2].Trim(' ', '\t');
 
                     //context
-                    tokens[3] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[3] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -706,20 +706,20 @@ namespace RDFSharp.Store
                 //B->P->L(PLANG)->
                 if (RDFNTriples.BPL_PLANG.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //plain literal with language
-                    tokens[2] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -727,25 +727,25 @@ namespace RDFSharp.Store
                 //B->P->L(TLIT)->C
                 if (BPLC_TLIT.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t', '>' });
+                    nquad = nquad.Trim('.', ' ', '\t', '>');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //typed literal
                     tokens[2] = nquad.Substring(0, nquad.LastIndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[2].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[2] = tokens[2].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
+                    tokens[2] = tokens[2].Trim(' ', '\t');
 
                     //context
-                    tokens[3] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[3] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -753,20 +753,20 @@ namespace RDFSharp.Store
                 //B->P->L(TLIT)->
                 if (RDFNTriples.BPL_TLIT.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //typed literal
-                    tokens[2] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -774,25 +774,25 @@ namespace RDFSharp.Store
                 //B->P->B->C
                 if (BPBC.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //object
                     tokens[2] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[2].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[2] = tokens[2].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
+                    tokens[2] = tokens[2].Trim(' ', '\t');
 
                     //context
-                    tokens[3] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[3] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }
@@ -800,20 +800,20 @@ namespace RDFSharp.Store
                 //B->P->B->
                 if (RDFNTriples.BPB.Value.Match(nquad).Success)
                 {
-                    nquad = nquad.Trim(new char[] { '.', ' ', '\t' });
+                    nquad = nquad.Trim('.', ' ', '\t');
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
+                    tokens[0] = tokens[0].Trim(' ', '\t');
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                    tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
+                    tokens[1] = tokens[1].Trim(' ', '\t');
 
                     //object
-                    tokens[2] = nquad.Trim(new char[] { ' ', '\t' });
+                    tokens[2] = nquad.Trim(' ', '\t');
 
                     return tokens;
                 }

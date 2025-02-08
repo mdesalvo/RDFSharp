@@ -223,7 +223,7 @@ namespace RDFSharp.Query
 
             //Remove the Optional indicator from the template print (since it is not supported in SPARQL UPDATE operations)
             if (tp.IsOptional)
-                tpString = tpString.Replace("OPTIONAL { ", string.Empty).TrimEnd(new char[] { ' ', '}' });
+                tpString = tpString.Replace("OPTIONAL { ", string.Empty).TrimEnd(' ', '}');
 
             return string.Concat("  ", tpString, " .", Environment.NewLine);
         }

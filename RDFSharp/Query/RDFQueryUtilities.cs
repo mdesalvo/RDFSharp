@@ -260,7 +260,7 @@ namespace RDFSharp.Query
                     if (pmemberString.StartsWith(nspString))
                     {
                         pmemberString = pmemberString.Replace(nspString, string.Concat(nsp.NamespacePrefix, ":"))
-                                                     .TrimEnd(new char[] { '/' });
+                                                     .TrimEnd('/');
 
                         //Accept the abbreviation only if it has generated a valid XSD QName
                         try

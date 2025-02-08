@@ -208,7 +208,7 @@ namespace RDFSharp.Model
 
             string shortUri = uri.ToString();
             if (!string.IsNullOrEmpty(uri.Fragment))
-                shortUri = uri.Fragment.TrimStart(new char[] { '#' });
+                shortUri = uri.Fragment.TrimStart('#');
             else if (uri.Segments.Length > 1)
                 shortUri = uri.Segments.Last();
             return shortUri;

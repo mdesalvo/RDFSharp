@@ -178,7 +178,7 @@ namespace RDFSharp.Model
             {
                 RDFNamespace result = Instance.Register.Find(ns => string.Equals(ns.NamespaceUri.ToString(), uri.Trim(), StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService)
-                    result = LookupPrefixCC(uri.Trim().TrimEnd(new char[] { '#' }), 2);
+                    result = LookupPrefixCC(uri.Trim().TrimEnd('#'), 2);
                 return result;
             }
             return null;

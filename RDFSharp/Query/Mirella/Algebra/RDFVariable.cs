@@ -34,7 +34,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFVariable(string variableName)
         {
-            string trimmedVariableName = variableName?.Trim(new char[] { ' ', '?', '$' });
+            string trimmedVariableName = variableName?.Trim(' ', '?', '$');
             if (string.IsNullOrWhiteSpace(trimmedVariableName))
                 throw new RDFQueryException("Cannot create RDFVariable because given \"variableName\" parameter is null or empty or contains only whitespaces.");
             
