@@ -138,7 +138,7 @@ namespace RDFSharp.Model
             //Subject (Index)
             if (!SubjectsIndex.TryGetValue(triple.Subject.PatternMemberID, out HashSet<long> subjectsIndex))
                 SubjectsIndex.Add(triple.Subject.PatternMemberID, new HashSet<long>() { triple.TripleID });
-            else if (!subjectsIndex.Contains(triple.TripleID))
+            else
                 subjectsIndex.Add(triple.TripleID);
 
             //Predicate (Register)
@@ -147,7 +147,7 @@ namespace RDFSharp.Model
             //Predicate (Index)
             if (!PredicatesIndex.TryGetValue(triple.Predicate.PatternMemberID, out HashSet<long> predicatesIndex))
                 PredicatesIndex.Add(triple.Predicate.PatternMemberID, new HashSet<long>() { triple.TripleID });
-            else if (!predicatesIndex.Contains(triple.TripleID))
+            else
                 predicatesIndex.Add(triple.TripleID);
 
             //Object
@@ -159,7 +159,7 @@ namespace RDFSharp.Model
                 //Index
                 if (!ObjectsIndex.TryGetValue(triple.Object.PatternMemberID, out HashSet<long> objectsIndex))
                     ObjectsIndex.Add(triple.Object.PatternMemberID, new HashSet<long>() { triple.TripleID });
-                else if (!objectsIndex.Contains(triple.TripleID))
+                else
                     objectsIndex.Add(triple.TripleID);
             }
 
@@ -172,7 +172,7 @@ namespace RDFSharp.Model
                 //Index
                 if (!LiteralsIndex.TryGetValue(triple.Object.PatternMemberID, out HashSet<long> literalsIndex))
                     LiteralsIndex.Add(triple.Object.PatternMemberID, new HashSet<long>() { triple.TripleID });
-                else if (!literalsIndex.Contains(triple.TripleID))
+                else
                     literalsIndex.Add(triple.TripleID);
             }
 

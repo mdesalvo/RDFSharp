@@ -24,7 +24,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// RDFPatternHoles represents an enumeration for possible positions of holes in a pattern.
         /// </summary>
-        internal enum RDFPatternHoles { C, S, P, O, CS, CP, CO, CSP, CSO, CPO, CSPO, SP, SO, PO, SPO };
+        internal enum RDFPatternHoles { C, S, P, O, CS, CP, CO, CSP, CSO, CPO, CSPO, SP, SO, PO, SPO }
 
         /// <summary>
         /// RDFOrderByFlavors represents an enumeration for possible directions of query results ordering on a given variable.
@@ -39,7 +39,7 @@ namespace RDFSharp.Query
             /// Orders SPARQL results in descending mode on the selected variable
             /// </summary>
             DESC = 2
-        };
+        }
 
         /// <summary>
         /// RDFComparisonFlavors represents an enumeration for possible comparison modes between two patten members.
@@ -70,7 +70,7 @@ namespace RDFSharp.Query
             /// Represents the greater-or-equal comparison operator
             /// </summary>
             GreaterOrEqualThan = 6
-        };
+        }
 
         /// <summary>
         /// RDFPropertyPathStepFlavors represents an enumeration for possible connection types within a property path.
@@ -222,7 +222,7 @@ namespace RDFSharp.Query
             /// geof:ehContains
             /// </summary>
             Contains = 8
-        };
+        }
 
         /// <summary>
         /// Represents an enumeration for the set of built-in Region-Connected-Calculus-8 spatial relations

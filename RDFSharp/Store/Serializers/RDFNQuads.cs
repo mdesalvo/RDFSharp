@@ -108,18 +108,14 @@ namespace RDFSharp.Store
                             quadrupleTemplate = "<{SUBJ}> <{PRED}> <{OBJ}> <{CTX}> .";
                         else
                         {
-                            if (q.Object is RDFPlainLiteral)
-                                quadrupleTemplate = "<{SUBJ}> <{PRED}> \"{VAL}\"@{LANG} <{CTX}> .";
-                            else
-                                quadrupleTemplate = "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> <{CTX}> .";
+                            quadrupleTemplate = q.Object is RDFPlainLiteral ? "<{SUBJ}> <{PRED}> \"{VAL}\"@{LANG} <{CTX}> ." 
+                                                                            : "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> <{CTX}> .";
                         }
                         #endregion
 
                         #region subj
-                        if (((RDFResource)q.Subject).IsBlank)
-                            quadrupleTemplate = quadrupleTemplate.Replace("<{SUBJ}>", RDFModelUtilities.Unicode_To_ASCII(q.Subject.ToString()).Replace("bnode:", "_:"));
-                        else
-                            quadrupleTemplate = quadrupleTemplate.Replace("{SUBJ}", RDFModelUtilities.Unicode_To_ASCII(q.Subject.ToString()));
+                        quadrupleTemplate = ((RDFResource)q.Subject).IsBlank ? quadrupleTemplate.Replace("<{SUBJ}>", RDFModelUtilities.Unicode_To_ASCII(q.Subject.ToString()).Replace("bnode:", "_:")) 
+                                                                             : quadrupleTemplate.Replace("{SUBJ}", RDFModelUtilities.Unicode_To_ASCII(q.Subject.ToString()));
                         #endregion
 
                         #region pred
@@ -129,10 +125,8 @@ namespace RDFSharp.Store
                         #region object
                         if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                         {
-                            if (((RDFResource)q.Object).IsBlank)
-                                quadrupleTemplate = quadrupleTemplate.Replace("<{OBJ}>", RDFModelUtilities.Unicode_To_ASCII(q.Object.ToString())).Replace("bnode:", "_:");
-                            else
-                                quadrupleTemplate = quadrupleTemplate.Replace("{OBJ}", RDFModelUtilities.Unicode_To_ASCII(q.Object.ToString()));
+                            quadrupleTemplate = ((RDFResource)q.Object).IsBlank ? quadrupleTemplate.Replace("<{OBJ}>", RDFModelUtilities.Unicode_To_ASCII(q.Object.ToString())).Replace("bnode:", "_:") 
+                                                                                : quadrupleTemplate.Replace("{OBJ}", RDFModelUtilities.Unicode_To_ASCII(q.Object.ToString()));
                         }
                         #endregion
 
@@ -310,10 +304,10 @@ namespace RDFSharp.Store
                         #endregion
 
                         #region addquadruple
-                        if (O != null)
-                            result.AddQuadruple(new RDFQuadruple(C, S, P, O));
-                        else
-                            result.AddQuadruple(new RDFQuadruple(C, S, P, L));
+
+                        result.AddQuadruple(O != null ? new RDFQuadruple(C, S, P, O) 
+                                                      : new RDFQuadruple(C, S, P, L));
+
                         #endregion
 
                     }

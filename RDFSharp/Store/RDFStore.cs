@@ -317,7 +317,7 @@ namespace RDFSharp.Store
         /// Asynchronously clears the quadruples of the store
         /// </summary>
         public Task ClearQuadruplesAsync()
-            => Task.Run(() => ClearQuadruples());
+            => Task.Run(ClearQuadruples);
 
         /// <summary>
         /// Compacts the reified quadruples by removing their 4 standard statements
@@ -491,7 +491,7 @@ namespace RDFSharp.Store
         public List<RDFGraph> ExtractGraphs()
         {
             Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>();
-            foreach (RDFQuadruple q in (this is RDFMemoryStore memStore ? memStore : SelectAllQuadruples()))
+            foreach (RDFQuadruple q in (this as RDFMemoryStore ?? SelectAllQuadruples()))
             {
                 // Step 1: Cache-Update
                 if (!graphs.ContainsKey(q.Context.PatternMemberID))
@@ -501,10 +501,9 @@ namespace RDFSharp.Store
                 }
 
                 // Step 2: Result-Update
-                if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                    graphs[q.Context.PatternMemberID].AddTriple(new RDFTriple((RDFResource)q.Subject, (RDFResource)q.Predicate, (RDFResource)q.Object));
-                else
-                    graphs[q.Context.PatternMemberID].AddTriple(new RDFTriple((RDFResource)q.Subject, (RDFResource)q.Predicate, (RDFLiteral)q.Object));
+                graphs[q.Context.PatternMemberID].AddTriple(q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
+                    ? new RDFTriple((RDFResource)q.Subject, (RDFResource)q.Predicate, (RDFResource)q.Object)
+                    : new RDFTriple((RDFResource)q.Subject, (RDFResource)q.Predicate, (RDFLiteral)q.Object));
             }
             return graphs.Values.ToList();
         }
@@ -513,7 +512,7 @@ namespace RDFSharp.Store
         /// Asynchronously gets a list containing the graphs saved in the store
         /// </summary>
         public Task<List<RDFGraph>> ExtractGraphsAsync()
-            => Task.Run(() => ExtractGraphs());
+            => Task.Run(ExtractGraphs);
 
         /// <summary>
         /// Gets a list containing the contexts saved in the store
@@ -521,7 +520,7 @@ namespace RDFSharp.Store
         public List<RDFContext> ExtractContexts()
         {
             Dictionary<long, RDFPatternMember> contexts = new Dictionary<long, RDFPatternMember>();
-            foreach (RDFQuadruple q in (this is RDFMemoryStore memStore ? memStore : SelectAllQuadruples()))
+            foreach (RDFQuadruple q in (this as RDFMemoryStore ?? SelectAllQuadruples()))
             {
                 if (!contexts.ContainsKey(q.Context.PatternMemberID))
                     contexts.Add(q.Context.PatternMemberID, q.Context);
@@ -533,7 +532,7 @@ namespace RDFSharp.Store
         /// Asynchronously gets a list containing the contexts saved in the store
         /// </summary>
         public Task<List<RDFContext>> ExtractContextsAsync()
-            => Task.Run(() => ExtractContexts());
+            => Task.Run(ExtractContexts);
         #endregion
 
         #region Convert
@@ -627,7 +626,7 @@ namespace RDFSharp.Store
         /// Asynchronously writes the store into a datatable with "Context-Subject-Predicate-Object" columns
         /// </summary>
         public Task<DataTable> ToDataTableAsync()
-            => Task.Run(() => ToDataTable());
+            => Task.Run(ToDataTable);
         #endregion
 
         #endregion

@@ -39,7 +39,7 @@ namespace RDFSharp.Model
             /// Shape has been violated: data graph contains structural inconsistencies
             /// </summary>
             Violation = 2
-        };
+        }
 
         /// <summary>
         /// RDFNodeKinds represents an enumeration for supported values of sh:nodeKind constraint

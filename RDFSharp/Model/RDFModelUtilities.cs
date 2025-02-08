@@ -499,9 +499,7 @@ namespace RDFSharp.Model
                         {
                             itemRest = (RDFResource)rest.Object;
                             //Avoid bad-formed cyclic lists to generate infinite loops
-                            if (!itemRestVisitCache.Contains(itemRest.PatternMemberID))
-                                itemRestVisitCache.Add(itemRest.PatternMemberID);
-                            else
+                            if (!itemRestVisitCache.Add(itemRest.PatternMemberID))
                                 nilFound = true;
                         }
                     }

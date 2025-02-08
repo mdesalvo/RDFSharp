@@ -146,9 +146,7 @@ namespace RDFSharp.Model
                     visitContext = new HashSet<long>() { { className.PatternMemberID } };
                 else
                 {
-                    if (!visitContext.Contains(className.PatternMemberID))
-                        visitContext.Add(className.PatternMemberID);
-                    else
+                    if (!visitContext.Add(className.PatternMemberID))
                         return result;
                 }
                 #endregion

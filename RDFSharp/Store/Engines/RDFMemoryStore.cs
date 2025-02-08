@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -113,15 +114,7 @@ namespace RDFSharp.Store
         {
             if (other == null || QuadruplesCount != other.QuadruplesCount)
                 return false;
-            if (base.Equals(other))
-                return true;
-
-            foreach (RDFQuadruple q in this)
-            {
-                if (!other.ContainsQuadruple(q))
-                    return false;
-            }
-            return true;
+            return base.Equals(other) || this.All(other.ContainsQuadruple);
         }
 
         /// <summary>

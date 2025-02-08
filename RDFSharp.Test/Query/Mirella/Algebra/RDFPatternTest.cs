@@ -15,7 +15,6 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Store;

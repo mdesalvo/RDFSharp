@@ -59,9 +59,8 @@ namespace RDFSharp.Store
                     //Write namespaces (avoid duplicates)
                     HashSet<string> printedNamespaces = new HashSet<string>();
                     foreach (RDFNamespace ns in prefixes.OrderBy(n => n.NamespacePrefix))
-                        if (!printedNamespaces.Contains(ns.NamespacePrefix))
+                        if (printedNamespaces.Add(ns.NamespacePrefix))
                         {
-                            printedNamespaces.Add(ns.NamespacePrefix);
                             sw.WriteLine(string.Concat("@prefix ", ns.NamespacePrefix, ": <", ns.NamespaceUri, ">."));
                         }
                     if (printedNamespaces.Count > 0)
@@ -172,12 +171,11 @@ namespace RDFSharp.Store
         internal static void ParseStatement(string trigData, RDFTriGContext trigContext)
         {
             StringBuilder sb = new StringBuilder(8);
-            int codePoint;
 
             // longest valid directive @prefix
             do
             {
-                codePoint = ReadCodePoint(trigData, trigContext);
+                int codePoint = ReadCodePoint(trigData, trigContext);
                 if (codePoint == -1 || IsWhitespace(codePoint))
                 {
                     UnreadCodePoint(trigContext, codePoint);

@@ -18,7 +18,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetTopologySuite.Geometries;
 using RDFSharp.Model;
 using RDFSharp.Query;
-using System.Collections.Generic;
 using System.Data;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 

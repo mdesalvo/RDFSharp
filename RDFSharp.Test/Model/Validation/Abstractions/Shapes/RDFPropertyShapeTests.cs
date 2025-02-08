@@ -16,7 +16,6 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
-using System.Collections.Generic;
 using System.Linq;
 using static RDFSharp.Query.RDFQueryEnums;
 

@@ -68,9 +68,8 @@ namespace RDFSharp.Model
                               && innerlanglitValueNode.Language.Equals(outerlanglitValueNode.Language))
                         {
                             //Ensure to not report twice the same language tag
-                            if (!reportedLangs.Contains(innerlanglitValueNode.Language))
+                            if (reportedLangs.Add(innerlanglitValueNode.Language))
                             {
-                                reportedLangs.Add(innerlanglitValueNode.Language);
                                 report.AddResult(new RDFValidationResult(shape,
                                                                          RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
                                                                          focusNode,

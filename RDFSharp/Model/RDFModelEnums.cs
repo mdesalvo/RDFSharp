@@ -44,7 +44,7 @@ namespace RDFSharp.Model
             /// XML serialization (https://www.w3.org/TR/rdf11-xml/)
             /// </summary>
             RdfXml = 3
-        };
+        }
 
         /// <summary>
         /// RDFTripleFlavors represents an enumeration for possible triple flavors.
@@ -59,7 +59,7 @@ namespace RDFSharp.Model
             /// Indicates that the object of the triple is a literal
             /// </summary>
             SPL = 2
-        };
+        }
 
         /// <summary>
         /// RDFDatatypes represents an enumeration for supported datatypes (RDF/RDFS/XSD).
@@ -321,7 +321,7 @@ namespace RDFSharp.Model
             /// </summary>
             [Description("http://www.w3.org/2002/07/owl#rational")]
             OWL_RATIONAL = 50
-        };
+        }
 
         /// <summary>
         /// RDFContainerTypes represents an enumeration for supported container types.
@@ -340,7 +340,7 @@ namespace RDFSharp.Model
             /// Represents an unordered list which does not allow duplicates
             /// </summary>
             Alt = 2
-        };
+        }
 
         /// <summary>
         /// RDFItemTypes represents an enumeration for acceptable RDFContainer and RDFCollection item types.
@@ -355,7 +355,7 @@ namespace RDFSharp.Model
             /// Indicates that a container/collection accepts only literals
             /// </summary>
             Literal = 2
-        };
+        }
 
         /// <summary>
         /// RDFPlainLiteralDirections represents an enumeration for supported directions of plain literal's value
@@ -370,6 +370,6 @@ namespace RDFSharp.Model
             /// Indicates that the value of the plain literal should be read in "right to left" direction
             /// </summary>
             RTL = 2
-        };
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFStoreIndex represents an automatically managed in-memory index structure for the quadruples of a store.
     /// </summary>
-    internal class RDFStoreIndex : IDisposable
+    internal sealed class RDFStoreIndex : IDisposable
     {
         #region Properties
         /// <summary>
@@ -114,7 +114,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Disposes the store index 
         /// </summary>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (Disposed)
                 return;
@@ -153,7 +153,7 @@ namespace RDFSharp.Store
             //Context (Index)
             if (!ContextsIndex.TryGetValue(quadruple.Context.PatternMemberID, out HashSet<long> contextsIndex))
                 ContextsIndex.Add(quadruple.Context.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-            else if (!contextsIndex.Contains(quadruple.QuadrupleID))
+            else
                 contextsIndex.Add(quadruple.QuadrupleID);
 
             //Subject (Register)
@@ -162,7 +162,7 @@ namespace RDFSharp.Store
             //Subject (Index)
             if (!SubjectsIndex.TryGetValue(quadruple.Subject.PatternMemberID, out HashSet<long> subjectsIndex))
                 SubjectsIndex.Add(quadruple.Subject.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-            else if (!subjectsIndex.Contains(quadruple.QuadrupleID))
+            else
                 subjectsIndex.Add(quadruple.QuadrupleID);
 
             //Predicate (Register)
@@ -171,7 +171,7 @@ namespace RDFSharp.Store
             //Predicate (Index)
             if (!PredicatesIndex.TryGetValue(quadruple.Predicate.PatternMemberID, out HashSet<long> predicatesIndex))
                 PredicatesIndex.Add(quadruple.Predicate.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-            else if (!predicatesIndex.Contains(quadruple.QuadrupleID))
+            else
                 predicatesIndex.Add(quadruple.QuadrupleID);
 
             //Object
@@ -183,7 +183,7 @@ namespace RDFSharp.Store
                 //Index
                 if (!ObjectsIndex.TryGetValue(quadruple.Object.PatternMemberID, out HashSet<long> objectsIndex))
                     ObjectsIndex.Add(quadruple.Object.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-                else if (!objectsIndex.Contains(quadruple.QuadrupleID))
+                else
                     objectsIndex.Add(quadruple.QuadrupleID);
             }
 
@@ -196,7 +196,7 @@ namespace RDFSharp.Store
                 //Index
                 if (!LiteralsIndex.TryGetValue(quadruple.Object.PatternMemberID, out HashSet<long> literalsIndex))
                     LiteralsIndex.Add(quadruple.Object.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-                else if (!literalsIndex.Contains(quadruple.QuadrupleID))
+                else
                     literalsIndex.Add(quadruple.QuadrupleID);
             }
 

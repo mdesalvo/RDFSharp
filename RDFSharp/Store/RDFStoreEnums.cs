@@ -38,7 +38,7 @@ namespace RDFSharp.Store
             /// Indicates that diagnostics on the selected database has not passed because it's not ready for use with RDFSharp
             /// </summary>
             QuadruplesTableNotFound = 2
-        };
+        }
 
         /// <summary>
         /// RDFFormats represents an enumeration for supported RDF store serialization data formats.
@@ -57,6 +57,6 @@ namespace RDFSharp.Store
             /// TriG serialization (https://www.w3.org/TR/trig/)
             /// </summary>
             TriG = 3
-        };
+        }
     }
 }
