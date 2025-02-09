@@ -17,88 +17,87 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 
-namespace RDFSharp.Test.Model
+namespace RDFSharp.Test.Model;
+
+[TestClass]
+public class RDFNodeShapeTests
 {
-    [TestClass]
-    public class RDFNodeShapeTests
+    #region Tests
+    [TestMethod]
+    public void ShouldCreateNodeShape()
     {
-        #region Tests
-        [TestMethod]
-        public void ShouldCreateNodeShape()
-        {
-            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
+        RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
 
-            Assert.IsNotNull(nodeShape);
-            Assert.IsTrue(nodeShape.Equals(new RDFResource("ex:nodeShape")));
-            Assert.IsFalse(nodeShape.IsBlank);
-            Assert.IsFalse(nodeShape.Deactivated);
-            Assert.IsTrue(nodeShape.Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-            Assert.IsTrue(nodeShape.MessagesCount == 0);
-            Assert.IsTrue(nodeShape.TargetsCount == 0);
-            Assert.IsTrue(nodeShape.ConstraintsCount == 0);
-        }
-
-        [TestMethod]
-        public void ShouldCreateBlankNodeShape()
-        {
-            RDFNodeShape nodeShape = new RDFNodeShape();
-
-            Assert.IsNotNull(nodeShape);
-            Assert.IsTrue(nodeShape.IsBlank);
-            Assert.IsFalse(nodeShape.Deactivated);
-            Assert.IsTrue(nodeShape.Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-            Assert.IsTrue(nodeShape.MessagesCount == 0);
-            Assert.IsTrue(nodeShape.TargetsCount == 0);
-            Assert.IsTrue(nodeShape.ConstraintsCount == 0);
-        }
-
-        [TestMethod]
-        public void ShouldEnumerateNodeShape()
-        {
-            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
-            int i = 0;
-            foreach (RDFConstraint constraint in nodeShape) i++;
-
-            Assert.IsTrue(i == 0);
-        }
-
-        [TestMethod]
-        public void ShouldDeactivateNodeShape()
-        {
-            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
-            nodeShape.Deactivate();
-
-            Assert.IsTrue(nodeShape.Deactivated);
-        }
-
-        [TestMethod]
-        public void ShouldExportNodeShape()
-        {
-            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
-            RDFGraph nshGraph = nodeShape.ToRDFGraph();
-
-            Assert.IsNotNull(nshGraph);
-            Assert.IsTrue(nshGraph.Context.Equals(nodeShape.URI));
-            Assert.IsTrue(nshGraph.TriplesCount == 3);
-            Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE)));
-            Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.SHACL.SEVERITY_PROPERTY, RDFVocabulary.SHACL.VIOLATION)));
-            Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.False)));
-        }
-
-        [TestMethod]
-        public void ShouldExportDeactivatedNodeShape()
-        {
-            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
-            nodeShape.Deactivate();
-            RDFGraph nshGraph = nodeShape.ToRDFGraph();
-
-            Assert.IsNotNull(nshGraph);
-            Assert.IsTrue(nshGraph.Context.Equals(nodeShape.URI));
-            Assert.IsTrue(nshGraph.TriplesCount == 3);
-            Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE)));
-            Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.SHACL.SEVERITY_PROPERTY, RDFVocabulary.SHACL.VIOLATION)));
-            Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.True)));
-        }
-        #endregion
+        Assert.IsNotNull(nodeShape);
+        Assert.IsTrue(nodeShape.Equals(new RDFResource("ex:nodeShape")));
+        Assert.IsFalse(nodeShape.IsBlank);
+        Assert.IsFalse(nodeShape.Deactivated);
+        Assert.IsTrue(nodeShape.Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
+        Assert.IsTrue(nodeShape.MessagesCount == 0);
+        Assert.IsTrue(nodeShape.TargetsCount == 0);
+        Assert.IsTrue(nodeShape.ConstraintsCount == 0);
     }
+
+    [TestMethod]
+    public void ShouldCreateBlankNodeShape()
+    {
+        RDFNodeShape nodeShape = new RDFNodeShape();
+
+        Assert.IsNotNull(nodeShape);
+        Assert.IsTrue(nodeShape.IsBlank);
+        Assert.IsFalse(nodeShape.Deactivated);
+        Assert.IsTrue(nodeShape.Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
+        Assert.IsTrue(nodeShape.MessagesCount == 0);
+        Assert.IsTrue(nodeShape.TargetsCount == 0);
+        Assert.IsTrue(nodeShape.ConstraintsCount == 0);
+    }
+
+    [TestMethod]
+    public void ShouldEnumerateNodeShape()
+    {
+        RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
+        int i = 0;
+        foreach (RDFConstraint constraint in nodeShape) i++;
+
+        Assert.IsTrue(i == 0);
+    }
+
+    [TestMethod]
+    public void ShouldDeactivateNodeShape()
+    {
+        RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
+        nodeShape.Deactivate();
+
+        Assert.IsTrue(nodeShape.Deactivated);
+    }
+
+    [TestMethod]
+    public void ShouldExportNodeShape()
+    {
+        RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
+        RDFGraph nshGraph = nodeShape.ToRDFGraph();
+
+        Assert.IsNotNull(nshGraph);
+        Assert.IsTrue(nshGraph.Context.Equals(nodeShape.URI));
+        Assert.IsTrue(nshGraph.TriplesCount == 3);
+        Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE)));
+        Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.SHACL.SEVERITY_PROPERTY, RDFVocabulary.SHACL.VIOLATION)));
+        Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.False)));
+    }
+
+    [TestMethod]
+    public void ShouldExportDeactivatedNodeShape()
+    {
+        RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
+        nodeShape.Deactivate();
+        RDFGraph nshGraph = nodeShape.ToRDFGraph();
+
+        Assert.IsNotNull(nshGraph);
+        Assert.IsTrue(nshGraph.Context.Equals(nodeShape.URI));
+        Assert.IsTrue(nshGraph.TriplesCount == 3);
+        Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE)));
+        Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.SHACL.SEVERITY_PROPERTY, RDFVocabulary.SHACL.VIOLATION)));
+        Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.True)));
+    }
+    #endregion
 }

@@ -18,53 +18,52 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Store;
 using System;
 
-namespace RDFSharp.Test.Store
+namespace RDFSharp.Test.Store;
+
+[TestClass]
+public class RDFStoreExceptionTest
 {
-    [TestClass]
-    public class RDFStoreExceptionTest
+    #region Tests
+    [TestMethod]
+    public void ShouldRaiseEmptyStoreException()
     {
-        #region Tests
-        [TestMethod]
-        public void ShouldRaiseEmptyStoreException()
+        try
         {
-            try
-            {
-                throw new RDFStoreException();
-            }
-            catch (RDFStoreException mex)
-            {
-                Assert.IsTrue(mex.Message.Contains("RDFSharp.Store.RDFStoreException", StringComparison.OrdinalIgnoreCase));
-            }
+            throw new RDFStoreException();
         }
-
-        [TestMethod]
-        public void ShouldRaiseMessageStoreException()
+        catch (RDFStoreException mex)
         {
-            try
-            {
-                throw new RDFStoreException("This is an exception coming from RDF Store!");
-            }
-            catch (RDFStoreException mex)
-            {
-                Assert.IsTrue(mex.Message.Equals("This is an exception coming from RDF Store!", StringComparison.OrdinalIgnoreCase));
-                Assert.IsNull(mex.InnerException);
-            }
+            Assert.IsTrue(mex.Message.Contains("RDFSharp.Store.RDFStoreException", StringComparison.OrdinalIgnoreCase));
         }
-
-        [TestMethod]
-        public void ShouldRaiseMessageWithInnerStoreException()
-        {
-            try
-            {
-                throw new RDFStoreException("This is an exception coming from RDF Store!", new Exception("This is the inner exception!"));
-            }
-            catch (RDFStoreException mex)
-            {
-                Assert.IsTrue(mex.Message.Equals("This is an exception coming from RDF Store!", StringComparison.OrdinalIgnoreCase));
-                Assert.IsNotNull(mex.InnerException);
-                Assert.IsTrue(mex.InnerException.Message.Equals("This is the inner exception!"));
-            }
-        }
-        #endregion
     }
+
+    [TestMethod]
+    public void ShouldRaiseMessageStoreException()
+    {
+        try
+        {
+            throw new RDFStoreException("This is an exception coming from RDF Store!");
+        }
+        catch (RDFStoreException mex)
+        {
+            Assert.IsTrue(mex.Message.Equals("This is an exception coming from RDF Store!", StringComparison.OrdinalIgnoreCase));
+            Assert.IsNull(mex.InnerException);
+        }
+    }
+
+    [TestMethod]
+    public void ShouldRaiseMessageWithInnerStoreException()
+    {
+        try
+        {
+            throw new RDFStoreException("This is an exception coming from RDF Store!", new Exception("This is the inner exception!"));
+        }
+        catch (RDFStoreException mex)
+        {
+            Assert.IsTrue(mex.Message.Equals("This is an exception coming from RDF Store!", StringComparison.OrdinalIgnoreCase));
+            Assert.IsNotNull(mex.InnerException);
+            Assert.IsTrue(mex.InnerException.Message.Equals("This is the inner exception!"));
+        }
+    }
+    #endregion
 }

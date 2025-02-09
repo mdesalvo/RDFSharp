@@ -17,35 +17,34 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 
-namespace RDFSharp.Test.Model
+namespace RDFSharp.Test.Model;
+
+[TestClass]
+public class RDFTargetClassTest
 {
-    [TestClass]
-    public class RDFTargetClassTest
+    #region Test
+    [TestMethod]
+    public void ShouldCreateTargetClass()
     {
-        #region Test
-        [TestMethod]
-        public void ShouldCreateTargetClass()
-        {
-            RDFTargetClass targetClass = new RDFTargetClass(new RDFResource("ex:targetClass"));
+        RDFTargetClass targetClass = new RDFTargetClass(new RDFResource("ex:targetClass"));
 
-            Assert.IsNotNull(targetClass);
-            Assert.IsTrue(targetClass.TargetValue.Equals(new RDFResource("ex:targetClass")));
-        }
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnCreatingTargetClassBecauseNullValue()
-            => Assert.ThrowsException<RDFModelException>(() => new RDFTargetClass(null));
-
-        [TestMethod]
-        public void ShouldExportTargetClass()
-        {
-            RDFTargetClass targetClass = new RDFTargetClass(new RDFResource("ex:targetClass"));
-            RDFGraph graph = targetClass.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:nodeShape")));
-
-            Assert.IsNotNull(graph);
-            Assert.IsTrue(graph.TriplesCount == 1);
-            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("ex:nodeShape"), RDFVocabulary.SHACL.TARGET_CLASS, targetClass.TargetValue)));
-        }
-        #endregion
+        Assert.IsNotNull(targetClass);
+        Assert.IsTrue(targetClass.TargetValue.Equals(new RDFResource("ex:targetClass")));
     }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingTargetClassBecauseNullValue()
+        => Assert.ThrowsException<RDFModelException>(() => new RDFTargetClass(null));
+
+    [TestMethod]
+    public void ShouldExportTargetClass()
+    {
+        RDFTargetClass targetClass = new RDFTargetClass(new RDFResource("ex:targetClass"));
+        RDFGraph graph = targetClass.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:nodeShape")));
+
+        Assert.IsNotNull(graph);
+        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("ex:nodeShape"), RDFVocabulary.SHACL.TARGET_CLASS, targetClass.TargetValue)));
+    }
+    #endregion
 }

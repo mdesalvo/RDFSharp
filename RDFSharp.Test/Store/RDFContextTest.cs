@@ -19,62 +19,61 @@ using RDFSharp.Store;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace RDFSharp.Test.Store
+namespace RDFSharp.Test.Store;
+
+[TestClass]
+public class RDFContextTest
 {
-    [TestClass]
-    public class RDFContextTest
+    #region Tests
+    [TestMethod]
+    public void ShouldCreateDefaultContext()
     {
-        #region Tests
-        [TestMethod]
-        public void ShouldCreateDefaultContext()
-        {
-            RDFContext ctx = new RDFContext();
+        RDFContext ctx = new RDFContext();
 
-            Assert.IsNotNull(ctx);
-            Assert.IsTrue(ctx.ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
-        }
-
-        [TestMethod]
-        public void ShouldCreateContextFromString()
-        {
-            RDFContext ctx = new RDFContext("ex:context");
-
-            Assert.IsNotNull(ctx);
-            Assert.IsTrue(ctx.ToString().Equals("ex:context"));
-        }
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnCreatingContextFromStringBecauseBlankNode()
-            => Assert.ThrowsException<RDFStoreException>(() => new RDFContext("bnode:12345"));
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnCreatingContextFromStringBecauseInvalidUri()
-            => Assert.ThrowsException<RDFStoreException>(() => new RDFContext("test"));
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnCreatingContextFromStringBecauseNull()
-            => Assert.ThrowsException<RDFStoreException>(() => new RDFContext(null as string));
-
-        [TestMethod]
-        public void ShouldCreateContextFromUri()
-        {
-            RDFContext ctx = new RDFContext(new Uri("ex:context"));
-
-            Assert.IsNotNull(ctx);
-            Assert.IsTrue(ctx.ToString().Equals("ex:context"));
-        }
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnCreatingContextFromUriBecauseBlankNode()
-            => Assert.ThrowsException<RDFStoreException>(() => new RDFContext(new Uri("bnode:12345")));
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnCreatingContextFromUriBecauseInvalidUri()
-            => Assert.ThrowsException<RDFStoreException>(() => new RDFContext(new Uri("test", UriKind.Relative)));
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnCreatingContextFromUriBecauseNull()
-            => Assert.ThrowsException<RDFStoreException>(() => new RDFContext(null as Uri));
-        #endregion
+        Assert.IsNotNull(ctx);
+        Assert.IsTrue(ctx.ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
     }
+
+    [TestMethod]
+    public void ShouldCreateContextFromString()
+    {
+        RDFContext ctx = new RDFContext("ex:context");
+
+        Assert.IsNotNull(ctx);
+        Assert.IsTrue(ctx.ToString().Equals("ex:context"));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingContextFromStringBecauseBlankNode()
+        => Assert.ThrowsException<RDFStoreException>(() => new RDFContext("bnode:12345"));
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingContextFromStringBecauseInvalidUri()
+        => Assert.ThrowsException<RDFStoreException>(() => new RDFContext("test"));
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingContextFromStringBecauseNull()
+        => Assert.ThrowsException<RDFStoreException>(() => new RDFContext(null as string));
+
+    [TestMethod]
+    public void ShouldCreateContextFromUri()
+    {
+        RDFContext ctx = new RDFContext(new Uri("ex:context"));
+
+        Assert.IsNotNull(ctx);
+        Assert.IsTrue(ctx.ToString().Equals("ex:context"));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingContextFromUriBecauseBlankNode()
+        => Assert.ThrowsException<RDFStoreException>(() => new RDFContext(new Uri("bnode:12345")));
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingContextFromUriBecauseInvalidUri()
+        => Assert.ThrowsException<RDFStoreException>(() => new RDFContext(new Uri("test", UriKind.Relative)));
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingContextFromUriBecauseNull()
+        => Assert.ThrowsException<RDFStoreException>(() => new RDFContext(null as Uri));
+    #endregion
 }

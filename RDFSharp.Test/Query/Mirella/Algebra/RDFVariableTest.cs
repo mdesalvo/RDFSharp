@@ -17,46 +17,45 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Query;
 
-namespace RDFSharp.Test.Query
+namespace RDFSharp.Test.Query;
+
+[TestClass]
+public class RDFVariableTest
 {
-    [TestClass]
-    public class RDFVariableTest
+    #region Tests
+    [DataTestMethod]
+    [DataRow("var")]
+    [DataRow("vaR")]
+    [DataRow("?var")]
+    [DataRow(" ?var ")]
+    [DataRow("?var?")]
+    [DataRow("$var$")]
+    public void ShouldCreateVariable(string variableName)
     {
-        #region Tests
-        [DataTestMethod]
-        [DataRow("var")]
-        [DataRow("vaR")]
-        [DataRow("?var")]
-        [DataRow(" ?var ")]
-        [DataRow("?var?")]
-        [DataRow("$var$")]
-        public void ShouldCreateVariable(string variableName)
-        {
-            string effectiveVariableName = string.Concat("?", variableName.Trim(' ', '?', '$').ToUpperInvariant());
-            RDFVariable variable1 = new RDFVariable(variableName);
+        string effectiveVariableName = string.Concat("?", variableName.Trim(' ', '?', '$').ToUpperInvariant());
+        RDFVariable variable1 = new RDFVariable(variableName);
 
-            Assert.IsNotNull(variable1);
-            Assert.IsTrue(variable1.VariableName.Equals(effectiveVariableName));
-            Assert.IsTrue(variable1.ToString().Equals(effectiveVariableName));
+        Assert.IsNotNull(variable1);
+        Assert.IsTrue(variable1.VariableName.Equals(effectiveVariableName));
+        Assert.IsTrue(variable1.ToString().Equals(effectiveVariableName));
 
-            RDFVariable variable2 = new RDFVariable(variableName.ToUpperInvariant());
+        RDFVariable variable2 = new RDFVariable(variableName.ToUpperInvariant());
 
-            Assert.IsNotNull(variable2);
-            Assert.IsTrue(variable2.VariableName.Equals(effectiveVariableName));
-            Assert.IsTrue(variable2.ToString().Equals(effectiveVariableName));
+        Assert.IsNotNull(variable2);
+        Assert.IsTrue(variable2.VariableName.Equals(effectiveVariableName));
+        Assert.IsTrue(variable2.ToString().Equals(effectiveVariableName));
 
-            Assert.IsTrue(variable1.Equals(variable2));
-        }
-
-        [DataTestMethod]
-        [DataRow(null)]
-        [DataRow("")]
-        [DataRow("  ")]
-        [DataRow("??")]
-        [DataRow("$$")]
-        [DataRow("?  $")]
-        public void ShouldThrowExceptionOnCreatingVariable(string varname)
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFVariable(varname));
-        #endregion
+        Assert.IsTrue(variable1.Equals(variable2));
     }
+
+    [DataTestMethod]
+    [DataRow(null)]
+    [DataRow("")]
+    [DataRow("  ")]
+    [DataRow("??")]
+    [DataRow("$$")]
+    [DataRow("?  $")]
+    public void ShouldThrowExceptionOnCreatingVariable(string varname)
+        => Assert.ThrowsException<RDFQueryException>(() => new RDFVariable(varname));
+    #endregion
 }

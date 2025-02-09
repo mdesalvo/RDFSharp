@@ -18,48 +18,47 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
-namespace RDFSharp.Test.Query
+namespace RDFSharp.Test.Query;
+
+[TestClass]
+public class RDFBindTest
 {
-    [TestClass]
-    public class RDFBindTest
+    #region Tests
+    [TestMethod]
+    public void ShouldCreateBind()
     {
-        #region Tests
-        [TestMethod]
-        public void ShouldCreateBind()
-        {
-            RDFBind bind = new RDFBind(new RDFVariableExpression(new RDFVariable("?EXP")), new RDFVariable("?BIND"));
+        RDFBind bind = new RDFBind(new RDFVariableExpression(new RDFVariable("?EXP")), new RDFVariable("?BIND"));
 
-            Assert.IsNotNull(bind);
-            Assert.IsNotNull(bind.Expression);
-            Assert.IsNotNull(bind.Variable);
-            Assert.IsTrue(bind.IsEvaluable);
-            Assert.IsTrue(bind.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(bind.PatternGroupMemberStringID)));
-            Assert.IsTrue(string.Equals(bind.ToString(), "BIND(?EXP AS ?BIND)"));
-            Assert.IsTrue(string.Equals(bind.ToString([]), "BIND(?EXP AS ?BIND)"));
-        }
-
-        [TestMethod]
-        public void ShouldCreateBindWithPrefixableUris()
-        {
-            RDFBind bind = new RDFBind(new RDFConstantExpression(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING)), new RDFVariable("?BIND"));
-
-            Assert.IsNotNull(bind);
-            Assert.IsNotNull(bind.Expression);
-            Assert.IsNotNull(bind.Variable);
-            Assert.IsTrue(bind.IsEvaluable);
-            Assert.IsTrue(bind.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(bind.PatternGroupMemberStringID)));
-            Assert.IsTrue(string.Equals(bind.ToString(), $"BIND(\"hello\"^^<{RDFVocabulary.XSD.STRING}> AS ?BIND)"));
-            Assert.IsTrue(string.Equals(bind.ToString([]), $"BIND(\"hello\"^^<{RDFVocabulary.XSD.STRING}> AS ?BIND)"));
-            Assert.IsTrue(string.Equals(bind.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]), $"BIND(\"hello\"^^xsd:string AS ?BIND)"));
-        }
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnCreatingBindBecauseNullExpression()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFBind(null, new RDFVariable("?BIND")));
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnCreatingBindBecauseNullVariable()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFBind(new RDFVariableExpression(new RDFVariable("?EXP")), null));
-        #endregion
+        Assert.IsNotNull(bind);
+        Assert.IsNotNull(bind.Expression);
+        Assert.IsNotNull(bind.Variable);
+        Assert.IsTrue(bind.IsEvaluable);
+        Assert.IsTrue(bind.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(bind.PatternGroupMemberStringID)));
+        Assert.IsTrue(string.Equals(bind.ToString(), "BIND(?EXP AS ?BIND)"));
+        Assert.IsTrue(string.Equals(bind.ToString([]), "BIND(?EXP AS ?BIND)"));
     }
+
+    [TestMethod]
+    public void ShouldCreateBindWithPrefixableUris()
+    {
+        RDFBind bind = new RDFBind(new RDFConstantExpression(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING)), new RDFVariable("?BIND"));
+
+        Assert.IsNotNull(bind);
+        Assert.IsNotNull(bind.Expression);
+        Assert.IsNotNull(bind.Variable);
+        Assert.IsTrue(bind.IsEvaluable);
+        Assert.IsTrue(bind.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(bind.PatternGroupMemberStringID)));
+        Assert.IsTrue(string.Equals(bind.ToString(), $"BIND(\"hello\"^^<{RDFVocabulary.XSD.STRING}> AS ?BIND)"));
+        Assert.IsTrue(string.Equals(bind.ToString([]), $"BIND(\"hello\"^^<{RDFVocabulary.XSD.STRING}> AS ?BIND)"));
+        Assert.IsTrue(string.Equals(bind.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]), "BIND(\"hello\"^^xsd:string AS ?BIND)"));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingBindBecauseNullExpression()
+        => Assert.ThrowsException<RDFQueryException>(() => new RDFBind(null, new RDFVariable("?BIND")));
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingBindBecauseNullVariable()
+        => Assert.ThrowsException<RDFQueryException>(() => new RDFBind(new RDFVariableExpression(new RDFVariable("?EXP")), null));
+    #endregion
 }

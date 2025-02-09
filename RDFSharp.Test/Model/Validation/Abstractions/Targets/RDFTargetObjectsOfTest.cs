@@ -17,35 +17,34 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 
-namespace RDFSharp.Test.Model
+namespace RDFSharp.Test.Model;
+
+[TestClass]
+public class RDFTargetObjectsOfTest
 {
-    [TestClass]
-    public class RDFTargetObjectsOfTest
+    #region Test
+    [TestMethod]
+    public void ShouldCreateTargetObjectsOf()
     {
-        #region Test
-        [TestMethod]
-        public void ShouldCreateTargetObjectsOf()
-        {
-            RDFTargetObjectsOf targetObjectsOf = new RDFTargetObjectsOf(new RDFResource("ex:targetObjectsOf"));
+        RDFTargetObjectsOf targetObjectsOf = new RDFTargetObjectsOf(new RDFResource("ex:targetObjectsOf"));
 
-            Assert.IsNotNull(targetObjectsOf);
-            Assert.IsTrue(targetObjectsOf.TargetValue.Equals(new RDFResource("ex:targetObjectsOf")));
-        }
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnCreatingTargetObjectsOfBecauseNullValue()
-            => Assert.ThrowsException<RDFModelException>(() => new RDFTargetObjectsOf(null));
-
-        [TestMethod]
-        public void ShouldExportTargetObjectsOf()
-        {
-            RDFTargetObjectsOf targetObjectsOf = new RDFTargetObjectsOf(new RDFResource("ex:targetObjectsOf"));
-            RDFGraph graph = targetObjectsOf.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:nodeShape")));
-
-            Assert.IsNotNull(graph);
-            Assert.IsTrue(graph.TriplesCount == 1);
-            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("ex:nodeShape"), RDFVocabulary.SHACL.TARGET_OBJECTS_OF, targetObjectsOf.TargetValue)));
-        }
-        #endregion
+        Assert.IsNotNull(targetObjectsOf);
+        Assert.IsTrue(targetObjectsOf.TargetValue.Equals(new RDFResource("ex:targetObjectsOf")));
     }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingTargetObjectsOfBecauseNullValue()
+        => Assert.ThrowsException<RDFModelException>(() => new RDFTargetObjectsOf(null));
+
+    [TestMethod]
+    public void ShouldExportTargetObjectsOf()
+    {
+        RDFTargetObjectsOf targetObjectsOf = new RDFTargetObjectsOf(new RDFResource("ex:targetObjectsOf"));
+        RDFGraph graph = targetObjectsOf.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:nodeShape")));
+
+        Assert.IsNotNull(graph);
+        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("ex:nodeShape"), RDFVocabulary.SHACL.TARGET_OBJECTS_OF, targetObjectsOf.TargetValue)));
+    }
+    #endregion
 }

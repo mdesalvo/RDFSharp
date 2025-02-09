@@ -18,53 +18,52 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 
-namespace RDFSharp.Test.Model
+namespace RDFSharp.Test.Model;
+
+[TestClass]
+public class RDFMinLengthFacetTest
 {
-    [TestClass]
-    public class RDFMinLengthFacetTest
+    #region Tests
+    [TestMethod]
+        
+    public void ShouldCreateMinLengthFacet()
     {
-        #region Tests
-        [TestMethod]
-        
-        public void ShouldCreateMinLengthFacet()
-        {
-            RDFMinLengthFacet facet = new RDFMinLengthFacet(6);
+        RDFMinLengthFacet facet = new RDFMinLengthFacet(6);
 
-            Assert.IsNotNull(facet);
-            Assert.IsTrue(facet.Length == 6);
-            Assert.IsTrue(facet.URI.IsBlank);
-        }
-
-        [TestMethod]
-        
-        public void ShouldValidateMinLengthFacet()
-        {
-            RDFMinLengthFacet facet = new RDFMinLengthFacet(6);
-
-            Assert.IsTrue(facet.Validate("abcdef"));
-            Assert.IsFalse(facet.Validate(null));
-            Assert.IsFalse(facet.Validate(string.Empty));
-            Assert.IsFalse(facet.Validate("a"));
-
-            RDFMinLengthFacet facet0 = new RDFMinLengthFacet(0);
-            Assert.IsTrue(facet0.Validate("abcdef"));
-            Assert.IsTrue(facet0.Validate(null));
-            Assert.IsTrue(facet0.Validate(string.Empty));
-            Assert.IsTrue(facet0.Validate("a"));
-        }
-
-        [TestMethod]
-        
-        public void ShouldConvertMinLengthFacetToGraph()
-        {
-            RDFMinLengthFacet facet = new RDFMinLengthFacet(6);
-            RDFGraph graph = facet.ToRDFGraph();
-
-            Assert.IsNotNull(graph);
-            Assert.IsTrue(graph.TriplesCount == 1);
-            Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.MIN_LENGTH));
-            Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("6", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.NON_NEGATIVE_INTEGER.ToString()))));
-        }
-        #endregion
+        Assert.IsNotNull(facet);
+        Assert.IsTrue(facet.Length == 6);
+        Assert.IsTrue(facet.URI.IsBlank);
     }
+
+    [TestMethod]
+        
+    public void ShouldValidateMinLengthFacet()
+    {
+        RDFMinLengthFacet facet = new RDFMinLengthFacet(6);
+
+        Assert.IsTrue(facet.Validate("abcdef"));
+        Assert.IsFalse(facet.Validate(null));
+        Assert.IsFalse(facet.Validate(string.Empty));
+        Assert.IsFalse(facet.Validate("a"));
+
+        RDFMinLengthFacet facet0 = new RDFMinLengthFacet(0);
+        Assert.IsTrue(facet0.Validate("abcdef"));
+        Assert.IsTrue(facet0.Validate(null));
+        Assert.IsTrue(facet0.Validate(string.Empty));
+        Assert.IsTrue(facet0.Validate("a"));
+    }
+
+    [TestMethod]
+        
+    public void ShouldConvertMinLengthFacetToGraph()
+    {
+        RDFMinLengthFacet facet = new RDFMinLengthFacet(6);
+        RDFGraph graph = facet.ToRDFGraph();
+
+        Assert.IsNotNull(graph);
+        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.MIN_LENGTH));
+        Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("6", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.NON_NEGATIVE_INTEGER.ToString()))));
+    }
+    #endregion
 }

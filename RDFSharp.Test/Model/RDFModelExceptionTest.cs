@@ -18,53 +18,52 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System;
 
-namespace RDFSharp.Test.Model
+namespace RDFSharp.Test.Model;
+
+[TestClass]
+public class RDFModelExceptionTest
 {
-    [TestClass]
-    public class RDFModelExceptionTest
+    #region Tests
+    [TestMethod]
+    public void ShouldRaiseEmptyModelException()
     {
-        #region Tests
-        [TestMethod]
-        public void ShouldRaiseEmptyModelException()
+        try
         {
-            try
-            {
-                throw new RDFModelException();
-            }
-            catch (RDFModelException mex)
-            {
-                Assert.IsTrue(mex.Message.Contains("RDFSharp.Model.RDFModelException", StringComparison.OrdinalIgnoreCase));
-            }
+            throw new RDFModelException();
         }
-
-        [TestMethod]
-        public void ShouldRaiseMessageModelException()
+        catch (RDFModelException mex)
         {
-            try
-            {
-                throw new RDFModelException("This is an exception coming from RDF modeling!");
-            }
-            catch (RDFModelException mex)
-            {
-                Assert.IsTrue(mex.Message.Equals("This is an exception coming from RDF modeling!", StringComparison.OrdinalIgnoreCase));
-                Assert.IsNull(mex.InnerException);
-            }
+            Assert.IsTrue(mex.Message.Contains("RDFSharp.Model.RDFModelException", StringComparison.OrdinalIgnoreCase));
         }
-
-        [TestMethod]
-        public void ShouldRaiseMessageWithInnerModelException()
-        {
-            try
-            {
-                throw new RDFModelException("This is an exception coming from RDF modeling!", new Exception("This is the inner exception!"));
-            }
-            catch (RDFModelException mex)
-            {
-                Assert.IsTrue(mex.Message.Equals("This is an exception coming from RDF modeling!", StringComparison.OrdinalIgnoreCase));
-                Assert.IsNotNull(mex.InnerException);
-                Assert.IsTrue(mex.InnerException.Message.Equals("This is the inner exception!"));
-            }
-        }
-        #endregion
     }
+
+    [TestMethod]
+    public void ShouldRaiseMessageModelException()
+    {
+        try
+        {
+            throw new RDFModelException("This is an exception coming from RDF modeling!");
+        }
+        catch (RDFModelException mex)
+        {
+            Assert.IsTrue(mex.Message.Equals("This is an exception coming from RDF modeling!", StringComparison.OrdinalIgnoreCase));
+            Assert.IsNull(mex.InnerException);
+        }
+    }
+
+    [TestMethod]
+    public void ShouldRaiseMessageWithInnerModelException()
+    {
+        try
+        {
+            throw new RDFModelException("This is an exception coming from RDF modeling!", new Exception("This is the inner exception!"));
+        }
+        catch (RDFModelException mex)
+        {
+            Assert.IsTrue(mex.Message.Equals("This is an exception coming from RDF modeling!", StringComparison.OrdinalIgnoreCase));
+            Assert.IsNotNull(mex.InnerException);
+            Assert.IsTrue(mex.InnerException.Message.Equals("This is the inner exception!"));
+        }
+    }
+    #endregion
 }

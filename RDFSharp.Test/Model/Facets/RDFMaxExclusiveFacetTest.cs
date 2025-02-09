@@ -18,54 +18,53 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 
-namespace RDFSharp.Test.Model
+namespace RDFSharp.Test.Model;
+
+[TestClass]
+public class RDFMaxExclusiveFacetTest
 {
-    [TestClass]
-    public class RDFMaxExclusiveFacetTest
+    #region Tests
+    [TestMethod]
+        
+    public void ShouldCreateMaxExclusiveFacet()
     {
-        #region Tests
-        [TestMethod]
-        
-        public void ShouldCreateMaxExclusiveFacet()
-        {
-            RDFMaxExclusiveFacet facet = new RDFMaxExclusiveFacet(6.145);
+        RDFMaxExclusiveFacet facet = new RDFMaxExclusiveFacet(6.145);
 
-            Assert.IsNotNull(facet);
-            Assert.IsTrue(facet.ExclusiveUpperBound == 6.145d);
-            Assert.IsTrue(facet.URI.IsBlank);
-        }
-
-        [TestMethod]
-        
-        public void ShouldValidateMaxExclusiveFacet()
-        {
-            RDFMaxExclusiveFacet facet = new RDFMaxExclusiveFacet(6);
-
-            Assert.IsTrue(facet.Validate("-2.0089"));
-            Assert.IsTrue(facet.Validate("2.047"));
-            Assert.IsFalse(facet.Validate(null));
-            Assert.IsFalse(facet.Validate(string.Empty));
-            Assert.IsFalse(facet.Validate("14.5773"));
-            Assert.IsFalse(facet.Validate("6"));
-            Assert.IsFalse(facet.Validate("abcdefgh"));
-
-            RDFMaxExclusiveFacet facet0 = new RDFMaxExclusiveFacet(-12.45);
-            Assert.IsTrue(facet0.Validate("-16.2442"));
-            Assert.IsFalse(facet0.Validate("-12.00"));
-        }
-
-        [TestMethod]
-        
-        public void ShouldConvertMaxExclusiveFacetToGraph()
-        {
-            RDFMaxExclusiveFacet facet = new RDFMaxExclusiveFacet(6);
-            RDFGraph graph = facet.ToRDFGraph();
-
-            Assert.IsNotNull(graph);
-            Assert.IsTrue(graph.TriplesCount == 1);
-            Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.MAX_EXCLUSIVE));
-            Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("6", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.DOUBLE.ToString()))));
-        }
-        #endregion
+        Assert.IsNotNull(facet);
+        Assert.IsTrue(facet.ExclusiveUpperBound == 6.145d);
+        Assert.IsTrue(facet.URI.IsBlank);
     }
+
+    [TestMethod]
+        
+    public void ShouldValidateMaxExclusiveFacet()
+    {
+        RDFMaxExclusiveFacet facet = new RDFMaxExclusiveFacet(6);
+
+        Assert.IsTrue(facet.Validate("-2.0089"));
+        Assert.IsTrue(facet.Validate("2.047"));
+        Assert.IsFalse(facet.Validate(null));
+        Assert.IsFalse(facet.Validate(string.Empty));
+        Assert.IsFalse(facet.Validate("14.5773"));
+        Assert.IsFalse(facet.Validate("6"));
+        Assert.IsFalse(facet.Validate("abcdefgh"));
+
+        RDFMaxExclusiveFacet facet0 = new RDFMaxExclusiveFacet(-12.45);
+        Assert.IsTrue(facet0.Validate("-16.2442"));
+        Assert.IsFalse(facet0.Validate("-12.00"));
+    }
+
+    [TestMethod]
+        
+    public void ShouldConvertMaxExclusiveFacetToGraph()
+    {
+        RDFMaxExclusiveFacet facet = new RDFMaxExclusiveFacet(6);
+        RDFGraph graph = facet.ToRDFGraph();
+
+        Assert.IsNotNull(graph);
+        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.MAX_EXCLUSIVE));
+        Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("6", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.DOUBLE.ToString()))));
+    }
+    #endregion
 }

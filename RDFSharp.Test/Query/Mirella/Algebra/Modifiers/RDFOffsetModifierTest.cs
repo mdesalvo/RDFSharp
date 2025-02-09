@@ -20,129 +20,128 @@ using System.Data;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
-namespace RDFSharp.Test.Query
+namespace RDFSharp.Test.Query;
+
+[TestClass]
+public class RDFOffsetModifierTest
 {
-    [TestClass]
-    public class RDFOffsetModifierTest
+    #region Tests
+    [TestMethod]
+    public void ShouldCreateOffsetModifier()
     {
-        #region Tests
-        [TestMethod]
-        public void ShouldCreateOffsetModifier()
-        {
-            RDFOffsetModifier modifier = new RDFOffsetModifier(25);
+        RDFOffsetModifier modifier = new RDFOffsetModifier(25);
 
-            Assert.IsNotNull(modifier);
-            Assert.IsTrue(modifier.Offset == 25);
-            Assert.IsFalse(modifier.IsEvaluable);
-            Assert.IsTrue(modifier.ToString().Equals("OFFSET 25"));
-            Assert.IsNotNull(modifier.QueryMemberStringID);
-            Assert.IsTrue(modifier.QueryMemberID.Equals(RDFModelUtilities.CreateHash(modifier.QueryMemberStringID)));
-            Assert.IsTrue(modifier.Equals(modifier));
-            Assert.IsFalse(modifier.Equals(new RDFOffsetModifier(25)));
-        }
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnCreatingOffsetModifierBecauseNegativeValue()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFOffsetModifier(-1));
-
-        [TestMethod]
-        public void ShouldApplyOffsetModifier()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            table.Columns.Add("?C", typeof(string));            
-            DataRow row0 = table.NewRow();
-            row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-            row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-            row0["?C"] = new RDFResource("ex:value0").ToString();
-            table.Rows.Add(row0);
-            DataRow row1 = table.NewRow();
-            row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-            row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-            row1["?C"] = new RDFResource("ex:value0").ToString();
-            table.Rows.Add(row1);
-            DataRow row2 = table.NewRow();
-            row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-            row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
-            row2["?C"] = DBNull.Value;
-            table.Rows.Add(row2);
-            table.AcceptChanges();
-            table.DefaultView.Sort = "?A DESC";
-
-            DataTable offsetTable = new RDFOffsetModifier(1).ApplyModifier(table);
-
-            Assert.IsNotNull(offsetTable);
-            Assert.IsTrue(offsetTable.Columns.Count == 3);
-            Assert.IsTrue(offsetTable.Columns.Contains("?A"));
-            Assert.IsTrue(offsetTable.Columns.Contains("?B"));
-            Assert.IsTrue(offsetTable.Columns.Contains("?C"));
-            Assert.IsTrue(offsetTable.Rows.Count == 2);
-            Assert.IsTrue(offsetTable.Rows[0]["?A"].ToString().Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString()));
-            Assert.IsTrue(offsetTable.Rows[0]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en-US").ToString()));
-            Assert.IsTrue(offsetTable.Rows[0]["?C"].ToString().Equals(new RDFResource("ex:value0").ToString()));
-            Assert.IsTrue(offsetTable.Rows[1]["?A"].ToString().Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString()));
-            Assert.IsTrue(offsetTable.Rows[1]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en").ToString()));
-            Assert.IsTrue(offsetTable.Rows[1]["?C"].ToString().Equals(string.Empty));
-            Assert.IsTrue(offsetTable.DefaultView.Sort.Equals("?A DESC"));
-        }
-
-        [TestMethod]
-        public void ShouldApplyOffsetExceedingModifier()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            table.Columns.Add("?C", typeof(string));            
-            DataRow row0 = table.NewRow();
-            row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-            row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-            row0["?C"] = new RDFResource("ex:value0").ToString();
-            table.Rows.Add(row0);
-            DataRow row1 = table.NewRow();
-            row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-            row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-            row1["?C"] = new RDFResource("ex:value0").ToString();
-            table.Rows.Add(row1);
-            DataRow row2 = table.NewRow();
-            row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-            row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
-            row2["?C"] = DBNull.Value;
-            table.Rows.Add(row2);
-            table.AcceptChanges();
-            table.DefaultView.Sort = "?A DESC";
-
-            DataTable offsetTable = new RDFOffsetModifier(4).ApplyModifier(table);
-
-            Assert.IsNotNull(offsetTable);
-            Assert.IsTrue(offsetTable.Columns.Count == 3);
-            Assert.IsTrue(offsetTable.Columns.Contains("?A"));
-            Assert.IsTrue(offsetTable.Columns.Contains("?B"));
-            Assert.IsTrue(offsetTable.Columns.Contains("?C"));
-            Assert.IsTrue(offsetTable.Rows.Count == 0);
-            Assert.IsTrue(offsetTable.DefaultView.Sort.Equals("?A DESC"));
-        }
-
-        [TestMethod]
-        public void ShouldApplyOffsetModifierToEmptyTable()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            table.Columns.Add("?C", typeof(string));            
-            table.AcceptChanges();
-            table.DefaultView.Sort = "?A DESC";
-
-            DataTable offsetTable = new RDFOffsetModifier(2).ApplyModifier(table);
-
-            Assert.IsNotNull(offsetTable);
-            Assert.IsTrue(offsetTable.Columns.Count == 3);
-            Assert.IsTrue(offsetTable.Columns.Contains("?A"));
-            Assert.IsTrue(offsetTable.Columns.Contains("?B"));
-            Assert.IsTrue(offsetTable.Columns.Contains("?C"));
-            Assert.IsTrue(offsetTable.Rows.Count == 0);
-            Assert.IsTrue(offsetTable.DefaultView.Sort.Equals("?A DESC"));
-        }
-        #endregion
+        Assert.IsNotNull(modifier);
+        Assert.IsTrue(modifier.Offset == 25);
+        Assert.IsFalse(modifier.IsEvaluable);
+        Assert.IsTrue(modifier.ToString().Equals("OFFSET 25"));
+        Assert.IsNotNull(modifier.QueryMemberStringID);
+        Assert.IsTrue(modifier.QueryMemberID.Equals(RDFModelUtilities.CreateHash(modifier.QueryMemberStringID)));
+        Assert.IsTrue(modifier.Equals(modifier));
+        Assert.IsFalse(modifier.Equals(new RDFOffsetModifier(25)));
     }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingOffsetModifierBecauseNegativeValue()
+        => Assert.ThrowsException<RDFQueryException>(() => new RDFOffsetModifier(-1));
+
+    [TestMethod]
+    public void ShouldApplyOffsetModifier()
+    {
+        DataTable table = new DataTable();
+        table.Columns.Add("?A", typeof(string));
+        table.Columns.Add("?B", typeof(string));
+        table.Columns.Add("?C", typeof(string));            
+        DataRow row0 = table.NewRow();
+        row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+        row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+        row0["?C"] = new RDFResource("ex:value0").ToString();
+        table.Rows.Add(row0);
+        DataRow row1 = table.NewRow();
+        row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+        row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+        row1["?C"] = new RDFResource("ex:value0").ToString();
+        table.Rows.Add(row1);
+        DataRow row2 = table.NewRow();
+        row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+        row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
+        row2["?C"] = DBNull.Value;
+        table.Rows.Add(row2);
+        table.AcceptChanges();
+        table.DefaultView.Sort = "?A DESC";
+
+        DataTable offsetTable = new RDFOffsetModifier(1).ApplyModifier(table);
+
+        Assert.IsNotNull(offsetTable);
+        Assert.IsTrue(offsetTable.Columns.Count == 3);
+        Assert.IsTrue(offsetTable.Columns.Contains("?A"));
+        Assert.IsTrue(offsetTable.Columns.Contains("?B"));
+        Assert.IsTrue(offsetTable.Columns.Contains("?C"));
+        Assert.IsTrue(offsetTable.Rows.Count == 2);
+        Assert.IsTrue(offsetTable.Rows[0]["?A"].ToString().Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString()));
+        Assert.IsTrue(offsetTable.Rows[0]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en-US").ToString()));
+        Assert.IsTrue(offsetTable.Rows[0]["?C"].ToString().Equals(new RDFResource("ex:value0").ToString()));
+        Assert.IsTrue(offsetTable.Rows[1]["?A"].ToString().Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString()));
+        Assert.IsTrue(offsetTable.Rows[1]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en").ToString()));
+        Assert.IsTrue(offsetTable.Rows[1]["?C"].ToString().Equals(string.Empty));
+        Assert.IsTrue(offsetTable.DefaultView.Sort.Equals("?A DESC"));
+    }
+
+    [TestMethod]
+    public void ShouldApplyOffsetExceedingModifier()
+    {
+        DataTable table = new DataTable();
+        table.Columns.Add("?A", typeof(string));
+        table.Columns.Add("?B", typeof(string));
+        table.Columns.Add("?C", typeof(string));            
+        DataRow row0 = table.NewRow();
+        row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+        row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+        row0["?C"] = new RDFResource("ex:value0").ToString();
+        table.Rows.Add(row0);
+        DataRow row1 = table.NewRow();
+        row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+        row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+        row1["?C"] = new RDFResource("ex:value0").ToString();
+        table.Rows.Add(row1);
+        DataRow row2 = table.NewRow();
+        row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+        row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
+        row2["?C"] = DBNull.Value;
+        table.Rows.Add(row2);
+        table.AcceptChanges();
+        table.DefaultView.Sort = "?A DESC";
+
+        DataTable offsetTable = new RDFOffsetModifier(4).ApplyModifier(table);
+
+        Assert.IsNotNull(offsetTable);
+        Assert.IsTrue(offsetTable.Columns.Count == 3);
+        Assert.IsTrue(offsetTable.Columns.Contains("?A"));
+        Assert.IsTrue(offsetTable.Columns.Contains("?B"));
+        Assert.IsTrue(offsetTable.Columns.Contains("?C"));
+        Assert.IsTrue(offsetTable.Rows.Count == 0);
+        Assert.IsTrue(offsetTable.DefaultView.Sort.Equals("?A DESC"));
+    }
+
+    [TestMethod]
+    public void ShouldApplyOffsetModifierToEmptyTable()
+    {
+        DataTable table = new DataTable();
+        table.Columns.Add("?A", typeof(string));
+        table.Columns.Add("?B", typeof(string));
+        table.Columns.Add("?C", typeof(string));            
+        table.AcceptChanges();
+        table.DefaultView.Sort = "?A DESC";
+
+        DataTable offsetTable = new RDFOffsetModifier(2).ApplyModifier(table);
+
+        Assert.IsNotNull(offsetTable);
+        Assert.IsTrue(offsetTable.Columns.Count == 3);
+        Assert.IsTrue(offsetTable.Columns.Contains("?A"));
+        Assert.IsTrue(offsetTable.Columns.Contains("?B"));
+        Assert.IsTrue(offsetTable.Columns.Contains("?C"));
+        Assert.IsTrue(offsetTable.Rows.Count == 0);
+        Assert.IsTrue(offsetTable.DefaultView.Sort.Equals("?A DESC"));
+    }
+    #endregion
 }

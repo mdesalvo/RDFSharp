@@ -19,46 +19,45 @@ using System.Data;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
-namespace RDFSharp.Test.Query
+namespace RDFSharp.Test.Query;
+
+[TestClass]
+public class RDFRandExpressionTest
 {
-    [TestClass]
-    public class RDFRandExpressionTest
+    #region Tests
+    [TestMethod]
+    public void ShouldCreateRandExpression()
     {
-        #region Tests
-        [TestMethod]
-        public void ShouldCreateRandExpression()
-        {
-            RDFRandExpression expression = new RDFRandExpression();
+        RDFRandExpression expression = new RDFRandExpression();
 
-            Assert.IsNotNull(expression);
-            Assert.IsNull(expression.LeftArgument);
-            Assert.IsNull(expression.RightArgument);
-            Assert.IsTrue(expression.ToString().Equals("(RAND())"));
-            Assert.IsTrue(expression.ToString([]).Equals("(RAND())"));
-        }
-
-        [TestMethod]
-        public void ShouldApplyExpressionAndCalculateResult()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-            row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFRandExpression expression = new RDFRandExpression();
-            RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
-
-            Assert.IsNotNull(expressionResult);
-            Assert.IsTrue(expressionResult is RDFTypedLiteral tlitExprRes && tlitExprRes.HasDecimalDatatype());
-
-            RDFPatternMember expressionResult2 = expression.ApplyExpression(table.Rows[0]);
-            Assert.IsTrue(expressionResult2 is RDFTypedLiteral tlitExprRes2 && tlitExprRes2.HasDecimalDatatype());
-            Assert.IsFalse(expressionResult.Equals(expressionResult2));
-        }
-        #endregion
+        Assert.IsNotNull(expression);
+        Assert.IsNull(expression.LeftArgument);
+        Assert.IsNull(expression.RightArgument);
+        Assert.IsTrue(expression.ToString().Equals("(RAND())"));
+        Assert.IsTrue(expression.ToString([]).Equals("(RAND())"));
     }
+
+    [TestMethod]
+    public void ShouldApplyExpressionAndCalculateResult()
+    {
+        DataTable table = new DataTable();
+        table.Columns.Add("?A", typeof(string));
+        table.Columns.Add("?B", typeof(string));
+        DataRow row = table.NewRow();
+        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+        row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+        table.Rows.Add(row);
+        table.AcceptChanges();
+
+        RDFRandExpression expression = new RDFRandExpression();
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult is RDFTypedLiteral tlitExprRes && tlitExprRes.HasDecimalDatatype());
+
+        RDFPatternMember expressionResult2 = expression.ApplyExpression(table.Rows[0]);
+        Assert.IsTrue(expressionResult2 is RDFTypedLiteral tlitExprRes2 && tlitExprRes2.HasDecimalDatatype());
+        Assert.IsFalse(expressionResult.Equals(expressionResult2));
+    }
+    #endregion
 }

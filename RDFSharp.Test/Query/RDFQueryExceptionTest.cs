@@ -18,53 +18,52 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Query;
 using System;
 
-namespace RDFSharp.Test.Query
+namespace RDFSharp.Test.Query;
+
+[TestClass]
+public class RDFQueryExceptionTest
 {
-    [TestClass]
-    public class RDFQueryExceptionTest
+    #region Tests
+    [TestMethod]
+    public void ShouldRaiseEmptyQueryException()
     {
-        #region Tests
-        [TestMethod]
-        public void ShouldRaiseEmptyQueryException()
+        try
         {
-            try
-            {
-                throw new RDFQueryException();
-            }
-            catch (RDFQueryException mex)
-            {
-                Assert.IsTrue(mex.Message.Contains("RDFSharp.Query.RDFQueryException", StringComparison.OrdinalIgnoreCase));
-            }
+            throw new RDFQueryException();
         }
-
-        [TestMethod]
-        public void ShouldRaiseMessageQueryException()
+        catch (RDFQueryException mex)
         {
-            try
-            {
-                throw new RDFQueryException("This is an exception coming from RDF Query!");
-            }
-            catch (RDFQueryException mex)
-            {
-                Assert.IsTrue(mex.Message.Equals("This is an exception coming from RDF Query!", StringComparison.OrdinalIgnoreCase));
-                Assert.IsNull(mex.InnerException);
-            }
+            Assert.IsTrue(mex.Message.Contains("RDFSharp.Query.RDFQueryException", StringComparison.OrdinalIgnoreCase));
         }
-
-        [TestMethod]
-        public void ShouldRaiseMessageWithInnerQueryException()
-        {
-            try
-            {
-                throw new RDFQueryException("This is an exception coming from RDF Query!", new Exception("This is the inner exception!"));
-            }
-            catch (RDFQueryException mex)
-            {
-                Assert.IsTrue(mex.Message.Equals("This is an exception coming from RDF Query!", StringComparison.OrdinalIgnoreCase));
-                Assert.IsNotNull(mex.InnerException);
-                Assert.IsTrue(mex.InnerException.Message.Equals("This is the inner exception!"));
-            }
-        }
-        #endregion
     }
+
+    [TestMethod]
+    public void ShouldRaiseMessageQueryException()
+    {
+        try
+        {
+            throw new RDFQueryException("This is an exception coming from RDF Query!");
+        }
+        catch (RDFQueryException mex)
+        {
+            Assert.IsTrue(mex.Message.Equals("This is an exception coming from RDF Query!", StringComparison.OrdinalIgnoreCase));
+            Assert.IsNull(mex.InnerException);
+        }
+    }
+
+    [TestMethod]
+    public void ShouldRaiseMessageWithInnerQueryException()
+    {
+        try
+        {
+            throw new RDFQueryException("This is an exception coming from RDF Query!", new Exception("This is the inner exception!"));
+        }
+        catch (RDFQueryException mex)
+        {
+            Assert.IsTrue(mex.Message.Equals("This is an exception coming from RDF Query!", StringComparison.OrdinalIgnoreCase));
+            Assert.IsNotNull(mex.InnerException);
+            Assert.IsTrue(mex.InnerException.Message.Equals("This is the inner exception!"));
+        }
+    }
+    #endregion
 }
