@@ -102,7 +102,7 @@ namespace RDFSharp.Query
             {
                 #region Evaluate Arguments
                 //Evaluate left argument (Expression VS Variable)
-                RDFPatternMember leftArgumentPMember = null;
+                RDFPatternMember leftArgumentPMember;
                 if (LeftArgument is RDFExpression leftArgumentExpression)
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else

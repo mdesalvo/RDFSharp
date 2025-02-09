@@ -108,26 +108,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFDescribeQueryResult EvaluateDescribeQuery(RDFDescribeQuery describeQuery, RDFDataSource datasource)
         {
-            DataTable FillDescribeTerms(DataTable qResultTable)
-            {
-                DataTable resultTable = new DataTable();
-
-                if (datasource.IsFederation())
-                {
-                    foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
-                    {
-                        //Ensure to skip tricky empty federations
-                        if (fedDataSource.IsFederation() && ((RDFFederation)fedDataSource).DataSourcesCount == 0)
-                            continue;
-                        resultTable.Merge(DescribeTerms(describeQuery, fedDataSource, qResultTable), true, MissingSchemaAction.Add);
-                    }
-                }
-                else
-                    resultTable = DescribeTerms(describeQuery, datasource, qResultTable);
-
-                return resultTable;
-            }
-
             DataTable queryResultTable = new DataTable();
             RDFDescribeQueryResult queryResult = new RDFDescribeQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers().ToList();
@@ -147,6 +127,28 @@ namespace RDFSharp.Query
             queryResult.DescribeResults = ApplyModifiers(describeQuery, describeResultTable);
 
             return queryResult;
+            
+            #region Utilities
+            DataTable FillDescribeTerms(DataTable qResultTable)
+            {
+                DataTable resultTable = new DataTable();
+
+                if (datasource.IsFederation())
+                {
+                    foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
+                    {
+                        //Ensure to skip tricky empty federations
+                        if (fedDataSource.IsFederation() && ((RDFFederation)fedDataSource).DataSourcesCount == 0)
+                            continue;
+                        resultTable.Merge(DescribeTerms(describeQuery, fedDataSource, qResultTable), true, MissingSchemaAction.Add);
+                    }
+                }
+                else
+                    resultTable = DescribeTerms(describeQuery, datasource, qResultTable);
+
+                return resultTable;
+            }
+            #endregion
         }
 
         /// <summary>
@@ -297,8 +299,7 @@ namespace RDFSharp.Query
             //**Standard** evaluation => iterate its active members
             else
             {
-                List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().Distinct().ToList();
-                foreach (RDFPatternGroupMember evaluablePGMember in evaluablePGMembers)
+                foreach (RDFPatternGroupMember evaluablePGMember in patternGroup.GetEvaluablePatternGroupMembers().Distinct().ToList())
                 {
                     switch (evaluablePGMember)
                     {
@@ -420,11 +421,10 @@ namespace RDFSharp.Query
                 IEnumerator rowsEnum = QueryMemberResultTables[patternGroup.QueryMemberID].Rows.GetEnumerator();
 
                 //Iterate the rows of the pattern group's result table
-                bool keepRow;
                 while (rowsEnum.MoveNext())
                 {
                     //Apply the pattern group's filters on the row
-                    keepRow = true;
+                    bool keepRow = true;
                     List<RDFFilter>.Enumerator filtersEnum = filters.GetEnumerator();
                     while (keepRow && filtersEnum.MoveNext())
                         keepRow = filtersEnum.Current.ApplyFilter((DataRow)rowsEnum.Current, false);
@@ -517,7 +517,7 @@ namespace RDFSharp.Query
             //Iterate on the templates
             string defaultContext = RDFNamespaceRegister.DefaultNamespace.ToString();
             foreach (RDFPattern template in templates.Where(tp => tp.Variables.Count == 0
-                                                                   || tp.Variables.TrueForAll(v => resultTable.Columns.Contains(v.ToString()))))
+                                                                             || tp.Variables.TrueForAll(v => resultTable.Columns.Contains(v.ToString()))))
             {
                 string templateCtx = template.Context?.ToString();
                 string templateSubj = template.Subject.ToString();
@@ -889,7 +889,7 @@ namespace RDFSharp.Query
             }
 
             //Analyze templateHoleDetector to decide hole filling strategy
-            List<RDFTriple> matchingTriples = new List<RDFTriple>();
+            List<RDFTriple> matchingTriples;
             switch (templateHoleDetector.ToString())
             {
                 case "S":
@@ -983,7 +983,7 @@ namespace RDFSharp.Query
             }
 
             //Analyze templateHoleDetector to decide hole filling strategy
-            RDFMemoryStore matchingQuadruples = new RDFMemoryStore();
+            RDFMemoryStore matchingQuadruples;
             switch (templateHoleDetector.ToString())
             {
                 case "C":
@@ -1169,8 +1169,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal DataTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFDataSource dataSource)
         {
-            DataTable resultTable = new DataTable();
-
             //Translate property path into equivalent list of patterns
             List<RDFPattern> patternList = propertyPath.GetPatternList();
 
@@ -1191,15 +1189,13 @@ namespace RDFSharp.Query
             }
 
             //Merge produced list of tables
-            resultTable = CombineTables(patternTables);
+            DataTable resultTable = CombineTables(patternTables);
 
             //Remove property path variables
-            List<string> propPathCols = new List<string>();
-            foreach (DataColumn dtCol in resultTable.Columns)
-            {
-                if (dtCol.ColumnName.StartsWith("?__PP"))
-                    propPathCols.Add(dtCol.ColumnName);
-            }
+            List<string> propPathCols = (from DataColumn dtCol 
+                                         in resultTable.Columns 
+                                         where dtCol.ColumnName.StartsWith("?__PP") 
+                                         select dtCol.ColumnName).ToList();
             propPathCols.ForEach(ppc => resultTable.Columns.Remove(ppc));
 
             return resultTable;
@@ -1223,7 +1219,7 @@ namespace RDFSharp.Query
             }
             #endregion
 
-            RDFQueryResult queryResult = default;
+            RDFQueryResult queryResult = null;
             if (!string.IsNullOrWhiteSpace(query) && sparqlEndpoint != null)
             {
                 if (sparqlEndpointQueryOptions == null)
@@ -1258,6 +1254,7 @@ namespace RDFSharp.Query
                         switch (sparqlEndpointQueryOptions.QueryMethod)
                         {
                             //query via GET with URL-encoded querystring
+                            default:
                             case RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Get:
                                 //Handle user-provided parameters
                                 webClient.QueryString.Add("query", HttpUtility.UrlEncode(query));
@@ -1712,9 +1709,8 @@ namespace RDFSharp.Query
             {
                 //Leverage a relation between left row and right table based on common columns
                 //(this helps at slightly reducing O(N^2) complexity to O(N*K) where K << N)
-                EnumerableRowCollection<DataRow> relatedRows = rightTable.AsEnumerable();
-                foreach (DataColumn commonColumn in commonColumns)
-                    relatedRows = relatedRows.Where(relatedRow => CheckJoin(leftRow, relatedRow, commonColumn.ColumnName));
+                EnumerableRowCollection<DataRow> relatedRows = commonColumns.Aggregate(rightTable.AsEnumerable(), 
+                                                                    (current, commonColumn) => current.Where(relatedRow => CheckJoin(leftRow, relatedRow, commonColumn.ColumnName)));
                 List<DataRow> relatedRowsList = relatedRows.ToList();
 
                 //Relation HAS found data => proceed with outer-join
@@ -1831,9 +1827,8 @@ namespace RDFSharp.Query
 
                 //Leverage a relation between left row and right table based on common columns
                 //(this helps at slightly reducing O(N^2) complexity to O(N*K) where K << N)
-                EnumerableRowCollection<DataRow> relatedRows = rightTable.AsEnumerable();
-                foreach (DataColumn commonColumn in commonColumns)
-                    relatedRows = relatedRows.Where(relatedRow => CheckJoin(leftRow, relatedRow, commonColumn.ColumnName));
+                EnumerableRowCollection<DataRow> relatedRows = commonColumns.Aggregate(rightTable.AsEnumerable(), 
+                                                                    (current, commonColumn) => current.Where(relatedRow => CheckJoin(leftRow, relatedRow, commonColumn.ColumnName)));
                 List<DataRow> relatedRowsList = relatedRows.ToList();
 
                 //Take left row only if it HASN'T any right matches

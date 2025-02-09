@@ -918,7 +918,7 @@ namespace RDFSharp.Model
                     throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"?SUBJECT\" column.");
 
                 RDFPatternMember rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?SUBJECT"].ToString());
-                if (!(rowSubj is RDFResource))
+                if (!(rowSubj is RDFResource subj))
                     throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row not having a resource in the \"?SUBJECT\" column.");
                 #endregion
 
@@ -927,9 +927,9 @@ namespace RDFSharp.Model
                     throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"?PREDICATE\" column.");
 
                 RDFPatternMember rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?PREDICATE"].ToString());
-                if (!(rowPred is RDFResource))
+                if (!(rowPred is RDFResource pred))
                     throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row not having a resource in the \"?PREDICATE\" column.");
-                if (((RDFResource)rowPred).IsBlank)
+                if (pred.IsBlank)
                     throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having a blank resource in the \"?PREDICATE\" column.");
                 #endregion
 
@@ -939,9 +939,9 @@ namespace RDFSharp.Model
 
                 RDFPatternMember rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?OBJECT"].ToString());
                 if (rowObj is RDFResource rowObjRes)
-                    graph.AddTriple(new RDFTriple((RDFResource)rowSubj, (RDFResource)rowPred, rowObjRes));
+                    graph.AddTriple(new RDFTriple(subj, pred, rowObjRes));
                 else
-                    graph.AddTriple(new RDFTriple((RDFResource)rowSubj, (RDFResource)rowPred, (RDFLiteral)rowObj));
+                    graph.AddTriple(new RDFTriple(subj, pred, (RDFLiteral)rowObj));
                 #endregion
             }
             #endregion

@@ -168,8 +168,8 @@ namespace RDFSharp.Model
                         {
                             subjNode = rdfDoc.CreateNode(XmlNodeType.Element, "rdf:Description", RDFVocabulary.RDF.BASE_URI);
                             //<rdf:Description rdf:nodeID="blankID">
-                            XmlAttribute subjNodeDesc = null;
-                            XmlText subjNodeDescText = null;
+                            XmlAttribute subjNodeDesc;
+                            XmlText subjNodeDescText;
                             if (triplesGroup.Key.StartsWith("bnode:", StringComparison.Ordinal))
                             {
                                 subjNodeDescText = rdfDoc.CreateTextNode(triplesGroup.Key.Replace("bnode:", string.Empty));
@@ -248,8 +248,8 @@ namespace RDFSharp.Model
                                                 throw new RDFModelException($"Collection having '{currentCollItem}' as subject is not well-formed. Please check presence of its 'rdf:type/rdf:first/rdf:rest' triples.");
 
                                             XmlNode collElementToAppend = rdfDoc.CreateNode(XmlNodeType.Element, "rdf:Description", RDFVocabulary.RDF.BASE_URI);
-                                            XmlAttribute collElementAttr = null;
-                                            XmlText collElementAttrText = null;
+                                            XmlAttribute collElementAttr;
+                                            XmlText collElementAttrText;
                                             if (collElement.CollectionValue.ToString().StartsWith("bnode:", StringComparison.Ordinal))
                                             {
                                                 collElementAttrText = rdfDoc.CreateTextNode(collElement.CollectionValue.ToString().Replace("bnode:", string.Empty));
@@ -277,8 +277,8 @@ namespace RDFSharp.Model
                                     else
                                     {
                                         string objString = triple.Object.ToString();
-                                        XmlAttribute predNodeDesc = null;
-                                        XmlText predNodeDescText = null;
+                                        XmlAttribute predNodeDesc;
+                                        XmlText predNodeDescText;
                                         //  rdf:nodeID="blankID">
                                         if (objString.StartsWith("bnode:"))
                                         {
@@ -380,9 +380,12 @@ namespace RDFSharp.Model
                 RDFGraph result = new RDFGraph().SetContext(graphContext);
                 using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
-                    using (XmlTextReader xmlReader = new XmlTextReader(streamReader) 
-                            { DtdProcessing = DtdProcessing.Parse, XmlResolver = null, Normalization = false })
+                    using (XmlTextReader xmlReader = new XmlTextReader(streamReader))
                     {
+                        xmlReader.DtdProcessing = DtdProcessing.Parse;
+                        xmlReader.XmlResolver = null;
+                        xmlReader.Normalization = false;
+
                         #region document
                         XmlDocument xmlDoc = new XmlDocument { XmlResolver = null };
                         xmlDoc.Load(xmlReader);
@@ -511,7 +514,7 @@ namespace RDFSharp.Model
                     {
                         #region predicate
                         //Get the current pred node
-                        RDFResource pred = null;
+                        RDFResource pred;
                         XmlNode predNode = (XmlNode)predNodesEnum.Current;
 
                         //Skip predicate if it is not an element
@@ -1003,17 +1006,9 @@ namespace RDFSharp.Model
                     result.AddTriple(new RDFTriple(obj, RDFVocabulary.RDF.FIRST, elem));
 
                     //Last element of a collection must give a triple to a "rdf:nil" object
-                    RDFResource newObj;
-                    if (elem != lastElement)
-                    {
-                        // obj -> rdf:rest -> newObj
-                        newObj = new RDFResource();
-                    }
-                    else
-                    {
-                        // obj -> rdf:rest -> rdf:nil
-                        newObj = RDFVocabulary.RDF.NIL;
-                    }
+                    RDFResource newObj = elem != lastElement 
+                        ? new RDFResource()      // obj -> rdf:rest -> newObj
+                        : RDFVocabulary.RDF.NIL; // obj -> rdf:rest -> rdf:nil
                     result.AddTriple(new RDFTriple(obj, RDFVocabulary.RDF.REST, newObj));
                     obj = newObj;
                 }

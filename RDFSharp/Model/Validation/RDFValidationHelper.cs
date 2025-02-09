@@ -644,7 +644,7 @@ namespace RDFSharp.Model
 
             //sh:qualifiedValueShape (accepted occurrences: 1)
             RDFTriple shapeQualifiedValueConstraint = shapeDefinition[null, RDFVocabulary.SHACL.QUALIFIED_VALUE_SHAPE, null, null].FirstOrDefault();
-            if (shapeQualifiedValueConstraint?.Object is RDFResource)
+            if (shapeQualifiedValueConstraint?.Object is RDFResource qualifiedValueShapeUri)
             {
                 //sh:qualifiedMinCount (accepted occurrences: 1)
                 int? qualifiedMinCountValue = null;
@@ -660,7 +660,7 @@ namespace RDFSharp.Model
                       && shapeQualifiedMaxCountConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.INTEGER.ToString()))
                     qualifiedMaxCountValue = int.Parse(shapeQualifiedMaxCountConstraintLiteral.Value);
 
-                shape.AddConstraint(new RDFQualifiedValueShapeConstraint((RDFResource)shapeQualifiedValueConstraint.Object, qualifiedMinCountValue, qualifiedMaxCountValue));
+                shape.AddConstraint(new RDFQualifiedValueShapeConstraint(qualifiedValueShapeUri, qualifiedMinCountValue, qualifiedMaxCountValue));
             }
 
             //sh:uniqueLang (accepted occurrences: 1)

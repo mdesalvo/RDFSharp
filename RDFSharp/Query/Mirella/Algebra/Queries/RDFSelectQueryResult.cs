@@ -223,9 +223,12 @@ namespace RDFSharp.Query
                 #region deserialize                
                 using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
-                    using (XmlTextReader xmlReader = new XmlTextReader(streamReader)
-                            { DtdProcessing = DtdProcessing.Parse, XmlResolver = null, Normalization = false })
+                    using (XmlTextReader xmlReader = new XmlTextReader(streamReader))
                     {
+                        xmlReader.DtdProcessing = DtdProcessing.Parse;
+                        xmlReader.XmlResolver = null;
+                        xmlReader.Normalization = false;
+
                         #region document
                         XmlDocument srxDoc = new XmlDocument { XmlResolver = null };
                         srxDoc.Load(xmlReader);

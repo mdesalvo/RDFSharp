@@ -78,7 +78,7 @@ namespace RDFSharp.Query
             {
                 #region Evaluate Arguments
                 //Evaluate left argument (Expression VS Variable)
-                RDFPatternMember leftArgumentPMember = null;
+                RDFPatternMember leftArgumentPMember;
                 if (LeftArgument is RDFExpression leftArgumentExpression)
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else
@@ -100,10 +100,9 @@ namespace RDFSharp.Query
                     return null;
                 using (SHA256CryptoServiceProvider SHA256Encryptor = new SHA256CryptoServiceProvider())
                 {
-                    byte[] hashBytes = SHA256Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(leftArgumentPMember.ToString()));
                     StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < hashBytes.Length; i++)
-                        sb.Append(hashBytes[i].ToString("x2"));
+                    foreach (byte hashByte in SHA256Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(leftArgumentPMember.ToString())))
+                        sb.Append(hashByte.ToString("x2"));
                     expressionResult = new RDFPlainLiteral(sb.ToString());
                 }
                 #endregion

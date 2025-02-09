@@ -125,9 +125,8 @@ namespace RDFSharp.Query
         {
             try
             {
-                if (!tableRow.IsNull(AggregatorVariable.VariableName))
-                    return tableRow[AggregatorVariable.VariableName].ToString();
-                return string.Empty;
+                return !tableRow.IsNull(AggregatorVariable.VariableName) ? tableRow[AggregatorVariable.VariableName].ToString() 
+                                                                         : string.Empty;
             }
             catch { return string.Empty; }
         }

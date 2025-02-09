@@ -100,10 +100,10 @@ namespace RDFSharp.Store
                 #region serialize
                 using (StreamWriter sw = new StreamWriter(outputStream, Encoding.ASCII))
                 {
-                    string quadrupleTemplate = string.Empty;
                     foreach (RDFQuadruple q in store.SelectAllQuadruples())
                     {
                         #region template
+                        string quadrupleTemplate;
                         if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                             quadrupleTemplate = "<{SUBJ}> <{PRED}> <{OBJ}> <{CTX}> .";
                         else
@@ -186,12 +186,12 @@ namespace RDFSharp.Store
                 using (StreamReader sr = new StreamReader(inputStream, Encoding.ASCII))
                 {
                     RDFMemoryStore result = new RDFMemoryStore();
-                    string nquad = string.Empty;
+                    string nquad;
                     string[] tokens = new string[4];
-                    RDFResource S = null;
-                    RDFResource P = null;
-                    RDFResource O = null;
-                    RDFLiteral L = null;
+                    RDFResource S;
+                    RDFResource P;
+                    RDFResource O;
+                    RDFLiteral L;
                     RDFContext C = new RDFContext();
                     Dictionary<string, long> hashContext = new Dictionary<string, long>();
                     while ((nquad = sr.ReadLine()) != null)

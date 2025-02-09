@@ -186,10 +186,9 @@ namespace RDFSharp.Model
             foreach (RDFPatternMember item in this)
             {
                 RDFResource ordPred = new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, "_", (++index).ToString()));
-                if (ItemType == RDFModelEnums.RDFItemTypes.Resource)
-                    reifCont.AddTriple(new RDFTriple(ReificationSubject, ordPred, (RDFResource)item));
-                else
-                    reifCont.AddTriple(new RDFTriple(ReificationSubject, ordPred, (RDFLiteral)item));
+                reifCont.AddTriple(ItemType == RDFModelEnums.RDFItemTypes.Resource
+                    ? new RDFTriple(ReificationSubject, ordPred, (RDFResource)item)
+                    : new RDFTriple(ReificationSubject, ordPred, (RDFLiteral)item));
             }
 
             return reifCont;

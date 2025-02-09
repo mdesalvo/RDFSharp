@@ -39,15 +39,15 @@ namespace RDFSharp.Query
                 return sb.ToString();
 
             #region INDENT
-            int subqueryHeaderSpacesFunc(double indLevel)
-                => subqueryBodySpacesFunc(indentLevel) - 2 < 0 ? 0 : subqueryBodySpacesFunc(indentLevel) - 2;
-            int subqueryBodySpacesFunc(double indLevel)
+            int subqueryHeaderSpacesFunc()
+                => subqueryBodySpacesFunc() - 2 < 0 ? 0 : subqueryBodySpacesFunc() - 2;
+            int subqueryBodySpacesFunc()
                 => Convert.ToInt32(4.0d * indentLevel);
             int subqueryUnionOrMinusSpacesFunc(bool unionOrMinus)
                 => unionOrMinus ? 2 : 0;
 
-            string subquerySpaces = new string(' ', subqueryHeaderSpacesFunc(indentLevel) + subqueryUnionOrMinusSpacesFunc(fromUnionOrMinus));
-            string subqueryBodySpaces = new string(' ', subqueryBodySpacesFunc(indentLevel) + subqueryUnionOrMinusSpacesFunc(fromUnionOrMinus));
+            string subquerySpaces = new string(' ', subqueryHeaderSpacesFunc() + subqueryUnionOrMinusSpacesFunc(fromUnionOrMinus));
+            string subqueryBodySpaces = new string(' ', subqueryBodySpacesFunc() + subqueryUnionOrMinusSpacesFunc(fromUnionOrMinus));
             #endregion
 
             #region PREFIX
@@ -98,12 +98,11 @@ namespace RDFSharp.Query
                 {
                     foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionElement in selectQuery.ProjectionVars.OrderBy(pv => pv.Value.Item1))
                     {
-                        //Projection Variable
-                        if (projectionElement.Value.Item2 == null)
-                            sb.Append($" {projectionElement.Key}");
-                        //Projection Expression
-                        else
-                            sb.Append($" ({projectionElement.Value.Item2.ToString(prefixes)} AS {projectionElement.Key})");
+                        sb.Append(projectionElement.Value.Item2 == null
+                            //Projection Variable
+                            ? $" {projectionElement.Key}"
+                            //Projection Expression
+                            : $" ({projectionElement.Value.Item2.ToString(prefixes)} AS {projectionElement.Key})");
                     }
                 }
             }
@@ -716,15 +715,13 @@ namespace RDFSharp.Query
             if (pattern.Context != null)
             {
                 string ctx = PrintPatternMember(pattern.Context, prefixes);
-                if (pattern.IsOptional)
-                    return string.Concat("OPTIONAL { GRAPH ", ctx, " { ", subj, " ", pred, " ", obj, " } }");
-                return string.Concat("GRAPH ", ctx, " { ", subj, " ", pred, " ", obj, " }");
+                return pattern.IsOptional ? string.Concat("OPTIONAL { GRAPH ", ctx, " { ", subj, " ", pred, " ", obj, " } }") 
+                                          : string.Concat("GRAPH ", ctx, " { ", subj, " ", pred, " ", obj, " }");
             }
 
             //SPO pattern
-            if (pattern.IsOptional)
-                return string.Concat("OPTIONAL { ", subj, " ", pred, " ", obj, " }");
-            return string.Concat(subj, " ", pred, " ", obj);
+            return pattern.IsOptional ? string.Concat("OPTIONAL { ", subj, " ", pred, " ", obj, " }") 
+                                      : string.Concat(subj, " ", pred, " ", obj);
         }
 
         /// <summary>
@@ -829,10 +826,7 @@ namespace RDFSharp.Query
                 result.Append(" { ");
                 foreach (RDFPatternMember binding in values.Bindings.ElementAt(0).Value)
                 {
-                    if (binding == null)
-                        result.Append("UNDEF");
-                    else
-                        result.Append(PrintPatternMember(binding, prefixes));
+                    result.Append(binding == null ? "UNDEF" : PrintPatternMember(binding, prefixes));
                     result.Append(' ');
                 }
                 result.Append('}');
@@ -849,10 +843,7 @@ namespace RDFSharp.Query
                     values.Bindings.ToList().ForEach(binding =>
                     {
                         RDFPatternMember bindingValue = binding.Value.ElementAtOrDefault(i);
-                        if (bindingValue == null)
-                            result.Append("UNDEF");
-                        else
-                            result.Append(PrintPatternMember(bindingValue, prefixes));
+                        result.Append(bindingValue == null ? "UNDEF" : PrintPatternMember(bindingValue, prefixes));
                         result.Append(' ');
                     });
                     result.AppendLine(")");

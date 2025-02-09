@@ -91,47 +91,42 @@ namespace RDFSharp.Store
                 List<RDFIndexedQuadruple> P = new List<RDFIndexedQuadruple>();
                 List<RDFIndexedQuadruple> O = new List<RDFIndexedQuadruple>();
                 List<RDFIndexedQuadruple> L = new List<RDFIndexedQuadruple>();
-                List<RDFIndexedQuadruple> matchResultIndexedQuadruples = new List<RDFIndexedQuadruple>();
+                List<RDFIndexedQuadruple> matchResultIndexedQuadruples;
                 StringBuilder queryFilters = new StringBuilder();
 
                 //Filter by Context
                 if (ctx != null)
                 {
                     queryFilters.Append('C');
-                    foreach (long q in store.StoreIndex.SelectIndexByContext(ctx))
-                        C.Add(store.IndexedQuadruples[q]);
+                    C.AddRange(store.StoreIndex.SelectIndexByContext(ctx).Select(q => store.IndexedQuadruples[q]));
                 }
 
                 //Filter by Subject
                 if (subj != null)
                 {
                     queryFilters.Append('S');
-                    foreach (long q in store.StoreIndex.SelectIndexBySubject(subj))
-                        S.Add(store.IndexedQuadruples[q]);
+                    S.AddRange(store.StoreIndex.SelectIndexBySubject(subj).Select(q => store.IndexedQuadruples[q]));
                 }
 
                 //Filter by Predicate
                 if (pred != null)
                 {
                     queryFilters.Append('P');
-                    foreach (long q in store.StoreIndex.SelectIndexByPredicate(pred))
-                        P.Add(store.IndexedQuadruples[q]);
+                    P.AddRange(store.StoreIndex.SelectIndexByPredicate(pred).Select(q => store.IndexedQuadruples[q]));
                 }
 
                 //Filter by Object
                 if (obj != null)
                 {
                     queryFilters.Append('O');
-                    foreach (long q in store.StoreIndex.SelectIndexByObject(obj))
-                        O.Add(store.IndexedQuadruples[q]);
+                    O.AddRange(store.StoreIndex.SelectIndexByObject(obj).Select(q => store.IndexedQuadruples[q]));
                 }
 
                 //Filter by Literal
                 if (lit != null)
                 {
                     queryFilters.Append('L');
-                    foreach (long q in store.StoreIndex.SelectIndexByLiteral(lit))
-                        L.Add(store.IndexedQuadruples[q]);
+                    L.AddRange(store.StoreIndex.SelectIndexByLiteral(lit).Select(q => store.IndexedQuadruples[q]));
                 }
 
                 //Intersect the filters

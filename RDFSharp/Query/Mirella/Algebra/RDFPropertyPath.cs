@@ -150,12 +150,11 @@ namespace RDFSharp.Query
             #region Single Property
             if (Steps.Count == 1)
             {
-                //InversePath (swap start/end)
-                if (Steps[0].IsInverseStep)
-                    patterns.Add(new RDFPattern(End, Steps[0].StepProperty, Start));
-                //Path
-                else
-                    patterns.Add(new RDFPattern(Start, Steps[0].StepProperty, End));
+                patterns.Add(Steps[0].IsInverseStep
+                    //InversePath (swap start/end)
+                    ? new RDFPattern(End, Steps[0].StepProperty, Start)
+                    //Path
+                    : new RDFPattern(Start, Steps[0].StepProperty, End));
             }
             #endregion
 
@@ -176,22 +175,20 @@ namespace RDFSharp.Query
                             if (!Steps.Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence && p.StepOrdinal > i))
                                 currEnd = End;
 
-                            //InversePath (swap start/end)
-                            if (Steps[i].IsInverseStep)
-                                patterns.Add(new RDFPattern(currEnd, Steps[i].StepProperty, currStart).UnionWithNext());
-                            //Path
-                            else
-                                patterns.Add(new RDFPattern(currStart, Steps[i].StepProperty, currEnd).UnionWithNext());
+                            patterns.Add(Steps[i].IsInverseStep
+                                //InversePath (swap start/end)
+                                ? new RDFPattern(currEnd, Steps[i].StepProperty, currStart).UnionWithNext()
+                                //Path
+                                : new RDFPattern(currStart, Steps[i].StepProperty, currEnd).UnionWithNext());
                         }
                         //Translate to pattern (item is the last alternative)
                         else
                         {
-                            //InversePath (swap start/end)
-                            if (Steps[i].IsInverseStep)
-                                patterns.Add(new RDFPattern(currEnd, Steps[i].StepProperty, currStart));
-                            //Path
-                            else
-                                patterns.Add(new RDFPattern(currStart, Steps[i].StepProperty, currEnd));
+                            patterns.Add(Steps[i].IsInverseStep
+                                //InversePath (swap start/end)
+                                ? new RDFPattern(currEnd, Steps[i].StepProperty, currStart)
+                                //Path
+                                : new RDFPattern(currStart, Steps[i].StepProperty, currEnd));
 
                             //Adjust start/end
                             if (i < Steps.Count - 1)
@@ -209,21 +206,17 @@ namespace RDFSharp.Query
                     #region Sequence
                     else
                     {
-                        //InversePath (swap start/end)
-                        if (Steps[i].IsInverseStep)
-                            patterns.Add(new RDFPattern(currEnd, Steps[i].StepProperty, currStart));
-                        //Path
-                        else
-                            patterns.Add(new RDFPattern(currStart, Steps[i].StepProperty, currEnd));
+                        patterns.Add(Steps[i].IsInverseStep
+                            //InversePath (swap start/end)
+                            ? new RDFPattern(currEnd, Steps[i].StepProperty, currStart)
+                            //Path
+                            : new RDFPattern(currStart, Steps[i].StepProperty, currEnd));
 
                         //Adjust start/end
                         if (i < Steps.Count - 1)
                         {
                             currStart = currEnd;
-                            if (i == Steps.Count - 2)
-                                currEnd = End;
-                            else
-                                currEnd = new RDFVariable($"__PP{i+1}");
+                            currEnd = i == Steps.Count - 2 ? End : new RDFVariable($"__PP{i+1}");
                         }
                     }
                     #endregion

@@ -201,9 +201,11 @@ namespace RDFSharp.Model
                 RDFGraph result = new RDFGraph().SetContext(graphContext);
                 using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
-                    using (XmlTextReader trixReader = new XmlTextReader(streamReader)
-                            { DtdProcessing = DtdProcessing.Parse, XmlResolver = null, Normalization = false })
+                    using (XmlTextReader trixReader = new XmlTextReader(streamReader))
                     {
+                        trixReader.DtdProcessing = DtdProcessing.Parse;
+                        trixReader.XmlResolver = null;
+                        trixReader.Normalization = false;
                         XmlDocument trixDoc = new XmlDocument { XmlResolver = null };
                         trixDoc.Load(trixReader);
                         
@@ -214,7 +216,7 @@ namespace RDFSharp.Model
                             #region Guards
 
                             if (!trixDoc.DocumentElement.Name.Equals("TriX")
-                                    || !trixDoc.DocumentElement.NamespaceURI.Equals("http://www.w3.org/2004/03/trix/trix-1/"))
+                                 || !trixDoc.DocumentElement.NamespaceURI.Equals("http://www.w3.org/2004/03/trix/trix-1/"))
                                 throw new Exception(" given file does not encode a TriX graph.");
 
                             if (trixDoc.DocumentElement.ChildNodes.Count > 1)

@@ -98,7 +98,7 @@ namespace RDFSharp.Model
                 RDFTurtleContext turtleContext = new RDFTurtleContext();
 
                 //Fetch Turtle data
-                string turtleData = string.Empty;
+                string turtleData;
                 using (StreamReader sReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                     turtleData = sReader.ReadToEnd();
 

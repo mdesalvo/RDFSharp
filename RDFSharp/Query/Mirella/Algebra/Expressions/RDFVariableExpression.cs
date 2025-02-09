@@ -51,8 +51,8 @@ namespace RDFSharp.Query
             StringBuilder sb = new StringBuilder();
 
             //Variable => ?L
-            if (LeftArgument is RDFVariable)
-                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+            if (LeftArgument is RDFVariable variable)
+                sb.Append(RDFQueryPrinter.PrintPatternMember(variable, prefixes));
 
             //Expression => (?L)
             else
@@ -83,7 +83,7 @@ namespace RDFSharp.Query
             {
                 #region Evaluate Arguments
                 //Evaluate left argument (Expression VS Variable)
-                RDFPatternMember leftArgumentPMember = null;
+                RDFPatternMember leftArgumentPMember;
                 if (LeftArgument is RDFExpression leftArgumentExpression)
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else 

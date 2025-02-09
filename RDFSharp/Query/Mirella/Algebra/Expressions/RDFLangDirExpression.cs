@@ -70,14 +70,14 @@ namespace RDFSharp.Query
 
             #region Guards
             if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return expressionResult;
+                return null;
             #endregion
 
             try
             {
                 #region Evaluate Arguments
                 //Evaluate left argument (Expression VS Variable)
-                RDFPatternMember leftArgumentPMember = null;
+                RDFPatternMember leftArgumentPMember;
                 if (LeftArgument is RDFExpression leftArgumentExpression)
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else
@@ -87,10 +87,9 @@ namespace RDFSharp.Query
                 #region Calculate Result
                 if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLiteral)
                 {
-                    if (leftArgumentPMemberPLiteral.HasDirection())
-                        expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLiteral.Language.Substring(leftArgumentPMemberPLiteral.Language.Length-3).ToLower()); //ltr / rtl
-                    else
-                        expressionResult = RDFPlainLiteral.Empty;
+                    expressionResult = leftArgumentPMemberPLiteral.HasDirection() 
+                                        ? new RDFPlainLiteral(leftArgumentPMemberPLiteral.Language.Substring(leftArgumentPMemberPLiteral.Language.Length-3).ToLower()) //ltr / rtl
+                                        : RDFPlainLiteral.Empty;
                 }
                 #endregion
             }

@@ -167,10 +167,10 @@ namespace RDFSharp.Query
 
             //Add aggregator value to bindings
             double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, double.PositiveInfinity);
-            if (aggregatorValue.Equals(double.NaN))
-                bindings.Add(ProjectionVariable.VariableName, string.Empty);
-            else
-                bindings.Add(ProjectionVariable.VariableName, new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString());
+            bindings.Add(ProjectionVariable.VariableName,
+                aggregatorValue.Equals(double.NaN)
+                    ? string.Empty
+                    : new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture),RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString());
 
             //Add bindings to result's table
             RDFQueryEngine.AddRow(projFuncTable, bindings);

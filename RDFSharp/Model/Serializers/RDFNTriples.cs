@@ -118,7 +118,7 @@ namespace RDFSharp.Model
                 #region serialize
                 using (StreamWriter sw = new StreamWriter(outputStream, Encoding.ASCII))
                 {
-                    string tripleTemplate = string.Empty;
+                    string tripleTemplate;
                     foreach (RDFTriple t in graph)
                     {
                         #region template
@@ -195,12 +195,10 @@ namespace RDFSharp.Model
                 using (StreamReader sr = new StreamReader(inputStream, Encoding.ASCII))
                 {
                     RDFGraph result = new RDFGraph().SetContext(graphContext);
-                    string ntriple = string.Empty;
+                    string ntriple;
                     string[] tokens = new string[3];
-                    RDFResource S = null;
-                    RDFResource P = null;
-                    RDFResource O = null;
-                    RDFLiteral L = null;
+                    RDFResource S, P, O;
+                    RDFLiteral L;
                     Dictionary<string, long> hashContext = new Dictionary<string, long>();
                     char[] openingBrackets = { '<' };
                     char[] closingBrackets = { '>' };
@@ -212,9 +210,13 @@ namespace RDFSharp.Model
 
                         #region sanitize  & tokenize
                         //Cleanup previous data
-                        S = null; tokens[0] = string.Empty;
-                        P = null; tokens[1] = string.Empty;
-                        O = null; L = null; tokens[2] = string.Empty;
+                        S = null; 
+                        tokens[0] = string.Empty;
+                        P = null; 
+                        tokens[1] = string.Empty;
+                        O = null; 
+                        L = null; 
+                        tokens[2] = string.Empty;
 
                         //Preliminary sanitizations: clean trailing space-like chars
                         ntriple = ntriple.Trim(trimmableChars);
@@ -306,10 +308,10 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region addtriple
-                        if (O != null)
-                            result.AddTriple(new RDFTriple(S, P, O));
-                        else
-                            result.AddTriple(new RDFTriple(S, P, L));
+
+                        result.AddTriple(O != null ? new RDFTriple(S, P, O) 
+                                                   : new RDFTriple(S, P, L));
+
                         #endregion
 
                     }

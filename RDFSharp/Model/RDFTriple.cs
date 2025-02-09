@@ -140,10 +140,9 @@ namespace RDFSharp.Model
             reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
             reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)Subject));
             reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)Predicate));
-            if (TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)Object));
-            else
-                reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)Object));
+            reifGraph.AddTriple(TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
+                ? new RDFTriple(ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)Object)
+                : new RDFTriple(ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)Object));
 
             return reifGraph;
         }

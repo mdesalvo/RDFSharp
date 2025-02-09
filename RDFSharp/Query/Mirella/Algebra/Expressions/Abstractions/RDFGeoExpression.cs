@@ -85,14 +85,14 @@ namespace RDFSharp.Query
             {
                 #region Evaluate Arguments
                 //Evaluate left argument (Expression VS Variable)
-                RDFPatternMember leftArgumentPMember = null;
+                RDFPatternMember leftArgumentPMember;
                 if (LeftArgument is RDFExpression leftArgumentExpression)
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else
                     leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
 
                 //Evaluate right argument (Expression VS Variable VS TypedLiteral)
-                RDFPatternMember rightArgumentPMember = null;
+                RDFPatternMember rightArgumentPMember;
                 switch (RightArgument)
                 {
                     case RDFExpression rightArgumentExpression:

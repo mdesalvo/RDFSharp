@@ -100,9 +100,11 @@ namespace RDFSharp.Store
                 Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>();
                 using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
-                    using (XmlTextReader trixReader = new XmlTextReader(streamReader)
-                        { DtdProcessing = DtdProcessing.Parse, XmlResolver = null, Normalization = false })
+                    using (XmlTextReader trixReader = new XmlTextReader(streamReader))
                     {
+                        trixReader.DtdProcessing = DtdProcessing.Parse;
+                        trixReader.XmlResolver = null;
+                        trixReader.Normalization = false;
                         XmlDocument trixDoc = new XmlDocument { XmlResolver = null };
                         trixDoc.Load(trixReader);
 

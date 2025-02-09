@@ -158,7 +158,7 @@ namespace RDFSharp.Query
                     leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
 
                 //Evaluate right argument (Expression VS Variable)
-                RDFPatternMember rightArgumentPMember = null;
+                RDFPatternMember rightArgumentPMember;
                 if (RightArgument is RDFExpression rightArgumentExpression)
                     rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
                 else

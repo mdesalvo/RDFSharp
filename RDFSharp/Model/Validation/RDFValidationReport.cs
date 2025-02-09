@@ -107,10 +107,7 @@ namespace RDFSharp.Model
             result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.VALIDATION_REPORT));
 
             //Conforms
-            if (Conforms)
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.CONFORMS, RDFTypedLiteral.True));
-            else
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.CONFORMS, RDFTypedLiteral.False));
+            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.CONFORMS, Conforms ? RDFTypedLiteral.True : RDFTypedLiteral.False));
 
             //Results
             Results.ForEach(res =>

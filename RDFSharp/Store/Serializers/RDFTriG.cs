@@ -114,7 +114,7 @@ namespace RDFSharp.Store
                 RDFTriGContext trigContext = new RDFTriGContext();
 
                 //Fetch TriG data
-                string trigData = string.Empty;
+                string trigData;
                 using (StreamReader sReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                     trigData = sReader.ReadToEnd();
 
