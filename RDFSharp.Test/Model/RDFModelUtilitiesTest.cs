@@ -138,49 +138,49 @@ namespace RDFSharp.Test.Model
         }
 
         [DataTestMethod]
-        [DataRow("This is smiling face: \\U0001F603\\U0001F603; This is tilde: \\U0000007E\\U0001F603")]
-        [DataRow("This is smiling face: \\U0001F603; This is tilde: \\U0000007E")]
-        [DataRow("This is smiling face: \\U0001F603; This is tilde: \\u007E")]
-        [DataRow("This is smiling face: \\U0001F603; This is tilde: \\u007E\\U0001F603")]
-        [DataRow("This is smiling face: \\U0001F603\\u007E; This is tilde: \\u007E\\u007E")]
+        [DataRow(@"This is smiling face: \U0001F603\U0001F603; This is tilde: \U0000007E\U0001F603")]
+        [DataRow(@"This is smiling face: \U0001F603; This is tilde: \U0000007E")]
+        [DataRow(@"This is smiling face: \U0001F603; This is tilde: \u007E")]
+        [DataRow(@"This is smiling face: \U0001F603; This is tilde: \u007E\U0001F603")]
+        [DataRow(@"This is smiling face: \U0001F603\u007E; This is tilde: \u007E\u007E")]
         public void ShouldTransformASCII_To_UnicodeWithSurrogatesAndUnicode(string input)
         {
             string output = RDFModelUtilities.ASCII_To_Unicode(input);
 
             Assert.IsNotNull(output);
-            Assert.IsTrue(output.IndexOf("\\U") == -1);
-            Assert.IsTrue(output.IndexOf("\\u") == -1);
-            Assert.IsTrue(output.IndexOf("😃") > -1);
-            Assert.IsTrue(output.IndexOf("~") > -1);
+            Assert.IsTrue(output.IndexOf("\\U", StringComparison.Ordinal) == -1);
+            Assert.IsTrue(output.IndexOf("\\u", StringComparison.Ordinal) == -1);
+            Assert.IsTrue(output.IndexOf("😃", StringComparison.Ordinal) > -1);
+            Assert.IsTrue(output.IndexOf('~', StringComparison.Ordinal) > -1);
         }
 
         [DataTestMethod]
-        [DataRow("This is delta: \\U00000394; This is tilde: \\U0000007E")]
-        [DataRow("This is delta: \\U00000394; This is tilde: \\u007E")]
-        [DataRow("This is delta: \\u0394; This is tilde: \\u007E")]
-        [DataRow("This is delta: \\u0394\\u0394; This is tilde: \\u007E\\u007E\\u007E")]
-        [DataRow("This is delta: \\u0394; This is tilde: \\U0000007E")]
+        [DataRow(@"This is delta: \U00000394; This is tilde: \U0000007E")]
+        [DataRow(@"This is delta: \U00000394; This is tilde: \u007E")]
+        [DataRow(@"This is delta: \u0394; This is tilde: \u007E")]
+        [DataRow(@"This is delta: \u0394\u0394; This is tilde: \u007E\u007E\u007E")]
+        [DataRow(@"This is delta: \u0394; This is tilde: \U0000007E")]
         public void ShouldTransformASCII_To_UnicodeWithUnicode(string input)
         {
             string output = RDFModelUtilities.ASCII_To_Unicode(input);
 
             Assert.IsNotNull(output);
-            Assert.IsTrue(output.IndexOf("\\U") == -1);
-            Assert.IsTrue(output.IndexOf("\\u") == -1);
-            Assert.IsTrue(output.IndexOf("~") > -1);
-            Assert.IsTrue(output.IndexOf("Δ") > -1);
+            Assert.IsTrue(output.IndexOf("\\U", StringComparison.Ordinal) == -1);
+            Assert.IsTrue(output.IndexOf("\\u", StringComparison.Ordinal) == -1);
+            Assert.IsTrue(output.IndexOf('~', StringComparison.Ordinal) > -1);
+            Assert.IsTrue(output.IndexOf('Δ', StringComparison.Ordinal) > -1);
         }
 
         [DataTestMethod]
-        [DataRow("This is smiling face: \\U0001F603; These are smiling faces: \\U0001F603\\U0001F603")]
+        [DataRow(@"This is smiling face: \U0001F603; These are smiling faces: \U0001F603\U0001F603")]
         public void ShouldTransformASCII_To_UnicodeWithSurrogates(string input)
         {
             string output = RDFModelUtilities.ASCII_To_Unicode(input);
 
             Assert.IsNotNull(output);
-            Assert.IsTrue(output.IndexOf("\\U") == -1);
-            Assert.IsTrue(output.IndexOf("\\u") == -1);
-            Assert.IsTrue(output.IndexOf("😃") > -1);
+            Assert.IsTrue(output.IndexOf("\\U", StringComparison.Ordinal) == -1);
+            Assert.IsTrue(output.IndexOf("\\u", StringComparison.Ordinal) == -1);
+            Assert.IsTrue(output.IndexOf("😃", StringComparison.Ordinal) > -1);
         }
 
         [DataTestMethod]
@@ -190,8 +190,8 @@ namespace RDFSharp.Test.Model
             string output = RDFModelUtilities.ASCII_To_Unicode(input);
 
             Assert.IsNotNull(output);
-            Assert.IsTrue(output.IndexOf("\\U") == -1);
-            Assert.IsTrue(output.IndexOf("\\u") == -1);
+            Assert.IsTrue(output.IndexOf("\\U", StringComparison.Ordinal) == -1);
+            Assert.IsTrue(output.IndexOf("\\u", StringComparison.Ordinal) == -1);
         }
 
         [DataTestMethod]
@@ -204,7 +204,7 @@ namespace RDFSharp.Test.Model
         }
 
         [DataTestMethod]
-        [DataRow("\\U9\\u8")]
+        [DataRow(@"\U9\u8")]
         public void ShouldNotTransformBadFormedASCII_To_Unicode(string input)
         {
             string output = RDFModelUtilities.ASCII_To_Unicode(input);
@@ -222,8 +222,8 @@ namespace RDFSharp.Test.Model
             string output = RDFModelUtilities.Unicode_To_ASCII(input);
 
             Assert.IsNotNull(output);
-            Assert.IsTrue(output.IndexOf("\\U0001F603") > -1);
-            Assert.IsTrue(output.IndexOf("\\u20AC") > -1);
+            Assert.IsTrue(output.IndexOf("\\U0001F603", StringComparison.Ordinal) > -1);
+            Assert.IsTrue(output.IndexOf("\\u20AC", StringComparison.Ordinal) > -1);
         }
 
         [DataTestMethod]
@@ -233,8 +233,8 @@ namespace RDFSharp.Test.Model
             string output = RDFModelUtilities.Unicode_To_ASCII(input);
 
             Assert.IsNotNull(output);
-            Assert.IsTrue(output.IndexOf("\\U0001F603") > -1);
-            Assert.IsTrue(output.IndexOf("\\u") == -1);
+            Assert.IsTrue(output.IndexOf("\\U0001F603", StringComparison.Ordinal) > -1);
+            Assert.IsTrue(output.IndexOf("\\u", StringComparison.Ordinal) == -1);
         }
 
         [DataTestMethod]
@@ -245,8 +245,8 @@ namespace RDFSharp.Test.Model
             string output = RDFModelUtilities.Unicode_To_ASCII(input);
 
             Assert.IsNotNull(output);
-            Assert.IsTrue(output.IndexOf("\\U") == -1);
-            Assert.IsTrue(output.IndexOf("\\u20AC") > -1);
+            Assert.IsTrue(output.IndexOf("\\U", StringComparison.Ordinal) == -1);
+            Assert.IsTrue(output.IndexOf("\\u20AC", StringComparison.Ordinal) > -1);
         }
 
         [DataTestMethod]
@@ -256,8 +256,8 @@ namespace RDFSharp.Test.Model
             string output = RDFModelUtilities.Unicode_To_ASCII(input);
 
             Assert.IsNotNull(output);
-            Assert.IsTrue(output.IndexOf("\\U") == -1);
-            Assert.IsTrue(output.IndexOf("\\u") == -1);
+            Assert.IsTrue(output.IndexOf("\\U", StringComparison.Ordinal) == -1);
+            Assert.IsTrue(output.IndexOf("\\u", StringComparison.Ordinal) == -1);
         }
 
         [DataTestMethod]
@@ -270,7 +270,7 @@ namespace RDFSharp.Test.Model
         }
 
         [DataTestMethod]
-        [DataRow("This string contains XML-escapeable control chars: \0")]
+        [DataRow("This string contains XML-escapable control chars: \0")]
         public void ShouldEscapeControlCharsForXML(string input)
         {
             string result = RDFModelUtilities.EscapeControlCharsForXML(input);
@@ -316,7 +316,7 @@ namespace RDFSharp.Test.Model
             string result = input.TrimEnd("hello");
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.IndexOf("hello") == -1);
+            Assert.IsTrue(result.IndexOf("hello", StringComparison.Ordinal) == -1);
         }
 
         [DataTestMethod]
@@ -326,8 +326,8 @@ namespace RDFSharp.Test.Model
             string result = input.TrimEnd("o");
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.IndexOf("hellooo") == -1);
-            Assert.IsTrue(result.IndexOf("helloo") > -1);
+            Assert.IsTrue(result.IndexOf("hellooo", StringComparison.Ordinal) == -1);
+            Assert.IsTrue(result.IndexOf("helloo", StringComparison.Ordinal) > -1);
         }
 
         [DataTestMethod]
@@ -337,7 +337,7 @@ namespace RDFSharp.Test.Model
             string result = input.TrimEnd("hello");
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.IndexOf("hello") > -1);
+            Assert.IsTrue(result.IndexOf("hello", StringComparison.Ordinal) > -1);
         }
 
         [DataTestMethod]
@@ -347,7 +347,7 @@ namespace RDFSharp.Test.Model
             string result = input.TrimEnd(string.Empty);
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.IndexOf("hello") > -1);
+            Assert.IsTrue(result.IndexOf("hello", StringComparison.Ordinal) > -1);
         }
 
         [DataTestMethod]
@@ -357,7 +357,7 @@ namespace RDFSharp.Test.Model
             string result = input.TrimEnd(null);
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.IndexOf("hello") > -1);
+            Assert.IsTrue(result.IndexOf("hello", StringComparison.Ordinal) > -1);
         }
 
         [DataTestMethod]
@@ -367,7 +367,7 @@ namespace RDFSharp.Test.Model
             string result = input.TrimEnd("hello");
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.IndexOf("hello") == -1);
+            Assert.IsTrue(result.IndexOf("hello", StringComparison.Ordinal) == -1);
         }
 
         [DataTestMethod]
@@ -448,12 +448,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPOTriplesBySubjectPredicateObjectBecauseFaultingSubject()
         {
             RDFGraph graph = new RDFGraph(
-                [
-                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
-                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
-                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
-                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                ]);
+            [
+                new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
+                new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
+            ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"), null);
 
             Assert.IsNotNull(result);
@@ -464,12 +464,12 @@ namespace RDFSharp.Test.Model
         public void ShouldNotSelectSPOTriplesBySubjectPredicateObjectBecauseFaultingPredicate()
         {
             RDFGraph graph = new RDFGraph(
-                [
-                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
-                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
-                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
-                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
-                ]);
+            [
+                new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
+                new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
+            ]);
             List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred6/"), new RDFResource("http://obj2/"), null);
 
             Assert.IsNotNull(result);

@@ -701,7 +701,7 @@ namespace RDFSharp.Test.Model
             nodeShape.AddConstraint(new RDFXoneConstraint().AddShape(new RDFResource("ex:PropShape1"))
                                                            .AddShape(new RDFResource("ex:PropShape2")));
             RDFPropertyShape propShape1 = new RDFPropertyShape(new RDFResource("ex:PropShape1"), RDFVocabulary.FOAF.KNOWS);
-            propShape1.AddConstraint(new RDFPatternConstraint(new Regex(@"^ex:", RegexOptions.IgnoreCase)));
+            propShape1.AddConstraint(new RDFPatternConstraint(new Regex("^ex:", RegexOptions.IgnoreCase)));
             RDFPropertyShape propShape2 = new RDFPropertyShape(new RDFResource("ex:PropShape2"), RDFVocabulary.FOAF.AGE);
             propShape2.AddConstraint(new RDFMaxExclusiveConstraint(new RDFTypedLiteral("22.0", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
             shapesGraph.AddShape(nodeShape);

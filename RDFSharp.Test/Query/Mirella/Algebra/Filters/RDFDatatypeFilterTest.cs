@@ -36,7 +36,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(filter.VariableName.Equals("?VAR"));
             Assert.IsTrue(filter.Datatype.ToString().Equals(RDFModelEnums.RDFDatatypes.XSD_FLOAT.GetDatatypeFromEnum()));
             Assert.IsNotNull(filter.DatatypeRegex);
-            Assert.IsTrue(filter.DatatypeRegex.ToString().Equals(new Regex($"\\^\\^{RDFVocabulary.XSD.FLOAT}$").ToString()));
+            Assert.IsTrue(filter.DatatypeRegex.ToString().Equals(new Regex($@"\^\^{RDFVocabulary.XSD.FLOAT}$").ToString()));
             Assert.IsTrue(filter.ToString().Equals($"FILTER ( DATATYPE(?VAR) = <{RDFVocabulary.XSD.FLOAT}> )"));
             Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( DATATYPE(?VAR) = xsd:float )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
@@ -52,7 +52,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(filter.VariableName.Equals("?VAR"));
             Assert.IsTrue(filter.Datatype.ToString().Equals(RDFModelEnums.RDFDatatypes.XSD_FLOAT.GetDatatypeFromEnum()));
             Assert.IsNotNull(filter.DatatypeRegex);
-            Assert.IsTrue(filter.DatatypeRegex.ToString().Equals(new Regex($"\\^\\^{RDFVocabulary.XSD.FLOAT}$").ToString()));
+            Assert.IsTrue(filter.DatatypeRegex.ToString().Equals(new Regex($@"\^\^{RDFVocabulary.XSD.FLOAT}$").ToString()));
             Assert.IsTrue(filter.ToString().Equals($"FILTER ( DATATYPE(?VAR) = <{RDFVocabulary.XSD.FLOAT}> )"));
             Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( DATATYPE(?VAR) = xsd:float )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));

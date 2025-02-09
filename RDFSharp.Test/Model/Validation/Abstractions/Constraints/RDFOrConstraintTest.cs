@@ -693,7 +693,7 @@ namespace RDFSharp.Test.Model
             nodeShape.AddConstraint(new RDFOrConstraint().AddShape(new RDFResource("ex:PropShape1"))
                                                          .AddShape(new RDFResource("ex:PropShape2")));
             RDFPropertyShape propShape1 = new RDFPropertyShape(new RDFResource("ex:PropShape1"), RDFVocabulary.FOAF.KNOWS);
-            propShape1.AddConstraint(new RDFPatternConstraint(new Regex(@"^ex:", RegexOptions.IgnoreCase)));
+            propShape1.AddConstraint(new RDFPatternConstraint(new Regex("^ex:", RegexOptions.IgnoreCase)));
             RDFPropertyShape propShape2 = new RDFPropertyShape(new RDFResource("ex:PropShape2"), RDFVocabulary.FOAF.AGE);
             propShape2.AddConstraint(new RDFMaxInclusiveConstraint(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
             shapesGraph.AddShape(nodeShape);
@@ -770,7 +770,7 @@ namespace RDFSharp.Test.Model
             nodeShape.AddConstraint(new RDFOrConstraint().AddShape(new RDFResource("ex:PropShape1"))
                                                          .AddShape(new RDFResource("ex:PropShape2")));
             RDFPropertyShape propShape1 = new RDFPropertyShape(new RDFResource("ex:PropShape1"), RDFVocabulary.FOAF.KNOWS);
-            propShape1.AddConstraint(new RDFPatternConstraint(new Regex(@"^ez:", RegexOptions.IgnoreCase)));
+            propShape1.AddConstraint(new RDFPatternConstraint(new Regex("^ez:", RegexOptions.IgnoreCase)));
             RDFPropertyShape propShape2 = new RDFPropertyShape(new RDFResource("ex:PropShape2"), RDFVocabulary.FOAF.AGE);
             propShape2.AddConstraint(new RDFMaxInclusiveConstraint(new RDFTypedLiteral("24", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
             shapesGraph.AddShape(nodeShape);

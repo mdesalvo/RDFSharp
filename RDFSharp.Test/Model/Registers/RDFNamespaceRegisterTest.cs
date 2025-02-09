@@ -30,7 +30,7 @@ namespace RDFSharp.Test.Model
         public void ShouldAccessInstance()
         {
             Assert.IsNotNull(RDFNamespaceRegister.Instance);
-            Assert.IsTrue(RDFNamespaceRegister.Instance is IEnumerable<RDFNamespace>);
+            Assert.IsNotNull(RDFNamespaceRegister.Instance.Register);
         }
 
         [TestMethod]

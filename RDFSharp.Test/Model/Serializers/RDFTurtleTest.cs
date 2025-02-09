@@ -8371,7 +8371,7 @@ namespace RDFSharp.Test.Model
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.Write($"_:12345 rdf:\\(\\(%");
+                writer.Write($@"_:12345 rdf:\(\(%");
             Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
 
@@ -8380,7 +8380,7 @@ namespace RDFSharp.Test.Model
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.Write($"_:12345 rdf:\\(\\(%P2");
+                writer.Write($@"_:12345 rdf:\(\(%P2");
             Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
 
@@ -8389,7 +8389,7 @@ namespace RDFSharp.Test.Model
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.Write($"_:12345 rdf:\\(\\(%2P");
+                writer.Write($@"_:12345 rdf:\(\(%2P");
             Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
 
