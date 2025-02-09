@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using RDFSharp.Model;
 
 namespace RDFSharp.Query
@@ -100,12 +101,8 @@ namespace RDFSharp.Query
         internal override void UpdateProjectionTable(string partitionKey, DataTable projFuncTable)
         {
             //Get bindings from context
-            Dictionary<string, string> bindings = new Dictionary<string, string>();
-            foreach (string pkValue in partitionKey.Split(new[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                string[] pValues = pkValue.Split(new[] { "§PV§" }, StringSplitOptions.None);
-                bindings.Add(pValues[0], pValues[1]);
-            }
+            Dictionary<string, string> bindings = partitionKey.Split(new[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries)
+                                                              .Select(pkValue => pkValue.Split(new[] { "§PV§" }, StringSplitOptions.None)).ToDictionary(pValues => pValues[0], pValues => pValues[1]);
 
             //Add aggregator value to bindings
             string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty);

@@ -31,17 +31,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// rdfsharp
             /// </summary>
-            public static readonly string PREFIX = "rdfsharp";
+            public const string PREFIX = "rdfsharp";
 
             /// <summary>
             /// https://rdfsharp.codeplex.com/
             /// </summary>
-            public static readonly string BASE_URI = "https://rdfsharp.codeplex.com/";
+            public const string BASE_URI = "https://rdfsharp.codeplex.com/";
 
             /// <summary>
             /// https://rdfsharp.codeplex.com/
             /// </summary>
-            public static readonly string DEREFERENCE_URI = "https://rdfsharp.codeplex.com/";
+            public const string DEREFERENCE_URI = "https://rdfsharp.codeplex.com/";
             #endregion
         }
         #endregion

@@ -118,13 +118,12 @@ namespace RDFSharp.Model
                 #region serialize
                 using (StreamWriter sw = new StreamWriter(outputStream, Encoding.ASCII))
                 {
-                    string tripleTemplate;
                     foreach (RDFTriple t in graph)
                     {
                         #region template
-                        tripleTemplate = t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO ? TemplateSPO
-                                            : t.Object is RDFPlainLiteral ? TemplateSPLL
-                                                : TemplateSPLT;
+                        string tripleTemplate = t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO 
+                            ? TemplateSPO
+                            : t.Object is RDFPlainLiteral ? TemplateSPLL : TemplateSPLT;
                         #endregion
 
                         #region subj

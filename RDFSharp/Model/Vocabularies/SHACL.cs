@@ -31,17 +31,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// sh
             /// </summary>
-            public static readonly string PREFIX = "sh";
+            public const string PREFIX = "sh";
 
             /// <summary>
             /// http://www.w3.org/ns/shacl#
             /// </summary>
-            public static readonly string BASE_URI = "http://www.w3.org/ns/shacl#";
+            public const string BASE_URI = "http://www.w3.org/ns/shacl#";
 
             /// <summary>
             /// http://www.w3.org/ns/shacl#
             /// </summary>
-            public static readonly string DEREFERENCE_URI = "http://www.w3.org/ns/shacl#";
+            public const string DEREFERENCE_URI = "http://www.w3.org/ns/shacl#";
 
             /// <summary>
             /// sh:Shape

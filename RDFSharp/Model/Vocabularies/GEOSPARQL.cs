@@ -31,17 +31,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// geosparql
             /// </summary>
-            public static readonly string PREFIX = "geosparql";
+            public const string PREFIX = "geosparql";
 
             /// <summary>
             /// http://www.opengis.net/ont/geosparql#
             /// </summary>
-            public static readonly string BASE_URI = "http://www.opengis.net/ont/geosparql#";
+            public const string BASE_URI = "http://www.opengis.net/ont/geosparql#";
 
             /// <summary>
             /// http://www.opengis.net/ont/geosparql#
             /// </summary>
-            public static readonly string DEREFERENCE_URI = "http://www.opengis.net/ont/geosparql#";
+            public const string DEREFERENCE_URI = "http://www.opengis.net/ont/geosparql#";
 
             /// <summary>
             /// geosparql:wktLiteral
@@ -248,17 +248,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// sf
                 /// </summary>
-                public static readonly string PREFIX = "sf";
+                public const string PREFIX = "sf";
 
                 /// <summary>
                 /// http://www.opengis.net/ont/sf#
                 /// </summary>
-                public static readonly string BASE_URI = "http://www.opengis.net/ont/sf#";
+                public const string BASE_URI = "http://www.opengis.net/ont/sf#";
 
                 /// <summary>
                 /// http://www.opengis.net/ont/sf#
                 /// </summary>
-                public static readonly string DEREFERENCE_URI = "http://www.opengis.net/ont/sf#";
+                public const string DEREFERENCE_URI = "http://www.opengis.net/ont/sf#";
 
                 /// <summary>
                 /// sf:Point
@@ -349,17 +349,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// geof
                 /// </summary>
-                public static readonly string PREFIX = "geof";
+                public const string PREFIX = "geof";
 
                 /// <summary>
                 /// http://www.opengis.net/def/function/geosparql/
                 /// </summary>
-                public static readonly string BASE_URI = "http://www.opengis.net/def/function/geosparql/";
+                public const string BASE_URI = "http://www.opengis.net/def/function/geosparql/";
 
                 /// <summary>
                 /// http://www.opengis.net/def/function/geosparql/
                 /// </summary>
-                public static readonly string DEREFERENCE_URI = "http://www.opengis.net/def/function/geosparql/";
+                public const string DEREFERENCE_URI = "http://www.opengis.net/def/function/geosparql/";
 
                 /// <summary>
                 /// geof:boundary

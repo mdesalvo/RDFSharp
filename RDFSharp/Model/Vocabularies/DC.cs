@@ -31,17 +31,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// dc
             /// </summary>
-            public static readonly string PREFIX = "dc";
+            public const string PREFIX = "dc";
 
             /// <summary>
             /// http://purl.org/dc/elements/1.1/
             /// </summary>
-            public static readonly string BASE_URI = "http://purl.org/dc/elements/1.1/";
+            public const string BASE_URI = "http://purl.org/dc/elements/1.1/";
 
             /// <summary>
             /// https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_elements.rdf
             /// </summary>
-            public static readonly string DEREFERENCE_URI = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_elements.rdf";
+            public const string DEREFERENCE_URI = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_elements.rdf";
 
             /// <summary>
             /// dc:contributor
@@ -131,17 +131,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// dcam
                 /// </summary>
-                public static readonly string PREFIX = "dcam";
+                public const string PREFIX = "dcam";
 
                 /// <summary>
                 /// http://purl.org/dc/dcam/
                 /// </summary>
-                public static readonly string BASE_URI = "http://purl.org/dc/dcam/";
+                public const string BASE_URI = "http://purl.org/dc/dcam/";
 
                 /// <summary>
                 /// https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_abstract_model.rdf
                 /// </summary>
-                public static readonly string DEREFERENCE_URI = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_abstract_model.rdf";
+                public const string DEREFERENCE_URI = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_abstract_model.rdf";
 
                 /// <summary>
                 /// dcam:memberOf
@@ -166,17 +166,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// dcterms
                 /// </summary>
-                public static readonly string PREFIX = "dcterms";
+                public const string PREFIX = "dcterms";
 
                 /// <summary>
                 /// http://purl.org/dc/terms/
                 /// </summary>
-                public static readonly string BASE_URI = "http://purl.org/dc/terms/";
+                public const string BASE_URI = "http://purl.org/dc/terms/";
 
                 /// <summary>
                 /// https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_terms.rdf
                 /// </summary>
-                public static readonly string DEREFERENCE_URI = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_terms.rdf";
+                public const string DEREFERENCE_URI = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_terms.rdf";
 
                 /// <summary>
                 /// dcterms:abstract
@@ -686,17 +686,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// dctype
                 /// </summary>
-                public static readonly string PREFIX = "dctype";
+                public const string PREFIX = "dctype";
 
                 /// <summary>
                 /// http://purl.org/dc/dcmitype/
                 /// </summary>
-                public static readonly string BASE_URI = "http://purl.org/dc/dcmitype/";
+                public const string BASE_URI = "http://purl.org/dc/dcmitype/";
 
                 /// <summary>
                 /// https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_type.rdf
                 /// </summary>
-                public static readonly string DEREFERENCE_URI = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_type.rdf";
+                public const string DEREFERENCE_URI = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_type.rdf";
 
                 /// <summary>
                 /// dctype:Collection

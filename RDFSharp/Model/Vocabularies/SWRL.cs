@@ -31,17 +31,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// swrl
             /// </summary>
-            public static readonly string PREFIX = "swrl";
+            public const string PREFIX = "swrl";
 
             /// <summary>
             /// http://www.w3.org/2003/11/swrl#
             /// </summary>
-            public static readonly string BASE_URI = "http://www.w3.org/2003/11/swrl#";
+            public const string BASE_URI = "http://www.w3.org/2003/11/swrl#";
 
             /// <summary>
             /// http://www.w3.org/2003/11/swrl#
             /// </summary>
-            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2003/11/swrl#";
+            public const string DEREFERENCE_URI = "http://www.w3.org/2003/11/swrl#";
 
             /// <summary>
             /// swrl:Imp
@@ -159,17 +159,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// swrlb
                 /// </summary>
-                public static readonly string PREFIX = "swrlb";
+                public const string PREFIX = "swrlb";
 
                 /// <summary>
                 /// http://www.w3.org/2003/11/swrlb#
                 /// </summary>
-                public static readonly string BASE_URI = "http://www.w3.org/2003/11/swrlb#";
+                public const string BASE_URI = "http://www.w3.org/2003/11/swrlb#";
 
                 /// <summary>
                 /// http://www.w3.org/2003/11/swrlb#
                 /// </summary>
-                public static readonly string DEREFERENCE_URI = "http://www.w3.org/2003/11/swrlb#";
+                public const string DEREFERENCE_URI = "http://www.w3.org/2003/11/swrlb#";
                 #endregion
             }
             #endregion

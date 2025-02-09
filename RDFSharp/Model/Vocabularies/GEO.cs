@@ -31,17 +31,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// geo
             /// </summary>
-            public static readonly string PREFIX = "geo";
+            public const string PREFIX = "geo";
 
             /// <summary>
             /// http://www.w3.org/2003/01/geo/wgs84_pos#
             /// </summary>
-            public static readonly string BASE_URI = "http://www.w3.org/2003/01/geo/wgs84_pos#";
+            public const string BASE_URI = "http://www.w3.org/2003/01/geo/wgs84_pos#";
 
             /// <summary>
             /// http://www.w3.org/2003/01/geo/wgs84_pos#
             /// </summary>
-            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2003/01/geo/wgs84_pos#";
+            public const string DEREFERENCE_URI = "http://www.w3.org/2003/01/geo/wgs84_pos#";
 
             /// <summary>
             /// geo:lat

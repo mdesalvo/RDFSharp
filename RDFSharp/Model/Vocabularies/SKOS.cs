@@ -31,17 +31,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// skos
             /// </summary>
-            public static readonly string PREFIX = "skos";
+            public const string PREFIX = "skos";
 
             /// <summary>
             /// http://www.w3.org/2004/02/skos/core#
             /// </summary>
-            public static readonly string BASE_URI = "http://www.w3.org/2004/02/skos/core#";
+            public const string BASE_URI = "http://www.w3.org/2004/02/skos/core#";
 
             /// <summary>
             /// http://www.w3.org/2004/02/skos/core#
             /// </summary>
-            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2004/02/skos/core#";
+            public const string DEREFERENCE_URI = "http://www.w3.org/2004/02/skos/core#";
 
             /// <summary>
             /// skos:Concept
@@ -219,17 +219,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// skosxl
                 /// </summary>
-                public static readonly string PREFIX = "skosxl";
+                public const string PREFIX = "skosxl";
 
                 /// <summary>
                 /// http://www.w3.org/2008/05/skos-xl#
                 /// </summary>
-                public static readonly string BASE_URI = "http://www.w3.org/2008/05/skos-xl#";
+                public const string BASE_URI = "http://www.w3.org/2008/05/skos-xl#";
 
                 /// <summary>
                 /// http://www.w3.org/2008/05/skos-xl#
                 /// </summary>
-                public static readonly string DEREFERENCE_URI = "http://www.w3.org/2008/05/skos-xl#";
+                public const string DEREFERENCE_URI = "http://www.w3.org/2008/05/skos-xl#";
 
                 /// <summary>
                 /// skosxl:Label

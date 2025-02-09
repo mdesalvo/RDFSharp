@@ -48,22 +48,22 @@ namespace RDFSharp.Query
         /// <summary>
         /// Attribute denoting an optional pattern/patternGroup/query
         /// </summary>
-        internal static readonly string IsOptional = "IsOptional";
+        internal const string IsOptional = "IsOptional";
 
         /// <summary>
         /// Attribute denoting a pattern/patternGroup/query to be joined as union
         /// </summary>
-        internal static readonly string JoinAsUnion = "JoinAsUnion";
+        internal const string JoinAsUnion = "JoinAsUnion";
 
         /// <summary>
         /// Attribute denoting a pattern/patternGroup/query to be joined as minus
         /// </summary>
-        internal static readonly string JoinAsMinus = "JoinAsMinus";
+        internal const string JoinAsMinus = "JoinAsMinus";
 
         /// <summary>
         /// Attribute denoting a logically deleted intermediate results table
         /// </summary>
-        internal static readonly string LogicallyDeleted = "LogicallyDeleted";
+        internal const string LogicallyDeleted = "LogicallyDeleted";
         #endregion
 
         #region Ctors
@@ -1806,7 +1806,7 @@ namespace RDFSharp.Query
             DataColumn[] commonColumns = leftColumns.Intersect(rightColumns, dtComparer)
                                                     .Select(c => new DataColumn(c.ColumnName, c.DataType))
                                                     .ToArray();
-            int commonColumnsCount = commonColumns.Count();
+            int commonColumnsCount = commonColumns.Length;
 
             //Create structure of diff table
             diffTable.Columns.AddRange(leftColumns.Select(c => new DataColumn(c.ColumnName, c.DataType))

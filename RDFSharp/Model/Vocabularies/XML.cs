@@ -31,17 +31,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// xml
             /// </summary>
-            public static readonly string PREFIX = "xml";
+            public const string PREFIX = "xml";
 
             /// <summary>
             /// http://www.w3.org/XML/1998/namespace
             /// </summary>
-            public static readonly string BASE_URI = "http://www.w3.org/XML/1998/namespace";
+            public const string BASE_URI = "http://www.w3.org/XML/1998/namespace";
 
             /// <summary>
             /// http://www.w3.org/XML/1998/namespace
             /// </summary>
-            public static readonly string DEREFERENCE_URI = "http://www.w3.org/XML/1998/namespace";
+            public const string DEREFERENCE_URI = "http://www.w3.org/XML/1998/namespace";
 
             /// <summary>
             /// xml:lang

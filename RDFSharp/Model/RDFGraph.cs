@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using RDFSharp.Query;
@@ -28,7 +29,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFGraph represents an Uri-named collection of triples in the RDF model
     /// </summary>
-    public class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple>, IDisposable
+    public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple>, IDisposable
     {
         #region Properties
         /// <summary>
@@ -113,12 +114,7 @@ namespace RDFSharp.Model
             if (other == null || TriplesCount != other.TriplesCount)
                 return false;
 
-            foreach (RDFTriple t in this)
-            {
-                if (!other.ContainsTriple(t))
-                    return false;
-            }
-            return true;
+            return this.All(other.ContainsTriple);
         }
 
         /// <summary>
@@ -145,7 +141,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Disposes the graph
         /// </summary>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (Disposed)
                 return;

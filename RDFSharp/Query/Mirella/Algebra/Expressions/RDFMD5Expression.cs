@@ -100,10 +100,10 @@ namespace RDFSharp.Query
                     return null;
                 using (MD5CryptoServiceProvider md5Encryptor = new MD5CryptoServiceProvider())
                 {
-                    byte[] hashBytes = md5Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(leftArgumentPMember.ToString()));
                     StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < hashBytes.Length; i++)
-                        sb.Append(hashBytes[i].ToString("x2"));
+                    foreach (byte hashByte in md5Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(leftArgumentPMember.ToString())))
+                        sb.Append(hashByte.ToString("x2"));
+
                     expressionResult = new RDFPlainLiteral(sb.ToString());
                 }
                 #endregion

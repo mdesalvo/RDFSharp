@@ -334,7 +334,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Projected system used when coordinates of geometries span across multiple UTM zones
         /// </summary>
-        internal static CoordinateSystem LambertAzimutalWGS84 = new CoordinateSystemFactory().CreateFromWkt(
+        internal static readonly CoordinateSystem LambertAzimutalWGS84 = new CoordinateSystemFactory().CreateFromWkt(
 @"PROJCS[""WGS84 / Lambert Azim Mozambique"",
     GEOGCS[""WGS 84"",
         DATUM[""WGS_1984"",

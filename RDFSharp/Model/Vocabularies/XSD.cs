@@ -31,17 +31,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// xsd
             /// </summary>
-            public static readonly string PREFIX = "xsd";
+            public const string PREFIX = "xsd";
 
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#
             /// </summary>
-            public static readonly string BASE_URI = "http://www.w3.org/2001/XMLSchema#";
+            public const string BASE_URI = "http://www.w3.org/2001/XMLSchema#";
 
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#
             /// </summary>
-            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2001/XMLSchema#";
+            public const string DEREFERENCE_URI = "http://www.w3.org/2001/XMLSchema#";
 
             /// <summary>
             /// xsd:string

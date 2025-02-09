@@ -31,17 +31,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// rdfs
             /// </summary>
-            public static readonly string PREFIX = "rdfs";
+            public const string PREFIX = "rdfs";
 
             /// <summary>
             /// http://www.w3.org/2000/01/rdf-schema#
             /// </summary>
-            public static readonly string BASE_URI = "http://www.w3.org/2000/01/rdf-schema#";
+            public const string BASE_URI = "http://www.w3.org/2000/01/rdf-schema#";
 
             /// <summary>
             /// http://www.w3.org/2000/01/rdf-schema#
             /// </summary>
-            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2000/01/rdf-schema#";
+            public const string DEREFERENCE_URI = "http://www.w3.org/2000/01/rdf-schema#";
 
             /// <summary>
             /// rdfs:Resource

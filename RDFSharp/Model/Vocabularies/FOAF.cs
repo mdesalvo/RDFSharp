@@ -31,17 +31,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// foaf
             /// </summary>
-            public static readonly string PREFIX = "foaf";
+            public const string PREFIX = "foaf";
 
             /// <summary>
             /// http://xmlns.com/foaf/0.1/
             /// </summary>
-            public static readonly string BASE_URI = "http://xmlns.com/foaf/0.1/";
+            public const string BASE_URI = "http://xmlns.com/foaf/0.1/";
 
             /// <summary>
             /// http://xmlns.com/foaf/0.1/
             /// </summary>
-            public static readonly string DEREFERENCE_URI = "http://xmlns.com/foaf/0.1/";
+            public const string DEREFERENCE_URI = "http://xmlns.com/foaf/0.1/";
 
             /// <summary>
             /// foaf:Agent

@@ -171,12 +171,12 @@ namespace RDFSharp.Model
                 return data;
 
             StringBuilder b = new StringBuilder();
-            for (int i = 0; i < data.Length; i++)
+            foreach (char c in data)
             {
-                if (char.IsControl(data[i]) && data[i] != '\u0009' && data[i] != '\u000A' && data[i] != '\u000D')
-                    b.Append(string.Concat("\\u", ((int)data[i]).ToString("X4")));
+                if (char.IsControl(c) && c != '\u0009' && c != '\u000A' && c != '\u000D')
+                    b.Append(string.Concat("\\u", ((int)c).ToString("X4")));
                 else
-                    b.Append(data[i]);
+                    b.Append(c);
             }
             return b.ToString();
         }
@@ -554,16 +554,12 @@ namespace RDFSharp.Model
         /// Gives the Enum representation of the given datatype
         /// </summary>
         public static RDFModelEnums.RDFDatatypes GetEnumFromDatatype(this string datatype)
-        {
-            foreach (RDFModelEnums.RDFDatatypes enumValue in RDFModelEnums_RDFDatatypes_EnumValues)
-            {
-                MemberInfo enumValueInfo = RDFModelEnums_RDFDatatypes_EnumType.GetMember(enumValue.ToString())[0];
-                DescriptionAttribute enumValueDescriptionAttribute = enumValueInfo.GetCustomAttribute<DescriptionAttribute>();
-                if (string.Equals(datatype, enumValueDescriptionAttribute.Description))
-                    return enumValue;
-            }
-            return RDFModelEnums.RDFDatatypes.RDFS_LITERAL;
-        }
+            => (from RDFModelEnums.RDFDatatypes enumValue
+                in RDFModelEnums_RDFDatatypes_EnumValues
+                let enumValueInfo = RDFModelEnums_RDFDatatypes_EnumType.GetMember(enumValue.ToString())[0]
+                let enumValueDescriptionAttribute = enumValueInfo.GetCustomAttribute<DescriptionAttribute>()
+                where string.Equals(datatype, enumValueDescriptionAttribute.Description)
+                select enumValue).FirstOrDefault();
 
         /// <summary>
         /// Validates the value of the given typed literal against its datatype

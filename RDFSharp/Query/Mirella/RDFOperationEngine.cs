@@ -96,14 +96,12 @@ namespace RDFSharp.Query
             if (datasource.IsGraph())
             {
                 RDFGraph insertGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
-                foreach (RDFTriple insertTriple in insertGraph)
-                    insertTemplates.Add(new RDFPattern(insertTriple.Subject, insertTriple.Predicate, insertTriple.Object));
+                insertTemplates.AddRange(insertGraph.Select(insertTriple => new RDFPattern(insertTriple.Subject, insertTriple.Predicate, insertTriple.Object)));
             }
             else if (datasource.IsStore())
             {
                 RDFMemoryStore insertStore = RDFMemoryStore.FromDataTable(constructResult.ConstructResults);
-                foreach (RDFQuadruple insertQuadruple in insertStore)
-                    insertTemplates.Add(new RDFPattern(insertQuadruple.Context, insertQuadruple.Subject, insertQuadruple.Predicate, insertQuadruple.Object));
+                insertTemplates.AddRange(insertStore.Select(insertQuadruple => new RDFPattern(insertQuadruple.Context, insertQuadruple.Subject, insertQuadruple.Predicate, insertQuadruple.Object)));
             }
             operationResult.InsertResults = PopulateInsertOperationResults(insertTemplates, datasource);
 
@@ -137,14 +135,12 @@ namespace RDFSharp.Query
             if (datasource.IsGraph())
             {
                 RDFGraph deleteGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
-                foreach (RDFTriple deleteTriple in deleteGraph)
-                    deleteTemplates.Add(new RDFPattern(deleteTriple.Subject, deleteTriple.Predicate, deleteTriple.Object));
+                deleteTemplates.AddRange(deleteGraph.Select(deleteTriple => new RDFPattern(deleteTriple.Subject, deleteTriple.Predicate, deleteTriple.Object)));
             }
             else if (datasource.IsStore())
             {
                 RDFMemoryStore deleteStore = RDFMemoryStore.FromDataTable(constructResult.ConstructResults);
-                foreach (RDFQuadruple deleteQuadruple in deleteStore)
-                    deleteTemplates.Add(new RDFPattern(deleteQuadruple.Context, deleteQuadruple.Subject, deleteQuadruple.Predicate, deleteQuadruple.Object));
+                deleteTemplates.AddRange(deleteStore.Select(deleteQuadruple => new RDFPattern(deleteQuadruple.Context, deleteQuadruple.Subject, deleteQuadruple.Predicate, deleteQuadruple.Object)));
             }
             operationResult.DeleteResults = PopulateDeleteOperationResults(deleteTemplates, datasource);
 
@@ -168,22 +164,18 @@ namespace RDFSharp.Query
             if (datasource.IsGraph())
             {
                 RDFGraph deleteGraph = RDFGraph.FromDataTable(constructDeleteResult.ConstructResults);
-                foreach (RDFTriple deleteTriple in deleteGraph)
-                    deleteTemplates.Add(new RDFPattern(deleteTriple.Subject, deleteTriple.Predicate, deleteTriple.Object));
+                deleteTemplates.AddRange(deleteGraph.Select(deleteTriple => new RDFPattern(deleteTriple.Subject, deleteTriple.Predicate, deleteTriple.Object)));
 
                 RDFGraph insertGraph = RDFGraph.FromDataTable(constructInsertResult.ConstructResults);
-                foreach (RDFTriple insertTriple in insertGraph)
-                    insertTemplates.Add(new RDFPattern(insertTriple.Subject, insertTriple.Predicate, insertTriple.Object));
+                insertTemplates.AddRange(insertGraph.Select(insertTriple => new RDFPattern(insertTriple.Subject, insertTriple.Predicate, insertTriple.Object)));
             }
             else if (datasource.IsStore())
             {
                 RDFMemoryStore deleteStore = RDFMemoryStore.FromDataTable(constructDeleteResult.ConstructResults);
-                foreach (RDFQuadruple deleteQuadruple in deleteStore)
-                    deleteTemplates.Add(new RDFPattern(deleteQuadruple.Context, deleteQuadruple.Subject, deleteQuadruple.Predicate, deleteQuadruple.Object));
+                deleteTemplates.AddRange(deleteStore.Select(deleteQuadruple => new RDFPattern(deleteQuadruple.Context, deleteQuadruple.Subject, deleteQuadruple.Predicate, deleteQuadruple.Object)));
 
                 RDFMemoryStore insertStore = RDFMemoryStore.FromDataTable(constructInsertResult.ConstructResults);
-                foreach (RDFQuadruple insertQuadruple in insertStore)
-                    insertTemplates.Add(new RDFPattern(insertQuadruple.Context, insertQuadruple.Subject, insertQuadruple.Predicate, insertQuadruple.Object));
+                insertTemplates.AddRange(insertStore.Select(insertQuadruple => new RDFPattern(insertQuadruple.Context, insertQuadruple.Subject, insertQuadruple.Predicate, insertQuadruple.Object)));
             }
             operationResult.DeleteResults = PopulateDeleteOperationResults(deleteTemplates, datasource);
             operationResult.InsertResults = PopulateInsertOperationResults(insertTemplates, datasource);
@@ -204,17 +196,13 @@ namespace RDFSharp.Query
 
                 //GRAPH => Dereference triples
                 if (datasource.IsGraph())
-                {
-                    foreach (RDFTriple loadTriple in RDFGraph.FromUri(loadOperation.FromContext))
-                        insertTemplates.Add(new RDFPattern(loadTriple.Subject, loadTriple.Predicate, loadTriple.Object));
-                }
-
+                    insertTemplates.AddRange(RDFGraph.FromUri(loadOperation.FromContext).Select(loadTriple => new RDFPattern(loadTriple.Subject, loadTriple.Predicate, loadTriple.Object)));
+                
                 //STORE => Dereference quadruples (respect the target context, if provided by the operation)
                 else if (datasource.IsStore())
                 {
                     RDFContext targetContext = (loadOperation.ToContext != null ? new RDFContext(loadOperation.ToContext) : null);
-                    foreach (RDFQuadruple loadQuadruple in RDFMemoryStore.FromUri(loadOperation.FromContext))
-                        insertTemplates.Add(new RDFPattern(targetContext ?? loadQuadruple.Context, loadQuadruple.Subject, loadQuadruple.Predicate, loadQuadruple.Object));
+                    insertTemplates.AddRange(RDFMemoryStore.FromUri(loadOperation.FromContext).Select(loadQuadruple => new RDFPattern(targetContext ?? loadQuadruple.Context, loadQuadruple.Subject, loadQuadruple.Predicate, loadQuadruple.Object)));
                 }
 
                 operationResult.InsertResults = PopulateInsertOperationResults(insertTemplates, datasource);

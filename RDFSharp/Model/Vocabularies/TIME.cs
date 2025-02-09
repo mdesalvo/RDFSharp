@@ -32,17 +32,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// time
             /// </summary>
-            public static readonly string PREFIX = "time";
+            public const string PREFIX = "time";
 
             /// <summary>
             /// http://www.w3.org/2006/time#
             /// </summary>
-            public static readonly string BASE_URI = "http://www.w3.org/2006/time#";
+            public const string BASE_URI = "http://www.w3.org/2006/time#";
 
             /// <summary>
             /// http://www.w3.org/2006/time#
             /// </summary>
-            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2006/time#";
+            public const string DEREFERENCE_URI = "http://www.w3.org/2006/time#";
 
             /// <summary>
             /// time:DateTimeDescription
@@ -554,17 +554,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// greg
                 /// </summary>
-                public static readonly string PREFIX = "greg";
+                public const string PREFIX = "greg";
 
                 /// <summary>
                 /// http://www.w3.org/ns/time/gregorian#
                 /// </summary>
-                public static readonly string BASE_URI = "http://www.w3.org/ns/time/gregorian#";
+                public const string BASE_URI = "http://www.w3.org/ns/time/gregorian#";
 
                 /// <summary>
                 /// http://www.w3.org/2006/time#
                 /// </summary>
-                public static readonly string DEREFERENCE_URI = "http://www.w3.org/ns/time/gregorian#";
+                public const string DEREFERENCE_URI = "http://www.w3.org/ns/time/gregorian#";
 
                 /// <summary>
                 /// greg:January
@@ -635,17 +635,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// thors
                 /// </summary>
-                public static readonly string PREFIX = "thors";
+                public const string PREFIX = "thors";
 
                 /// <summary>
                 /// http://resource.geosciml.org/ontology/timescale/thors#
                 /// </summary>
-                public static readonly string BASE_URI = "http://resource.geosciml.org/ontology/timescale/thors#";
+                public const string BASE_URI = "http://resource.geosciml.org/ontology/timescale/thors#";
 
                 /// <summary>
                 /// http://resource.geosciml.org/ontology/timescale/thors
                 /// </summary>
-                public static readonly string DEREFERENCE_URI = "http://resource.geosciml.org/ontology/timescale/thors#";
+                public const string DEREFERENCE_URI = "http://resource.geosciml.org/ontology/timescale/thors#";
 
                 /// <summary>
                 /// thors:Era

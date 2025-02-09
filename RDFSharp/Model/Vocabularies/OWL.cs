@@ -31,17 +31,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// owl
             /// </summary>
-            public static readonly string PREFIX = "owl";
+            public const string PREFIX = "owl";
 
             /// <summary>
             /// http://www.w3.org/2002/07/owl#
             /// </summary>
-            public static readonly string BASE_URI = "http://www.w3.org/2002/07/owl#";
+            public const string BASE_URI = "http://www.w3.org/2002/07/owl#";
 
             /// <summary>
             /// http://www.w3.org/2002/07/owl#
             /// </summary>
-            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2002/07/owl#";
+            public const string DEREFERENCE_URI = "http://www.w3.org/2002/07/owl#";
 
             /// <summary>
             /// owl:Ontology
