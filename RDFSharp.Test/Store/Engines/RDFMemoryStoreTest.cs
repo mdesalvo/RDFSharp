@@ -946,7 +946,7 @@ public class RDFMemoryStoreTest
         Assert.IsNotNull(intersectionEmptyA);
         Assert.IsTrue(intersectionEmptyA.QuadruplesCount == 0);
 
-        RDFMemoryStore intersectionEmptyB = (new RDFMemoryStore()).IntersectWith(store1);
+        RDFMemoryStore intersectionEmptyB = new RDFMemoryStore().IntersectWith(store1);
         Assert.IsNotNull(intersectionEmptyB);
         Assert.IsTrue(intersectionEmptyB.QuadruplesCount == 0);
 
@@ -980,7 +980,7 @@ public class RDFMemoryStoreTest
         Assert.IsNotNull(unionEmptyA);
         Assert.IsTrue(unionEmptyA.QuadruplesCount == 3);
 
-        RDFMemoryStore unionEmptyB = (new RDFMemoryStore()).UnionWith(store1);
+        RDFMemoryStore unionEmptyB = new RDFMemoryStore().UnionWith(store1);
         Assert.IsNotNull(unionEmptyB);
         Assert.IsTrue(unionEmptyB.QuadruplesCount == 3);
 
@@ -1014,7 +1014,7 @@ public class RDFMemoryStoreTest
         Assert.IsNotNull(differenceEmptyA);
         Assert.IsTrue(differenceEmptyA.QuadruplesCount == 3);
 
-        RDFMemoryStore differenceEmptyB = (new RDFMemoryStore()).DifferenceWith(store1);
+        RDFMemoryStore differenceEmptyB = new RDFMemoryStore().DifferenceWith(store1);
         Assert.IsNotNull(differenceEmptyB);
         Assert.IsTrue(differenceEmptyB.QuadruplesCount == 0);
 
@@ -2694,7 +2694,7 @@ public class RDFMemoryStoreTest
         Assert.IsNotNull(intersectionEmptyA);
         Assert.IsTrue(intersectionEmptyA.QuadruplesCount == 0);
 
-        RDFMemoryStore intersectionEmptyB = await (new RDFMemoryStore()).IntersectWithAsync(store1);
+        RDFMemoryStore intersectionEmptyB = await new RDFMemoryStore().IntersectWithAsync(store1);
         Assert.IsNotNull(intersectionEmptyB);
         Assert.IsTrue(intersectionEmptyB.QuadruplesCount == 0);
 
@@ -2728,7 +2728,7 @@ public class RDFMemoryStoreTest
         Assert.IsNotNull(unionEmptyA);
         Assert.IsTrue(unionEmptyA.QuadruplesCount == 3);
 
-        RDFMemoryStore unionEmptyB = await (new RDFMemoryStore()).UnionWithAsync(store1);
+        RDFMemoryStore unionEmptyB = await new RDFMemoryStore().UnionWithAsync(store1);
         Assert.IsNotNull(unionEmptyB);
         Assert.IsTrue(unionEmptyB.QuadruplesCount == 3);
 
@@ -2762,7 +2762,7 @@ public class RDFMemoryStoreTest
         Assert.IsNotNull(differenceEmptyA);
         Assert.IsTrue(differenceEmptyA.QuadruplesCount == 3);
 
-        RDFMemoryStore differenceEmptyB = await (new RDFMemoryStore()).DifferenceWithAsync(store1);
+        RDFMemoryStore differenceEmptyB = await new RDFMemoryStore().DifferenceWithAsync(store1);
         Assert.IsNotNull(differenceEmptyB);
         Assert.IsTrue(differenceEmptyB.QuadruplesCount == 0);
 

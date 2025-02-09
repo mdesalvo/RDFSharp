@@ -61,8 +61,7 @@ public class RDFShapesGraphTest
         while (shapesEnumerator.MoveNext()) i++;
         Assert.IsTrue(i == 1);
 
-        int j = 0;
-        foreach (RDFShape shp in shapesGraph) j++;
+        int j = shapesGraph.Count();
         Assert.IsTrue(j == 1);
     }
 

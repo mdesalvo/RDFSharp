@@ -91,8 +91,7 @@ public class RDFPropertyShapeTests
     public void ShouldEnumeratePropertyShape()
     {
         RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME);
-        int i = 0;
-        foreach (RDFConstraint constraint in propertyShape) i++;
+        int i = propertyShape.Count();
 
         Assert.IsTrue(i == 0);
     }

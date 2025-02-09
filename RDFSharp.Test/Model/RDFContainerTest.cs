@@ -18,6 +18,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RDFSharp.Test.Model;
 
@@ -42,8 +43,7 @@ public class RDFContainerTest
         Assert.IsTrue(cont.ItemsCount == 0);
         Assert.IsTrue(cont.ReificationSubject.IsBlank);
 
-        int i = 0;
-        foreach (RDFPatternMember item in cont) i++;
+        int i = cont.Count();
         Assert.IsTrue(i == 0);
 
         int j = 0;
@@ -67,8 +67,7 @@ public class RDFContainerTest
         else
             cont.AddItem(new RDFResource("http://item/"));
 
-        int i = 0;
-        foreach (RDFPatternMember item in cont) i++;
+        int i = cont.Count();
         Assert.IsTrue(i == 1);
 
         int j = 0;

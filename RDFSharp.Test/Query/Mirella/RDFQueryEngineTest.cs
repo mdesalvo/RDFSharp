@@ -199,7 +199,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_UnionsThenOptional()
+    public void ShouldEvaluateSelectQueryOnGraphUnionsThenOptional()
     {
         RDFGraph graph = new RDFGraph(
         [
@@ -232,7 +232,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_UnionsThenInner()
+    public void ShouldEvaluateSelectQueryOnGraphUnionsThenInner()
     {
         RDFGraph graph = new RDFGraph(
         [
@@ -263,7 +263,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_MinusPatternGroup()
+    public void ShouldEvaluateSelectQueryOnGraphMinusPatternGroup()
     {
         RDFGraph graph = new RDFGraph(
         [
@@ -315,7 +315,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_MinusPattern()
+    public void ShouldEvaluateSelectQueryOnGraphMinusPattern()
     {
         RDFGraph graph = new RDFGraph(
         [
@@ -355,7 +355,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_BindAndProjectionExpressions()
+    public void ShouldEvaluateSelectQueryOnGraphBindAndProjectionExpressions()
     {
         RDFGraph graph = new RDFGraph(
         [
@@ -402,7 +402,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_BindAndProjectionExpressionsSortedByBind()
+    public void ShouldEvaluateSelectQueryOnGraphBindAndProjectionExpressionsSortedByBind()
     {
         RDFGraph graph = new RDFGraph(
         [
@@ -449,7 +449,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_BindAndProjectionExpressionsSortedByProjectionExpressions()
+    public void ShouldEvaluateSelectQueryOnGraphBindAndProjectionExpressionsSortedByProjectionExpressions()
     {
         RDFGraph graph = new RDFGraph(
         [
@@ -496,7 +496,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_BindAndProjectionExpressionsSortedByProjectionExpressionsThenByBind()
+    public void ShouldEvaluateSelectQueryOnGraphBindAndProjectionExpressionsSortedByProjectionExpressionsThenByBind()
     {
         RDFGraph graph = new RDFGraph(
         [
@@ -551,7 +551,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_BindAndProjectionExpressionsSortedByBindThenByProjectionExpressions()
+    public void ShouldEvaluateSelectQueryOnGraphBindAndProjectionExpressionsSortedByBindThenByProjectionExpressions()
     {
         RDFGraph graph = new RDFGraph(
         [
@@ -606,7 +606,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_ProjectionExpressionsSortedByUnboundProjectionExpressions()
+    public void ShouldEvaluateSelectQueryOnGraphProjectionExpressionsSortedByUnboundProjectionExpressions()
     {
         RDFGraph graph = new RDFGraph(
         [
@@ -638,7 +638,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_StarWithBind()
+    public void ShouldEvaluateSelectQueryOnGraphStarWithBind()
     {
         RDFGraph graph = new RDFGraph(
         [
@@ -680,7 +680,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_EmptyTableConstantExpressionBoundValue()
+    public void ShouldEvaluateSelectQueryOnGraphEmptyTableConstantExpressionBoundValue()
     {
         RDFGraph graph = new RDFGraph();
 
@@ -697,7 +697,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_EmptyTableConstantExpressionProjectedValue()
+    public void ShouldEvaluateSelectQueryOnGraphEmptyTableConstantExpressionProjectedValue()
     {
         RDFGraph graph = new RDFGraph();
 
@@ -713,7 +713,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_EmptyTableNowExpressionProjectedValue()
+    public void ShouldEvaluateSelectQueryOnGraphEmptyTableNowExpressionProjectedValue()
     {
         RDFGraph graph = new RDFGraph();
 
@@ -729,7 +729,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_EmptyTableComplexVariableLessExpressionProjectedValue1()
+    public void ShouldEvaluateSelectQueryOnGraphEmptyTableComplexVariableLessExpressionProjectedValue1()
     {
         RDFGraph graph = new RDFGraph();
 
@@ -747,7 +747,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_EmptyTableComplexVariableLessExpressionProjectedValue2()
+    public void ShouldEvaluateSelectQueryOnGraphEmptyTableComplexVariableLessExpressionProjectedValue2()
     {
         RDFGraph graph = new RDFGraph();
 
@@ -766,7 +766,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_EmptyTableComplexVariableLessExpressionProjectedValue3()
+    public void ShouldEvaluateSelectQueryOnGraphEmptyTableComplexVariableLessExpressionProjectedValue3()
     {
         RDFGraph graph = new RDFGraph();
 
@@ -785,7 +785,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_EmptyTableRandExpressionProjectedValue()
+    public void ShouldEvaluateSelectQueryOnGraphEmptyTableRandExpressionProjectedValue()
     {
         RDFGraph graph = new RDFGraph();
 
@@ -801,7 +801,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_EmptyTableFloorExpressionProjectedValue()
+    public void ShouldEvaluateSelectQueryOnGraphEmptyTableFloorExpressionProjectedValue()
     {
         RDFGraph graph = new RDFGraph();
 
@@ -817,7 +817,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_EmptyTableFloorExpressionProjectedValueFromSubQuery1()
+    public void ShouldEvaluateSelectQueryOnGraphEmptyTableFloorExpressionProjectedValueFromSubQuery1()
     {
         RDFGraph graph = new RDFGraph();
 
@@ -835,7 +835,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraph_EmptyTableFloorExpressionProjectedValueFromSubQuery2()
+    public void ShouldEvaluateSelectQueryOnGraphEmptyTableFloorExpressionProjectedValueFromSubQuery2()
     {
         RDFGraph graph = new RDFGraph();
 
@@ -1554,7 +1554,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnFederation_BindAndProjectionExpressions()
+    public void ShouldEvaluateSelectueryOnFederation_BindAndProjectionExpressions()
     {
         RDFGraph graph = new RDFGraph(
         [
@@ -1605,7 +1605,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpoints()
+    public void ShouldEvaluateSelectQeryOnFederationWithResults_SPARQLEndpoints()
     {
         string receivedQuery1 = "";
         string receivedQuery2 = "";
@@ -1733,7 +1733,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneGivingEmptyResult()
+    public void ShouldEvaluateSelectQuryOnFederationWithResults_SPARQLEndpointsOneGivingEmptyResult()
     {
         string receivedQuery1 = "";
         string receivedQuery2 = "";
@@ -1863,7 +1863,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneThrowingException()
+    public void ShouldEvaluateSelectQueyOnFederationWithResultsSPARQLEndpointsOneThrowingException()
     {
         string receivedQuery1 = "";
         string receivedQuery2 = "";

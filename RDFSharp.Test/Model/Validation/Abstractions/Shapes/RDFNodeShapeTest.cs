@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 
@@ -56,8 +57,7 @@ public class RDFNodeShapeTests
     public void ShouldEnumerateNodeShape()
     {
         RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
-        int i = 0;
-        foreach (RDFConstraint constraint in nodeShape) i++;
+        int i = nodeShape.Count();
 
         Assert.IsTrue(i == 0);
     }

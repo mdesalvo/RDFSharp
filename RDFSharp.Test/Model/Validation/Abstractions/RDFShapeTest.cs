@@ -107,9 +107,7 @@ public class RDFShapeTest
         while (constraintsEnumerator.MoveNext()) i++;
         Assert.IsTrue(i == 1);
 
-        int j = 0;
-        foreach (RDFConstraint constraint in shape)
-            j++;
+        int j = shape.Count();
         Assert.IsTrue(j == 1);
     }
 

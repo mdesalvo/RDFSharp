@@ -18,6 +18,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RDFSharp.Test.Model;
@@ -169,8 +170,7 @@ public class RDFValidationReportTest
         while (resultsEnumerator.MoveNext()) i++;
         Assert.IsTrue(i == 1);
 
-        int j = 0;
-        foreach (RDFValidationResult vr in vRep) j++;
+        int j = vRep.Count();
         Assert.IsTrue(j == 1);
     }
 

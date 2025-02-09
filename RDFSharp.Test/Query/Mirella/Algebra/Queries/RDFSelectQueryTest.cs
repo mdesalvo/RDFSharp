@@ -2053,7 +2053,7 @@ public class RDFSelectQueryTest
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-        RDFSelectQueryResult result = query.ApplyToDataSource(null as RDFGraph);
+        RDFSelectQueryResult result = query.ApplyToDataSource(null);
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.SelectResults);

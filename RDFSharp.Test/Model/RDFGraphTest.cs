@@ -47,8 +47,7 @@ public class RDFGraphTest
         Assert.IsNotNull(graph.Context);
         Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
 
-        int i = 0;
-        foreach (RDFTriple t in graph) i++;
+        int i = graph.Count();
         Assert.IsTrue(i == 0);
 
         int j = 0;
@@ -149,8 +148,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit"))
         ]);
 
-        int i = 0;
-        foreach (RDFTriple t in graph) i++;
+        int i = graph.Count();
         Assert.IsTrue(i == 2);
 
         int j = 0;
