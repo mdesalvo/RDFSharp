@@ -193,8 +193,6 @@ namespace RDFSharp.Test.Query
         {
             RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
             aggregator.ExecutePartition(null, null); //Just no-op
-
-            Assert.IsTrue(true);
         }
 
         [TestMethod]
@@ -211,8 +209,6 @@ namespace RDFSharp.Test.Query
         {
             RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
             aggregator.UpdateProjectionTable(null, null); //Just no-op
-
-            Assert.IsTrue(true);
         }
 
         //AggregatorContext

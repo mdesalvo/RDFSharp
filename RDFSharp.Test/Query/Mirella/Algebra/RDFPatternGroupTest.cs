@@ -164,7 +164,7 @@ namespace RDFSharp.Test.Query
                     pattern3,
                     pattern1, //Will not be added, since duplicate patterns are not allowed
                     null, //Will not be added, since null is not allowed
-                    groundPattern, //Will not be added, since ground patterns are not allowed
+                    groundPattern //Will not be added, since ground patterns are not allowed
                 ]);
 
             Assert.IsNotNull(pGroup);
@@ -202,12 +202,12 @@ namespace RDFSharp.Test.Query
                     pattern3,
                     pattern1, //Will not be added, since duplicate patterns are not allowed
                     null, //Will not be added, since null is not allowed
-                    groundPattern, //Will not be added, since ground patterns are not allowed
+                    groundPattern //Will not be added, since ground patterns are not allowed
                 ],
                 [
                     filter,
                     null, //Will not be added, since null is not allowed
-                    filter, //Will not be added, since duplicate filters are not allowed
+                    filter //Will not be added, since duplicate filters are not allowed
                 ]);
 
             Assert.IsNotNull(pGroup);

@@ -1517,7 +1517,7 @@ namespace RDFSharp.Test.Query
         {
             RDFGraph graph = new RDFGraph(
             [
-                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino"))
             ]);
             RDFMemoryStore store = new RDFMemoryStore(
             [
@@ -1558,7 +1558,7 @@ namespace RDFSharp.Test.Query
         {
             RDFGraph graph = new RDFGraph(
             [
-                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
+                new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino"))
             ]);
             RDFMemoryStore store = new RDFMemoryStore(
             [
@@ -7144,7 +7144,7 @@ namespace RDFSharp.Test.Query
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" },
                 { "?N", "Mickey Mouse@EN-US" },
-                { "?A", $"85^^{RDFVocabulary.XSD.INTEGER}" },
+                { "?A", $"85^^{RDFVocabulary.XSD.INTEGER}" }
             };
             RDFQueryEngine.AddRow(table, tableBindings1);
             Dictionary<string, string> tableBindings2 = new Dictionary<string, string>
@@ -7152,7 +7152,7 @@ namespace RDFSharp.Test.Query
                 { "?Y", "ex:fido" },
                 { "?X", "ex:paperino" },
                 { "?N", "Donald Duck@EN-US" },
-                { "?A", $"83^^{RDFVocabulary.XSD.INTEGER}" },
+                { "?A", $"83^^{RDFVocabulary.XSD.INTEGER}" }
             };
             RDFQueryEngine.AddRow(table, tableBindings2);
             Dictionary<string, string> tableBindings3 = new Dictionary<string, string>
@@ -7160,7 +7160,7 @@ namespace RDFSharp.Test.Query
                 { "?Y", "ex:balto" },
                 { "?X", "ex:whoever" },
                 { "?N", null },
-                { "?A", null },
+                { "?A", null }
             };
             RDFQueryEngine.AddRow(table, tableBindings3);
 
@@ -7192,7 +7192,7 @@ namespace RDFSharp.Test.Query
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" },
                 { "?N", "Mickey Mouse@EN-US" },
-                { "?A", $"85^^{RDFVocabulary.XSD.INTEGER}" },
+                { "?A", $"85^^{RDFVocabulary.XSD.INTEGER}" }
             };
             RDFQueryEngine.AddRow(table, tableBindings1);
             Dictionary<string, string> tableBindings2 = new Dictionary<string, string>
@@ -7200,7 +7200,7 @@ namespace RDFSharp.Test.Query
                 { "?Y", "ex:fido" },
                 { "?X", "ex:paperino" },
                 { "?N", "Donald Duck@EN-US" },
-                { "?A", $"83^^{RDFVocabulary.XSD.INTEGER}" },
+                { "?A", $"83^^{RDFVocabulary.XSD.INTEGER}" }
             };
             RDFQueryEngine.AddRow(table, tableBindings2);
             Dictionary<string, string> tableBindings3 = new Dictionary<string, string>
@@ -7208,7 +7208,7 @@ namespace RDFSharp.Test.Query
                 { "?Y", "ex:balto" },
                 { "?X", "ex:whoever" },
                 { "?N", null },
-                { "?A", null },
+                { "?A", null }
             };
             RDFQueryEngine.AddRow(table, tableBindings3);
 
@@ -7239,7 +7239,7 @@ namespace RDFSharp.Test.Query
                 { "?Y", "ex:pluto" },
                 { "?X", "ex:topolino" },
                 { "?N", "Mickey Mouse@EN-US" },
-                { "?A", $"85^^{RDFVocabulary.XSD.INTEGER}" },
+                { "?A", $"85^^{RDFVocabulary.XSD.INTEGER}" }
             };
             RDFQueryEngine.AddRow(table, tableBindings1);
             Dictionary<string, string> tableBindings2 = new Dictionary<string, string>
@@ -7247,7 +7247,7 @@ namespace RDFSharp.Test.Query
                 { "?Y", "ex:fido" },
                 { "?X", "ex:paperino" },
                 { "?N", "Donald Duck@EN-US" },
-                { "?A", $"83^^{RDFVocabulary.XSD.INTEGER}" },
+                { "?A", $"83^^{RDFVocabulary.XSD.INTEGER}" }
             };
             RDFQueryEngine.AddRow(table, tableBindings2);
             Dictionary<string, string> tableBindings3 = new Dictionary<string, string>
@@ -7255,7 +7255,7 @@ namespace RDFSharp.Test.Query
                 { "?Y", "ex:balto" },
                 { "?X", "ex:whoever" },
                 { "?N", null },
-                { "?A", null },
+                { "?A", null }
             };
             RDFQueryEngine.AddRow(table, tableBindings3);
 

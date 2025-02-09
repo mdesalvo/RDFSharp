@@ -201,7 +201,6 @@ namespace RDFSharp.Test.Query
             (bool, string) result = RDFQueryUtilities.AbbreviateRDFPatternMember(new RDFResource("test:HTML"),
                                         [new RDFNamespace("test","http://test/")]);
 
-            Assert.IsNotNull(result);
             Assert.IsTrue(result.Item1);
             Assert.IsTrue(result.Item2.Equals("test:HTML"));
         }
@@ -212,7 +211,6 @@ namespace RDFSharp.Test.Query
             (bool, string) result = RDFQueryUtilities.AbbreviateRDFPatternMember(new RDFResource("http://test/HTML"),
                                         [new RDFNamespace("test","http://test/")]);
 
-            Assert.IsNotNull(result);
             Assert.IsTrue(result.Item1);
             Assert.IsTrue(result.Item2.Equals("test:HTML"));
         }
@@ -223,7 +221,6 @@ namespace RDFSharp.Test.Query
             (bool, string) result = RDFQueryUtilities.AbbreviateRDFPatternMember(new RDFResource("http://test/HTML"),
                                         [new RDFNamespace("test1","http://test"), new RDFNamespace("test2","http://test")]);
 
-            Assert.IsNotNull(result);
             Assert.IsTrue(result.Item1);
             Assert.IsTrue(result.Item2.Equals("test1:HTML"));
         }
@@ -234,7 +231,6 @@ namespace RDFSharp.Test.Query
             (bool, string) result = RDFQueryUtilities.AbbreviateRDFPatternMember(new RDFResource("http://test/HTML1"),
                                         [new RDFNamespace("test1","http://test/HTML"), new RDFNamespace("test2","http://test/")]);
 
-            Assert.IsNotNull(result);
             Assert.IsTrue(result.Item1);
             Assert.IsTrue(result.Item2.Equals("test2:HTML1"));
         }
@@ -244,7 +240,6 @@ namespace RDFSharp.Test.Query
         {
             (bool, string) result = RDFQueryUtilities.AbbreviateRDFPatternMember(new RDFResource("http://test/HTML"), null);
 
-            Assert.IsNotNull(result);
             Assert.IsFalse(result.Item1);
             Assert.IsTrue(result.Item2.Equals("http://test/HTML"));
         }
@@ -262,7 +257,7 @@ namespace RDFSharp.Test.Query
                 new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER),
                 new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)
             ];
-            List<RDFPatternMember> pMembersWithoutDuplicates = RDFQueryUtilities.RemoveDuplicates<RDFPatternMember>(pMembers);
+            List<RDFPatternMember> pMembersWithoutDuplicates = RDFQueryUtilities.RemoveDuplicates(pMembers);
 
             Assert.IsNotNull(pMembersWithoutDuplicates);
             Assert.IsTrue(pMembersWithoutDuplicates.Count == 4);

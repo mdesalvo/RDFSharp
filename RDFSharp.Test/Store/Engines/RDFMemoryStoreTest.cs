@@ -60,8 +60,7 @@ namespace RDFSharp.Test.Store
             Assert.IsTrue(store.StoreID.Equals(RDFModelUtilities.CreateHash(store.ToString())));
             Assert.IsTrue(store.ToString().Equals($"MEMORY|ID={store.StoreGUID}"));
 
-            int i = 0;
-            foreach (RDFQuadruple quad in store) i++;
+            int i = store.Count();
             Assert.IsTrue(i == 1);
 
             int j = 0;
@@ -83,7 +82,6 @@ namespace RDFSharp.Test.Store
             };
             Assert.IsTrue(store.Disposed);
             Assert.IsNull(store.IndexedQuadruples);
-            Assert.IsNull(store.StoreIndex);
         }
 
         [TestMethod]
