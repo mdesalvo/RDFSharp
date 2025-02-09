@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -43,11 +43,11 @@ public class RDFPartitionAggregatorTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPartitionAggregatorBecauseNullAggregatorVariable()
-        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFPartitionAggregator(null as RDFVariable, new RDFVariable("?PROJVAR")));
+        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFPartitionAggregator(null, new RDFVariable("?PROJVAR")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPartitionAggregatorBecauseNullPartitionVariable()
-        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFPartitionAggregator(new RDFVariable("?AGGVAR"), null as RDFVariable));
+        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFPartitionAggregator(new RDFVariable("?AGGVAR"), null));
 
     [TestMethod]
     public void ShouldCreateDistinctPartitionAggregator()

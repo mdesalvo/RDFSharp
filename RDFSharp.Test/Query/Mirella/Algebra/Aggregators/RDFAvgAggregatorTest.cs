@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -43,11 +43,11 @@ public class RDFAvgAggregatorTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAvgAggregatorBecauseNullAggregatorVariable()
-        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFAvgAggregator(null as RDFVariable, new RDFVariable("?PROJVAR")));
+        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFAvgAggregator(null, new RDFVariable("?PROJVAR")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAvgAggregatorBecauseNullPartitionVariable()
-        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFAvgAggregator(new RDFVariable("?AGGVAR"), null as RDFVariable));
+        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFAvgAggregator(new RDFVariable("?AGGVAR"), null));
 
     [TestMethod]
     public void ShouldCreateDistinctAvgAggregator()

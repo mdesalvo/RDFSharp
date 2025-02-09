@@ -736,7 +736,7 @@ public class RDFSelectQueryTest
 
         try
         {
-            RDFSelectQueryResult result = query.ApplyToGraph(new RDFGraph());
+            _ = query.ApplyToGraph(new RDFGraph());
         }
         catch (RDFQueryException qex) 
         {
@@ -801,7 +801,7 @@ public class RDFSelectQueryTest
 
         try
         {
-            RDFSelectQueryResult result = query.ApplyToGraph(new RDFGraph());
+            _ = query.ApplyToGraph(new RDFGraph());
         }
         catch (RDFQueryException qex) 
         {

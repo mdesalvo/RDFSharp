@@ -1554,7 +1554,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectueryOnFederation_BindAndProjectionExpressions()
+    public void houldEvaluateSelectueryOnFederation_BindAndProjectionExpressions()
     {
         RDFGraph graph = new RDFGraph(
         [
@@ -1605,7 +1605,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQeryOnFederationWithResults_SPARQLEndpoints()
+    public void SouldEvaluateSelectQeryOnFederationWithResultsSPARQLEndpoints()
     {
         string receivedQuery1 = "";
         string receivedQuery2 = "";
@@ -1733,7 +1733,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQuryOnFederationWithResults_SPARQLEndpointsOneGivingEmptyResult()
+    public void ShouldEvaluateSelectQuryOnFederationWithResultsSPARQLEndpointsOneGivingEmptyResult()
     {
         string receivedQuery1 = "";
         string receivedQuery2 = "";

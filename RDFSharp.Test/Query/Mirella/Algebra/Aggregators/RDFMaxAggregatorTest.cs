@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -48,13 +48,13 @@ public class RDFMaxAggregatorTest
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric)]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.String)]
     public void ShouldThrowExceptionOnCreatingStringMaxAggregatorBecauseNullAggregatorVariable(RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor)
-        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFMaxAggregator(null as RDFVariable, new RDFVariable("?PROJVAR"), aggregatorFlavor));
+        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFMaxAggregator(null, new RDFVariable("?PROJVAR"), aggregatorFlavor));
 
     [DataTestMethod]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric)]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.String)]
     public void ShouldThrowExceptionOnCreatingStringMaxAggregatorBecauseNullPartitionVariable(RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor)
-        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFMaxAggregator(new RDFVariable("?AGGVAR"), null as RDFVariable, aggregatorFlavor));
+        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFMaxAggregator(new RDFVariable("?AGGVAR"), null, aggregatorFlavor));
 
     [DataTestMethod]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric)]

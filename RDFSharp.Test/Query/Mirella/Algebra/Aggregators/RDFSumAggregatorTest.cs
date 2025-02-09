@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -43,11 +43,11 @@ public class RDFSumAggregatorTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingSumAggregatorBecauseNullAggregatorVariable()
-        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFSumAggregator(null as RDFVariable, new RDFVariable("?PROJVAR")));
+        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFSumAggregator(null, new RDFVariable("?PROJVAR")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingSumAggregatorBecauseNullPartitionVariable()
-        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFSumAggregator(new RDFVariable("?AGGVAR"), null as RDFVariable));
+        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFSumAggregator(new RDFVariable("?AGGVAR"), null));
 
     [TestMethod]
     public void ShouldCreateDistinctSumAggregator()

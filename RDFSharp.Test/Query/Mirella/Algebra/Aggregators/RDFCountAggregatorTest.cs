@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -43,11 +43,11 @@ public class RDFCountAggregatorTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingCountAggregatorBecauseNullAggregatorVariable()
-        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFCountAggregator(null as RDFVariable, new RDFVariable("?PROJVAR")));
+        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFCountAggregator(null, new RDFVariable("?PROJVAR")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingCountAggregatorBecauseNullPartitionVariable()
-        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFCountAggregator(new RDFVariable("?AGGVAR"), null as RDFVariable));
+        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFCountAggregator(new RDFVariable("?AGGVAR"), null));
 
     [TestMethod]
     public void ShouldCreateDistinctCountAggregator()

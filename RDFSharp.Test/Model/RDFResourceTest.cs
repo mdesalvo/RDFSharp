@@ -103,7 +103,7 @@ public class RDFResourceTest
         RDFTriple triple4 = new RDFTriple(res1, res2CacheHitB, res3);
         RDFTriple triple5 = new RDFTriple(res1CacheHitA, res2CacheHitA, res3);
         RDFTriple triple6 = new RDFTriple(res1CacheHitA, res2CacheHitB, res3);
-        RDFGraph graph = new RDFGraph([triple1, triple2, triple3, triple4, triple5, triple6]);
+        _ = new RDFGraph([triple1, triple2, triple3, triple4, triple5, triple6]);
 
         //Now we have materialized the lazy promises and calculated the hashes, exploiting the cache for boosting performances
         Assert.IsTrue(hashContext.Count == 3);

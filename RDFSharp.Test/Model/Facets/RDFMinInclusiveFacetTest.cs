@@ -31,7 +31,7 @@ public class RDFMinInclusiveFacetTest
         RDFMinInclusiveFacet facet = new RDFMinInclusiveFacet(6.145);
 
         Assert.IsNotNull(facet);
-        Assert.IsTrue(facet.InclusiveLowerBound == 6.145d);
+        Assert.AreEqual(6.145d, facet.InclusiveLowerBound);
         Assert.IsTrue(facet.URI.IsBlank);
     }
 

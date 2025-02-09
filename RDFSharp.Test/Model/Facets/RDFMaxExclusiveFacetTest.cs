@@ -31,7 +31,7 @@ public class RDFMaxExclusiveFacetTest
         RDFMaxExclusiveFacet facet = new RDFMaxExclusiveFacet(6.145);
 
         Assert.IsNotNull(facet);
-        Assert.IsTrue(facet.ExclusiveUpperBound == 6.145d);
+        Assert.AreEqual(6.145d, facet.ExclusiveUpperBound);
         Assert.IsTrue(facet.URI.IsBlank);
     }
 
