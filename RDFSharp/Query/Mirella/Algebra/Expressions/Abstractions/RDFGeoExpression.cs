@@ -14,15 +14,15 @@
    limitations under the License.
 */
 
-using NetTopologySuite.Geometries;
-using NetTopologySuite.IO.GML2;
-using NetTopologySuite.IO;
-using RDFSharp.Model;
 using System;
 using System.Data;
 using System.Globalization;
-using ProjNet.CoordinateSystems.Transformations;
+using NetTopologySuite.Geometries;
+using NetTopologySuite.IO;
+using NetTopologySuite.IO.GML2;
 using ProjNet.CoordinateSystems;
+using ProjNet.CoordinateSystems.Transformations;
+using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {

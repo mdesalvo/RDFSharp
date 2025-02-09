@@ -14,10 +14,9 @@
    limitations under the License.
 */
 
-using RDFSharp.Model;
 using System.Collections.Generic;
 using System.Data;
-
+using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {

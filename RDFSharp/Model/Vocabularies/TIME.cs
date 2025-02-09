@@ -47,502 +47,502 @@ namespace RDFSharp.Model
             /// <summary>
             /// time:DateTimeDescription
             /// </summary>
-            public static readonly RDFResource DATETIME_DESCRIPTION = new RDFResource(string.Concat(TIME.BASE_URI, "DateTimeDescription"));
+            public static readonly RDFResource DATETIME_DESCRIPTION = new RDFResource(string.Concat(BASE_URI, "DateTimeDescription"));
 
             /// <summary>
             /// time:DateTimeInterval
             /// </summary>
-            public static readonly RDFResource DATETIME_INTERVAL = new RDFResource(string.Concat(TIME.BASE_URI, "DateTimeInterval"));
+            public static readonly RDFResource DATETIME_INTERVAL = new RDFResource(string.Concat(BASE_URI, "DateTimeInterval"));
 
             /// <summary>
             /// time:DayOfWeek
             /// </summary>
-            public static readonly RDFResource DAY_OF_WEEK_CLASS = new RDFResource(string.Concat(TIME.BASE_URI, "DayOfWeek"));
+            public static readonly RDFResource DAY_OF_WEEK_CLASS = new RDFResource(string.Concat(BASE_URI, "DayOfWeek"));
 
             /// <summary>
             /// time:Duration
             /// </summary>
-            public static readonly RDFResource DURATION = new RDFResource(string.Concat(TIME.BASE_URI, "Duration"));
+            public static readonly RDFResource DURATION = new RDFResource(string.Concat(BASE_URI, "Duration"));
 
             /// <summary>
             /// time:DurationDescription
             /// </summary>
-            public static readonly RDFResource DURATION_DESCRIPTION = new RDFResource(string.Concat(TIME.BASE_URI, "DurationDescription"));
+            public static readonly RDFResource DURATION_DESCRIPTION = new RDFResource(string.Concat(BASE_URI, "DurationDescription"));
 
             /// <summary>
             /// time:GeneralDateTimeDescription
             /// </summary>
-            public static readonly RDFResource GENERAL_DATETIME_DESCRIPTION = new RDFResource(string.Concat(TIME.BASE_URI, "GeneralDateTimeDescription"));
+            public static readonly RDFResource GENERAL_DATETIME_DESCRIPTION = new RDFResource(string.Concat(BASE_URI, "GeneralDateTimeDescription"));
 
             /// <summary>
             /// time:GeneralDurationDescription
             /// </summary>
-            public static readonly RDFResource GENERAL_DURATION_DESCRIPTION = new RDFResource(string.Concat(TIME.BASE_URI, "GeneralDurationDescription"));
+            public static readonly RDFResource GENERAL_DURATION_DESCRIPTION = new RDFResource(string.Concat(BASE_URI, "GeneralDurationDescription"));
 
             /// <summary>
             /// time:Instant
             /// </summary>
-            public static readonly RDFResource INSTANT = new RDFResource(string.Concat(TIME.BASE_URI, "Instant"));
+            public static readonly RDFResource INSTANT = new RDFResource(string.Concat(BASE_URI, "Instant"));
 
             /// <summary>
             /// time:Interval
             /// </summary>
-            public static readonly RDFResource INTERVAL = new RDFResource(string.Concat(TIME.BASE_URI, "Interval"));
+            public static readonly RDFResource INTERVAL = new RDFResource(string.Concat(BASE_URI, "Interval"));
 
             /// <summary>
             /// time:MonthOfYear
             /// </summary>
-            public static readonly RDFResource MONTH_OF_YEAR_CLASS = new RDFResource(string.Concat(TIME.BASE_URI, "MonthOfYear"));
+            public static readonly RDFResource MONTH_OF_YEAR_CLASS = new RDFResource(string.Concat(BASE_URI, "MonthOfYear"));
 
             /// <summary>
             /// time:ProperInterval
             /// </summary>
-            public static readonly RDFResource PROPER_INTERVAL = new RDFResource(string.Concat(TIME.BASE_URI, "ProperInterval"));
+            public static readonly RDFResource PROPER_INTERVAL = new RDFResource(string.Concat(BASE_URI, "ProperInterval"));
 
             /// <summary>
             /// time:TemporalDuration
             /// </summary>
-            public static readonly RDFResource TEMPORAL_DURATION = new RDFResource(string.Concat(TIME.BASE_URI, "TemporalDuration"));
+            public static readonly RDFResource TEMPORAL_DURATION = new RDFResource(string.Concat(BASE_URI, "TemporalDuration"));
 
             /// <summary>
             /// time:TemporalEntity
             /// </summary>
-            public static readonly RDFResource TEMPORAL_ENTITY = new RDFResource(string.Concat(TIME.BASE_URI, "TemporalEntity"));
+            public static readonly RDFResource TEMPORAL_ENTITY = new RDFResource(string.Concat(BASE_URI, "TemporalEntity"));
 
             /// <summary>
             /// time:TemporalPosition
             /// </summary>
-            public static readonly RDFResource TEMPORAL_POSITION = new RDFResource(string.Concat(TIME.BASE_URI, "TemporalPosition"));
+            public static readonly RDFResource TEMPORAL_POSITION = new RDFResource(string.Concat(BASE_URI, "TemporalPosition"));
 
             /// <summary>
             /// time:TemporalUnit
             /// </summary>
-            public static readonly RDFResource TEMPORAL_UNIT = new RDFResource(string.Concat(TIME.BASE_URI, "TemporalUnit"));
+            public static readonly RDFResource TEMPORAL_UNIT = new RDFResource(string.Concat(BASE_URI, "TemporalUnit"));
 
             /// <summary>
             /// time:TimePosition
             /// </summary>
-            public static readonly RDFResource TIME_POSITION = new RDFResource(string.Concat(TIME.BASE_URI, "TimePosition"));
+            public static readonly RDFResource TIME_POSITION = new RDFResource(string.Concat(BASE_URI, "TimePosition"));
 
             /// <summary>
             /// time:TimeZone
             /// </summary>
-            public static readonly RDFResource TIMEZONE_CLASS = new RDFResource(string.Concat(TIME.BASE_URI, "TimeZone"));
+            public static readonly RDFResource TIMEZONE_CLASS = new RDFResource(string.Concat(BASE_URI, "TimeZone"));
 
             /// <summary>
             /// time:TRS
             /// </summary>
-            public static readonly RDFResource TRS = new RDFResource(string.Concat(TIME.BASE_URI, "TRS"));
+            public static readonly RDFResource TRS = new RDFResource(string.Concat(BASE_URI, "TRS"));
 
             /// <summary>
             /// time:after
             /// </summary>
-            public static readonly RDFResource AFTER = new RDFResource(string.Concat(TIME.BASE_URI, "after"));
+            public static readonly RDFResource AFTER = new RDFResource(string.Concat(BASE_URI, "after"));
 
             /// <summary>
             /// time:before
             /// </summary>
-            public static readonly RDFResource BEFORE = new RDFResource(string.Concat(TIME.BASE_URI, "before"));
+            public static readonly RDFResource BEFORE = new RDFResource(string.Concat(BASE_URI, "before"));
 
             /// <summary>
             /// time:day
             /// </summary>
-            public static readonly RDFResource DAY = new RDFResource(string.Concat(TIME.BASE_URI, "day"));
+            public static readonly RDFResource DAY = new RDFResource(string.Concat(BASE_URI, "day"));
 
             /// <summary>
             /// time:dayOfWeek
             /// </summary>
-            public static readonly RDFResource DAY_OF_WEEK = new RDFResource(string.Concat(TIME.BASE_URI, "dayOfWeek"));
+            public static readonly RDFResource DAY_OF_WEEK = new RDFResource(string.Concat(BASE_URI, "dayOfWeek"));
 
             /// <summary>
             /// time:dayOfYear
             /// </summary>
-            public static readonly RDFResource DAY_OF_YEAR = new RDFResource(string.Concat(TIME.BASE_URI, "dayOfYear"));
+            public static readonly RDFResource DAY_OF_YEAR = new RDFResource(string.Concat(BASE_URI, "dayOfYear"));
 
             /// <summary>
             /// time:days
             /// </summary>
-            public static readonly RDFResource DAYS = new RDFResource(string.Concat(TIME.BASE_URI, "days"));
+            public static readonly RDFResource DAYS = new RDFResource(string.Concat(BASE_URI, "days"));
 
             /// <summary>
             /// time:disjoint
             /// </summary>
-            public static readonly RDFResource DISJOINT = new RDFResource(string.Concat(TIME.BASE_URI, "disjoint"));
+            public static readonly RDFResource DISJOINT = new RDFResource(string.Concat(BASE_URI, "disjoint"));
 
             /// <summary>
             /// time:equals
             /// </summary>
-            public static readonly RDFResource EQUALS = new RDFResource(string.Concat(TIME.BASE_URI, "equals"));
+            public static readonly RDFResource EQUALS = new RDFResource(string.Concat(BASE_URI, "equals"));
 
             /// <summary>
             /// time:hasBeginning
             /// </summary>
-            public static readonly RDFResource HAS_BEGINNING = new RDFResource(string.Concat(TIME.BASE_URI, "hasBeginning"));
+            public static readonly RDFResource HAS_BEGINNING = new RDFResource(string.Concat(BASE_URI, "hasBeginning"));
 
             /// <summary>
             /// time:hasDateTimeDescription
             /// </summary>
-            public static readonly RDFResource HAS_DATETIME_DESCRIPTION = new RDFResource(string.Concat(TIME.BASE_URI, "hasDateTimeDescription"));
+            public static readonly RDFResource HAS_DATETIME_DESCRIPTION = new RDFResource(string.Concat(BASE_URI, "hasDateTimeDescription"));
 
             /// <summary>
             /// time:hasDuration
             /// </summary>
-            public static readonly RDFResource HAS_DURATION = new RDFResource(string.Concat(TIME.BASE_URI, "hasDuration"));
+            public static readonly RDFResource HAS_DURATION = new RDFResource(string.Concat(BASE_URI, "hasDuration"));
 
             /// <summary>
             /// time:hasDurationDescription
             /// </summary>
-            public static readonly RDFResource HAS_DURATION_DESCRIPTION = new RDFResource(string.Concat(TIME.BASE_URI, "hasDurationDescription"));
+            public static readonly RDFResource HAS_DURATION_DESCRIPTION = new RDFResource(string.Concat(BASE_URI, "hasDurationDescription"));
 
             /// <summary>
             /// time:hasEnd
             /// </summary>
-            public static readonly RDFResource HAS_END = new RDFResource(string.Concat(TIME.BASE_URI, "hasEnd"));
+            public static readonly RDFResource HAS_END = new RDFResource(string.Concat(BASE_URI, "hasEnd"));
 
             /// <summary>
             /// time:hasInside
             /// </summary>
-            public static readonly RDFResource HAS_INSIDE = new RDFResource(string.Concat(TIME.BASE_URI, "hasInside"));
+            public static readonly RDFResource HAS_INSIDE = new RDFResource(string.Concat(BASE_URI, "hasInside"));
 
             /// <summary>
             /// time:hasTemporalDuration
             /// </summary>
-            public static readonly RDFResource HAS_TEMPORAL_DURATION = new RDFResource(string.Concat(TIME.BASE_URI, "hasTemporalDuration"));
+            public static readonly RDFResource HAS_TEMPORAL_DURATION = new RDFResource(string.Concat(BASE_URI, "hasTemporalDuration"));
 
             /// <summary>
             /// time:hasTime
             /// </summary>
-            public static readonly RDFResource HAS_TIME = new RDFResource(string.Concat(TIME.BASE_URI, "hasTime"));
+            public static readonly RDFResource HAS_TIME = new RDFResource(string.Concat(BASE_URI, "hasTime"));
 
             /// <summary>
             /// time:hasTRS
             /// </summary>
-            public static readonly RDFResource HAS_TRS = new RDFResource(string.Concat(TIME.BASE_URI, "hasTRS"));
+            public static readonly RDFResource HAS_TRS = new RDFResource(string.Concat(BASE_URI, "hasTRS"));
 
             /// <summary>
             /// time:hasXSDDuration
             /// </summary>
-            public static readonly RDFResource HAS_XSD_DURATION = new RDFResource(string.Concat(TIME.BASE_URI, "hasXSDDuration"));
+            public static readonly RDFResource HAS_XSD_DURATION = new RDFResource(string.Concat(BASE_URI, "hasXSDDuration"));
 
             /// <summary>
             /// time:hour
             /// </summary>
-            public static readonly RDFResource HOUR = new RDFResource(string.Concat(TIME.BASE_URI, "hour"));
+            public static readonly RDFResource HOUR = new RDFResource(string.Concat(BASE_URI, "hour"));
 
             /// <summary>
             /// time:hours
             /// </summary>
-            public static readonly RDFResource HOURS = new RDFResource(string.Concat(TIME.BASE_URI, "hours"));
+            public static readonly RDFResource HOURS = new RDFResource(string.Concat(BASE_URI, "hours"));
 
             /// <summary>
             /// time:inDateTime
             /// </summary>
-            public static readonly RDFResource IN_DATETIME = new RDFResource(string.Concat(TIME.BASE_URI, "inDateTime"));
+            public static readonly RDFResource IN_DATETIME = new RDFResource(string.Concat(BASE_URI, "inDateTime"));
 
             /// <summary>
             /// time:inside
             /// </summary>
-            public static readonly RDFResource INSIDE = new RDFResource(string.Concat(TIME.BASE_URI, "inside"));
+            public static readonly RDFResource INSIDE = new RDFResource(string.Concat(BASE_URI, "inside"));
 
             /// <summary>
             /// time:inTemporalPosition
             /// </summary>
-            public static readonly RDFResource IN_TEMPORAL_POSITION = new RDFResource(string.Concat(TIME.BASE_URI, "inTemporalPosition"));
+            public static readonly RDFResource IN_TEMPORAL_POSITION = new RDFResource(string.Concat(BASE_URI, "inTemporalPosition"));
 
             /// <summary>
             /// time:intervalAfter
             /// </summary>
-            public static readonly RDFResource INTERVAL_AFTER = new RDFResource(string.Concat(TIME.BASE_URI, "intervalAfter"));
+            public static readonly RDFResource INTERVAL_AFTER = new RDFResource(string.Concat(BASE_URI, "intervalAfter"));
 
             /// <summary>
             /// time:intervalBefore
             /// </summary>
-            public static readonly RDFResource INTERVAL_BEFORE = new RDFResource(string.Concat(TIME.BASE_URI, "intervalBefore"));
+            public static readonly RDFResource INTERVAL_BEFORE = new RDFResource(string.Concat(BASE_URI, "intervalBefore"));
 
             /// <summary>
             /// time:intervalContains
             /// </summary>
-            public static readonly RDFResource INTERVAL_CONTAINS = new RDFResource(string.Concat(TIME.BASE_URI, "intervalContains"));
+            public static readonly RDFResource INTERVAL_CONTAINS = new RDFResource(string.Concat(BASE_URI, "intervalContains"));
 
             /// <summary>
             /// time:intervalDisjoint
             /// </summary>
-            public static readonly RDFResource INTERVAL_DISJOINT = new RDFResource(string.Concat(TIME.BASE_URI, "intervalDisjoint"));
+            public static readonly RDFResource INTERVAL_DISJOINT = new RDFResource(string.Concat(BASE_URI, "intervalDisjoint"));
 
             /// <summary>
             /// time:intervalDuring
             /// </summary>
-            public static readonly RDFResource INTERVAL_DURING = new RDFResource(string.Concat(TIME.BASE_URI, "intervalDuring"));
+            public static readonly RDFResource INTERVAL_DURING = new RDFResource(string.Concat(BASE_URI, "intervalDuring"));
 
             /// <summary>
             /// time:intervalEquals
             /// </summary>
-            public static readonly RDFResource INTERVAL_EQUALS = new RDFResource(string.Concat(TIME.BASE_URI, "intervalEquals"));
+            public static readonly RDFResource INTERVAL_EQUALS = new RDFResource(string.Concat(BASE_URI, "intervalEquals"));
 
             /// <summary>
             /// time:intervalFinishedBy
             /// </summary>
-            public static readonly RDFResource INTERVAL_FINISHED_BY = new RDFResource(string.Concat(TIME.BASE_URI, "intervalFinishedBy"));
+            public static readonly RDFResource INTERVAL_FINISHED_BY = new RDFResource(string.Concat(BASE_URI, "intervalFinishedBy"));
 
             /// <summary>
             /// time:intervalFinishes
             /// </summary>
-            public static readonly RDFResource INTERVAL_FINISHES = new RDFResource(string.Concat(TIME.BASE_URI, "intervalFinishes"));
+            public static readonly RDFResource INTERVAL_FINISHES = new RDFResource(string.Concat(BASE_URI, "intervalFinishes"));
 
             /// <summary>
             /// time:intervalIn
             /// </summary>
-            public static readonly RDFResource INTERVAL_IN = new RDFResource(string.Concat(TIME.BASE_URI, "intervalIn"));
+            public static readonly RDFResource INTERVAL_IN = new RDFResource(string.Concat(BASE_URI, "intervalIn"));
 
             /// <summary>
             /// time:intervalMeets
             /// </summary>
-            public static readonly RDFResource INTERVAL_MEETS = new RDFResource(string.Concat(TIME.BASE_URI, "intervalMeets"));
+            public static readonly RDFResource INTERVAL_MEETS = new RDFResource(string.Concat(BASE_URI, "intervalMeets"));
 
             /// <summary>
             /// time:intervalMetBy
             /// </summary>
-            public static readonly RDFResource INTERVAL_MET_BY = new RDFResource(string.Concat(TIME.BASE_URI, "intervalMetBy"));
+            public static readonly RDFResource INTERVAL_MET_BY = new RDFResource(string.Concat(BASE_URI, "intervalMetBy"));
 
             /// <summary>
             /// time:intervalOverlappedBy
             /// </summary>
-            public static readonly RDFResource INTERVAL_OVERLAPPED_BY = new RDFResource(string.Concat(TIME.BASE_URI, "intervalOverlappedBy"));
+            public static readonly RDFResource INTERVAL_OVERLAPPED_BY = new RDFResource(string.Concat(BASE_URI, "intervalOverlappedBy"));
 
             /// <summary>
             /// time:intervalOverlaps
             /// </summary>
-            public static readonly RDFResource INTERVAL_OVERLAPS = new RDFResource(string.Concat(TIME.BASE_URI, "intervalOverlaps"));
+            public static readonly RDFResource INTERVAL_OVERLAPS = new RDFResource(string.Concat(BASE_URI, "intervalOverlaps"));
 
             /// <summary>
             /// time:intervalStartedBy
             /// </summary>
-            public static readonly RDFResource INTERVAL_STARTED_BY = new RDFResource(string.Concat(TIME.BASE_URI, "intervalStartedBy"));
+            public static readonly RDFResource INTERVAL_STARTED_BY = new RDFResource(string.Concat(BASE_URI, "intervalStartedBy"));
 
             /// <summary>
             /// time:intervalStarts
             /// </summary>
-            public static readonly RDFResource INTERVAL_STARTS = new RDFResource(string.Concat(TIME.BASE_URI, "intervalStarts"));
+            public static readonly RDFResource INTERVAL_STARTS = new RDFResource(string.Concat(BASE_URI, "intervalStarts"));
 
             /// <summary>
             /// time:inTimePosition
             /// </summary>
-            public static readonly RDFResource IN_TIME_POSITION = new RDFResource(string.Concat(TIME.BASE_URI, "inTimePosition"));
+            public static readonly RDFResource IN_TIME_POSITION = new RDFResource(string.Concat(BASE_URI, "inTimePosition"));
 
             /// <summary>
             /// time:inXSDDate
             /// </summary>
-            public static readonly RDFResource IN_XSD_DATE = new RDFResource(string.Concat(TIME.BASE_URI, "inXSDDate"));
+            public static readonly RDFResource IN_XSD_DATE = new RDFResource(string.Concat(BASE_URI, "inXSDDate"));
 
             /// <summary>
             /// time:inXSDDateTime
             /// </summary>
-            public static readonly RDFResource IN_XSD_DATETIME = new RDFResource(string.Concat(TIME.BASE_URI, "inXSDDateTime"));
+            public static readonly RDFResource IN_XSD_DATETIME = new RDFResource(string.Concat(BASE_URI, "inXSDDateTime"));
 
             /// <summary>
             /// time:inXSDDateTimeStamp
             /// </summary>
-            public static readonly RDFResource IN_XSD_DATETIMESTAMP = new RDFResource(string.Concat(TIME.BASE_URI, "inXSDDateTimeStamp"));
+            public static readonly RDFResource IN_XSD_DATETIMESTAMP = new RDFResource(string.Concat(BASE_URI, "inXSDDateTimeStamp"));
 
             /// <summary>
             /// time:inXSDgYear
             /// </summary>
-            public static readonly RDFResource IN_XSD_GYEAR = new RDFResource(string.Concat(TIME.BASE_URI, "inXSDgYear"));
+            public static readonly RDFResource IN_XSD_GYEAR = new RDFResource(string.Concat(BASE_URI, "inXSDgYear"));
 
             /// <summary>
             /// time:inXSDgYearMonth
             /// </summary>
-            public static readonly RDFResource IN_XSD_GYEARMONTH = new RDFResource(string.Concat(TIME.BASE_URI, "inXSDgYearMonth"));
+            public static readonly RDFResource IN_XSD_GYEARMONTH = new RDFResource(string.Concat(BASE_URI, "inXSDgYearMonth"));
 
             /// <summary>
             /// time:minute
             /// </summary>
-            public static readonly RDFResource MINUTE = new RDFResource(string.Concat(TIME.BASE_URI, "minute"));
+            public static readonly RDFResource MINUTE = new RDFResource(string.Concat(BASE_URI, "minute"));
 
             /// <summary>
             /// time:minutes
             /// </summary>
-            public static readonly RDFResource MINUTES = new RDFResource(string.Concat(TIME.BASE_URI, "minutes"));
+            public static readonly RDFResource MINUTES = new RDFResource(string.Concat(BASE_URI, "minutes"));
 
             /// <summary>
             /// time:month
             /// </summary>
-            public static readonly RDFResource MONTH = new RDFResource(string.Concat(TIME.BASE_URI, "month"));
+            public static readonly RDFResource MONTH = new RDFResource(string.Concat(BASE_URI, "month"));
 
             /// <summary>
             /// time:monthOfYear
             /// </summary>
-            public static readonly RDFResource MONTH_OF_YEAR = new RDFResource(string.Concat(TIME.BASE_URI, "monthOfYear"));
+            public static readonly RDFResource MONTH_OF_YEAR = new RDFResource(string.Concat(BASE_URI, "monthOfYear"));
 
             /// <summary>
             /// time:months
             /// </summary>
-            public static readonly RDFResource MONTHS = new RDFResource(string.Concat(TIME.BASE_URI, "months"));
+            public static readonly RDFResource MONTHS = new RDFResource(string.Concat(BASE_URI, "months"));
 
             /// <summary>
             /// time:nominalPosition
             /// </summary>
-            public static readonly RDFResource NOMINAL_POSITION = new RDFResource(string.Concat(TIME.BASE_URI, "nominalPosition"));
+            public static readonly RDFResource NOMINAL_POSITION = new RDFResource(string.Concat(BASE_URI, "nominalPosition"));
 
             /// <summary>
             /// time:notDisjoint
             /// </summary>
-            public static readonly RDFResource NOT_DISJOINT = new RDFResource(string.Concat(TIME.BASE_URI, "notDisjoint"));
+            public static readonly RDFResource NOT_DISJOINT = new RDFResource(string.Concat(BASE_URI, "notDisjoint"));
 
             /// <summary>
             /// time:numericDuration
             /// </summary>
-            public static readonly RDFResource NUMERIC_DURATION = new RDFResource(string.Concat(TIME.BASE_URI, "numericDuration"));
+            public static readonly RDFResource NUMERIC_DURATION = new RDFResource(string.Concat(BASE_URI, "numericDuration"));
 
             /// <summary>
             /// time:numericPosition
             /// </summary>
-            public static readonly RDFResource NUMERIC_POSITION = new RDFResource(string.Concat(TIME.BASE_URI, "numericPosition"));
+            public static readonly RDFResource NUMERIC_POSITION = new RDFResource(string.Concat(BASE_URI, "numericPosition"));
 
             /// <summary>
             /// time:second
             /// </summary>
-            public static readonly RDFResource SECOND = new RDFResource(string.Concat(TIME.BASE_URI, "second"));
+            public static readonly RDFResource SECOND = new RDFResource(string.Concat(BASE_URI, "second"));
 
             /// <summary>
             /// time:seconds
             /// </summary>
-            public static readonly RDFResource SECONDS = new RDFResource(string.Concat(TIME.BASE_URI, "seconds"));
+            public static readonly RDFResource SECONDS = new RDFResource(string.Concat(BASE_URI, "seconds"));
 
             /// <summary>
             /// time:timeZone
             /// </summary>
-            public static readonly RDFResource TIMEZONE = new RDFResource(string.Concat(TIME.BASE_URI, "timeZone"));
+            public static readonly RDFResource TIMEZONE = new RDFResource(string.Concat(BASE_URI, "timeZone"));
 
             /// <summary>
             /// time:unitType
             /// </summary>
-            public static readonly RDFResource UNIT_TYPE = new RDFResource(string.Concat(TIME.BASE_URI, "unitType"));
+            public static readonly RDFResource UNIT_TYPE = new RDFResource(string.Concat(BASE_URI, "unitType"));
 
             /// <summary>
             /// time:week
             /// </summary>
-            public static readonly RDFResource WEEK = new RDFResource(string.Concat(TIME.BASE_URI, "week"));
+            public static readonly RDFResource WEEK = new RDFResource(string.Concat(BASE_URI, "week"));
 
             /// <summary>
             /// time:weeks
             /// </summary>
-            public static readonly RDFResource WEEKS = new RDFResource(string.Concat(TIME.BASE_URI, "weeks"));
+            public static readonly RDFResource WEEKS = new RDFResource(string.Concat(BASE_URI, "weeks"));
 
             /// <summary>
             /// time:xsdDateTime
             /// </summary>
-            public static readonly RDFResource XSD_DATETIME = new RDFResource(string.Concat(TIME.BASE_URI, "xsdDateTime"));
+            public static readonly RDFResource XSD_DATETIME = new RDFResource(string.Concat(BASE_URI, "xsdDateTime"));
 
             /// <summary>
             /// time:year
             /// </summary>
-            public static readonly RDFResource YEAR = new RDFResource(string.Concat(TIME.BASE_URI, "year"));
+            public static readonly RDFResource YEAR = new RDFResource(string.Concat(BASE_URI, "year"));
 
             /// <summary>
             /// time:years
             /// </summary>
-            public static readonly RDFResource YEARS = new RDFResource(string.Concat(TIME.BASE_URI, "years"));
+            public static readonly RDFResource YEARS = new RDFResource(string.Concat(BASE_URI, "years"));
 
             /// <summary>
             /// time:generalDay
             /// </summary>
-            public static readonly RDFResource GENERAL_DAY = new RDFResource(string.Concat(TIME.BASE_URI, "generalDay"));
+            public static readonly RDFResource GENERAL_DAY = new RDFResource(string.Concat(BASE_URI, "generalDay"));
 
             /// <summary>
             /// time:generalMonth
             /// </summary>
-            public static readonly RDFResource GENERAL_MONTH = new RDFResource(string.Concat(TIME.BASE_URI, "generalMonth"));
+            public static readonly RDFResource GENERAL_MONTH = new RDFResource(string.Concat(BASE_URI, "generalMonth"));
 
             /// <summary>
             /// time:generalYear
             /// </summary>
-            public static readonly RDFResource GENERAL_YEAR = new RDFResource(string.Concat(TIME.BASE_URI, "generalYear"));
+            public static readonly RDFResource GENERAL_YEAR = new RDFResource(string.Concat(BASE_URI, "generalYear"));
 
             /// <summary>
             /// time:Friday
             /// </summary>
-            public static readonly RDFResource FRIDAY = new RDFResource(string.Concat(TIME.BASE_URI, "Friday"));
+            public static readonly RDFResource FRIDAY = new RDFResource(string.Concat(BASE_URI, "Friday"));
 
             /// <summary>
             /// time:Monday
             /// </summary>
-            public static readonly RDFResource MONDAY = new RDFResource(string.Concat(TIME.BASE_URI, "Monday"));
+            public static readonly RDFResource MONDAY = new RDFResource(string.Concat(BASE_URI, "Monday"));
 
             /// <summary>
             /// time:Saturday
             /// </summary>
-            public static readonly RDFResource SATURDAY = new RDFResource(string.Concat(TIME.BASE_URI, "Saturday"));
+            public static readonly RDFResource SATURDAY = new RDFResource(string.Concat(BASE_URI, "Saturday"));
 
             /// <summary>
             /// time:Sunday
             /// </summary>
-            public static readonly RDFResource SUNDAY = new RDFResource(string.Concat(TIME.BASE_URI, "Sunday"));
+            public static readonly RDFResource SUNDAY = new RDFResource(string.Concat(BASE_URI, "Sunday"));
 
             /// <summary>
             /// time:Thursday
             /// </summary>
-            public static readonly RDFResource THURSDAY = new RDFResource(string.Concat(TIME.BASE_URI, "Thursday"));
+            public static readonly RDFResource THURSDAY = new RDFResource(string.Concat(BASE_URI, "Thursday"));
 
             /// <summary>
             /// time:Tuesday
             /// </summary>
-            public static readonly RDFResource TUESDAY = new RDFResource(string.Concat(TIME.BASE_URI, "Tuesday"));
+            public static readonly RDFResource TUESDAY = new RDFResource(string.Concat(BASE_URI, "Tuesday"));
 
             /// <summary>
             /// time:Wednesday
             /// </summary>
-            public static readonly RDFResource WEDNESDAY = new RDFResource(string.Concat(TIME.BASE_URI, "Wednesday"));
+            public static readonly RDFResource WEDNESDAY = new RDFResource(string.Concat(BASE_URI, "Wednesday"));
 
             /// <summary>
             /// time:unitCentury
             /// </summary>
-            public static readonly RDFResource UNIT_CENTURY = new RDFResource(string.Concat(TIME.BASE_URI, "unitCentury"));
+            public static readonly RDFResource UNIT_CENTURY = new RDFResource(string.Concat(BASE_URI, "unitCentury"));
 
             /// <summary>
             /// time:unitDay
             /// </summary>
-            public static readonly RDFResource UNIT_DAY = new RDFResource(string.Concat(TIME.BASE_URI, "unitDay"));
+            public static readonly RDFResource UNIT_DAY = new RDFResource(string.Concat(BASE_URI, "unitDay"));
 
             /// <summary>
             /// time:unitDecade
             /// </summary>
-            public static readonly RDFResource UNIT_DECADE = new RDFResource(string.Concat(TIME.BASE_URI, "unitDecade"));
+            public static readonly RDFResource UNIT_DECADE = new RDFResource(string.Concat(BASE_URI, "unitDecade"));
 
             /// <summary>
             /// time:unitHour
             /// </summary>
-            public static readonly RDFResource UNIT_HOUR = new RDFResource(string.Concat(TIME.BASE_URI, "unitHour"));
+            public static readonly RDFResource UNIT_HOUR = new RDFResource(string.Concat(BASE_URI, "unitHour"));
 
             /// <summary>
             /// time:unitMillenium
             /// </summary>
-            public static readonly RDFResource UNIT_MILLENIUM = new RDFResource(string.Concat(TIME.BASE_URI, "unitMillenium"));
+            public static readonly RDFResource UNIT_MILLENIUM = new RDFResource(string.Concat(BASE_URI, "unitMillenium"));
 
             /// <summary>
             /// time:unitMinute
             /// </summary>
-            public static readonly RDFResource UNIT_MINUTE = new RDFResource(string.Concat(TIME.BASE_URI, "unitMinute"));
+            public static readonly RDFResource UNIT_MINUTE = new RDFResource(string.Concat(BASE_URI, "unitMinute"));
 
             /// <summary>
             /// time:unitMonth
             /// </summary>
-            public static readonly RDFResource UNIT_MONTH = new RDFResource(string.Concat(TIME.BASE_URI, "unitMonth"));
+            public static readonly RDFResource UNIT_MONTH = new RDFResource(string.Concat(BASE_URI, "unitMonth"));
 
             /// <summary>
             /// time:unitSecond
             /// </summary>
-            public static readonly RDFResource UNIT_SECOND = new RDFResource(string.Concat(TIME.BASE_URI, "unitSecond"));
+            public static readonly RDFResource UNIT_SECOND = new RDFResource(string.Concat(BASE_URI, "unitSecond"));
 
             /// <summary>
             /// time:unitWeek
             /// </summary>
-            public static readonly RDFResource UNIT_WEEK = new RDFResource(string.Concat(TIME.BASE_URI, "unitWeek"));
+            public static readonly RDFResource UNIT_WEEK = new RDFResource(string.Concat(BASE_URI, "unitWeek"));
 
             /// <summary>
             /// time:unitYear
             /// </summary>
-            public static readonly RDFResource UNIT_YEAR = new RDFResource(string.Concat(TIME.BASE_URI, "unitYear"));
+            public static readonly RDFResource UNIT_YEAR = new RDFResource(string.Concat(BASE_URI, "unitYear"));
             #endregion
 
             #region Extended Properties
@@ -569,62 +569,62 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// greg:January
                 /// </summary>
-                public static readonly RDFResource JANUARY = new RDFResource(string.Concat(GREG.BASE_URI, "January"));
+                public static readonly RDFResource JANUARY = new RDFResource(string.Concat(BASE_URI, "January"));
 
                 /// <summary>
                 /// greg:February
                 /// </summary>
-                public static readonly RDFResource FEBRUARY = new RDFResource(string.Concat(GREG.BASE_URI, "February"));
+                public static readonly RDFResource FEBRUARY = new RDFResource(string.Concat(BASE_URI, "February"));
 
                 /// <summary>
                 /// greg:March
                 /// </summary>
-                public static readonly RDFResource MARCH = new RDFResource(string.Concat(GREG.BASE_URI, "March"));
+                public static readonly RDFResource MARCH = new RDFResource(string.Concat(BASE_URI, "March"));
 
                 /// <summary>
                 /// greg:April
                 /// </summary>
-                public static readonly RDFResource APRIL = new RDFResource(string.Concat(GREG.BASE_URI, "April"));
+                public static readonly RDFResource APRIL = new RDFResource(string.Concat(BASE_URI, "April"));
 
                 /// <summary>
                 /// greg:May
                 /// </summary>
-                public static readonly RDFResource MAY = new RDFResource(string.Concat(GREG.BASE_URI, "May"));
+                public static readonly RDFResource MAY = new RDFResource(string.Concat(BASE_URI, "May"));
 
                 /// <summary>
                 /// greg:June
                 /// </summary>
-                public static readonly RDFResource JUNE = new RDFResource(string.Concat(GREG.BASE_URI, "June"));
+                public static readonly RDFResource JUNE = new RDFResource(string.Concat(BASE_URI, "June"));
 
                 /// <summary>
                 /// greg:July
                 /// </summary>
-                public static readonly RDFResource JULY = new RDFResource(string.Concat(GREG.BASE_URI, "July"));
+                public static readonly RDFResource JULY = new RDFResource(string.Concat(BASE_URI, "July"));
 
                 /// <summary>
                 /// greg:August
                 /// </summary>
-                public static readonly RDFResource AUGUST = new RDFResource(string.Concat(GREG.BASE_URI, "August"));
+                public static readonly RDFResource AUGUST = new RDFResource(string.Concat(BASE_URI, "August"));
 
                 /// <summary>
                 /// greg:September
                 /// </summary>
-                public static readonly RDFResource SEPTEMBER = new RDFResource(string.Concat(GREG.BASE_URI, "September"));
+                public static readonly RDFResource SEPTEMBER = new RDFResource(string.Concat(BASE_URI, "September"));
 
                 /// <summary>
                 /// greg:October
                 /// </summary>
-                public static readonly RDFResource OCTOBER = new RDFResource(string.Concat(GREG.BASE_URI, "October"));
+                public static readonly RDFResource OCTOBER = new RDFResource(string.Concat(BASE_URI, "October"));
 
                 /// <summary>
                 /// greg:November
                 /// </summary>
-                public static readonly RDFResource NOVEMBER = new RDFResource(string.Concat(GREG.BASE_URI, "November"));
+                public static readonly RDFResource NOVEMBER = new RDFResource(string.Concat(BASE_URI, "November"));
 
                 /// <summary>
                 /// greg:December
                 /// </summary>
-                public static readonly RDFResource DECEMBER = new RDFResource(string.Concat(GREG.BASE_URI, "December"));
+                public static readonly RDFResource DECEMBER = new RDFResource(string.Concat(BASE_URI, "December"));
             }
 
             /// <summary>
@@ -650,62 +650,62 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// thors:Era
                 /// </summary>
-                public static readonly RDFResource ERA = new RDFResource(string.Concat(THORS.BASE_URI, "Era"));
+                public static readonly RDFResource ERA = new RDFResource(string.Concat(BASE_URI, "Era"));
 
                 /// <summary>
                 /// thors:EraBoundary
                 /// </summary>
-                public static readonly RDFResource ERA_BOUNDARY = new RDFResource(string.Concat(THORS.BASE_URI, "EraBoundary"));
+                public static readonly RDFResource ERA_BOUNDARY = new RDFResource(string.Concat(BASE_URI, "EraBoundary"));
 
                 /// <summary>
                 /// thors:ReferenceSystem
                 /// </summary>
-                public static readonly RDFResource REFERENCE_SYSTEM = new RDFResource(string.Concat(THORS.BASE_URI, "ReferenceSystem"));
+                public static readonly RDFResource REFERENCE_SYSTEM = new RDFResource(string.Concat(BASE_URI, "ReferenceSystem"));
 
                 /// <summary>
                 /// thors:begin
                 /// </summary>
-                public static readonly RDFResource BEGIN = new RDFResource(string.Concat(THORS.BASE_URI, "begin"));
+                public static readonly RDFResource BEGIN = new RDFResource(string.Concat(BASE_URI, "begin"));
 
                 /// <summary>
                 /// thors:component
                 /// </summary>
-                public static readonly RDFResource COMPONENT = new RDFResource(string.Concat(THORS.BASE_URI, "component"));
+                public static readonly RDFResource COMPONENT = new RDFResource(string.Concat(BASE_URI, "component"));
 
                 /// <summary>
                 /// thors:end
                 /// </summary>
-                public static readonly RDFResource END = new RDFResource(string.Concat(THORS.BASE_URI, "end"));
+                public static readonly RDFResource END = new RDFResource(string.Concat(BASE_URI, "end"));
 
                 /// <summary>
                 /// thors:member
                 /// </summary>
-                public static readonly RDFResource MEMBER = new RDFResource(string.Concat(THORS.BASE_URI, "member"));
+                public static readonly RDFResource MEMBER = new RDFResource(string.Concat(BASE_URI, "member"));
 
                 /// <summary>
                 /// thors:nextEra
                 /// </summary>
-                public static readonly RDFResource NEXT_ERA = new RDFResource(string.Concat(THORS.BASE_URI, "nextEra"));
+                public static readonly RDFResource NEXT_ERA = new RDFResource(string.Concat(BASE_URI, "nextEra"));
 
                 /// <summary>
                 /// thors:previousEra
                 /// </summary>
-                public static readonly RDFResource PREVIOUS_ERA = new RDFResource(string.Concat(THORS.BASE_URI, "previousEra"));
+                public static readonly RDFResource PREVIOUS_ERA = new RDFResource(string.Concat(BASE_URI, "previousEra"));
 
                 /// <summary>
                 /// thors:referencePoint
                 /// </summary>
-                public static readonly RDFResource REFERENCE_POINT = new RDFResource(string.Concat(THORS.BASE_URI, "referencePoint"));
+                public static readonly RDFResource REFERENCE_POINT = new RDFResource(string.Concat(BASE_URI, "referencePoint"));
 
                 /// <summary>
                 /// thors:system
                 /// </summary>
-                public static readonly RDFResource SYSTEM = new RDFResource(string.Concat(THORS.BASE_URI, "system"));
+                public static readonly RDFResource SYSTEM = new RDFResource(string.Concat(BASE_URI, "system"));
 
                 /// <summary>
                 /// thors:positionalUncertainty
                 /// </summary>
-                public static readonly RDFResource POSITIONAL_UNCERTAINTY = new RDFResource(string.Concat(THORS.BASE_URI, "positionalUncertainty"));
+                public static readonly RDFResource POSITIONAL_UNCERTAINTY = new RDFResource(string.Concat(BASE_URI, "positionalUncertainty"));
             }
             #endregion
         }

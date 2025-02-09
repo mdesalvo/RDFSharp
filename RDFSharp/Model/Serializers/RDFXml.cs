@@ -207,7 +207,7 @@ namespace RDFSharp.Model
                                                         .TrimEnd(':', '/');
                                 try
                                 {
-                                    new RDFTypedLiteral(predUri, RDFModelEnums.RDFDatatypes.XSD_QNAME);
+                                    _ = new RDFTypedLiteral(predUri, RDFModelEnums.RDFDatatypes.XSD_QNAME);
                                 }
                                 catch
                                 {

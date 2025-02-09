@@ -46,167 +46,167 @@ namespace RDFSharp.Model
             /// <summary>
             /// skos:Concept
             /// </summary>
-            public static readonly RDFResource CONCEPT = new RDFResource(string.Concat(SKOS.BASE_URI,"Concept"));
+            public static readonly RDFResource CONCEPT = new RDFResource(string.Concat(BASE_URI,"Concept"));
 
             /// <summary>
             /// skos:ConceptScheme
             /// </summary>
-            public static readonly RDFResource CONCEPT_SCHEME = new RDFResource(string.Concat(SKOS.BASE_URI,"ConceptScheme"));
+            public static readonly RDFResource CONCEPT_SCHEME = new RDFResource(string.Concat(BASE_URI,"ConceptScheme"));
 
             /// <summary>
             /// skos:inScheme
             /// </summary>
-            public static readonly RDFResource IN_SCHEME = new RDFResource(string.Concat(SKOS.BASE_URI,"inScheme"));
+            public static readonly RDFResource IN_SCHEME = new RDFResource(string.Concat(BASE_URI,"inScheme"));
 
             /// <summary>
             /// skos:hasTopConcept
             /// </summary>
-            public static readonly RDFResource HAS_TOP_CONCEPT = new RDFResource(string.Concat(SKOS.BASE_URI,"hasTopConcept"));
+            public static readonly RDFResource HAS_TOP_CONCEPT = new RDFResource(string.Concat(BASE_URI,"hasTopConcept"));
 
             /// <summary>
             /// skos:topConceptOf
             /// </summary>
-            public static readonly RDFResource TOP_CONCEPT_OF = new RDFResource(string.Concat(SKOS.BASE_URI,"topConceptOf"));
+            public static readonly RDFResource TOP_CONCEPT_OF = new RDFResource(string.Concat(BASE_URI,"topConceptOf"));
 
             /// <summary>
             /// skos:altLabel
             /// </summary>
-            public static readonly RDFResource ALT_LABEL = new RDFResource(string.Concat(SKOS.BASE_URI,"altLabel"));
+            public static readonly RDFResource ALT_LABEL = new RDFResource(string.Concat(BASE_URI,"altLabel"));
 
             /// <summary>
             /// skos:hiddenLabel
             /// </summary>
-            public static readonly RDFResource HIDDEN_LABEL = new RDFResource(string.Concat(SKOS.BASE_URI,"hiddenLabel"));
+            public static readonly RDFResource HIDDEN_LABEL = new RDFResource(string.Concat(BASE_URI,"hiddenLabel"));
 
             /// <summary>
             /// skos:prefLabel
             /// </summary>
-            public static readonly RDFResource PREF_LABEL = new RDFResource(string.Concat(SKOS.BASE_URI,"prefLabel"));
+            public static readonly RDFResource PREF_LABEL = new RDFResource(string.Concat(BASE_URI,"prefLabel"));
 
             /// <summary>
             /// skos:notation
             /// </summary>
-            public static readonly RDFResource NOTATION = new RDFResource(string.Concat(SKOS.BASE_URI,"notation"));
+            public static readonly RDFResource NOTATION = new RDFResource(string.Concat(BASE_URI,"notation"));
 
             /// <summary>
             /// skos:changeNote
             /// </summary>
-            public static readonly RDFResource CHANGE_NOTE = new RDFResource(string.Concat(SKOS.BASE_URI,"changeNote"));
+            public static readonly RDFResource CHANGE_NOTE = new RDFResource(string.Concat(BASE_URI,"changeNote"));
 
             /// <summary>
             /// skos:definition
             /// </summary>
-            public static readonly RDFResource DEFINITION = new RDFResource(string.Concat(SKOS.BASE_URI,"definition"));
+            public static readonly RDFResource DEFINITION = new RDFResource(string.Concat(BASE_URI,"definition"));
 
             /// <summary>
             /// skos:example
             /// </summary>
-            public static readonly RDFResource EXAMPLE = new RDFResource(string.Concat(SKOS.BASE_URI,"example"));
+            public static readonly RDFResource EXAMPLE = new RDFResource(string.Concat(BASE_URI,"example"));
 
             /// <summary>
             /// skos:editorialNote
             /// </summary>
-            public static readonly RDFResource EDITORIAL_NOTE = new RDFResource(string.Concat(SKOS.BASE_URI,"editorialNote"));
+            public static readonly RDFResource EDITORIAL_NOTE = new RDFResource(string.Concat(BASE_URI,"editorialNote"));
 
             /// <summary>
             /// skos:historyNote
             /// </summary>
-            public static readonly RDFResource HISTORY_NOTE = new RDFResource(string.Concat(SKOS.BASE_URI,"historyNote"));
+            public static readonly RDFResource HISTORY_NOTE = new RDFResource(string.Concat(BASE_URI,"historyNote"));
 
             /// <summary>
             /// skos:note
             /// </summary>
-            public static readonly RDFResource NOTE = new RDFResource(string.Concat(SKOS.BASE_URI,"note"));
+            public static readonly RDFResource NOTE = new RDFResource(string.Concat(BASE_URI,"note"));
 
             /// <summary>
             /// skos:scopeNote
             /// </summary>
-            public static readonly RDFResource SCOPE_NOTE = new RDFResource(string.Concat(SKOS.BASE_URI,"scopeNote"));
+            public static readonly RDFResource SCOPE_NOTE = new RDFResource(string.Concat(BASE_URI,"scopeNote"));
 
             /// <summary>
             /// skos:broader
             /// </summary>
-            public static readonly RDFResource BROADER = new RDFResource(string.Concat(SKOS.BASE_URI,"broader"));
+            public static readonly RDFResource BROADER = new RDFResource(string.Concat(BASE_URI,"broader"));
 
             /// <summary>
             /// skos:broaderTransitive
             /// </summary>
-            public static readonly RDFResource BROADER_TRANSITIVE = new RDFResource(string.Concat(SKOS.BASE_URI,"broaderTransitive"));
+            public static readonly RDFResource BROADER_TRANSITIVE = new RDFResource(string.Concat(BASE_URI,"broaderTransitive"));
 
             /// <summary>
             /// skos:narrower
             /// </summary>
-            public static readonly RDFResource NARROWER = new RDFResource(string.Concat(SKOS.BASE_URI,"narrower"));
+            public static readonly RDFResource NARROWER = new RDFResource(string.Concat(BASE_URI,"narrower"));
 
             /// <summary>
             /// skos:narrowerTransitive
             /// </summary>
-            public static readonly RDFResource NARROWER_TRANSITIVE = new RDFResource(string.Concat(SKOS.BASE_URI,"narrowerTransitive"));
+            public static readonly RDFResource NARROWER_TRANSITIVE = new RDFResource(string.Concat(BASE_URI,"narrowerTransitive"));
 
             /// <summary>
             /// skos:related
             /// </summary>
-            public static readonly RDFResource RELATED = new RDFResource(string.Concat(SKOS.BASE_URI,"related"));
+            public static readonly RDFResource RELATED = new RDFResource(string.Concat(BASE_URI,"related"));
 
             /// <summary>
             /// skos:semanticRelation
             /// </summary>
-            public static readonly RDFResource SEMANTIC_RELATION = new RDFResource(string.Concat(SKOS.BASE_URI,"semanticRelation"));
+            public static readonly RDFResource SEMANTIC_RELATION = new RDFResource(string.Concat(BASE_URI,"semanticRelation"));
 
             /// <summary>
             /// skos:subject
             /// </summary>
-            public static readonly RDFResource SUBJECT = new RDFResource(string.Concat(SKOS.BASE_URI,"subject"));
+            public static readonly RDFResource SUBJECT = new RDFResource(string.Concat(BASE_URI,"subject"));
 
             /// <summary>
             /// skos:Collection
             /// </summary>
-            public static readonly RDFResource COLLECTION = new RDFResource(string.Concat(SKOS.BASE_URI,"Collection"));
+            public static readonly RDFResource COLLECTION = new RDFResource(string.Concat(BASE_URI,"Collection"));
 
             /// <summary>
             /// skos:OrderedCollection
             /// </summary>
-            public static readonly RDFResource ORDERED_COLLECTION = new RDFResource(string.Concat(SKOS.BASE_URI,"OrderedCollection"));
+            public static readonly RDFResource ORDERED_COLLECTION = new RDFResource(string.Concat(BASE_URI,"OrderedCollection"));
 
             /// <summary>
             /// skos:member
             /// </summary>
-            public static readonly RDFResource MEMBER = new RDFResource(string.Concat(SKOS.BASE_URI,"member"));
+            public static readonly RDFResource MEMBER = new RDFResource(string.Concat(BASE_URI,"member"));
 
             /// <summary>
             /// skos:memberList
             /// </summary>
-            public static readonly RDFResource MEMBER_LIST = new RDFResource(string.Concat(SKOS.BASE_URI,"memberList"));
+            public static readonly RDFResource MEMBER_LIST = new RDFResource(string.Concat(BASE_URI,"memberList"));
 
             /// <summary>
             /// skos:broadMatch
             /// </summary>
-            public static readonly RDFResource BROAD_MATCH = new RDFResource(string.Concat(SKOS.BASE_URI,"broadMatch"));
+            public static readonly RDFResource BROAD_MATCH = new RDFResource(string.Concat(BASE_URI,"broadMatch"));
 
             /// <summary>
             /// skos:closeMatch
             /// </summary>
-            public static readonly RDFResource CLOSE_MATCH = new RDFResource(string.Concat(SKOS.BASE_URI,"closeMatch"));
+            public static readonly RDFResource CLOSE_MATCH = new RDFResource(string.Concat(BASE_URI,"closeMatch"));
 
             /// <summary>
             /// skos:narrowMatch
             /// </summary>
-            public static readonly RDFResource NARROW_MATCH = new RDFResource(string.Concat(SKOS.BASE_URI,"narrowMatch"));
+            public static readonly RDFResource NARROW_MATCH = new RDFResource(string.Concat(BASE_URI,"narrowMatch"));
 
             /// <summary>
             /// skos:relatedMatch
             /// </summary>
-            public static readonly RDFResource RELATED_MATCH = new RDFResource(string.Concat(SKOS.BASE_URI,"relatedMatch"));
+            public static readonly RDFResource RELATED_MATCH = new RDFResource(string.Concat(BASE_URI,"relatedMatch"));
 
             /// <summary>
             /// skos:exactMatch
             /// </summary>
-            public static readonly RDFResource EXACT_MATCH = new RDFResource(string.Concat(SKOS.BASE_URI,"exactMatch"));
+            public static readonly RDFResource EXACT_MATCH = new RDFResource(string.Concat(BASE_URI,"exactMatch"));
 
             /// <summary>
             /// skos:mappingRelation
             /// </summary>
-            public static readonly RDFResource MAPPING_RELATION = new RDFResource(string.Concat(SKOS.BASE_URI,"mappingRelation"));
+            public static readonly RDFResource MAPPING_RELATION = new RDFResource(string.Concat(BASE_URI,"mappingRelation"));
             #endregion
 
             #region Extended Properties
@@ -234,32 +234,32 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// skosxl:Label
                 /// </summary>
-                public static readonly RDFResource LABEL = new RDFResource(string.Concat(SKOSXL.BASE_URI, "Label"));
+                public static readonly RDFResource LABEL = new RDFResource(string.Concat(BASE_URI, "Label"));
 
                 /// <summary>
                 /// skosxl:altLabel
                 /// </summary>
-                public static readonly RDFResource ALT_LABEL = new RDFResource(string.Concat(SKOSXL.BASE_URI, "altLabel"));
+                public static readonly RDFResource ALT_LABEL = new RDFResource(string.Concat(BASE_URI, "altLabel"));
 
                 /// <summary>
                 /// skosxl:hiddenLabel
                 /// </summary>
-                public static readonly RDFResource HIDDEN_LABEL = new RDFResource(string.Concat(SKOSXL.BASE_URI, "hiddenLabel"));
+                public static readonly RDFResource HIDDEN_LABEL = new RDFResource(string.Concat(BASE_URI, "hiddenLabel"));
 
                 /// <summary>
                 /// skosxl:labelRelation
                 /// </summary>
-                public static readonly RDFResource LABEL_RELATION = new RDFResource(string.Concat(SKOSXL.BASE_URI, "labelRelation"));
+                public static readonly RDFResource LABEL_RELATION = new RDFResource(string.Concat(BASE_URI, "labelRelation"));
 
                 /// <summary>
                 /// skosxl:literalForm
                 /// </summary>
-                public static readonly RDFResource LITERAL_FORM = new RDFResource(string.Concat(SKOSXL.BASE_URI, "literalForm"));
+                public static readonly RDFResource LITERAL_FORM = new RDFResource(string.Concat(BASE_URI, "literalForm"));
 
                 /// <summary>
                 /// skosxl:prefLabel
                 /// </summary>
-                public static readonly RDFResource PREF_LABEL = new RDFResource(string.Concat(SKOSXL.BASE_URI, "prefLabel"));
+                public static readonly RDFResource PREF_LABEL = new RDFResource(string.Concat(BASE_URI, "prefLabel"));
                 #endregion
             }
             #endregion

@@ -599,7 +599,7 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL:
                     try
                     {
-                        XDocument.Parse(literalValue);
+                        _ = XDocument.Parse(literalValue);
                         return (true, literalValue);
                     }
                     catch { return (false, literalValue); }
@@ -610,9 +610,8 @@ namespace RDFSharp.Model
                     return (isValidJson, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_ANYURI:
-                    if (Uri.TryCreate(literalValue, UriKind.Absolute, out Uri outUri))
-                        return (true, Convert.ToString(outUri));
-                    return (false, literalValue);;
+                    return Uri.TryCreate(literalValue, UriKind.Absolute, out Uri outUri) ? (true, Convert.ToString(outUri)) 
+                                                                                         : (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_NAME:
                     try
@@ -683,14 +682,13 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY:
                     try
                     {
-                        Convert.FromBase64String(literalValue);
+                        _ = Convert.FromBase64String(literalValue);
                         return (true, literalValue);
                     }
                     catch { return (false, literalValue); }
 
                 case RDFModelEnums.RDFDatatypes.XSD_HEXBINARY:
-                    bool isValidHexBinary = hexBinary.Value.Match(literalValue).Success;
-                    return (isValidHexBinary, literalValue);
+                    return (hexBinary.Value.Match(literalValue).Success, literalValue);
                 #endregion
 
                 #region GEOGRAPHIC CATEGORY

@@ -46,107 +46,107 @@ namespace RDFSharp.Model
             /// <summary>
             /// swrl:Imp
             /// </summary>
-            public static readonly RDFResource IMP = new RDFResource(string.Concat(SWRL.BASE_URI,"Imp"));
+            public static readonly RDFResource IMP = new RDFResource(string.Concat(BASE_URI,"Imp"));
 
             /// <summary>
             /// swrl:head
             /// </summary>
-            public static readonly RDFResource HEAD = new RDFResource(string.Concat(SWRL.BASE_URI,"head"));
+            public static readonly RDFResource HEAD = new RDFResource(string.Concat(BASE_URI,"head"));
 
             /// <summary>
             /// swrl:body
             /// </summary>
-            public static readonly RDFResource BODY = new RDFResource(string.Concat(SWRL.BASE_URI,"body"));
+            public static readonly RDFResource BODY = new RDFResource(string.Concat(BASE_URI,"body"));
 
             /// <summary>
             /// swrl:Variable
             /// </summary>
-            public static readonly RDFResource VARIABLE = new RDFResource(string.Concat(SWRL.BASE_URI,"Variable"));
+            public static readonly RDFResource VARIABLE = new RDFResource(string.Concat(BASE_URI,"Variable"));
 
             /// <summary>
             /// swrl:Atom
             /// </summary>
-            public static readonly RDFResource ATOM = new RDFResource(string.Concat(SWRL.BASE_URI,"Atom"));
+            public static readonly RDFResource ATOM = new RDFResource(string.Concat(BASE_URI,"Atom"));
 
             /// <summary>
             /// swrl:AtomList
             /// </summary>
-            public static readonly RDFResource ATOMLIST = new RDFResource(string.Concat(SWRL.BASE_URI,"AtomList"));
+            public static readonly RDFResource ATOMLIST = new RDFResource(string.Concat(BASE_URI,"AtomList"));
 
             /// <summary>
             /// swrl:Builtin
             /// </summary>
-            public static readonly RDFResource BUILTIN_CLS = new RDFResource(string.Concat(SWRL.BASE_URI,"Builtin"));
+            public static readonly RDFResource BUILTIN_CLS = new RDFResource(string.Concat(BASE_URI,"Builtin"));
 
             /// <summary>
             /// swrl:argument1
             /// </summary>
-            public static readonly RDFResource ARGUMENT1 = new RDFResource(string.Concat(SWRL.BASE_URI,"argument1"));
+            public static readonly RDFResource ARGUMENT1 = new RDFResource(string.Concat(BASE_URI,"argument1"));
 
             /// <summary>
             /// swrl:argument2
             /// </summary>
-            public static readonly RDFResource ARGUMENT2 = new RDFResource(string.Concat(SWRL.BASE_URI,"argument2"));
+            public static readonly RDFResource ARGUMENT2 = new RDFResource(string.Concat(BASE_URI,"argument2"));
 
             /// <summary>
             /// swrl:arguments
             /// </summary>
-            public static readonly RDFResource ARGUMENTS = new RDFResource(string.Concat(SWRL.BASE_URI,"arguments"));
+            public static readonly RDFResource ARGUMENTS = new RDFResource(string.Concat(BASE_URI,"arguments"));
 
             /// <summary>
             /// swrl:classPredicate
             /// </summary>
-            public static readonly RDFResource CLASS_PREDICATE = new RDFResource(string.Concat(SWRL.BASE_URI,"classPredicate"));
+            public static readonly RDFResource CLASS_PREDICATE = new RDFResource(string.Concat(BASE_URI,"classPredicate"));
 
             /// <summary>
             /// swrl:propertyPredicate
             /// </summary>
-            public static readonly RDFResource PROPERTY_PREDICATE = new RDFResource(string.Concat(SWRL.BASE_URI,"propertyPredicate"));
+            public static readonly RDFResource PROPERTY_PREDICATE = new RDFResource(string.Concat(BASE_URI,"propertyPredicate"));
 
             /// <summary>
             /// swrl:dataRange
             /// </summary>
-            public static readonly RDFResource DATARANGE = new RDFResource(string.Concat(SWRL.BASE_URI,"dataRange"));
+            public static readonly RDFResource DATARANGE = new RDFResource(string.Concat(BASE_URI,"dataRange"));
 
             /// <summary>
             /// swrl:builtin
             /// </summary>
-            public static readonly RDFResource BUILTIN_PROP = new RDFResource(string.Concat(SWRL.BASE_URI,"builtin"));
+            public static readonly RDFResource BUILTIN_PROP = new RDFResource(string.Concat(BASE_URI,"builtin"));
 
             /// <summary>
             /// swrl:ClassAtom
             /// </summary>
-            public static readonly RDFResource CLASS_ATOM = new RDFResource(string.Concat(SWRL.BASE_URI,"ClassAtom"));
+            public static readonly RDFResource CLASS_ATOM = new RDFResource(string.Concat(BASE_URI,"ClassAtom"));
 
             /// <summary>
             /// swrl:IndividualPropertyAtom
             /// </summary>
-            public static readonly RDFResource INDIVIDUAL_PROPERTY_ATOM = new RDFResource(string.Concat(SWRL.BASE_URI,"IndividualPropertyAtom"));
+            public static readonly RDFResource INDIVIDUAL_PROPERTY_ATOM = new RDFResource(string.Concat(BASE_URI,"IndividualPropertyAtom"));
 
             /// <summary>
             /// swrl:DatavaluedPropertyAtom
             /// </summary>
-            public static readonly RDFResource DATAVALUED_PROPERTY_ATOM = new RDFResource(string.Concat(SWRL.BASE_URI,"DatavaluedPropertyAtom"));
+            public static readonly RDFResource DATAVALUED_PROPERTY_ATOM = new RDFResource(string.Concat(BASE_URI,"DatavaluedPropertyAtom"));
 
             /// <summary>
             /// swrl:SameIndividualAtom
             /// </summary>
-            public static readonly RDFResource SAME_INDIVIDUAL_ATOM = new RDFResource(string.Concat(SWRL.BASE_URI,"SameIndividualAtom"));
+            public static readonly RDFResource SAME_INDIVIDUAL_ATOM = new RDFResource(string.Concat(BASE_URI,"SameIndividualAtom"));
 
             /// <summary>
             /// swrl:DifferentIndividualsAtom
             /// </summary>
-            public static readonly RDFResource DIFFERENT_INDIVIDUALS_ATOM = new RDFResource(string.Concat(SWRL.BASE_URI,"DifferentIndividualsAtom"));
+            public static readonly RDFResource DIFFERENT_INDIVIDUALS_ATOM = new RDFResource(string.Concat(BASE_URI,"DifferentIndividualsAtom"));
 
             /// <summary>
             /// swrl:DataRangeAtom
             /// </summary>
-            public static readonly RDFResource DATARANGE_ATOM = new RDFResource(string.Concat(SWRL.BASE_URI,"DataRangeAtom"));
+            public static readonly RDFResource DATARANGE_ATOM = new RDFResource(string.Concat(BASE_URI,"DataRangeAtom"));
 
             /// <summary>
             /// swrl:BuiltinAtom
             /// </summary>
-            public static readonly RDFResource BUILTIN_ATOM = new RDFResource(string.Concat(SWRL.BASE_URI,"BuiltinAtom"));
+            public static readonly RDFResource BUILTIN_ATOM = new RDFResource(string.Concat(BASE_URI,"BuiltinAtom"));
             #endregion
 
             #region Extended Properties

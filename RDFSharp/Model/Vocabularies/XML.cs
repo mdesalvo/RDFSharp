@@ -46,12 +46,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// xml:lang
             /// </summary>
-            public static readonly RDFResource LANG = new RDFResource(string.Concat(XML.BASE_URI, "#lang"));
+            public static readonly RDFResource LANG = new RDFResource(string.Concat(BASE_URI, "#lang"));
 
             /// <summary>
             /// xml:base
             /// </summary>
-            public static readonly RDFResource BASE = new RDFResource(string.Concat(XML.BASE_URI, "#base"));
+            public static readonly RDFResource BASE = new RDFResource(string.Concat(BASE_URI, "#base"));
             #endregion
         }
         #endregion

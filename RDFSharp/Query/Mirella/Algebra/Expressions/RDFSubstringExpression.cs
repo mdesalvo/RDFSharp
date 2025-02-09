@@ -14,10 +14,10 @@
    limitations under the License.
 */
 
-using RDFSharp.Model;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
@@ -95,7 +95,7 @@ namespace RDFSharp.Query
 
             #region Guards
             if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return expressionResult;
+                return null;
             #endregion
 
             try

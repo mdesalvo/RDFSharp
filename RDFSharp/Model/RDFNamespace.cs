@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFNamespace represents a generic namespace in the RDF model.
     /// </summary>
-    public class RDFNamespace : IEquatable<RDFNamespace>
+    public sealed class RDFNamespace : IEquatable<RDFNamespace>
     {
         #region Properties
         /// <summary>

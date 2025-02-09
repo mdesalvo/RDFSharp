@@ -11,11 +11,11 @@
    limitations under the License.
 */
 
-using RDFSharp.Query;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
+using RDFSharp.Query;
 
 namespace RDFSharp.Model
 {

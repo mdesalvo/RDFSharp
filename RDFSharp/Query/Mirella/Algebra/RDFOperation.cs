@@ -14,11 +14,11 @@
    limitations under the License.
 */
 
-using RDFSharp.Model;
-using RDFSharp.Store;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using RDFSharp.Model;
+using RDFSharp.Store;
 
 namespace RDFSharp.Query
 {
@@ -116,7 +116,7 @@ namespace RDFSharp.Query
         {
             #region Guards
             if (template == null)
-                throw new RDFQueryException($"Cannot add DELETE template to operation because it is null.");
+                throw new RDFQueryException("Cannot add DELETE template to operation because it is null.");
             if (template.Variables.Count > 0)
                 throw new RDFQueryException($"Cannot add DELETE template '{template}' to operation because it is not ground: please ensure it does not contain variables.");
             #endregion
@@ -134,7 +134,7 @@ namespace RDFSharp.Query
         {
             #region Guards
             if (template == null)
-                throw new RDFQueryException($"Cannot add DELETE template to operation because it is null.");
+                throw new RDFQueryException("Cannot add DELETE template to operation because it is null.");
             #endregion
 
             if (!DeleteTemplates.Any(tp => tp.Equals(template)))
@@ -153,7 +153,7 @@ namespace RDFSharp.Query
         {
             #region Guards
             if (template == null)
-                throw new RDFQueryException($"Cannot add INSERT template to operation because it is null.");
+                throw new RDFQueryException("Cannot add INSERT template to operation because it is null.");
             if (template.Variables.Count > 0)
                 throw new RDFQueryException($"Cannot add INSERT template '{template}' to operation because it is not ground: please ensure it does not contain variables.");
             #endregion
@@ -171,7 +171,7 @@ namespace RDFSharp.Query
         {
             #region Guards
             if (template == null)
-                throw new RDFQueryException($"Cannot add INSERT template to operation because it is null.");
+                throw new RDFQueryException("Cannot add INSERT template to operation because it is null.");
             #endregion
 
             if (!InsertTemplates.Any(tp => tp.Equals(template)))
@@ -190,7 +190,7 @@ namespace RDFSharp.Query
         {
             #region Guards
             if (prefix == null)
-                throw new RDFQueryException($"Cannot add prefix to operation because it is null.");
+                throw new RDFQueryException("Cannot add prefix to operation because it is null.");
             #endregion
 
             if (!Prefixes.Any(p => p.Equals(prefix)))
@@ -206,7 +206,7 @@ namespace RDFSharp.Query
         {
             #region Guards
             if (patternGroup == null)
-                throw new RDFQueryException($"Cannot add pattern group to operation because it is null.");
+                throw new RDFQueryException("Cannot add pattern group to operation because it is null.");
             #endregion
 
             if (!GetPatternGroups().Any(q => q.Equals(patternGroup)))
@@ -222,7 +222,7 @@ namespace RDFSharp.Query
         {
             #region Guards
             if (modifier == null)
-                throw new RDFQueryException($"Cannot add modifier to operation because it is null.");
+                throw new RDFQueryException("Cannot add modifier to operation because it is null.");
             #endregion
 
             if (!GetModifiers().Any(m => m is RDFDistinctModifier))
@@ -238,7 +238,7 @@ namespace RDFSharp.Query
         {
             #region Guards
             if (subQuery == null)
-                throw new RDFQueryException($"Cannot add sub query to operation because it is null.");
+                throw new RDFQueryException("Cannot add sub query to operation because it is null.");
             #endregion
 
             if (!GetSubQueries().Any(q => q.Equals(subQuery)))

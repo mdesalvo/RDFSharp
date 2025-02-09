@@ -46,127 +46,127 @@ namespace RDFSharp.Model
             /// <summary>
             /// rdf:Bag
             /// </summary>
-            public static readonly RDFResource BAG = new RDFResource(string.Concat(RDF.BASE_URI,"Bag"));
+            public static readonly RDFResource BAG = new RDFResource(string.Concat(BASE_URI,"Bag"));
 
             /// <summary>
             /// rdf:Seq
             /// </summary>
-            public static readonly RDFResource SEQ = new RDFResource(string.Concat(RDF.BASE_URI,"Seq"));
+            public static readonly RDFResource SEQ = new RDFResource(string.Concat(BASE_URI,"Seq"));
 
             /// <summary>
             /// rdf:Alt
             /// </summary>
-            public static readonly RDFResource ALT = new RDFResource(string.Concat(RDF.BASE_URI,"Alt"));
+            public static readonly RDFResource ALT = new RDFResource(string.Concat(BASE_URI,"Alt"));
 
             /// <summary>
             /// rdf:Statement
             /// </summary>
-            public static readonly RDFResource STATEMENT = new RDFResource(string.Concat(RDF.BASE_URI,"Statement"));
+            public static readonly RDFResource STATEMENT = new RDFResource(string.Concat(BASE_URI,"Statement"));
 
             /// <summary>
             /// rdf:Property
             /// </summary>
-            public static readonly RDFResource PROPERTY = new RDFResource(string.Concat(RDF.BASE_URI,"Property"));
+            public static readonly RDFResource PROPERTY = new RDFResource(string.Concat(BASE_URI,"Property"));
 
             /// <summary>
             /// rdf:XMLLiteral
             /// </summary>
-            public static readonly RDFResource XML_LITERAL = new RDFResource(string.Concat(RDF.BASE_URI,"XMLLiteral"));
+            public static readonly RDFResource XML_LITERAL = new RDFResource(string.Concat(BASE_URI,"XMLLiteral"));
 
             /// <summary>
             /// rdf:PlainLiteral
             /// </summary>
-            public static readonly RDFResource PLAIN_LITERAL = new RDFResource(string.Concat(RDF.BASE_URI, "PlainLiteral"));
+            public static readonly RDFResource PLAIN_LITERAL = new RDFResource(string.Concat(BASE_URI, "PlainLiteral"));
 
             /// <summary>
             /// rdf:HTML
             /// </summary>
-            public static readonly RDFResource HTML = new RDFResource(string.Concat(RDF.BASE_URI, "HTML"));
+            public static readonly RDFResource HTML = new RDFResource(string.Concat(BASE_URI, "HTML"));
 
             /// <summary>
             /// rdf:JSON
             /// </summary>
-            public static readonly RDFResource JSON = new RDFResource(string.Concat(RDF.BASE_URI, "JSON"));
+            public static readonly RDFResource JSON = new RDFResource(string.Concat(BASE_URI, "JSON"));
 
             /// <summary>
             /// rdf:List
             /// </summary>
-            public static readonly RDFResource LIST = new RDFResource(string.Concat(RDF.BASE_URI,"List"));
+            public static readonly RDFResource LIST = new RDFResource(string.Concat(BASE_URI,"List"));
 
             /// <summary>
             /// rdf:nil
             /// </summary>
-            public static readonly RDFResource NIL = new RDFResource(string.Concat(RDF.BASE_URI,"nil"));
+            public static readonly RDFResource NIL = new RDFResource(string.Concat(BASE_URI,"nil"));
 
             /// <summary>
             /// rdf:first
             /// </summary>
-            public static readonly RDFResource FIRST = new RDFResource(string.Concat(RDF.BASE_URI, "first"));
+            public static readonly RDFResource FIRST = new RDFResource(string.Concat(BASE_URI, "first"));
 
             /// <summary>
             /// rdf:rest
             /// </summary>
-            public static readonly RDFResource REST = new RDFResource(string.Concat(RDF.BASE_URI, "rest"));
+            public static readonly RDFResource REST = new RDFResource(string.Concat(BASE_URI, "rest"));
 
             /// <summary>
             /// rdf:li
             /// </summary>
-            public static readonly RDFResource LI = new RDFResource(string.Concat(RDF.BASE_URI,"li"));
+            public static readonly RDFResource LI = new RDFResource(string.Concat(BASE_URI,"li"));
 
             /// <summary>
             /// rdf:subject
             /// </summary>
-            public static readonly RDFResource SUBJECT = new RDFResource(string.Concat(RDF.BASE_URI,"subject"));
+            public static readonly RDFResource SUBJECT = new RDFResource(string.Concat(BASE_URI,"subject"));
 
             /// <summary>
             /// rdf:predicate
             /// </summary>
-            public static readonly RDFResource PREDICATE = new RDFResource(string.Concat(RDF.BASE_URI,"predicate"));
+            public static readonly RDFResource PREDICATE = new RDFResource(string.Concat(BASE_URI,"predicate"));
 
             /// <summary>
             /// rdf:object
             /// </summary>
-            public static readonly RDFResource OBJECT = new RDFResource(string.Concat(RDF.BASE_URI,"object"));
+            public static readonly RDFResource OBJECT = new RDFResource(string.Concat(BASE_URI,"object"));
 
             /// <summary>
             /// rdf:type
             /// </summary>
-            public static readonly RDFResource TYPE = new RDFResource(string.Concat(RDF.BASE_URI,"type"));
+            public static readonly RDFResource TYPE = new RDFResource(string.Concat(BASE_URI,"type"));
 
             /// <summary>
             /// rdf:value
             /// </summary>
-            public static readonly RDFResource VALUE = new RDFResource(string.Concat(RDF.BASE_URI,"value"));
+            public static readonly RDFResource VALUE = new RDFResource(string.Concat(BASE_URI,"value"));
 
             /// <summary>
             /// rdf:language
             /// </summary>
-            public static readonly RDFResource LANGUAGE = new RDFResource(string.Concat(RDF.BASE_URI, "language"));
+            public static readonly RDFResource LANGUAGE = new RDFResource(string.Concat(BASE_URI, "language"));
 
             /// <summary>
             /// rdf:langRange
             /// </summary>
-            public static readonly RDFResource LANG_RANGE = new RDFResource(string.Concat(RDF.BASE_URI, "langRange"));
+            public static readonly RDFResource LANG_RANGE = new RDFResource(string.Concat(BASE_URI, "langRange"));
 
             /// <summary>
             /// rdf:langString
             /// </summary>
-            public static readonly RDFResource LANG_STRING = new RDFResource(string.Concat(RDF.BASE_URI, "langString"));
+            public static readonly RDFResource LANG_STRING = new RDFResource(string.Concat(BASE_URI, "langString"));
 
             /// <summary>
             /// rdf:dirLangString
             /// </summary>
-            public static readonly RDFResource DIR_LANG_STRING = new RDFResource(string.Concat(RDF.BASE_URI, "dirLangString"));
+            public static readonly RDFResource DIR_LANG_STRING = new RDFResource(string.Concat(BASE_URI, "dirLangString"));
 
             /// <summary>
             /// rdf:direction
             /// </summary>
-            public static readonly RDFResource DIRECTION = new RDFResource(string.Concat(RDF.BASE_URI, "direction"));
+            public static readonly RDFResource DIRECTION = new RDFResource(string.Concat(BASE_URI, "direction"));
 
             /// <summary>
             /// rdf:reifies
             /// </summary>
-            public static readonly RDFResource REIFIES = new RDFResource(string.Concat(RDF.BASE_URI, "reifies"));
+            public static readonly RDFResource REIFIES = new RDFResource(string.Concat(BASE_URI, "reifies"));
             #endregion
         }
         #endregion

@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-using RDFSharp.Query;
 using System.Collections.Generic;
+using RDFSharp.Query;
 
 namespace RDFSharp.Model
 {
@@ -70,7 +70,7 @@ namespace RDFSharp.Model
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Value does not have at least one of the shapes in sh:or enumeration"));
+                shapeMessages.Add(new RDFPlainLiteral("Value does not have at least one of the shapes in sh:or enumeration"));
 
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)

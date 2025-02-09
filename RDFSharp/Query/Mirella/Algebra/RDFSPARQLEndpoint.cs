@@ -14,11 +14,11 @@
    limitations under the License.
 */
 
-using RDFSharp.Model;
-using static RDFSharp.Query.RDFQueryUtilities;
 using System;
 using System.Collections.Specialized;
 using System.Net;
+using RDFSharp.Model;
+using static RDFSharp.Query.RDFQueryUtilities;
 
 namespace RDFSharp.Query
 {

@@ -14,9 +14,9 @@
    limitations under the License.
 */
 
-using RDFSharp.Model;
 using System.Collections.Generic;
 using System.Data;
+using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
@@ -42,25 +42,25 @@ namespace RDFSharp.Query
         /// Default-ctor to build an expression with given expression arguments
         /// </summary>
         public RDFExpression(RDFExpression leftArgument, RDFExpression rightArgument)
-            : this(leftArgument as RDFExpressionArgument, rightArgument as RDFExpressionArgument) { }
+            : this(leftArgument, rightArgument as RDFExpressionArgument) { }
 
         /// <summary>
         /// Default-ctor to build an expression with given mixed arguments
         /// </summary>
         public RDFExpression(RDFExpression leftArgument, RDFPatternMember rightArgument)
-            : this(leftArgument as RDFExpressionArgument, rightArgument as RDFExpressionArgument) { }
+            : this(leftArgument, rightArgument as RDFExpressionArgument) { }
 
         /// <summary>
         /// Default-ctor to build an expression with given mixed arguments
         /// </summary>
         public RDFExpression(RDFPatternMember leftArgument, RDFExpression rightArgument)
-            : this(leftArgument as RDFExpressionArgument, rightArgument as RDFExpressionArgument) { }
+            : this(leftArgument, rightArgument as RDFExpressionArgument) { }
 
         /// <summary>
         /// Default-ctor to build an expression with given pattern member arguments
         /// </summary>
         public RDFExpression(RDFPatternMember leftArgument, RDFPatternMember rightArgument)
-            : this(leftArgument as RDFExpressionArgument, rightArgument as RDFExpressionArgument) { }
+            : this(leftArgument, rightArgument as RDFExpressionArgument) { }
 
         /// <summary>
         /// Internal-ctor to build an expression with given expression arguments

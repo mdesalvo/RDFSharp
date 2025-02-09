@@ -46,244 +46,244 @@ namespace RDFSharp.Model
             /// <summary>
             /// xsd:string
             /// </summary>
-            public static readonly RDFResource STRING = new RDFResource(string.Concat(XSD.BASE_URI,"string"));
+            public static readonly RDFResource STRING = new RDFResource(string.Concat(BASE_URI,"string"));
 
             /// <summary>
             /// xsd:boolean
             /// </summary>
-            public static readonly RDFResource BOOLEAN = new RDFResource(string.Concat(XSD.BASE_URI,"boolean"));
+            public static readonly RDFResource BOOLEAN = new RDFResource(string.Concat(BASE_URI,"boolean"));
 
             /// <summary>
             /// xsd:decimal
             /// </summary>
-            public static readonly RDFResource DECIMAL = new RDFResource(string.Concat(XSD.BASE_URI,"decimal"));
+            public static readonly RDFResource DECIMAL = new RDFResource(string.Concat(BASE_URI,"decimal"));
 
             /// <summary>
             /// xsd:float
             /// </summary>
-            public static readonly RDFResource FLOAT = new RDFResource(string.Concat(XSD.BASE_URI,"float"));
+            public static readonly RDFResource FLOAT = new RDFResource(string.Concat(BASE_URI,"float"));
 
             /// <summary>
             /// xsd:double
             /// </summary>
-            public static readonly RDFResource DOUBLE = new RDFResource(string.Concat(XSD.BASE_URI,"double"));
+            public static readonly RDFResource DOUBLE = new RDFResource(string.Concat(BASE_URI,"double"));
 
             /// <summary>
             /// xsd:positiveInteger
             /// </summary>
-            public static readonly RDFResource POSITIVE_INTEGER = new RDFResource(string.Concat(XSD.BASE_URI,"positiveInteger"));
+            public static readonly RDFResource POSITIVE_INTEGER = new RDFResource(string.Concat(BASE_URI,"positiveInteger"));
 
             /// <summary>
             /// xsd:negativeInteger
             /// </summary>
-            public static readonly RDFResource NEGATIVE_INTEGER = new RDFResource(string.Concat(XSD.BASE_URI,"negativeInteger"));
+            public static readonly RDFResource NEGATIVE_INTEGER = new RDFResource(string.Concat(BASE_URI,"negativeInteger"));
 
             /// <summary>
             /// xsd:nonPositiveInteger
             /// </summary>
-            public static readonly RDFResource NON_POSITIVE_INTEGER = new RDFResource(string.Concat(XSD.BASE_URI,"nonPositiveInteger"));
+            public static readonly RDFResource NON_POSITIVE_INTEGER = new RDFResource(string.Concat(BASE_URI,"nonPositiveInteger"));
 
             /// <summary>
             /// xsd:nonNegativeInteger
             /// </summary>
-            public static readonly RDFResource NON_NEGATIVE_INTEGER = new RDFResource(string.Concat(XSD.BASE_URI,"nonNegativeInteger"));
+            public static readonly RDFResource NON_NEGATIVE_INTEGER = new RDFResource(string.Concat(BASE_URI,"nonNegativeInteger"));
 
             /// <summary>
             /// xsd:integer
             /// </summary>
-            public static readonly RDFResource INTEGER = new RDFResource(string.Concat(XSD.BASE_URI,"integer"));
+            public static readonly RDFResource INTEGER = new RDFResource(string.Concat(BASE_URI,"integer"));
 
             /// <summary>
             /// xsd:long
             /// </summary>
-            public static readonly RDFResource LONG = new RDFResource(string.Concat(XSD.BASE_URI,"long"));
+            public static readonly RDFResource LONG = new RDFResource(string.Concat(BASE_URI,"long"));
 
             /// <summary>
             /// xsd:unsignedLong
             /// </summary>
-            public static readonly RDFResource UNSIGNED_LONG = new RDFResource(string.Concat(XSD.BASE_URI,"unsignedLong"));
+            public static readonly RDFResource UNSIGNED_LONG = new RDFResource(string.Concat(BASE_URI,"unsignedLong"));
 
             /// <summary>
             /// xsd:int
             /// </summary>
-            public static readonly RDFResource INT = new RDFResource(string.Concat(XSD.BASE_URI,"int"));
+            public static readonly RDFResource INT = new RDFResource(string.Concat(BASE_URI,"int"));
 
             /// <summary>
             /// xsd:unsignedInt
             /// </summary>
-            public static readonly RDFResource UNSIGNED_INT = new RDFResource(string.Concat(XSD.BASE_URI,"unsignedInt"));
+            public static readonly RDFResource UNSIGNED_INT = new RDFResource(string.Concat(BASE_URI,"unsignedInt"));
 
             /// <summary>
             /// xsd:short
             /// </summary>
-            public static readonly RDFResource SHORT = new RDFResource(string.Concat(XSD.BASE_URI,"short"));
+            public static readonly RDFResource SHORT = new RDFResource(string.Concat(BASE_URI,"short"));
 
             /// <summary>
             /// xsd:unsignedShort
             /// </summary>
-            public static readonly RDFResource UNSIGNED_SHORT = new RDFResource(string.Concat(XSD.BASE_URI,"unsignedShort"));
+            public static readonly RDFResource UNSIGNED_SHORT = new RDFResource(string.Concat(BASE_URI,"unsignedShort"));
 
             /// <summary>
             /// xsd:byte
             /// </summary>
-            public static readonly RDFResource BYTE = new RDFResource(string.Concat(XSD.BASE_URI,"byte"));
+            public static readonly RDFResource BYTE = new RDFResource(string.Concat(BASE_URI,"byte"));
 
             /// <summary>
             /// xsd:unsignedByte
             /// </summary>
-            public static readonly RDFResource UNSIGNED_BYTE = new RDFResource(string.Concat(XSD.BASE_URI,"unsignedByte"));
+            public static readonly RDFResource UNSIGNED_BYTE = new RDFResource(string.Concat(BASE_URI,"unsignedByte"));
 
             /// <summary>
             /// xsd:duration
             /// </summary>
-            public static readonly RDFResource DURATION = new RDFResource(string.Concat(XSD.BASE_URI,"duration"));
+            public static readonly RDFResource DURATION = new RDFResource(string.Concat(BASE_URI,"duration"));
 
             /// <summary>
             /// xsd:dateTime
             /// </summary>
-            public static readonly RDFResource DATETIME = new RDFResource(string.Concat(XSD.BASE_URI,"dateTime"));
+            public static readonly RDFResource DATETIME = new RDFResource(string.Concat(BASE_URI,"dateTime"));
 
             /// <summary>
             /// xsd:dateTimeStamp
             /// </summary>
-            public static readonly RDFResource DATETIMESTAMP = new RDFResource(string.Concat(XSD.BASE_URI, "dateTimeStamp"));
+            public static readonly RDFResource DATETIMESTAMP = new RDFResource(string.Concat(BASE_URI, "dateTimeStamp"));
 
             /// <summary>
             /// xsd:time
             /// </summary>
-            public static readonly RDFResource TIME = new RDFResource(string.Concat(XSD.BASE_URI,"time"));
+            public static readonly RDFResource TIME = new RDFResource(string.Concat(BASE_URI,"time"));
 
             /// <summary>
             /// xsd:date
             /// </summary>
-            public static readonly RDFResource DATE = new RDFResource(string.Concat(XSD.BASE_URI,"date"));
+            public static readonly RDFResource DATE = new RDFResource(string.Concat(BASE_URI,"date"));
 
             /// <summary>
             /// xsd:gYearMonth
             /// </summary>
-            public static readonly RDFResource G_YEAR_MONTH = new RDFResource(string.Concat(XSD.BASE_URI,"gYearMonth"));
+            public static readonly RDFResource G_YEAR_MONTH = new RDFResource(string.Concat(BASE_URI,"gYearMonth"));
 
             /// <summary>
             /// xsd:gYear
             /// </summary>
-            public static readonly RDFResource G_YEAR = new RDFResource(string.Concat(XSD.BASE_URI,"gYear"));
+            public static readonly RDFResource G_YEAR = new RDFResource(string.Concat(BASE_URI,"gYear"));
 
             /// <summary>
             /// xsd:gMonth
             /// </summary>
-            public static readonly RDFResource G_MONTH = new RDFResource(string.Concat(XSD.BASE_URI,"gMonth"));
+            public static readonly RDFResource G_MONTH = new RDFResource(string.Concat(BASE_URI,"gMonth"));
 
             /// <summary>
             /// xsd:gMonthDay
             /// </summary>
-            public static readonly RDFResource G_MONTH_DAY = new RDFResource(string.Concat(XSD.BASE_URI,"gMonthDay"));
+            public static readonly RDFResource G_MONTH_DAY = new RDFResource(string.Concat(BASE_URI,"gMonthDay"));
 
             /// <summary>
             /// xsd:gDay
             /// </summary>
-            public static readonly RDFResource G_DAY = new RDFResource(string.Concat(XSD.BASE_URI,"gDay"));
+            public static readonly RDFResource G_DAY = new RDFResource(string.Concat(BASE_URI,"gDay"));
 
             /// <summary>
             /// xsd:hexBinary
             /// </summary>
-            public static readonly RDFResource HEX_BINARY = new RDFResource(string.Concat(XSD.BASE_URI,"hexBinary"));
+            public static readonly RDFResource HEX_BINARY = new RDFResource(string.Concat(BASE_URI,"hexBinary"));
 
             /// <summary>
             /// xsd:base64Binary
             /// </summary>
-            public static readonly RDFResource BASE64_BINARY = new RDFResource(string.Concat(XSD.BASE_URI,"base64Binary"));
+            public static readonly RDFResource BASE64_BINARY = new RDFResource(string.Concat(BASE_URI,"base64Binary"));
 
             /// <summary>
             /// xsd:anyURI
             /// </summary>
-            public static readonly RDFResource ANY_URI = new RDFResource(string.Concat(XSD.BASE_URI,"anyURI"));
+            public static readonly RDFResource ANY_URI = new RDFResource(string.Concat(BASE_URI,"anyURI"));
 
             /// <summary>
             /// xsd:QName
             /// </summary>
-            public static readonly RDFResource QNAME = new RDFResource(string.Concat(XSD.BASE_URI,"QName"));
+            public static readonly RDFResource QNAME = new RDFResource(string.Concat(BASE_URI,"QName"));
 
             /// <summary>
             /// xsd:NOTATION
             /// </summary>
-            public static readonly RDFResource NOTATION = new RDFResource(string.Concat(XSD.BASE_URI,"NOTATION"));
+            public static readonly RDFResource NOTATION = new RDFResource(string.Concat(BASE_URI,"NOTATION"));
 
             /// <summary>
             /// xsd:language
             /// </summary>
-            public static readonly RDFResource LANGUAGE = new RDFResource(string.Concat(XSD.BASE_URI,"language"));
+            public static readonly RDFResource LANGUAGE = new RDFResource(string.Concat(BASE_URI,"language"));
 
             /// <summary>
             /// xsd:normalizedString
             /// </summary>
-            public static readonly RDFResource NORMALIZED_STRING = new RDFResource(string.Concat(XSD.BASE_URI,"normalizedString"));
+            public static readonly RDFResource NORMALIZED_STRING = new RDFResource(string.Concat(BASE_URI,"normalizedString"));
 
             /// <summary>
             /// xsd:token
             /// </summary>
-            public static readonly RDFResource TOKEN = new RDFResource(string.Concat(XSD.BASE_URI,"token"));
+            public static readonly RDFResource TOKEN = new RDFResource(string.Concat(BASE_URI,"token"));
 
             /// <summary>
             /// xsd:NMToken
             /// </summary>
-            public static readonly RDFResource NMTOKEN = new RDFResource(string.Concat(XSD.BASE_URI,"NMToken"));
+            public static readonly RDFResource NMTOKEN = new RDFResource(string.Concat(BASE_URI,"NMToken"));
 
             /// <summary>
             /// xsd:Name
             /// </summary>
-            public static readonly RDFResource NAME = new RDFResource(string.Concat(XSD.BASE_URI,"Name"));
+            public static readonly RDFResource NAME = new RDFResource(string.Concat(BASE_URI,"Name"));
 
             /// <summary>
             /// xsd:NCName
             /// </summary>
-            public static readonly RDFResource NCNAME = new RDFResource(string.Concat(XSD.BASE_URI,"NCName"));
+            public static readonly RDFResource NCNAME = new RDFResource(string.Concat(BASE_URI,"NCName"));
 
             /// <summary>
             /// xsd:ID
             /// </summary>
-            public static readonly RDFResource ID = new RDFResource(string.Concat(XSD.BASE_URI,"ID"));
+            public static readonly RDFResource ID = new RDFResource(string.Concat(BASE_URI,"ID"));
 
             //FACETS
 
             /// <summary>
             /// xsd:length
             /// </summary>
-            public static readonly RDFResource LENGTH = new RDFResource(string.Concat(XSD.BASE_URI, "length"));
+            public static readonly RDFResource LENGTH = new RDFResource(string.Concat(BASE_URI, "length"));
 
             /// <summary>
             /// xsd:minLength
             /// </summary>
-            public static readonly RDFResource MIN_LENGTH = new RDFResource(string.Concat(XSD.BASE_URI, "minLength"));
+            public static readonly RDFResource MIN_LENGTH = new RDFResource(string.Concat(BASE_URI, "minLength"));
 
             /// <summary>
             /// xsd:maxLength
             /// </summary>
-            public static readonly RDFResource MAX_LENGTH = new RDFResource(string.Concat(XSD.BASE_URI, "maxLength"));
+            public static readonly RDFResource MAX_LENGTH = new RDFResource(string.Concat(BASE_URI, "maxLength"));
 
             /// <summary>
             /// xsd:pattern
             /// </summary>
-            public static readonly RDFResource PATTERN = new RDFResource(string.Concat(XSD.BASE_URI, "pattern"));
+            public static readonly RDFResource PATTERN = new RDFResource(string.Concat(BASE_URI, "pattern"));
 
             /// <summary>
             /// xsd:maxInclusive
             /// </summary>
-            public static readonly RDFResource MAX_INCLUSIVE = new RDFResource(string.Concat(XSD.BASE_URI, "maxInclusive"));
+            public static readonly RDFResource MAX_INCLUSIVE = new RDFResource(string.Concat(BASE_URI, "maxInclusive"));
 
             /// <summary>
             /// xsd:maxExclusive
             /// </summary>
-            public static readonly RDFResource MAX_EXCLUSIVE = new RDFResource(string.Concat(XSD.BASE_URI, "maxExclusive"));
+            public static readonly RDFResource MAX_EXCLUSIVE = new RDFResource(string.Concat(BASE_URI, "maxExclusive"));
 
             /// <summary>
             /// xsd:minExclusive
             /// </summary>
-            public static readonly RDFResource MIN_EXCLUSIVE = new RDFResource(string.Concat(XSD.BASE_URI, "minExclusive"));
+            public static readonly RDFResource MIN_EXCLUSIVE = new RDFResource(string.Concat(BASE_URI, "minExclusive"));
 
             /// <summary>
             /// xsd:minInclusive
             /// </summary>
-            public static readonly RDFResource MIN_INCLUSIVE = new RDFResource(string.Concat(XSD.BASE_URI, "minInclusive"));
+            public static readonly RDFResource MIN_INCLUSIVE = new RDFResource(string.Concat(BASE_URI, "minInclusive"));
             #endregion
         }
         #endregion

@@ -46,392 +46,392 @@ namespace RDFSharp.Model
             /// <summary>
             /// owl:Ontology
             /// </summary>
-            public static readonly RDFResource ONTOLOGY = new RDFResource(string.Concat(OWL.BASE_URI,"Ontology"));
+            public static readonly RDFResource ONTOLOGY = new RDFResource(string.Concat(BASE_URI,"Ontology"));
 
             /// <summary>
             /// owl:imports
             /// </summary>
-            public static readonly RDFResource IMPORTS = new RDFResource(string.Concat(OWL.BASE_URI,"imports"));
+            public static readonly RDFResource IMPORTS = new RDFResource(string.Concat(BASE_URI,"imports"));
 
             /// <summary>
             /// owl:Class
             /// </summary>
-            public static readonly RDFResource CLASS = new RDFResource(string.Concat(OWL.BASE_URI,"Class"));
+            public static readonly RDFResource CLASS = new RDFResource(string.Concat(BASE_URI,"Class"));
 
             /// <summary>
             /// owl:Individual
             /// </summary>
-            public static readonly RDFResource INDIVIDUAL = new RDFResource(string.Concat(OWL.BASE_URI,"Individual"));
+            public static readonly RDFResource INDIVIDUAL = new RDFResource(string.Concat(BASE_URI,"Individual"));
 
             /// <summary>
             /// owl:Thing
             /// </summary>
-            public static readonly RDFResource THING = new RDFResource(string.Concat(OWL.BASE_URI,"Thing"));
+            public static readonly RDFResource THING = new RDFResource(string.Concat(BASE_URI,"Thing"));
 
             /// <summary>
             /// owl:Nothing
             /// </summary>
-            public static readonly RDFResource NOTHING = new RDFResource(string.Concat(OWL.BASE_URI,"Nothing"));
+            public static readonly RDFResource NOTHING = new RDFResource(string.Concat(BASE_URI,"Nothing"));
 
             /// <summary>
             /// owl:NamedIndividual
             /// </summary>
-            public static readonly RDFResource NAMED_INDIVIDUAL = new RDFResource(string.Concat(OWL.BASE_URI,"NamedIndividual"));
+            public static readonly RDFResource NAMED_INDIVIDUAL = new RDFResource(string.Concat(BASE_URI,"NamedIndividual"));
 
             /// <summary>
             /// owl:Restriction
             /// </summary>
-            public static readonly RDFResource RESTRICTION = new RDFResource(string.Concat(OWL.BASE_URI,"Restriction"));
+            public static readonly RDFResource RESTRICTION = new RDFResource(string.Concat(BASE_URI,"Restriction"));
 
             /// <summary>
             /// owl:onProperty
             /// </summary>
-            public static readonly RDFResource ON_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"onProperty"));
+            public static readonly RDFResource ON_PROPERTY = new RDFResource(string.Concat(BASE_URI,"onProperty"));
 
             /// <summary>
             /// owl:equivalentClass
             /// </summary>
-            public static readonly RDFResource EQUIVALENT_CLASS = new RDFResource(string.Concat(OWL.BASE_URI,"equivalentClass"));
+            public static readonly RDFResource EQUIVALENT_CLASS = new RDFResource(string.Concat(BASE_URI,"equivalentClass"));
 
             /// <summary>
             /// owl:DeprecatedClass
             /// </summary>
-            public static readonly RDFResource DEPRECATED_CLASS = new RDFResource(string.Concat(OWL.BASE_URI,"DeprecatedClass"));
+            public static readonly RDFResource DEPRECATED_CLASS = new RDFResource(string.Concat(BASE_URI,"DeprecatedClass"));
 
             /// <summary>
             /// owl:equivalentProperty
             /// </summary>
-            public static readonly RDFResource EQUIVALENT_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"equivalentProperty"));
+            public static readonly RDFResource EQUIVALENT_PROPERTY = new RDFResource(string.Concat(BASE_URI,"equivalentProperty"));
 
             /// <summary>
             /// owl:DeprecatedProperty
             /// </summary>
-            public static readonly RDFResource DEPRECATED_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"DeprecatedProperty"));
+            public static readonly RDFResource DEPRECATED_PROPERTY = new RDFResource(string.Concat(BASE_URI,"DeprecatedProperty"));
 
             /// <summary>
             /// owl:inverseOf
             /// </summary>
-            public static readonly RDFResource INVERSE_OF = new RDFResource(string.Concat(OWL.BASE_URI,"inverseOf"));
+            public static readonly RDFResource INVERSE_OF = new RDFResource(string.Concat(BASE_URI,"inverseOf"));
 
             /// <summary>
             /// owl:DatatypeProperty
             /// </summary>
-            public static readonly RDFResource DATATYPE_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"DatatypeProperty"));
+            public static readonly RDFResource DATATYPE_PROPERTY = new RDFResource(string.Concat(BASE_URI,"DatatypeProperty"));
 
             /// <summary>
             /// owl:ObjectProperty
             /// </summary>
-            public static readonly RDFResource OBJECT_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"ObjectProperty"));
+            public static readonly RDFResource OBJECT_PROPERTY = new RDFResource(string.Concat(BASE_URI,"ObjectProperty"));
 
             /// <summary>
             /// owl:TransitiveProperty
             /// </summary>
-            public static readonly RDFResource TRANSITIVE_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"TransitiveProperty"));
+            public static readonly RDFResource TRANSITIVE_PROPERTY = new RDFResource(string.Concat(BASE_URI,"TransitiveProperty"));
 
             /// <summary>
             /// owl:SymmetricProperty
             /// </summary>
-            public static readonly RDFResource SYMMETRIC_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"SymmetricProperty"));
+            public static readonly RDFResource SYMMETRIC_PROPERTY = new RDFResource(string.Concat(BASE_URI,"SymmetricProperty"));
 
             /// <summary>
             /// owl:FunctionalProperty
             /// </summary>
-            public static readonly RDFResource FUNCTIONAL_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"FunctionalProperty"));
+            public static readonly RDFResource FUNCTIONAL_PROPERTY = new RDFResource(string.Concat(BASE_URI,"FunctionalProperty"));
 
             /// <summary>
             /// owl:InverseFunctionalProperty
             /// </summary>
-            public static readonly RDFResource INVERSE_FUNCTIONAL_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"InverseFunctionalProperty"));
+            public static readonly RDFResource INVERSE_FUNCTIONAL_PROPERTY = new RDFResource(string.Concat(BASE_URI,"InverseFunctionalProperty"));
 
             /// <summary>
             /// owl:AnnotationProperty
             /// </summary>
-            public static readonly RDFResource ANNOTATION_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"AnnotationProperty"));
+            public static readonly RDFResource ANNOTATION_PROPERTY = new RDFResource(string.Concat(BASE_URI,"AnnotationProperty"));
 
             /// <summary>
             /// owl:OntologyProperty
             /// </summary>
-            public static readonly RDFResource ONTOLOGY_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"OntologyProperty"));
+            public static readonly RDFResource ONTOLOGY_PROPERTY = new RDFResource(string.Concat(BASE_URI,"OntologyProperty"));
 
             /// <summary>
             /// owl:allValuesFrom
             /// </summary>
-            public static readonly RDFResource ALL_VALUES_FROM = new RDFResource(string.Concat(OWL.BASE_URI,"allValuesFrom"));
+            public static readonly RDFResource ALL_VALUES_FROM = new RDFResource(string.Concat(BASE_URI,"allValuesFrom"));
 
             /// <summary>
             /// owl:someValuesFrom
             /// </summary>
-            public static readonly RDFResource SOME_VALUES_FROM = new RDFResource(string.Concat(OWL.BASE_URI,"someValuesFrom"));
+            public static readonly RDFResource SOME_VALUES_FROM = new RDFResource(string.Concat(BASE_URI,"someValuesFrom"));
 
             /// <summary>
             /// owl:hasValue
             /// </summary>
-            public static readonly RDFResource HAS_VALUE = new RDFResource(string.Concat(OWL.BASE_URI,"hasValue"));
+            public static readonly RDFResource HAS_VALUE = new RDFResource(string.Concat(BASE_URI,"hasValue"));
 
             /// <summary>
             /// owl:minCardinality
             /// </summary>
-            public static readonly RDFResource MIN_CARDINALITY = new RDFResource(string.Concat(OWL.BASE_URI,"minCardinality"));
+            public static readonly RDFResource MIN_CARDINALITY = new RDFResource(string.Concat(BASE_URI,"minCardinality"));
 
             /// <summary>
             /// owl:maxCardinality
             /// </summary>
-            public static readonly RDFResource MAX_CARDINALITY = new RDFResource(string.Concat(OWL.BASE_URI,"maxCardinality"));
+            public static readonly RDFResource MAX_CARDINALITY = new RDFResource(string.Concat(BASE_URI,"maxCardinality"));
 
             /// <summary>
             /// owl:cardinality
             /// </summary>
-            public static readonly RDFResource CARDINALITY = new RDFResource(string.Concat(OWL.BASE_URI,"cardinality"));
+            public static readonly RDFResource CARDINALITY = new RDFResource(string.Concat(BASE_URI,"cardinality"));
 
             /// <summary>
             /// owl:sameAs
             /// </summary>
-            public static readonly RDFResource SAME_AS = new RDFResource(string.Concat(OWL.BASE_URI,"sameAs"));
+            public static readonly RDFResource SAME_AS = new RDFResource(string.Concat(BASE_URI,"sameAs"));
 
             /// <summary>
             /// owl:differentFrom
             /// </summary>
-            public static readonly RDFResource DIFFERENT_FROM = new RDFResource(string.Concat(OWL.BASE_URI,"differentFrom"));
+            public static readonly RDFResource DIFFERENT_FROM = new RDFResource(string.Concat(BASE_URI,"differentFrom"));
 
             /// <summary>
             /// owl:members
             /// </summary>
-            public static readonly RDFResource MEMBERS = new RDFResource(string.Concat(OWL.BASE_URI,"members"));
+            public static readonly RDFResource MEMBERS = new RDFResource(string.Concat(BASE_URI,"members"));
 
             /// <summary>
             /// owl:distinctMembers
             /// </summary>
-            public static readonly RDFResource DISTINCT_MEMBERS = new RDFResource(string.Concat(OWL.BASE_URI,"distinctMembers"));
+            public static readonly RDFResource DISTINCT_MEMBERS = new RDFResource(string.Concat(BASE_URI,"distinctMembers"));
 
             /// <summary>
             /// owl:intersectionOf
             /// </summary>
-            public static readonly RDFResource INTERSECTION_OF = new RDFResource(string.Concat(OWL.BASE_URI,"intersectionOf"));
+            public static readonly RDFResource INTERSECTION_OF = new RDFResource(string.Concat(BASE_URI,"intersectionOf"));
 
             /// <summary>
             /// owl:unionOf
             /// </summary>
-            public static readonly RDFResource UNION_OF = new RDFResource(string.Concat(OWL.BASE_URI,"unionOf"));
+            public static readonly RDFResource UNION_OF = new RDFResource(string.Concat(BASE_URI,"unionOf"));
 
             /// <summary>
             /// owl:complementOf
             /// </summary>
-            public static readonly RDFResource COMPLEMENT_OF = new RDFResource(string.Concat(OWL.BASE_URI,"complementOf"));
+            public static readonly RDFResource COMPLEMENT_OF = new RDFResource(string.Concat(BASE_URI,"complementOf"));
 
             /// <summary>
             /// owl:oneOf
             /// </summary>
-            public static readonly RDFResource ONE_OF = new RDFResource(string.Concat(OWL.BASE_URI,"oneOf"));
+            public static readonly RDFResource ONE_OF = new RDFResource(string.Concat(BASE_URI,"oneOf"));
 
             /// <summary>
             /// owl:DataRange
             /// </summary>
-            public static readonly RDFResource DATA_RANGE = new RDFResource(string.Concat(OWL.BASE_URI,"DataRange"));
+            public static readonly RDFResource DATA_RANGE = new RDFResource(string.Concat(BASE_URI,"DataRange"));
 
             /// <summary>
             /// owl:backwardCompatibleWith
             /// </summary>
-            public static readonly RDFResource BACKWARD_COMPATIBLE_WITH = new RDFResource(string.Concat(OWL.BASE_URI,"backwardCompatibleWith"));
+            public static readonly RDFResource BACKWARD_COMPATIBLE_WITH = new RDFResource(string.Concat(BASE_URI,"backwardCompatibleWith"));
 
             /// <summary>
             /// owl:incompatibleWith
             /// </summary>
-            public static readonly RDFResource INCOMPATIBLE_WITH = new RDFResource(string.Concat(OWL.BASE_URI,"incompatibleWith"));
+            public static readonly RDFResource INCOMPATIBLE_WITH = new RDFResource(string.Concat(BASE_URI,"incompatibleWith"));
 
             /// <summary>
             /// owl:disjointWith
             /// </summary>
-            public static readonly RDFResource DISJOINT_WITH = new RDFResource(string.Concat(OWL.BASE_URI,"disjointWith"));
+            public static readonly RDFResource DISJOINT_WITH = new RDFResource(string.Concat(BASE_URI,"disjointWith"));
 
             /// <summary>
             /// owl:priorVersion
             /// </summary>
-            public static readonly RDFResource PRIOR_VERSION = new RDFResource(string.Concat(OWL.BASE_URI,"priorVersion"));
+            public static readonly RDFResource PRIOR_VERSION = new RDFResource(string.Concat(BASE_URI,"priorVersion"));
 
             /// <summary>
             /// owl:versionInfo
             /// </summary>
-            public static readonly RDFResource VERSION_INFO = new RDFResource(string.Concat(OWL.BASE_URI,"versionInfo"));
+            public static readonly RDFResource VERSION_INFO = new RDFResource(string.Concat(BASE_URI,"versionInfo"));
 
             /// <summary>
             /// owl:versionIRI
             /// </summary>
-            public static readonly RDFResource VERSION_IRI = new RDFResource(string.Concat(OWL.BASE_URI,"versionIRI"));
+            public static readonly RDFResource VERSION_IRI = new RDFResource(string.Concat(BASE_URI,"versionIRI"));
 
             /// <summary>
             /// owl:disjointUnionOf [OWL2]
             /// </summary>
-            public static readonly RDFResource DISJOINT_UNION_OF = new RDFResource(string.Concat(OWL.BASE_URI,"disjointUnionOf"));
+            public static readonly RDFResource DISJOINT_UNION_OF = new RDFResource(string.Concat(BASE_URI,"disjointUnionOf"));
 
             /// <summary>
             /// owl:AllDisjointClasses [OWL2]
             /// </summary>
-            public static readonly RDFResource ALL_DISJOINT_CLASSES = new RDFResource(string.Concat(OWL.BASE_URI,"AllDisjointClasses"));
+            public static readonly RDFResource ALL_DISJOINT_CLASSES = new RDFResource(string.Concat(BASE_URI,"AllDisjointClasses"));
 
             /// <summary>
             /// owl:AllDifferent [OWL2]
             /// </summary>
-            public static readonly RDFResource ALL_DIFFERENT = new RDFResource(string.Concat(OWL.BASE_URI,"AllDifferent"));
+            public static readonly RDFResource ALL_DIFFERENT = new RDFResource(string.Concat(BASE_URI,"AllDifferent"));
 
             /// <summary>
             /// owl:AllDisjointProperties [OWL2]
             /// </summary>
-            public static readonly RDFResource ALL_DISJOINT_PROPERTIES = new RDFResource(string.Concat(OWL.BASE_URI,"AllDisjointProperties"));
+            public static readonly RDFResource ALL_DISJOINT_PROPERTIES = new RDFResource(string.Concat(BASE_URI,"AllDisjointProperties"));
 
             /// <summary>
             /// owl:AsymmetricProperty [OWL2]
             /// </summary>
-            public static readonly RDFResource ASYMMETRIC_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"AsymmetricProperty"));
+            public static readonly RDFResource ASYMMETRIC_PROPERTY = new RDFResource(string.Concat(BASE_URI,"AsymmetricProperty"));
 
             /// <summary>
             /// owl:ReflexiveProperty [OWL2]
             /// </summary>
-            public static readonly RDFResource REFLEXIVE_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"ReflexiveProperty"));
+            public static readonly RDFResource REFLEXIVE_PROPERTY = new RDFResource(string.Concat(BASE_URI,"ReflexiveProperty"));
 
             /// <summary>
             /// owl:IrreflexiveProperty [OWL2]
             /// </summary>
-            public static readonly RDFResource IRREFLEXIVE_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"IrreflexiveProperty"));
+            public static readonly RDFResource IRREFLEXIVE_PROPERTY = new RDFResource(string.Concat(BASE_URI,"IrreflexiveProperty"));
 
             /// <summary>
             /// owl:qualifiedCardinality [OWL2]
             /// </summary>
-            public static readonly RDFResource QUALIFIED_CARDINALITY = new RDFResource(string.Concat(OWL.BASE_URI,"qualifiedCardinality"));
+            public static readonly RDFResource QUALIFIED_CARDINALITY = new RDFResource(string.Concat(BASE_URI,"qualifiedCardinality"));
 
             /// <summary>
             /// owl:minQualifiedCardinality [OWL2]
             /// </summary>
-            public static readonly RDFResource MIN_QUALIFIED_CARDINALITY = new RDFResource(string.Concat(OWL.BASE_URI,"minQualifiedCardinality"));
+            public static readonly RDFResource MIN_QUALIFIED_CARDINALITY = new RDFResource(string.Concat(BASE_URI,"minQualifiedCardinality"));
 
             /// <summary>
             /// owl:maxQualifiedCardinality [OWL2]
             /// </summary>
-            public static readonly RDFResource MAX_QUALIFIED_CARDINALITY = new RDFResource(string.Concat(OWL.BASE_URI,"maxQualifiedCardinality"));
+            public static readonly RDFResource MAX_QUALIFIED_CARDINALITY = new RDFResource(string.Concat(BASE_URI,"maxQualifiedCardinality"));
 
             /// <summary>
             /// owl:onClass [OWL2]
             /// </summary>
-            public static readonly RDFResource ON_CLASS = new RDFResource(string.Concat(OWL.BASE_URI,"onClass"));
+            public static readonly RDFResource ON_CLASS = new RDFResource(string.Concat(BASE_URI,"onClass"));
 
             /// <summary>
             /// owl:onDataRange [OWL2]
             /// </summary>
-            public static readonly RDFResource ON_DATARANGE = new RDFResource(string.Concat(OWL.BASE_URI,"onDataRange"));
+            public static readonly RDFResource ON_DATARANGE = new RDFResource(string.Concat(BASE_URI,"onDataRange"));
 
             /// <summary>
             /// owl:onDatatype [OWL2]
             /// </summary>
-            public static readonly RDFResource ON_DATATYPE = new RDFResource(string.Concat(OWL.BASE_URI,"onDatatype"));
+            public static readonly RDFResource ON_DATATYPE = new RDFResource(string.Concat(BASE_URI,"onDatatype"));
 
             /// <summary>
             /// owl:withRestrictions [OWL2]
             /// </summary>
-            public static readonly RDFResource WITH_RESTRICTIONS = new RDFResource(string.Concat(OWL.BASE_URI,"withRestrictions"));
+            public static readonly RDFResource WITH_RESTRICTIONS = new RDFResource(string.Concat(BASE_URI,"withRestrictions"));
 
             /// <summary>
             /// owl:propertyDisjointWith [OWL2]
             /// </summary>
-            public static readonly RDFResource PROPERTY_DISJOINT_WITH = new RDFResource(string.Concat(OWL.BASE_URI,"propertyDisjointWith"));
+            public static readonly RDFResource PROPERTY_DISJOINT_WITH = new RDFResource(string.Concat(BASE_URI,"propertyDisjointWith"));
 
             /// <summary>
             /// owl:hasSelf [OWL2]
             /// </summary>
-            public static readonly RDFResource HAS_SELF = new RDFResource(string.Concat(OWL.BASE_URI,"hasSelf"));
+            public static readonly RDFResource HAS_SELF = new RDFResource(string.Concat(BASE_URI,"hasSelf"));
 
             /// <summary>
             /// owl:NegativePropertyAssertion [OWL2]
             /// </summary>
-            public static readonly RDFResource NEGATIVE_PROPERTY_ASSERTION = new RDFResource(string.Concat(OWL.BASE_URI,"NegativePropertyAssertion"));
+            public static readonly RDFResource NEGATIVE_PROPERTY_ASSERTION = new RDFResource(string.Concat(BASE_URI,"NegativePropertyAssertion"));
 
             /// <summary>
             /// owl:sourceIndividual [OWL2]
             /// </summary>
-            public static readonly RDFResource SOURCE_INDIVIDUAL = new RDFResource(string.Concat(OWL.BASE_URI,"sourceIndividual"));
+            public static readonly RDFResource SOURCE_INDIVIDUAL = new RDFResource(string.Concat(BASE_URI,"sourceIndividual"));
 
             /// <summary>
             /// owl:assertionProperty [OWL2]
             /// </summary>
-            public static readonly RDFResource ASSERTION_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"assertionProperty"));
+            public static readonly RDFResource ASSERTION_PROPERTY = new RDFResource(string.Concat(BASE_URI,"assertionProperty"));
 
             /// <summary>
             /// owl:targetIndividual [OWL2]
             /// </summary>
-            public static readonly RDFResource TARGET_INDIVIDUAL = new RDFResource(string.Concat(OWL.BASE_URI,"targetIndividual"));
+            public static readonly RDFResource TARGET_INDIVIDUAL = new RDFResource(string.Concat(BASE_URI,"targetIndividual"));
 
             /// <summary>
             /// owl:targetValue [OWL2]
             /// </summary>
-            public static readonly RDFResource TARGET_VALUE = new RDFResource(string.Concat(OWL.BASE_URI,"targetValue"));
+            public static readonly RDFResource TARGET_VALUE = new RDFResource(string.Concat(BASE_URI,"targetValue"));
 
             /// <summary>
             /// owl:hasKey [OWL2]
             /// </summary>
-            public static readonly RDFResource HAS_KEY = new RDFResource(string.Concat(OWL.BASE_URI,"hasKey"));
+            public static readonly RDFResource HAS_KEY = new RDFResource(string.Concat(BASE_URI,"hasKey"));
 
             /// <summary>
             /// owl:propertyChainAxiom [OWL2]
             /// </summary>
-            public static readonly RDFResource PROPERTY_CHAIN_AXIOM = new RDFResource(string.Concat(OWL.BASE_URI,"propertyChainAxiom"));
+            public static readonly RDFResource PROPERTY_CHAIN_AXIOM = new RDFResource(string.Concat(BASE_URI,"propertyChainAxiom"));
 
             /// <summary>
             /// owl:topProperty [OWL2]
             /// </summary>
-            public static readonly RDFResource TOP_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"topProperty"));
+            public static readonly RDFResource TOP_PROPERTY = new RDFResource(string.Concat(BASE_URI,"topProperty"));
 
             /// <summary>
             /// owl:topObjectProperty [OWL2]
             /// </summary>
-            public static readonly RDFResource TOP_OBJECT_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"topObjectProperty"));
+            public static readonly RDFResource TOP_OBJECT_PROPERTY = new RDFResource(string.Concat(BASE_URI,"topObjectProperty"));
 
             /// <summary>
             /// owl:topDataProperty [OWL2]
             /// </summary>
-            public static readonly RDFResource TOP_DATA_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"topDataProperty"));
+            public static readonly RDFResource TOP_DATA_PROPERTY = new RDFResource(string.Concat(BASE_URI,"topDataProperty"));
 
             /// <summary>
             /// owl:bottomProperty [OWL2]
             /// </summary>
-            public static readonly RDFResource BOTTOM_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"bottomProperty"));
+            public static readonly RDFResource BOTTOM_PROPERTY = new RDFResource(string.Concat(BASE_URI,"bottomProperty"));
 
             /// <summary>
             /// owl:bottomObjectProperty [OWL2]
             /// </summary>
-            public static readonly RDFResource BOTTOM_OBJECT_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"bottomObjectProperty"));
+            public static readonly RDFResource BOTTOM_OBJECT_PROPERTY = new RDFResource(string.Concat(BASE_URI,"bottomObjectProperty"));
 
             /// <summary>
             /// owl:bottomDataProperty [OWL2]
             /// </summary>
-            public static readonly RDFResource BOTTOM_DATA_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"bottomDataProperty"));
+            public static readonly RDFResource BOTTOM_DATA_PROPERTY = new RDFResource(string.Concat(BASE_URI,"bottomDataProperty"));
 
             /// <summary>
             /// owl:Axiom [OWL2]
             /// </summary>
-            public static readonly RDFResource AXIOM = new RDFResource(string.Concat(OWL.BASE_URI, "Axiom"));
+            public static readonly RDFResource AXIOM = new RDFResource(string.Concat(BASE_URI, "Axiom"));
 
             /// <summary>
             /// owl:annotatedSource [OWL2]
             /// </summary>
-            public static readonly RDFResource ANNOTATED_SOURCE = new RDFResource(string.Concat(OWL.BASE_URI, "annotatedSource"));
+            public static readonly RDFResource ANNOTATED_SOURCE = new RDFResource(string.Concat(BASE_URI, "annotatedSource"));
 
             /// <summary>
             /// owl:annotatedProperty [OWL2]
             /// </summary>
-            public static readonly RDFResource ANNOTATED_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI, "annotatedProperty"));
+            public static readonly RDFResource ANNOTATED_PROPERTY = new RDFResource(string.Concat(BASE_URI, "annotatedProperty"));
 
             /// <summary>
             /// owl:annotatedTarget [OWL2]
             /// </summary>
-            public static readonly RDFResource ANNOTATED_TARGET = new RDFResource(string.Concat(OWL.BASE_URI, "annotatedTarget"));
+            public static readonly RDFResource ANNOTATED_TARGET = new RDFResource(string.Concat(BASE_URI, "annotatedTarget"));
 
             /// <summary>
             /// owl:deprecated
             /// </summary>
-            public static readonly RDFResource DEPRECATED = new RDFResource(string.Concat(OWL.BASE_URI,"deprecated"));
+            public static readonly RDFResource DEPRECATED = new RDFResource(string.Concat(BASE_URI,"deprecated"));
 
             /// <summary>
             /// owl:real [OWL2]
             /// </summary>
-            public static readonly RDFResource REAL = new RDFResource(string.Concat(OWL.BASE_URI, "real"));
+            public static readonly RDFResource REAL = new RDFResource(string.Concat(BASE_URI, "real"));
             #endregion
         }
         #endregion

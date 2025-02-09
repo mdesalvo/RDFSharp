@@ -14,12 +14,12 @@
    limitations under the License.
 */
 
-using RDFSharp.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using RDFSharp.Model;
 
 namespace RDFSharp.Store
 {
@@ -63,7 +63,7 @@ namespace RDFSharp.Store
 
                     #region graphs
                     foreach (RDFGraph graph in store.ExtractGraphs())
-                        RDFSharp.Model.RDFTriX.AppendTriXGraph(trixDoc, trixRoot, graph);
+                        Model.RDFTriX.AppendTriXGraph(trixDoc, trixRoot, graph);
                     #endregion
 
                     trixDoc.AppendChild(trixRoot);
@@ -162,7 +162,7 @@ namespace RDFSharp.Store
 
                                     //<triple> gives a triple of the graph
                                     else if (graphChild.Name.Equals("triple", StringComparison.Ordinal) && graphChild.ChildNodes.Count == 3)
-                                        RDFSharp.Model.RDFTriX.ParseTriXTriple(graphs[graphID], graphChild, hashContext);
+                                        Model.RDFTriX.ParseTriXTriple(graphs[graphID], graphChild, hashContext);
                                     
                                     //Neither <uri> or a well-formed <triple>: exception must be raised
                                     else

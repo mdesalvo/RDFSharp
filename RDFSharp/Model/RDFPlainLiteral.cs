@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System;
 using System.Text.RegularExpressions;
 
 namespace RDFSharp.Model
@@ -82,8 +83,8 @@ namespace RDFSharp.Model
         /// </summary>
         public bool HasDirection()
             => HasLanguage() 
-                && (Language.EndsWith("--ltr", System.StringComparison.OrdinalIgnoreCase)
-                    || Language.EndsWith("--rtl", System.StringComparison.OrdinalIgnoreCase));
+                && (Language.EndsWith("--ltr", StringComparison.OrdinalIgnoreCase)
+                    || Language.EndsWith("--rtl", StringComparison.OrdinalIgnoreCase));
         #endregion
     }
 }

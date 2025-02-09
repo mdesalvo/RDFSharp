@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-using RDFSharp.Model;
-using RDFSharp.Store;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -23,6 +21,8 @@ using System.Globalization;
 using System.Net;
 using System.Xml;
 using NetTopologySuite.Geometries;
+using RDFSharp.Model;
+using RDFSharp.Store;
 
 namespace RDFSharp.Query
 {

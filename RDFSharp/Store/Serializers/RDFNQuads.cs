@@ -14,13 +14,13 @@
    limitations under the License.
 */
 
-using RDFSharp.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using RDFSharp.Model;
 
 namespace RDFSharp.Store
 {

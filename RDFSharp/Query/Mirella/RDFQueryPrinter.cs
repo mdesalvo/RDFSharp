@@ -14,12 +14,12 @@
    limitations under the License.
 */
 
-using RDFSharp.Model;
-using RDFSharp.Store;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RDFSharp.Model;
+using RDFSharp.Store;
 
 namespace RDFSharp.Query
 {
@@ -832,7 +832,7 @@ namespace RDFSharp.Query
                     if (binding == null)
                         result.Append("UNDEF");
                     else
-                        result.Append(RDFQueryPrinter.PrintPatternMember(binding, prefixes));
+                        result.Append(PrintPatternMember(binding, prefixes));
                     result.Append(' ');
                 }
                 result.Append('}');
@@ -852,7 +852,7 @@ namespace RDFSharp.Query
                         if (bindingValue == null)
                             result.Append("UNDEF");
                         else
-                            result.Append(RDFQueryPrinter.PrintPatternMember(bindingValue, prefixes));
+                            result.Append(PrintPatternMember(bindingValue, prefixes));
                         result.Append(' ');
                     });
                     result.AppendLine(")");

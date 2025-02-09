@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-using RDFSharp.Model;
-using RDFSharp.Store;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,6 +23,8 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web;
+using RDFSharp.Model;
+using RDFSharp.Store;
 using static RDFSharp.Query.RDFQueryUtilities;
 
 namespace RDFSharp.Query
@@ -552,7 +552,7 @@ namespace RDFSharp.Query
                             if (((DataRow)rowsEnum.Current).IsNull(templateCtx))
                                 continue;
 
-                            RDFPatternMember ctx = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[templateCtx].ToString());
+                            RDFPatternMember ctx = ParseRDFPatternMember(((DataRow)rowsEnum.Current)[templateCtx].ToString());
                             //Row contains a literal in position of the variable corresponding to the template context
                             if (ctx is RDFLiteral)
                                 continue;
@@ -574,7 +574,7 @@ namespace RDFSharp.Query
                         if (((DataRow)rowsEnum.Current).IsNull(templateSubj))
                             continue;
 
-                        RDFPatternMember subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[templateSubj].ToString());
+                        RDFPatternMember subj = ParseRDFPatternMember(((DataRow)rowsEnum.Current)[templateSubj].ToString());
                         //Row contains a literal in position of the variable corresponding to the template subject
                         if (subj is RDFLiteral)
                             continue;
@@ -595,7 +595,7 @@ namespace RDFSharp.Query
                         if (((DataRow)rowsEnum.Current).IsNull(templatePred))
                             continue;
 
-                        RDFPatternMember pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[templatePred].ToString());
+                        RDFPatternMember pred = ParseRDFPatternMember(((DataRow)rowsEnum.Current)[templatePred].ToString());
                         //Row contains a blank resource or a literal in position of the variable corresponding to the template predicate
                         if ((pred is RDFResource predRes && predRes.IsBlank) || pred is RDFLiteral)
                             continue;
@@ -616,7 +616,7 @@ namespace RDFSharp.Query
                         if (((DataRow)rowsEnum.Current).IsNull(templateObj))
                             continue;
 
-                        RDFPatternMember obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[templateObj].ToString());
+                        RDFPatternMember obj = ParseRDFPatternMember(((DataRow)rowsEnum.Current)[templateObj].ToString());
                         //Row contains a resource or a literal in position of the variable corresponding to the template object
                         bindings["?OBJECT"] = obj.ToString();
                     }
@@ -797,7 +797,7 @@ namespace RDFSharp.Query
                     continue;
 
                 //Retrieve the value of the variable
-                RDFPatternMember describeVariableValue = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[describeVariableName].ToString());
+                RDFPatternMember describeVariableValue = ParseRDFPatternMember(((DataRow)rowsEnum.Current)[describeVariableName].ToString());
 
                 //Execute most appropriate strategy, depending on the type of the variable value
                 switch (describeVariableValue)
