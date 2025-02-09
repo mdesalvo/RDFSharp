@@ -55,10 +55,12 @@ namespace RDFSharp.Test.Query
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"DELETE {
-}
-WHERE {
-}"));
+                """
+                DELETE {
+                }
+                WHERE {
+                }
+                """));
         }
 
         [TestMethod]
@@ -80,11 +82,13 @@ WHERE {
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"DELETE {
-  <ex:subj> <ex:pred> <ex:obj> .
-}
-WHERE {
-}"));
+                """
+                DELETE {
+                  <ex:subj> <ex:pred> <ex:obj> .
+                }
+                WHERE {
+                }
+                """));
         }
 
         [TestMethod]
@@ -109,13 +113,15 @@ WHERE {
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                """
+                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DELETE {
-}
-WHERE {
-}"));
+                DELETE {
+                }
+                WHERE {
+                }
+                """));
         }
 
         [TestMethod]
@@ -138,10 +144,12 @@ WHERE {
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"DELETE {
-}
-WHERE {
-}"));
+                """
+                DELETE {
+                }
+                WHERE {
+                }
+                """));
         }
 
         [TestMethod]
@@ -166,13 +174,15 @@ WHERE {
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"DELETE {
-}
-WHERE {
-  {
-    ?Y <ex:dogOf> ?X .
-  }
-}"));
+                """
+                DELETE {
+                }
+                WHERE {
+                  {
+                    ?Y <ex:dogOf> ?X .
+                  }
+                }
+                """));
         }
 
         [TestMethod]
@@ -196,15 +206,17 @@ WHERE {
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"DELETE {
-}
-WHERE {
-  {
-    SELECT *
-    WHERE {
-    }
-  }
-}"));
+                """
+                DELETE {
+                }
+                WHERE {
+                  {
+                    SELECT *
+                    WHERE {
+                    }
+                  }
+                }
+                """));
         }
 
         [TestMethod]

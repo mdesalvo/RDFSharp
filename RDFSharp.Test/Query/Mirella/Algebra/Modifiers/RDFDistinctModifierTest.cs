@@ -17,6 +17,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Data;
+using System.Globalization;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -77,7 +78,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(table2.Rows[0]["?C"].ToString().Equals(new RDFResource("ex:value0").ToString()));
             Assert.IsTrue(table2.Rows[1]["?A"].ToString().Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString()));
             Assert.IsTrue(table2.Rows[1]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en").ToString()));
-            Assert.IsTrue(table2.Rows[1]["?C"].ToString().Equals(DBNull.Value.ToString()));
+            Assert.IsTrue(table2.Rows[1]["?C"].ToString().Equals(DBNull.Value.ToString(CultureInfo.InvariantCulture)));
         }
         #endregion
     }

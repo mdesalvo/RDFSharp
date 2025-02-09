@@ -172,16 +172,18 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:org</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>");
+                  """
+                  <?xml version="1.0" encoding="utf-8"?>
+                  <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                    <results>
+                      <result>
+                        <binding name="?S">
+                          <uri>ex:org</uri>
+                        </binding>
+                      </result>
+                    </results>
+                  </sparql>
+                  """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }
@@ -192,12 +194,14 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S""/>
-  </head>
-</sparql>");
+                  """
+                  <?xml version="1.0" encoding="utf-8"?>
+                  <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                    <head>
+                      <variable name="?S"/>
+                    </head>
+                  </sparql>
+                  """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }
@@ -208,17 +212,19 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head/>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:org</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>");
+                  """
+                  <?xml version="1.0" encoding="utf-8"?>
+                  <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                    <head/>
+                    <results>
+                      <result>
+                        <binding name="?S">
+                          <uri>ex:org</uri>
+                        </binding>
+                      </result>
+                    </results>
+                  </sparql>
+                  """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }
@@ -229,19 +235,21 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable/>
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:org</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>");
+                  """
+                  <?xml version="1.0" encoding="utf-8"?>
+                  <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                    <head>
+                      <variable/>
+                    </head>
+                    <results>
+                      <result>
+                        <binding name="?S">
+                          <uri>ex:org</uri>
+                        </binding>
+                      </result>
+                    </results>
+                  </sparql>
+                  """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }
@@ -252,19 +260,21 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""""/>
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:org</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>");
+                  """
+                  <?xml version="1.0" encoding="utf-8"?>
+                  <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                    <head>
+                      <variable name=""/>
+                    </head>
+                    <results>
+                      <result>
+                        <binding name="?S">
+                          <uri>ex:org</uri>
+                        </binding>
+                      </result>
+                    </results>
+                  </sparql>
+                  """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }
@@ -275,19 +285,21 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:org</uri>
-      </binding>
-    </result>
-  </results>
-  <head>
-    <variable name=""?S""/>
-  </head>
-</sparql>");
+                  """
+                  <?xml version="1.0" encoding="utf-8"?>
+                  <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                    <results>
+                      <result>
+                        <binding name="?S">
+                          <uri>ex:org</uri>
+                        </binding>
+                      </result>
+                    </results>
+                    <head>
+                      <variable name="?S"/>
+                    </head>
+                  </sparql>
+                  """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }
@@ -298,19 +310,21 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S""/>
-  </head>
-  <results>
-    <result>
-      <binding>
-        <uri>ex:org</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>");
+                  """
+                  <?xml version="1.0" encoding="utf-8"?>
+                  <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                    <head>
+                      <variable name="?S"/>
+                    </head>
+                    <results>
+                      <result>
+                        <binding>
+                          <uri>ex:org</uri>
+                        </binding>
+                      </result>
+                    </results>
+                  </sparql>
+                  """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }
@@ -321,19 +335,21 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S""/>
-  </head>
-  <results>
-    <result>
-      <binding name="""">
-        <uri>ex:org</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>");
+                  """
+                  <?xml version="1.0" encoding="utf-8"?>
+                  <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                    <head>
+                      <variable name="?S"/>
+                    </head>
+                    <results>
+                      <result>
+                        <binding name="">
+                          <uri>ex:org</uri>
+                        </binding>
+                      </result>
+                    </results>
+                  </sparql>
+                  """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }
@@ -344,17 +360,19 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S""/>
-  </head>
-  <results>
-    <result>
-      <binding name=""?S""/>
-    </result>
-  </results>
-</sparql>");
+                  """
+                  <?xml version="1.0" encoding="utf-8"?>
+                  <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                    <head>
+                      <variable name="?S"/>
+                    </head>
+                    <results>
+                      <result>
+                        <binding name="?S"/>
+                      </result>
+                    </results>
+                  </sparql>
+                  """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }
@@ -365,19 +383,21 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S""/>
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>hello</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>");
+                  """
+                  <?xml version="1.0" encoding="utf-8"?>
+                  <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                    <head>
+                      <variable name="?S"/>
+                    </head>
+                    <results>
+                      <result>
+                        <binding name="?S">
+                          <uri>hello</uri>
+                        </binding>
+                      </result>
+                    </results>
+                  </sparql>
+                  """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }
@@ -388,19 +408,21 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S""/>
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <bnode>hello</bnode>
-      </binding>
-    </result>
-  </results>
-</sparql>");
+                  """
+                  <?xml version="1.0" encoding="utf-8"?>
+                  <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                    <head>
+                      <variable name="?S"/>
+                    </head>
+                    <results>
+                      <result>
+                        <binding name="?S">
+                          <bnode>hello</bnode>
+                        </binding>
+                      </result>
+                    </results>
+                  </sparql>
+                  """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }
@@ -411,19 +433,21 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S""/>
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <literal hello=""yes"">hello</literal>
-      </binding>
-    </result>
-  </results>
-</sparql>");
+                  """
+                  <?xml version="1.0" encoding="utf-8"?>
+                  <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                    <head>
+                      <variable name="?S"/>
+                    </head>
+                    <results>
+                      <result>
+                        <binding name="?S">
+                          <literal hello="yes">hello</literal>
+                        </binding>
+                      </result>
+                    </results>
+                  </sparql>
+                  """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }
@@ -434,19 +458,21 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S""/>
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <hello>ex:org</hello>
-      </binding>
-    </result>
-  </results>
-</sparql>");
+                  """
+                  <?xml version="1.0" encoding="utf-8"?>
+                  <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                    <head>
+                      <variable name="?S"/>
+                    </head>
+                    <results>
+                      <result>
+                        <binding name="?S">
+                          <hello>ex:org</hello>
+                        </binding>
+                      </result>
+                    </results>
+                  </sparql>
+                  """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }

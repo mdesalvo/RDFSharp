@@ -18,6 +18,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -227,7 +228,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Mickey Mouse@EN-US"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
         }
 
         [TestMethod]
@@ -294,21 +295,23 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Mickey Mouse@EN-US"));
             Assert.IsTrue(string.Equals(query.ToString(),
-@"SELECT *
-WHERE {
-  {
-    {
-      ?Y <ex:dogOf> ?X .
-      OPTIONAL { ?X <ex:hasName> ?N } .
-    }
-    MINUS
-    {
-      BIND(<ex:balto> AS ?Y) .
-    }
-  }
-}
-ORDER BY ASC(?X)
-"));
+                """
+                SELECT *
+                WHERE {
+                  {
+                    {
+                      ?Y <ex:dogOf> ?X .
+                      OPTIONAL { ?X <ex:hasName> ?N } .
+                    }
+                    MINUS
+                    {
+                      BIND(<ex:balto> AS ?Y) .
+                    }
+                  }
+                }
+                ORDER BY ASC(?X)
+
+                """));
         }
 
         [TestMethod]
@@ -338,15 +341,17 @@ ORDER BY ASC(?X)
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:balto"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:whoever"));
             Assert.IsTrue(string.Equals(query.ToString(),
-@"SELECT *
-WHERE {
-  {
-    { ?Y <ex:dogOf> ?X }
-    MINUS
-    { ?Y <ex:dogOf> <ex:paperino> }
-  }
-}
-"));
+                """
+                SELECT *
+                WHERE {
+                  {
+                    { ?Y <ex:dogOf> ?X }
+                    MINUS
+                    { ?Y <ex:dogOf> <ex:paperino> }
+                  }
+                }
+
+                """));
         }
 
         [TestMethod]
@@ -929,7 +934,7 @@ WHERE {
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:paperino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), "Donald Duck@EN-US"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:linus"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?C"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?C"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:paperoga"));
@@ -937,7 +942,7 @@ WHERE {
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), "Mickey Mouse@EN-US"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:linus"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?C"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?C"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?X"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?N"].ToString(), "Mickey Mouse@EN-US"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?Y"].ToString(), "ex:paperoga"));
@@ -981,7 +986,7 @@ WHERE {
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:paperino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), "Donald Duck@EN-US"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:linus"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?C"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?C"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:paperoga"));
@@ -989,17 +994,17 @@ WHERE {
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), "Mickey Mouse@EN-US"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:linus"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?C"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?C"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?X"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?N"].ToString(), "Mickey Mouse@EN-US"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?Y"].ToString(), "ex:paperoga"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?C"].ToString(), "white"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[4]["?X"].ToString(), "ex:whoever"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[4]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[4]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[4]["?Y"].ToString(), "ex:linus"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[4]["?C"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[4]["?C"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[5]["?X"].ToString(), "ex:whoever"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[5]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[5]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[5]["?Y"].ToString(), "ex:paperoga"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[5]["?C"].ToString(), "white"));
         }
@@ -1044,7 +1049,7 @@ WHERE {
             Assert.IsTrue(result.SelectResultsCount == 3);
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:snoopie"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:linus"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
@@ -1052,35 +1057,37 @@ WHERE {
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), "Mickey Mouse@EN-US"));
             Assert.IsTrue(string.Equals(query.ToString(),
-@"SELECT ?Y ?X ?N
-WHERE {
-  {
-    {
-      ?Y <ex:dogOf> ?X .
-      OPTIONAL { ?X <ex:hasName> ?N } .
-    }
-    MINUS
-    {
-      {
-        SELECT *
-        WHERE {
-          {
-            ?Y <ex:dogOf> ?X .
-            ?X <ex:hasColor> ?C .
-          }
-        }
-      }
-      UNION
-      {
-        VALUES (?Y ?X) {
-          ( <ex:balto> <ex:whoever> )
-        } .
-      }
-    }
-  }
-}
-ORDER BY ASC(?X)
-"));
+                """
+                SELECT ?Y ?X ?N
+                WHERE {
+                  {
+                    {
+                      ?Y <ex:dogOf> ?X .
+                      OPTIONAL { ?X <ex:hasName> ?N } .
+                    }
+                    MINUS
+                    {
+                      {
+                        SELECT *
+                        WHERE {
+                          {
+                            ?Y <ex:dogOf> ?X .
+                            ?X <ex:hasColor> ?C .
+                          }
+                        }
+                      }
+                      UNION
+                      {
+                        VALUES (?Y ?X) {
+                          ( <ex:balto> <ex:whoever> )
+                        } .
+                      }
+                    }
+                  }
+                }
+                ORDER BY ASC(?X)
+
+                """));
         }
 
         [TestMethod]
@@ -1543,7 +1550,7 @@ ORDER BY ASC(?X)
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?C"].ToString(), "ex:ctx"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
         }
 
         [TestMethod]
@@ -1604,49 +1611,53 @@ ORDER BY ASC(?X)
             string receivedQuery2 = "";
 
             string mockedResponseXml1 =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?Y"" />
-    <variable name=""?X"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:pluto</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:topolino</uri>
-      </binding>
-    </result>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:fido</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:paperino</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                  <head>
+                    <variable name="?Y" />
+                    <variable name="?X" />
+                  </head>
+                  <results>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:pluto</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:topolino</uri>
+                      </binding>
+                    </result>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:fido</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:paperino</uri>
+                      </binding>
+                    </result>
+                  </results>
+                </sparql>
+                """;
             string mockedResponseXml2 =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?Y"" />
-    <variable name=""?X"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:balto</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:whoever</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                  <head>
+                    <variable name="?Y" />
+                    <variable name="?X" />
+                  </head>
+                  <results>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:balto</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:whoever</uri>
+                      </binding>
+                    </result>
+                  </results>
+                </sparql>
+                """;
             
             server
                 .Given(
@@ -1728,49 +1739,53 @@ ORDER BY ASC(?X)
             string receivedQuery2 = "";
 
             string mockedResponseXml1 =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?Y"" />
-    <variable name=""?X"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:pluto</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:topolino</uri>
-      </binding>
-    </result>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:fido</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:paperino</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                  <head>
+                    <variable name="?Y" />
+                    <variable name="?X" />
+                  </head>
+                  <results>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:pluto</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:topolino</uri>
+                      </binding>
+                    </result>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:fido</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:paperino</uri>
+                      </binding>
+                    </result>
+                  </results>
+                </sparql>
+                """;
             string mockedResponseXml2 =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?Y"" />
-    <variable name=""?X"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:balto</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:whoever</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                  <head>
+                    <variable name="?Y" />
+                    <variable name="?X" />
+                  </head>
+                  <results>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:balto</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:whoever</uri>
+                      </binding>
+                    </result>
+                  </results>
+                </sparql>
+                """;
             
             server
                 .Given(
@@ -1854,49 +1869,53 @@ ORDER BY ASC(?X)
             string receivedQuery2 = "";
 
             string mockedResponseXml1 =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?Y"" />
-    <variable name=""?X"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:pluto</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:topolino</uri>
-      </binding>
-    </result>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:fido</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:paperino</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                  <head>
+                    <variable name="?Y" />
+                    <variable name="?X" />
+                  </head>
+                  <results>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:pluto</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:topolino</uri>
+                      </binding>
+                    </result>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:fido</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:paperino</uri>
+                      </binding>
+                    </result>
+                  </results>
+                </sparql>
+                """;
             string mockedResponseXml2 =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?Y"" />
-    <variable name=""?X"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:balto</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:whoever</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                  <head>
+                    <variable name="?Y" />
+                    <variable name="?X" />
+                  </head>
+                  <results>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:balto</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:whoever</uri>
+                      </binding>
+                    </result>
+                  </results>
+                </sparql>
+                """;
             
             server
                 .Given(
@@ -1966,39 +1985,41 @@ ORDER BY ASC(?X)
             string receivedQuery = "";
             string expectedQuery = string.Concat("?query=SELECT *", Environment.NewLine, "WHERE {", Environment.NewLine, "  {", Environment.NewLine, "    ?Y <ex:dogOf> ?X .", Environment.NewLine, "  }", Environment.NewLine, "}", Environment.NewLine);
             string mockedResponseXml =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?Y"" />
-    <variable name=""?X"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:pluto</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:topolino</uri>
-      </binding>
-    </result>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:fido</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:paperino</uri>
-      </binding>
-    </result>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:balto</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:whoever</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                  <head>
+                    <variable name="?Y" />
+                    <variable name="?X" />
+                  </head>
+                  <results>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:pluto</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:topolino</uri>
+                      </binding>
+                    </result>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:fido</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:paperino</uri>
+                      </binding>
+                    </result>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:balto</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:whoever</uri>
+                      </binding>
+                    </result>
+                  </results>
+                </sparql>
+                """;
             server
                 .Given(
                     Request.Create()
@@ -2050,50 +2071,54 @@ ORDER BY ASC(?X)
         {
             string receivedQuery = "";
             string expectedQuery =
-@"?query=SELECT *
-WHERE {
-  {
-    VALUES (?Y ?X) {
-      ( <ex:pluto> <ex:topolino> )
-    } .
-    ?Y <ex:dogOf> ?X .
-  }
-}
-";
+                """
+                ?query=SELECT *
+                WHERE {
+                  {
+                    VALUES (?Y ?X) {
+                      ( <ex:pluto> <ex:topolino> )
+                    } .
+                    ?Y <ex:dogOf> ?X .
+                  }
+                }
+
+                """;
             string mockedResponseXml =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?Y"" />
-    <variable name=""?X"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:pluto</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:topolino</uri>
-      </binding>
-    </result>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:fido</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:paperino</uri>
-      </binding>
-    </result>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:balto</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:whoever</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                  <head>
+                    <variable name="?Y" />
+                    <variable name="?X" />
+                  </head>
+                  <results>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:pluto</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:topolino</uri>
+                      </binding>
+                    </result>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:fido</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:paperino</uri>
+                      </binding>
+                    </result>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:balto</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:whoever</uri>
+                      </binding>
+                    </result>
+                  </results>
+                </sparql>
+                """;
             server
                 .Given(
                     Request.Create()
@@ -2149,39 +2174,41 @@ WHERE {
             string receivedQuery = "";
             string expectedQuery = string.Concat("?query=SELECT *", Environment.NewLine, "WHERE {", Environment.NewLine, "  {", Environment.NewLine, "    ?Y <ex:dogOf> ?X .", Environment.NewLine, "  }", Environment.NewLine, "}", Environment.NewLine);
             string mockedResponseXml =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?Y"" />
-    <variable name=""?X"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:pluto</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:topolino</uri>
-      </binding>
-    </result>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:fido</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:paperino</uri>
-      </binding>
-    </result>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:balto</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:whoever</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                  <head>
+                    <variable name="?Y" />
+                    <variable name="?X" />
+                  </head>
+                  <results>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:pluto</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:topolino</uri>
+                      </binding>
+                    </result>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:fido</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:paperino</uri>
+                      </binding>
+                    </result>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:balto</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:whoever</uri>
+                      </binding>
+                    </result>
+                  </results>
+                </sparql>
+                """;
             server
                 .Given(
                     Request.Create()
@@ -2232,59 +2259,63 @@ WHERE {
             string receivedQuery1 = "";
             string expectedQuery1 = string.Concat("?query=SELECT *", Environment.NewLine, "WHERE {", Environment.NewLine, "  {", Environment.NewLine, "    ?Y <ex:dogOf> ?X .", Environment.NewLine, "  }", Environment.NewLine, "}", Environment.NewLine);
             string mockedResponse1Xml =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?Y"" />
-    <variable name=""?X"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:pluto</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:topolino</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                  <head>
+                    <variable name="?Y" />
+                    <variable name="?X" />
+                  </head>
+                  <results>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:pluto</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:topolino</uri>
+                      </binding>
+                    </result>
+                  </results>
+                </sparql>
+                """;
             string receivedQuery2 = "";
             string expectedQuery2 = string.Concat("?query=SELECT *", Environment.NewLine, "WHERE {", Environment.NewLine, "  {", Environment.NewLine, "    ?Y <ex:dogOf> ?X .", Environment.NewLine, "  }", Environment.NewLine, "}", Environment.NewLine);
             string mockedResponse2Xml =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?Y"" />
-    <variable name=""?X"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:pluto</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:topolino</uri>
-      </binding>
-    </result>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:fido</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:paperino</uri>
-      </binding>
-    </result>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:balto</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:whoever</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                  <head>
+                    <variable name="?Y" />
+                    <variable name="?X" />
+                  </head>
+                  <results>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:pluto</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:topolino</uri>
+                      </binding>
+                    </result>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:fido</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:paperino</uri>
+                      </binding>
+                    </result>
+                    <result>
+                      <binding name="?Y">
+                        <uri>ex:balto</uri>
+                      </binding>
+                      <binding name="?X">
+                        <uri>ex:whoever</uri>
+                      </binding>
+                    </result>
+                  </results>
+                </sparql>
+                """;
             server
                 .Given(
                     Request.Create()
@@ -3527,7 +3558,7 @@ WHERE {
             row1["?X"] = "ex:paperino";
             table.Rows.Add(row1);
             DataRow row2 = table.NewRow();
-            row2["?Y"] = DBNull.Value.ToString(); //Will not be considered, since null values are not allowed
+            row2["?Y"] = DBNull.Value.ToString(CultureInfo.InvariantCulture); //Will not be considered, since null values are not allowed
             row2["?X"] = "ex:paperino";
             table.Rows.Add(row2);
             DataRow row3 = table.NewRow();
@@ -3572,7 +3603,7 @@ WHERE {
             row1["?X"] = "ex:paperino";
             table.Rows.Add(row1);
             DataRow row2 = table.NewRow();
-            row2["?Y"] = DBNull.Value.ToString(); //Will not be considered, since null values are not allowed
+            row2["?Y"] = DBNull.Value.ToString(CultureInfo.InvariantCulture); //Will not be considered, since null values are not allowed
             row2["?X"] = "ex:paperino";
             table.Rows.Add(row2);
             DataRow row3 = table.NewRow();
@@ -5304,23 +5335,25 @@ WHERE {
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?Y"" />
-    <variable name=""?X"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?Y"">
-        <uri>ex:pluto</uri>
-      </binding>
-      <binding name=""?X"">
-        <uri>ex:topolino</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?Y" />
+                                    <variable name="?X" />
+                                  </head>
+                                  <results>
+                                    <result>
+                                      <binding name="?Y">
+                                        <uri>ex:pluto</uri>
+                                      </binding>
+                                      <binding name="?X">
+                                        <uri>ex:topolino</uri>
+                                      </binding>
+                                    </result>
+                                  </results>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldApplyPatternToFederationHavingSPARQLEndpoint/sparql"));
@@ -6052,7 +6085,7 @@ WHERE {
             RDFQueryEngine.AddColumn(dt2, "?N");
             Dictionary<string, string> dt2Bindings = new Dictionary<string, string>
             {
-                { "?X", DBNull.Value.ToString() },
+                { "?X", DBNull.Value.ToString(CultureInfo.InvariantCulture) },
                 { "?N", "Mickey Mouse@EN-US" }
             };
             RDFQueryEngine.AddRow(dt2, dt2Bindings);
@@ -6282,7 +6315,7 @@ WHERE {
             Assert.IsTrue(joinTable.Columns.Contains("?N"));
             Assert.IsTrue(joinTable.Rows.Count == 1);
             Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-            Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
             Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
         }
 
@@ -6320,7 +6353,7 @@ WHERE {
             Assert.IsTrue(joinTable.Rows.Count == 1);
             Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
             Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), "ex:minnie"));
-            Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
         }
 
         [TestMethod]
@@ -6605,18 +6638,18 @@ WHERE {
             Assert.IsTrue(combineTable.Columns.Contains("?N"));
             Assert.IsTrue(combineTable.Columns.Contains("?Q"));
             Assert.IsTrue(combineTable.Rows.Count == 3);
-            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Y"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Y"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
             Assert.IsTrue(string.Equals(combineTable.Rows[1]["?X"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(combineTable.Rows[1]["?N"].ToString(), "Mickey Mouse@EN-US"));
-            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
             Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Y"].ToString(), "ex:pluto"));
             Assert.IsTrue(string.Equals(combineTable.Rows[2]["?X"].ToString(), "ex:minnie"));
-            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?N"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+            Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
         }
 
         [TestMethod]
@@ -6657,14 +6690,14 @@ WHERE {
             Assert.IsTrue(combineTable.Columns.Contains("?N"));
             Assert.IsTrue(combineTable.Columns.Contains("?Q"));
             Assert.IsTrue(combineTable.Rows.Count == 2);
-            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
             Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), "ex:topolino"));
             Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
-            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
             Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Y"].ToString(), "ex:pluto"));
             Assert.IsTrue(string.Equals(combineTable.Rows[1]["?X"].ToString(), "ex:minnie"));
-            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?N"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+            Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
         }
 
         [TestMethod]
@@ -6712,7 +6745,7 @@ WHERE {
             Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
             Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), "ex:minnie"));
             Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
-            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
         }
 
         [TestMethod]
@@ -6891,7 +6924,7 @@ WHERE {
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
         }
 
         [TestMethod]
@@ -6947,9 +6980,9 @@ WHERE {
             Assert.IsTrue(result.SelectResults.Columns.Contains("?Q"));
             Assert.IsTrue(result.SelectResults.Columns["?Q"].Ordinal == 0);
             Assert.IsTrue(result.SelectResults.Rows.Count == 3);
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Q"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Q"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
         }
 
         [TestMethod]
@@ -6980,11 +7013,11 @@ WHERE {
             Assert.IsTrue(result.SelectResults.Columns["?Q"].Ordinal == 1);
             Assert.IsTrue(result.SelectResults.Rows.Count == 3);
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Q"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
         }
 
         [TestMethod]
@@ -7095,7 +7128,7 @@ WHERE {
             Assert.IsTrue(result.SelectResults.Rows.Count == 3);
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
         }
 
         [TestMethod]
@@ -7268,7 +7301,7 @@ WHERE {
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
         }
 
         [TestMethod]
@@ -7313,9 +7346,9 @@ WHERE {
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX4"].ToString(), "332^^http://www.w3.org/2001/XMLSchema#double"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX4PLUS1"].ToString(), "333^^http://www.w3.org/2001/XMLSchema#double"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX4"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX4PLUS1"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX4"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX4PLUS1"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
         }
 
         [TestMethod]
@@ -7385,7 +7418,7 @@ WHERE {
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
         }
 
@@ -7436,8 +7469,8 @@ WHERE {
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX4"].ToString(), "332^^http://www.w3.org/2001/XMLSchema#double"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString()));
-            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX4"].ToString(), DBNull.Value.ToString()));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+            Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX4"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
             Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
         }
         #endregion

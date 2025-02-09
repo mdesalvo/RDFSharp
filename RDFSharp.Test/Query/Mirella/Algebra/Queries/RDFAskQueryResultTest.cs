@@ -173,10 +173,12 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <boolean>TRUE</boolean>
-</sparql>");
+                    """
+                    <?xml version="1.0" encoding="utf-8"?>
+                    <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                      <boolean>TRUE</boolean>
+                    </sparql>
+                    """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFAskQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }
@@ -187,10 +189,12 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head />
-</sparql>");
+                    """
+                    <?xml version="1.0" encoding="utf-8"?>
+                    <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                      <head />
+                    </sparql>
+                    """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFAskQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }
@@ -201,11 +205,13 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <boolean>TRUE</boolean>
-  <head />
-</sparql>");
+                    """
+                    <?xml version="1.0" encoding="utf-8"?>
+                    <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                      <boolean>TRUE</boolean>
+                      <head />
+                    </sparql>
+                    """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFAskQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }
@@ -216,11 +222,13 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head />
-  <boolean>hello</boolean>  
-</sparql>");
+                    """
+                    <?xml version="1.0" encoding="utf-8"?>
+                    <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                      <head />
+                      <boolean>hello</boolean>  
+                    </sparql>
+                    """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFAskQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }
@@ -231,9 +239,11 @@ namespace RDFSharp.Test.Query
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-</sparql>");
+                    """
+                    <?xml version="1.0" encoding="utf-8"?>
+                    <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                    </sparql>
+                    """);
 
             Assert.ThrowsException<RDFQueryException>(() => RDFAskQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }

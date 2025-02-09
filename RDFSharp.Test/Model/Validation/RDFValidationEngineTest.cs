@@ -195,41 +195,43 @@ namespace RDFSharp.Test.Model
         {
             //ShapesGraph
             string shapesData =
-@"
-@prefix exns:    <http://ex.com/ns#> .
-@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix sh:      <http://www.w3.org/ns/shacl#> .
+                """
 
-exns:Parent  rdf:type  sh:NodeShape ;
-        sh:property     exns:Parent.Child-cardinality ;
-        sh:targetClass  exns:Parent .
+                @prefix exns:    <http://ex.com/ns#> .
+                @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+                @prefix sh:      <http://www.w3.org/ns/shacl#> .
+
+                exns:Parent  rdf:type  sh:NodeShape ;
+                        sh:property     exns:Parent.Child-cardinality ;
+                        sh:targetClass  exns:Parent .
 
 
-exns:Child  rdf:type  sh:NodeShape ;
-        sh:property     exns:Child.Parent-cardinality ;
-        sh:targetClass  exns:Child .
+                exns:Child  rdf:type  sh:NodeShape ;
+                        sh:property     exns:Child.Parent-cardinality ;
+                        sh:targetClass  exns:Child .
 
-exns:Parent.Child-cardinality
-        rdf:type        sh:PropertyShape ;
-        sh:description  ""This constraint validates the cardinality of the association at the inverse direction."" ;
-        sh:group        exns:CardinalityGroup ;
-        sh:message      ""Cardinality violation. Lower bound shall be 1. exns:Parent.Child-cardinality"" ;
-        sh:minCount     1 ;
-        sh:name         ""Parent.Child-cardinality"" ;
-        sh:order        0 ;
-        sh:path         [ sh:inversePath  exns:Child.Parent ] ;
-        sh:severity     sh:Violation .
+                exns:Parent.Child-cardinality
+                        rdf:type        sh:PropertyShape ;
+                        sh:description  "This constraint validates the cardinality of the association at the inverse direction." ;
+                        sh:group        exns:CardinalityGroup ;
+                        sh:message      "Cardinality violation. Lower bound shall be 1. exns:Parent.Child-cardinality" ;
+                        sh:minCount     1 ;
+                        sh:name         "Parent.Child-cardinality" ;
+                        sh:order        0 ;
+                        sh:path         [ sh:inversePath  exns:Child.Parent ] ;
+                        sh:severity     sh:Violation .
 
-exns:Child.Parent-cardinality
-        rdf:type        sh:PropertyShape ;
-        sh:description  ""This constraint validates the cardinality of the association at the inverse direction."" ;
-        sh:group        exns:CardinalityGroup ;
-        sh:message      ""Cardinality violation. A child should have at least one parent. exns:Child.Parent-cardinality"" ;
-        sh:minCount     1 ;
-        sh:name         ""Child.Parent-cardinality"" ;
-        sh:order        0 ;
-        sh:path         exns:Child.Parent ;
-        sh:severity     sh:Violation .";
+                exns:Child.Parent-cardinality
+                        rdf:type        sh:PropertyShape ;
+                        sh:description  "This constraint validates the cardinality of the association at the inverse direction." ;
+                        sh:group        exns:CardinalityGroup ;
+                        sh:message      "Cardinality violation. A child should have at least one parent. exns:Child.Parent-cardinality" ;
+                        sh:minCount     1 ;
+                        sh:name         "Child.Parent-cardinality" ;
+                        sh:order        0 ;
+                        sh:path         exns:Child.Parent ;
+                        sh:severity     sh:Violation .
+                """;
             MemoryStream shapeStream = new MemoryStream();
             using (StreamWriter shapeStreamWriter = new StreamWriter(shapeStream))
                 shapeStreamWriter.WriteLine(shapesData);
@@ -238,18 +240,20 @@ exns:Child.Parent-cardinality
 
             //DataGraph
             string graphData =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<rdf:RDF
-    xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
-    xmlns:exns=""http://ex.com/ns#"">
-
-    <exns:Child rdf:about=""http://ex.com/ns#child"">
-        <exns:Child.Parent rdf:resource=""http://ex.com/ns#parent0"" />
-    </exns:Child>
-
-    <exns:Parent rdf:about=""http://ex.com/ns#parent0"" />
-    <exns:Parent rdf:about=""http://ex.com/ns#parent1"" />
-</rdf:RDF>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <rdf:RDF
+                    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                    xmlns:exns="http://ex.com/ns#">
+                
+                    <exns:Child rdf:about="http://ex.com/ns#child">
+                        <exns:Child.Parent rdf:resource="http://ex.com/ns#parent0" />
+                    </exns:Child>
+                
+                    <exns:Parent rdf:about="http://ex.com/ns#parent0" />
+                    <exns:Parent rdf:about="http://ex.com/ns#parent1" />
+                </rdf:RDF>
+                """;
             MemoryStream dataStream = new MemoryStream();
             using (StreamWriter dataStreamWriter = new StreamWriter(dataStream))
                 dataStreamWriter.WriteLine(graphData);
@@ -276,24 +280,26 @@ exns:Child.Parent-cardinality
         {
             //ShapesGraph
             string shapesData =
-@"
-@prefix exns:   <http://ex.com/ns#> .
-@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix sh:     <http://www.w3.org/ns/shacl#> .
+                """
 
-exns:Person  rdf:type  sh:NodeShape ;
-        sh:property     exns:Person.mobile-landline-cardinality ;
-        sh:targetClass  exns:Person .
+                @prefix exns:   <http://ex.com/ns#> .
+                @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+                @prefix sh:     <http://www.w3.org/ns/shacl#> .
 
-exns:Person.mobile-landline-cardinality
-        rdf:type        sh:PropertyShape ;
-        sh:description  ""This constraint validates that a Person has either mobileNumber or landLine set."" ;
-        sh:minCount     1 ;
-        sh:message      ""Either mobileNumber or landLine should be present"" ;
-        sh:name         ""Person.mobileNumber-landLine-cardinality"" ;
-        sh:order        0 ;
-        sh:path         [ sh:alternativePath ( exns:Person.mobilePhone exns:Person.landLine ) ] ;
-        sh:severity     sh:Violation .";
+                exns:Person  rdf:type  sh:NodeShape ;
+                        sh:property     exns:Person.mobile-landline-cardinality ;
+                        sh:targetClass  exns:Person .
+
+                exns:Person.mobile-landline-cardinality
+                        rdf:type        sh:PropertyShape ;
+                        sh:description  "This constraint validates that a Person has either mobileNumber or landLine set." ;
+                        sh:minCount     1 ;
+                        sh:message      "Either mobileNumber or landLine should be present" ;
+                        sh:name         "Person.mobileNumber-landLine-cardinality" ;
+                        sh:order        0 ;
+                        sh:path         [ sh:alternativePath ( exns:Person.mobilePhone exns:Person.landLine ) ] ;
+                        sh:severity     sh:Violation .
+                """;
 
             MemoryStream shapeStream = new MemoryStream();
             using (StreamWriter shapeStreamWriter = new StreamWriter(shapeStream))
@@ -303,26 +309,28 @@ exns:Person.mobile-landline-cardinality
 
             //DataGraph
             string graphData =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<rdf:RDF
-    xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
-    xmlns:exns=""http://ex.com/ns#"">
-
-    <exns:Person rdf:about=""http://ex.com/ns#person0"">
-        <exns:Person.mobilePhone>0123456789</exns:Person.mobilePhone>
-    </exns:Person>
-
-    <exns:Person rdf:about=""http://ex.com/ns#person1"">
-        <exns:Person.landLine>0123456789</exns:Person.landLine>
-    </exns:Person>
-
-    <exns:Person rdf:about=""http://ex.com/ns#person2"">
-        <exns:Person.mobilePhone>0123456789</exns:Person.mobilePhone>
-        <exns:Person.landLine>0123456789</exns:Person.landLine>
-    </exns:Person>
-
-    <exns:Person rdf:about=""http://ex.com/ns#person3""/>
-</rdf:RDF>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <rdf:RDF
+                    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                    xmlns:exns="http://ex.com/ns#">
+                
+                    <exns:Person rdf:about="http://ex.com/ns#person0">
+                        <exns:Person.mobilePhone>0123456789</exns:Person.mobilePhone>
+                    </exns:Person>
+                
+                    <exns:Person rdf:about="http://ex.com/ns#person1">
+                        <exns:Person.landLine>0123456789</exns:Person.landLine>
+                    </exns:Person>
+                
+                    <exns:Person rdf:about="http://ex.com/ns#person2">
+                        <exns:Person.mobilePhone>0123456789</exns:Person.mobilePhone>
+                        <exns:Person.landLine>0123456789</exns:Person.landLine>
+                    </exns:Person>
+                
+                    <exns:Person rdf:about="http://ex.com/ns#person3"/>
+                </rdf:RDF>
+                """;
             MemoryStream dataStream = new MemoryStream();
             using (StreamWriter dataStreamWriter = new StreamWriter(dataStream))
                 dataStreamWriter.WriteLine(graphData);
@@ -349,24 +357,26 @@ exns:Person.mobile-landline-cardinality
         {
             //ShapesGraph
             string shapesData =
-@"
-@prefix exns:   <http://ex.com/ns#> .
-@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix sh:     <http://www.w3.org/ns/shacl#> .
+                """
 
-exns:Person  rdf:type  sh:NodeShape ;
-        sh:property     exns:Person.Uncle-cardinality ;
-        sh:targetClass  exns:Person .
+                @prefix exns:   <http://ex.com/ns#> .
+                @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+                @prefix sh:     <http://www.w3.org/ns/shacl#> .
 
-exns:Person.Uncle-cardinality
-        rdf:type        sh:PropertyShape ;
-        sh:description  ""This constraint validates that a Person has at least one uncle."" ;
-        sh:minCount     1 ;
-        sh:message      ""Person should have at least one Uncle defined as: Person.Father/Person.Brother"" ;
-        sh:name         ""Person.Uncle-cardinality"" ;
-        sh:order        0 ;
-        sh:path         ( exns:Person.Father exns:Person.Brother ) ;
-        sh:severity     sh:Violation .";
+                exns:Person  rdf:type  sh:NodeShape ;
+                        sh:property     exns:Person.Uncle-cardinality ;
+                        sh:targetClass  exns:Person .
+
+                exns:Person.Uncle-cardinality
+                        rdf:type        sh:PropertyShape ;
+                        sh:description  "This constraint validates that a Person has at least one uncle." ;
+                        sh:minCount     1 ;
+                        sh:message      "Person should have at least one Uncle defined as: Person.Father/Person.Brother" ;
+                        sh:name         "Person.Uncle-cardinality" ;
+                        sh:order        0 ;
+                        sh:path         ( exns:Person.Father exns:Person.Brother ) ;
+                        sh:severity     sh:Violation .
+                """;
 
             MemoryStream shapeStream = new MemoryStream();
             using (StreamWriter shapeStreamWriter = new StreamWriter(shapeStream))
@@ -376,32 +386,34 @@ exns:Person.Uncle-cardinality
 
             //DataGraph
             string graphData =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<rdf:RDF
-    xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
-    xmlns:exns=""http://ex.com/ns#"">
-
-    <exns:Person rdf:about=""http://ex.com/ns#person0"">
-        <exns:Person.Father rdf:resource=""http://ex.com/ns#person1""/>
-    </exns:Person>
-
-    <exns:Person rdf:about=""http://ex.com/ns#person1"">
-        <exns:Person.Father rdf:resource=""http://ex.com/ns#person2""/>
-        <exns:Person.Brother rdf:resource=""http://ex.com/ns#person3""/>
-    </exns:Person>
-
-    <exns:Person rdf:about=""http://ex.com/ns#person2"">
-        <exns:Person.Father rdf:resource=""http://ex.com/ns#person4""/>
-        <exns:Person.Brother rdf:resource=""http://ex.com/ns#person3""/>
-    </exns:Person>
-
-    <exns:Person rdf:about=""http://ex.com/ns#person3""/>
-
-    <exns:Person rdf:about=""http://ex.com/ns#person4"">
-        <exns:Person.Father rdf:resource=""http://ex.com/ns#person1""/>
-        <exns:Person.Brother rdf:resource=""http://ex.com/ns#person3""/>
-    </exns:Person>
-</rdf:RDF>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <rdf:RDF
+                    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                    xmlns:exns="http://ex.com/ns#">
+                
+                    <exns:Person rdf:about="http://ex.com/ns#person0">
+                        <exns:Person.Father rdf:resource="http://ex.com/ns#person1"/>
+                    </exns:Person>
+                
+                    <exns:Person rdf:about="http://ex.com/ns#person1">
+                        <exns:Person.Father rdf:resource="http://ex.com/ns#person2"/>
+                        <exns:Person.Brother rdf:resource="http://ex.com/ns#person3"/>
+                    </exns:Person>
+                
+                    <exns:Person rdf:about="http://ex.com/ns#person2">
+                        <exns:Person.Father rdf:resource="http://ex.com/ns#person4"/>
+                        <exns:Person.Brother rdf:resource="http://ex.com/ns#person3"/>
+                    </exns:Person>
+                
+                    <exns:Person rdf:about="http://ex.com/ns#person3"/>
+                
+                    <exns:Person rdf:about="http://ex.com/ns#person4">
+                        <exns:Person.Father rdf:resource="http://ex.com/ns#person1"/>
+                        <exns:Person.Brother rdf:resource="http://ex.com/ns#person3"/>
+                    </exns:Person>
+                </rdf:RDF>
+                """;
             MemoryStream dataStream = new MemoryStream();
             using (StreamWriter dataStreamWriter = new StreamWriter(dataStream))
                 dataStreamWriter.WriteLine(graphData);
@@ -428,40 +440,42 @@ exns:Person.Uncle-cardinality
         {
             //ShapesGraph
             string shapesData =
-@"
-@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix sh:      <http://www.w3.org/ns/shacl#> .
-@prefix exns:    <http://ex.com/ns#> .
+                """
 
-exns:Parent  rdf:type  sh:NodeShape ;
-        sh:property     exns:Parent.Child-cardinality ;
-        sh:targetClass  exns:Parent .
+                @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+                @prefix sh:      <http://www.w3.org/ns/shacl#> .
+                @prefix exns:    <http://ex.com/ns#> .
 
-exns:Child  rdf:type  sh:NodeShape ;
-        sh:property     exns:Child.Parent-cardinality ;
-        sh:targetClass  exns:Child .
+                exns:Parent  rdf:type  sh:NodeShape ;
+                        sh:property     exns:Parent.Child-cardinality ;
+                        sh:targetClass  exns:Parent .
 
-exns:Parent.Child-cardinality
-        rdf:type        sh:PropertyShape ;
-        sh:description  ""This constraint validates the cardinality of the association at the inverse direction."" ;
-        sh:group        exns:CardinalityGroup ;
-        sh:message      ""Cardinality violation. Lower bound shall be 1. exns:Parent.Child-cardinality"" ;
-        sh:minCount     1 ;
-        sh:name         ""Parent.Child-cardinality"" ;
-        sh:order        0 ;
-        sh:path         [ sh:inversePath exns:Child.Parent ] ;
-        sh:severity     sh:Violation .
+                exns:Child  rdf:type  sh:NodeShape ;
+                        sh:property     exns:Child.Parent-cardinality ;
+                        sh:targetClass  exns:Child .
 
-exns:Child.Parent-cardinality
-        rdf:type        sh:PropertyShape ;
-        sh:description  ""This constraint validates the cardinality of the association at the inverse direction."" ;
-        sh:group        exns:CardinalityGroup ;
-        sh:message      ""Cardinality violation. A child should have at least one parent. exns:Parent.Child-cardinality"" ;
-        sh:minCount     1 ;
-        sh:name         ""Parent.Child-cardinality"" ;
-        sh:order        0 ;
-        sh:path         exns:Child.Parent ;
-        sh:severity     sh:Violation .";
+                exns:Parent.Child-cardinality
+                        rdf:type        sh:PropertyShape ;
+                        sh:description  "This constraint validates the cardinality of the association at the inverse direction." ;
+                        sh:group        exns:CardinalityGroup ;
+                        sh:message      "Cardinality violation. Lower bound shall be 1. exns:Parent.Child-cardinality" ;
+                        sh:minCount     1 ;
+                        sh:name         "Parent.Child-cardinality" ;
+                        sh:order        0 ;
+                        sh:path         [ sh:inversePath exns:Child.Parent ] ;
+                        sh:severity     sh:Violation .
+
+                exns:Child.Parent-cardinality
+                        rdf:type        sh:PropertyShape ;
+                        sh:description  "This constraint validates the cardinality of the association at the inverse direction." ;
+                        sh:group        exns:CardinalityGroup ;
+                        sh:message      "Cardinality violation. A child should have at least one parent. exns:Parent.Child-cardinality" ;
+                        sh:minCount     1 ;
+                        sh:name         "Parent.Child-cardinality" ;
+                        sh:order        0 ;
+                        sh:path         exns:Child.Parent ;
+                        sh:severity     sh:Violation .
+                """;
             MemoryStream shapeStream = new MemoryStream();
             using (StreamWriter shapeStreamWriter = new StreamWriter(shapeStream))
                 shapeStreamWriter.WriteLine(shapesData);
@@ -470,20 +484,22 @@ exns:Child.Parent-cardinality
 
             //DataGraph
             string graphData =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<rdf:RDF
-    xml:base=""http://test.com/""
-    xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
-    xmlns:exns=""http://ex.com/ns#""
-    >
-
-    <exns:Child rdf:ID=""child"">
-        <exns:Child.Parent rdf:resource=""#parent0"" />
-    </exns:Child>
-
-    <exns:Parent rdf:ID=""parent0"" />
-    <exns:Parent rdf:ID=""#parent1"" />
-</rdf:RDF>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <rdf:RDF
+                    xml:base="http://test.com/"
+                    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                    xmlns:exns="http://ex.com/ns#"
+                    >
+                
+                    <exns:Child rdf:ID="child">
+                        <exns:Child.Parent rdf:resource="#parent0" />
+                    </exns:Child>
+                
+                    <exns:Parent rdf:ID="parent0" />
+                    <exns:Parent rdf:ID="#parent1" />
+                </rdf:RDF>
+                """;
             MemoryStream dataStream = new MemoryStream();
             using (StreamWriter dataStreamWriter = new StreamWriter(dataStream))
                 dataStreamWriter.WriteLine(graphData);
@@ -508,40 +524,42 @@ exns:Child.Parent-cardinality
         {
             //ShapesGraph
             string shapesData =
-@"
-@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix sh:      <http://www.w3.org/ns/shacl#> .
-@prefix exns:    <http://ex.com/ns#> .
+                """
 
-exns:Parent  rdf:type  sh:NodeShape ;
-        sh:property     exns:Parent.Child-cardinality ;
-        sh:targetClass  exns:Parent .
+                @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+                @prefix sh:      <http://www.w3.org/ns/shacl#> .
+                @prefix exns:    <http://ex.com/ns#> .
 
-exns:Child  rdf:type  sh:NodeShape ;
-        sh:property     exns:Child.Parent-cardinality ;
-        sh:targetClass  exns:Child .
+                exns:Parent  rdf:type  sh:NodeShape ;
+                        sh:property     exns:Parent.Child-cardinality ;
+                        sh:targetClass  exns:Parent .
 
-exns:Parent.Child-cardinality
-        rdf:type        sh:PropertyShape ;
-        sh:description  ""This constraint validates the cardinality of the association at the inverse direction."" ;
-        sh:group        exns:CardinalityGroup ;
-        sh:message      ""Cardinality violation. Lower bound shall be 1. exns:Parent.Child-cardinality"" ;
-        sh:minCount     1 ;
-        sh:name         ""Parent.Child-cardinality"" ;
-        sh:order        0 ;
-        sh:path         [ sh:inversePath exns:Child.Parent ] ;
-        sh:severity     sh:Violation .
+                exns:Child  rdf:type  sh:NodeShape ;
+                        sh:property     exns:Child.Parent-cardinality ;
+                        sh:targetClass  exns:Child .
 
-exns:Child.Parent-cardinality
-        rdf:type        sh:PropertyShape ;
-        sh:description  ""This constraint validates the cardinality of the association at the inverse direction."" ;
-        sh:group        exns:CardinalityGroup ;
-        sh:message      ""Cardinality violation. A child should have at least one parent. exns:Parent.Child-cardinality"" ;
-        sh:minCount     1 ;
-        sh:name         ""Parent.Child-cardinality"" ;
-        sh:order        0 ;
-        sh:path         exns:Child.Parent ;
-        sh:severity     sh:Violation .";
+                exns:Parent.Child-cardinality
+                        rdf:type        sh:PropertyShape ;
+                        sh:description  "This constraint validates the cardinality of the association at the inverse direction." ;
+                        sh:group        exns:CardinalityGroup ;
+                        sh:message      "Cardinality violation. Lower bound shall be 1. exns:Parent.Child-cardinality" ;
+                        sh:minCount     1 ;
+                        sh:name         "Parent.Child-cardinality" ;
+                        sh:order        0 ;
+                        sh:path         [ sh:inversePath exns:Child.Parent ] ;
+                        sh:severity     sh:Violation .
+
+                exns:Child.Parent-cardinality
+                        rdf:type        sh:PropertyShape ;
+                        sh:description  "This constraint validates the cardinality of the association at the inverse direction." ;
+                        sh:group        exns:CardinalityGroup ;
+                        sh:message      "Cardinality violation. A child should have at least one parent. exns:Parent.Child-cardinality" ;
+                        sh:minCount     1 ;
+                        sh:name         "Parent.Child-cardinality" ;
+                        sh:order        0 ;
+                        sh:path         exns:Child.Parent ;
+                        sh:severity     sh:Violation .
+                """;
             MemoryStream shapeStream = new MemoryStream();
             using (StreamWriter shapeStreamWriter = new StreamWriter(shapeStream))
                 shapeStreamWriter.WriteLine(shapesData);
@@ -550,20 +568,22 @@ exns:Child.Parent-cardinality
 
             //DataGraph
             string graphData =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<rdf:RDF
-    xml:base=""http://test.com/#""
-    xmlns:rdf=""http://www.w3.org/1999/02/22-rdf-syntax-ns#""
-    xmlns:exns=""http://ex.com/ns#""
-    >
-
-    <exns:Child rdf:ID=""child"">
-        <exns:Child.Parent rdf:resource=""#parent0"" />
-    </exns:Child>
-
-    <exns:Parent rdf:ID=""parent0"" />
-    <exns:Parent rdf:ID=""#parent1"" />
-</rdf:RDF>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <rdf:RDF
+                    xml:base="http://test.com/#"
+                    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                    xmlns:exns="http://ex.com/ns#"
+                    >
+                
+                    <exns:Child rdf:ID="child">
+                        <exns:Child.Parent rdf:resource="#parent0" />
+                    </exns:Child>
+                
+                    <exns:Parent rdf:ID="parent0" />
+                    <exns:Parent rdf:ID="#parent1" />
+                </rdf:RDF>
+                """;
             MemoryStream dataStream = new MemoryStream();
             using (StreamWriter dataStreamWriter = new StreamWriter(dataStream))
                 dataStreamWriter.WriteLine(graphData);

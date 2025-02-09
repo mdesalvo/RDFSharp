@@ -88,7 +88,7 @@ namespace RDFSharp.Test.Model
             Assert.IsFalse(tl.HasDatetimeDatatype());
             Assert.IsFalse(tl.HasDecimalDatatype());
             Assert.IsFalse(tl.HasTimespanDatatype());
-            Assert.IsTrue(tl.ToString().Equals(string.Concat(value ?? "", "^^", RDFModelUtilities.GetDatatypeFromEnum(datatype))));
+            Assert.IsTrue(tl.ToString().Equals(string.Concat(value ?? "", "^^", datatype.GetDatatypeFromEnum())));
         }
 
         [DataTestMethod]
@@ -105,7 +105,7 @@ namespace RDFSharp.Test.Model
             Assert.IsFalse(tl.HasDatetimeDatatype());
             Assert.IsFalse(tl.HasDecimalDatatype());
             Assert.IsFalse(tl.HasTimespanDatatype());
-            Assert.IsTrue(tl.ToString().Equals(string.Concat(value ?? "", "^^", RDFModelUtilities.GetDatatypeFromEnum(datatype))));
+            Assert.IsTrue(tl.ToString().Equals(string.Concat(value ?? "", "^^", datatype.GetDatatypeFromEnum())));
         }
 
         [DataTestMethod]
@@ -140,8 +140,8 @@ namespace RDFSharp.Test.Model
             Assert.IsFalse(tl.HasDatetimeDatatype());
             Assert.IsFalse(tl.HasDecimalDatatype());
             Assert.IsFalse(tl.HasTimespanDatatype());
-            Assert.IsTrue(tl.ToString().Equals(string.Concat("true^^", RDFModelUtilities.GetDatatypeFromEnum(datatype)))
-                            || tl.ToString().Equals(string.Concat("false^^", RDFModelUtilities.GetDatatypeFromEnum(datatype))));
+            Assert.IsTrue(tl.ToString().Equals(string.Concat("true^^", datatype.GetDatatypeFromEnum()))
+                            || tl.ToString().Equals(string.Concat("false^^", datatype.GetDatatypeFromEnum())));
         }
 
         [DataTestMethod]

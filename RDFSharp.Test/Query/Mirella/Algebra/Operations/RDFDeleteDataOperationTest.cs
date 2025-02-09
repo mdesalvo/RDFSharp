@@ -55,8 +55,10 @@ namespace RDFSharp.Test.Query
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"DELETE DATA {
-}"));
+                """
+                DELETE DATA {
+                }
+                """));
         }
 
         [TestMethod]
@@ -82,14 +84,16 @@ namespace RDFSharp.Test.Query
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
+                """
+                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
-DELETE DATA {
-  <ex:subj> <ex:pred> <ex:obj> .
-  rdfs:Class rdf:type owl:Class .
-}"));
+                DELETE DATA {
+                  <ex:subj> <ex:pred> <ex:obj> .
+                  rdfs:Class rdf:type owl:Class .
+                }
+                """));
         }
 
         [TestMethod]

@@ -276,7 +276,7 @@ namespace RDFSharp.Test.Model
             string result = RDFModelUtilities.EscapeControlCharsForXML(input);
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.ToList().Any(chr => char.IsControl(chr)));
+            Assert.IsFalse(result.ToList().Any(char.IsControl));
         }
 
         [DataTestMethod]
@@ -286,7 +286,7 @@ namespace RDFSharp.Test.Model
             string result = RDFModelUtilities.EscapeControlCharsForXML(input);
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.ToList().Any(chr => char.IsControl(chr)));
+            Assert.IsTrue(result.ToList().Any(char.IsControl));
         }
 
         [DataTestMethod]
@@ -296,7 +296,7 @@ namespace RDFSharp.Test.Model
             string result = RDFModelUtilities.EscapeControlCharsForXML(input);
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.ToList().Any(chr => char.IsControl(chr)));
+            Assert.IsFalse(result.ToList().Any(char.IsControl));
             Assert.IsTrue(result.Equals(input));
         }
 
@@ -383,7 +383,7 @@ namespace RDFSharp.Test.Model
         [DataRow("http://example.org/test#test1")]
         public void ShouldGetShortUriAsFragment(string input)
         {
-            string shortUri = RDFModelUtilities.GetShortUri(new Uri(input));
+            string shortUri = new Uri(input).GetShortUri();
 
             Assert.IsNotNull(shortUri);
             Assert.IsTrue(shortUri.Equals("test1"));
@@ -393,7 +393,7 @@ namespace RDFSharp.Test.Model
         [DataRow("http://example.org/test#test1/test2#test3")]
         public void ShouldGetShortUriAsEffectiveFragment(string input)
         {
-            string shortUri = RDFModelUtilities.GetShortUri(new Uri(input));
+            string shortUri = new Uri(input).GetShortUri();
 
             Assert.IsNotNull(shortUri);
             Assert.IsTrue(shortUri.Equals("test1/test2#test3"));
@@ -403,7 +403,7 @@ namespace RDFSharp.Test.Model
         [DataRow("http://example.org/test")]
         public void ShouldGetShortUriAsLastSegment(string input)
         {
-            string shortUri = RDFModelUtilities.GetShortUri(new Uri(input));
+            string shortUri = new Uri(input).GetShortUri();
 
             Assert.IsNotNull(shortUri);
             Assert.IsTrue(shortUri.Equals("test"));
@@ -413,7 +413,7 @@ namespace RDFSharp.Test.Model
         [DataRow("http://example.org")]
         public void ShouldGetShortUriAsUniqueSegment(string input)
         {
-            string shortUri = RDFModelUtilities.GetShortUri(new Uri(input));
+            string shortUri = new Uri(input).GetShortUri();
 
             Assert.IsNotNull(shortUri);
             Assert.IsTrue(shortUri.Equals("http://example.org/"));
@@ -1565,7 +1565,7 @@ namespace RDFSharp.Test.Model
         [DataRow("http://www.w3.org/2006/time#generalMonth", RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH)]
         [DataRow("http://www.w3.org/2006/time#generalYear", RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR)]
         public void ShouldGetDatatypeFromEnum(string expected, RDFModelEnums.RDFDatatypes input)
-            => Assert.IsTrue(RDFModelUtilities.GetDatatypeFromEnum(input) == expected);
+            => Assert.IsTrue(input.GetDatatypeFromEnum() == expected);
 
         [DataTestMethod]
         [DataRow("http://www.w3.org/2000/01/rdf-schema#Literal", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)]
@@ -1622,7 +1622,7 @@ namespace RDFSharp.Test.Model
         [DataRow("http://example.org", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)] //fallback to rdfs:Literal
         [DataRow(null, RDFModelEnums.RDFDatatypes.RDFS_LITERAL)] //fallback to rdfs:Literal
         public void ShouldGetEnumFromDatatype(string input, RDFModelEnums.RDFDatatypes expected)
-            => Assert.IsTrue(RDFModelUtilities.GetEnumFromDatatype(input) == expected);
+            => Assert.IsTrue(input.GetEnumFromDatatype() == expected);
         #endregion
     }
 }

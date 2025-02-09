@@ -14,11 +14,10 @@
    limitations under the License.
 */
 
-using RDFSharp.Model;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RDFSharp.Model;
 
 namespace RDFSharp.Test.Model
 {
@@ -137,7 +136,7 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldGetNamespaceByPrefix()
         {
-            RDFNamespace ns = RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX, false);
+            RDFNamespace ns = RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX);
 
             Assert.IsNotNull(ns);
             Assert.IsTrue(ns.NamespacePrefix.Equals(RDFVocabulary.RDF.PREFIX));
@@ -161,8 +160,8 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldNotGetNamespaceByPrefix()
         {
-            Assert.IsNull(RDFNamespaceRegister.GetByPrefix("exxx", false));
-            Assert.IsNull(RDFNamespaceRegister.GetByPrefix(null, false));
+            Assert.IsNull(RDFNamespaceRegister.GetByPrefix("exxx"));
+            Assert.IsNull(RDFNamespaceRegister.GetByPrefix(null));
         }
 
         [TestMethod]
@@ -176,7 +175,7 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldGetNamespaceByUri()
         {
-            RDFNamespace ns = RDFNamespaceRegister.GetByUri(RDFVocabulary.RDF.BASE_URI, false);
+            RDFNamespace ns = RDFNamespaceRegister.GetByUri(RDFVocabulary.RDF.BASE_URI);
 
             Assert.IsNotNull(ns);
             Assert.IsTrue(ns.NamespacePrefix.Equals(RDFVocabulary.RDF.PREFIX));
@@ -199,8 +198,8 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldNotGetNamespaceByUri()
         {
-            Assert.IsNull(RDFNamespaceRegister.GetByUri("http://exx.org/", false));
-            Assert.IsNull(RDFNamespaceRegister.GetByUri(null, false));
+            Assert.IsNull(RDFNamespaceRegister.GetByUri("http://exx.org/"));
+            Assert.IsNull(RDFNamespaceRegister.GetByUri(null));
         }
 
         [TestMethod]

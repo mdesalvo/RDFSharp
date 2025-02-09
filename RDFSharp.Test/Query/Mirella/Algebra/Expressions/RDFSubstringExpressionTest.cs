@@ -55,7 +55,7 @@ namespace RDFSharp.Test.Query
         public void ShouldCreateSubstringExpressionWithExpressionAndStartAndLengthNull()
         {
             RDFSubstringExpression expression = new RDFSubstringExpression(
-                new RDFVariableExpression(new RDFVariable("?V")), 5, null);
+                new RDFVariableExpression(new RDFVariable("?V")), 5);
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);
@@ -94,7 +94,7 @@ namespace RDFSharp.Test.Query
         public void ShouldCreateSubstringExpressionWithVariableAndStartAndLengthNull()
         {
             RDFSubstringExpression expression = new RDFSubstringExpression(
-                new RDFVariable("?V"), 5, null);
+                new RDFVariable("?V"), 5);
 
             Assert.IsNotNull(expression);
             Assert.IsNotNull(expression.LeftArgument);

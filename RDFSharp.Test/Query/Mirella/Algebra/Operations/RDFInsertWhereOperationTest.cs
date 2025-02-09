@@ -55,10 +55,12 @@ namespace RDFSharp.Test.Query
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"INSERT {
-}
-WHERE {
-}"));
+                """
+                INSERT {
+                }
+                WHERE {
+                }
+                """));
         }
 
         [TestMethod]
@@ -80,11 +82,13 @@ WHERE {
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"INSERT {
-  <ex:subj> <ex:pred> <ex:obj> .
-}
-WHERE {
-}"));
+                """
+                INSERT {
+                  <ex:subj> <ex:pred> <ex:obj> .
+                }
+                WHERE {
+                }
+                """));
         }
 
         [TestMethod]
@@ -109,13 +113,15 @@ WHERE {
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                """
+                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-INSERT {
-}
-WHERE {
-}"));
+                INSERT {
+                }
+                WHERE {
+                }
+                """));
         }
 
         [TestMethod]
@@ -138,10 +144,12 @@ WHERE {
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"INSERT {
-}
-WHERE {
-}"));
+                """
+                INSERT {
+                }
+                WHERE {
+                }
+                """));
         }
 
         [TestMethod]
@@ -166,13 +174,15 @@ WHERE {
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"INSERT {
-}
-WHERE {
-  {
-    ?Y <ex:dogOf> ?X .
-  }
-}"));
+                """
+                INSERT {
+                }
+                WHERE {
+                  {
+                    ?Y <ex:dogOf> ?X .
+                  }
+                }
+                """));
         }
 
         [TestMethod]
@@ -194,14 +204,16 @@ WHERE {
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"INSERT {
-}
-WHERE {
-  {
-    ?Y <ex:dogOf> ?X .
-    BIND(?Y AS ?YBIND) .
-  }
-}"));
+                """
+                INSERT {
+                }
+                WHERE {
+                  {
+                    ?Y <ex:dogOf> ?X .
+                    BIND(?Y AS ?YBIND) .
+                  }
+                }
+                """));
         }
 
         [TestMethod]
@@ -223,14 +235,16 @@ WHERE {
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"INSERT {
-}
-WHERE {
-  {
-    ?Y <ex:dogOf> ?X .
-    BIND(?Y AS ?YBIND) .
-  }
-}"));
+                """
+                INSERT {
+                }
+                WHERE {
+                  {
+                    ?Y <ex:dogOf> ?X .
+                    BIND(?Y AS ?YBIND) .
+                  }
+                }
+                """));
         }
 
         [TestMethod]
@@ -253,15 +267,17 @@ WHERE {
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"INSERT {
-}
-WHERE {
-  {
-    ?Y <ex:dogOf> ?X .
-    BIND(?Y AS ?YBIND) .
-    ?Y <ex:isDogOf> ?X .
-  }
-}"));
+                """
+                INSERT {
+                }
+                WHERE {
+                  {
+                    ?Y <ex:dogOf> ?X .
+                    BIND(?Y AS ?YBIND) .
+                    ?Y <ex:isDogOf> ?X .
+                  }
+                }
+                """));
         }
 
         [TestMethod]
@@ -285,15 +301,17 @@ WHERE {
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"INSERT {
-}
-WHERE {
-  {
-    SELECT *
-    WHERE {
-    }
-  }
-}"));
+                """
+                INSERT {
+                }
+                WHERE {
+                  {
+                    SELECT *
+                    WHERE {
+                    }
+                  }
+                }
+                """));
         }
 
         [TestMethod]
@@ -332,44 +350,46 @@ WHERE {
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                """
+                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-INSERT {
-  ?Y rdf:type <ex:dog> .
-}
-WHERE {
-  {
-    {
-      { ?Y <ex:dogOf> ?X }
-      UNION
-      { ?Y <ex:isDogOf> ?X }
-    }
-    UNION
-    {
-      ?Y <ex:isDogOf> ?X .
-    }
-  }
-  {
-    {
-      SELECT ?Y
-      WHERE {
-        {
-          ?Y (<http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment>) ?X .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT ?Y ?X ((?X + 1) AS ?XADD1)
-      WHERE {
-        {
-          ?X <ex:hasDog> ?Y .
-        }
-      }
-      ORDER BY DESC(?X)
-    }
-  }
-}"));
+                INSERT {
+                  ?Y rdf:type <ex:dog> .
+                }
+                WHERE {
+                  {
+                    {
+                      { ?Y <ex:dogOf> ?X }
+                      UNION
+                      { ?Y <ex:isDogOf> ?X }
+                    }
+                    UNION
+                    {
+                      ?Y <ex:isDogOf> ?X .
+                    }
+                  }
+                  {
+                    {
+                      SELECT ?Y
+                      WHERE {
+                        {
+                          ?Y (<http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment>) ?X .
+                        }
+                      }
+                    }
+                    UNION
+                    {
+                      SELECT ?Y ?X ((?X + 1) AS ?XADD1)
+                      WHERE {
+                        {
+                          ?X <ex:hasDog> ?Y .
+                        }
+                      }
+                      ORDER BY DESC(?X)
+                    }
+                  }
+                }
+                """));
         }
 
         [TestMethod]
@@ -411,51 +431,53 @@ WHERE {
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                """
+                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-INSERT {
-  ?Y rdf:type <ex:dog> .
-}
-WHERE {
-  {
-    {
-      BIND(?Y AS ?YBIND3) .
-      { ?Y <ex:dogOf> ?X }
-      UNION
-      { ?Y <ex:isDogOf> ?X }
-      BIND(?Y AS ?YBIND) .
-      ?Y <ex:isDoggyOf> ?X .
-    }
-    UNION
-    {
-      ?Y <ex:isDogOf> ?X .
-      BIND(?Y AS ?YBIND2) .
-      { ?Y <ex:dogOf> ?X }
-      UNION
-      { ?Y <ex:isDoggyOf> ?X }
-    }
-  }
-  {
-    {
-      SELECT ?Y
-      WHERE {
-        {
-          ?Y (<http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment>) ?X .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT ?Y ?X ((?X + 1) AS ?XADD1)
-      WHERE {
-        {
-          ?X <ex:hasDog> ?Y .
-        }
-      }
-      ORDER BY DESC(?X)
-    }
-  }
-}"));
+                INSERT {
+                  ?Y rdf:type <ex:dog> .
+                }
+                WHERE {
+                  {
+                    {
+                      BIND(?Y AS ?YBIND3) .
+                      { ?Y <ex:dogOf> ?X }
+                      UNION
+                      { ?Y <ex:isDogOf> ?X }
+                      BIND(?Y AS ?YBIND) .
+                      ?Y <ex:isDoggyOf> ?X .
+                    }
+                    UNION
+                    {
+                      ?Y <ex:isDogOf> ?X .
+                      BIND(?Y AS ?YBIND2) .
+                      { ?Y <ex:dogOf> ?X }
+                      UNION
+                      { ?Y <ex:isDoggyOf> ?X }
+                    }
+                  }
+                  {
+                    {
+                      SELECT ?Y
+                      WHERE {
+                        {
+                          ?Y (<http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment>) ?X .
+                        }
+                      }
+                    }
+                    UNION
+                    {
+                      SELECT ?Y ?X ((?X + 1) AS ?XADD1)
+                      WHERE {
+                        {
+                          ?X <ex:hasDog> ?Y .
+                        }
+                      }
+                      ORDER BY DESC(?X)
+                    }
+                  }
+                }
+                """));
         }
 
         [TestMethod]
@@ -499,51 +521,53 @@ WHERE {
             string operationString = operation.ToString();
 
             Assert.IsTrue(string.Equals(operationString,
-@"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                """
+                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-INSERT {
-  ?Y rdf:type <ex:dog> .
-}
-WHERE {
-  {
-    {
-      BIND(?Y AS ?YBIND3) .
-      { ?Y <ex:dogOf> ?X }
-      UNION
-      { ?Y <ex:isDogOf> ?X }
-      BIND(?Y AS ?YBIND) .
-      ?Y <ex:isDoggyOf> ?X .
-    }
-    UNION
-    {
-      ?Y <ex:isDogOf> ?X .
-      BIND(?Y AS ?YBIND2) .
-      { ?Y <ex:dogOf> ?X }
-      UNION
-      { ?Y <ex:isDoggyOf> ?X }
-    }
-  }
-  {
-    {
-      SELECT ?Y
-      WHERE {
-        {
-          ?Y (<http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment>) ?X .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT ?Y ?X ((?X + 1) AS ?XADD1)
-      WHERE {
-        {
-          ?X <ex:hasDog> ?Y .
-        }
-      }
-      ORDER BY DESC(?X)
-    }
-  }
-}"));
+                INSERT {
+                  ?Y rdf:type <ex:dog> .
+                }
+                WHERE {
+                  {
+                    {
+                      BIND(?Y AS ?YBIND3) .
+                      { ?Y <ex:dogOf> ?X }
+                      UNION
+                      { ?Y <ex:isDogOf> ?X }
+                      BIND(?Y AS ?YBIND) .
+                      ?Y <ex:isDoggyOf> ?X .
+                    }
+                    UNION
+                    {
+                      ?Y <ex:isDogOf> ?X .
+                      BIND(?Y AS ?YBIND2) .
+                      { ?Y <ex:dogOf> ?X }
+                      UNION
+                      { ?Y <ex:isDoggyOf> ?X }
+                    }
+                  }
+                  {
+                    {
+                      SELECT ?Y
+                      WHERE {
+                        {
+                          ?Y (<http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment>) ?X .
+                        }
+                      }
+                    }
+                    UNION
+                    {
+                      SELECT ?Y ?X ((?X + 1) AS ?XADD1)
+                      WHERE {
+                        {
+                          ?X <ex:hasDog> ?Y .
+                        }
+                      }
+                      ORDER BY DESC(?X)
+                    }
+                  }
+                }
+                """));
         }
 
         [TestMethod]

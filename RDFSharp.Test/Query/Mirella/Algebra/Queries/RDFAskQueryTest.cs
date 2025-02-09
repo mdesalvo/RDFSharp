@@ -257,11 +257,13 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>true</boolean>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0"?>
+                                <sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+                                    <head />
+                                    <boolean>true</boolean>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -287,11 +289,13 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>true</boolean>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0"?>
+                                <sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+                                    <head />
+                                    <boolean>true</boolean>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -319,11 +323,13 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>false</boolean>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0"?>
+                                <sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+                                    <head />
+                                    <boolean>false</boolean>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -349,11 +355,13 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>false</boolean>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0"?>
+                                <sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+                                    <head />
+                                    <boolean>false</boolean>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -381,11 +389,13 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>true</boolean>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0"?>
+                                <sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+                                    <head />
+                                    <boolean>true</boolean>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -411,11 +421,13 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>true</boolean>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0"?>
+                                <sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+                                    <head />
+                                    <boolean>true</boolean>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -456,11 +468,13 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>false</boolean>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0"?>
+                                <sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+                                    <head />
+                                    <boolean>false</boolean>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithStatusCode(HttpStatusCode.OK)
                             .WithDelay(750));
 
@@ -484,11 +498,13 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>false</boolean>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0"?>
+                                <sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+                                    <head />
+                                    <boolean>false</boolean>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithStatusCode(HttpStatusCode.OK)
                             .WithDelay(750));
 
@@ -514,11 +530,13 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>false</boolean>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0"?>
+                                <sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+                                    <head />
+                                    <boolean>false</boolean>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithStatusCode(HttpStatusCode.OK)
                             .WithDelay(750));
 
@@ -545,11 +563,13 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>false</boolean>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0"?>
+                                <sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+                                    <head />
+                                    <boolean>false</boolean>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithStatusCode(HttpStatusCode.OK)
                             .WithDelay(750));
 
@@ -813,11 +833,13 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>true</boolean>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0"?>
+                                <sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+                                    <head />
+                                    <boolean>true</boolean>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -844,11 +866,13 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>false</boolean>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0"?>
+                                <sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+                                    <head />
+                                    <boolean>false</boolean>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -875,11 +899,13 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>true</boolean>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0"?>
+                                <sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+                                    <head />
+                                    <boolean>true</boolean>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 

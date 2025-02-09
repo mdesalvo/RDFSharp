@@ -59,8 +59,7 @@ namespace RDFSharp.Test.Model
                 new RDFResource("ex:focusNode"),
                 new RDFResource("ex:resultPath"),
                 new RDFPlainLiteral("resultValue"),
-                [new RDFPlainLiteral("resultMessage")],
-                RDFValidationEnums.RDFShapeSeverity.Violation
+                [new RDFPlainLiteral("resultMessage")]
             );
             RDFValidationReport vRep = new RDFValidationReport(new RDFResource("ex:validationReport"));
             vRep.AddResult(vRes);
@@ -96,8 +95,7 @@ namespace RDFSharp.Test.Model
                 new RDFResource("ex:focusNode"),
                 new RDFResource("ex:resultPath"),
                 new RDFPlainLiteral("resultValue"),
-                [new RDFPlainLiteral("resultMessage")],
-                RDFValidationEnums.RDFShapeSeverity.Violation
+                [new RDFPlainLiteral("resultMessage")]
             );
             RDFValidationReport vRep = new RDFValidationReport(new RDFResource("ex:validationReport"));
             vRep.AddResult(vRes);
@@ -129,8 +127,7 @@ namespace RDFSharp.Test.Model
                 new RDFResource("ex:focusNode"),
                 new RDFResource("ex:resultPath"),
                 new RDFPlainLiteral("resultValue"),
-                [new RDFPlainLiteral("resultMessage")],
-                RDFValidationEnums.RDFShapeSeverity.Violation
+                [new RDFPlainLiteral("resultMessage")]
             );
             RDFValidationReport vRep = new RDFValidationReport(new RDFResource("ex:validationReport"));
             vRep.AddResult(vRes);
@@ -162,8 +159,7 @@ namespace RDFSharp.Test.Model
                 new RDFResource("ex:focusNode"),
                 new RDFResource("ex:resultPath"),
                 new RDFPlainLiteral("resultValue"),
-                [new RDFPlainLiteral("resultMessage")],
-                RDFValidationEnums.RDFShapeSeverity.Violation
+                [new RDFPlainLiteral("resultMessage")]
             );
             RDFValidationReport vRep = new RDFValidationReport(new RDFResource("ex:validationReport"));
             vRep.AddResult(vRes);
@@ -208,8 +204,7 @@ namespace RDFSharp.Test.Model
                 new RDFResource("ex:focusNode"),
                 null,
                 new RDFPlainLiteral("resultValue"),
-                [new RDFPlainLiteral("resultMessage")],
-                RDFValidationEnums.RDFShapeSeverity.Violation
+                [new RDFPlainLiteral("resultMessage")]
             );
             RDFValidationResult vRes2 = new RDFValidationResult(
                 new RDFNodeShape(new RDFResource("ex:sourceShape")),
@@ -217,8 +212,7 @@ namespace RDFSharp.Test.Model
                 new RDFResource("ex:focusNode2"),
                 null,
                 new RDFPlainLiteral("resultValue2"),
-                [new RDFPlainLiteral("resultMessage2")],
-                RDFValidationEnums.RDFShapeSeverity.Violation
+                [new RDFPlainLiteral("resultMessage2")]
             );
             RDFValidationReport vRep1 = new RDFValidationReport(new RDFResource("ex:validationReport"));
             vRep1.AddResult(vRes1);

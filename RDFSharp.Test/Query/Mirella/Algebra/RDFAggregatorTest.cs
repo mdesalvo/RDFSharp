@@ -14,9 +14,9 @@
    limitations under the License.
 */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Data;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -44,11 +44,11 @@ namespace RDFSharp.Test.Query
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingAggregatorBecauseNullAggregatorVariable()
-            =>  Assert.ThrowsException<RDFQueryException>(() => new RDFAggregator(null as RDFVariable, new RDFVariable("?PROJVAR")));
+            =>  Assert.ThrowsException<RDFQueryException>(() => new RDFAggregator(null, new RDFVariable("?PROJVAR")));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingAggregatorBecauseNullPartitionVariable()
-            =>  Assert.ThrowsException<RDFQueryException>(() => new RDFAggregator(new RDFVariable("?AGGVAR"), null as RDFVariable));
+            =>  Assert.ThrowsException<RDFQueryException>(() => new RDFAggregator(new RDFVariable("?AGGVAR"), null));
         
         [TestMethod]
         public void ShouldSetDistinct()
@@ -221,7 +221,7 @@ namespace RDFSharp.Test.Query
         public void ShouldAddPartitionKeyToAggregatorContext()
         {
             RDFAggregatorContext aggCtx = new RDFAggregatorContext();
-            aggCtx.AddPartitionKey<string>("testPKey", "value");
+            aggCtx.AddPartitionKey("testPKey", "value");
 
             Assert.IsTrue(aggCtx.ExecutionRegistry.ContainsKey("testPKey"));
             Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionResult"));
@@ -234,7 +234,7 @@ namespace RDFSharp.Test.Query
         public void ShouldGetPartitionKeyExecutionResultFromAggregatorContext()
         {
             RDFAggregatorContext aggCtx = new RDFAggregatorContext();
-            string value = aggCtx.GetPartitionKeyExecutionResult<string>("testPKey", "value");
+            string value = aggCtx.GetPartitionKeyExecutionResult("testPKey", "value");
 
             Assert.IsTrue(value.Equals("value"));
             Assert.IsTrue(aggCtx.ExecutionRegistry.ContainsKey("testPKey"));
@@ -248,7 +248,7 @@ namespace RDFSharp.Test.Query
         public void ShouldGetPartitionKeyExecutionCounterFromAggregatorContext()
         {
             RDFAggregatorContext aggCtx = new RDFAggregatorContext();
-            aggCtx.AddPartitionKey<string>("testPKey", "value");
+            aggCtx.AddPartitionKey("testPKey", "value");
             double execCounter = aggCtx.GetPartitionKeyExecutionCounter("testPKey");
 
             Assert.IsTrue(execCounter.Equals(0d));
@@ -263,8 +263,8 @@ namespace RDFSharp.Test.Query
         public void ShouldUpdatePartitionKeyExecutionResultToAggregatorContext()
         {
             RDFAggregatorContext aggCtx = new RDFAggregatorContext();
-            aggCtx.AddPartitionKey<string>("testPKey", "value");
-            aggCtx.UpdatePartitionKeyExecutionResult<string>("testPKey", "value2");
+            aggCtx.AddPartitionKey("testPKey", "value");
+            aggCtx.UpdatePartitionKeyExecutionResult("testPKey", "value2");
 
             Assert.IsTrue(aggCtx.ExecutionRegistry.ContainsKey("testPKey"));
             Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionResult"));
@@ -277,7 +277,7 @@ namespace RDFSharp.Test.Query
         public void ShouldUpdatePartitionKeyExecutionCounterToAggregatorContext()
         {
             RDFAggregatorContext aggCtx = new RDFAggregatorContext();
-            aggCtx.AddPartitionKey<string>("testPKey", "value");
+            aggCtx.AddPartitionKey("testPKey", "value");
             aggCtx.UpdatePartitionKeyExecutionCounter("testPKey");
 
             Assert.IsTrue(aggCtx.ExecutionRegistry.ContainsKey("testPKey"));
@@ -291,9 +291,9 @@ namespace RDFSharp.Test.Query
         public void ShouldCheckPartitionKeyRowValueCacheFromAggregatorContext()
         {
             RDFAggregatorContext aggCtx = new RDFAggregatorContext();
-            aggCtx.AddPartitionKey<string>("testPKey", "value");
+            aggCtx.AddPartitionKey("testPKey", "value");
 
-            Assert.IsFalse(aggCtx.CheckPartitionKeyRowValueCache<string>("testPKey", "value"));
+            Assert.IsFalse(aggCtx.CheckPartitionKeyRowValueCache("testPKey", "value"));
 
             Assert.IsTrue(aggCtx.ExecutionRegistry.ContainsKey("testPKey"));
             Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionResult"));
@@ -306,11 +306,11 @@ namespace RDFSharp.Test.Query
         public void ShouldUpdatePartitionKeyRowValueCacheToAggregatorContext()
         {
             RDFAggregatorContext aggCtx = new RDFAggregatorContext();
-            aggCtx.AddPartitionKey<string>("testPKey", "value");
+            aggCtx.AddPartitionKey("testPKey", "value");
 
-            Assert.IsFalse(aggCtx.CheckPartitionKeyRowValueCache<string>("testPKey", "value"));
-            aggCtx.UpdatePartitionKeyRowValueCache<string>("testPKey", "value");
-            Assert.IsTrue(aggCtx.CheckPartitionKeyRowValueCache<string>("testPKey", "value"));
+            Assert.IsFalse(aggCtx.CheckPartitionKeyRowValueCache("testPKey", "value"));
+            aggCtx.UpdatePartitionKeyRowValueCache("testPKey", "value");
+            Assert.IsTrue(aggCtx.CheckPartitionKeyRowValueCache("testPKey", "value"));
 
             Assert.IsTrue(aggCtx.ExecutionRegistry.ContainsKey("testPKey"));
             Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionResult"));

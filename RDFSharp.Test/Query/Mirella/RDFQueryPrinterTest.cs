@@ -38,10 +38,12 @@ namespace RDFSharp.Test.Query
             RDFSelectQuery query = new RDFSelectQuery();
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-}
-";
+              """
+              SELECT *
+              WHERE {
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -55,15 +57,17 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -76,13 +80,15 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-    ?S <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                  ?S <http://www.w3.org/2000/01/rdf-schema#label> "label"@EN .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -96,15 +102,17 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    OPTIONAL { ?S rdfs:label ""label""@EN } .
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  OPTIONAL { ?S rdfs:label "label"@EN } .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -119,17 +127,19 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  OPTIONAL {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                OPTIONAL {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -144,17 +154,19 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  OPTIONAL {
-    {
-      OPTIONAL { ?S rdfs:label ""label""@EN } .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                OPTIONAL {
+                  {
+                    OPTIONAL { ?S rdfs:label "label"@EN } .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -168,15 +180,17 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext()));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -191,17 +205,19 @@ WHERE {
                     .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E")).AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    { ?S rdfs:label ""label""@EN }
-    UNION
-    { ?S rdfs:label ?E }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  { ?S rdfs:label "label"@EN }
+                  UNION
+                  { ?S rdfs:label ?E }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -216,17 +232,19 @@ WHERE {
                     .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.LABEL])));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    { ?S rdfs:label ""label""@EN }
-    UNION
-    { VALUES ?S { rdfs:label } }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  { ?S rdfs:label "label"@EN }
+                  UNION
+                  { VALUES ?S { rdfs:label } }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -241,16 +259,18 @@ WHERE {
                     .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?EXP")), new RDFVariable("?V"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-    BIND(?EXP AS ?V) .
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                  BIND(?EXP AS ?V) .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -266,18 +286,20 @@ WHERE {
                     .AddBind(new RDFBind(new RDFConstantExpression(RDFVocabulary.RDFS.CLASS), new RDFVariable("?V"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    { ?S1 rdfs:label ""label""@EN }
-    UNION
-    { ?S2 rdfs:label ""label""@EN-US }
-    BIND(rdfs:Class AS ?V) .
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  { ?S1 rdfs:label "label"@EN }
+                  UNION
+                  { ?S2 rdfs:label "label"@EN-US }
+                  BIND(rdfs:Class AS ?V) .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -293,17 +315,19 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US")).UnionWithNext()));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    ?S1 rdfs:label ""label""@EN .
-    BIND(rdfs:Class AS ?V) .
-    ?S2 rdfs:label ""label""@EN-US .
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  ?S1 rdfs:label "label"@EN .
+                  BIND(rdfs:Class AS ?V) .
+                  ?S2 rdfs:label "label"@EN-US .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -319,17 +343,19 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US")).Optional()));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    OPTIONAL { ?S1 rdfs:label ""label""@EN } .
-    BIND(rdfs:Class AS ?V) .
-    OPTIONAL { ?S2 rdfs:label ""label""@EN-US } .
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  OPTIONAL { ?S1 rdfs:label "label"@EN } .
+                  BIND(rdfs:Class AS ?V) .
+                  OPTIONAL { ?S2 rdfs:label "label"@EN-US } .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -344,15 +370,17 @@ WHERE {
                     .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -367,15 +395,17 @@ WHERE {
                     .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -389,15 +419,17 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).MinusWithNext()));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -412,17 +444,19 @@ WHERE {
                     .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E")).AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    { ?S rdfs:label ""label""@EN }
-    MINUS
-    { ?S rdfs:label ?E }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  { ?S rdfs:label "label"@EN }
+                  MINUS
+                  { ?S rdfs:label ?E }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -437,17 +471,19 @@ WHERE {
                     .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.LABEL])));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    { ?S rdfs:label ""label""@EN }
-    MINUS
-    { VALUES ?S { rdfs:label } }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  { ?S rdfs:label "label"@EN }
+                  MINUS
+                  { VALUES ?S { rdfs:label } }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -462,16 +498,18 @@ WHERE {
                     .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?EXP")), new RDFVariable("?V"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-    BIND(?EXP AS ?V) .
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                  BIND(?EXP AS ?V) .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -487,18 +525,20 @@ WHERE {
                     .AddBind(new RDFBind(new RDFConstantExpression(RDFVocabulary.RDFS.CLASS), new RDFVariable("?V"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    { ?S1 rdfs:label ""label""@EN }
-    MINUS
-    { ?S2 rdfs:label ""label""@EN-US }
-    BIND(rdfs:Class AS ?V) .
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  { ?S1 rdfs:label "label"@EN }
+                  MINUS
+                  { ?S2 rdfs:label "label"@EN-US }
+                  BIND(rdfs:Class AS ?V) .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -514,19 +554,21 @@ WHERE {
                     .AddValues(new RDFValues().AddColumn(new RDFVariable("?V"), [ new RDFResource("ex:val") ])));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    { ?S1 rdfs:label ""label""@EN }
-    MINUS
-    { ?S2 rdfs:label ""label""@EN-US }
-    MINUS
-    { VALUES ?V { <ex:val> } }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  { ?S1 rdfs:label "label"@EN }
+                  MINUS
+                  { ?S2 rdfs:label "label"@EN-US }
+                  MINUS
+                  { VALUES ?V { <ex:val> } }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -542,17 +584,19 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US")).MinusWithNext()));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    ?S1 rdfs:label ""label""@EN .
-    BIND(rdfs:Class AS ?V) .
-    ?S2 rdfs:label ""label""@EN-US .
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  ?S1 rdfs:label "label"@EN .
+                  BIND(rdfs:Class AS ?V) .
+                  ?S2 rdfs:label "label"@EN-US .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -568,18 +612,20 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US")).MinusWithNext()));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    { ?S1 rdfs:label ""label""@EN }
-    MINUS
-    { VALUES ?V { <ex:val> } }
-    ?S2 rdfs:label ""label""@EN-US .
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  { ?S1 rdfs:label "label"@EN }
+                  MINUS
+                  { VALUES ?V { <ex:val> } }
+                  ?S2 rdfs:label "label"@EN-US .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -594,15 +640,17 @@ WHERE {
                     .MinusWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -617,15 +665,17 @@ WHERE {
                     .MinusWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -640,17 +690,19 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE <ex:org> {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE <ex:org> {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -665,17 +717,19 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions { ErrorBehavior= RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult }));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE SILENT <ex:org> {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE SILENT <ex:org> {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -691,19 +745,21 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  OPTIONAL {
-    SERVICE <ex:org> {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                OPTIONAL {
+                  SERVICE <ex:org> {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -719,19 +775,21 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  OPTIONAL {
-    SERVICE SILENT <ex:org> {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                OPTIONAL {
+                  SERVICE SILENT <ex:org> {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -747,17 +805,19 @@ WHERE {
                     .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE <ex:org> {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE <ex:org> {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -773,17 +833,19 @@ WHERE {
                     .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE SILENT <ex:org> {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE SILENT <ex:org> {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -802,29 +864,31 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    {
-      SERVICE <ex:org1> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-    UNION
-    {
-      SERVICE <ex:org2> {
-        {
-          ?S rdfs:comment rdfs:Class .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    SERVICE <ex:org1> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SERVICE <ex:org2> {
+                      {
+                        ?S rdfs:comment rdfs:Class .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -842,25 +906,27 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS)));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    {
-      SERVICE <ex:org1> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-    UNION
-    {
-      ?S rdfs:comment rdfs:Class .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    SERVICE <ex:org1> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    ?S rdfs:comment rdfs:Class .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -878,25 +944,27 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      SERVICE <ex:org1> {
-        {
-          ?S rdfs:comment rdfs:Class .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    SERVICE <ex:org1> {
+                      {
+                        ?S rdfs:comment rdfs:Class .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -922,42 +990,44 @@ WHERE {
                     .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    {
-      SERVICE <ex:org1> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-    UNION
-    {
-      ?S rdfs:comment rdfs:Class .
-    }
-  }
-  {
-    {
-      SERVICE <ex:org3> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-    UNION
-    {
-      SERVICE <ex:org4> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    SERVICE <ex:org1> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    ?S rdfs:comment rdfs:Class .
+                  }
+                }
+                {
+                  {
+                    SERVICE <ex:org3> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SERVICE <ex:org4> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -983,39 +1053,41 @@ WHERE {
                     .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE <ex:org1> {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-  OPTIONAL {
-    {
-      ?S rdfs:comment rdfs:Class .
-    }
-  }
-  {
-    {
-      SERVICE <ex:org3> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-    UNION
-    {
-      SERVICE <ex:org4> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE <ex:org1> {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+                OPTIONAL {
+                  {
+                    ?S rdfs:comment rdfs:Class .
+                  }
+                }
+                {
+                  {
+                    SERVICE <ex:org3> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SERVICE <ex:org4> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1039,33 +1111,35 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE <ex:org1> {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-  {
-    {
-      ?S rdfs:comment rdfs:Class .
-    }
-    UNION
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-  OPTIONAL {
-    SERVICE <ex:org4> {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE <ex:org1> {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+                {
+                  {
+                    ?S rdfs:comment rdfs:Class .
+                  }
+                  UNION
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+                OPTIONAL {
+                  SERVICE <ex:org4> {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1088,31 +1162,33 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE <ex:org1> {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-  {
-    {
-      ?S rdfs:comment rdfs:Class .
-    }
-    UNION
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-  SERVICE <ex:org4> {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE <ex:org1> {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+                {
+                  {
+                    ?S rdfs:comment rdfs:Class .
+                  }
+                  UNION
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+                SERVICE <ex:org4> {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1138,35 +1214,37 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  OPTIONAL {
-    SERVICE <ex:org1> {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-  {
-    {
-      ?S rdfs:comment rdfs:Class .
-    }
-    UNION
-    {
-      ?S rdfs:label <ex:org> .
-    }
-  }
-  OPTIONAL {
-    SERVICE <ex:org4> {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                OPTIONAL {
+                  SERVICE <ex:org1> {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+                {
+                  {
+                    ?S rdfs:comment rdfs:Class .
+                  }
+                  UNION
+                  {
+                    ?S rdfs:label <ex:org> .
+                  }
+                }
+                OPTIONAL {
+                  SERVICE <ex:org4> {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1182,17 +1260,19 @@ WHERE {
                     .MinusWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE <ex:org> {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE <ex:org> {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1208,17 +1288,19 @@ WHERE {
                     .MinusWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE SILENT <ex:org> {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE SILENT <ex:org> {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1237,29 +1319,31 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    {
-      SERVICE <ex:org1> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-    MINUS
-    {
-      SERVICE <ex:org2> {
-        {
-          ?S rdfs:comment rdfs:Class .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    SERVICE <ex:org1> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                  MINUS
+                  {
+                    SERVICE <ex:org2> {
+                      {
+                        ?S rdfs:comment rdfs:Class .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1277,25 +1361,27 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS)));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    {
-      SERVICE <ex:org1> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-    MINUS
-    {
-      ?S rdfs:comment rdfs:Class .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    SERVICE <ex:org1> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                  MINUS
+                  {
+                    ?S rdfs:comment rdfs:Class .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1313,25 +1399,27 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    MINUS
-    {
-      SERVICE <ex:org1> {
-        {
-          ?S rdfs:comment rdfs:Class .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  MINUS
+                  {
+                    SERVICE <ex:org1> {
+                      {
+                        ?S rdfs:comment rdfs:Class .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1357,42 +1445,44 @@ WHERE {
                     .MinusWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    {
-      SERVICE <ex:org1> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-    MINUS
-    {
-      ?S rdfs:comment rdfs:Class .
-    }
-  }
-  {
-    {
-      SERVICE <ex:org3> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-    MINUS
-    {
-      SERVICE <ex:org4> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    SERVICE <ex:org1> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                  MINUS
+                  {
+                    ?S rdfs:comment rdfs:Class .
+                  }
+                }
+                {
+                  {
+                    SERVICE <ex:org3> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                  MINUS
+                  {
+                    SERVICE <ex:org4> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1418,39 +1508,41 @@ WHERE {
                     .MinusWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE <ex:org1> {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-  OPTIONAL {
-    {
-      ?S rdfs:comment rdfs:Class .
-    }
-  }
-  {
-    {
-      SERVICE <ex:org3> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-    MINUS
-    {
-      SERVICE <ex:org4> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE <ex:org1> {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+                OPTIONAL {
+                  {
+                    ?S rdfs:comment rdfs:Class .
+                  }
+                }
+                {
+                  {
+                    SERVICE <ex:org3> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                  MINUS
+                  {
+                    SERVICE <ex:org4> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1474,33 +1566,35 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE <ex:org1> {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-  {
-    {
-      ?S rdfs:comment rdfs:Class .
-    }
-    MINUS
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-  OPTIONAL {
-    SERVICE <ex:org4> {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE <ex:org1> {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+                {
+                  {
+                    ?S rdfs:comment rdfs:Class .
+                  }
+                  MINUS
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+                OPTIONAL {
+                  SERVICE <ex:org4> {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1523,31 +1617,33 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE <ex:org1> {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-  {
-    {
-      ?S rdfs:comment rdfs:Class .
-    }
-    MINUS
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-  SERVICE <ex:org4> {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE <ex:org1> {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+                {
+                  {
+                    ?S rdfs:comment rdfs:Class .
+                  }
+                  MINUS
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+                SERVICE <ex:org4> {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1573,35 +1669,37 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  OPTIONAL {
-    SERVICE <ex:org1> {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-  {
-    {
-      ?S rdfs:comment rdfs:Class .
-    }
-    MINUS
-    {
-      ?S rdfs:label <ex:org> .
-    }
-  }
-  OPTIONAL {
-    SERVICE <ex:org4> {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                OPTIONAL {
+                  SERVICE <ex:org1> {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+                {
+                  {
+                    ?S rdfs:comment rdfs:Class .
+                  }
+                  MINUS
+                  {
+                    ?S rdfs:label <ex:org> .
+                  }
+                }
+                OPTIONAL {
+                  SERVICE <ex:org4> {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1618,20 +1716,22 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-  SERVICE <ex:org2> {
-    {
-      ?S rdfs:comment rdfs:Class .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+                SERVICE <ex:org2> {
+                  {
+                    ?S rdfs:comment rdfs:Class .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1651,25 +1751,27 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    ?S rdfs:label <http://example.org/res> .
-  }
-  SERVICE <ex:org1> {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-  SERVICE <ex:org2> {
-    {
-      ?S rdfs:comment rdfs:Class .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  ?S rdfs:label <http://example.org/res> .
+                }
+                SERVICE <ex:org1> {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+                SERVICE <ex:org2> {
+                  {
+                    ?S rdfs:comment rdfs:Class .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1691,34 +1793,36 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    {
-      SERVICE <ex:org1> {
-        {
-          ?S rdfs:label <http://example.org/res> .
-        }
-      }
-    }
-    UNION
-    {
-      SERVICE <ex:org2> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-  }
-  SERVICE <ex:org3> {
-    {
-      ?S rdfs:comment rdfs:Class .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    SERVICE <ex:org1> {
+                      {
+                        ?S rdfs:label <http://example.org/res> .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SERVICE <ex:org2> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                }
+                SERVICE <ex:org3> {
+                  {
+                    ?S rdfs:comment rdfs:Class .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1740,34 +1844,36 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE <ex:org1> {
-    {
-      ?S rdfs:label <http://example.org/res> .
-    }
-  }
-  {
-    {
-      SERVICE <ex:org2> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-    UNION
-    {
-      SERVICE <ex:org3> {
-        {
-          ?S rdfs:comment rdfs:Class .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE <ex:org1> {
+                  {
+                    ?S rdfs:label <http://example.org/res> .
+                  }
+                }
+                {
+                  {
+                    SERVICE <ex:org2> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SERVICE <ex:org3> {
+                      {
+                        ?S rdfs:comment rdfs:Class .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1789,34 +1895,36 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE <ex:org1> {
-    {
-      ?S rdfs:label <http://example.org/res> .
-    }
-  }
-  {
-    {
-      SERVICE <ex:org2> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-    MINUS
-    {
-      SERVICE <ex:org3> {
-        {
-          ?S rdfs:comment rdfs:Class .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE <ex:org1> {
+                  {
+                    ?S rdfs:label <http://example.org/res> .
+                  }
+                }
+                {
+                  {
+                    SERVICE <ex:org2> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                  MINUS
+                  {
+                    SERVICE <ex:org3> {
+                      {
+                        ?S rdfs:comment rdfs:Class .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1839,36 +1947,38 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    {
-      SERVICE <ex:org1> {
-        {
-          ?S rdfs:label <http://example.org/res> .
-        }
-      }
-    }
-    UNION
-    {
-      SERVICE <ex:org2> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-  }
-  OPTIONAL {
-    SERVICE <ex:org3> {
-      {
-        ?S rdfs:comment rdfs:Class .
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    SERVICE <ex:org1> {
+                      {
+                        ?S rdfs:label <http://example.org/res> .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SERVICE <ex:org2> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                }
+                OPTIONAL {
+                  SERVICE <ex:org3> {
+                    {
+                      ?S rdfs:comment rdfs:Class .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1891,31 +2001,33 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE <ex:org1> {
-    {
-      ?S rdfs:label <http://example.org/res> .
-    }
-  }
-  OPTIONAL {
-    SERVICE <ex:org2> {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-  OPTIONAL {
-    SERVICE <ex:org3> {
-      {
-        ?S rdfs:comment rdfs:Class .
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE <ex:org1> {
+                  {
+                    ?S rdfs:label <http://example.org/res> .
+                  }
+                }
+                OPTIONAL {
+                  SERVICE <ex:org2> {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+                OPTIONAL {
+                  SERVICE <ex:org3> {
+                    {
+                      ?S rdfs:comment rdfs:Class .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1939,33 +2051,35 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  OPTIONAL {
-    SERVICE <ex:org1> {
-      {
-        ?S rdfs:label <http://example.org/res> .
-      }
-    }
-  }
-  OPTIONAL {
-    SERVICE <ex:org2> {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-  OPTIONAL {
-    SERVICE <ex:org3> {
-      {
-        ?S rdfs:comment rdfs:Class .
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                OPTIONAL {
+                  SERVICE <ex:org1> {
+                    {
+                      ?S rdfs:label <http://example.org/res> .
+                    }
+                  }
+                }
+                OPTIONAL {
+                  SERVICE <ex:org2> {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+                OPTIONAL {
+                  SERVICE <ex:org3> {
+                    {
+                      ?S rdfs:comment rdfs:Class .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -1989,36 +2103,38 @@ WHERE {
                     .Optional()); //this Optional will be discarded, since we are under UnionWithNext from previous
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  OPTIONAL {
-    SERVICE <ex:org1> {
-      {
-        ?S rdfs:label <http://example.org/res> .
-      }
-    }
-  }
-  {
-    {
-      SERVICE <ex:org2> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-    UNION
-    {
-      SERVICE <ex:org3> {
-        {
-          ?S rdfs:comment rdfs:Class .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                OPTIONAL {
+                  SERVICE <ex:org1> {
+                    {
+                      ?S rdfs:label <http://example.org/res> .
+                    }
+                  }
+                }
+                {
+                  {
+                    SERVICE <ex:org2> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SERVICE <ex:org3> {
+                      {
+                        ?S rdfs:comment rdfs:Class .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2042,36 +2158,38 @@ WHERE {
                     .Optional()); //this Optional will be discarded, since we are under MinusWithNext from previous
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  OPTIONAL {
-    SERVICE <ex:org1> {
-      {
-        ?S rdfs:label <http://example.org/res> .
-      }
-    }
-  }
-  {
-    {
-      SERVICE <ex:org2> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-    MINUS
-    {
-      SERVICE <ex:org3> {
-        {
-          ?S rdfs:comment rdfs:Class .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                OPTIONAL {
+                  SERVICE <ex:org1> {
+                    {
+                      ?S rdfs:label <http://example.org/res> .
+                    }
+                  }
+                }
+                {
+                  {
+                    SERVICE <ex:org2> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                  MINUS
+                  {
+                    SERVICE <ex:org3> {
+                      {
+                        ?S rdfs:comment rdfs:Class .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2092,27 +2210,29 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE <ex:org1> {
-    {
-      ?S rdfs:label <http://example.org/res> .
-    }
-  }
-  SERVICE <ex:org2> {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-  SERVICE <ex:org3> {
-    {
-      ?S rdfs:comment rdfs:Class .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE <ex:org1> {
+                  {
+                    ?S rdfs:label <http://example.org/res> .
+                  }
+                }
+                SERVICE <ex:org2> {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+                SERVICE <ex:org3> {
+                  {
+                    ?S rdfs:comment rdfs:Class .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2133,32 +2253,34 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    ?S rdfs:label <http://example.org/res> .
-  }
-  {
-    {
-      SERVICE <ex:org1> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-    UNION
-    {
-      SERVICE <ex:org2> {
-        {
-          ?S rdfs:comment rdfs:Class .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  ?S rdfs:label <http://example.org/res> .
+                }
+                {
+                  {
+                    SERVICE <ex:org1> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SERVICE <ex:org2> {
+                      {
+                        ?S rdfs:comment rdfs:Class .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2179,32 +2301,34 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    ?S rdfs:label <http://example.org/res> .
-  }
-  {
-    {
-      SERVICE <ex:org1> {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-    MINUS
-    {
-      SERVICE <ex:org2> {
-        {
-          ?S rdfs:comment rdfs:Class .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  ?S rdfs:label <http://example.org/res> .
+                }
+                {
+                  {
+                    SERVICE <ex:org1> {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                  MINUS
+                  {
+                    SERVICE <ex:org2> {
+                      {
+                        ?S rdfs:comment rdfs:Class .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2221,18 +2345,20 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(new Uri("ex:org"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE <ex:org> {
-    {
-      VALUES ?V { <ex:val1> } .
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE <ex:org> {
+                  {
+                    VALUES ?V { <ex:val1> } .
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2244,12 +2370,14 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2261,14 +2389,16 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup().Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  OPTIONAL {
-    {
-    }
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                OPTIONAL {
+                  {
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2280,12 +2410,14 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup().UnionWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2297,12 +2429,14 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup().MinusWithNext());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2316,16 +2450,18 @@ WHERE {
                     .AsService(new RDFSPARQLEndpoint(RDFVocabulary.RDFS.RESOURCE.URI)));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  SERVICE <http://www.w3.org/2000/01/rdf-schema#Resource> {
-    {
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                SERVICE <http://www.w3.org/2000/01/rdf-schema#Resource> {
+                  {
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2340,15 +2476,17 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?S"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?S
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}
-";
+              SELECT ?S
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2362,13 +2500,15 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?S"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"SELECT ?S
-WHERE {
-  {
-    ?S <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
-  }
-}
-";
+              """
+              SELECT ?S
+              WHERE {
+                {
+                  ?S <http://www.w3.org/2000/01/rdf-schema#label> "label"@EN .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2385,16 +2525,18 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?S ?T
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-    OPTIONAL { <ex:subj> <ex:pred> ?T } .
-  }
-}
-";
+              SELECT ?S ?T
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                  OPTIONAL { <ex:subj> <ex:pred> ?T } .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2413,20 +2555,22 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?S ?T
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-  OPTIONAL {
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-  }
-}
-";
+              SELECT ?S ?T
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+                OPTIONAL {
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2446,21 +2590,23 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?S ?T
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-  OPTIONAL {
-    {
-      <ex:subj1> <ex:pred1> ?T .
-      OPTIONAL { <ex:subj2> <ex:pred2> ?T } .
-    }
-  }
-}
-";
+              SELECT ?S ?T
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+                OPTIONAL {
+                  {
+                    <ex:subj1> <ex:pred1> ?T .
+                    OPTIONAL { <ex:subj2> <ex:pred2> ?T } .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2479,21 +2625,23 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?S ?T
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-  }
-}
-";
+              SELECT ?S ?T
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2516,25 +2664,27 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?S ?T
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-}
-";
+              SELECT ?S ?T
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2558,28 +2708,30 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?S ?T
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-  {
-    _:12345 rdfs:label ?T .
-  }
-}
-";
+              SELECT ?S ?T
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+                {
+                  _:12345 rdfs:label ?T .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2606,29 +2758,31 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?TVV"), new RDFVariableExpression(new RDFVariable("?TV")));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?S ?T (?TV AS ?TVV)
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-    UNION
-    {
-      BIND(?T AS ?TV) .
-    }
-  }
-}
-";
+              SELECT ?S ?T (?TV AS ?TVV)
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                  UNION
+                  {
+                    BIND(?T AS ?TV) .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2653,30 +2807,32 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?S ?T
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-  OPTIONAL {
-    {
-      _:12345 rdfs:label ?T .
-    }
-  }
-}
-";
+              SELECT ?S ?T
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+                OPTIONAL {
+                  {
+                    _:12345 rdfs:label ?T .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2705,34 +2861,36 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-SELECT ?S ?T
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-      OPTIONAL { ?S rdfs:comment ""comment"" } .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-      OPTIONAL { <ex:subj> ?P _:12345 } .
-      OPTIONAL { ?S ?P ""25""^^xsd:integer } .
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-  OPTIONAL {
-    {
-      _:12345 rdfs:label ?T .
-    }
-  }
-}
-";
+              SELECT ?S ?T
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                    OPTIONAL { ?S rdfs:comment "comment" } .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                    OPTIONAL { <ex:subj> ?P _:12345 } .
+                    OPTIONAL { ?S ?P "25"^^xsd:integer } .
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+                OPTIONAL {
+                  {
+                    _:12345 rdfs:label ?T .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2758,31 +2916,33 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?S ?T
-WHERE {
-  {
-    {
-      { ?S rdfs:label ""label""@EN }
-      UNION
-      { ?S rdfs:comment ""comment"" }
-    }
-    UNION
-    {
-      { <ex:subj> <ex:pred> ?T }
-      UNION
-      { <ex:subj> <ex:pred2> ?T }
-      UNION
-      { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-}
-";
+              SELECT ?S ?T
+              WHERE {
+                {
+                  {
+                    { ?S rdfs:label "label"@EN }
+                    UNION
+                    { ?S rdfs:comment "comment" }
+                  }
+                  UNION
+                  {
+                    { <ex:subj> <ex:pred> ?T }
+                    UNION
+                    { <ex:subj> <ex:pred2> ?T }
+                    UNION
+                    { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2801,21 +2961,23 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?S ?T
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    MINUS
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-  }
-}
-";
+              SELECT ?S ?T
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  MINUS
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2838,25 +3000,27 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?S ?T
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    MINUS
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-    MINUS
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-}
-";
+              SELECT ?S ?T
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  MINUS
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                  MINUS
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2880,28 +3044,30 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?S ?T
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    MINUS
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-    MINUS
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-  {
-    _:12345 rdfs:label ?T .
-  }
-}
-";
+              SELECT ?S ?T
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  MINUS
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                  MINUS
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+                {
+                  _:12345 rdfs:label ?T .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2928,29 +3094,31 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?TVV"), new RDFVariableExpression(new RDFVariable("?TV")));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?S ?T (?TV AS ?TVV)
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    MINUS
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-    MINUS
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-    MINUS
-    {
-      BIND(?T AS ?TV) .
-    }
-  }
-}
-";
+              SELECT ?S ?T (?TV AS ?TVV)
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  MINUS
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                  MINUS
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                  MINUS
+                  {
+                    BIND(?T AS ?TV) .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -2975,30 +3143,32 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?S ?T
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    MINUS
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-    MINUS
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-  OPTIONAL {
-    {
-      _:12345 rdfs:label ?T .
-    }
-  }
-}
-";
+              SELECT ?S ?T
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  MINUS
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                  MINUS
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+                OPTIONAL {
+                  {
+                    _:12345 rdfs:label ?T .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3027,34 +3197,36 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-SELECT ?S ?T
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-      OPTIONAL { ?S rdfs:comment ""comment"" } .
-    }
-    MINUS
-    {
-      <ex:subj> <ex:pred> ?T .
-      OPTIONAL { <ex:subj> ?P _:12345 } .
-      OPTIONAL { ?S ?P ""25""^^xsd:integer } .
-    }
-    MINUS
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-  OPTIONAL {
-    {
-      _:12345 rdfs:label ?T .
-    }
-  }
-}
-";
+              SELECT ?S ?T
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                    OPTIONAL { ?S rdfs:comment "comment" } .
+                  }
+                  MINUS
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                    OPTIONAL { <ex:subj> ?P _:12345 } .
+                    OPTIONAL { ?S ?P "25"^^xsd:integer } .
+                  }
+                  MINUS
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+                OPTIONAL {
+                  {
+                    _:12345 rdfs:label ?T .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3080,31 +3252,33 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?S ?T
-WHERE {
-  {
-    {
-      { ?S rdfs:label ""label""@EN }
-      MINUS
-      { ?S rdfs:comment ""comment"" }
-    }
-    MINUS
-    {
-      { <ex:subj> <ex:pred> ?T }
-      MINUS
-      { <ex:subj> <ex:pred2> ?T }
-      MINUS
-      { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
-    }
-    MINUS
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-}
-";
+              SELECT ?S ?T
+              WHERE {
+                {
+                  {
+                    { ?S rdfs:label "label"@EN }
+                    MINUS
+                    { ?S rdfs:comment "comment" }
+                  }
+                  MINUS
+                  {
+                    { <ex:subj> <ex:pred> ?T }
+                    MINUS
+                    { <ex:subj> <ex:pred2> ?T }
+                    MINUS
+                    { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
+                  }
+                  MINUS
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3119,20 +3293,22 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    SELECT *
-    WHERE {
-      {
-        OPTIONAL { ?S rdfs:label ""label""@EN } .
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  SELECT *
+                  WHERE {
+                    {
+                      OPTIONAL { ?S rdfs:label "label"@EN } .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3148,20 +3324,22 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?S")));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    SELECT ?S
-    WHERE {
-      {
-        OPTIONAL { ?S rdfs:label ""label""@EN } .
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  SELECT ?S
+                  WHERE {
+                    {
+                      OPTIONAL { ?S rdfs:label "label"@EN } .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3178,22 +3356,24 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?S")));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    SELECT ?S
-    WHERE {
-      SERVICE <ex:org> {
-        {
-          OPTIONAL { ?S rdfs:label ""label""@EN } .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  SELECT ?S
+                  WHERE {
+                    SERVICE <ex:org> {
+                      {
+                        OPTIONAL { ?S rdfs:label "label"@EN } .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3214,34 +3394,36 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?S")));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    SELECT ?S
-    WHERE {
-      {
-        {
-          SERVICE <ex:org1> {
-            {
-              OPTIONAL { ?S rdfs:label ""label""@EN } .
-            }
-          }
-        }
-        UNION
-        {
-          SERVICE <ex:org2> {
-            {
-              OPTIONAL { ?S rdfs:label rdfs:comment } .
-            }
-          }
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  SELECT ?S
+                  WHERE {
+                    {
+                      {
+                        SERVICE <ex:org1> {
+                          {
+                            OPTIONAL { ?S rdfs:label "label"@EN } .
+                          }
+                        }
+                      }
+                      UNION
+                      {
+                        SERVICE <ex:org2> {
+                          {
+                            OPTIONAL { ?S rdfs:label rdfs:comment } .
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3257,20 +3439,22 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?S"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?S
-WHERE {
-  {
-    SELECT *
-    WHERE {
-      {
-        OPTIONAL { ?S rdfs:label ""label""@EN } .
-      }
-    }
-  }
-}
-";
+              SELECT ?S
+              WHERE {
+                {
+                  SELECT *
+                  WHERE {
+                    {
+                      OPTIONAL { ?S rdfs:label "label"@EN } .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3288,21 +3472,23 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?S"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?S
-WHERE {
-  {
-    SELECT ?T
-    WHERE {
-      {
-        OPTIONAL { ?S rdfs:label ""label""@EN } .
-      }
-    }
-  }
-}
-";
+              SELECT ?S
+              WHERE {
+                {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      OPTIONAL { ?S rdfs:label "label"@EN } .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3321,21 +3507,23 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?S"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?S
-WHERE {
-  OPTIONAL {
-    SELECT ?T
-    WHERE {
-      {
-        OPTIONAL { ?S rdfs:label ""label""@EN } .
-      }
-    }
-  }
-}
-";
+              SELECT ?S
+              WHERE {
+                OPTIONAL {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      OPTIONAL { ?S rdfs:label "label"@EN } .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3359,30 +3547,32 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?Z ?T
-WHERE {
-  {
-    SELECT ?Z
-    WHERE {
-      {
-        ?S rdfs:label _:12345 .
-      }
-    }
-  }
-  {
-    SELECT ?T
-    WHERE {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}
-";
+              SELECT ?Z ?T
+              WHERE {
+                {
+                  SELECT ?Z
+                  WHERE {
+                    {
+                      ?S rdfs:label _:12345 .
+                    }
+                  }
+                }
+                {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3407,30 +3597,32 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?Z ?T
-WHERE {
-  {
-    SELECT ?Z
-    WHERE {
-      {
-        ?S rdfs:label _:12345 .
-      }
-    }
-  }
-  OPTIONAL {
-    SELECT ?T
-    WHERE {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}
-";
+              SELECT ?Z ?T
+              WHERE {
+                {
+                  SELECT ?Z
+                  WHERE {
+                    {
+                      ?S rdfs:label _:12345 .
+                    }
+                  }
+                }
+                OPTIONAL {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3455,33 +3647,35 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?Z ?T
-WHERE {
-  {
-    {
-      SELECT ?Z
-      WHERE {
-        {
-          ?S rdfs:label _:12345 .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT ?T
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT ?Z ?T
+              WHERE {
+                {
+                  {
+                    SELECT ?Z
+                    WHERE {
+                      {
+                        ?S rdfs:label _:12345 .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SELECT ?T
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3507,33 +3701,35 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?Z ?T
-WHERE {
-  {
-    {
-      SELECT ?Z
-      WHERE {
-        {
-          ?S rdfs:label _:12345 .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT ?T
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT ?Z ?T
+              WHERE {
+                {
+                  {
+                    SELECT ?Z
+                    WHERE {
+                      {
+                        ?S rdfs:label _:12345 .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SELECT ?T
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3564,41 +3760,43 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?Z ?T
-WHERE {
-  {
-    {
-      SELECT ?Z
-      WHERE {
-        {
-          ?S rdfs:label _:12345 .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT ?T
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-  }
-  OPTIONAL {
-    SELECT ?T
-    WHERE {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}
-";
+              SELECT ?Z ?T
+              WHERE {
+                {
+                  {
+                    SELECT ?Z
+                    WHERE {
+                      {
+                        ?S rdfs:label _:12345 .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SELECT ?T
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                }
+                OPTIONAL {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3648,70 +3846,72 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT *
-WHERE {
-  {
-    {
-      SELECT ?Z
-      WHERE {
-        {
-          SELECT DISTINCT *
-          WHERE {
-            {
-              ?S rdfs:label _:12345 .
-              FILTER ( BOUND(?S) ) 
-            }
-          }
-          ORDER BY ASC(?S)
-          LIMIT 5
-          OFFSET 1
-        }
-        {
-          ?S rdfs:label _:12345 .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT ?S (AVG(?S) AS ?AVG_S)
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-      GROUP BY ?S
-      HAVING ((AVG(?S) >= ""11.44""^^xsd:float))
-    }
-    UNION
-    {
-      SELECT *
-      WHERE {
-        {
-          SELECT ?START
-          WHERE {
-            {
-              VALUES ?S { <ex:org> } .
-              ?START (rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class>) ?END .
-            }
-          }
-        }
-      }
-    }
-  }
-  {
-    SELECT ?T
-    WHERE {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    SELECT ?Z
+                    WHERE {
+                      {
+                        SELECT DISTINCT *
+                        WHERE {
+                          {
+                            ?S rdfs:label _:12345 .
+                            FILTER ( BOUND(?S) ) 
+                          }
+                        }
+                        ORDER BY ASC(?S)
+                        LIMIT 5
+                        OFFSET 1
+                      }
+                      {
+                        ?S rdfs:label _:12345 .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SELECT ?S (AVG(?S) AS ?AVG_S)
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                    GROUP BY ?S
+                    HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+                  }
+                  UNION
+                  {
+                    SELECT *
+                    WHERE {
+                      {
+                        SELECT ?START
+                        WHERE {
+                          {
+                            VALUES ?S { <ex:org> } .
+                            ?START (rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class>) ?END .
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3746,48 +3946,50 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT *
-WHERE {
-  {
-    {
-      SELECT DISTINCT *
-      WHERE {
-        {
-          ?S rdfs:label _:12345 .
-          FILTER ( BOUND(?S) ) 
-        }
-      }
-      ORDER BY ASC(?S)
-      LIMIT 5
-      OFFSET 1
-    }
-    MINUS
-    {
-      SELECT ?S (AVG(?S) AS ?AVG_S)
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-      GROUP BY ?S
-      HAVING ((AVG(?S) >= ""11.44""^^xsd:float))
-    }
-    MINUS
-    {
-      SELECT ?T
-      WHERE {
-        {
-          ?S rdfs:label ""eitchetta""@IT .
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    SELECT DISTINCT *
+                    WHERE {
+                      {
+                        ?S rdfs:label _:12345 .
+                        FILTER ( BOUND(?S) ) 
+                      }
+                    }
+                    ORDER BY ASC(?S)
+                    LIMIT 5
+                    OFFSET 1
+                  }
+                  MINUS
+                  {
+                    SELECT ?S (AVG(?S) AS ?AVG_S)
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                    GROUP BY ?S
+                    HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+                  }
+                  MINUS
+                  {
+                    SELECT ?T
+                    WHERE {
+                      {
+                        ?S rdfs:label "eitchetta"@IT .
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3822,50 +4024,52 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT *
-WHERE {
-  {
-    {
-      SELECT DISTINCT *
-      WHERE {
-        {
-          ?S rdfs:label _:12345 .
-          FILTER ( BOUND(?S) ) 
-        }
-      }
-      ORDER BY ASC(?S)
-      LIMIT 5
-      OFFSET 1
-    }
-    UNION
-    {
-      {
-        SELECT ?S (AVG(?S) AS ?AVG_S)
-        WHERE {
-          {
-            ?S rdfs:label ""label""@EN .
-          }
-        }
-        GROUP BY ?S
-        HAVING ((AVG(?S) >= ""11.44""^^xsd:float))
-      }
-      MINUS
-      {
-        SELECT ?T
-        WHERE {
-          {
-            ?S rdfs:label ""eitchetta""@IT .
-          }
-        }
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    SELECT DISTINCT *
+                    WHERE {
+                      {
+                        ?S rdfs:label _:12345 .
+                        FILTER ( BOUND(?S) ) 
+                      }
+                    }
+                    ORDER BY ASC(?S)
+                    LIMIT 5
+                    OFFSET 1
+                  }
+                  UNION
+                  {
+                    {
+                      SELECT ?S (AVG(?S) AS ?AVG_S)
+                      WHERE {
+                        {
+                          ?S rdfs:label "label"@EN .
+                        }
+                      }
+                      GROUP BY ?S
+                      HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+                    }
+                    MINUS
+                    {
+                      SELECT ?T
+                      WHERE {
+                        {
+                          ?S rdfs:label "eitchetta"@IT .
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3898,44 +4102,46 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT *
-WHERE {
-  {
-    {
-      ?S rdfs:label _:12345 .
-      FILTER ( BOUND(?S) ) 
-    }
-    UNION
-    {
-      {
-        SELECT ?S (AVG(?S) AS ?AVG_S)
-        WHERE {
-          {
-            ?S rdfs:label ""label""@EN .
-          }
-        }
-        GROUP BY ?S
-        HAVING ((AVG(?S) >= ""11.44""^^<http://www.w3.org/2001/XMLSchema#float>))
-      }
-      MINUS
-      {
-        SELECT DISTINCT ?T
-        WHERE {
-          {
-            ?S rdfs:label ""eitchetta""@IT .
-          }
-        }
-        ORDER BY ASC(?S)
-        LIMIT 5
-        OFFSET 1
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label _:12345 .
+                    FILTER ( BOUND(?S) ) 
+                  }
+                  UNION
+                  {
+                    {
+                      SELECT ?S (AVG(?S) AS ?AVG_S)
+                      WHERE {
+                        {
+                          ?S rdfs:label "label"@EN .
+                        }
+                      }
+                      GROUP BY ?S
+                      HAVING ((AVG(?S) >= "11.44"^^<http://www.w3.org/2001/XMLSchema#float>))
+                    }
+                    MINUS
+                    {
+                      SELECT DISTINCT ?T
+                      WHERE {
+                        {
+                          ?S rdfs:label "eitchetta"@IT .
+                        }
+                      }
+                      ORDER BY ASC(?S)
+                      LIMIT 5
+                      OFFSET 1
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -3968,44 +4174,46 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT *
-WHERE {
-  {
-    {
-      ?S rdfs:label _:12345 .
-      FILTER ( BOUND(?S) ) 
-    }
-    MINUS
-    {
-      {
-        SELECT ?S (AVG(?S) AS ?AVG_S)
-        WHERE {
-          {
-            ?S rdfs:label ""label""@EN .
-          }
-        }
-        GROUP BY ?S
-        HAVING ((AVG(?S) >= ""11.44""^^<http://www.w3.org/2001/XMLSchema#float>))
-      }
-      UNION
-      {
-        SELECT DISTINCT ?T
-        WHERE {
-          {
-            ?S rdfs:label ""eitchetta""@IT .
-          }
-        }
-        ORDER BY ASC(?S)
-        LIMIT 5
-        OFFSET 1
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label _:12345 .
+                    FILTER ( BOUND(?S) ) 
+                  }
+                  MINUS
+                  {
+                    {
+                      SELECT ?S (AVG(?S) AS ?AVG_S)
+                      WHERE {
+                        {
+                          ?S rdfs:label "label"@EN .
+                        }
+                      }
+                      GROUP BY ?S
+                      HAVING ((AVG(?S) >= "11.44"^^<http://www.w3.org/2001/XMLSchema#float>))
+                    }
+                    UNION
+                    {
+                      SELECT DISTINCT ?T
+                      WHERE {
+                        {
+                          ?S rdfs:label "eitchetta"@IT .
+                        }
+                      }
+                      ORDER BY ASC(?S)
+                      LIMIT 5
+                      OFFSET 1
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4036,37 +4244,39 @@ WHERE {
               .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT DISTINCT ?T
-WHERE {
-  {
-    {
-      ?S rdfs:label _:12345 .
-      FILTER ( BOUND(?S) ) 
-    }
-    MINUS
-    {
-      SELECT ?S (AVG(?S) AS ?AVG_S)
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-      GROUP BY ?S
-      HAVING ((AVG(?S) >= ""11.44""^^<http://www.w3.org/2001/XMLSchema#float>))
-    }
-    MINUS
-    {
-      ?S rdfs:label ""eitchetta""@IT .
-    }
-  }
-}
-ORDER BY ASC(?S)
-LIMIT 5
-OFFSET 1
-";
+              SELECT DISTINCT ?T
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label _:12345 .
+                    FILTER ( BOUND(?S) ) 
+                  }
+                  MINUS
+                  {
+                    SELECT ?S (AVG(?S) AS ?AVG_S)
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                    GROUP BY ?S
+                    HAVING ((AVG(?S) >= "11.44"^^<http://www.w3.org/2001/XMLSchema#float>))
+                  }
+                  MINUS
+                  {
+                    ?S rdfs:label "eitchetta"@IT .
+                  }
+                }
+              }
+              ORDER BY ASC(?S)
+              LIMIT 5
+              OFFSET 1
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4096,35 +4306,37 @@ OFFSET 1
               .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT DISTINCT ?T
-WHERE {
-  {
-    {
-      ?S rdfs:label _:12345 .
-      FILTER ( BOUND(?S) ) 
-    }
-    MINUS
-    {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-      UNION
-      {
-        ?S rdfs:label ""etiquette""@FR .
-      }
-      MINUS
-      {
-        ?S rdfs:label ""eitchetta""@IT .
-      }
-    }
-  }
-}
-ORDER BY ASC(?S)
-LIMIT 5
-OFFSET 1
-";
+              SELECT DISTINCT ?T
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label _:12345 .
+                    FILTER ( BOUND(?S) ) 
+                  }
+                  MINUS
+                  {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                    UNION
+                    {
+                      ?S rdfs:label "etiquette"@FR .
+                    }
+                    MINUS
+                    {
+                      ?S rdfs:label "eitchetta"@IT .
+                    }
+                  }
+                }
+              }
+              ORDER BY ASC(?S)
+              LIMIT 5
+              OFFSET 1
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4165,60 +4377,62 @@ OFFSET 1
               .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?T
-WHERE {
-  {
-    {
-      SELECT *
-      WHERE {
-        {
-          {
-            ?S rdfs:label _:12345 .
-            FILTER ( BOUND(?S) ) 
-          }
-          MINUS
-          {
-            SELECT DISTINCT *
-            WHERE {
-              {
-                ?S rdfs:label _:12345 .
-                FILTER ( BOUND(?S) ) 
+              SELECT ?T
+              WHERE {
+                {
+                  {
+                    SELECT *
+                    WHERE {
+                      {
+                        {
+                          ?S rdfs:label _:12345 .
+                          FILTER ( BOUND(?S) ) 
+                        }
+                        MINUS
+                        {
+                          SELECT DISTINCT *
+                          WHERE {
+                            {
+                              ?S rdfs:label _:12345 .
+                              FILTER ( BOUND(?S) ) 
+                            }
+                          }
+                          ORDER BY ASC(?S)
+                        }
+                      }
+                    }
+                    LIMIT 5
+                    OFFSET 1
+                  }
+                  UNION
+                  {
+                    {
+                      SELECT ?S (AVG(?S) AS ?AVG_S)
+                      WHERE {
+                        {
+                          ?S rdfs:label "label"@EN .
+                        }
+                      }
+                      GROUP BY ?S
+                      HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+                    }
+                    MINUS
+                    {
+                      ?S1 rdfs:label "eitchetta"@IT .
+                    }
+                  }
+                }
+                {
+                  ?S2 rdfs:label "eitchetta"@IT .
+                }
               }
-            }
-            ORDER BY ASC(?S)
-          }
-        }
-      }
-      LIMIT 5
-      OFFSET 1
-    }
-    UNION
-    {
-      {
-        SELECT ?S (AVG(?S) AS ?AVG_S)
-        WHERE {
-          {
-            ?S rdfs:label ""label""@EN .
-          }
-        }
-        GROUP BY ?S
-        HAVING ((AVG(?S) >= ""11.44""^^xsd:float))
-      }
-      MINUS
-      {
-        ?S1 rdfs:label ""eitchetta""@IT .
-      }
-    }
-  }
-  {
-    ?S2 rdfs:label ""eitchetta""@IT .
-  }
-}
-";
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4258,56 +4472,58 @@ WHERE {
               .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?T
-WHERE {
-  {
-    SELECT *
-    WHERE {
-      {
-        ?S rdfs:label _:12345 .
-        FILTER ( BOUND(?S) ) 
-      }
-      {
-        SELECT DISTINCT *
-        WHERE {
-          {
-            ?S rdfs:label _:12345 .
-            FILTER ( BOUND(?S) ) 
-          }
-        }
-        ORDER BY ASC(?S)
-      }
-    }
-    LIMIT 5
-    OFFSET 1
-  }
-  {
-    {
-      SELECT ?S (AVG(?S) AS ?AVG_S)
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-      GROUP BY ?S
-      HAVING ((AVG(?S) >= ""11.44""^^xsd:float))
-    }
-    MINUS
-    {
-      ?S1 rdfs:label ""eitchetta""@IT .
-    }
-  }
-  OPTIONAL {
-    {
-      ?S2 rdfs:label ""eitchetta""@IT .
-    }
-  }
-}
-";
+              SELECT ?T
+              WHERE {
+                {
+                  SELECT *
+                  WHERE {
+                    {
+                      ?S rdfs:label _:12345 .
+                      FILTER ( BOUND(?S) ) 
+                    }
+                    {
+                      SELECT DISTINCT *
+                      WHERE {
+                        {
+                          ?S rdfs:label _:12345 .
+                          FILTER ( BOUND(?S) ) 
+                        }
+                      }
+                      ORDER BY ASC(?S)
+                    }
+                  }
+                  LIMIT 5
+                  OFFSET 1
+                }
+                {
+                  {
+                    SELECT ?S (AVG(?S) AS ?AVG_S)
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                    GROUP BY ?S
+                    HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+                  }
+                  MINUS
+                  {
+                    ?S1 rdfs:label "eitchetta"@IT .
+                  }
+                }
+                OPTIONAL {
+                  {
+                    ?S2 rdfs:label "eitchetta"@IT .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4348,57 +4564,59 @@ WHERE {
               .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?T
-WHERE {
-  {
-    SELECT *
-    WHERE {
-      {
-        ?S rdfs:label _:12345 .
-        FILTER ( BOUND(?S) ) 
-      }
-      {
-        SELECT DISTINCT *
-        WHERE {
-          {
-            ?S rdfs:label _:12345 .
-            FILTER ( BOUND(?S) ) 
-          }
-        }
-        ORDER BY ASC(?S)
-      }
-    }
-    LIMIT 5
-    OFFSET 1
-  }
-  {
-    {
-      SELECT ?S (AVG(?S) AS ?AVG_S)
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-      GROUP BY ?S
-      HAVING ((AVG(?S) >= ""11.44""^^xsd:float))
-    }
-    MINUS
-    {
-      {
-        ?S1 rdfs:label ""eitchetta""@IT .
-      }
-      UNION
-      {
-        ?S2 rdfs:label ""eitchetta""@IT .
-      }
-    }
-  }
-}
-";
+              SELECT ?T
+              WHERE {
+                {
+                  SELECT *
+                  WHERE {
+                    {
+                      ?S rdfs:label _:12345 .
+                      FILTER ( BOUND(?S) ) 
+                    }
+                    {
+                      SELECT DISTINCT *
+                      WHERE {
+                        {
+                          ?S rdfs:label _:12345 .
+                          FILTER ( BOUND(?S) ) 
+                        }
+                      }
+                      ORDER BY ASC(?S)
+                    }
+                  }
+                  LIMIT 5
+                  OFFSET 1
+                }
+                {
+                  {
+                    SELECT ?S (AVG(?S) AS ?AVG_S)
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                    GROUP BY ?S
+                    HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+                  }
+                  MINUS
+                  {
+                    {
+                      ?S1 rdfs:label "eitchetta"@IT .
+                    }
+                    UNION
+                    {
+                      ?S2 rdfs:label "eitchetta"@IT .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4423,30 +4641,32 @@ WHERE {
               .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?T
-WHERE {
-  {
-    ?S rdfs:label _:12345 .
-    FILTER ( BOUND(?S) ) 
-  }
-  OPTIONAL {
-    {
-      ?S rdfs:label _:12345 .
-      FILTER ( BOUND(?S) ) 
-    }
-  }
-  {
-    ?S1 rdfs:label ""eitchetta""@IT .
-  }
-  OPTIONAL {
-    {
-      ?S2 rdfs:label ""eitchetta""@IT .
-    }
-  }
-}
-";
+              SELECT ?T
+              WHERE {
+                {
+                  ?S rdfs:label _:12345 .
+                  FILTER ( BOUND(?S) ) 
+                }
+                OPTIONAL {
+                  {
+                    ?S rdfs:label _:12345 .
+                    FILTER ( BOUND(?S) ) 
+                  }
+                }
+                {
+                  ?S1 rdfs:label "eitchetta"@IT .
+                }
+                OPTIONAL {
+                  {
+                    ?S2 rdfs:label "eitchetta"@IT .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4471,33 +4691,35 @@ WHERE {
                 .Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    {
-      ?S rdfs:label _:12345 .
-      FILTER ( BOUND(?S) ) 
-    }
-    MINUS
-    {
-      ?S rdfs:label _:12345 .
-      FILTER ( BOUND(?S) ) 
-    }
-  }
-  OPTIONAL {
-    {
-      ?S1 rdfs:label ""eitchetta""@IT .
-    }
-  }
-  OPTIONAL {
-    {
-      ?S2 rdfs:label ""eitchetta""@IT .
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label _:12345 .
+                    FILTER ( BOUND(?S) ) 
+                  }
+                  MINUS
+                  {
+                    ?S rdfs:label _:12345 .
+                    FILTER ( BOUND(?S) ) 
+                  }
+                }
+                OPTIONAL {
+                  {
+                    ?S1 rdfs:label "eitchetta"@IT .
+                  }
+                }
+                OPTIONAL {
+                  {
+                    ?S2 rdfs:label "eitchetta"@IT .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4522,33 +4744,35 @@ WHERE {
                 .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    {
-      ?S rdfs:label _:12345 .
-      FILTER ( BOUND(?S) ) 
-    }
-    MINUS
-    {
-      {
-        ?S rdfs:label _:12345 .
-        FILTER ( BOUND(?S) ) 
-      }
-      UNION
-      {
-        ?S1 rdfs:label ""eitchetta""@IT .
-      }
-      UNION
-      {
-        ?S2 rdfs:label ""eitchetta""@IT .
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label _:12345 .
+                    FILTER ( BOUND(?S) ) 
+                  }
+                  MINUS
+                  {
+                    {
+                      ?S rdfs:label _:12345 .
+                      FILTER ( BOUND(?S) ) 
+                    }
+                    UNION
+                    {
+                      ?S1 rdfs:label "eitchetta"@IT .
+                    }
+                    UNION
+                    {
+                      ?S2 rdfs:label "eitchetta"@IT .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4573,33 +4797,35 @@ WHERE {
                 .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    {
-      ?S rdfs:label _:12345 .
-      FILTER ( BOUND(?S) ) 
-    }
-    MINUS
-    {
-      {
-        ?S rdfs:label _:12345 .
-        FILTER ( BOUND(?S) ) 
-      }
-      UNION
-      {
-        ?S1 rdfs:label ""eitchetta""@IT .
-      }
-      MINUS
-      {
-        ?S2 rdfs:label ""eitchetta""@IT .
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label _:12345 .
+                    FILTER ( BOUND(?S) ) 
+                  }
+                  MINUS
+                  {
+                    {
+                      ?S rdfs:label _:12345 .
+                      FILTER ( BOUND(?S) ) 
+                    }
+                    UNION
+                    {
+                      ?S1 rdfs:label "eitchetta"@IT .
+                    }
+                    MINUS
+                    {
+                      ?S2 rdfs:label "eitchetta"@IT .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4629,33 +4855,35 @@ WHERE {
                 .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT *
-WHERE {
-  {
-    {
-      ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>/rdfs:subClassOf ?E .
-      FILTER ( BOUND(?S) ) 
-    }
-    MINUS
-    {
-      {
-        ?S (<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>|rdfs:subClassOf) ?E .
-        VALUES ?S { ""test"" } .
-      }
-      UNION
-      {
-        ?S1 rdfs:label ""eitchetta""@IT .
-      }
-      MINUS
-      {
-        ?S2 rdfs:label ""eitchetta""@IT .
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>/rdfs:subClassOf ?E .
+                    FILTER ( BOUND(?S) ) 
+                  }
+                  MINUS
+                  {
+                    {
+                      ?S (<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>|rdfs:subClassOf) ?E .
+                      VALUES ?S { "test" } .
+                    }
+                    UNION
+                    {
+                      ?S1 rdfs:label "eitchetta"@IT .
+                    }
+                    MINUS
+                    {
+                      ?S2 rdfs:label "eitchetta"@IT .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4674,24 +4902,26 @@ WHERE {
               );
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-    { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    {
-      { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    }
-    ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                  { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  {
+                    { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  }
+                  ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4710,24 +4940,26 @@ WHERE {
               );
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-    { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    {
-      { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    }
-    OPTIONAL { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } .
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                  { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  {
+                    { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  }
+                  OPTIONAL { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4746,23 +4978,25 @@ WHERE {
               );
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-    { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    {
-      { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { OPTIONAL { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } }
-    }
-    ?S5 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
-    OPTIONAL { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } .
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                  { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  {
+                    { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { OPTIONAL { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
+                  }
+                  ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
+                  OPTIONAL { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4781,24 +5015,26 @@ WHERE {
               );
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-    { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    {
-      { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { OPTIONAL { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } }
-    }
-    { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    { OPTIONAL { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } }
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                  { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  {
+                    { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { OPTIONAL { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
+                  }
+                  { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  { OPTIONAL { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4817,25 +5053,27 @@ WHERE {
               );
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-    { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    UNION
-    { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    UNION
-    { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    {
-      { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    }
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                  { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  UNION
+                  { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  UNION
+                  { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  {
+                    { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4855,26 +5093,28 @@ WHERE {
             );
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-    { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    UNION
-    { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    UNION
-    { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    {
-      { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      MINUS
-      { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    }
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                  { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  UNION
+                  { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  UNION
+                  { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  {
+                    { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    MINUS
+                    { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4894,31 +5134,33 @@ WHERE {
             );
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-    { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    {
-      { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      MINUS
-      {
-        { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        UNION
-        { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        MINUS
-        {
-          { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-          UNION
-          { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        }
-      }
-    }
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                  { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  {
+                    { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    MINUS
+                    {
+                      { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      UNION
+                      { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      MINUS
+                      {
+                        { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                        UNION
+                        { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4938,27 +5180,29 @@ WHERE {
             );
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-    { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    UNION
-    { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    {
-      { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    }
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                  { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  UNION
+                  { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  {
+                    { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -4986,32 +5230,34 @@ WHERE {
                 .AddPattern(new RDFPattern(new RDFVariable("?S11"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-    { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    {
-      { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S5A <ex:step1>/<ex:step2> ?S6A }
-    }
-    { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    { ?S5B <ex:step1>/<ex:step2> ?S6B }
-    { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    {
-      { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S5C <ex:step1>/<ex:step2> ?S6C }
-    }
-    ?S11 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                  { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  {
+                    { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S5A <ex:step1>/<ex:step2> ?S6A }
+                  }
+                  { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  { ?S5B <ex:step1>/<ex:step2> ?S6B }
+                  { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  {
+                    { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S5C <ex:step1>/<ex:step2> ?S6C }
+                  }
+                  ?S11 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -5033,32 +5279,34 @@ WHERE {
                 .AddPattern(new RDFPattern(new RDFVariable("?S11"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-    { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    {
-      { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { VALUES ?V { UNDEF } }
-    }
-    { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    { VALUES ?V { UNDEF } }
-    { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    {
-      { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { VALUES ?V { UNDEF } }
-    }
-    ?S11 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                  { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  {
+                    { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { VALUES ?V { UNDEF } }
+                  }
+                  { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  { VALUES ?V { UNDEF } }
+                  { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  {
+                    { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { VALUES ?V { UNDEF } }
+                  }
+                  ?S11 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -5080,27 +5328,29 @@ WHERE {
                 .AddPattern(new RDFPattern(new RDFVariable("?S11"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional()));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-    { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    BIND(""val"" AS ?V) .
-    ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
-    BIND(""val"" AS ?V2) .
-    { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    MINUS
-    {
-      { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    }
-    BIND(""val"" AS ?V3) .
-    OPTIONAL { ?S11 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } .
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                  { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  BIND("val" AS ?V) .
+                  ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
+                  BIND("val" AS ?V2) .
+                  { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  MINUS
+                  {
+                    { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  }
+                  BIND("val" AS ?V3) .
+                  OPTIONAL { ?S11 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -5139,61 +5389,63 @@ WHERE {
                 .Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-    {
-      { ?S1A <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S2A <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      MINUS
-      { ?S3A <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      MINUS
-      {
-        { ?S4A <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        UNION
-        { ?S5A <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      }
-    }
-    UNION
-    {
-      { ?S1B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      MINUS
-      {
-        { ?S2B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        UNION
-        { ?S3B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        MINUS
-        { ?S4B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        MINUS
-        { OPTIONAL { ?S5B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } }
-      }
-    }
-    UNION
-    {
-      {
-        { ?S1C <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        MINUS
-        { ?S2C <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        { ?S3C <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        UNION
-        { ?S4C <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        OPTIONAL { ?S5C <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } .
-      }
-      MINUS
-      {
-        ?S1D <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
-        OPTIONAL { ?S2D <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } .
-        { ?S3D <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        UNION
-        { ?S4D <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        UNION
-        { ?S5D <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      }
-    }
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                  {
+                    { ?S1A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S2A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    MINUS
+                    { ?S3A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    MINUS
+                    {
+                      { ?S4A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      UNION
+                      { ?S5A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    }
+                  }
+                  UNION
+                  {
+                    { ?S1B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    MINUS
+                    {
+                      { ?S2B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      UNION
+                      { ?S3B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      MINUS
+                      { ?S4B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      MINUS
+                      { OPTIONAL { ?S5B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
+                    }
+                  }
+                  UNION
+                  {
+                    {
+                      { ?S1C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      MINUS
+                      { ?S2C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      { ?S3C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      UNION
+                      { ?S4C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      OPTIONAL { ?S5C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
+                    }
+                    MINUS
+                    {
+                      ?S1D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
+                      OPTIONAL { ?S2D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
+                      { ?S3D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      UNION
+                      { ?S4D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      UNION
+                      { ?S5D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -5232,61 +5484,63 @@ WHERE {
               );
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-    {
-      { ?S1A <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S2A <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      MINUS
-      { ?S3A <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      MINUS
-      {
-        { ?S4A <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        UNION
-        { ?S5A <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      }
-    }
-    MINUS
-    {
-      { ?S1B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      MINUS
-      {
-        { ?S2B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        UNION
-        { ?S3B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        MINUS
-        { ?S4B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        MINUS
-        { OPTIONAL { ?S5B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } }
-      }
-    }
-    MINUS
-    {
-      {
-        { ?S1C <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        MINUS
-        { ?S2C <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        { ?S3C <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        UNION
-        { ?S4C <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        OPTIONAL { ?S5C <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } .
-      }
-      UNION
-      {
-        ?S1D <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
-        OPTIONAL { ?S2D <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } .
-        { ?S3D <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        UNION
-        { ?S4D <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        UNION
-        { ?S5D <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      }
-    }
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                  {
+                    { ?S1A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S2A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    MINUS
+                    { ?S3A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    MINUS
+                    {
+                      { ?S4A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      UNION
+                      { ?S5A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    }
+                  }
+                  MINUS
+                  {
+                    { ?S1B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    MINUS
+                    {
+                      { ?S2B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      UNION
+                      { ?S3B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      MINUS
+                      { ?S4B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      MINUS
+                      { OPTIONAL { ?S5B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
+                    }
+                  }
+                  MINUS
+                  {
+                    {
+                      { ?S1C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      MINUS
+                      { ?S2C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      { ?S3C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      UNION
+                      { ?S4C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      OPTIONAL { ?S5C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
+                    }
+                    UNION
+                    {
+                      ?S1D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
+                      OPTIONAL { ?S2D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
+                      { ?S3D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      UNION
+                      { ?S4D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      UNION
+                      { ?S5D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -5325,60 +5579,62 @@ WHERE {
                 .Optional());
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-    {
-      { ?S1A <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S2A <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      MINUS
-      { ?S3A <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      MINUS
-      {
-        { ?S4A <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        UNION
-        { ?S5A <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      }
-    }
-    MINUS
-    {
-      { ?S1B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      MINUS
-      {
-        { ?S2B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        UNION
-        { ?S3B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        MINUS
-        { ?S4B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-        MINUS
-        { OPTIONAL { ?S5B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } }
-      }
-    }
-  }
-  {
-    {
-      { ?S1C <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      MINUS
-      { ?S2C <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      { ?S3C <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S4C <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      OPTIONAL { ?S5C <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } .
-    }
-    UNION
-    {
-      ?S1D <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
-      OPTIONAL { ?S2D <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } .
-      { ?S3D <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S4D <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-      UNION
-      { ?S5D <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-    }
-  }
-}
-";
+              """
+              SELECT *
+              WHERE {
+                {
+                  {
+                    { ?S1A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S2A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    MINUS
+                    { ?S3A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    MINUS
+                    {
+                      { ?S4A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      UNION
+                      { ?S5A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    }
+                  }
+                  MINUS
+                  {
+                    { ?S1B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    MINUS
+                    {
+                      { ?S2B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      UNION
+                      { ?S3B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      MINUS
+                      { ?S4B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      MINUS
+                      { OPTIONAL { ?S5B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
+                    }
+                  }
+                }
+                {
+                  {
+                    { ?S1C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    MINUS
+                    { ?S2C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    { ?S3C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S4C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    OPTIONAL { ?S5C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
+                  }
+                  UNION
+                  {
+                    ?S1D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
+                    OPTIONAL { ?S2D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
+                    { ?S3D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S4D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S5D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -5419,81 +5675,83 @@ WHERE {
                 );
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-    {
-      SELECT *
-      WHERE {
-        {
-          { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-          MINUS
-          { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-          MINUS
-          {
-            { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-            UNION
-            { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-            UNION
-            { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-          }
-          ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
-        }
-      }
-    }
-    MINUS
-    {
-      SELECT *
-      WHERE {
-        {
-          SELECT *
-          WHERE {
-            {
+              """
               SELECT *
               WHERE {
                 {
                   {
-                    { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                    MINUS
-                    {
-                      { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                      UNION
-                      { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                      MINUS
-                      { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                      MINUS
+                    SELECT *
+                    WHERE {
                       {
-                        { ?S11 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                        UNION
-                        { ?S12 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+                        { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                        MINUS
+                        { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                        MINUS
+                        {
+                          { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                          UNION
+                          { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                          UNION
+                          { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                        }
+                        ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
                       }
                     }
                   }
-                  UNION
+                  MINUS
                   {
-                    { ?S7B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                    UNION
-                    { ?S8B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                    UNION
-                    { ?S9B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                    UNION
-                    { ?S10B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                    MINUS
-                    { OPTIONAL { ?S11B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } }
+                    SELECT *
+                    WHERE {
+                      {
+                        SELECT *
+                        WHERE {
+                          {
+                            SELECT *
+                            WHERE {
+                              {
+                                {
+                                  { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                  MINUS
+                                  {
+                                    { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                    UNION
+                                    { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                    MINUS
+                                    { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                    MINUS
+                                    {
+                                      { ?S11 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                      UNION
+                                      { ?S12 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                    }
+                                  }
+                                }
+                                UNION
+                                {
+                                  { ?S7B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                  UNION
+                                  { ?S8B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                  UNION
+                                  { ?S9B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                  UNION
+                                  { ?S10B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                  MINUS
+                                  { OPTIONAL { ?S11B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
+                                }
+                              }
+                              {
+                                ?S7B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 }
-                {
-                  ?S7B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
-                }
               }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-";
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -5534,81 +5792,83 @@ WHERE {
                 );
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT *
-WHERE {
-  {
-    {
-      SELECT *
-      WHERE {
-        {
-          { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-          MINUS
-          { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-          MINUS
-          {
-            { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-            UNION
-            { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-            UNION
-            { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-          }
-          ?S6 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT *
-      WHERE {
-        {
-          SELECT *
-          WHERE {
-            {
+              """
               SELECT *
               WHERE {
                 {
                   {
-                    { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                    MINUS
-                    {
-                      { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                      UNION
-                      { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                      MINUS
-                      { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                      MINUS
+                    SELECT *
+                    WHERE {
                       {
-                        { ?S11 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                        UNION
-                        { ?S12 <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
+                        { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                        MINUS
+                        { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                        MINUS
+                        {
+                          { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                          UNION
+                          { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                          UNION
+                          { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                        }
+                        ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
                       }
                     }
                   }
-                  MINUS
+                  UNION
                   {
-                    { ?S7B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                    UNION
-                    { ?S8B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                    UNION
-                    { ?S9B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                    UNION
-                    { ?S10B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT }
-                    MINUS
-                    { OPTIONAL { ?S11B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT } }
+                    SELECT *
+                    WHERE {
+                      {
+                        SELECT *
+                        WHERE {
+                          {
+                            SELECT *
+                            WHERE {
+                              {
+                                {
+                                  { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                  MINUS
+                                  {
+                                    { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                    UNION
+                                    { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                    MINUS
+                                    { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                    MINUS
+                                    {
+                                      { ?S11 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                      UNION
+                                      { ?S12 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                    }
+                                  }
+                                }
+                                MINUS
+                                {
+                                  { ?S7B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                  UNION
+                                  { ?S8B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                  UNION
+                                  { ?S9B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                  UNION
+                                  { ?S10B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                                  MINUS
+                                  { OPTIONAL { ?S11B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
+                                }
+                              }
+                              {
+                                ?S7B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 }
-                {
-                  ?S7B <http://www.w3.org/2000/01/rdf-schema#label> ""eitchetta""@IT .
-                }
               }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-";
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -5662,73 +5922,75 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT *
-WHERE {
-  {
-    {
-      SELECT ?Z
-      WHERE {
-        {
-          SELECT DISTINCT *
-          WHERE {
-            {
-              ?S rdfs:label _:12345 .
-              BIND((ABS(?T)) AS ?ABST) .
-              FILTER ( BOUND(?S) ) 
-            }
-          }
-          ORDER BY ASC(?S)
-          LIMIT 5
-          OFFSET 1
-        }
-        {
-          ?S rdfs:label _:12345 .
-          BIND((?T && ?Q) AS ?ANDTQ) .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT ?S (AVG(?S) AS ?AVG_S)
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-      GROUP BY ?S
-      HAVING ((AVG(?S) >= ""11.44""^^xsd:float))
-    }
-    UNION
-    {
-      SELECT *
-      WHERE {
-        {
-          SELECT ?START ((STRLEN(?START)) AS ?STARTLEN)
-          WHERE {
-            {
-              VALUES ?S { <ex:org> } .
-              ?START (rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class>) ?END .
-              BIND((ABS(?T)) AS ?ABST) .
-            }
-          }
-        }
-      }
-    }
-  }
-  {
-    SELECT ?T
-    WHERE {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}
-";
+              SELECT *
+              WHERE {
+                {
+                  {
+                    SELECT ?Z
+                    WHERE {
+                      {
+                        SELECT DISTINCT *
+                        WHERE {
+                          {
+                            ?S rdfs:label _:12345 .
+                            BIND((ABS(?T)) AS ?ABST) .
+                            FILTER ( BOUND(?S) ) 
+                          }
+                        }
+                        ORDER BY ASC(?S)
+                        LIMIT 5
+                        OFFSET 1
+                      }
+                      {
+                        ?S rdfs:label _:12345 .
+                        BIND((?T && ?Q) AS ?ANDTQ) .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SELECT ?S (AVG(?S) AS ?AVG_S)
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                    GROUP BY ?S
+                    HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+                  }
+                  UNION
+                  {
+                    SELECT *
+                    WHERE {
+                      {
+                        SELECT ?START ((STRLEN(?START)) AS ?STARTLEN)
+                        WHERE {
+                          {
+                            VALUES ?S { <ex:org> } .
+                            ?START (rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class>) ?END .
+                            BIND((ABS(?T)) AS ?ABST) .
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -5748,25 +6010,27 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT ?T
-WHERE {
-  {
-    {
-      SELECT *
-      WHERE {
-        {
-          ?S <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
-        }
-      }
-    }
-    UNION
-    {
-      BIND(<ex:t> AS ?T) .
-      ?T <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
-    }
-  }
-}
-";
+              """
+              SELECT ?T
+              WHERE {
+                {
+                  {
+                    SELECT *
+                    WHERE {
+                      {
+                        ?S <http://www.w3.org/2000/01/rdf-schema#label> "label"@EN .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    BIND(<ex:t> AS ?T) .
+                    ?T <http://www.w3.org/2000/01/rdf-schema#label> "label"@EN .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -5786,25 +6050,27 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT ?T
-WHERE {
-  {
-    {
-      SELECT *
-      WHERE {
-        {
-          ?S <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
-        }
-      }
-    }
-    UNION
-    {
-      BIND(<ex:t> AS ?T) .
-      ?T <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
-    }
-  }
-}
-";
+              """
+              SELECT ?T
+              WHERE {
+                {
+                  {
+                    SELECT *
+                    WHERE {
+                      {
+                        ?S <http://www.w3.org/2000/01/rdf-schema#label> "label"@EN .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    BIND(<ex:t> AS ?T) .
+                    ?T <http://www.w3.org/2000/01/rdf-schema#label> "label"@EN .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -5825,26 +6091,28 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T3"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT ?T3
-WHERE {
-  {
-    {
-      SELECT *
-      WHERE {
-        {
-          ?S <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
-        }
-      }
-    }
-    UNION
-    {
-      ?T1 <http://www.w3.org/2000/01/rdf-schema#label> ""label1""@EN .
-      BIND(<ex:t> AS ?T3) .
-      ?T2 <http://www.w3.org/2000/01/rdf-schema#label> ""label2""@EN .
-    }
-  }
-}
-";
+              """
+              SELECT ?T3
+              WHERE {
+                {
+                  {
+                    SELECT *
+                    WHERE {
+                      {
+                        ?S <http://www.w3.org/2000/01/rdf-schema#label> "label"@EN .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    ?T1 <http://www.w3.org/2000/01/rdf-schema#label> "label1"@EN .
+                    BIND(<ex:t> AS ?T3) .
+                    ?T2 <http://www.w3.org/2000/01/rdf-schema#label> "label2"@EN .
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -5874,39 +6142,41 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T6"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT ?T3 ?T6
-WHERE {
-  {
-    {
-      SELECT *
-      WHERE {
-        {
-          ?S <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
-        }
-      }
-    }
-    UNION
-    {
-      { ?T1 <http://www.w3.org/2000/01/rdf-schema#label> ""label1""@EN }
-      UNION
-      { ?T2 <http://www.w3.org/2000/01/rdf-schema#label> ""label2""@EN }
-      BIND(<ex:t3> AS ?T3) .
-    }
-    UNION
-    {
-      { ?T4 <http://www.w3.org/2000/01/rdf-schema#label> ""label4""@EN }
-      UNION
-      { ?T5 <http://www.w3.org/2000/01/rdf-schema#label> ""label5""@EN }
-      BIND(<ex:t6> AS ?T6) .
-      { ?T7 <http://www.w3.org/2000/01/rdf-schema#label> ""label7""@EN }
-      UNION
-      { ?T8 <http://www.w3.org/2000/01/rdf-schema#label> ""label8""@EN }
-      UNION
-      { OPTIONAL { ?T9 <http://www.w3.org/2000/01/rdf-schema#label> ""label9""@EN } }
-    }
-  }
-}
-";
+              """
+              SELECT ?T3 ?T6
+              WHERE {
+                {
+                  {
+                    SELECT *
+                    WHERE {
+                      {
+                        ?S <http://www.w3.org/2000/01/rdf-schema#label> "label"@EN .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    { ?T1 <http://www.w3.org/2000/01/rdf-schema#label> "label1"@EN }
+                    UNION
+                    { ?T2 <http://www.w3.org/2000/01/rdf-schema#label> "label2"@EN }
+                    BIND(<ex:t3> AS ?T3) .
+                  }
+                  UNION
+                  {
+                    { ?T4 <http://www.w3.org/2000/01/rdf-schema#label> "label4"@EN }
+                    UNION
+                    { ?T5 <http://www.w3.org/2000/01/rdf-schema#label> "label5"@EN }
+                    BIND(<ex:t6> AS ?T6) .
+                    { ?T7 <http://www.w3.org/2000/01/rdf-schema#label> "label7"@EN }
+                    UNION
+                    { ?T8 <http://www.w3.org/2000/01/rdf-schema#label> "label8"@EN }
+                    UNION
+                    { OPTIONAL { ?T9 <http://www.w3.org/2000/01/rdf-schema#label> "label9"@EN } }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -5936,37 +6206,39 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T6"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT ?T3 ?T6
-WHERE {
-  {
-    {
-      SELECT *
-      WHERE {
-        {
-          ?S <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
-        }
-      }
-    }
-    UNION
-    {
-      { ?T1 <http://www.w3.org/2000/01/rdf-schema#label> ""label1""@EN }
-      UNION
-      { OPTIONAL { ?T2 <http://www.w3.org/2000/01/rdf-schema#label> ""label2""@EN } }
-      BIND(<ex:t3> AS ?T3) .
-    }
-  }
-  {
-    { ?T4 <http://www.w3.org/2000/01/rdf-schema#label> ""label4""@EN }
-    UNION
-    { OPTIONAL { ?T5 <http://www.w3.org/2000/01/rdf-schema#label> ""label5""@EN } }
-    BIND(<ex:t6> AS ?T6) .
-    OPTIONAL { ?T7 <http://www.w3.org/2000/01/rdf-schema#label> ""label7""@EN } .
-    { ?T8 <http://www.w3.org/2000/01/rdf-schema#label> ""label8""@EN }
-    UNION
-    { OPTIONAL { ?T9 <http://www.w3.org/2000/01/rdf-schema#label> ""label9""@EN } }
-  }
-}
-";
+              """
+              SELECT ?T3 ?T6
+              WHERE {
+                {
+                  {
+                    SELECT *
+                    WHERE {
+                      {
+                        ?S <http://www.w3.org/2000/01/rdf-schema#label> "label"@EN .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    { ?T1 <http://www.w3.org/2000/01/rdf-schema#label> "label1"@EN }
+                    UNION
+                    { OPTIONAL { ?T2 <http://www.w3.org/2000/01/rdf-schema#label> "label2"@EN } }
+                    BIND(<ex:t3> AS ?T3) .
+                  }
+                }
+                {
+                  { ?T4 <http://www.w3.org/2000/01/rdf-schema#label> "label4"@EN }
+                  UNION
+                  { OPTIONAL { ?T5 <http://www.w3.org/2000/01/rdf-schema#label> "label5"@EN } }
+                  BIND(<ex:t6> AS ?T6) .
+                  OPTIONAL { ?T7 <http://www.w3.org/2000/01/rdf-schema#label> "label7"@EN } .
+                  { ?T8 <http://www.w3.org/2000/01/rdf-schema#label> "label8"@EN }
+                  UNION
+                  { OPTIONAL { ?T9 <http://www.w3.org/2000/01/rdf-schema#label> "label9"@EN } }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -5998,45 +6270,47 @@ WHERE {
                 .AddProjectionVariable(new RDFVariable("?T6"));
             string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
             string expectedQueryString =
-@"SELECT ?T3 ?T6
-WHERE {
-  {
-    {
-      SELECT *
-      WHERE {
-        {
-          ?S <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
-        }
-      }
-    }
-    UNION
-    {
-      {
-        { ?T1 <http://www.w3.org/2000/01/rdf-schema#label> ""label1""@EN }
-        MINUS
-        { OPTIONAL { ?T2 <http://www.w3.org/2000/01/rdf-schema#label> ""label2""@EN } }
-        BIND(<ex:t3> AS ?T3) .
-      }
-      MINUS
-      {
-        { ?T4 <http://www.w3.org/2000/01/rdf-schema#label> ""label4""@EN }
-        UNION
-        { OPTIONAL { ?T5 <http://www.w3.org/2000/01/rdf-schema#label> ""label5""@EN } }
-        BIND(<ex:t6> AS ?T6) .
-        { ?T7 <http://www.w3.org/2000/01/rdf-schema#label> ""label7""@EN }
-        MINUS
-        { ?T8 <http://www.w3.org/2000/01/rdf-schema#label> ""label8""@EN }
-        MINUS
-        { ?T9 <http://www.w3.org/2000/01/rdf-schema#label> ""label9""@EN }
-      }
-      UNION
-      {
-        BIND(<ex:t7> AS ?T7) .
-      }
-    }
-  }
-}
-";
+              """
+              SELECT ?T3 ?T6
+              WHERE {
+                {
+                  {
+                    SELECT *
+                    WHERE {
+                      {
+                        ?S <http://www.w3.org/2000/01/rdf-schema#label> "label"@EN .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    {
+                      { ?T1 <http://www.w3.org/2000/01/rdf-schema#label> "label1"@EN }
+                      MINUS
+                      { OPTIONAL { ?T2 <http://www.w3.org/2000/01/rdf-schema#label> "label2"@EN } }
+                      BIND(<ex:t3> AS ?T3) .
+                    }
+                    MINUS
+                    {
+                      { ?T4 <http://www.w3.org/2000/01/rdf-schema#label> "label4"@EN }
+                      UNION
+                      { OPTIONAL { ?T5 <http://www.w3.org/2000/01/rdf-schema#label> "label5"@EN } }
+                      BIND(<ex:t6> AS ?T6) .
+                      { ?T7 <http://www.w3.org/2000/01/rdf-schema#label> "label7"@EN }
+                      MINUS
+                      { ?T8 <http://www.w3.org/2000/01/rdf-schema#label> "label8"@EN }
+                      MINUS
+                      { ?T9 <http://www.w3.org/2000/01/rdf-schema#label> "label9"@EN }
+                    }
+                    UNION
+                    {
+                      BIND(<ex:t7> AS ?T7) .
+                    }
+                  }
+                }
+              }
+
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6052,9 +6326,11 @@ WHERE {
             RDFAskQuery query = new RDFAskQuery();
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString =
-@"ASK
-WHERE {
-}";
+              """
+              ASK
+              WHERE {
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6068,14 +6344,16 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6088,12 +6366,14 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString =
-@"ASK
-WHERE {
-  {
-    ?S <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
-  }
-}";
+              """
+              ASK
+              WHERE {
+                {
+                  ?S <http://www.w3.org/2000/01/rdf-schema#label> "label"@EN .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6107,14 +6387,16 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  {
-    OPTIONAL { ?S rdfs:label ""label""@EN } .
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  OPTIONAL { ?S rdfs:label "label"@EN } .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6129,16 +6411,18 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  OPTIONAL {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-}";
+              ASK
+              WHERE {
+                OPTIONAL {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6153,16 +6437,18 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  OPTIONAL {
-    {
-      OPTIONAL { ?S rdfs:label ""label""@EN } .
-    }
-  }
-}";
+              ASK
+              WHERE {
+                OPTIONAL {
+                  {
+                    OPTIONAL { ?S rdfs:label "label"@EN } .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6176,14 +6462,16 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext()));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6198,14 +6486,16 @@ WHERE {
                     .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6221,14 +6511,16 @@ WHERE {
                     .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6240,11 +6532,13 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString =
-@"ASK
-WHERE {
-  {
-  }
-}";
+              """
+              ASK
+              WHERE {
+                {
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6256,13 +6550,15 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup().Optional());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString =
-@"ASK
-WHERE {
-  OPTIONAL {
-    {
-    }
-  }
-}";
+              """
+              ASK
+              WHERE {
+                OPTIONAL {
+                  {
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6274,11 +6570,13 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup().UnionWithNext());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString =
-@"ASK
-WHERE {
-  {
-  }
-}";
+              """
+              ASK
+              WHERE {
+                {
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6293,15 +6591,17 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Optional()));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-    OPTIONAL { <ex:subj> <ex:pred> ?T } .
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                  OPTIONAL { <ex:subj> <ex:pred> ?T } .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6318,19 +6618,21 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-  OPTIONAL {
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+                OPTIONAL {
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6348,20 +6650,22 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-  OPTIONAL {
-    {
-      <ex:subj1> <ex:pred1> ?T .
-      OPTIONAL { <ex:subj2> <ex:pred2> ?T } .
-    }
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+                OPTIONAL {
+                  {
+                    <ex:subj1> <ex:pred1> ?T .
+                    OPTIONAL { <ex:subj2> <ex:pred2> ?T } .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6378,20 +6682,22 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T"))));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6412,24 +6718,26 @@ WHERE {
                     .UnionWithNext()); //Will not be printed, since this is the last evaluable query member
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6451,27 +6759,29 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-  {
-    _:12345 rdfs:label ?T .
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+                {
+                  _:12345 rdfs:label ?T .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6494,29 +6804,31 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-  OPTIONAL {
-    {
-      _:12345 rdfs:label ?T .
-    }
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+                OPTIONAL {
+                  {
+                    _:12345 rdfs:label ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6543,33 +6855,35 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-ASK
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-      OPTIONAL { ?S rdfs:comment ""comment"" } .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-      OPTIONAL { <ex:subj> ?P _:12345 } .
-      OPTIONAL { ?S ?P ""25""^^xsd:integer } .
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-  OPTIONAL {
-    {
-      _:12345 rdfs:label ?T .
-    }
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                    OPTIONAL { ?S rdfs:comment "comment" } .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                    OPTIONAL { <ex:subj> ?P _:12345 } .
+                    OPTIONAL { ?S ?P "25"^^xsd:integer } .
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+                OPTIONAL {
+                  {
+                    _:12345 rdfs:label ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6593,30 +6907,32 @@ WHERE {
                     .UnionWithNext()); //UnionWithNext will not be printed, since this is the last evaluable query member
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  {
-    {
-      { ?S rdfs:label ""label""@EN }
-      UNION
-      { ?S rdfs:comment ""comment"" }
-    }
-    UNION
-    {
-      { <ex:subj> <ex:pred> ?T }
-      UNION
-      { <ex:subj> <ex:pred2> ?T }
-      UNION
-      { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  {
+                    { ?S rdfs:label "label"@EN }
+                    UNION
+                    { ?S rdfs:comment "comment" }
+                  }
+                  UNION
+                  {
+                    { <ex:subj> <ex:pred> ?T }
+                    UNION
+                    { <ex:subj> <ex:pred2> ?T }
+                    UNION
+                    { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6631,19 +6947,21 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  {
-    SELECT *
-    WHERE {
-      {
-        OPTIONAL { ?S rdfs:label ""label""@EN } .
-      }
-    }
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  SELECT *
+                  WHERE {
+                    {
+                      OPTIONAL { ?S rdfs:label "label"@EN } .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6659,19 +6977,21 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?S")));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  {
-    SELECT ?S
-    WHERE {
-      {
-        OPTIONAL { ?S rdfs:label ""label""@EN } .
-      }
-    }
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  SELECT ?S
+                  WHERE {
+                    {
+                      OPTIONAL { ?S rdfs:label "label"@EN } .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6686,19 +7006,21 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-ASK
-WHERE {
-  {
-    SELECT *
-    WHERE {
-      {
-        OPTIONAL { ?S rdfs:label ""label""@EN } .
-      }
-    }
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  SELECT *
+                  WHERE {
+                    {
+                      OPTIONAL { ?S rdfs:label "label"@EN } .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6715,20 +7037,22 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-ASK
-WHERE {
-  {
-    SELECT ?T
-    WHERE {
-      {
-        OPTIONAL { ?S rdfs:label ""label""@EN } .
-      }
-    }
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      OPTIONAL { ?S rdfs:label "label"@EN } .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6746,20 +7070,22 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-ASK
-WHERE {
-  OPTIONAL {
-    SELECT ?T
-    WHERE {
-      {
-        OPTIONAL { ?S rdfs:label ""label""@EN } .
-      }
-    }
-  }
-}";
+              ASK
+              WHERE {
+                OPTIONAL {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      OPTIONAL { ?S rdfs:label "label"@EN } .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6781,29 +7107,31 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-ASK
-WHERE {
-  {
-    SELECT ?Z
-    WHERE {
-      {
-        ?S rdfs:label _:12345 .
-      }
-    }
-  }
-  {
-    SELECT ?T
-    WHERE {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  SELECT ?Z
+                  WHERE {
+                    {
+                      ?S rdfs:label _:12345 .
+                    }
+                  }
+                }
+                {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6826,29 +7154,31 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-ASK
-WHERE {
-  {
-    SELECT ?Z
-    WHERE {
-      {
-        ?S rdfs:label _:12345 .
-      }
-    }
-  }
-  OPTIONAL {
-    SELECT ?T
-    WHERE {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  SELECT ?Z
+                  WHERE {
+                    {
+                      ?S rdfs:label _:12345 .
+                    }
+                  }
+                }
+                OPTIONAL {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6871,32 +7201,34 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-ASK
-WHERE {
-  {
-    {
-      SELECT ?Z
-      WHERE {
-        {
-          ?S rdfs:label _:12345 .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT ?T
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  {
+                    SELECT ?Z
+                    WHERE {
+                      {
+                        ?S rdfs:label _:12345 .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SELECT ?T
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -6925,40 +7257,42 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-ASK
-WHERE {
-  {
-    {
-      SELECT ?Z
-      WHERE {
-        {
-          ?S rdfs:label _:12345 .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT ?T
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-  }
-  OPTIONAL {
-    SELECT ?T
-    WHERE {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  {
+                    SELECT ?Z
+                    WHERE {
+                      {
+                        ?S rdfs:label _:12345 .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SELECT ?T
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                }
+                OPTIONAL {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7008,69 +7342,71 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintAskQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-ASK
-WHERE {
-  {
-    {
-      SELECT ?Z
-      WHERE {
-        {
-          SELECT DISTINCT *
-          WHERE {
-            {
-              ?S rdfs:label _:12345 .
-              FILTER ( BOUND(?S) ) 
-            }
-          }
-          ORDER BY ASC(?S)
-          LIMIT 5
-          OFFSET 1
-        }
-        {
-          ?S rdfs:label _:12345 .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT ?S (AVG(?S) AS ?AVG_S)
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-      GROUP BY ?S
-      HAVING ((AVG(?S) >= ""11.44""^^xsd:float))
-    }
-    UNION
-    {
-      SELECT *
-      WHERE {
-        {
-          SELECT ?START
-          WHERE {
-            {
-              VALUES ?S { <ex:org> } .
-              ?START (rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class>) ?END .
-            }
-          }
-        }
-      }
-    }
-  }
-  {
-    SELECT ?T
-    WHERE {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}";
+              ASK
+              WHERE {
+                {
+                  {
+                    SELECT ?Z
+                    WHERE {
+                      {
+                        SELECT DISTINCT *
+                        WHERE {
+                          {
+                            ?S rdfs:label _:12345 .
+                            FILTER ( BOUND(?S) ) 
+                          }
+                        }
+                        ORDER BY ASC(?S)
+                        LIMIT 5
+                        OFFSET 1
+                      }
+                      {
+                        ?S rdfs:label _:12345 .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SELECT ?S (AVG(?S) AS ?AVG_S)
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                    GROUP BY ?S
+                    HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+                  }
+                  UNION
+                  {
+                    SELECT *
+                    WHERE {
+                      {
+                        SELECT ?START
+                        WHERE {
+                          {
+                            VALUES ?S { <ex:org> } .
+                            ?START (rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class>) ?END .
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7086,10 +7422,12 @@ WHERE {
             RDFConstructQuery query = new RDFConstructQuery();
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString =
-@"CONSTRUCT {
-}
-WHERE {
-}";
+              """
+              CONSTRUCT {
+              }
+              WHERE {
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7103,15 +7441,17 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-CONSTRUCT {
-}
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}";
+              CONSTRUCT {
+              }
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7124,13 +7464,15 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString =
-@"CONSTRUCT {
-}
-WHERE {
-  {
-    ?S <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
-  }
-}";
+              """
+              CONSTRUCT {
+              }
+              WHERE {
+                {
+                  ?S <http://www.w3.org/2000/01/rdf-schema#label> "label"@EN .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7144,15 +7486,17 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-CONSTRUCT {
-}
-WHERE {
-  {
-    OPTIONAL { ?S rdfs:label ""label""@EN } .
-  }
-}";
+              CONSTRUCT {
+              }
+              WHERE {
+                {
+                  OPTIONAL { ?S rdfs:label "label"@EN } .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7167,17 +7511,19 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-CONSTRUCT {
-}
-WHERE {
-  OPTIONAL {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-}";
+              CONSTRUCT {
+              }
+              WHERE {
+                OPTIONAL {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7192,17 +7538,19 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-CONSTRUCT {
-}
-WHERE {
-  OPTIONAL {
-    {
-      OPTIONAL { ?S rdfs:label ""label""@EN } .
-    }
-  }
-}";
+              CONSTRUCT {
+              }
+              WHERE {
+                OPTIONAL {
+                  {
+                    OPTIONAL { ?S rdfs:label "label"@EN } .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7216,15 +7564,17 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext()));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-CONSTRUCT {
-}
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}";
+              CONSTRUCT {
+              }
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7239,15 +7589,17 @@ WHERE {
                     .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-CONSTRUCT {
-}
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}";
+              CONSTRUCT {
+              }
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7263,15 +7615,17 @@ WHERE {
                     .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-CONSTRUCT {
-}
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}";
+              CONSTRUCT {
+              }
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7283,12 +7637,14 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString =
-@"CONSTRUCT {
-}
-WHERE {
-  {
-  }
-}";
+              """
+              CONSTRUCT {
+              }
+              WHERE {
+                {
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7300,14 +7656,16 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup().Optional());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString =
-@"CONSTRUCT {
-}
-WHERE {
-  OPTIONAL {
-    {
-    }
-  }
-}";
+              """
+              CONSTRUCT {
+              }
+              WHERE {
+                OPTIONAL {
+                  {
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7319,12 +7677,14 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup().UnionWithNext());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString =
-@"CONSTRUCT {
-}
-WHERE {
-  {
-  }
-}";
+              """
+              CONSTRUCT {
+              }
+              WHERE {
+                {
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7340,17 +7700,19 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Optional()));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-CONSTRUCT {
-  ?S rdfs:label ?T .
-}
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-    OPTIONAL { <ex:subj> <ex:pred> ?T } .
-  }
-}";
+              CONSTRUCT {
+                ?S rdfs:label ?T .
+              }
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                  OPTIONAL { <ex:subj> <ex:pred> ?T } .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7368,21 +7730,23 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-CONSTRUCT {
-  ?S rdfs:label ?T .
-}
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-  OPTIONAL {
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-  }
-}";
+              CONSTRUCT {
+                ?S rdfs:label ?T .
+              }
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+                OPTIONAL {
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7401,22 +7765,24 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-CONSTRUCT {
-  ?S rdfs:label ?T .
-}
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-  OPTIONAL {
-    {
-      <ex:subj1> <ex:pred1> ?T .
-      OPTIONAL { <ex:subj2> <ex:pred2> ?T } .
-    }
-  }
-}";
+              CONSTRUCT {
+                ?S rdfs:label ?T .
+              }
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+                OPTIONAL {
+                  {
+                    <ex:subj1> <ex:pred1> ?T .
+                    OPTIONAL { <ex:subj2> <ex:pred2> ?T } .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7434,22 +7800,24 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T"))));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-CONSTRUCT {
-  ?S rdfs:label ?T .
-}
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-  }
-}";
+              CONSTRUCT {
+                ?S rdfs:label ?T .
+              }
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7471,26 +7839,28 @@ WHERE {
                     .UnionWithNext()); //Will not be printed, since this is the last evaluable query member
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-CONSTRUCT {
-  ?S rdfs:label ?T .
-}
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-}";
+              CONSTRUCT {
+                ?S rdfs:label ?T .
+              }
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7514,30 +7884,32 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-CONSTRUCT {
-  ?S rdfs:label ?T .
-  ?S rdfs:label ?Z .
-}
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-  {
-    _:12345 rdfs:label ?T .
-  }
-}";
+              CONSTRUCT {
+                ?S rdfs:label ?T .
+                ?S rdfs:label ?Z .
+              }
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+                {
+                  _:12345 rdfs:label ?T .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7561,31 +7933,33 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-CONSTRUCT {
-  ?S rdfs:label ?T .
-}
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-  OPTIONAL {
-    {
-      _:12345 rdfs:label ?T .
-    }
-  }
-}";
+              CONSTRUCT {
+                ?S rdfs:label ?T .
+              }
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+                OPTIONAL {
+                  {
+                    _:12345 rdfs:label ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7613,35 +7987,37 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-CONSTRUCT {
-  ?S rdfs:label ?T .
-}
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-      OPTIONAL { ?S rdfs:comment ""comment"" } .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-      OPTIONAL { <ex:subj> ?P _:12345 } .
-      OPTIONAL { ?S ?P ""25""^^xsd:integer } .
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-  OPTIONAL {
-    {
-      _:12345 rdfs:label ?T .
-    }
-  }
-}";
+              CONSTRUCT {
+                ?S rdfs:label ?T .
+              }
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                    OPTIONAL { ?S rdfs:comment "comment" } .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                    OPTIONAL { <ex:subj> ?P _:12345 } .
+                    OPTIONAL { ?S ?P "25"^^xsd:integer } .
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+                OPTIONAL {
+                  {
+                    _:12345 rdfs:label ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7666,32 +8042,34 @@ WHERE {
                     .UnionWithNext()); //UnionWithNext will not be printed, since this is the last evaluable query member
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-CONSTRUCT {
-  ?S rdfs:label ?T .
-}
-WHERE {
-  {
-    {
-      { ?S rdfs:label ""label""@EN }
-      UNION
-      { ?S rdfs:comment ""comment"" }
-    }
-    UNION
-    {
-      { <ex:subj> <ex:pred> ?T }
-      UNION
-      { <ex:subj> <ex:pred2> ?T }
-      UNION
-      { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-}";
+              CONSTRUCT {
+                ?S rdfs:label ?T .
+              }
+              WHERE {
+                {
+                  {
+                    { ?S rdfs:label "label"@EN }
+                    UNION
+                    { ?S rdfs:comment "comment" }
+                  }
+                  UNION
+                  {
+                    { <ex:subj> <ex:pred> ?T }
+                    UNION
+                    { <ex:subj> <ex:pred2> ?T }
+                    UNION
+                    { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7707,21 +8085,23 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-CONSTRUCT {
-  ?S rdfs:label ?T .
-}
-WHERE {
-  {
-    SELECT *
-    WHERE {
-      {
-        OPTIONAL { ?S rdfs:label ""label""@EN } .
-      }
-    }
-  }
-}";
+              CONSTRUCT {
+                ?S rdfs:label ?T .
+              }
+              WHERE {
+                {
+                  SELECT *
+                  WHERE {
+                    {
+                      OPTIONAL { ?S rdfs:label "label"@EN } .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7738,21 +8118,23 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?S")));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-CONSTRUCT {
-  ?S rdfs:label ?T .
-}
-WHERE {
-  {
-    SELECT ?S
-    WHERE {
-      {
-        OPTIONAL { ?S rdfs:label ""label""@EN } .
-      }
-    }
-  }
-}";
+              CONSTRUCT {
+                ?S rdfs:label ?T .
+              }
+              WHERE {
+                {
+                  SELECT ?S
+                  WHERE {
+                    {
+                      OPTIONAL { ?S rdfs:label "label"@EN } .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7771,22 +8153,24 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-CONSTRUCT {
-  ?S rdfs:label ?T .
-}
-WHERE {
-  OPTIONAL {
-    SELECT ?T
-    WHERE {
-      {
-        OPTIONAL { ?S rdfs:label ""label""@EN } .
-      }
-    }
-  }
-}";
+              CONSTRUCT {
+                ?S rdfs:label ?T .
+              }
+              WHERE {
+                OPTIONAL {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      OPTIONAL { ?S rdfs:label "label"@EN } .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7809,31 +8193,33 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-CONSTRUCT {
-  ?S rdfs:label ?T .
-}
-WHERE {
-  {
-    SELECT ?Z
-    WHERE {
-      {
-        ?S rdfs:label _:12345 .
-      }
-    }
-  }
-  {
-    SELECT ?T
-    WHERE {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}";
+              CONSTRUCT {
+                ?S rdfs:label ?T .
+              }
+              WHERE {
+                {
+                  SELECT ?Z
+                  WHERE {
+                    {
+                      ?S rdfs:label _:12345 .
+                    }
+                  }
+                }
+                {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7857,31 +8243,33 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-CONSTRUCT {
-  ?S rdfs:label ?T .
-}
-WHERE {
-  {
-    SELECT ?Z
-    WHERE {
-      {
-        ?S rdfs:label _:12345 .
-      }
-    }
-  }
-  OPTIONAL {
-    SELECT ?T
-    WHERE {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}";
+              CONSTRUCT {
+                ?S rdfs:label ?T .
+              }
+              WHERE {
+                {
+                  SELECT ?Z
+                  WHERE {
+                    {
+                      ?S rdfs:label _:12345 .
+                    }
+                  }
+                }
+                OPTIONAL {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7905,34 +8293,36 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-CONSTRUCT {
-  ?S rdfs:label ?T .
-}
-WHERE {
-  {
-    {
-      SELECT ?Z
-      WHERE {
-        {
-          ?S rdfs:label _:12345 .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT ?T
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-  }
-}";
+              CONSTRUCT {
+                ?S rdfs:label ?T .
+              }
+              WHERE {
+                {
+                  {
+                    SELECT ?Z
+                    WHERE {
+                      {
+                        ?S rdfs:label _:12345 .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SELECT ?T
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -7962,42 +8352,44 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-CONSTRUCT {
-  ?S rdfs:label ?T .
-}
-WHERE {
-  {
-    {
-      SELECT ?Z
-      WHERE {
-        {
-          ?S rdfs:label _:12345 .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT ?T
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-  }
-  OPTIONAL {
-    SELECT ?T
-    WHERE {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}";
+              CONSTRUCT {
+                ?S rdfs:label ?T .
+              }
+              WHERE {
+                {
+                  {
+                    SELECT ?Z
+                    WHERE {
+                      {
+                        ?S rdfs:label _:12345 .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SELECT ?T
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                }
+                OPTIONAL {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8049,72 +8441,74 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintConstructQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-CONSTRUCT {
-  ?S rdfs:label ?T .
-  ?S <ex:org> ""hello""@EN-US .
-}
-WHERE {
-  {
-    {
-      SELECT ?Z
-      WHERE {
-        {
-          SELECT DISTINCT *
-          WHERE {
-            {
-              ?S rdfs:label _:12345 .
-              FILTER ( BOUND(?S) ) 
-            }
-          }
-          ORDER BY ASC(?S)
-          LIMIT 5
-          OFFSET 1
-        }
-        {
-          ?S rdfs:label _:12345 .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT ?S (AVG(?S) AS ?AVG_S)
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-      GROUP BY ?S
-      HAVING ((AVG(?S) >= ""11.44""^^xsd:float))
-    }
-    UNION
-    {
-      SELECT *
-      WHERE {
-        {
-          SELECT ?START
-          WHERE {
-            {
-              VALUES ?S { <ex:org> } .
-              ?START (rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class>) ?END .
-            }
-          }
-        }
-      }
-    }
-  }
-  {
-    SELECT ?T
-    WHERE {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}";
+              CONSTRUCT {
+                ?S rdfs:label ?T .
+                ?S <ex:org> "hello"@EN-US .
+              }
+              WHERE {
+                {
+                  {
+                    SELECT ?Z
+                    WHERE {
+                      {
+                        SELECT DISTINCT *
+                        WHERE {
+                          {
+                            ?S rdfs:label _:12345 .
+                            FILTER ( BOUND(?S) ) 
+                          }
+                        }
+                        ORDER BY ASC(?S)
+                        LIMIT 5
+                        OFFSET 1
+                      }
+                      {
+                        ?S rdfs:label _:12345 .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SELECT ?S (AVG(?S) AS ?AVG_S)
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                    GROUP BY ?S
+                    HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+                  }
+                  UNION
+                  {
+                    SELECT *
+                    WHERE {
+                      {
+                        SELECT ?START
+                        WHERE {
+                          {
+                            VALUES ?S { <ex:org> } .
+                            ?START (rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class>) ?END .
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8130,9 +8524,11 @@ WHERE {
             RDFDescribeQuery query = new RDFDescribeQuery();
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString =
-@"DESCRIBE *
-WHERE {
-}";
+              """
+              DESCRIBE *
+              WHERE {
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8146,14 +8542,16 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DESCRIBE *
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}";
+              DESCRIBE *
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8166,12 +8564,14 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString =
-@"DESCRIBE *
-WHERE {
-  {
-    ?S <http://www.w3.org/2000/01/rdf-schema#label> ""label""@EN .
-  }
-}";
+              """
+              DESCRIBE *
+              WHERE {
+                {
+                  ?S <http://www.w3.org/2000/01/rdf-schema#label> "label"@EN .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8185,14 +8585,16 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DESCRIBE *
-WHERE {
-  {
-    OPTIONAL { ?S rdfs:label ""label""@EN } .
-  }
-}";
+              DESCRIBE *
+              WHERE {
+                {
+                  OPTIONAL { ?S rdfs:label "label"@EN } .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8207,16 +8609,18 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DESCRIBE *
-WHERE {
-  OPTIONAL {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-  }
-}";
+              DESCRIBE *
+              WHERE {
+                OPTIONAL {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8231,16 +8635,18 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DESCRIBE *
-WHERE {
-  OPTIONAL {
-    {
-      OPTIONAL { ?S rdfs:label ""label""@EN } .
-    }
-  }
-}";
+              DESCRIBE *
+              WHERE {
+                OPTIONAL {
+                  {
+                    OPTIONAL { ?S rdfs:label "label"@EN } .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8254,14 +8660,16 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext()));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DESCRIBE *
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}";
+              DESCRIBE *
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8276,14 +8684,16 @@ WHERE {
                     .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DESCRIBE *
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}";
+              DESCRIBE *
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8299,14 +8709,16 @@ WHERE {
                     .UnionWithNext());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString =
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DESCRIBE *
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-}";
+              DESCRIBE *
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8318,11 +8730,13 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString =
-@"DESCRIBE *
-WHERE {
-  {
-  }
-}";
+              """
+              DESCRIBE *
+              WHERE {
+                {
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8334,13 +8748,15 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup().Optional());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString =
-@"DESCRIBE *
-WHERE {
-  OPTIONAL {
-    {
-    }
-  }
-}";
+              """
+              DESCRIBE *
+              WHERE {
+                OPTIONAL {
+                  {
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8352,11 +8768,13 @@ WHERE {
                 .AddPatternGroup(new RDFPatternGroup().UnionWithNext());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString =
-@"DESCRIBE *
-WHERE {
-  {
-  }
-}";
+              """
+              DESCRIBE *
+              WHERE {
+                {
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8374,15 +8792,17 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Optional()));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DESCRIBE ?S rdfs:label _:12345
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-    OPTIONAL { <ex:subj> <ex:pred> ?T } .
-  }
-}";
+              DESCRIBE ?S rdfs:label _:12345
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                  OPTIONAL { <ex:subj> <ex:pred> ?T } .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8402,19 +8822,21 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DESCRIBE <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt> rdfs:label
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-  OPTIONAL {
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-  }
-}";
+              DESCRIBE <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt> rdfs:label
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+                OPTIONAL {
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8433,20 +8855,22 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DESCRIBE ?S
-WHERE {
-  {
-    ?S rdfs:label ""label""@EN .
-  }
-  OPTIONAL {
-    {
-      <ex:subj1> <ex:pred1> ?T .
-      OPTIONAL { <ex:subj2> <ex:pred2> ?T } .
-    }
-  }
-}";
+              DESCRIBE ?S
+              WHERE {
+                {
+                  ?S rdfs:label "label"@EN .
+                }
+                OPTIONAL {
+                  {
+                    <ex:subj1> <ex:pred1> ?T .
+                    OPTIONAL { <ex:subj2> <ex:pred2> ?T } .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8466,20 +8890,22 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T"))));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DESCRIBE _:12345 _:54321 ?S
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-  }
-}";
+              DESCRIBE _:12345 _:54321 ?S
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8501,24 +8927,26 @@ WHERE {
                     .UnionWithNext()); //Will not be printed, since this is the last evaluable query member
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DESCRIBE ?S
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-}";
+              DESCRIBE ?S
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8541,27 +8969,29 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DESCRIBE ?S
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-  {
-    _:12345 rdfs:label ?T .
-  }
-}";
+              DESCRIBE ?S
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+                {
+                  _:12345 rdfs:label ?T .
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8585,29 +9015,31 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DESCRIBE ?S
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-  OPTIONAL {
-    {
-      _:12345 rdfs:label ?T .
-    }
-  }
-}";
+              DESCRIBE ?S
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+                OPTIONAL {
+                  {
+                    _:12345 rdfs:label ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8635,33 +9067,35 @@ WHERE {
                     .Optional());
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-DESCRIBE ?S
-WHERE {
-  {
-    {
-      ?S rdfs:label ""label""@EN .
-      OPTIONAL { ?S rdfs:comment ""comment"" } .
-    }
-    UNION
-    {
-      <ex:subj> <ex:pred> ?T .
-      OPTIONAL { <ex:subj> ?P _:12345 } .
-      OPTIONAL { ?S ?P ""25""^^xsd:integer } .
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-  OPTIONAL {
-    {
-      _:12345 rdfs:label ?T .
-    }
-  }
-}";
+              DESCRIBE ?S
+              WHERE {
+                {
+                  {
+                    ?S rdfs:label "label"@EN .
+                    OPTIONAL { ?S rdfs:comment "comment" } .
+                  }
+                  UNION
+                  {
+                    <ex:subj> <ex:pred> ?T .
+                    OPTIONAL { <ex:subj> ?P _:12345 } .
+                    OPTIONAL { ?S ?P "25"^^xsd:integer } .
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+                OPTIONAL {
+                  {
+                    _:12345 rdfs:label ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8689,30 +9123,32 @@ WHERE {
                     .UnionWithNext()); //UnionWithNext will not be printed, since this is the last evaluable query member
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DESCRIBE rdfs:label <ex:org> _:12345 ?S
-WHERE {
-  {
-    {
-      { ?S rdfs:label ""label""@EN }
-      UNION
-      { ?S rdfs:comment ""comment"" }
-    }
-    UNION
-    {
-      { <ex:subj> <ex:pred> ?T }
-      UNION
-      { <ex:subj> <ex:pred2> ?T }
-      UNION
-      { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
-    }
-    UNION
-    {
-      <ex:subj> rdfs:label ?T .
-    }
-  }
-}";
+              DESCRIBE rdfs:label <ex:org> _:12345 ?S
+              WHERE {
+                {
+                  {
+                    { ?S rdfs:label "label"@EN }
+                    UNION
+                    { ?S rdfs:comment "comment" }
+                  }
+                  UNION
+                  {
+                    { <ex:subj> <ex:pred> ?T }
+                    UNION
+                    { <ex:subj> <ex:pred2> ?T }
+                    UNION
+                    { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
+                  }
+                  UNION
+                  {
+                    <ex:subj> rdfs:label ?T .
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8728,19 +9164,21 @@ WHERE {
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DESCRIBE ?S
-WHERE {
-  {
-    SELECT *
-    WHERE {
-      {
-        OPTIONAL { ?S rdfs:label ""label""@EN } .
-      }
-    }
-  }
-}";
+              DESCRIBE ?S
+              WHERE {
+                {
+                  SELECT *
+                  WHERE {
+                    {
+                      OPTIONAL { ?S rdfs:label "label"@EN } .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8757,19 +9195,21 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?S")));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-DESCRIBE ?S
-WHERE {
-  {
-    SELECT ?S
-    WHERE {
-      {
-        OPTIONAL { ?S rdfs:label ""label""@EN } .
-      }
-    }
-  }
-}";
+              DESCRIBE ?S
+              WHERE {
+                {
+                  SELECT ?S
+                  WHERE {
+                    {
+                      OPTIONAL { ?S rdfs:label "label"@EN } .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8788,20 +9228,22 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-DESCRIBE ?T
-WHERE {
-  OPTIONAL {
-    SELECT ?T
-    WHERE {
-      {
-        OPTIONAL { ?S rdfs:label ""label""@EN } .
-      }
-    }
-  }
-}";
+              DESCRIBE ?T
+              WHERE {
+                OPTIONAL {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      OPTIONAL { ?S rdfs:label "label"@EN } .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8824,29 +9266,31 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-DESCRIBE ?S
-WHERE {
-  {
-    SELECT ?Z
-    WHERE {
-      {
-        ?S rdfs:label _:12345 .
-      }
-    }
-  }
-  {
-    SELECT ?T
-    WHERE {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}";
+              DESCRIBE ?S
+              WHERE {
+                {
+                  SELECT ?Z
+                  WHERE {
+                    {
+                      ?S rdfs:label _:12345 .
+                    }
+                  }
+                }
+                {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8870,29 +9314,31 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-DESCRIBE ?S
-WHERE {
-  {
-    SELECT ?Z
-    WHERE {
-      {
-        ?S rdfs:label _:12345 .
-      }
-    }
-  }
-  OPTIONAL {
-    SELECT ?T
-    WHERE {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}";
+              DESCRIBE ?S
+              WHERE {
+                {
+                  SELECT ?Z
+                  WHERE {
+                    {
+                      ?S rdfs:label _:12345 .
+                    }
+                  }
+                }
+                OPTIONAL {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8916,32 +9362,34 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-DESCRIBE <ex:org>
-WHERE {
-  {
-    {
-      SELECT ?Z
-      WHERE {
-        {
-          ?S rdfs:label _:12345 .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT ?T
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-  }
-}";
+              DESCRIBE <ex:org>
+              WHERE {
+                {
+                  {
+                    SELECT ?Z
+                    WHERE {
+                      {
+                        ?S rdfs:label _:12345 .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SELECT ?T
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -8971,40 +9419,42 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-DESCRIBE ?T
-WHERE {
-  {
-    {
-      SELECT ?Z
-      WHERE {
-        {
-          ?S rdfs:label _:12345 .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT ?T
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-    }
-  }
-  OPTIONAL {
-    SELECT ?T
-    WHERE {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}";
+              DESCRIBE ?T
+              WHERE {
+                {
+                  {
+                    SELECT ?Z
+                    WHERE {
+                      {
+                        ?S rdfs:label _:12345 .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SELECT ?T
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                  }
+                }
+                OPTIONAL {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }
@@ -9055,69 +9505,71 @@ WHERE {
                   .AddProjectionVariable(new RDFVariable("?T")));
             string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
             string expectedQueryString = 
-@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              """
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-DESCRIBE ?T
-WHERE {
-  {
-    {
-      SELECT ?Z
-      WHERE {
-        {
-          SELECT DISTINCT *
-          WHERE {
-            {
-              ?S rdfs:label _:12345 .
-              FILTER ( BOUND(?S) ) 
-            }
-          }
-          ORDER BY ASC(?S)
-          LIMIT 5
-          OFFSET 1
-        }
-        {
-          ?S rdfs:label _:12345 .
-        }
-      }
-    }
-    UNION
-    {
-      SELECT ?S (AVG(?S) AS ?AVG_S)
-      WHERE {
-        {
-          ?S rdfs:label ""label""@EN .
-        }
-      }
-      GROUP BY ?S
-      HAVING ((AVG(?S) >= ""11.44""^^xsd:float))
-    }
-    UNION
-    {
-      SELECT *
-      WHERE {
-        {
-          SELECT ?START
-          WHERE {
-            {
-              VALUES ?S { <ex:org> } .
-              ?START (rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class>) ?END .
-            }
-          }
-        }
-      }
-    }
-  }
-  {
-    SELECT ?T
-    WHERE {
-      {
-        ?S rdfs:label ""label""@EN .
-      }
-    }
-  }
-}";
+              DESCRIBE ?T
+              WHERE {
+                {
+                  {
+                    SELECT ?Z
+                    WHERE {
+                      {
+                        SELECT DISTINCT *
+                        WHERE {
+                          {
+                            ?S rdfs:label _:12345 .
+                            FILTER ( BOUND(?S) ) 
+                          }
+                        }
+                        ORDER BY ASC(?S)
+                        LIMIT 5
+                        OFFSET 1
+                      }
+                      {
+                        ?S rdfs:label _:12345 .
+                      }
+                    }
+                  }
+                  UNION
+                  {
+                    SELECT ?S (AVG(?S) AS ?AVG_S)
+                    WHERE {
+                      {
+                        ?S rdfs:label "label"@EN .
+                      }
+                    }
+                    GROUP BY ?S
+                    HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+                  }
+                  UNION
+                  {
+                    SELECT *
+                    WHERE {
+                      {
+                        SELECT ?START
+                        WHERE {
+                          {
+                            VALUES ?S { <ex:org> } .
+                            ?START (rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class>) ?END .
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                {
+                  SELECT ?T
+                  WHERE {
+                    {
+                      ?S rdfs:label "label"@EN .
+                    }
+                  }
+                }
+              }
+              """;
             Assert.IsTrue(string.Equals(queryString, expectedQueryString));
             Assert.IsTrue(queryString.Count(chr => chr == '{') == queryString.Count(chr => chr == '}'));
         }

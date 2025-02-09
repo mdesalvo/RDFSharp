@@ -14,10 +14,10 @@
    limitations under the License.
 */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RDFSharp.Model;
 using System;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RDFSharp.Model;
 
 namespace RDFSharp.Test.Model
 {

@@ -684,19 +684,21 @@ namespace RDFSharp.Test.Query
         {
             string receivedQuery = null;
             string mockedResponseXml =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                  <head>
+                    <variable name="?S" />
+                  </head>
+                  <results>
+                    <result>
+                      <binding name="?S">
+                        <uri>ex:flower</uri>
+                      </binding>
+                    </result>
+                  </results>
+                </sparql>
+                """;
             server
                 .Given(
                     Request.Create()
@@ -747,19 +749,21 @@ namespace RDFSharp.Test.Query
         {
             string receivedQuery = null;
             string mockedResponseXml =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                  <head>
+                    <variable name="?S" />
+                  </head>
+                  <results>
+                    <result>
+                      <binding name="?S">
+                        <uri>ex:flower</uri>
+                      </binding>
+                    </result>
+                  </results>
+                </sparql>
+                """;
             server
                 .Given(
                     Request.Create()
@@ -810,19 +814,21 @@ namespace RDFSharp.Test.Query
         {
             string receivedQuery = null;
             string mockedResponseXml =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                  <head>
+                    <variable name="?S" />
+                  </head>
+                  <results>
+                    <result>
+                      <binding name="?S">
+                        <uri>ex:flower</uri>
+                      </binding>
+                    </result>
+                  </results>
+                </sparql>
+                """;
             server
                 .Given(
                     Request.Create()
@@ -872,19 +878,21 @@ namespace RDFSharp.Test.Query
         {
             string receivedQuery = null;
             string mockedResponseXml =
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>";
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                  <head>
+                    <variable name="?S" />
+                  </head>
+                  <results>
+                    <result>
+                      <binding name="?S">
+                        <uri>ex:flower</uri>
+                      </binding>
+                    </result>
+                  </results>
+                </sparql>
+                """;
             server
                 .Given(
                     Request.Create()
@@ -1056,19 +1064,21 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?S" />
+                                  </head>
+                                  <results>
+                                    <result>
+                                      <binding name="?S">
+                                        <uri>ex:flower</uri>
+                                      </binding>
+                                    </result>
+                                  </results>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -1098,19 +1108,21 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?S" />
+                                  </head>
+                                  <results>
+                                    <result>
+                                      <binding name="?S">
+                                        <uri>ex:flower</uri>
+                                      </binding>
+                                    </result>
+                                  </results>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -1142,19 +1154,21 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?S" />
+                                  </head>
+                                  <results>
+                                    <result>
+                                      <binding name="?S">
+                                        <uri>ex:flower</uri>
+                                      </binding>
+                                    </result>
+                                  </results>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -1184,19 +1198,21 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?S" />
+                                  </head>
+                                  <results>
+                                    <result>
+                                      <binding name="?S">
+                                        <uri>ex:flower</uri>
+                                      </binding>
+                                    </result>
+                                  </results>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -1231,19 +1247,21 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?S" />
+                                  </head>
+                                  <results>
+                                    <result>
+                                      <binding name="?S">
+                                        <uri>ex:flower</uri>
+                                      </binding>
+                                    </result>
+                                  </results>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -1278,19 +1296,21 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?S" />
+                                  </head>
+                                  <results>
+                                    <result>
+                                      <binding name="?S">
+                                        <uri>ex:flower</uri>
+                                      </binding>
+                                    </result>
+                                  </results>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -1371,19 +1391,21 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?S" />
+                                  </head>
+                                  <results>
+                                    <result>
+                                      <binding name="?S">
+                                        <uri>ex:flower</uri>
+                                      </binding>
+                                    </result>
+                                  </results>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -1418,19 +1440,21 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?S" />
+                                  </head>
+                                  <results>
+                                    <result>
+                                      <binding name="?S">
+                                        <uri>ex:flower</uri>
+                                      </binding>
+                                    </result>
+                                  </results>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -1464,19 +1488,21 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="S" />
+                                  </head>
+                                  <results>
+                                    <result>
+                                      <binding name="S">
+                                        <uri>ex:flower</uri>
+                                      </binding>
+                                    </result>
+                                  </results>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -1506,19 +1532,21 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="S" />
+                                  </head>
+                                  <results>
+                                    <result>
+                                      <binding name="S">
+                                        <uri>ex:flower</uri>
+                                      </binding>
+                                    </result>
+                                  </results>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -1550,13 +1578,15 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results />
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?S" />
+                                  </head>
+                                  <results />
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -1585,13 +1615,15 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results />
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?S" />
+                                  </head>
+                                  <results />
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -1637,19 +1669,21 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?S" />
+                                  </head>
+                                  <results>
+                                    <result>
+                                      <binding name="?S">
+                                        <uri>ex:flower</uri>
+                                      </binding>
+                                    </result>
+                                  </results>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithStatusCode(HttpStatusCode.OK)
                             .WithDelay(750));
 
@@ -1673,19 +1707,21 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?S" />
+                                  </head>
+                                  <results>
+                                    <result>
+                                      <binding name="?S">
+                                        <uri>ex:flower</uri>
+                                      </binding>
+                                    </result>
+                                  </results>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithStatusCode(HttpStatusCode.OK)
                             .WithDelay(750));
 
@@ -1711,19 +1747,21 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?S" />
+                                  </head>
+                                  <results>
+                                    <result>
+                                      <binding name="?S">
+                                        <uri>ex:flower</uri>
+                                      </binding>
+                                    </result>
+                                  </results>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithStatusCode(HttpStatusCode.OK)
                             .WithDelay(750));
 
@@ -1752,19 +1790,21 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?S" />
+                                  </head>
+                                  <results>
+                                    <result>
+                                      <binding name="?S">
+                                        <uri>ex:flower</uri>
+                                      </binding>
+                                    </result>
+                                  </results>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithStatusCode(HttpStatusCode.OK)
                             .WithDelay(750));
 
@@ -1970,19 +2010,21 @@ namespace RDFSharp.Test.Query
                         .RespondWith(
                             Response.Create()
                                     .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                        """
+                                        <?xml version="1.0" encoding="utf-8"?>
+                                        <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                          <head>
+                                            <variable name="?S" />
+                                          </head>
+                                          <results>
+                                            <result>
+                                              <binding name="?S">
+                                                <uri>ex:flower</uri>
+                                              </binding>
+                                            </result>
+                                          </results>
+                                        </sparql>
+                                        """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -2203,19 +2245,21 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?S" />
+                                  </head>
+                                  <results>
+                                    <result>
+                                      <binding name="?S">
+                                        <uri>ex:flower</uri>
+                                      </binding>
+                                    </result>
+                                  </results>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -2246,13 +2290,15 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results />
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?S" />
+                                  </head>
+                                  <results />
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -2282,19 +2328,21 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                """
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                  <head>
+                                    <variable name="?S" />
+                                  </head>
+                                  <results>
+                                    <result>
+                                      <binding name="?S">
+                                        <uri>ex:flower</uri>
+                                      </binding>
+                                    </result>
+                                  </results>
+                                </sparql>
+                                """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
@@ -2409,19 +2457,21 @@ namespace RDFSharp.Test.Query
                         .RespondWith(
                             Response.Create()
                                     .WithBody(
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
-  <head>
-    <variable name=""?S"" />
-  </head>
-  <results>
-    <result>
-      <binding name=""?S"">
-        <uri>ex:flower</uri>
-      </binding>
-    </result>
-  </results>
-</sparql>", encoding: Encoding.UTF8)
+                                        """
+                                        <?xml version="1.0" encoding="utf-8"?>
+                                        <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                                          <head>
+                                            <variable name="?S" />
+                                          </head>
+                                          <results>
+                                            <result>
+                                              <binding name="?S">
+                                                <uri>ex:flower</uri>
+                                              </binding>
+                                            </result>
+                                          </results>
+                                        </sparql>
+                                        """, encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
 
