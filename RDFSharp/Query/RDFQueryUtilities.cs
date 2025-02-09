@@ -289,7 +289,7 @@ namespace RDFSharp.Query
         internal class RDFWebClient : WebClient
         {
             #region Properties
-            private int TimeOut { get; }
+            private int TimeOut { get; set; }
             #endregion
 
             #region Ctors

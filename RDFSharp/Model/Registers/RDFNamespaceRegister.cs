@@ -207,7 +207,7 @@ namespace RDFSharp.Model
             string lookupString = lookupMode == 1 ? string.Concat("http://prefix.cc/", data, ".file.txt")
                                                   : string.Concat("http://prefix.cc/reverse?uri=", data, "&format=txt");
 
-            using (RDFWebClient webclient = new RDFWebClient(1000))
+            using (RDFWebClient webclient = new RDFWebClient(2000))
             {
                 try
                 {
