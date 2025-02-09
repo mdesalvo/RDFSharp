@@ -1523,7 +1523,7 @@ namespace RDFSharp.Model
                  {
                      subj = triple.Subject.ToString(),
                      pred = triple.Predicate.ToString()
-                 });
+                 }).ToList();
             var lastGroupOfTriples = triplesGroupedBySubjectAndPredicate.LastOrDefault();
             #endregion
 

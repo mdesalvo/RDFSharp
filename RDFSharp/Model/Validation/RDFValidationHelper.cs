@@ -106,12 +106,10 @@ namespace RDFSharp.Model
                                 //Compute property path on the given focus node
                                 DataTable pathResult = new RDFQueryEngine().ApplyPropertyPath(
                                     isAlternativePath ? propertyShape.AlternativePath : propertyShape.SequencePath, dataGraph);
-                                foreach (DataRow pathResultRow in pathResult.Rows)
-                                {
-                                    string prValue = pathResultRow["?END"]?.ToString();
-                                    if (!string.IsNullOrEmpty(prValue))
-                                        result.Add(RDFQueryUtilities.ParseRDFPatternMember(prValue));
-                                }
+                                result.AddRange(from DataRow pathResultRow 
+                                                in pathResult.Rows 
+                                                select pathResultRow["?END"]?.ToString() into prValue where !string.IsNullOrEmpty(prValue) 
+                                                select RDFQueryUtilities.ParseRDFPatternMember(prValue));
 
                                 //Recontextualize property path to the initial configuration
                                 if (isAlternativePath)
@@ -152,8 +150,7 @@ namespace RDFSharp.Model
                 #endregion
 
                 //rdf:type
-                foreach (RDFTriple triple in dataGraph[null, RDFVocabulary.RDF.TYPE, className, null])
-                    result.Add(triple.Subject);
+                result.AddRange(dataGraph[null, RDFVocabulary.RDF.TYPE, className, null].Select(triple => triple.Subject));
 
                 //rdfs:subClassOf
                 foreach (RDFTriple triple in dataGraph[null, RDFVocabulary.RDFS.SUB_CLASS_OF, className, null])

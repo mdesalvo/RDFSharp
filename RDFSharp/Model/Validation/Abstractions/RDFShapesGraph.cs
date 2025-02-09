@@ -16,6 +16,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RDFSharp.Model
@@ -131,8 +132,7 @@ namespace RDFSharp.Model
         {
             RDFGraph result = new RDFGraph();
 
-            foreach (RDFShape shape in this)
-                result = result.UnionWith(shape.ToRDFGraph());
+            result = this.Aggregate(result, (current, shape) => current.UnionWith(shape.ToRDFGraph()));
 
             result.SetContext(URI);
             return result;

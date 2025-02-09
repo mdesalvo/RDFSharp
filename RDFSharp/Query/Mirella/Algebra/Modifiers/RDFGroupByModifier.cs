@@ -117,26 +117,29 @@ namespace RDFSharp.Query
         private void ConsistencyChecks(DataTable table)
         {
             //Every partition variable must be found in the working table as a column
-            IEnumerable<string> unavailablePartitionVariables = PartitionVariables.Where(pv => !table.Columns.Contains(pv.ToString()))
-                                                                                  .Select(pv => pv.ToString());
+            List<string> unavailablePartitionVariables = PartitionVariables.Where(pv => !table.Columns.Contains(pv.ToString()))
+                                                                           .Select(pv => pv.ToString())
+                                                                           .ToList();
             if (unavailablePartitionVariables.Any())
                 throw new RDFQueryException($"Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: {string.Join(",", unavailablePartitionVariables.Distinct())}");
             
             //Every aggregator variable must be found in the working table as a column
-            IEnumerable<string> unavailableAggregatorVariables = Aggregators.Where(ag => !table.Columns.Contains(ag.AggregatorVariable.ToString()))
-                                                                            .Select(ag => ag.AggregatorVariable.ToString());
+            List<string> unavailableAggregatorVariables = Aggregators.Where(ag => !table.Columns.Contains(ag.AggregatorVariable.ToString()))
+                                                                     .Select(ag => ag.AggregatorVariable.ToString())
+                                                                     .ToList();
             if (unavailableAggregatorVariables.Any())
                 throw new RDFQueryException($"Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: {string.Join(",", unavailableAggregatorVariables.Distinct())}");
             
             //There should NOT be intersection between partition variables (GroupBy) and projection variables (Aggregators)
-            IEnumerable<string> commonPartitionProjectionVariables = PartitionVariables.Where(pv => Aggregators.Any(ag => (!(ag is RDFPartitionAggregator)) && pv.Equals(ag.ProjectionVariable)))
-                                                                                       .Select(pav => pav.ToString());
+            List<string> commonPartitionProjectionVariables = PartitionVariables.Where(pv => Aggregators.Any(ag => (!(ag is RDFPartitionAggregator)) && pv.Equals(ag.ProjectionVariable)))
+                                                                                .Select(pav => pav.ToString())
+                                                                                .ToList();
             if (commonPartitionProjectionVariables.Any())
                 throw new RDFQueryException($"Cannot apply GroupBy modifier because the following variables have been specified both for partitioning (in GroupBy) and projection (in Aggregator): {string.Join(",", commonPartitionProjectionVariables.Distinct())}");
         }
 
         /// <summary>
-        /// Executes partition algorythm
+        /// Executes partition algorithm
         /// </summary>
         private void ExecutePartitionAlgorythm(DataTable table)
         {
@@ -170,8 +173,9 @@ namespace RDFSharp.Query
             {
                 DataTable filteredTable = resultTable.Clone();
                 IEnumerator rowsEnum = resultTable.Rows.GetEnumerator();
-                IEnumerable<RDFComparisonFilter> havingFilters = Aggregators.Where(ag => ag.HavingClause.Item1)
-                                                                            .Select(ag => new RDFComparisonFilter(ag.HavingClause.Item2, ag.ProjectionVariable, ag.HavingClause.Item3));
+                List<RDFComparisonFilter> havingFilters = Aggregators.Where(ag => ag.HavingClause.Item1)
+                                                                     .Select(ag => new RDFComparisonFilter(ag.HavingClause.Item2, ag.ProjectionVariable, ag.HavingClause.Item3))
+                                                                     .ToList();
                 #region ExecuteFilters
                 while (rowsEnum.MoveNext())
                 {
