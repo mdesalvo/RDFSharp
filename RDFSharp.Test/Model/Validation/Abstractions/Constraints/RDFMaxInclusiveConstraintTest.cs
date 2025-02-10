@@ -45,7 +45,7 @@ public class RDFMaxInclusiveConstraintTest
         RDFGraph graph = maxInclusiveConstraint.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:NodeShape")));
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.MAX_INCLUSIVE.PatternMemberID)
                                                     && t.Value.ObjectID.Equals(new RDFResource("ex:value").PatternMemberID)));
@@ -71,7 +71,7 @@ public class RDFMaxInclusiveConstraintTest
         RDFGraph graph = maxInclusiveConstraint.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:NodeShape")));
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.MAX_INCLUSIVE.PatternMemberID)
                                                     && t.Value.ObjectID.Equals(new RDFPlainLiteral("value").PatternMemberID)));
@@ -324,9 +324,9 @@ public class RDFMaxInclusiveConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values lower or equal than <ex:Steva>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Steve")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
@@ -360,9 +360,9 @@ public class RDFMaxInclusiveConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values lower or equal than <ex:Steva>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Steve")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
@@ -396,9 +396,9 @@ public class RDFMaxInclusiveConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values lower or equal than <ex:Boa>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -432,9 +432,9 @@ public class RDFMaxInclusiveConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values lower or equal than <ex:Boa>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -470,9 +470,9 @@ public class RDFMaxInclusiveConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values lower or equal than <ex:Boa>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -506,9 +506,9 @@ public class RDFMaxInclusiveConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values lower or equal than <ex:Boa>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -542,9 +542,9 @@ public class RDFMaxInclusiveConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values lower or equal than <ex:Boa>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -578,9 +578,9 @@ public class RDFMaxInclusiveConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values lower or equal than <ex:Boa>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -643,9 +643,9 @@ public class RDFMaxInclusiveConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values lower or equal than <1999-12-30Z^^http://www.w3.org/2001/XMLSchema#date>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("1999-12-31", RDFModelEnums.RDFDatatypes.XSD_DATE)));

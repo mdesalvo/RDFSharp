@@ -34,7 +34,7 @@ public class RDFValuesFilterTest
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Values);
-        Assert.IsTrue(filter.Values.Bindings.Count == 1);
+        Assert.AreEqual(1, filter.Values.Bindings.Count);
         Assert.IsNotNull(filter.ValuesTable);
         Assert.IsTrue(filter.ToString().Equals("VALUES ?A { <" + RDFVocabulary.RDF.ALT + "> }"));
         Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("VALUES ?A { rdf:Alt }"));
@@ -49,7 +49,7 @@ public class RDFValuesFilterTest
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Values);
-        Assert.IsTrue(filter.Values.Bindings.Count == 1);
+        Assert.AreEqual(1, filter.Values.Bindings.Count);
         Assert.IsNotNull(filter.ValuesTable);
         Assert.IsTrue(filter.ToString().Equals("VALUES ?A { UNDEF }"));
         Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("VALUES ?A { UNDEF }"));
@@ -198,7 +198,7 @@ public class RDFValuesFilterTest
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Values);
-        Assert.IsTrue(filter.Values.Bindings.Count == 2);
+        Assert.AreEqual(2, filter.Values.Bindings.Count);
         Assert.IsNotNull(filter.ValuesTable);
         Assert.IsTrue(filter.ToString().Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( <" + RDFVocabulary.RDF.ALT + "> <" + RDFVocabulary.RDF.BAG + "> )" + Environment.NewLine + "    }"));
         Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( rdf:Alt rdf:Bag )" + Environment.NewLine + "    }"));
@@ -214,7 +214,7 @@ public class RDFValuesFilterTest
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Values);
-        Assert.IsTrue(filter.Values.Bindings.Count == 2);
+        Assert.AreEqual(2, filter.Values.Bindings.Count);
         Assert.IsNotNull(filter.ValuesTable);
         Assert.IsTrue(filter.ToString().Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( UNDEF <" + RDFVocabulary.RDF.BAG + "> )" + Environment.NewLine + "    }"));
         Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( UNDEF rdf:Bag )" + Environment.NewLine + "    }"));

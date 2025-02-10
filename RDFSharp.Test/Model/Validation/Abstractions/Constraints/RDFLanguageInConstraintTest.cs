@@ -45,7 +45,7 @@ public class RDFLanguageInConstraintTest
 
         Assert.IsNotNull(languageinConstraint);
         Assert.IsNotNull(languageinConstraint.LanguageTags);
-        Assert.IsTrue(languageinConstraint.LanguageTags.Count == 6);
+        Assert.AreEqual(6, languageinConstraint.LanguageTags.Count);
     }
 
     [TestMethod]
@@ -56,7 +56,7 @@ public class RDFLanguageInConstraintTest
         RDFGraph graph = languageinConstraint.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:NodeShape")));
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 10);
+        Assert.AreEqual(10, graph.TriplesCount);
         Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.LANGUAGE_IN.PatternMemberID)));
         Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
@@ -292,9 +292,9 @@ public class RDFLanguageInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a language from the sh:languageIn enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFPlainLiteral("Alice", "en")));
@@ -328,9 +328,9 @@ public class RDFLanguageInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a language from the sh:languageIn enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFPlainLiteral("Alice", "it-IT")));
@@ -364,9 +364,9 @@ public class RDFLanguageInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a language from the sh:languageIn enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFPlainLiteral("Alice")));
@@ -400,9 +400,9 @@ public class RDFLanguageInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a language from the sh:languageIn enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFPlainLiteral("Alice","en-US")));
@@ -436,9 +436,9 @@ public class RDFLanguageInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a language from the sh:languageIn enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("Alice", RDFModelEnums.RDFDatatypes.XSD_STRING)));
@@ -472,9 +472,9 @@ public class RDFLanguageInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a language from the sh:languageIn enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFPlainLiteral("Alice")));
@@ -509,9 +509,9 @@ public class RDFLanguageInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a language from the sh:languageIn enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFPlainLiteral("Alice")));
@@ -548,9 +548,9 @@ public class RDFLanguageInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a language from the sh:languageIn enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFPlainLiteral("Bob")));
@@ -618,25 +618,25 @@ public class RDFLanguageInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 3);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(3, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a language from the sh:languageIn enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Berg")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFPlainLiteral("Berg")));
         Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(new RDFResource("ex:prefLabel")));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropShape")));
-        Assert.IsTrue(validationReport.Results[1].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[1].ResultMessages.Count == 1);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[1].Severity);
+        Assert.AreEqual(1, validationReport.Results[1].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral("Not a language from the sh:languageIn enumeration")));
         Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Berg")));
         Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFPlainLiteral("Berg","de")));
         Assert.IsTrue(validationReport.Results[1].ResultPath.Equals(new RDFResource("ex:prefLabel")));
         Assert.IsTrue(validationReport.Results[1].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[1].SourceShape.Equals(new RDFResource("ex:PropShape")));
-        Assert.IsTrue(validationReport.Results[2].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[2].ResultMessages.Count == 1);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[2].Severity);
+        Assert.AreEqual(1, validationReport.Results[2].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[2].ResultMessages[0].Equals(new RDFPlainLiteral("Not a language from the sh:languageIn enumeration")));
         Assert.IsTrue(validationReport.Results[2].FocusNode.Equals(new RDFResource("ex:Berg")));
         Assert.IsTrue(validationReport.Results[2].ResultValue.Equals(new RDFResource("ex:BergLabel")));

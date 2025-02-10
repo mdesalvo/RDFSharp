@@ -30,7 +30,7 @@ public class RDFModelUtilitiesTest
     public void ShouldCreateHash()
     {
         long hash = RDFModelUtilities.CreateHash("hello!");
-        Assert.IsTrue(hash == 4443177098358787418);
+        Assert.AreEqual(4443177098358787418, hash);
     }
 
     [TestMethod]
@@ -148,8 +148,8 @@ public class RDFModelUtilitiesTest
         string output = RDFModelUtilities.ASCII_To_Unicode(input);
 
         Assert.IsNotNull(output);
-        Assert.IsTrue(output.IndexOf("\\U", StringComparison.Ordinal) == -1);
-        Assert.IsTrue(output.IndexOf("\\u", StringComparison.Ordinal) == -1);
+        Assert.AreEqual(-1, output.IndexOf("\\U", StringComparison.Ordinal));
+        Assert.AreEqual(-1, output.IndexOf("\\u", StringComparison.Ordinal));
         Assert.IsTrue(output.IndexOf("😃", StringComparison.Ordinal) > -1);
         Assert.IsTrue(output.IndexOf('~', StringComparison.Ordinal) > -1);
     }
@@ -165,8 +165,8 @@ public class RDFModelUtilitiesTest
         string output = RDFModelUtilities.ASCII_To_Unicode(input);
 
         Assert.IsNotNull(output);
-        Assert.IsTrue(output.IndexOf("\\U", StringComparison.Ordinal) == -1);
-        Assert.IsTrue(output.IndexOf("\\u", StringComparison.Ordinal) == -1);
+        Assert.AreEqual(-1, output.IndexOf("\\U", StringComparison.Ordinal));
+        Assert.AreEqual(-1, output.IndexOf("\\u", StringComparison.Ordinal));
         Assert.IsTrue(output.IndexOf('~', StringComparison.Ordinal) > -1);
         Assert.IsTrue(output.IndexOf('Δ', StringComparison.Ordinal) > -1);
     }
@@ -178,8 +178,8 @@ public class RDFModelUtilitiesTest
         string output = RDFModelUtilities.ASCII_To_Unicode(input);
 
         Assert.IsNotNull(output);
-        Assert.IsTrue(output.IndexOf("\\U", StringComparison.Ordinal) == -1);
-        Assert.IsTrue(output.IndexOf("\\u", StringComparison.Ordinal) == -1);
+        Assert.AreEqual(-1, output.IndexOf("\\U", StringComparison.Ordinal));
+        Assert.AreEqual(-1, output.IndexOf("\\u", StringComparison.Ordinal));
         Assert.IsTrue(output.IndexOf("😃", StringComparison.Ordinal) > -1);
     }
 
@@ -190,8 +190,8 @@ public class RDFModelUtilitiesTest
         string output = RDFModelUtilities.ASCII_To_Unicode(input);
 
         Assert.IsNotNull(output);
-        Assert.IsTrue(output.IndexOf("\\U", StringComparison.Ordinal) == -1);
-        Assert.IsTrue(output.IndexOf("\\u", StringComparison.Ordinal) == -1);
+        Assert.AreEqual(-1, output.IndexOf("\\U", StringComparison.Ordinal));
+        Assert.AreEqual(-1, output.IndexOf("\\u", StringComparison.Ordinal));
     }
 
     [DataTestMethod]
@@ -234,7 +234,7 @@ public class RDFModelUtilitiesTest
 
         Assert.IsNotNull(output);
         Assert.IsTrue(output.IndexOf("\\U0001F603", StringComparison.Ordinal) > -1);
-        Assert.IsTrue(output.IndexOf("\\u", StringComparison.Ordinal) == -1);
+        Assert.AreEqual(-1, output.IndexOf("\\u", StringComparison.Ordinal));
     }
 
     [DataTestMethod]
@@ -245,7 +245,7 @@ public class RDFModelUtilitiesTest
         string output = RDFModelUtilities.Unicode_To_ASCII(input);
 
         Assert.IsNotNull(output);
-        Assert.IsTrue(output.IndexOf("\\U", StringComparison.Ordinal) == -1);
+        Assert.AreEqual(-1, output.IndexOf("\\U", StringComparison.Ordinal));
         Assert.IsTrue(output.IndexOf("\\u20AC", StringComparison.Ordinal) > -1);
     }
 
@@ -256,8 +256,8 @@ public class RDFModelUtilitiesTest
         string output = RDFModelUtilities.Unicode_To_ASCII(input);
 
         Assert.IsNotNull(output);
-        Assert.IsTrue(output.IndexOf("\\U", StringComparison.Ordinal) == -1);
-        Assert.IsTrue(output.IndexOf("\\u", StringComparison.Ordinal) == -1);
+        Assert.AreEqual(-1, output.IndexOf("\\U", StringComparison.Ordinal));
+        Assert.AreEqual(-1, output.IndexOf("\\u", StringComparison.Ordinal));
     }
 
     [DataTestMethod]
@@ -316,7 +316,7 @@ public class RDFModelUtilitiesTest
         string result = input.TrimEnd("hello");
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.IndexOf("hello", StringComparison.Ordinal) == -1);
+        Assert.AreEqual(-1, result.IndexOf("hello", StringComparison.Ordinal));
     }
 
     [DataTestMethod]
@@ -326,7 +326,7 @@ public class RDFModelUtilitiesTest
         string result = input.TrimEnd("o");
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.IndexOf("hellooo", StringComparison.Ordinal) == -1);
+        Assert.AreEqual(-1, result.IndexOf("hellooo", StringComparison.Ordinal));
         Assert.IsTrue(result.IndexOf("helloo", StringComparison.Ordinal) > -1);
     }
 
@@ -367,7 +367,7 @@ public class RDFModelUtilitiesTest
         string result = input.TrimEnd("hello");
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.IndexOf("hello", StringComparison.Ordinal) == -1);
+        Assert.AreEqual(-1, result.IndexOf("hello", StringComparison.Ordinal));
     }
 
     [DataTestMethod]
@@ -440,7 +440,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"), null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
         Assert.IsTrue(result.Single().Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"))));
     }
 
@@ -457,7 +457,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"), null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -473,7 +473,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred6/"), new RDFResource("http://obj2/"), null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -489,7 +489,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFResource("http://obj6/"), null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -505,7 +505,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
         Assert.IsTrue(result.Single().Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"))));
     }
 
@@ -522,7 +522,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), new RDFResource("http://pred2/"), null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -538,7 +538,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred6/"), null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -554,7 +554,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), null, new RDFResource("http://obj2/"), null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
         Assert.IsTrue(result.Single().Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"))));
     }
 
@@ -571,7 +571,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), null, new RDFResource("http://obj2/"), null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -587,7 +587,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), null, new RDFResource("http://obj6/"), null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -603,7 +603,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), null, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 2);
+        Assert.AreEqual(2, result.Count);
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFResource("http://obj1/")))));
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/")))));
     }
@@ -621,7 +621,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), null, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -637,7 +637,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred2/"), new RDFResource("http://obj2/"), null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 2);
+        Assert.AreEqual(2, result.Count);
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/")))));
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/")))));
     }
@@ -655,7 +655,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred6/"), new RDFResource("http://obj2/"), null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -671,7 +671,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred1/"), new RDFResource("http://obj6/"), null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -687,7 +687,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred2/"), null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 2);
+        Assert.AreEqual(2, result.Count);
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/")))));
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/")))));
     }
@@ -705,7 +705,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred6/"), null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -721,7 +721,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, null, new RDFResource("http://obj2/"), null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 2);
+        Assert.AreEqual(2, result.Count);
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/")))));
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/")))));
     }
@@ -739,7 +739,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, null, new RDFResource("http://obj6/"), null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -755,7 +755,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, null, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 4);
+        Assert.AreEqual(4, result.Count);
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFResource("http://obj1/")))));
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/")))));
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred1/"), new RDFResource("http://obj1/")))));
@@ -775,7 +775,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
         Assert.IsTrue(result.Single().Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
 
@@ -792,7 +792,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), new RDFResource("http://pred2/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -808,7 +808,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred6/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -824,7 +824,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -840,7 +840,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
         Assert.IsTrue(result.Single().Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
 
@@ -857,7 +857,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), new RDFResource("http://pred2/"), null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -873,7 +873,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred6/"), null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -889,7 +889,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), null, null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
         Assert.IsTrue(result.Single().Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
 
@@ -906,7 +906,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), null, null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -922,7 +922,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), null, null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -938,7 +938,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), null, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 2);
+        Assert.AreEqual(2, result.Count);
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFPlainLiteral("lit1")))));
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))));
     }
@@ -956,7 +956,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), null, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -972,7 +972,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred2/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 2);
+        Assert.AreEqual(2, result.Count);
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))));
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))));
     }
@@ -990,7 +990,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred6/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -1006,7 +1006,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred2/"), null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -1022,7 +1022,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred2/"), null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 2);
+        Assert.AreEqual(2, result.Count);
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))));
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))));
     }
@@ -1040,7 +1040,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred6/"), null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -1056,7 +1056,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, null, null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 2);
+        Assert.AreEqual(2, result.Count);
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))));
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))));
     }
@@ -1074,7 +1074,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, null, null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -1090,7 +1090,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, null, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 4);
+        Assert.AreEqual(4, result.Count);
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFPlainLiteral("lit1")))));
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))));
         Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred1/"), new RDFPlainLiteral("lit1")))));
@@ -1103,7 +1103,7 @@ public class RDFModelUtilitiesTest
         List<RDFTriple> result = RDFModelUtilities.SelectTriples(null, null, null, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -1124,7 +1124,7 @@ public class RDFModelUtilitiesTest
         RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPO);
 
         Assert.IsNotNull(coll1);
-        Assert.IsTrue(coll1.ItemsCount == 3);
+        Assert.AreEqual(3, coll1.ItemsCount);
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item1/"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item2/"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item3/"))));
@@ -1148,7 +1148,7 @@ public class RDFModelUtilitiesTest
         RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPO);
 
         Assert.IsNotNull(coll1);
-        Assert.IsTrue(coll1.ItemsCount == 2);
+        Assert.AreEqual(2, coll1.ItemsCount);
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item1/"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item2/"))));
     }
@@ -1171,7 +1171,7 @@ public class RDFModelUtilitiesTest
         RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPO);
 
         Assert.IsNotNull(coll1);
-        Assert.IsTrue(coll1.ItemsCount == 3);
+        Assert.AreEqual(3, coll1.ItemsCount);
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item1/"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item2/"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item3/"))));
@@ -1194,7 +1194,7 @@ public class RDFModelUtilitiesTest
         RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPO);
 
         Assert.IsNotNull(coll1);
-        Assert.IsTrue(coll1.ItemsCount == 3);
+        Assert.AreEqual(3, coll1.ItemsCount);
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item1/"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item2/"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item3/"))));
@@ -1217,7 +1217,7 @@ public class RDFModelUtilitiesTest
         RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPO);
 
         Assert.IsNotNull(coll1);
-        Assert.IsTrue(coll1.ItemsCount == 2);
+        Assert.AreEqual(2, coll1.ItemsCount);
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item1/"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item2/"))));
     }
@@ -1234,7 +1234,7 @@ public class RDFModelUtilitiesTest
         RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPO);
 
         Assert.IsNotNull(coll1);
-        Assert.IsTrue(coll1.ItemsCount == 0);
+        Assert.AreEqual(0, coll1.ItemsCount);
     }
 
     [TestMethod]
@@ -1255,7 +1255,7 @@ public class RDFModelUtilitiesTest
         RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPL);
 
         Assert.IsNotNull(coll1);
-        Assert.IsTrue(coll1.ItemsCount == 3);
+        Assert.AreEqual(3, coll1.ItemsCount);
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item1"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item2"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item3"))));
@@ -1279,7 +1279,7 @@ public class RDFModelUtilitiesTest
         RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPL);
 
         Assert.IsNotNull(coll1);
-        Assert.IsTrue(coll1.ItemsCount == 2);
+        Assert.AreEqual(2, coll1.ItemsCount);
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item1"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item2"))));
     }
@@ -1302,7 +1302,7 @@ public class RDFModelUtilitiesTest
         RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPL);
 
         Assert.IsNotNull(coll1);
-        Assert.IsTrue(coll1.ItemsCount == 3);
+        Assert.AreEqual(3, coll1.ItemsCount);
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item1"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item2"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item3"))));
@@ -1325,7 +1325,7 @@ public class RDFModelUtilitiesTest
         RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPL);
 
         Assert.IsNotNull(coll1);
-        Assert.IsTrue(coll1.ItemsCount == 3);
+        Assert.AreEqual(3, coll1.ItemsCount);
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item1"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item2"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item3"))));
@@ -1348,7 +1348,7 @@ public class RDFModelUtilitiesTest
         RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPL);
 
         Assert.IsNotNull(coll1);
-        Assert.IsTrue(coll1.ItemsCount == 2);
+        Assert.AreEqual(2, coll1.ItemsCount);
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item1"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item2"))));
     }
@@ -1365,7 +1365,7 @@ public class RDFModelUtilitiesTest
         RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPL);
 
         Assert.IsNotNull(coll1);
-        Assert.IsTrue(coll1.ItemsCount == 0);
+        Assert.AreEqual(0, coll1.ItemsCount);
     }
 
     [TestMethod]
@@ -1386,7 +1386,7 @@ public class RDFModelUtilitiesTest
         RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPO);
 
         Assert.IsNotNull(coll1);
-        Assert.IsTrue(coll1.ItemsCount == 3);
+        Assert.AreEqual(3, coll1.ItemsCount);
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item1/"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item2/"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item3"))));
@@ -1410,7 +1410,7 @@ public class RDFModelUtilitiesTest
         RDFCollection coll1 = RDFModelUtilities.DeserializeCollectionFromGraph(graph, new RDFResource("bnode://coll1/"), RDFModelEnums.RDFTripleFlavors.SPL);
 
         Assert.IsNotNull(coll1);
-        Assert.IsTrue(coll1.ItemsCount == 3);
+        Assert.AreEqual(3, coll1.ItemsCount);
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item1"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFPlainLiteral("item2"))));
         Assert.IsTrue(coll1.Items.Any(x => x.Equals(new RDFResource("http://item3/"))));
@@ -1490,7 +1490,7 @@ public class RDFModelUtilitiesTest
         List<RDFNamespace> graphNS = RDFModelUtilities.GetGraphNamespaces(graph);
 
         Assert.IsNotNull(graphNS);
-        Assert.IsTrue(graphNS.Count == 3);
+        Assert.AreEqual(3, graphNS.Count);
         Assert.IsTrue(graphNS.Any(ns => ns.Equals(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))));
         Assert.IsTrue(graphNS.Any(ns => ns.Equals(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.GEO.PREFIX))));
         Assert.IsTrue(graphNS.Any(ns => ns.Equals(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.XSD.PREFIX))));
@@ -1506,7 +1506,7 @@ public class RDFModelUtilitiesTest
         List<RDFNamespace> graphNS = RDFModelUtilities.GetGraphNamespaces(graph);
 
         Assert.IsNotNull(graphNS);
-        Assert.IsTrue(graphNS.Count == 0);
+        Assert.AreEqual(0, graphNS.Count);
     }
 
     [DataTestMethod]
@@ -1562,7 +1562,7 @@ public class RDFModelUtilitiesTest
     [DataRow("http://www.w3.org/2006/time#generalMonth", RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH)]
     [DataRow("http://www.w3.org/2006/time#generalYear", RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR)]
     public void ShouldGetDatatypeFromEnum(string expected, RDFModelEnums.RDFDatatypes input)
-        => Assert.IsTrue(input.GetDatatypeFromEnum() == expected);
+        => Assert.AreEqual(expected, input.GetDatatypeFromEnum());
 
     [DataTestMethod]
     [DataRow("http://www.w3.org/2000/01/rdf-schema#Literal", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)]
@@ -1619,6 +1619,6 @@ public class RDFModelUtilitiesTest
     [DataRow("http://example.org", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)] //fallback to rdfs:Literal
     [DataRow(null, RDFModelEnums.RDFDatatypes.RDFS_LITERAL)] //fallback to rdfs:Literal
     public void ShouldGetEnumFromDatatype(string input, RDFModelEnums.RDFDatatypes expected)
-        => Assert.IsTrue(input.GetEnumFromDatatype() == expected);
+        => Assert.AreEqual(expected, input.GetEnumFromDatatype());
     #endregion
 }

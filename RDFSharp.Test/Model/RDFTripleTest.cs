@@ -34,7 +34,7 @@ public class RDFTripleTest
 
         RDFTriple triple = new RDFTriple(subj, pred, obj);
         Assert.IsNotNull(triple);
-        Assert.IsTrue(triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO);
+        Assert.AreEqual(RDFModelEnums.RDFTripleFlavors.SPO, triple.TripleFlavor);
         Assert.IsTrue(triple.Subject.Equals(subj));
         Assert.IsTrue(triple.Predicate.Equals(pred));
         Assert.IsTrue(triple.Object.Equals(obj));
@@ -58,7 +58,7 @@ public class RDFTripleTest
 
         RDFTriple triple = new RDFTriple(null, pred, null as RDFResource);
         Assert.IsNotNull(triple);
-        Assert.IsTrue(triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO);
+        Assert.AreEqual(RDFModelEnums.RDFTripleFlavors.SPO, triple.TripleFlavor);
         Assert.IsTrue(((RDFResource)triple.Subject).IsBlank);
         Assert.IsTrue(triple.Predicate.Equals(pred));
         Assert.IsTrue(((RDFResource)triple.Object).IsBlank);
@@ -75,7 +75,7 @@ public class RDFTripleTest
 
         RDFTriple triple = new RDFTriple(subj, pred, lit);
         Assert.IsNotNull(triple);
-        Assert.IsTrue(triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL);
+        Assert.AreEqual(RDFModelEnums.RDFTripleFlavors.SPL, triple.TripleFlavor);
         Assert.IsTrue(triple.Subject.Equals(subj));
         Assert.IsTrue(triple.Predicate.Equals(pred));
         Assert.IsTrue(triple.Object.Equals(lit));
@@ -99,7 +99,7 @@ public class RDFTripleTest
             
         RDFTriple triple = new RDFTriple(null, pred, null as RDFPlainLiteral);
         Assert.IsNotNull(triple);
-        Assert.IsTrue(triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL);
+        Assert.AreEqual(RDFModelEnums.RDFTripleFlavors.SPL, triple.TripleFlavor);
         Assert.IsTrue(((RDFResource)triple.Subject).IsBlank);
         Assert.IsTrue(triple.Predicate.Equals(pred));
         Assert.IsTrue(((RDFPlainLiteral)triple.Object).Equals(RDFPlainLiteral.Empty));
@@ -137,7 +137,7 @@ public class RDFTripleTest
         RDFTriple triple = new RDFTriple(subj, pred, obj);
         RDFGraph graph = triple.ReifyTriple();
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 4);
+        Assert.AreEqual(4, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT)));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)triple.Subject)));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate)));
@@ -155,7 +155,7 @@ public class RDFTripleTest
         RDFTriple triple = new RDFTriple(subj, pred, obj);
         RDFGraph graph = await triple.ReifyTripleAsync();
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 4);
+        Assert.AreEqual(4, graph.TriplesCount);
         Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT)));
         Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)triple.Subject)));
         Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate)));
@@ -173,7 +173,7 @@ public class RDFTripleTest
         RDFTriple triple = new RDFTriple(subj, pred, lit);
         RDFGraph graph = triple.ReifyTriple();
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 4);
+        Assert.AreEqual(4, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT)));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)triple.Subject)));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate)));
@@ -191,7 +191,7 @@ public class RDFTripleTest
         RDFTriple triple = new RDFTriple(subj, pred, lit);
         RDFGraph graph = await triple.ReifyTripleAsync();
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 4);
+        Assert.AreEqual(4, graph.TriplesCount);
         Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT)));
         Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)triple.Subject)));
         Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate)));

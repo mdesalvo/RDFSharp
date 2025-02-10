@@ -95,9 +95,9 @@ public class RDFPartitionAggregatorTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 1);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Rows.Count == 2);
+        Assert.AreEqual(1, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
     }
@@ -132,9 +132,9 @@ public class RDFPartitionAggregatorTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 1);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Rows.Count == 1);
+        Assert.AreEqual(1, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual(1, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
     }
     #endregion

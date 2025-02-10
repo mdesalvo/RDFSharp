@@ -31,7 +31,7 @@ public class RDFPatternFacetTest
         RDFPatternFacet facet = new RDFPatternFacet("^ex");
 
         Assert.IsNotNull(facet);
-        Assert.IsTrue(facet.Pattern == "^ex");
+        Assert.AreEqual("^ex", facet.Pattern);
         Assert.IsTrue(facet.URI.IsBlank);
     }
 
@@ -60,7 +60,7 @@ public class RDFPatternFacetTest
         RDFGraph graph = facet.ToRDFGraph();
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.PATTERN));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("^ex", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.STRING.ToString()))));
     }

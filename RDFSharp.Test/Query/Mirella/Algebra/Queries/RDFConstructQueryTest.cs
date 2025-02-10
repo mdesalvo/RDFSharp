@@ -45,22 +45,22 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
-        Assert.IsTrue(query.QueryMembers.Count == 0);
+        Assert.AreEqual(0, query.QueryMembers.Count);
         Assert.IsNotNull(query.Templates);
-        Assert.IsTrue(query.Templates.Count == 0);
+        Assert.AreEqual(0, query.Templates.Count);
         Assert.IsNotNull(query.Variables);
-        Assert.IsTrue(query.Variables.Count == 0);
+        Assert.AreEqual(0, query.Variables.Count);
         Assert.IsNotNull(query.Prefixes);
-        Assert.IsTrue(query.Prefixes.Count == 0);
+        Assert.AreEqual(0, query.Prefixes.Count);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsTrue(query.ToString().Equals("CONSTRUCT {" + Environment.NewLine + "}" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}"));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
-        Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
-        Assert.IsTrue(query.GetPatternGroups().Count() == 0);
-        Assert.IsTrue(query.GetSubQueries().Count() == 0);
-        Assert.IsTrue(query.GetValues().Count() == 0);
-        Assert.IsTrue(query.GetModifiers().Count() == 0);
-        Assert.IsTrue(query.GetPrefixes().Count() == 0);
+        Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
+        Assert.AreEqual(0, query.GetPatternGroups().Count());
+        Assert.AreEqual(0, query.GetSubQueries().Count());
+        Assert.AreEqual(0, query.GetValues().Count);
+        Assert.AreEqual(0, query.GetModifiers().Count());
+        Assert.AreEqual(0, query.GetPrefixes().Count);
     }
 
     [TestMethod]
@@ -91,14 +91,14 @@ public class RDFConstructQueryTest
 
         Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+Environment.NewLine+"PREFIX owl: <http://www.w3.org/2002/07/owl#>"+Environment.NewLine+""+Environment.NewLine+"CONSTRUCT {"+Environment.NewLine+"  ?S ?P ?O ."+Environment.NewLine+"  ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ."+Environment.NewLine+"}"+Environment.NewLine+"WHERE {"+Environment.NewLine+"  {"+Environment.NewLine+"    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ."+Environment.NewLine+"    FILTER ( ISURI(?S) ) "+Environment.NewLine+"  }"+Environment.NewLine+"  {"+Environment.NewLine+"    SELECT ?S ?P"+Environment.NewLine+"    WHERE {"+Environment.NewLine+"      {"+Environment.NewLine+"        ?S ?P owl:Class ."+Environment.NewLine+"        VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ."+Environment.NewLine+"      }"+Environment.NewLine+"    }"+Environment.NewLine+"  }"+Environment.NewLine+"}"+Environment.NewLine+"LIMIT 100"+Environment.NewLine+"OFFSET 20"));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
-        Assert.IsTrue(query.Templates.Count == 2);
-        Assert.IsTrue(query.Variables.Count == 4);
-        Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 2);
-        Assert.IsTrue(query.GetPatternGroups().Count() == 1);
-        Assert.IsTrue(query.GetSubQueries().Count() == 1);
-        Assert.IsTrue(query.GetValues().Count() == 1);
-        Assert.IsTrue(query.GetModifiers().Count() == 3);
-        Assert.IsTrue(query.GetPrefixes().Count() == 2);
+        Assert.AreEqual(2, query.Templates.Count);
+        Assert.AreEqual(4, query.Variables.Count);
+        Assert.AreEqual(2, query.GetEvaluableQueryMembers().Count());
+        Assert.AreEqual(1, query.GetPatternGroups().Count());
+        Assert.AreEqual(1, query.GetSubQueries().Count());
+        Assert.AreEqual(1, query.GetValues().Count);
+        Assert.AreEqual(3, query.GetModifiers().Count());
+        Assert.AreEqual(2, query.GetPrefixes().Count);
     }
 
     [TestMethod]
@@ -128,15 +128,15 @@ public class RDFConstructQueryTest
 
         Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+Environment.NewLine+"PREFIX owl: <http://www.w3.org/2002/07/owl#>"+Environment.NewLine+""+Environment.NewLine+"CONSTRUCT {"+Environment.NewLine+"  ?S ?P ?O ."+Environment.NewLine+"  ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ."+Environment.NewLine+"}"+Environment.NewLine+"WHERE {"+Environment.NewLine+"  {"+Environment.NewLine+"    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ."+Environment.NewLine+"    FILTER ( ISURI(?S) ) "+Environment.NewLine+"  }"+Environment.NewLine+"  OPTIONAL {"+Environment.NewLine+"    SELECT ?S ?P"+Environment.NewLine+"    WHERE {"+Environment.NewLine+"      {"+Environment.NewLine+"        ?S ?P owl:Class ."+Environment.NewLine+"        VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ."+Environment.NewLine+"      }"+Environment.NewLine+"    }"+Environment.NewLine+"  }"+Environment.NewLine+"}"+Environment.NewLine+"LIMIT 100"+Environment.NewLine+"OFFSET 20"));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
-        Assert.IsTrue(query.Templates.Count == 2);
-        Assert.IsTrue(query.Variables.Count == 4);
-        Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 2);
-        Assert.IsTrue(query.GetPatternGroups().Count() == 1);
-        Assert.IsTrue(query.GetSubQueries().Count() == 1);
+        Assert.AreEqual(2, query.Templates.Count);
+        Assert.AreEqual(4, query.Variables.Count);
+        Assert.AreEqual(2, query.GetEvaluableQueryMembers().Count());
+        Assert.AreEqual(1, query.GetPatternGroups().Count());
+        Assert.AreEqual(1, query.GetSubQueries().Count());
         Assert.IsTrue(query.GetSubQueries().Single() is RDFSelectQuery { IsOptional: true });
-        Assert.IsTrue(query.GetValues().Count() == 1);
-        Assert.IsTrue(query.GetModifiers().Count() == 3);
-        Assert.IsTrue(query.GetPrefixes().Count() == 2);
+        Assert.AreEqual(1, query.GetValues().Count);
+        Assert.AreEqual(3, query.GetModifiers().Count());
+        Assert.AreEqual(2, query.GetPrefixes().Count);
     }
 
     [TestMethod]
@@ -175,16 +175,16 @@ public class RDFConstructQueryTest
 
         Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+Environment.NewLine+"PREFIX owl: <http://www.w3.org/2002/07/owl#>"+Environment.NewLine+""+Environment.NewLine+"CONSTRUCT {"+Environment.NewLine+"  ?S ?P ?O ."+Environment.NewLine+"  ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ."+Environment.NewLine+"}"+Environment.NewLine+"WHERE {"+Environment.NewLine+"  {"+Environment.NewLine+"    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ."+Environment.NewLine+"    FILTER ( ISURI(?S) ) "+Environment.NewLine+"  }"+Environment.NewLine+"  {"+Environment.NewLine+"    {"+Environment.NewLine+"      SELECT ?S ?P"+Environment.NewLine+"      WHERE {"+Environment.NewLine+"        {"+Environment.NewLine+"          ?S ?P owl:Class ."+Environment.NewLine+"          VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ."+Environment.NewLine+"        }"+Environment.NewLine+"      }"+Environment.NewLine+"    }"+Environment.NewLine+"    UNION"+Environment.NewLine+"    {"+Environment.NewLine+"      SELECT ?S ?P"+Environment.NewLine+"      WHERE {"+Environment.NewLine+"        {"+Environment.NewLine+"          ?S ?P owl:Class ."+Environment.NewLine+"          VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ."+Environment.NewLine+"        }"+Environment.NewLine+"      }"+Environment.NewLine+"    }"+Environment.NewLine+"  }"+Environment.NewLine+"}"+Environment.NewLine+"LIMIT 100"+Environment.NewLine+"OFFSET 20"));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
-        Assert.IsTrue(query.Templates.Count == 2);
-        Assert.IsTrue(query.Variables.Count == 4);
-        Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 3);
-        Assert.IsTrue(query.GetPatternGroups().Count() == 1);
-        Assert.IsTrue(query.GetSubQueries().Count() == 2);
+        Assert.AreEqual(2, query.Templates.Count);
+        Assert.AreEqual(4, query.Variables.Count);
+        Assert.AreEqual(3, query.GetEvaluableQueryMembers().Count());
+        Assert.AreEqual(1, query.GetPatternGroups().Count());
+        Assert.AreEqual(2, query.GetSubQueries().Count());
         Assert.IsTrue(query.GetSubQueries().ElementAt(0) is RDFSelectQuery { JoinAsUnion: true });
         Assert.IsFalse(query.GetSubQueries().ElementAt(1) is RDFSelectQuery { JoinAsUnion: true });
-        Assert.IsTrue(query.GetValues().Count() == 2);
-        Assert.IsTrue(query.GetModifiers().Count() == 3);
-        Assert.IsTrue(query.GetPrefixes().Count() == 2);
+        Assert.AreEqual(2, query.GetValues().Count);
+        Assert.AreEqual(3, query.GetModifiers().Count());
+        Assert.AreEqual(2, query.GetPrefixes().Count);
     }
 
     [TestMethod]
@@ -201,8 +201,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -224,8 +224,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -245,8 +245,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -266,8 +266,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -287,8 +287,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -308,8 +308,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDFS.SUB_CLASS_OF}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{new RDFResource("ex:plant")}"));
@@ -329,7 +329,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -345,7 +345,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -362,7 +362,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -379,7 +379,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -397,7 +397,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -414,7 +414,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -431,7 +431,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -448,7 +448,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -466,7 +466,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -483,7 +483,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -501,7 +501,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -522,7 +522,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -537,7 +537,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -554,8 +554,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -575,8 +575,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -596,8 +596,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -617,8 +617,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -638,8 +638,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDFS.SUB_CLASS_OF}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{new RDFResource("ex:plant")}"));
@@ -659,7 +659,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -675,7 +675,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -692,7 +692,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -709,7 +709,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -727,7 +727,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -744,7 +744,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -761,7 +761,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -778,7 +778,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -796,7 +796,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -813,7 +813,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -831,7 +831,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -846,7 +846,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -865,8 +865,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -888,8 +888,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -911,8 +911,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -934,8 +934,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -957,8 +957,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDFS.SUB_CLASS_OF}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{new RDFResource("ex:plant")}"));
@@ -980,7 +980,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -998,7 +998,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -1017,7 +1017,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -1036,7 +1036,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -1056,7 +1056,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -1075,7 +1075,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -1094,7 +1094,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -1113,7 +1113,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -1133,7 +1133,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -1152,7 +1152,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -1172,7 +1172,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -1187,7 +1187,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -1215,8 +1215,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
+        Assert.AreEqual(1, result.ConstructResultsCount);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals("ex:plant"));
@@ -1247,8 +1247,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
+        Assert.AreEqual(1, result.ConstructResultsCount);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals("ex:plant"));
@@ -1279,8 +1279,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
+        Assert.AreEqual(0, result.ConstructResultsCount);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
     }
 
     [TestMethod]
@@ -1308,8 +1308,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
+        Assert.AreEqual(0, result.ConstructResultsCount);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
     }
 
     [TestMethod]
@@ -1337,8 +1337,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
+        Assert.AreEqual(1, result.ConstructResultsCount);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals("ex:plant"));
@@ -1369,8 +1369,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
+        Assert.AreEqual(1, result.ConstructResultsCount);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals("ex:plant"));
@@ -1388,8 +1388,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
+        Assert.AreEqual(0, result.ConstructResults.Columns.Count);
     }
 
     [TestMethod]
@@ -1467,8 +1467,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
+        Assert.AreEqual(0, result.ConstructResults.Columns.Count);
     }
 
     [TestMethod]
@@ -1496,8 +1496,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
+        Assert.AreEqual(0, result.ConstructResults.Columns.Count);
     }
 
     [TestMethod]
@@ -1575,8 +1575,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
+        Assert.AreEqual(0, result.ConstructResults.Columns.Count);
     }
 
     [TestMethod]
@@ -1604,8 +1604,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
+        Assert.AreEqual(0, result.ConstructResults.Columns.Count);
     }
 
     //ASYNC
@@ -1624,8 +1624,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -1645,7 +1645,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -1660,7 +1660,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -1677,8 +1677,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -1698,7 +1698,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -1713,7 +1713,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -1732,8 +1732,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
+        Assert.AreEqual(1, result.ConstructResultsCount);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
@@ -1755,7 +1755,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -1770,7 +1770,7 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
     }
 
     [TestMethod]
@@ -1798,8 +1798,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
+        Assert.AreEqual(1, result.ConstructResultsCount);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals("ex:plant"));
@@ -1830,8 +1830,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
+        Assert.AreEqual(0, result.ConstructResultsCount);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
     }
 
     [TestMethod]
@@ -1859,8 +1859,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 1);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 3);
+        Assert.AreEqual(1, result.ConstructResultsCount);
+        Assert.AreEqual(3, result.ConstructResults.Columns.Count);
         Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals("ex:plant"));
@@ -1878,8 +1878,8 @@ public class RDFConstructQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.ConstructResults);
-        Assert.IsTrue(result.ConstructResultsCount == 0);
-        Assert.IsTrue(result.ConstructResults.Columns.Count == 0);
+        Assert.AreEqual(0, result.ConstructResultsCount);
+        Assert.AreEqual(0, result.ConstructResults.Columns.Count);
     }
     #endregion
 }

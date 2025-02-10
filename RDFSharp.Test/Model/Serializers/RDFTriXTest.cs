@@ -358,7 +358,7 @@ public class RDFTriXTest
         RDFGraph graph2 = RDFTriX.Deserialize(Path.Combine(Environment.CurrentDirectory, "RDFTriXTest_ShouldDeserializeEmptyGraph.trix"));
 
         Assert.IsNotNull(graph2);
-        Assert.IsTrue(graph2.TriplesCount == 0);
+        Assert.AreEqual(0, graph2.TriplesCount);
     }
 
     [TestMethod]
@@ -370,7 +370,7 @@ public class RDFTriXTest
         RDFGraph graph2 = RDFTriX.Deserialize(Path.Combine(Environment.CurrentDirectory, "RDFTriXTest_ShouldDeserializeGraph.trix"));
 
         Assert.IsNotNull(graph2);
-        Assert.IsTrue(graph2.TriplesCount == 1);
+        Assert.AreEqual(1, graph2.TriplesCount);
         Assert.IsTrue(graph2.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -383,7 +383,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -396,7 +396,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
         Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
     }
@@ -410,7 +410,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
         Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
     }
@@ -424,7 +424,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -464,7 +464,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
         Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
     }
@@ -478,7 +478,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
         Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
     }
@@ -537,7 +537,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
     }
 
@@ -550,7 +550,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
         Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
     }
@@ -564,7 +564,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -577,7 +577,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
         Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
     }
@@ -591,7 +591,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
     }
 
@@ -604,7 +604,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
         Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
     }
@@ -618,7 +618,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
     }
 
@@ -631,7 +631,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
         Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
     }
@@ -645,7 +645,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), RDFPlainLiteral.Empty)));
     }
 
@@ -658,7 +658,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
     }
 
@@ -671,7 +671,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty, "en-US"))));
     }
 
@@ -684,7 +684,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US--ltr"))));
     }
 
@@ -697,7 +697,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
         Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
     }
@@ -711,7 +711,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US-ZK--rtl"))));
         Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
     }
@@ -725,7 +725,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
 
@@ -738,7 +738,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral(string.Empty, RDFModelEnums.RDFDatatypes.XSD_STRING))));
     }
 
@@ -751,7 +751,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
     }
@@ -765,7 +765,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
     }
 
@@ -778,7 +778,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
         Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
     }
@@ -792,7 +792,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
     }
 
@@ -805,7 +805,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
     }
 
@@ -818,7 +818,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
         Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
     }
@@ -832,7 +832,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
     }
 
@@ -845,7 +845,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
         Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
     }
@@ -859,7 +859,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en--ltr"))));
     }
 
@@ -872,7 +872,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
 
@@ -885,7 +885,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
     }
@@ -899,7 +899,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
     }
 
@@ -912,7 +912,7 @@ public class RDFTriXTest
         RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
         Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
     }

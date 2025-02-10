@@ -29,7 +29,7 @@ public class RDFQuadrupleTest
     {
         RDFQuadruple quadruple = new RDFQuadruple(new RDFContext(), new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
         Assert.IsNotNull(quadruple);
-        Assert.IsTrue(quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO);
+        Assert.AreEqual(RDFModelEnums.RDFTripleFlavors.SPO, quadruple.TripleFlavor);
         Assert.IsTrue(quadruple.Context.Equals(new RDFContext()));
         Assert.IsTrue(quadruple.Subject.Equals(new RDFResource("http://subj/")));
         Assert.IsTrue(quadruple.Predicate.Equals(new RDFResource("http://pred/")));
@@ -51,7 +51,7 @@ public class RDFQuadrupleTest
     {
         RDFQuadruple quadruple = new RDFQuadruple(null, new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
         Assert.IsNotNull(quadruple);
-        Assert.IsTrue(quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO);
+        Assert.AreEqual(RDFModelEnums.RDFTripleFlavors.SPO, quadruple.TripleFlavor);
         Assert.IsTrue(quadruple.Context.Equals(new RDFContext()));
         Assert.IsTrue(quadruple.Subject.Equals(new RDFResource("http://subj/")));
         Assert.IsTrue(quadruple.Predicate.Equals(new RDFResource("http://pred/")));
@@ -73,7 +73,7 @@ public class RDFQuadrupleTest
     {
         RDFQuadruple quadruple = new RDFQuadruple(new RDFContext(), new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit")));
         Assert.IsNotNull(quadruple);
-        Assert.IsTrue(quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL);
+        Assert.AreEqual(RDFModelEnums.RDFTripleFlavors.SPL, quadruple.TripleFlavor);
         Assert.IsTrue(quadruple.Context.Equals(new RDFContext()));
         Assert.IsTrue(quadruple.Subject.Equals(new RDFResource("http://subj/")));
         Assert.IsTrue(quadruple.Predicate.Equals(new RDFResource("http://pred/")));
@@ -105,7 +105,7 @@ public class RDFQuadrupleTest
 
         RDFQuadruple quadruple = new RDFQuadruple(ctx, subj, pred, obj);
         Assert.IsNotNull(quadruple);
-        Assert.IsTrue(quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO);
+        Assert.AreEqual(RDFModelEnums.RDFTripleFlavors.SPO, quadruple.TripleFlavor);
         Assert.IsTrue(quadruple.Context.Equals(ctx));
         Assert.IsTrue(quadruple.Subject.Equals(subj));
         Assert.IsTrue(quadruple.Predicate.Equals(pred));
@@ -131,7 +131,7 @@ public class RDFQuadrupleTest
 
         RDFQuadruple quadruple = new RDFQuadruple(null, null, pred, null as RDFResource);
         Assert.IsNotNull(quadruple);
-        Assert.IsTrue(quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO);
+        Assert.AreEqual(RDFModelEnums.RDFTripleFlavors.SPO, quadruple.TripleFlavor);
         Assert.IsTrue(quadruple.Context.Equals(ctx));
         Assert.IsTrue(((RDFResource)quadruple.Subject).IsBlank);
         Assert.IsTrue(quadruple.Predicate.Equals(pred));
@@ -150,7 +150,7 @@ public class RDFQuadrupleTest
 
         RDFQuadruple quadruple = new RDFQuadruple(ctx, subj, pred, lit);
         Assert.IsNotNull(quadruple);
-        Assert.IsTrue(quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL);
+        Assert.AreEqual(RDFModelEnums.RDFTripleFlavors.SPL, quadruple.TripleFlavor);
         Assert.IsTrue(quadruple.Context.Equals(ctx));
         Assert.IsTrue(quadruple.Subject.Equals(subj));
         Assert.IsTrue(quadruple.Predicate.Equals(pred));
@@ -176,7 +176,7 @@ public class RDFQuadrupleTest
 
         RDFQuadruple quadruple = new RDFQuadruple(null, null, pred, null as RDFPlainLiteral);
         Assert.IsNotNull(quadruple);
-        Assert.IsTrue(quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL);
+        Assert.AreEqual(RDFModelEnums.RDFTripleFlavors.SPL, quadruple.TripleFlavor);
         Assert.IsTrue(quadruple.Context.Equals(ctx));
         Assert.IsTrue(((RDFResource)quadruple.Subject).IsBlank);
         Assert.IsTrue(quadruple.Predicate.Equals(pred));
@@ -216,7 +216,7 @@ public class RDFQuadrupleTest
         RDFQuadruple quadruple = new RDFQuadruple(ctx, subj, pred, obj);
         RDFMemoryStore store = quadruple.ReifyQuadruple();
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 4);
+        Assert.AreEqual(4, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT)));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)quadruple.Subject)));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)quadruple.Predicate)));
@@ -235,7 +235,7 @@ public class RDFQuadrupleTest
         RDFQuadruple quadruple = new RDFQuadruple(ctx, subj, pred, lit);
         RDFMemoryStore store = quadruple.ReifyQuadruple();
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 4);
+        Assert.AreEqual(4, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT)));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)quadruple.Subject)));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)quadruple.Predicate)));

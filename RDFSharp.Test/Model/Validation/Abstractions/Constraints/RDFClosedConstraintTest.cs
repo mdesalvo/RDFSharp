@@ -33,7 +33,7 @@ public class RDFClosedConstraintTest
         Assert.IsNotNull(closedConstraint);
         Assert.IsTrue(closedConstraint.Closed);
         Assert.IsNotNull(closedConstraint.IgnoredProperties);
-        Assert.IsTrue(closedConstraint.IgnoredProperties.Count == 0);
+        Assert.AreEqual(0, closedConstraint.IgnoredProperties.Count);
     }
 
     [TestMethod]
@@ -47,7 +47,7 @@ public class RDFClosedConstraintTest
         Assert.IsNotNull(closedConstraint);
         Assert.IsTrue(closedConstraint.Closed);
         Assert.IsNotNull(closedConstraint.IgnoredProperties);
-        Assert.IsTrue(closedConstraint.IgnoredProperties.Count == 1);
+        Assert.AreEqual(1, closedConstraint.IgnoredProperties.Count);
     }
 
     [TestMethod]
@@ -58,7 +58,7 @@ public class RDFClosedConstraintTest
         RDFGraph graph = closedConstraint.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:NodeShape")));
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 5);
+        Assert.AreEqual(5, graph.TriplesCount);
         Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.CLOSED.PatternMemberID)
                                                     && t.Value.ObjectID.Equals(RDFTypedLiteral.True.PatternMemberID)));
@@ -317,9 +317,9 @@ public class RDFClosedConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -355,9 +355,9 @@ public class RDFClosedConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -392,9 +392,9 @@ public class RDFClosedConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -429,9 +429,9 @@ public class RDFClosedConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -467,9 +467,9 @@ public class RDFClosedConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Predicate is not allowed (closed shape)")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -503,9 +503,9 @@ public class RDFClosedConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Predicate is not allowed (closed shape)")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -539,9 +539,9 @@ public class RDFClosedConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Predicate is not allowed (closed shape)")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -577,9 +577,9 @@ public class RDFClosedConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Predicate is not allowed (closed shape)")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -618,9 +618,9 @@ public class RDFClosedConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Predicate is not allowed (closed shape)")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFPlainLiteral("J")));

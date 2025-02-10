@@ -95,11 +95,11 @@ public class RDFOrderByModifierTest
         orderedTable = orderedTable.DefaultView.ToTable();
 
         Assert.IsNotNull(orderedTable);
-        Assert.IsTrue(orderedTable.Columns.Count == 3);
+        Assert.AreEqual(3, orderedTable.Columns.Count);
         Assert.IsTrue(orderedTable.Columns.Contains("?A"));
         Assert.IsTrue(orderedTable.Columns.Contains("?B"));
         Assert.IsTrue(orderedTable.Columns.Contains("?C"));
-        Assert.IsTrue(orderedTable.Rows.Count == 3);
+        Assert.AreEqual(3, orderedTable.Rows.Count);
         Assert.IsTrue(orderedTable.Rows[0]["?A"].ToString().Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString()));
         Assert.IsTrue(orderedTable.Rows[0]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en-US").ToString()));
         Assert.IsTrue(orderedTable.Rows[0]["?C"].ToString().Equals(new RDFResource("ex:value0").ToString()));
@@ -144,11 +144,11 @@ public class RDFOrderByModifierTest
         orderedTable = orderedTable.DefaultView.ToTable();
 
         Assert.IsNotNull(orderedTable);
-        Assert.IsTrue(orderedTable.Columns.Count == 3);
+        Assert.AreEqual(3, orderedTable.Columns.Count);
         Assert.IsTrue(orderedTable.Columns.Contains("?A"));
         Assert.IsTrue(orderedTable.Columns.Contains("?B"));
         Assert.IsTrue(orderedTable.Columns.Contains("?C"));
-        Assert.IsTrue(orderedTable.Rows.Count == 3);
+        Assert.AreEqual(3, orderedTable.Rows.Count);
         Assert.IsTrue(orderedTable.Rows[0]["?A"].ToString().Equals(new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString()));
         Assert.IsTrue(orderedTable.Rows[0]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en-US").ToString()));
         Assert.IsTrue(orderedTable.Rows[0]["?C"].ToString().Equals(new RDFResource("ex:value0").ToString()));
@@ -198,11 +198,11 @@ public class RDFOrderByModifierTest
         orderedTableB = orderedTableB.DefaultView.ToTable();
 
         Assert.IsNotNull(orderedTableB);
-        Assert.IsTrue(orderedTableB.Columns.Count == 3);
+        Assert.AreEqual(3, orderedTableB.Columns.Count);
         Assert.IsTrue(orderedTableB.Columns.Contains("?A"));
         Assert.IsTrue(orderedTableB.Columns.Contains("?B"));
         Assert.IsTrue(orderedTableB.Columns.Contains("?C"));
-        Assert.IsTrue(orderedTableB.Rows.Count == 3);
+        Assert.AreEqual(3, orderedTableB.Rows.Count);
         Assert.IsTrue(orderedTableB.Rows[0]["?A"].ToString().Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString()));
         Assert.IsTrue(orderedTableB.Rows[0]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en-US").ToString()));
         Assert.IsTrue(orderedTableB.Rows[0]["?C"].ToString().Equals(new RDFResource("ex:value0").ToString()));
@@ -247,11 +247,11 @@ public class RDFOrderByModifierTest
         orderedTable = orderedTable.DefaultView.ToTable();
 
         Assert.IsNotNull(orderedTable);
-        Assert.IsTrue(orderedTable.Columns.Count == 3);
+        Assert.AreEqual(3, orderedTable.Columns.Count);
         Assert.IsTrue(orderedTable.Columns.Contains("?A"));
         Assert.IsTrue(orderedTable.Columns.Contains("?B"));
         Assert.IsTrue(orderedTable.Columns.Contains("?C"));
-        Assert.IsTrue(orderedTable.Rows.Count == 3);
+        Assert.AreEqual(3, orderedTable.Rows.Count);
         Assert.IsTrue(orderedTable.Rows[0]["?A"].ToString().Equals(new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString()));
         Assert.IsTrue(orderedTable.Rows[0]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en-US").ToString()));
         Assert.IsTrue(orderedTable.Rows[0]["?C"].ToString().Equals(new RDFResource("ex:value0").ToString()));

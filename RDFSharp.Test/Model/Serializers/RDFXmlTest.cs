@@ -795,7 +795,7 @@ public class RDFXmlTest
 
         Assert.IsNotNull(graph);
         Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-        Assert.IsTrue(graph.TriplesCount == 0);
+        Assert.AreEqual(0, graph.TriplesCount);
     }
 
     [TestMethod]
@@ -808,7 +808,7 @@ public class RDFXmlTest
 
         Assert.IsNotNull(graph);
         Assert.IsTrue(graph.Context.Equals(new Uri("http://example.com/")));
-        Assert.IsTrue(graph.TriplesCount == 0);
+        Assert.AreEqual(0, graph.TriplesCount);
     }
 
     [TestMethod]
@@ -821,7 +821,7 @@ public class RDFXmlTest
 
         Assert.IsNotNull(graph);
         Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-        Assert.IsTrue(graph.TriplesCount == 0);
+        Assert.AreEqual(0, graph.TriplesCount);
     }
 
     [TestMethod]
@@ -834,7 +834,7 @@ public class RDFXmlTest
 
         Assert.IsNotNull(graph);
         Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-        Assert.IsTrue(graph.TriplesCount == 0);
+        Assert.AreEqual(0, graph.TriplesCount);
     }
 
     [TestMethod]
@@ -1530,7 +1530,7 @@ public class RDFXmlTest
         {
             IsBlank: true
         }));
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item1/"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {

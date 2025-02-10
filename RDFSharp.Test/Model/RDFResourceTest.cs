@@ -95,7 +95,7 @@ public class RDFResourceTest
         RDFResource res3 = new RDFResource("ex:res3", hashContext);
 
         //At this stage we only have lazy promises for hashes
-        Assert.IsTrue(hashContext.Count == 0);
+        Assert.AreEqual(0, hashContext.Count);
 
         RDFTriple triple1 = new RDFTriple(res1, res2, res3);
         RDFTriple triple2 = new RDFTriple(res1CacheHitA, res2, res3);
@@ -106,7 +106,7 @@ public class RDFResourceTest
         _ = new RDFGraph([triple1, triple2, triple3, triple4, triple5, triple6]);
 
         //Now we have materialized the lazy promises and calculated the hashes, exploiting the cache for boosting performances
-        Assert.IsTrue(hashContext.Count == 3);
+        Assert.AreEqual(3, hashContext.Count);
         Assert.IsTrue(hashContext.ContainsKey("ex:res1"));
         Assert.IsTrue(hashContext.ContainsKey("ex:res2"));
         Assert.IsTrue(hashContext.ContainsKey("ex:res3"));

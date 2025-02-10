@@ -33,7 +33,7 @@ public class RDFOrConstraintTest
 
         Assert.IsNotNull(orConstraint);
         Assert.IsNotNull(orConstraint.OrShapes);
-        Assert.IsTrue(orConstraint.OrShapes.Count == 0);
+        Assert.AreEqual(0, orConstraint.OrShapes.Count);
     }
 
     [TestMethod]
@@ -47,7 +47,7 @@ public class RDFOrConstraintTest
 
         Assert.IsNotNull(orConstraint);
         Assert.IsNotNull(orConstraint.OrShapes);
-        Assert.IsTrue(orConstraint.OrShapes.Count == 2);
+        Assert.AreEqual(2, orConstraint.OrShapes.Count);
     }
 
     [TestMethod]
@@ -59,7 +59,7 @@ public class RDFOrConstraintTest
         RDFGraph graph = orConstraint.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:NodeShape")));
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
+        Assert.AreEqual(7, graph.TriplesCount);
         Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.OR.PatternMemberID)));
         Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
@@ -369,9 +369,9 @@ public class RDFOrConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have at least one of the shapes in sh:or enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -410,9 +410,9 @@ public class RDFOrConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have at least one of the shapes in sh:or enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -451,9 +451,9 @@ public class RDFOrConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have at least one of the shapes in sh:or enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -492,9 +492,9 @@ public class RDFOrConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have at least one of the shapes in sh:or enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -536,9 +536,9 @@ public class RDFOrConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have at least one of the shapes in sh:or enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -578,9 +578,9 @@ public class RDFOrConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have at least one of the shapes in sh:or enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -620,9 +620,9 @@ public class RDFOrConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have at least one of the shapes in sh:or enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -662,9 +662,9 @@ public class RDFOrConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have at least one of the shapes in sh:or enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -741,9 +741,9 @@ public class RDFOrConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have at least one of the shapes in sh:or enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:InvalidInstance")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:InvalidInstance")));
@@ -782,9 +782,9 @@ public class RDFOrConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have at least one of the shapes in sh:or enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));

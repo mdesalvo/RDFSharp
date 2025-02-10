@@ -425,7 +425,7 @@ public class RDFGeoConverterTest
 
         Assert.IsNotNull(milanLAZ);
         Assert.IsTrue(string.Equals(milanLAZ.ToText(), "POINT (-899167.1609069 4413535.43188373)"));
-        Assert.IsTrue(milanLAZ.SRID == 42106);
+        Assert.AreEqual(42106, milanLAZ.SRID);
     }
 
     [TestMethod]
@@ -436,7 +436,7 @@ public class RDFGeoConverterTest
 
         Assert.IsNotNull(milanWGS84);
         Assert.IsTrue(string.Equals(milanWGS84.ToText(), "POINT (9.18854 45.464664)"));
-        Assert.IsTrue(milanWGS84.SRID == 4326);
+        Assert.AreEqual(4326, milanWGS84.SRID);
     }
     #endregion
 }

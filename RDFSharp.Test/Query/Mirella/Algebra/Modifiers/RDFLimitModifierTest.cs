@@ -32,7 +32,7 @@ public class RDFLimitModifierTest
         RDFLimitModifier modifier = new RDFLimitModifier(25);
 
         Assert.IsNotNull(modifier);
-        Assert.IsTrue(modifier.Limit == 25);
+        Assert.AreEqual(25, modifier.Limit);
         Assert.IsFalse(modifier.IsEvaluable);
         Assert.IsTrue(modifier.ToString().Equals("LIMIT 25"));
         Assert.IsNotNull(modifier.QueryMemberStringID);
@@ -73,11 +73,11 @@ public class RDFLimitModifierTest
         DataTable limitedTable = new RDFLimitModifier(1).ApplyModifier(table);
 
         Assert.IsNotNull(limitedTable);
-        Assert.IsTrue(limitedTable.Columns.Count == 3);
+        Assert.AreEqual(3, limitedTable.Columns.Count);
         Assert.IsTrue(limitedTable.Columns.Contains("?A"));
         Assert.IsTrue(limitedTable.Columns.Contains("?B"));
         Assert.IsTrue(limitedTable.Columns.Contains("?C"));
-        Assert.IsTrue(limitedTable.Rows.Count == 1);
+        Assert.AreEqual(1, limitedTable.Rows.Count);
         Assert.IsTrue(limitedTable.Rows[0]["?A"].ToString().Equals(new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString()));
         Assert.IsTrue(limitedTable.Rows[0]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en-US").ToString()));
         Assert.IsTrue(limitedTable.Rows[0]["?C"].ToString().Equals(new RDFResource("ex:value0").ToString()));
@@ -112,11 +112,11 @@ public class RDFLimitModifierTest
         DataTable limitedTable = new RDFLimitModifier(0).ApplyModifier(table);
 
         Assert.IsNotNull(limitedTable);
-        Assert.IsTrue(limitedTable.Columns.Count == 3);
+        Assert.AreEqual(3, limitedTable.Columns.Count);
         Assert.IsTrue(limitedTable.Columns.Contains("?A"));
         Assert.IsTrue(limitedTable.Columns.Contains("?B"));
         Assert.IsTrue(limitedTable.Columns.Contains("?C"));
-        Assert.IsTrue(limitedTable.Rows.Count == 0);
+        Assert.AreEqual(0, limitedTable.Rows.Count);
         Assert.IsTrue(limitedTable.DefaultView.Sort.Equals("?A DESC"));
     }
 
@@ -133,11 +133,11 @@ public class RDFLimitModifierTest
         DataTable limitedTable = new RDFLimitModifier(35).ApplyModifier(table);
 
         Assert.IsNotNull(limitedTable);
-        Assert.IsTrue(limitedTable.Columns.Count == 3);
+        Assert.AreEqual(3, limitedTable.Columns.Count);
         Assert.IsTrue(limitedTable.Columns.Contains("?A"));
         Assert.IsTrue(limitedTable.Columns.Contains("?B"));
         Assert.IsTrue(limitedTable.Columns.Contains("?C"));
-        Assert.IsTrue(limitedTable.Rows.Count == 0);
+        Assert.AreEqual(0, limitedTable.Rows.Count);
         Assert.IsTrue(limitedTable.DefaultView.Sort.Equals("?A DESC"));
     }
     #endregion

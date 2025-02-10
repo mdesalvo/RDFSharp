@@ -32,8 +32,8 @@ public class RDFInConstraintTest
 
         Assert.IsNotNull(inConstraint);
         Assert.IsNotNull(inConstraint.InValues);
-        Assert.IsTrue(inConstraint.InValues.Count == 0);
-        Assert.IsTrue(inConstraint.ItemType == RDFModelEnums.RDFItemTypes.Resource);
+        Assert.AreEqual(0, inConstraint.InValues.Count);
+        Assert.AreEqual(RDFModelEnums.RDFItemTypes.Resource, inConstraint.ItemType);
     }
 
     [TestMethod]
@@ -45,7 +45,7 @@ public class RDFInConstraintTest
         inConstraint.AddValue(null as RDFResource); //Will be discarded because null not allowed
         inConstraint.AddValue(new RDFPlainLiteral("value")); //Will be discarded because wrong item type
 
-        Assert.IsTrue(inConstraint.InValues.Count == 1);
+        Assert.AreEqual(1, inConstraint.InValues.Count);
     }
 
     [TestMethod]
@@ -55,8 +55,8 @@ public class RDFInConstraintTest
 
         Assert.IsNotNull(inConstraint);
         Assert.IsNotNull(inConstraint.InValues);
-        Assert.IsTrue(inConstraint.InValues.Count == 0);
-        Assert.IsTrue(inConstraint.ItemType == RDFModelEnums.RDFItemTypes.Literal);
+        Assert.AreEqual(0, inConstraint.InValues.Count);
+        Assert.AreEqual(RDFModelEnums.RDFItemTypes.Literal, inConstraint.ItemType);
     }
 
     [TestMethod]
@@ -68,7 +68,7 @@ public class RDFInConstraintTest
         inConstraint.AddValue(null as RDFLiteral); //Will be discarded because null not allowed
         inConstraint.AddValue(new RDFResource("ex:value")); //Will be discarded because wrong item type
 
-        Assert.IsTrue(inConstraint.InValues.Count == 1);
+        Assert.AreEqual(1, inConstraint.InValues.Count);
     }
 
     [TestMethod]
@@ -80,7 +80,7 @@ public class RDFInConstraintTest
         RDFGraph graph = inConstraint.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:NodeShape")));
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
+        Assert.AreEqual(7, graph.TriplesCount);
         Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.IN.PatternMemberID)));
         Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
@@ -103,7 +103,7 @@ public class RDFInConstraintTest
         RDFGraph graph = inConstraint.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:NodeShape")));
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
+        Assert.AreEqual(7, graph.TriplesCount);
         Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.IN.PatternMemberID)));
         Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
@@ -385,9 +385,9 @@ public class RDFInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a value from the sh:in enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -423,9 +423,9 @@ public class RDFInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a value from the sh:in enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -461,9 +461,9 @@ public class RDFInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a value from the sh:in enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -499,9 +499,9 @@ public class RDFInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a value from the sh:in enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -538,9 +538,9 @@ public class RDFInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a value from the sh:in enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -575,9 +575,9 @@ public class RDFInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a value from the sh:in enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -613,9 +613,9 @@ public class RDFInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a value from the sh:in enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -651,9 +651,9 @@ public class RDFInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a value from the sh:in enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -716,9 +716,9 @@ public class RDFInConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.IsTrue(validationReport.ResultsCount == 1);
-        Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Not a value from the sh:in enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:RainbowPony")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Green")));

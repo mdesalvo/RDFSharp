@@ -95,10 +95,10 @@ public class RDFSumAggregatorTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 2);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Columns[1].ColumnName == "?SUMPROJ");
-        Assert.IsTrue(result.Rows.Count == 2);
+        Assert.AreEqual(2, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual("?SUMPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
         Assert.IsTrue(result.Rows[0]["?SUMPROJ"].ToString().Equals($"53^^{RDFVocabulary.XSD.DOUBLE}"));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
@@ -134,10 +134,10 @@ public class RDFSumAggregatorTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 2);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Columns[1].ColumnName == "?SUMPROJ");
-        Assert.IsTrue(result.Rows.Count == 2);
+        Assert.AreEqual(2, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual("?SUMPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
         Assert.IsTrue(result.Rows[0]["?SUMPROJ"].ToString().Equals($"27^^{RDFVocabulary.XSD.DOUBLE}"));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
@@ -175,10 +175,10 @@ public class RDFSumAggregatorTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 2);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Columns[1].ColumnName == "?SUMPROJ");
-        Assert.IsTrue(result.Rows.Count == 1);
+        Assert.AreEqual(2, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual("?SUMPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual(1, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value0"));
         Assert.IsTrue(result.Rows[0]["?SUMPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}"));
         Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(SUM(?A) <= \"30\"^^<{RDFVocabulary.XSD.BYTE}>)"));
@@ -219,10 +219,10 @@ public class RDFSumAggregatorTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 2);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Columns[1].ColumnName == "?SUMPROJ");
-        Assert.IsTrue(result.Rows.Count == 3);
+        Assert.AreEqual(2, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual("?SUMPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual(3, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
         Assert.IsTrue(result.Rows[0]["?SUMPROJ"].ToString().Equals($"53.7^^{RDFVocabulary.XSD.DOUBLE}"));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));

@@ -55,7 +55,7 @@ public class RDFStoreUtilitiesTest
                 result.AddQuadruple(RDFStoreUtilities.ParseQuadruple(reader));
         }
 
-        Assert.IsTrue(result.QuadruplesCount == 4);
+        Assert.AreEqual(4, result.QuadruplesCount);
         Assert.IsTrue(result.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj/"))));
         Assert.IsTrue(result.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj2/"), new RDFResource("http://pred1/"), new RDFPlainLiteral("lit"))));
         Assert.IsTrue(result.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFPlainLiteral("lit", "en-US"))));
@@ -72,7 +72,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(null, null, null, null, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -92,7 +92,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, null, null, null); //select *
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 2);
+        Assert.AreEqual(2, result.Count);
     }
 
     [TestMethod]
@@ -116,7 +116,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, null, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 2);
+        Assert.AreEqual(2, result.Count);
     }
 
     [TestMethod]
@@ -140,7 +140,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj1, null, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 2);
+        Assert.AreEqual(2, result.Count);
     }
 
     [TestMethod]
@@ -164,7 +164,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, pred1, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 2);
+        Assert.AreEqual(2, result.Count);
     }
 
     [TestMethod]
@@ -188,7 +188,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, null, obj1, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -213,7 +213,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, null, null, lit2);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -237,7 +237,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, null, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -261,7 +261,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, pred1, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 2);
+        Assert.AreEqual(2, result.Count);
     }
 
     [TestMethod]
@@ -285,7 +285,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, null, obj1, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -309,7 +309,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, null, null, lit);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -333,7 +333,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, pred1, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -357,7 +357,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, null, obj1, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -381,7 +381,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj2, null, null, lit);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -405,7 +405,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, pred1, obj1, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -429,7 +429,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, pred1, null, lit);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -453,7 +453,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, pred1, obj1, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -477,7 +477,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj2, pred1, null, lit);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -501,7 +501,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj1, pred1, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -525,7 +525,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj1, null, obj1, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -549,7 +549,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj2, null, null, lit);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -573,7 +573,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, pred1, obj1, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -597,7 +597,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, pred1, null, lit);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -621,7 +621,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj1, pred1, obj1, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -645,7 +645,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj2, pred1, null, lit);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 1);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]
@@ -669,7 +669,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx2, null, null, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -693,7 +693,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj2, null, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -717,7 +717,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, pred2, null, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -742,7 +742,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, null, obj2, null);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -767,7 +767,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, null, null, lit2);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -790,7 +790,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, pred2, null, lit);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
 
     [TestMethod]
@@ -813,7 +813,7 @@ public class RDFStoreUtilitiesTest
         List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, pred1, null, lit2);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count == 0);
+        Assert.AreEqual(0, result.Count);
     }
     #endregion
 }

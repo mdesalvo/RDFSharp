@@ -44,7 +44,7 @@ public class RDFValidationResultTest
         Assert.IsTrue(result.SourceShape.Equals(new RDFNodeShape(new RDFResource("ex:sourceShape"))));
         Assert.IsNotNull(result.SourceConstraintComponent);
         Assert.IsTrue(result.SourceConstraintComponent is RDFMinLengthConstraint);
-        Assert.IsTrue(((RDFMinLengthConstraint)result.SourceConstraintComponent).MinLength == 8);
+        Assert.AreEqual(8, ((RDFMinLengthConstraint)result.SourceConstraintComponent).MinLength);
         Assert.IsNotNull(result.FocusNode);
         Assert.IsTrue(result.FocusNode.Equals(new RDFResource("ex:focusNode")));
         Assert.IsNotNull(result.ResultPath);
@@ -52,9 +52,9 @@ public class RDFValidationResultTest
         Assert.IsNotNull(result.ResultValue);
         Assert.IsTrue(result.ResultValue.Equals(new RDFPlainLiteral("resultValue")));
         Assert.IsNotNull(result.ResultMessages);
-        Assert.IsTrue(result.ResultMessages.Count == 1);
+        Assert.AreEqual(1, result.ResultMessages.Count);
         Assert.IsTrue(result.ResultMessages[0].Equals(new RDFPlainLiteral("resultMessage")));
-        Assert.IsTrue(result.Severity == severity);
+        Assert.AreEqual(severity, result.Severity);
     }
 
     [DataTestMethod]

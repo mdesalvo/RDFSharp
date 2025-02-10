@@ -89,23 +89,23 @@ public class RDFNamespaceRegisterTest
     {
         RDFNamespace ex5NS = new RDFNamespace("ex5", "http://example.org5/");
         RDFNamespaceRegister.AddNamespace(ex5NS);
-        Assert.IsTrue(RDFNamespaceRegister.Instance.Register.Count(x => 
-            x.NamespacePrefix.Equals(ex5NS.NamespacePrefix) || x.NamespaceUri.Equals(ex5NS.NamespaceUri)) == 1);
+        Assert.AreEqual(1, RDFNamespaceRegister.Instance.Register.Count(x =>
+            x.NamespacePrefix.Equals(ex5NS.NamespacePrefix) || x.NamespaceUri.Equals(ex5NS.NamespaceUri)));
 
         RDFNamespace ex5PNS = new RDFNamespace("ex5P", "http://example.org5/");
         RDFNamespaceRegister.AddNamespace(ex5PNS);
-        Assert.IsTrue(RDFNamespaceRegister.Instance.Register.Count(x =>
-            x.NamespacePrefix.Equals(ex5PNS.NamespacePrefix) || x.NamespaceUri.Equals(ex5PNS.NamespaceUri)) == 1);
+        Assert.AreEqual(1, RDFNamespaceRegister.Instance.Register.Count(x =>
+            x.NamespacePrefix.Equals(ex5PNS.NamespacePrefix) || x.NamespaceUri.Equals(ex5PNS.NamespaceUri)));
 
         RDFNamespace ex5UNS = new RDFNamespace("ex5", "http://example.org5U/");
         RDFNamespaceRegister.AddNamespace(ex5UNS);
-        Assert.IsTrue(RDFNamespaceRegister.Instance.Register.Count(x =>
-            x.NamespacePrefix.Equals(ex5UNS.NamespacePrefix) || x.NamespaceUri.Equals(ex5UNS.NamespaceUri)) == 1);
+        Assert.AreEqual(1, RDFNamespaceRegister.Instance.Register.Count(x =>
+            x.NamespacePrefix.Equals(ex5UNS.NamespacePrefix) || x.NamespaceUri.Equals(ex5UNS.NamespaceUri)));
 
         int nsCountBefore = RDFNamespaceRegister.NamespacesCount;
         RDFNamespaceRegister.AddNamespace(null);
         int nsCountAfter = RDFNamespaceRegister.NamespacesCount;
-        Assert.IsTrue(nsCountBefore == nsCountAfter);
+        Assert.AreEqual(nsCountAfter, nsCountBefore);
     }
 
     [TestMethod]
@@ -115,22 +115,22 @@ public class RDFNamespaceRegisterTest
         RDFNamespace ex6NS = new RDFNamespace("ex6", "http://example.org6/");
         RDFNamespaceRegister.RemoveByPrefix(ex6NS.NamespacePrefix);
         int nsCountAfter = RDFNamespaceRegister.NamespacesCount;
-        Assert.IsTrue(nsCountBefore == nsCountAfter);
+        Assert.AreEqual(nsCountAfter, nsCountBefore);
 
         nsCountBefore = RDFNamespaceRegister.NamespacesCount;
         RDFNamespaceRegister.RemoveByPrefix(null);
         nsCountAfter = RDFNamespaceRegister.NamespacesCount;
-        Assert.IsTrue(nsCountBefore == nsCountAfter);
+        Assert.AreEqual(nsCountAfter, nsCountBefore);
 
         nsCountBefore = RDFNamespaceRegister.NamespacesCount;
         RDFNamespaceRegister.RemoveByUri(ex6NS.NamespaceUri.ToString());
         nsCountAfter = RDFNamespaceRegister.NamespacesCount;
-        Assert.IsTrue(nsCountBefore == nsCountAfter);
+        Assert.AreEqual(nsCountAfter, nsCountBefore);
 
         nsCountBefore = RDFNamespaceRegister.NamespacesCount;
         RDFNamespaceRegister.RemoveByUri(null);
         nsCountAfter = RDFNamespaceRegister.NamespacesCount;
-        Assert.IsTrue(nsCountBefore == nsCountAfter);
+        Assert.AreEqual(nsCountAfter, nsCountBefore);
     }
 
     [TestMethod]

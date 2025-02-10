@@ -38,18 +38,18 @@ public class RDFContainerTest
         RDFContainer cont = new RDFContainer(containerType, itemType);
 
         Assert.IsNotNull(cont);
-        Assert.IsTrue(cont.ContainerType == containerType);
-        Assert.IsTrue(cont.ItemType == itemType);
-        Assert.IsTrue(cont.ItemsCount == 0);
+        Assert.AreEqual(containerType, cont.ContainerType);
+        Assert.AreEqual(itemType, cont.ItemType);
+        Assert.AreEqual(0, cont.ItemsCount);
         Assert.IsTrue(cont.ReificationSubject.IsBlank);
 
         int i = cont.Count();
-        Assert.IsTrue(i == 0);
+        Assert.AreEqual(0, i);
 
         int j = 0;
         IEnumerator<RDFPatternMember> itemsEnumerator = cont.ItemsEnumerator;
         while (itemsEnumerator.MoveNext()) j++;
-        Assert.IsTrue(j == 0);
+        Assert.AreEqual(0, j);
     }
 
     [DataTestMethod]
@@ -68,12 +68,12 @@ public class RDFContainerTest
             cont.AddItem(new RDFResource("http://item/"));
 
         int i = cont.Count();
-        Assert.IsTrue(i == 1);
+        Assert.AreEqual(1, i);
 
         int j = 0;
         IEnumerator<RDFPatternMember> itemsEnumerator = cont.ItemsEnumerator;
         while (itemsEnumerator.MoveNext()) j++;
-        Assert.IsTrue(j == 1);
+        Assert.AreEqual(1, j);
     }
 
     [DataTestMethod]
@@ -100,12 +100,12 @@ public class RDFContainerTest
         switch (containerType)
         {
             case RDFModelEnums.RDFContainerTypes.Alt:
-                Assert.IsTrue(cont.ItemsCount == 1);
+                Assert.AreEqual(1, cont.ItemsCount);
                 break;
 
             case RDFModelEnums.RDFContainerTypes.Bag:
             case RDFModelEnums.RDFContainerTypes.Seq:
-                Assert.IsTrue(cont.ItemsCount == 2);
+                Assert.AreEqual(2, cont.ItemsCount);
                 break;
         }
     }
@@ -125,7 +125,7 @@ public class RDFContainerTest
         else
             cont.AddItem(new RDFPlainLiteral("lit"));
             
-        Assert.IsTrue(cont.ItemsCount == 0);
+        Assert.AreEqual(0, cont.ItemsCount);
     }
 
     [DataTestMethod]
@@ -143,7 +143,7 @@ public class RDFContainerTest
         else
             cont.AddItem(null as RDFResource);
 
-        Assert.IsTrue(cont.ItemsCount == 0);
+        Assert.AreEqual(0, cont.ItemsCount);
     }
 
     [DataTestMethod]
@@ -169,7 +169,7 @@ public class RDFContainerTest
             cont.RemoveItem(new RDFResource("http://item/"));
         }
 
-        Assert.IsTrue(cont.ItemsCount == 0);
+        Assert.AreEqual(0, cont.ItemsCount);
     }
 
     [DataTestMethod]
@@ -198,12 +198,12 @@ public class RDFContainerTest
         switch (containerType)
         {
             case RDFModelEnums.RDFContainerTypes.Alt:
-                Assert.IsTrue(cont.ItemsCount == 1);
+                Assert.AreEqual(1, cont.ItemsCount);
                 break;
 
             case RDFModelEnums.RDFContainerTypes.Bag:
             case RDFModelEnums.RDFContainerTypes.Seq:
-                Assert.IsTrue(cont.ItemsCount == 2);
+                Assert.AreEqual(2, cont.ItemsCount);
                 break;
         }
     }
@@ -234,12 +234,12 @@ public class RDFContainerTest
         switch (containerType)
         {
             case RDFModelEnums.RDFContainerTypes.Alt:
-                Assert.IsTrue(cont.ItemsCount == 1);
+                Assert.AreEqual(1, cont.ItemsCount);
                 break;
 
             case RDFModelEnums.RDFContainerTypes.Bag:
             case RDFModelEnums.RDFContainerTypes.Seq:
-                Assert.IsTrue(cont.ItemsCount == 2);
+                Assert.AreEqual(2, cont.ItemsCount);
                 break;
         }
     }
@@ -266,7 +266,7 @@ public class RDFContainerTest
         }
 
         cont.ClearItems();
-        Assert.IsTrue(cont.ItemsCount == 0);
+        Assert.AreEqual(0, cont.ItemsCount);
     }
 
     [DataTestMethod]
@@ -282,7 +282,7 @@ public class RDFContainerTest
         RDFGraph graph = cont.ReifyContainer();
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         switch (containerType)
         {
             case RDFModelEnums.RDFContainerTypes.Alt:
@@ -320,7 +320,7 @@ public class RDFContainerTest
         RDFGraph graph = cont.ReifyContainer();
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 3);
+        Assert.AreEqual(3, graph.TriplesCount);
         switch (containerType)
         {
             case RDFModelEnums.RDFContainerTypes.Alt:

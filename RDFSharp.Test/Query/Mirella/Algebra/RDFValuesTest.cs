@@ -33,8 +33,8 @@ public class RDFValuesTest
 
         Assert.IsNotNull(values);
         Assert.IsNotNull(values.Bindings);
-        Assert.IsTrue(values.Bindings.Count == 0);
-        Assert.IsTrue(values.MaxBindingsLength() == 0);
+        Assert.AreEqual(0, values.Bindings.Count);
+        Assert.AreEqual(0, values.MaxBindingsLength());
         Assert.IsFalse(values.IsEvaluable);
         Assert.IsFalse(values.IsInjected);
         Assert.IsTrue(values.ToString().Equals(string.Concat("VALUES () {", Environment.NewLine, "    }")));
@@ -51,8 +51,8 @@ public class RDFValuesTest
 
         Assert.IsNotNull(values);
         Assert.IsNotNull(values.Bindings);
-        Assert.IsTrue(values.Bindings.Count == 3);
-        Assert.IsTrue(values.MaxBindingsLength() == 1);
+        Assert.AreEqual(3, values.Bindings.Count);
+        Assert.AreEqual(1, values.MaxBindingsLength());
         Assert.IsTrue(values.IsEvaluable);
         Assert.IsFalse(values.IsInjected);
         Assert.IsTrue(values.ToString().Equals(string.Concat("VALUES (?V1 ?V2 ?V3) {", Environment.NewLine, "      ( <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/knows> UNDEF )", Environment.NewLine, "    }")));
@@ -70,8 +70,8 @@ public class RDFValuesTest
 
         Assert.IsNotNull(values);
         Assert.IsNotNull(values.Bindings);
-        Assert.IsTrue(values.Bindings.Count == 3);
-        Assert.IsTrue(values.MaxBindingsLength() == 2);
+        Assert.AreEqual(3, values.Bindings.Count);
+        Assert.AreEqual(2, values.MaxBindingsLength());
         Assert.IsTrue(values.IsEvaluable);
         Assert.IsFalse(values.IsInjected);
         Assert.IsTrue(values.ToString().Equals(string.Concat("VALUES (?V1 ?V2 ?V3) {", Environment.NewLine, "      ( <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/knows> UNDEF )", Environment.NewLine, "      ( <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt> UNDEF UNDEF )", Environment.NewLine, "    }")));
@@ -93,11 +93,11 @@ public class RDFValuesTest
         Assert.IsTrue((bool)valuesTable.ExtendedProperties[RDFQueryEngine.IsOptional]);
         Assert.IsTrue(valuesTable.ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
         Assert.IsFalse((bool)valuesTable.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
-        Assert.IsTrue(valuesTable.Columns.Count == 3);
+        Assert.AreEqual(3, valuesTable.Columns.Count);
         Assert.IsTrue(valuesTable.Columns.Contains("?V1"));
         Assert.IsTrue(valuesTable.Columns.Contains("?V2"));
         Assert.IsTrue(valuesTable.Columns.Contains("?V3"));
-        Assert.IsTrue(valuesTable.Rows.Count == 2);
+        Assert.AreEqual(2, valuesTable.Rows.Count);
         Assert.IsTrue(valuesTable.Rows[0]["?V1"].Equals(RDFVocabulary.RDF.TYPE.ToString()));
         Assert.IsTrue(valuesTable.Rows[0]["?V2"].Equals(RDFVocabulary.FOAF.KNOWS.ToString()));
         Assert.IsTrue(valuesTable.Rows[0]["?V3"].Equals(DBNull.Value));

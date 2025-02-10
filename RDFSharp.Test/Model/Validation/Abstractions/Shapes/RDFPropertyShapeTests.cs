@@ -36,14 +36,14 @@ public class RDFPropertyShapeTests
         Assert.IsNotNull(propertyShape.Path);
         Assert.IsTrue(propertyShape.Path.Equals(RDFVocabulary.FOAF.NAME));
         Assert.IsFalse(propertyShape.Deactivated);
-        Assert.IsTrue(propertyShape.Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(propertyShape.MessagesCount == 0);
-        Assert.IsTrue(propertyShape.TargetsCount == 0);
-        Assert.IsTrue(propertyShape.ConstraintsCount == 0);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, propertyShape.Severity);
+        Assert.AreEqual(0, propertyShape.MessagesCount);
+        Assert.AreEqual(0, propertyShape.TargetsCount);
+        Assert.AreEqual(0, propertyShape.ConstraintsCount);
         Assert.IsNotNull(propertyShape.Descriptions);
-        Assert.IsTrue(propertyShape.Descriptions.Count == 0);
+        Assert.AreEqual(0, propertyShape.Descriptions.Count);
         Assert.IsNotNull(propertyShape.Names);
-        Assert.IsTrue(propertyShape.Names.Count == 0);
+        Assert.AreEqual(0, propertyShape.Names.Count);
         Assert.IsNull(propertyShape.Order);
         Assert.IsNull(propertyShape.Group);
     }
@@ -59,14 +59,14 @@ public class RDFPropertyShapeTests
         Assert.IsNotNull(propertyShape.Path);
         Assert.IsTrue(propertyShape.Path.Equals(RDFVocabulary.FOAF.NAME));
         Assert.IsFalse(propertyShape.Deactivated);
-        Assert.IsTrue(propertyShape.Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(propertyShape.MessagesCount == 0);
-        Assert.IsTrue(propertyShape.TargetsCount == 0);
-        Assert.IsTrue(propertyShape.ConstraintsCount == 0);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, propertyShape.Severity);
+        Assert.AreEqual(0, propertyShape.MessagesCount);
+        Assert.AreEqual(0, propertyShape.TargetsCount);
+        Assert.AreEqual(0, propertyShape.ConstraintsCount);
         Assert.IsNotNull(propertyShape.Descriptions);
-        Assert.IsTrue(propertyShape.Descriptions.Count == 0);
+        Assert.AreEqual(0, propertyShape.Descriptions.Count);
         Assert.IsNotNull(propertyShape.Names);
-        Assert.IsTrue(propertyShape.Names.Count == 0);
+        Assert.AreEqual(0, propertyShape.Names.Count);
         Assert.IsNull(propertyShape.Order);
         Assert.IsNull(propertyShape.Group);
     }
@@ -93,7 +93,7 @@ public class RDFPropertyShapeTests
         RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME);
         int i = propertyShape.Count();
 
-        Assert.IsTrue(i == 0);
+        Assert.AreEqual(0, i);
     }
 
     [TestMethod]
@@ -114,7 +114,7 @@ public class RDFPropertyShapeTests
         propertyShape.AddName(new RDFPlainLiteral("hello"));
         propertyShape.AddName(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING));
 
-        Assert.IsTrue(propertyShape.Names.Count == 2);
+        Assert.AreEqual(2, propertyShape.Names.Count);
     }
 
     [TestMethod]
@@ -125,7 +125,7 @@ public class RDFPropertyShapeTests
         propertyShape.AddDescription(new RDFPlainLiteral("hello"));
         propertyShape.AddDescription(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING));
 
-        Assert.IsTrue(propertyShape.Descriptions.Count == 2);
+        Assert.AreEqual(2, propertyShape.Descriptions.Count);
     }
 
     [TestMethod]
@@ -160,7 +160,7 @@ public class RDFPropertyShapeTests
 
         Assert.IsNotNull(pshGraph);
         Assert.IsTrue(pshGraph.Context.Equals(propertyShape.URI));
-        Assert.IsTrue(pshGraph.TriplesCount == 8);
+        Assert.AreEqual(8, pshGraph.TriplesCount);
         Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE)));
         Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.PATH, RDFVocabulary.FOAF.NAME)));
         Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.SEVERITY_PROPERTY, RDFVocabulary.SHACL.VIOLATION)));
@@ -183,7 +183,7 @@ public class RDFPropertyShapeTests
 
         Assert.IsNotNull(pshGraph);
         Assert.IsTrue(pshGraph.Context.Equals(propertyShape.URI));
-        Assert.IsTrue(pshGraph.TriplesCount == 9);
+        Assert.AreEqual(9, pshGraph.TriplesCount);
         Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE)));
         Assert.IsTrue(pshGraph.Any(t => t.Subject.Equals(propertyShape)
                                         && t.Predicate.Equals(RDFVocabulary.SHACL.PATH)
@@ -210,7 +210,7 @@ public class RDFPropertyShapeTests
 
         Assert.IsNotNull(pshGraph);
         Assert.IsTrue(pshGraph.Context.Equals(propertyShape.URI));
-        Assert.IsTrue(pshGraph.TriplesCount == 15);
+        Assert.AreEqual(15, pshGraph.TriplesCount);
         Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE)));
         Assert.IsTrue(pshGraph.Any(t => t.Subject.Equals(propertyShape)
                                         && t.Predicate.Equals(RDFVocabulary.SHACL.PATH)
@@ -239,7 +239,7 @@ public class RDFPropertyShapeTests
 
         Assert.IsNotNull(pshGraph);
         Assert.IsTrue(pshGraph.Context.Equals(propertyShape.URI));
-        Assert.IsTrue(pshGraph.TriplesCount == 14);
+        Assert.AreEqual(14, pshGraph.TriplesCount);
         Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE)));
         Assert.IsTrue(pshGraph.Any(t => t.Subject.Equals(propertyShape)
                                         && t.Predicate.Equals(RDFVocabulary.SHACL.PATH)
@@ -268,7 +268,7 @@ public class RDFPropertyShapeTests
 
         Assert.IsNotNull(pshGraph);
         Assert.IsTrue(pshGraph.Context.Equals(propertyShape.URI));
-        Assert.IsTrue(pshGraph.TriplesCount == 8);
+        Assert.AreEqual(8, pshGraph.TriplesCount);
         Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE)));
         Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.PATH, RDFVocabulary.FOAF.NAME)));
         Assert.IsTrue(pshGraph.ContainsTriple(new RDFTriple(propertyShape, RDFVocabulary.SHACL.SEVERITY_PROPERTY, RDFVocabulary.SHACL.VIOLATION)));

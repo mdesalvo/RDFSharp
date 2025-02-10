@@ -70,7 +70,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(nShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 0);
+        Assert.AreEqual(0, focusNodes.Count);
     }
 
     [TestMethod]
@@ -80,7 +80,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 0);
+        Assert.AreEqual(0, focusNodes.Count);
     }
 
     [TestMethod]
@@ -91,7 +91,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(nShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 3);
+        Assert.AreEqual(3, focusNodes.Count);
     }
 
     [TestMethod]
@@ -102,7 +102,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 3);
+        Assert.AreEqual(3, focusNodes.Count);
     }
 
     [TestMethod]
@@ -113,7 +113,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(nShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 4);
+        Assert.AreEqual(4, focusNodes.Count);
     }
 
     [TestMethod]
@@ -124,7 +124,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 4);
+        Assert.AreEqual(4, focusNodes.Count);
     }
 
     [TestMethod]
@@ -135,7 +135,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(nShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 0);
+        Assert.AreEqual(0, focusNodes.Count);
     }
 
     [TestMethod]
@@ -146,7 +146,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 0);
+        Assert.AreEqual(0, focusNodes.Count);
     }
 
     [TestMethod]
@@ -157,7 +157,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(nShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 0);
+        Assert.AreEqual(0, focusNodes.Count);
     }
 
     [TestMethod]
@@ -168,7 +168,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 0);
+        Assert.AreEqual(0, focusNodes.Count);
     }
 
     [TestMethod]
@@ -179,7 +179,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(nShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 1);
+        Assert.AreEqual(1, focusNodes.Count);
     }
 
     [TestMethod]
@@ -190,7 +190,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 1);
+        Assert.AreEqual(1, focusNodes.Count);
     }
 
     [TestMethod]
@@ -201,7 +201,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(nShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 4);
+        Assert.AreEqual(4, focusNodes.Count);
     }
 
     [TestMethod]
@@ -212,7 +212,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 4);
+        Assert.AreEqual(4, focusNodes.Count);
     }
 
     [TestMethod]
@@ -223,7 +223,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(nShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 0);
+        Assert.AreEqual(0, focusNodes.Count);
     }
 
     [TestMethod]
@@ -234,7 +234,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 0);
+        Assert.AreEqual(0, focusNodes.Count);
     }
 
     [TestMethod]
@@ -245,7 +245,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(nShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 4);
+        Assert.AreEqual(4, focusNodes.Count);
     }
 
     [TestMethod]
@@ -256,7 +256,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 4);
+        Assert.AreEqual(4, focusNodes.Count);
     }
 
     [TestMethod]
@@ -267,7 +267,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(nShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 0);
+        Assert.AreEqual(0, focusNodes.Count);
     }
 
     [TestMethod]
@@ -278,7 +278,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 0);
+        Assert.AreEqual(0, focusNodes.Count);
     }
 
     [TestMethod]
@@ -287,7 +287,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(null);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 0);
+        Assert.AreEqual(0, focusNodes.Count);
     }
 
     [TestMethod]
@@ -297,7 +297,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> focusNodes = RDFValidationHelper.GetFocusNodesOf(null, nShape);
 
         Assert.IsNotNull(focusNodes);
-        Assert.IsTrue(focusNodes.Count == 0);
+        Assert.AreEqual(0, focusNodes.Count);
     }
 
     [TestMethod]
@@ -309,7 +309,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(nShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 0);
+        Assert.AreEqual(0, valueNodes.Count);
     }
 
     [TestMethod]
@@ -321,7 +321,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(pShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 0);
+        Assert.AreEqual(0, valueNodes.Count);
     }
 
     [TestMethod]
@@ -334,7 +334,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(nShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 3);
+        Assert.AreEqual(3, valueNodes.Count);
     }
 
     [TestMethod]
@@ -347,7 +347,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(pShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 3);
+        Assert.AreEqual(3, valueNodes.Count);
     }
 
     [TestMethod]
@@ -360,7 +360,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(nShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 4);
+        Assert.AreEqual(4, valueNodes.Count);
     }
 
     [TestMethod]
@@ -373,7 +373,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(pShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 5);
+        Assert.AreEqual(5, valueNodes.Count);
     }
 
     [TestMethod]
@@ -386,7 +386,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(nShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 0);
+        Assert.AreEqual(0, valueNodes.Count);
     }
 
     [TestMethod]
@@ -399,7 +399,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(pShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 0);
+        Assert.AreEqual(0, valueNodes.Count);
     }
 
     [TestMethod]
@@ -412,7 +412,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(nShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 0);
+        Assert.AreEqual(0, valueNodes.Count);
     }
 
     [TestMethod]
@@ -425,7 +425,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(pShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 0);
+        Assert.AreEqual(0, valueNodes.Count);
     }
 
     [TestMethod]
@@ -438,7 +438,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(nShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 1);
+        Assert.AreEqual(1, valueNodes.Count);
     }
 
     [TestMethod]
@@ -451,7 +451,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(pShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 1);
+        Assert.AreEqual(1, valueNodes.Count);
     }
 
     [TestMethod]
@@ -464,7 +464,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(nShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 4);
+        Assert.AreEqual(4, valueNodes.Count);
     }
 
     [TestMethod]
@@ -477,7 +477,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(pShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 5);
+        Assert.AreEqual(5, valueNodes.Count);
     }
 
     [TestMethod]
@@ -490,7 +490,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(nShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 0);
+        Assert.AreEqual(0, valueNodes.Count);
     }
 
     [TestMethod]
@@ -503,7 +503,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(pShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 0);
+        Assert.AreEqual(0, valueNodes.Count);
     }
 
     [TestMethod]
@@ -516,7 +516,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(nShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 4);
+        Assert.AreEqual(4, valueNodes.Count);
     }
 
     [TestMethod]
@@ -529,7 +529,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(pShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 4);
+        Assert.AreEqual(4, valueNodes.Count);
     }
 
     [TestMethod]
@@ -542,7 +542,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(nShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 0);
+        Assert.AreEqual(0, valueNodes.Count);
     }
 
     [TestMethod]
@@ -555,7 +555,7 @@ public class RDFValidationHelperTest
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(pShape, focusNode)));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 0);
+        Assert.AreEqual(0, valueNodes.Count);
     }
 
     [TestMethod]
@@ -564,7 +564,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> valueNodes = dataGraph.GetValueNodesOf(null, new RDFResource("ex:Alice"));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 0);
+        Assert.AreEqual(0, valueNodes.Count);
     }
 
     [TestMethod]
@@ -574,7 +574,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> valueNodes = RDFValidationHelper.GetValueNodesOf(null, nShape, new RDFResource("ex:Alice"));
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 0);
+        Assert.AreEqual(0, valueNodes.Count);
     }
 
     [TestMethod]
@@ -584,7 +584,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> valueNodes = dataGraph.GetValueNodesOf(nShape, null);
 
         Assert.IsNotNull(valueNodes);
-        Assert.IsTrue(valueNodes.Count == 0);
+        Assert.AreEqual(0, valueNodes.Count);
     }
 
     [TestMethod]
@@ -593,7 +593,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> persons = dataGraph.GetInstancesOfClass(new RDFResource("ex:Person"));
 
         Assert.IsNotNull(persons);
-        Assert.IsTrue(persons.Count == 3);
+        Assert.AreEqual(3, persons.Count);
     }
 
     [TestMethod]
@@ -602,7 +602,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> persons = dataGraph.GetInstancesOfClass(new RDFResource("ex:Human"));
 
         Assert.IsNotNull(persons);
-        Assert.IsTrue(persons.Count == 4);
+        Assert.AreEqual(4, persons.Count);
     }
 
     [TestMethod]
@@ -611,7 +611,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> persons = dataGraph.GetInstancesOfClass(new RDFResource("ex:Guy"));
 
         Assert.IsNotNull(persons);
-        Assert.IsTrue(persons.Count == 0);
+        Assert.AreEqual(0, persons.Count);
     }
 
     [TestMethod]
@@ -620,7 +620,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> persons = dataGraph.GetInstancesOfClass(new RDFResource("ex:People"));
 
         Assert.IsNotNull(persons);
-        Assert.IsTrue(persons.Count == 0);
+        Assert.AreEqual(0, persons.Count);
     }
 
     [TestMethod]
@@ -629,7 +629,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> persons = dataGraph.GetInstancesOfClass(null);
 
         Assert.IsNotNull(persons);
-        Assert.IsTrue(persons.Count == 0);
+        Assert.AreEqual(0, persons.Count);
     }
 
     [TestMethod]
@@ -638,7 +638,7 @@ public class RDFValidationHelperTest
         List<RDFPatternMember> persons = RDFValidationHelper.GetInstancesOfClass(null, new RDFResource("ex:Person"));
 
         Assert.IsNotNull(persons);
-        Assert.IsTrue(persons.Count == 0);
+        Assert.AreEqual(0, persons.Count);
     }
 
     [TestMethod]
@@ -711,20 +711,20 @@ public class RDFValidationHelperTest
         #region Asserts
         Assert.IsNotNull(shapesGraph2);
         Assert.IsTrue(shapesGraph2.Equals(new RDFResource("ex:shapesGraph")));
-        Assert.IsTrue(shapesGraph2.ShapesCount == 1);
+        Assert.AreEqual(1, shapesGraph2.ShapesCount);
         RDFNodeShape shape2 = shapesGraph2.SelectShape("ex:nodeShape") as RDFNodeShape;
         Assert.IsNotNull(shape2);
             
         //Attributes
         Assert.IsFalse(shape2.Deactivated);
-        Assert.IsTrue(shape2.Severity == severity);
-        Assert.IsTrue(shape2.MessagesCount == 1);
+        Assert.AreEqual(severity, shape2.Severity);
+        Assert.AreEqual(1, shape2.MessagesCount);
         RDFPlainLiteral shape2Message = shape2.Messages.Single() as RDFPlainLiteral;
         Assert.IsNotNull(shape2Message);
         Assert.IsTrue(shape2Message.Equals(new RDFPlainLiteral("message", "en-US")));
 
         //Targets
-        Assert.IsTrue(shape2.TargetsCount == 4);
+        Assert.AreEqual(4, shape2.TargetsCount);
         RDFTargetClass shape2TargetClass = shape2.Targets.Single(x => x is RDFTargetClass) as RDFTargetClass;
         Assert.IsNotNull(shape2TargetClass);
         Assert.IsTrue(shape2TargetClass.TargetValue.Equals(new RDFResource("ex:Person")));
@@ -739,7 +739,7 @@ public class RDFValidationHelperTest
         Assert.IsTrue(shape2TargetObjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
 
         //Constraints
-        Assert.IsTrue(shape2.ConstraintsCount == 30);
+        Assert.AreEqual(30, shape2.ConstraintsCount);
         RDFClassConstraint shape2ClassConstraint = shape2.Constraints.Single(x => x is RDFClassConstraint) as RDFClassConstraint;
         Assert.IsNotNull(shape2ClassConstraint);
         Assert.IsTrue(shape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
@@ -752,7 +752,7 @@ public class RDFValidationHelperTest
         Assert.IsTrue(shape2ClosedConstraint.IgnoredProperties.ContainsKey(RDFVocabulary.FOAF.KNOWS.PatternMemberID));
         RDFDatatypeConstraint shape2DatatypeConstraint = shape2.Constraints.Single(x => x is RDFDatatypeConstraint) as RDFDatatypeConstraint;
         Assert.IsNotNull(shape2DatatypeConstraint);
-        Assert.IsTrue(shape2DatatypeConstraint.Datatype.ToString() == RDFModelEnums.RDFDatatypes.XSD_INTEGER.GetDatatypeFromEnum());
+        Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_INTEGER.GetDatatypeFromEnum(), shape2DatatypeConstraint.Datatype.ToString());
         RDFDisjointConstraint shape2DisjointConstraint = shape2.Constraints.Single(x => x is RDFDisjointConstraint) as RDFDisjointConstraint;
         Assert.IsNotNull(shape2DisjointConstraint);
         Assert.IsTrue(shape2DisjointConstraint.DisjointPredicate.Equals(RDFVocabulary.FOAF.KNOWS));
@@ -788,7 +788,7 @@ public class RDFValidationHelperTest
         Assert.IsTrue(shape2LessThanOrEqualsConstraint.LessThanOrEqualsPredicate.Equals(new RDFResource("ex:prop")));
         RDFMaxCountConstraint shape2MaxCountConstraint = shape2.Constraints.Single(x => x is RDFMaxCountConstraint) as RDFMaxCountConstraint;
         Assert.IsNotNull(shape2MaxCountConstraint);
-        Assert.IsTrue(shape2MaxCountConstraint.MaxCount == 2);
+        Assert.AreEqual(2, shape2MaxCountConstraint.MaxCount);
         RDFMaxExclusiveConstraint shape2MaxExclusiveConstraint = shape2.Constraints.Single(x => x is RDFMaxExclusiveConstraint) as RDFMaxExclusiveConstraint;
         Assert.IsNotNull(shape2MaxExclusiveConstraint);
         Assert.IsTrue(shape2MaxExclusiveConstraint.Value.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -797,10 +797,10 @@ public class RDFValidationHelperTest
         Assert.IsTrue(shape2MaxInclusiveConstraint.Value.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         RDFMaxLengthConstraint shape2MaxLengthConstraint = shape2.Constraints.Single(x => x is RDFMaxLengthConstraint) as RDFMaxLengthConstraint;
         Assert.IsNotNull(shape2MaxLengthConstraint);
-        Assert.IsTrue(shape2MaxLengthConstraint.MaxLength == 2);
+        Assert.AreEqual(2, shape2MaxLengthConstraint.MaxLength);
         RDFMinCountConstraint shape2MinCountConstraint = shape2.Constraints.Single(x => x is RDFMinCountConstraint) as RDFMinCountConstraint;
         Assert.IsNotNull(shape2MinCountConstraint);
-        Assert.IsTrue(shape2MinCountConstraint.MinCount == 2);
+        Assert.AreEqual(2, shape2MinCountConstraint.MinCount);
         RDFMinExclusiveConstraint shape2MinExclusiveConstraint = shape2.Constraints.Single(x => x is RDFMinExclusiveConstraint) as RDFMinExclusiveConstraint;
         Assert.IsNotNull(shape2MinExclusiveConstraint);
         Assert.IsTrue(shape2MinExclusiveConstraint.Value.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -809,13 +809,13 @@ public class RDFValidationHelperTest
         Assert.IsTrue(shape2MinInclusiveConstraint.Value.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         RDFMinLengthConstraint shape2MinLengthConstraint = shape2.Constraints.Single(x => x is RDFMinLengthConstraint) as RDFMinLengthConstraint;
         Assert.IsNotNull(shape2MinLengthConstraint);
-        Assert.IsTrue(shape2MinLengthConstraint.MinLength == 2);
+        Assert.AreEqual(2, shape2MinLengthConstraint.MinLength);
         RDFNodeConstraint shape2NodeConstraint = shape2.Constraints.Single(x => x is RDFNodeConstraint) as RDFNodeConstraint;
         Assert.IsNotNull(shape2NodeConstraint);
         Assert.IsTrue(shape2NodeConstraint.NodeShapeUri.Equals(new RDFResource("ex:nodeShape")));
         RDFNodeKindConstraint shape2NodeKindConstraint = shape2.Constraints.Single(x => x is RDFNodeKindConstraint) as RDFNodeKindConstraint;
         Assert.IsNotNull(shape2NodeKindConstraint);
-        Assert.IsTrue(shape2NodeKindConstraint.NodeKind == nodeKind);
+        Assert.AreEqual(nodeKind, shape2NodeKindConstraint.NodeKind);
         RDFNotConstraint shape2NotConstraint = shape2.Constraints.Single(x => x is RDFNotConstraint) as RDFNotConstraint;
         Assert.IsNotNull(shape2NotConstraint);
         Assert.IsTrue(shape2NotConstraint.NotShape.Equals(new RDFResource("ex:notShape")));
@@ -835,8 +835,8 @@ public class RDFValidationHelperTest
         RDFQualifiedValueShapeConstraint shape2QualifiedValueShapeConstraint = shape2.Constraints.Single(x => x is RDFQualifiedValueShapeConstraint) as RDFQualifiedValueShapeConstraint;
         Assert.IsNotNull(shape2QualifiedValueShapeConstraint);
         Assert.IsTrue(shape2QualifiedValueShapeConstraint.QualifiedValueShapeUri.Equals(new RDFResource("ex:qvShape")));
-        Assert.IsTrue(shape2QualifiedValueShapeConstraint.QualifiedValueMinCount == 2);
-        Assert.IsTrue(shape2QualifiedValueShapeConstraint.QualifiedValueMaxCount == 3);
+        Assert.AreEqual(2, shape2QualifiedValueShapeConstraint.QualifiedValueMinCount);
+        Assert.AreEqual(3, shape2QualifiedValueShapeConstraint.QualifiedValueMaxCount);
         RDFUniqueLangConstraint shape2UniqueLangConstraint = shape2.Constraints.Single(x => x is RDFUniqueLangConstraint) as RDFUniqueLangConstraint;
         Assert.IsNotNull(shape2UniqueLangConstraint);
         Assert.IsTrue(shape2UniqueLangConstraint.UniqueLang);
@@ -913,23 +913,23 @@ public class RDFValidationHelperTest
 
         #region Asserts
         Assert.IsNotNull(shapesGraph2);
-        Assert.IsTrue(shapesGraph2.ShapesCount == 1);
+        Assert.AreEqual(1, shapesGraph2.ShapesCount);
         Assert.IsTrue(shapesGraph2.Equals(new RDFResource("ex:shapesGraph")));
         RDFPropertyShape shape2 = shapesGraph2.SelectShape("ex:propertyShape") as RDFPropertyShape;
         Assert.IsNotNull(shape2);
 
         //Attributes
         Assert.IsFalse(shape2.Deactivated);
-        Assert.IsTrue(shape2.Severity == severity);
-        Assert.IsTrue(shape2.MessagesCount == 1);
+        Assert.AreEqual(severity, shape2.Severity);
+        Assert.AreEqual(1, shape2.MessagesCount);
         RDFPlainLiteral shape2Message = shape2.Messages.Single() as RDFPlainLiteral;
         Assert.IsNotNull(shape2Message);
         Assert.IsTrue(shape2Message.Equals(new RDFPlainLiteral("message", "en-US")));
 
         //NonValidating
-        Assert.IsTrue(shape2.Descriptions.Count == 1);
+        Assert.AreEqual(1, shape2.Descriptions.Count);
         Assert.IsTrue(shape2.Descriptions.Single().Equals(new RDFPlainLiteral("description", "en-US")));
-        Assert.IsTrue(shape2.Names.Count == 1);
+        Assert.AreEqual(1, shape2.Names.Count);
         Assert.IsTrue(shape2.Names.Single().Equals(new RDFPlainLiteral("name", "en-US")));
         Assert.IsNotNull(shape2.Order);
         Assert.IsTrue(shape2.Order.Equals(RDFTypedLiteral.One));
@@ -937,7 +937,7 @@ public class RDFValidationHelperTest
         Assert.IsTrue(shape2.Group.Equals(new RDFResource("ex:shapeGroup")));
 
         //Targets
-        Assert.IsTrue(shape2.TargetsCount == 4);
+        Assert.AreEqual(4, shape2.TargetsCount);
         RDFTargetClass shape2TargetClass = shape2.Targets.Single(x => x is RDFTargetClass) as RDFTargetClass;
         Assert.IsNotNull(shape2TargetClass);
         Assert.IsTrue(shape2TargetClass.TargetValue.Equals(new RDFResource("ex:Person")));
@@ -952,7 +952,7 @@ public class RDFValidationHelperTest
         Assert.IsTrue(shape2TargetObjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
 
         //Constraints
-        Assert.IsTrue(shape2.ConstraintsCount == 30);
+        Assert.AreEqual(30, shape2.ConstraintsCount);
         RDFClassConstraint shape2ClassConstraint = shape2.Constraints.Single(x => x is RDFClassConstraint) as RDFClassConstraint;
         Assert.IsNotNull(shape2ClassConstraint);
         Assert.IsTrue(shape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
@@ -965,7 +965,7 @@ public class RDFValidationHelperTest
         Assert.IsTrue(shape2ClosedConstraint.IgnoredProperties.ContainsKey(RDFVocabulary.FOAF.KNOWS.PatternMemberID));
         RDFDatatypeConstraint shape2DatatypeConstraint = shape2.Constraints.Single(x => x is RDFDatatypeConstraint) as RDFDatatypeConstraint;
         Assert.IsNotNull(shape2DatatypeConstraint);
-        Assert.IsTrue(shape2DatatypeConstraint.Datatype.ToString() == RDFModelEnums.RDFDatatypes.XSD_INTEGER.GetDatatypeFromEnum());
+        Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_INTEGER.GetDatatypeFromEnum(), shape2DatatypeConstraint.Datatype.ToString());
         RDFDisjointConstraint shape2DisjointConstraint = shape2.Constraints.Single(x => x is RDFDisjointConstraint) as RDFDisjointConstraint;
         Assert.IsNotNull(shape2DisjointConstraint);
         Assert.IsTrue(shape2DisjointConstraint.DisjointPredicate.Equals(RDFVocabulary.FOAF.KNOWS));
@@ -1001,7 +1001,7 @@ public class RDFValidationHelperTest
         Assert.IsTrue(shape2LessThanOrEqualsConstraint.LessThanOrEqualsPredicate.Equals(new RDFResource("ex:prop")));
         RDFMaxCountConstraint shape2MaxCountConstraint = shape2.Constraints.Single(x => x is RDFMaxCountConstraint) as RDFMaxCountConstraint;
         Assert.IsNotNull(shape2MaxCountConstraint);
-        Assert.IsTrue(shape2MaxCountConstraint.MaxCount == 2);
+        Assert.AreEqual(2, shape2MaxCountConstraint.MaxCount);
         RDFMaxExclusiveConstraint shape2MaxExclusiveConstraint = shape2.Constraints.Single(x => x is RDFMaxExclusiveConstraint) as RDFMaxExclusiveConstraint;
         Assert.IsNotNull(shape2MaxExclusiveConstraint);
         Assert.IsTrue(shape2MaxExclusiveConstraint.Value.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -1010,10 +1010,10 @@ public class RDFValidationHelperTest
         Assert.IsTrue(shape2MaxInclusiveConstraint.Value.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         RDFMaxLengthConstraint shape2MaxLengthConstraint = shape2.Constraints.Single(x => x is RDFMaxLengthConstraint) as RDFMaxLengthConstraint;
         Assert.IsNotNull(shape2MaxLengthConstraint);
-        Assert.IsTrue(shape2MaxLengthConstraint.MaxLength == 2);
+        Assert.AreEqual(2, shape2MaxLengthConstraint.MaxLength);
         RDFMinCountConstraint shape2MinCountConstraint = shape2.Constraints.Single(x => x is RDFMinCountConstraint) as RDFMinCountConstraint;
         Assert.IsNotNull(shape2MinCountConstraint);
-        Assert.IsTrue(shape2MinCountConstraint.MinCount == 2);
+        Assert.AreEqual(2, shape2MinCountConstraint.MinCount);
         RDFMinExclusiveConstraint shape2MinExclusiveConstraint = shape2.Constraints.Single(x => x is RDFMinExclusiveConstraint) as RDFMinExclusiveConstraint;
         Assert.IsNotNull(shape2MinExclusiveConstraint);
         Assert.IsTrue(shape2MinExclusiveConstraint.Value.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -1022,13 +1022,13 @@ public class RDFValidationHelperTest
         Assert.IsTrue(shape2MinInclusiveConstraint.Value.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         RDFMinLengthConstraint shape2MinLengthConstraint = shape2.Constraints.Single(x => x is RDFMinLengthConstraint) as RDFMinLengthConstraint;
         Assert.IsNotNull(shape2MinLengthConstraint);
-        Assert.IsTrue(shape2MinLengthConstraint.MinLength == 2);
+        Assert.AreEqual(2, shape2MinLengthConstraint.MinLength);
         RDFNodeConstraint shape2NodeConstraint = shape2.Constraints.Single(x => x is RDFNodeConstraint) as RDFNodeConstraint;
         Assert.IsNotNull(shape2NodeConstraint);
         Assert.IsTrue(shape2NodeConstraint.NodeShapeUri.Equals(new RDFResource("ex:nodeShape")));
         RDFNodeKindConstraint shape2NodeKindConstraint = shape2.Constraints.Single(x => x is RDFNodeKindConstraint) as RDFNodeKindConstraint;
         Assert.IsNotNull(shape2NodeKindConstraint);
-        Assert.IsTrue(shape2NodeKindConstraint.NodeKind == nodeKind);
+        Assert.AreEqual(nodeKind, shape2NodeKindConstraint.NodeKind);
         RDFNotConstraint shape2NotConstraint = shape2.Constraints.Single(x => x is RDFNotConstraint) as RDFNotConstraint;
         Assert.IsNotNull(shape2NotConstraint);
         Assert.IsTrue(shape2NotConstraint.NotShape.Equals(new RDFResource("ex:notShape")));
@@ -1048,8 +1048,8 @@ public class RDFValidationHelperTest
         RDFQualifiedValueShapeConstraint shape2QualifiedValueShapeConstraint = shape2.Constraints.Single(x => x is RDFQualifiedValueShapeConstraint) as RDFQualifiedValueShapeConstraint;
         Assert.IsNotNull(shape2QualifiedValueShapeConstraint);
         Assert.IsTrue(shape2QualifiedValueShapeConstraint.QualifiedValueShapeUri.Equals(new RDFResource("ex:qvShape")));
-        Assert.IsTrue(shape2QualifiedValueShapeConstraint.QualifiedValueMinCount == 2);
-        Assert.IsTrue(shape2QualifiedValueShapeConstraint.QualifiedValueMaxCount == 3);
+        Assert.AreEqual(2, shape2QualifiedValueShapeConstraint.QualifiedValueMinCount);
+        Assert.AreEqual(3, shape2QualifiedValueShapeConstraint.QualifiedValueMaxCount);
         RDFUniqueLangConstraint shape2UniqueLangConstraint = shape2.Constraints.Single(x => x is RDFUniqueLangConstraint) as RDFUniqueLangConstraint;
         Assert.IsNotNull(shape2UniqueLangConstraint);
         Assert.IsTrue(shape2UniqueLangConstraint.UniqueLang);
@@ -1071,19 +1071,19 @@ public class RDFValidationHelperTest
         RDFShapesGraph shapesGraph = RDFValidationHelper.FromRDFGraph(graph);
 
         Assert.IsNotNull(shapesGraph);
-        Assert.IsTrue(shapesGraph.ShapesCount == 2);
+        Assert.AreEqual(2, shapesGraph.ShapesCount);
 
         RDFPropertyShape propertyShape = shapesGraph.SelectShape("ex:propertyShape") as RDFPropertyShape;
         Assert.IsNotNull(propertyShape);
         Assert.IsTrue(propertyShape.Path.Equals(RDFVocabulary.FOAF.KNOWS));
-        Assert.IsTrue(propertyShape.ConstraintsCount == 1);
+        Assert.AreEqual(1, propertyShape.ConstraintsCount);
         Assert.IsTrue(propertyShape.Constraints.Single() is RDFPropertyConstraint propertyShapeConstraint
                       && propertyShapeConstraint.PropertyShapeUri.Equals(new RDFResource("bnode:inlinePropertyShape")));
 
         RDFPropertyShape inlinePropertyShape = shapesGraph.SelectShape("bnode:inlinePropertyShape") as RDFPropertyShape;
         Assert.IsNotNull(inlinePropertyShape);
         Assert.IsTrue(inlinePropertyShape.Path.Equals(RDFVocabulary.FOAF.AGE));
-        Assert.IsTrue(inlinePropertyShape.ConstraintsCount == 1);
+        Assert.AreEqual(1, inlinePropertyShape.ConstraintsCount);
         Assert.IsTrue(inlinePropertyShape.Constraints.Single() is RDFClassConstraint classConstraint
                       && classConstraint.ClassType.Equals(new RDFResource("ex:Class")));
     }

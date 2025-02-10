@@ -32,7 +32,7 @@ public class RDFOffsetModifierTest
         RDFOffsetModifier modifier = new RDFOffsetModifier(25);
 
         Assert.IsNotNull(modifier);
-        Assert.IsTrue(modifier.Offset == 25);
+        Assert.AreEqual(25, modifier.Offset);
         Assert.IsFalse(modifier.IsEvaluable);
         Assert.IsTrue(modifier.ToString().Equals("OFFSET 25"));
         Assert.IsNotNull(modifier.QueryMemberStringID);
@@ -73,11 +73,11 @@ public class RDFOffsetModifierTest
         DataTable offsetTable = new RDFOffsetModifier(1).ApplyModifier(table);
 
         Assert.IsNotNull(offsetTable);
-        Assert.IsTrue(offsetTable.Columns.Count == 3);
+        Assert.AreEqual(3, offsetTable.Columns.Count);
         Assert.IsTrue(offsetTable.Columns.Contains("?A"));
         Assert.IsTrue(offsetTable.Columns.Contains("?B"));
         Assert.IsTrue(offsetTable.Columns.Contains("?C"));
-        Assert.IsTrue(offsetTable.Rows.Count == 2);
+        Assert.AreEqual(2, offsetTable.Rows.Count);
         Assert.IsTrue(offsetTable.Rows[0]["?A"].ToString().Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString()));
         Assert.IsTrue(offsetTable.Rows[0]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en-US").ToString()));
         Assert.IsTrue(offsetTable.Rows[0]["?C"].ToString().Equals(new RDFResource("ex:value0").ToString()));
@@ -115,11 +115,11 @@ public class RDFOffsetModifierTest
         DataTable offsetTable = new RDFOffsetModifier(4).ApplyModifier(table);
 
         Assert.IsNotNull(offsetTable);
-        Assert.IsTrue(offsetTable.Columns.Count == 3);
+        Assert.AreEqual(3, offsetTable.Columns.Count);
         Assert.IsTrue(offsetTable.Columns.Contains("?A"));
         Assert.IsTrue(offsetTable.Columns.Contains("?B"));
         Assert.IsTrue(offsetTable.Columns.Contains("?C"));
-        Assert.IsTrue(offsetTable.Rows.Count == 0);
+        Assert.AreEqual(0, offsetTable.Rows.Count);
         Assert.IsTrue(offsetTable.DefaultView.Sort.Equals("?A DESC"));
     }
 
@@ -136,11 +136,11 @@ public class RDFOffsetModifierTest
         DataTable offsetTable = new RDFOffsetModifier(2).ApplyModifier(table);
 
         Assert.IsNotNull(offsetTable);
-        Assert.IsTrue(offsetTable.Columns.Count == 3);
+        Assert.AreEqual(3, offsetTable.Columns.Count);
         Assert.IsTrue(offsetTable.Columns.Contains("?A"));
         Assert.IsTrue(offsetTable.Columns.Contains("?B"));
         Assert.IsTrue(offsetTable.Columns.Contains("?C"));
-        Assert.IsTrue(offsetTable.Rows.Count == 0);
+        Assert.AreEqual(0, offsetTable.Rows.Count);
         Assert.IsTrue(offsetTable.DefaultView.Sort.Equals("?A DESC"));
     }
     #endregion

@@ -32,7 +32,7 @@ public class RDFDatatypeTest
             new RDFLengthFacet(6) ]);
 
         Assert.IsNotNull(length6);
-        Assert.IsTrue(length6.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+        Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_STRING, length6.TargetDatatype);
         Assert.IsTrue(length6.URI.Equals(new Uri("ex:length6")));
         Assert.IsTrue(length6.Facets.Single() is RDFLengthFacet { Length: 6 });
         Assert.IsTrue(string.Equals(length6.ToString(), "ex:length6"));
@@ -46,14 +46,14 @@ public class RDFDatatypeTest
         RDFGraph length6Graph = length6.ToRDFGraph();
 
         Assert.IsNotNull(length6Graph);
-        Assert.IsTrue(length6Graph.TriplesCount == 7);
-        Assert.IsTrue(length6Graph[new RDFResource("ex:length6"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE, null].TriplesCount == 1);
-        Assert.IsTrue(length6Graph[new RDFResource("ex:length6"), RDFVocabulary.OWL.WITH_RESTRICTIONS, null, null].TriplesCount == 1);
-        Assert.IsTrue(length6Graph[new RDFResource("ex:length6"), RDFVocabulary.OWL.ON_DATATYPE, RDFVocabulary.XSD.STRING, null].TriplesCount == 1);
-        Assert.IsTrue(length6Graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST, null].TriplesCount == 1);
-        Assert.IsTrue(length6Graph[null, RDFVocabulary.RDF.FIRST, null, null].TriplesCount == 1);
-        Assert.IsTrue(length6Graph[null, RDFVocabulary.XSD.LENGTH, null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)].TriplesCount == 1);
-        Assert.IsTrue(length6Graph[null, RDFVocabulary.RDF.REST, null, null].TriplesCount == 1);
+        Assert.AreEqual(7, length6Graph.TriplesCount);
+        Assert.AreEqual(1, length6Graph[new RDFResource("ex:length6"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE, null].TriplesCount);
+        Assert.AreEqual(1, length6Graph[new RDFResource("ex:length6"), RDFVocabulary.OWL.WITH_RESTRICTIONS, null, null].TriplesCount);
+        Assert.AreEqual(1, length6Graph[new RDFResource("ex:length6"), RDFVocabulary.OWL.ON_DATATYPE, RDFVocabulary.XSD.STRING, null].TriplesCount);
+        Assert.AreEqual(1, length6Graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST, null].TriplesCount);
+        Assert.AreEqual(1, length6Graph[null, RDFVocabulary.RDF.FIRST, null, null].TriplesCount);
+        Assert.AreEqual(1, length6Graph[null, RDFVocabulary.XSD.LENGTH, null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)].TriplesCount);
+        Assert.AreEqual(1, length6Graph[null, RDFVocabulary.RDF.REST, null, null].TriplesCount);
     }
 
     [TestMethod]
@@ -72,9 +72,9 @@ public class RDFDatatypeTest
         RDFDatatype exString = new RDFDatatype(new Uri("ex:string"), RDFModelEnums.RDFDatatypes.XSD_STRING, []);
 
         Assert.IsNotNull(exString);
-        Assert.IsTrue(exString.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING);
+        Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_STRING, exString.TargetDatatype);
         Assert.IsTrue(exString.URI.Equals(new Uri("ex:string")));
-        Assert.IsTrue(exString.Facets.Count == 0);
+        Assert.AreEqual(0, exString.Facets.Count);
     }
 
     [TestMethod]
@@ -84,9 +84,9 @@ public class RDFDatatypeTest
         RDFGraph exStringGraph = exString.ToRDFGraph();
 
         Assert.IsNotNull(exStringGraph);
-        Assert.IsTrue(exStringGraph.TriplesCount == 2);
-        Assert.IsTrue(exStringGraph[new RDFResource("ex:string"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE, null].TriplesCount == 1);
-        Assert.IsTrue(exStringGraph[new RDFResource("ex:string"), RDFVocabulary.OWL.EQUIVALENT_CLASS, RDFVocabulary.XSD.STRING, null].TriplesCount == 1);
+        Assert.AreEqual(2, exStringGraph.TriplesCount);
+        Assert.AreEqual(1, exStringGraph[new RDFResource("ex:string"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE, null].TriplesCount);
+        Assert.AreEqual(1, exStringGraph[new RDFResource("ex:string"), RDFVocabulary.OWL.EQUIVALENT_CLASS, RDFVocabulary.XSD.STRING, null].TriplesCount);
     }
 
     [TestMethod]

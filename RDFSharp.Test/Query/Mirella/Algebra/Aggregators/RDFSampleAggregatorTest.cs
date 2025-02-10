@@ -95,10 +95,10 @@ public class RDFSampleAggregatorTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 2);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Columns[1].ColumnName == "?SAMPLEPROJ");
-        Assert.IsTrue(result.Rows.Count == 2);
+        Assert.AreEqual(2, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual("?SAMPLEPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
         Assert.IsTrue(result.Rows[0]["?SAMPLEPROJ"].ToString().Equals("hello@EN-US"));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
@@ -134,10 +134,10 @@ public class RDFSampleAggregatorTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 2);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Columns[1].ColumnName == "?SAMPLEPROJ");
-        Assert.IsTrue(result.Rows.Count == 2);
+        Assert.AreEqual(2, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual("?SAMPLEPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
         Assert.IsTrue(result.Rows[0]["?SAMPLEPROJ"].ToString().Equals("hello@EN-US"));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
@@ -175,10 +175,10 @@ public class RDFSampleAggregatorTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 2);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Columns[1].ColumnName == "?SAMPLEPROJ");
-        Assert.IsTrue(result.Rows.Count == 2);
+        Assert.AreEqual(2, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual("?SAMPLEPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
         Assert.IsTrue(result.Rows[0]["?SAMPLEPROJ"].ToString().Equals("hello@EN-US"));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));

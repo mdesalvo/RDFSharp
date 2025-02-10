@@ -37,7 +37,7 @@ public class RDFMaxAggregatorTest
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
         Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsFalse(aggregator.IsDistinct);
-        Assert.IsTrue(aggregator.AggregatorFlavor == aggregatorFlavor);
+        Assert.AreEqual(aggregatorFlavor, aggregator.AggregatorFlavor);
         Assert.IsTrue(aggregator.ToString().Equals("(MAX(?AGGVAR) AS ?PROJVAR)"));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
@@ -69,7 +69,7 @@ public class RDFMaxAggregatorTest
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
         Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsTrue(aggregator.IsDistinct);
-        Assert.IsTrue(aggregator.AggregatorFlavor == aggregatorFlavor);
+        Assert.AreEqual(aggregatorFlavor, aggregator.AggregatorFlavor);
         Assert.IsTrue(aggregator.ToString().Equals("(MAX(DISTINCT ?AGGVAR) AS ?PROJVAR)"));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
@@ -110,10 +110,10 @@ public class RDFMaxAggregatorTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 2);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Columns[1].ColumnName == "?MAXPROJ");
-        Assert.IsTrue(result.Rows.Count == 2);
+        Assert.AreEqual(2, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual("?MAXPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
         Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals("hello@EN-US"));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
@@ -154,10 +154,10 @@ public class RDFMaxAggregatorTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 2);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Columns[1].ColumnName == "?MAXPROJ");
-        Assert.IsTrue(result.Rows.Count == 2);
+        Assert.AreEqual(2, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual("?MAXPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
         Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals("http://example.org/test/test1"));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
@@ -195,10 +195,10 @@ public class RDFMaxAggregatorTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 2);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Columns[1].ColumnName == "?MAXPROJ");
-        Assert.IsTrue(result.Rows.Count == 1);
+        Assert.AreEqual(2, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual("?MAXPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual(1, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
         Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals("hello@EN-US"));
         Assert.IsTrue(aggregator.PrintHavingClause(null).Equals("(MAX(?B) = \"hello\"@EN-US)"));
@@ -239,10 +239,10 @@ public class RDFMaxAggregatorTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 2);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Columns[1].ColumnName == "?MAXPROJ");
-        Assert.IsTrue(result.Rows.Count == 2);
+        Assert.AreEqual(2, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual("?MAXPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
         Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals($"27.5^^{RDFVocabulary.XSD.DOUBLE}"));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
@@ -283,10 +283,10 @@ public class RDFMaxAggregatorTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 2);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Columns[1].ColumnName == "?MAXPROJ");
-        Assert.IsTrue(result.Rows.Count == 2);
+        Assert.AreEqual(2, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual("?MAXPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
         Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals($"27^^{RDFVocabulary.XSD.DOUBLE}"));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
@@ -324,10 +324,10 @@ public class RDFMaxAggregatorTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 2);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Columns[1].ColumnName == "?MAXPROJ");
-        Assert.IsTrue(result.Rows.Count == 1);
+        Assert.AreEqual(2, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual("?MAXPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual(1, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
         Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals($"28.24^^{RDFVocabulary.XSD.DOUBLE}"));
         Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(MAX(?A) > \"28\"^^<{RDFVocabulary.XSD.POSITIVE_INTEGER}>)"));
@@ -368,10 +368,10 @@ public class RDFMaxAggregatorTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 2);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Columns[1].ColumnName == "?MAXPROJ");
-        Assert.IsTrue(result.Rows.Count == 2);
+        Assert.AreEqual(2, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual("?MAXPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
         Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals($"27.5^^{RDFVocabulary.XSD.DOUBLE}"));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));

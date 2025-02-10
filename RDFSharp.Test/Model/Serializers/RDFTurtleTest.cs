@@ -1997,7 +1997,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 0);
+        Assert.AreEqual(0, graph.TriplesCount);
     }
 
     [TestMethod]
@@ -2009,7 +2009,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 0);
+        Assert.AreEqual(0, graph.TriplesCount);
     }
 
     [TestMethod]
@@ -2021,7 +2021,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 0);
+        Assert.AreEqual(0, graph.TriplesCount);
     }
 
     [TestMethod]
@@ -2033,7 +2033,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 0);
+        Assert.AreEqual(0, graph.TriplesCount);
         Assert.IsTrue(graph.Context.Equals(new Uri("http://example.org/")));
     }
 
@@ -2046,7 +2046,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -2059,7 +2059,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -2072,7 +2072,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -2085,7 +2085,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -2098,7 +2098,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -2111,7 +2111,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -2125,7 +2125,7 @@ public class RDFTurtleTest
 
         Assert.IsNotNull(graph);
         Assert.IsTrue(graph.Context.Equals(new Uri("http://example.org/")));
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -2138,7 +2138,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -2151,7 +2151,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -2290,7 +2290,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -2312,7 +2312,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFResource("http://obj/"))));
     }
 
@@ -2325,7 +2325,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFResource("http://obj/"))));
     }
 
@@ -2347,7 +2347,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), RDFVocabulary.RDF.ALT)));
     }
 
@@ -2369,7 +2369,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred/"), RDFVocabulary.XSD.STRING)));
     }
 
@@ -2382,7 +2382,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, RDFVocabulary.XSD.STRING, new RDFResource("http://obj/"))));
     }
 
@@ -2395,7 +2395,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, RDFVocabulary.XSD.STRING)));
     }
 
@@ -2408,7 +2408,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.FOAF.AGE, RDFVocabulary.RDF.ALT, RDFVocabulary.XSD.STRING)));
     }
 
@@ -2421,7 +2421,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.FOAF.AGE, RDFVocabulary.RDF.TYPE, RDFVocabulary.XSD.STRING)));
     }
 
@@ -2434,7 +2434,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
     }
 
@@ -2447,7 +2447,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject.Equals(new RDFResource("http://subj/")));
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -2462,7 +2462,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
     }
 
@@ -2475,7 +2475,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject.Equals(new RDFResource("http://subj/")));
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -2490,7 +2490,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
     }
 
@@ -2503,7 +2503,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject.Equals(new RDFResource("http://subj/")));
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -2608,7 +2608,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
     }
 
@@ -2621,7 +2621,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject.Equals(RDFVocabulary.RDF.ALT));
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -2654,7 +2654,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFResource("bnode:12345"))));
     }
 
@@ -2667,7 +2667,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject.Equals(new RDFResource("http://subj/")));
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.ALT));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -2682,7 +2682,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFResource("bnode:12345"))));
     }
 
@@ -2695,7 +2695,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://ago/ago"), new RDFResource("http://ago/ago"), new RDFResource("bnode:12345"))));
     }
 
@@ -2708,7 +2708,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject.Equals(new RDFResource("http://subj/")));
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -2741,7 +2741,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, RDFVocabulary.XSD.STRING, new RDFResource("bnode:12345"))));
     }
 
@@ -2754,7 +2754,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject.Equals(RDFVocabulary.RDF.ALT));
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.STRING));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -2769,7 +2769,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.FOAF.AGE, RDFVocabulary.RDF.TYPE, new RDFResource("bnode:12345"))));
     }
 
@@ -2782,7 +2782,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject.Equals(RDFVocabulary.FOAF.AGE));
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -2797,7 +2797,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -2810,7 +2810,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFResource("http://obj/")));
@@ -2825,7 +2825,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFResource("http://obj/")));
@@ -2840,7 +2840,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -2853,7 +2853,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFResource("http://obj/")));
@@ -2868,7 +2868,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFResource("http://obj/")));
@@ -2883,7 +2883,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -2896,7 +2896,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFResource("http://obj/")));
@@ -2911,7 +2911,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFResource("http://obj/")));
@@ -3034,7 +3034,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFResource("http://obj/"))));
     }
 
@@ -3047,7 +3047,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.ALT));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFResource("http://obj/")));
@@ -3062,7 +3062,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.ALT));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFResource("http://obj/")));
@@ -3077,7 +3077,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFResource("http://obj/"))));
     }
 
@@ -3090,7 +3090,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFResource("http://obj/")));
@@ -3105,7 +3105,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFResource("http://obj/")));
@@ -3147,7 +3147,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), RDFVocabulary.RDF.ALT)));
     }
 
@@ -3160,7 +3160,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(RDFVocabulary.RDF.ALT));
@@ -3175,7 +3175,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(RDFVocabulary.RDF.ALT));
@@ -3217,7 +3217,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, RDFVocabulary.XSD.STRING)));
     }
 
@@ -3230,7 +3230,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.ALT));
         Assert.IsTrue(graph.Single().Object.Equals(RDFVocabulary.XSD.STRING));
@@ -3245,7 +3245,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.ALT));
         Assert.IsTrue(graph.Single().Object.Equals(RDFVocabulary.XSD.STRING));
@@ -3260,7 +3260,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, RDFVocabulary.XSD.STRING)));
     }
 
@@ -3273,7 +3273,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsTrue(graph.Single().Object.Equals(RDFVocabulary.XSD.STRING));
@@ -3288,7 +3288,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsTrue(graph.Single().Object.Equals(RDFVocabulary.XSD.STRING));
@@ -3303,7 +3303,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("bnode:54321"))));
     }
 
@@ -3316,7 +3316,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -3331,7 +3331,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -3346,7 +3346,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("bnode:54321"))));
     }
 
@@ -3359,7 +3359,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -3374,7 +3374,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -3389,7 +3389,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("bnode:54321"))));
     }
 
@@ -3402,7 +3402,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -3417,7 +3417,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -3540,7 +3540,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFResource("bnode:54321"))));
     }
 
@@ -3553,7 +3553,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.ALT));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -3568,7 +3568,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.ALT));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -3583,7 +3583,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFResource("bnode:54321"))));
     }
 
@@ -3596,7 +3596,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -3611,7 +3611,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsTrue(graph.Single().Object is RDFResource { IsBlank: true });
@@ -3653,7 +3653,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
     }
 
@@ -3666,7 +3666,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel\"lo"))));
     }
 
@@ -3679,7 +3679,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel\\lo"))));
     }
 
@@ -3692,7 +3692,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel~lo"))));
     }
 
@@ -3705,7 +3705,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/index.html~pag2"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
     }
 
@@ -3799,7 +3799,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel😃lo"))));
     }
 
@@ -3812,7 +3812,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel😃lo"))));
     }
 
@@ -3825,7 +3825,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello","en-US"))));
     }
 
@@ -3838,7 +3838,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello","en-US--ltr"))));
     }
 
@@ -3851,7 +3851,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello","en--ltr"))));
     }
 
@@ -3864,7 +3864,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel\"lo","en-US"))));
     }
 
@@ -3877,7 +3877,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel\\lo", "en-US"))));
     }
 
@@ -3890,7 +3890,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel~lo","en-US"))));
     }
 
@@ -3903,7 +3903,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel😃lo","en-US"))));
     }
 
@@ -3916,7 +3916,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING))));
     }
 
@@ -3929,7 +3929,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("hel\"lo", RDFModelEnums.RDFDatatypes.XSD_STRING))));
     }
 
@@ -3942,7 +3942,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("hel\\lo", RDFModelEnums.RDFDatatypes.XSD_STRING))));
     }
 
@@ -3955,7 +3955,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("hel~lo", RDFModelEnums.RDFDatatypes.XSD_STRING))));
     }
 
@@ -3968,7 +3968,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("hel😃lo", RDFModelEnums.RDFDatatypes.XSD_STRING))));
     }
 
@@ -3981,7 +3981,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), RDFTypedLiteral.True)));
     }
 
@@ -3994,7 +3994,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), RDFTypedLiteral.False)));
     }
 
@@ -4007,7 +4007,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
 
@@ -4020,7 +4020,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("-25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
 
@@ -4033,7 +4033,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
 
@@ -4046,7 +4046,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25.0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
     }
 
@@ -4059,7 +4059,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25.0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
     }
 
@@ -4072,7 +4072,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("-25.0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
     }
 
@@ -4085,7 +4085,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -4098,7 +4098,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -4111,7 +4111,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -4124,7 +4124,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -4137,7 +4137,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("2.02E-5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -4150,7 +4150,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("-2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -4163,7 +4163,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("2.02E-5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -4176,7 +4176,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("-2.02E-5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -4189,7 +4189,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("-2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -4202,7 +4202,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("🌀🏯"))));
     }
 
@@ -4215,7 +4215,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
     }
 
@@ -4228,7 +4228,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
     }
 
@@ -4241,7 +4241,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hello")));
@@ -4256,7 +4256,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel\"lo"))));
     }
 
@@ -4269,7 +4269,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hel\"lo")));
@@ -4284,7 +4284,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel\\lo"))));
     }
 
@@ -4297,7 +4297,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hel\\lo")));
@@ -4312,7 +4312,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel~lo"))));
     }
 
@@ -4325,7 +4325,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hel~lo")));
@@ -4340,7 +4340,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel😃lo"))));
     }
 
@@ -4353,7 +4353,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hel😃lo")));
@@ -4368,7 +4368,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
     }
 
@@ -4381,7 +4381,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US--ltr"))));
     }
 
@@ -4394,7 +4394,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hello", "en-US")));
@@ -4409,7 +4409,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hello", "en--rtl")));
@@ -4424,7 +4424,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel\"lo", "en-US"))));
     }
 
@@ -4437,7 +4437,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hel\"lo", "en-US")));
@@ -4452,7 +4452,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel\\lo", "en-US"))));
     }
 
@@ -4465,7 +4465,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hel\\lo", "en-US")));
@@ -4480,7 +4480,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel~lo", "en-US"))));
     }
 
@@ -4493,7 +4493,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hel~lo", "en-US")));
@@ -4508,7 +4508,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel😃lo", "en-US"))));
     }
 
@@ -4521,7 +4521,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hel😃lo", "en-US")));
@@ -4536,7 +4536,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING))));
     }
 
@@ -4549,7 +4549,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
@@ -4564,7 +4564,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("hel\"lo", RDFModelEnums.RDFDatatypes.XSD_STRING))));
     }
 
@@ -4577,7 +4577,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("hel\"lo", RDFModelEnums.RDFDatatypes.XSD_STRING)));
@@ -4592,7 +4592,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("hel\\lo", RDFModelEnums.RDFDatatypes.XSD_STRING))));
     }
 
@@ -4605,7 +4605,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("hel\\lo", RDFModelEnums.RDFDatatypes.XSD_STRING)));
@@ -4620,7 +4620,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("hel~lo", RDFModelEnums.RDFDatatypes.XSD_STRING))));
     }
 
@@ -4633,7 +4633,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("hel~lo", RDFModelEnums.RDFDatatypes.XSD_STRING)));
@@ -4648,7 +4648,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("hel😃lo", RDFModelEnums.RDFDatatypes.XSD_STRING))));
     }
 
@@ -4661,7 +4661,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("hel😃lo", RDFModelEnums.RDFDatatypes.XSD_STRING)));
@@ -4676,7 +4676,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), RDFTypedLiteral.True)));
     }
 
@@ -4689,7 +4689,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(RDFTypedLiteral.True));
@@ -4704,7 +4704,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), RDFTypedLiteral.False)));
     }
 
@@ -4717,7 +4717,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(RDFTypedLiteral.False));
@@ -4732,7 +4732,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
 
@@ -4745,7 +4745,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -4760,7 +4760,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("-25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
 
@@ -4773,7 +4773,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("-25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -4788,7 +4788,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
 
@@ -4801,7 +4801,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -4816,7 +4816,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25.0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
     }
 
@@ -4829,7 +4829,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("25.0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
@@ -4844,7 +4844,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25.0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
     }
 
@@ -4857,7 +4857,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("25.0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
@@ -4872,7 +4872,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("-25.0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
     }
 
@@ -4885,7 +4885,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("-25.0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
@@ -4900,7 +4900,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -4913,7 +4913,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
@@ -4928,7 +4928,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -4941,7 +4941,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
@@ -4956,7 +4956,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -4969,7 +4969,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
@@ -4984,7 +4984,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -4997,7 +4997,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
@@ -5012,7 +5012,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("2.02E-5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -5025,7 +5025,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("2.02E-5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
@@ -5040,7 +5040,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("-2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -5053,7 +5053,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("-2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
@@ -5068,7 +5068,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("2.02E-5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -5081,7 +5081,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("2.02E-5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
@@ -5096,7 +5096,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("-2.02E-5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -5109,7 +5109,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("-2.02E-5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
@@ -5124,7 +5124,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("-2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
     }
 
@@ -5137,7 +5137,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Subject is RDFResource { IsBlank: true });
         Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("-2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
@@ -5152,7 +5152,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred1/"), new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"))));
     }
@@ -5166,7 +5166,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred1/"), new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred2/"), new RDFResource("http://obj2/"))));
     }
@@ -5180,7 +5180,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.BAG, new RDFResource("http://obj2/"))));
     }
@@ -5194,7 +5194,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.BAG, new RDFResource("http://obj2/"))));
     }
@@ -5208,7 +5208,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFResource("http://obj2/"))));
     }
@@ -5222,7 +5222,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred1/"), RDFVocabulary.RDF.ALT)));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred2/"), RDFVocabulary.RDF.BAG)));
     }
@@ -5236,7 +5236,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred1/"), new RDFResource("bnode:12345"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("bnode:54321"))));
     }
@@ -5250,7 +5250,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred1/"), new RDFResource("bnode:12345"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred2/"), new RDFResource("bnode:54321"))));
     }
@@ -5264,7 +5264,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFResource("bnode:12345"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.BAG, new RDFResource("bnode:54321"))));
     }
@@ -5278,7 +5278,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFResource("bnode:12345"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.BAG, new RDFResource("bnode:54321"))));
     }
@@ -5292,7 +5292,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFResource("bnode:12345"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFResource("bnode:54321"))));
     }
@@ -5306,7 +5306,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object is RDFResource
         {
             IsBlank: true
@@ -5326,7 +5326,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject.Equals(RDFVocabulary.RDF.ALT) && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object is RDFResource
         {
             IsBlank: true
@@ -5346,7 +5346,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object is RDFResource
         {
             IsBlank: true
@@ -5366,7 +5366,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object is RDFResource
         {
             IsBlank: true
@@ -5386,7 +5386,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object is RDFResource
         {
             IsBlank: true
@@ -5406,7 +5406,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred1/"), new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"))));
     }
@@ -5420,7 +5420,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFResource("http://obj2/"))));
     }
@@ -5434,7 +5434,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFResource("http://obj2/"))));
     }
@@ -5448,7 +5448,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFResource("http://obj2/"))));
     }
@@ -5462,7 +5462,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred1/"), RDFVocabulary.RDF.ALT)));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred2/"), RDFVocabulary.RDF.BAG)));
     }
@@ -5476,7 +5476,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object.Equals(new RDFResource("http://obj2/"))));
     }
@@ -5490,7 +5490,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFResource("http://obj2/"))));
     }
@@ -5504,7 +5504,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFResource("http://obj2/"))));
     }
@@ -5518,7 +5518,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFResource("http://obj2/"))));
     }
@@ -5532,7 +5532,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(RDFVocabulary.RDF.ALT)));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object.Equals(RDFVocabulary.RDF.BAG)));
     }
@@ -5546,7 +5546,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred1/"), new RDFResource("bnode:54321"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred2/"), new RDFResource("bnode:54321"))));
     }
@@ -5560,7 +5560,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFResource("bnode:54321"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFResource("bnode:54321"))));
     }
@@ -5574,7 +5574,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFResource("bnode:54321"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFResource("bnode:54321"))));
     }
@@ -5588,7 +5588,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFResource("bnode:54321"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFResource("bnode:54321"))));
     }
@@ -5602,7 +5602,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object is RDFResource
         {
             IsBlank: true
@@ -5622,7 +5622,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object is RDFResource
         {
             IsBlank: true
@@ -5642,7 +5642,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object is RDFResource
         {
             IsBlank: true
@@ -5662,7 +5662,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object is RDFResource
         {
             IsBlank: true
@@ -5682,7 +5682,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object.Equals(new RDFResource("http://obj2/"))));
     }
@@ -5696,7 +5696,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFResource("http://obj2/"))));
     }
@@ -5710,7 +5710,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFResource("http://obj2/"))));
     }
@@ -5724,7 +5724,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFResource("http://obj2/"))));
     }
@@ -5738,7 +5738,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(RDFVocabulary.RDF.ALT)));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object.Equals(RDFVocabulary.RDF.BAG)));
     }
@@ -5752,7 +5752,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object is RDFResource
         {
             IsBlank: true
@@ -5772,7 +5772,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object is RDFResource
         {
             IsBlank: true
@@ -5792,7 +5792,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object is RDFResource
         {
             IsBlank: true
@@ -5812,7 +5812,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object is RDFResource
         {
             IsBlank: true
@@ -5832,7 +5832,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred1/"), new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2"))));
     }
@@ -5846,7 +5846,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred1/"), new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2"))));
     }
@@ -5860,7 +5860,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2"))));
     }
@@ -5874,7 +5874,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2"))));
     }
@@ -5888,7 +5888,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit2"))));
     }
@@ -5902,7 +5902,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred1/"), new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -5916,7 +5916,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred1/"), new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -5930,7 +5930,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -5944,7 +5944,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -5958,7 +5958,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -5972,7 +5972,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred1/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -5986,7 +5986,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred1/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred2/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -6000,7 +6000,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.BAG, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -6014,7 +6014,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.BAG, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -6028,7 +6028,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -6042,7 +6042,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred1/"), new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2"))));
     }
@@ -6056,7 +6056,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred1/"), new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2"))));
     }
@@ -6070,7 +6070,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2"))));
     }
@@ -6084,7 +6084,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2"))));
     }
@@ -6098,7 +6098,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit2"))));
     }
@@ -6112,7 +6112,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred1/"), new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -6126,7 +6126,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred1/"), new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -6140,7 +6140,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -6154,7 +6154,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -6168,7 +6168,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -6182,7 +6182,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred1/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred2/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -6196,7 +6196,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred1/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred2/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -6210,7 +6210,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -6224,7 +6224,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -6238,7 +6238,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -6252,7 +6252,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
     }
@@ -6266,7 +6266,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
     }
@@ -6280,7 +6280,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
     }
@@ -6294,7 +6294,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
     }
@@ -6308,7 +6308,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -6322,7 +6322,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -6336,7 +6336,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -6350,7 +6350,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -6364,7 +6364,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -6378,7 +6378,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -6392,7 +6392,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -6406,7 +6406,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -6420,7 +6420,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
     }
@@ -6434,7 +6434,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
     }
@@ -6448,7 +6448,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
     }
@@ -6462,7 +6462,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
     }
@@ -6476,7 +6476,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -6490,7 +6490,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -6504,7 +6504,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -6518,7 +6518,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -6532,7 +6532,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -6546,7 +6546,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -6560,7 +6560,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -6574,7 +6574,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -6588,7 +6588,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj2/"))));
     }
@@ -6602,7 +6602,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred/"), new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred/"), new RDFResource("http://obj2/"))));
     }
@@ -6616,7 +6616,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFResource("http://obj2/"))));
     }
@@ -6630,7 +6630,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFResource("http://obj2/"))));
     }
@@ -6644,7 +6644,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), RDFVocabulary.RDF.ALT)));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), RDFVocabulary.RDF.BAG)));
     }
@@ -6658,7 +6658,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("bnode:54321"))));
     }
@@ -6672,7 +6672,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred/"), new RDFResource("bnode:54321"))));
     }
@@ -6686,7 +6686,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFResource("bnode:12345"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFResource("bnode:54321"))));
     }
@@ -6700,7 +6700,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFResource("bnode:12345"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFResource("bnode:54321"))));
     }
@@ -6714,7 +6714,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj2/"))));
     }
@@ -6728,7 +6728,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFResource("http://obj2/"))));
     }
@@ -6742,7 +6742,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFResource("http://obj2/"))));
     }
@@ -6756,7 +6756,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), RDFVocabulary.RDF.ALT)));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), RDFVocabulary.RDF.BAG)));
     }
@@ -6770,7 +6770,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("bnode:54321"))));
     }
@@ -6784,7 +6784,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFResource("bnode:12345"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFResource("bnode:54321"))));
     }
@@ -6798,7 +6798,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFResource("bnode:12345"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFResource("bnode:54321"))));
     }
@@ -6812,7 +6812,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFResource("http://obj2/"))));
     }
@@ -6826,7 +6826,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFResource("http://obj2/"))));
     }
@@ -6840,7 +6840,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFResource("http://obj2/"))));
     }
@@ -6854,7 +6854,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(RDFVocabulary.RDF.ALT)));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(RDFVocabulary.RDF.BAG)));
     }
@@ -6868,11 +6868,11 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(2, graph.TriplesCount);
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 2);
+        }));
     }
 
     [TestMethod]
@@ -6884,11 +6884,11 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object is RDFResource
+        Assert.AreEqual(2, graph.TriplesCount);
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 2);
+        }));
     }
 
     [TestMethod]
@@ -6900,11 +6900,11 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object is RDFResource
+        Assert.AreEqual(2, graph.TriplesCount);
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 2);
+        }));
     }
 
     [TestMethod]
@@ -6916,7 +6916,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFResource("http://obj2/"))));
     }
@@ -6930,7 +6930,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFResource("http://obj2/"))));
     }
@@ -6944,7 +6944,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFResource("http://obj2/"))));
     }
@@ -6958,7 +6958,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(RDFVocabulary.RDF.ALT)));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(RDFVocabulary.RDF.BAG)));
     }
@@ -6972,11 +6972,11 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(2, graph.TriplesCount);
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 2);
+        }));
     }
 
     [TestMethod]
@@ -6988,11 +6988,11 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object is RDFResource
+        Assert.AreEqual(2, graph.TriplesCount);
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 2);
+        }));
     }
 
     [TestMethod]
@@ -7004,11 +7004,11 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object is RDFResource
+        Assert.AreEqual(2, graph.TriplesCount);
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 2);
+        }));
     }
 
     [TestMethod]
@@ -7020,20 +7020,20 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 4);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object is RDFResource
+        Assert.AreEqual(4, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred3/")) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred3/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
+        }));
     }
 
     [TestMethod]
@@ -7045,7 +7045,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit2"))));
     }
@@ -7059,7 +7059,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred/"), new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred/"), new RDFPlainLiteral("lit2"))));
     }
@@ -7073,7 +7073,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit2"))));
     }
@@ -7087,7 +7087,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit2"))));
     }
@@ -7101,7 +7101,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit2"))));
     }
@@ -7115,7 +7115,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit2"))));
     }
@@ -7129,7 +7129,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit2"))));
     }
@@ -7143,7 +7143,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
     }
@@ -7157,7 +7157,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
     }
@@ -7171,7 +7171,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
     }
@@ -7185,7 +7185,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
     }
@@ -7199,7 +7199,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
     }
@@ -7213,7 +7213,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
     }
@@ -7227,7 +7227,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -7241,7 +7241,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred/"), new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -7255,7 +7255,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -7269,7 +7269,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -7283,7 +7283,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -7297,7 +7297,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -7311,7 +7311,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -7325,7 +7325,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -7339,7 +7339,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -7353,7 +7353,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -7367,7 +7367,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -7381,7 +7381,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -7395,7 +7395,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
     }
@@ -7409,7 +7409,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -7423,7 +7423,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred/"), new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -7437,7 +7437,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -7451,7 +7451,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -7465,7 +7465,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -7479,7 +7479,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -7493,7 +7493,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -7507,7 +7507,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -7521,7 +7521,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -7535,7 +7535,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -7549,7 +7549,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -7563,7 +7563,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -7577,7 +7577,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 2);
+        Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(graph.Any(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -7591,7 +7591,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 4);
+        Assert.AreEqual(4, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFResource("http://obj1/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFResource("http://obj2/"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"))));
@@ -7607,11 +7607,11 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 4);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFResource("http://obj/"))) == 1);
+        Assert.AreEqual(4, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(new RDFResource("http://obj/"))));
     }
 
     [TestMethod]
@@ -7623,19 +7623,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item1/"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item2/"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item1/"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item2/"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -7647,8 +7647,8 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -7660,21 +7660,21 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -7686,19 +7686,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item1/"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item2/"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item1/"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item2/"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -7710,8 +7710,8 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -7723,21 +7723,21 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -7749,19 +7749,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item1/"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item2/"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item1/"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item2/"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -7773,8 +7773,8 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -7786,21 +7786,21 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -7812,19 +7812,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item1/"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item2/"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item1/"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item2/"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -7836,8 +7836,8 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -7849,21 +7849,21 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -7875,19 +7875,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit2"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -7899,19 +7899,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit2"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -7923,19 +7923,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit2"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -7947,19 +7947,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit2"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -7971,19 +7971,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -7995,19 +7995,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8019,19 +8019,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8043,19 +8043,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8067,19 +8067,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8091,19 +8091,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8115,19 +8115,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8139,19 +8139,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8163,19 +8163,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8187,19 +8187,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8211,19 +8211,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02E6", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02E6", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8235,19 +8235,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFTypedLiteral.True)) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFTypedLiteral.False)) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFTypedLiteral.True)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFTypedLiteral.False)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8259,19 +8259,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8283,19 +8283,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8307,19 +8307,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02E6", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02E6", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8331,19 +8331,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFTypedLiteral.True)) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFTypedLiteral.False)) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFTypedLiteral.True)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFTypedLiteral.False)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8355,19 +8355,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8379,19 +8379,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8403,19 +8403,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02E6", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02E6", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8427,19 +8427,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFTypedLiteral.True)) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFTypedLiteral.False)) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFTypedLiteral.True)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFTypedLiteral.False)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8451,19 +8451,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8475,19 +8475,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8499,19 +8499,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02E6", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02E5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFTypedLiteral("2.02E6", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8523,19 +8523,19 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFTypedLiteral.True)) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFTypedLiteral.False)) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
+        }));
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFTypedLiteral.True)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(RDFTypedLiteral.False)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+        }));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]
@@ -8547,15 +8547,15 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 7);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("item1"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item2/"))) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
-        Assert.IsTrue(graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
+        Assert.AreEqual(7, graph.TriplesCount);
+        Assert.AreEqual(2, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFPlainLiteral("item1"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item2/"))));
+        Assert.AreEqual(1, graph.Count(t => t.Subject is RDFResource { IsBlank: true } && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
+        Assert.AreEqual(1, graph.Count(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/")) && t.Object is RDFResource
         {
             IsBlank: true
-        }) == 1);
+        }));
     }
 
     [TestMethod]
@@ -8765,7 +8765,7 @@ public class RDFTurtleTest
         RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 4);
+        Assert.AreEqual(4, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit2"))));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));

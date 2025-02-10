@@ -36,10 +36,10 @@ public class RDFGroupByModifierTest
 
         Assert.IsNotNull(modifier);
         Assert.IsNotNull(modifier.PartitionVariables);
-        Assert.IsTrue(modifier.PartitionVariables.Count == 1);
+        Assert.AreEqual(1, modifier.PartitionVariables.Count);
         Assert.IsTrue(modifier.PartitionVariables[0].Equals(variable));
         Assert.IsNotNull(modifier.Aggregators);
-        Assert.IsTrue(modifier.Aggregators.Count == 1);
+        Assert.AreEqual(1, modifier.Aggregators.Count);
         Assert.IsTrue(modifier.Aggregators[0].ProjectionVariable.Equals(variable));
         Assert.IsTrue(modifier.Aggregators[0].AggregatorVariable.Equals(variable));
         Assert.IsTrue(modifier.IsEvaluable);
@@ -76,10 +76,10 @@ public class RDFGroupByModifierTest
 
         Assert.IsNotNull(modifier);
         Assert.IsNotNull(modifier.PartitionVariables);
-        Assert.IsTrue(modifier.PartitionVariables.Count == 1);
+        Assert.AreEqual(1, modifier.PartitionVariables.Count);
         Assert.IsTrue(modifier.PartitionVariables[0].Equals(variable1));
         Assert.IsNotNull(modifier.Aggregators);
-        Assert.IsTrue(modifier.Aggregators.Count == 2);
+        Assert.AreEqual(2, modifier.Aggregators.Count);
         Assert.IsTrue(modifier.Aggregators[0].AggregatorVariable.Equals(variable1));
         Assert.IsTrue(modifier.Aggregators[0].ProjectionVariable.Equals(variable1));            
         Assert.IsTrue(modifier.Aggregators[1].AggregatorVariable.Equals(variable2));
@@ -227,9 +227,9 @@ public class RDFGroupByModifierTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 1);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Rows.Count == 2);
+        Assert.AreEqual(1, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
     }
@@ -269,9 +269,9 @@ public class RDFGroupByModifierTest
         DataTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Columns.Count == 1);
-        Assert.IsTrue(result.Columns[0].ColumnName == "?C");
-        Assert.IsTrue(result.Rows.Count == 1);
+        Assert.AreEqual(1, result.Columns.Count);
+        Assert.AreEqual("?C", result.Columns[0].ColumnName);
+        Assert.AreEqual(1, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value0"));
     }
     #endregion

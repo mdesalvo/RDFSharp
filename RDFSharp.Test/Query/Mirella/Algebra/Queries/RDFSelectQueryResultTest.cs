@@ -35,7 +35,7 @@ public class RDFSelectQueryResultTest
 
     Assert.IsNotNull(result);
     Assert.IsNotNull(result.SelectResults);
-    Assert.IsTrue(result.SelectResultsCount == 0);
+    Assert.AreEqual(0, result.SelectResultsCount);
   }
 
   [TestMethod]
@@ -68,8 +68,8 @@ public class RDFSelectQueryResultTest
 
     Assert.IsNotNull(selectResult2);
     Assert.IsNotNull(selectResult2.SelectResults);
-    Assert.IsTrue(selectResult2.SelectResultsCount == 3);
-    Assert.IsTrue(selectResult2.SelectResults.Columns.Count == 2);
+    Assert.AreEqual(3, selectResult2.SelectResultsCount);
+    Assert.AreEqual(2, selectResult2.SelectResults.Columns.Count);
     Assert.IsTrue(selectResult2.SelectResults.Columns.Contains("?S"));
     Assert.IsTrue(selectResult2.SelectResults.Columns.Contains("?T"));
     Assert.IsTrue(selectResult2.SelectResults.Rows[0]["?S"].Equals("ex:org"));
@@ -102,8 +102,8 @@ public class RDFSelectQueryResultTest
 
     Assert.IsNotNull(selectResult2);
     Assert.IsNotNull(selectResult2.SelectResults);
-    Assert.IsTrue(selectResult2.SelectResultsCount == 1);
-    Assert.IsTrue(selectResult2.SelectResults.Columns.Count == 2);
+    Assert.AreEqual(1, selectResult2.SelectResultsCount);
+    Assert.AreEqual(2, selectResult2.SelectResults.Columns.Count);
     Assert.IsTrue(selectResult2.SelectResults.Columns.Contains("?S"));
     Assert.IsTrue(selectResult2.SelectResults.Columns.Contains("?T"));
     Assert.IsTrue(selectResult2.SelectResults.Rows[0]["?S"].Equals("ex:org"));
@@ -130,8 +130,8 @@ public class RDFSelectQueryResultTest
 
     Assert.IsNotNull(selectResult2);
     Assert.IsNotNull(selectResult2.SelectResults);
-    Assert.IsTrue(selectResult2.SelectResultsCount == 1);
-    Assert.IsTrue(selectResult2.SelectResults.Columns.Count == 2);
+    Assert.AreEqual(1, selectResult2.SelectResultsCount);
+    Assert.AreEqual(2, selectResult2.SelectResults.Columns.Count);
     Assert.IsTrue(selectResult2.SelectResults.Columns.Contains("?S"));
     Assert.IsTrue(selectResult2.SelectResults.Columns.Contains("?T"));
     Assert.IsTrue(selectResult2.SelectResults.Rows[0]["?S"].Equals("ex:org"));
@@ -158,8 +158,8 @@ public class RDFSelectQueryResultTest
 
     Assert.IsNotNull(selectResult2);
     Assert.IsNotNull(selectResult2.SelectResults);
-    Assert.IsTrue(selectResult2.SelectResultsCount == 1);
-    Assert.IsTrue(selectResult2.SelectResults.Columns.Count == 2);
+    Assert.AreEqual(1, selectResult2.SelectResultsCount);
+    Assert.AreEqual(2, selectResult2.SelectResults.Columns.Count);
     Assert.IsTrue(selectResult2.SelectResults.Columns.Contains("?S"));
     Assert.IsTrue(selectResult2.SelectResults.Columns.Contains("?T"));
     Assert.IsTrue(selectResult2.SelectResults.Rows[0]["?S"].Equals("ex:org"));

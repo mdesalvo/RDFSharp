@@ -32,13 +32,13 @@ public class RDFShapeTest
         RDFShape shape = new RDFShape(new RDFResource("ex:shape"));
         Assert.IsNotNull(shape);
         Assert.IsFalse(shape.Deactivated);
-        Assert.IsTrue(shape.Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, shape.Severity);
         Assert.IsNotNull(shape.Messages);
-        Assert.IsTrue(shape.MessagesCount == 0);
+        Assert.AreEqual(0, shape.MessagesCount);
         Assert.IsNotNull(shape.Targets);
-        Assert.IsTrue(shape.TargetsCount == 0);
+        Assert.AreEqual(0, shape.TargetsCount);
         Assert.IsNotNull(shape.Constraints);
-        Assert.IsTrue(shape.ConstraintsCount == 0);
+        Assert.AreEqual(0, shape.ConstraintsCount);
     }
 
     [TestMethod]
@@ -62,7 +62,7 @@ public class RDFShapeTest
     {
         RDFShape shape = new RDFShape(new RDFResource("ex:shape"));
         shape.SetSeverity(RDFValidationEnums.RDFShapeSeverity.Info);
-        Assert.IsTrue(shape.Severity == RDFValidationEnums.RDFShapeSeverity.Info);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Info, shape.Severity);
     }
 
     [TestMethod]
@@ -72,12 +72,12 @@ public class RDFShapeTest
         shape.AddMessage(new RDFPlainLiteral("This is an error", "en-US"));
         shape.AddMessage(new RDFTypedLiteral("This is an error", RDFModelEnums.RDFDatatypes.XSD_STRING));
         shape.AddMessage(new RDFTypedLiteral("This is an error", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)); //This will not be accepted
-        Assert.IsTrue(shape.MessagesCount == 2);
+        Assert.AreEqual(2, shape.MessagesCount);
 
         int j = 0;
         IEnumerator<RDFLiteral> messagesEnumerator = shape.MessagesEnumerator;
         while (messagesEnumerator.MoveNext()) j++;
-        Assert.IsTrue(j == 2);
+        Assert.AreEqual(2, j);
     }
 
     [TestMethod]
@@ -86,12 +86,12 @@ public class RDFShapeTest
         RDFShape shape = new RDFShape(new RDFResource("ex:shape"));
         shape.AddTarget(new RDFTargetClass(new RDFResource("ex:class")));
         shape.AddTarget(null); //This will not be accepted
-        Assert.IsTrue(shape.TargetsCount == 1);
+        Assert.AreEqual(1, shape.TargetsCount);
 
         int j = 0;
         IEnumerator<RDFTarget> targetsEnumerator = shape.TargetsEnumerator;
         while (targetsEnumerator.MoveNext()) j++;
-        Assert.IsTrue(j == 1);
+        Assert.AreEqual(1, j);
     }
 
     [TestMethod]
@@ -100,15 +100,15 @@ public class RDFShapeTest
         RDFShape shape = new RDFShape(new RDFResource("ex:shape"));
         shape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:class")));
         shape.AddConstraint(null); //This will not be accepted
-        Assert.IsTrue(shape.ConstraintsCount == 1);
+        Assert.AreEqual(1, shape.ConstraintsCount);
 
         int i = 0;
         IEnumerator<RDFConstraint> constraintsEnumerator = shape.ConstraintsEnumerator;
         while (constraintsEnumerator.MoveNext()) i++;
-        Assert.IsTrue(i == 1);
+        Assert.AreEqual(1, i);
 
         int j = shape.Count();
-        Assert.IsTrue(j == 1);
+        Assert.AreEqual(1, j);
     }
 
     [TestMethod]

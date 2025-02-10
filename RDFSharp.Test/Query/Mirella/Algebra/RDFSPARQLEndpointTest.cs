@@ -33,7 +33,7 @@ public class RDFSPARQLEndpointTest
         Assert.IsNotNull(sparqlEndpoint);
         Assert.IsTrue(sparqlEndpoint.BaseAddress.Equals(new Uri("http://sparql/query")));
         Assert.IsNotNull(sparqlEndpoint.QueryParams);
-        Assert.IsTrue(sparqlEndpoint.QueryParams.Count == 0);
+        Assert.AreEqual(0, sparqlEndpoint.QueryParams.Count);
         Assert.IsTrue(sparqlEndpoint.ToString().Equals("http://sparql/query"));
     }
 
@@ -51,7 +51,7 @@ public class RDFSPARQLEndpointTest
         Assert.IsNotNull(sparqlEndpoint);
         Assert.IsTrue(sparqlEndpoint.BaseAddress.Equals(new Uri("http://sparql/query")));
         Assert.IsNotNull(sparqlEndpoint.QueryParams);
-        Assert.IsTrue(sparqlEndpoint.QueryParams.Count == 2);
+        Assert.AreEqual(2, sparqlEndpoint.QueryParams.Count);
         Assert.IsTrue(sparqlEndpoint.QueryParams["default-graph-uri"].Equals("http://ex1.org/"));
         Assert.IsTrue(sparqlEndpoint.QueryParams["named-graph-uri"].Equals("http://ex2.org/"));
         Assert.IsTrue(sparqlEndpoint.ToString().Equals("http://sparql/query"));
@@ -67,9 +67,9 @@ public class RDFSPARQLEndpointTest
         Assert.IsNotNull(sparqlEndpoint);
         Assert.IsTrue(sparqlEndpoint.BaseAddress.Equals(new Uri("http://sparql/query")));
         Assert.IsNotNull(sparqlEndpoint.QueryParams);
-        Assert.IsTrue(sparqlEndpoint.QueryParams.Count == 0);
+        Assert.AreEqual(0, sparqlEndpoint.QueryParams.Count);
         Assert.IsTrue(string.Equals(sparqlEndpoint.ToString(), "http://sparql/query"));
-        Assert.IsTrue(sparqlEndpoint.AuthorizationType == RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Basic);
+        Assert.AreEqual(RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Basic, sparqlEndpoint.AuthorizationType);
         Assert.IsTrue(string.Equals(sparqlEndpoint.AuthorizationValue, authHeaderValue));
     }
 
@@ -82,9 +82,9 @@ public class RDFSPARQLEndpointTest
         Assert.IsNotNull(sparqlEndpoint);
         Assert.IsTrue(sparqlEndpoint.BaseAddress.Equals(new Uri("http://sparql/query")));
         Assert.IsNotNull(sparqlEndpoint.QueryParams);
-        Assert.IsTrue(sparqlEndpoint.QueryParams.Count == 0);
+        Assert.AreEqual(0, sparqlEndpoint.QueryParams.Count);
         Assert.IsTrue(string.Equals(sparqlEndpoint.ToString(), "http://sparql/query"));
-        Assert.IsTrue(sparqlEndpoint.AuthorizationType == RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Bearer);
+        Assert.AreEqual(RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Bearer, sparqlEndpoint.AuthorizationType);
         Assert.IsTrue(string.Equals(sparqlEndpoint.AuthorizationValue, "vF9dft4qmT"));
     }
 
@@ -94,8 +94,8 @@ public class RDFSPARQLEndpointTest
         RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions = new RDFSPARQLEndpointQueryOptions();
 
         Assert.IsNotNull(sparqlEndpointQueryOptions);
-        Assert.IsTrue(sparqlEndpointQueryOptions.TimeoutMilliseconds == -1);
-        Assert.IsTrue(sparqlEndpointQueryOptions.ErrorBehavior == RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException);
+        Assert.AreEqual(-1, sparqlEndpointQueryOptions.TimeoutMilliseconds);
+        Assert.AreEqual(RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException, sparqlEndpointQueryOptions.ErrorBehavior);
     }
 
     [TestMethod]
@@ -104,8 +104,8 @@ public class RDFSPARQLEndpointTest
         RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions = new RDFSPARQLEndpointQueryOptions(2000);
 
         Assert.IsNotNull(sparqlEndpointQueryOptions);
-        Assert.IsTrue(sparqlEndpointQueryOptions.TimeoutMilliseconds == 2000);
-        Assert.IsTrue(sparqlEndpointQueryOptions.ErrorBehavior == RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException);
+        Assert.AreEqual(2000, sparqlEndpointQueryOptions.TimeoutMilliseconds);
+        Assert.AreEqual(RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException, sparqlEndpointQueryOptions.ErrorBehavior);
     }
 
     [TestMethod]
@@ -114,8 +114,8 @@ public class RDFSPARQLEndpointTest
         RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions = new RDFSPARQLEndpointQueryOptions(-2000);
 
         Assert.IsNotNull(sparqlEndpointQueryOptions);
-        Assert.IsTrue(sparqlEndpointQueryOptions.TimeoutMilliseconds == -1);
-        Assert.IsTrue(sparqlEndpointQueryOptions.ErrorBehavior == RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException);
+        Assert.AreEqual(-1, sparqlEndpointQueryOptions.TimeoutMilliseconds);
+        Assert.AreEqual(RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException, sparqlEndpointQueryOptions.ErrorBehavior);
     }
 
     [TestMethod]
@@ -124,8 +124,8 @@ public class RDFSPARQLEndpointTest
         RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions = new RDFSPARQLEndpointQueryOptions(2000, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult);
 
         Assert.IsNotNull(sparqlEndpointQueryOptions);
-        Assert.IsTrue(sparqlEndpointQueryOptions.TimeoutMilliseconds == 2000);
-        Assert.IsTrue(sparqlEndpointQueryOptions.ErrorBehavior == RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult);
+        Assert.AreEqual(2000, sparqlEndpointQueryOptions.TimeoutMilliseconds);
+        Assert.AreEqual(RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult, sparqlEndpointQueryOptions.ErrorBehavior);
     }
 
     //SPARQL UPDATE
@@ -136,8 +136,8 @@ public class RDFSPARQLEndpointTest
         RDFSPARQLEndpointOperationOptions sparqlEndpointOperationOptions = new RDFSPARQLEndpointOperationOptions();
 
         Assert.IsNotNull(sparqlEndpointOperationOptions);
-        Assert.IsTrue(sparqlEndpointOperationOptions.TimeoutMilliseconds == -1);
-        Assert.IsTrue(sparqlEndpointOperationOptions.RequestContentType == RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update);
+        Assert.AreEqual(-1, sparqlEndpointOperationOptions.TimeoutMilliseconds);
+        Assert.AreEqual(RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update, sparqlEndpointOperationOptions.RequestContentType);
     }
 
     [TestMethod]
@@ -146,8 +146,8 @@ public class RDFSPARQLEndpointTest
         RDFSPARQLEndpointOperationOptions sparqlEndpointOperationOptions = new RDFSPARQLEndpointOperationOptions(20000);
 
         Assert.IsNotNull(sparqlEndpointOperationOptions);
-        Assert.IsTrue(sparqlEndpointOperationOptions.TimeoutMilliseconds == 20000);
-        Assert.IsTrue(sparqlEndpointOperationOptions.RequestContentType == RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update);
+        Assert.AreEqual(20000, sparqlEndpointOperationOptions.TimeoutMilliseconds);
+        Assert.AreEqual(RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update, sparqlEndpointOperationOptions.RequestContentType);
     }
 
     [TestMethod]
@@ -156,8 +156,8 @@ public class RDFSPARQLEndpointTest
         RDFSPARQLEndpointOperationOptions sparqlEndpointOperationOptions = new RDFSPARQLEndpointOperationOptions(-2000);
 
         Assert.IsNotNull(sparqlEndpointOperationOptions);
-        Assert.IsTrue(sparqlEndpointOperationOptions.TimeoutMilliseconds == -1);
-        Assert.IsTrue(sparqlEndpointOperationOptions.RequestContentType == RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update);
+        Assert.AreEqual(-1, sparqlEndpointOperationOptions.TimeoutMilliseconds);
+        Assert.AreEqual(RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update, sparqlEndpointOperationOptions.RequestContentType);
     }
 
     [TestMethod]
@@ -166,8 +166,8 @@ public class RDFSPARQLEndpointTest
         RDFSPARQLEndpointOperationOptions sparqlEndpointOperationOptions = new RDFSPARQLEndpointOperationOptions(20000, RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded);
 
         Assert.IsNotNull(sparqlEndpointOperationOptions);
-        Assert.IsTrue(sparqlEndpointOperationOptions.TimeoutMilliseconds == 20000);
-        Assert.IsTrue(sparqlEndpointOperationOptions.RequestContentType == RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded);
+        Assert.AreEqual(20000, sparqlEndpointOperationOptions.TimeoutMilliseconds);
+        Assert.AreEqual(RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded, sparqlEndpointOperationOptions.RequestContentType);
     }
     #endregion
 }

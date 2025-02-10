@@ -63,7 +63,7 @@ public class RDFMinExclusiveFacetTest
         RDFGraph graph = facet.ToRDFGraph();
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.MIN_EXCLUSIVE));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("6", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.DOUBLE.ToString()))));
     }

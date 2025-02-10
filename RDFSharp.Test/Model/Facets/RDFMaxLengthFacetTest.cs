@@ -31,7 +31,7 @@ public class RDFMaxLengthFacetTest
         RDFMaxLengthFacet facet = new RDFMaxLengthFacet(6);
 
         Assert.IsNotNull(facet);
-        Assert.IsTrue(facet.Length == 6);
+        Assert.AreEqual(6u, facet.Length);
         Assert.IsTrue(facet.URI.IsBlank);
     }
 
@@ -63,7 +63,7 @@ public class RDFMaxLengthFacetTest
         RDFGraph graph = facet.ToRDFGraph();
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.XSD.MAX_LENGTH));
         Assert.IsTrue(graph.Single().Object.Equals(new RDFTypedLiteral("6", RDFDatatypeRegister.GetDatatype(RDFVocabulary.XSD.NON_NEGATIVE_INTEGER.ToString()))));
     }

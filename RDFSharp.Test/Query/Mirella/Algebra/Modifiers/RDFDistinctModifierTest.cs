@@ -68,11 +68,11 @@ public class RDFDistinctModifierTest
         DataTable table2 = new RDFDistinctModifier().ApplyModifier(table);
 
         Assert.IsNotNull(table2);
-        Assert.IsTrue(table2.Columns.Count == 3);
+        Assert.AreEqual(3, table2.Columns.Count);
         Assert.IsTrue(table2.Columns.Contains("?A"));
         Assert.IsTrue(table2.Columns.Contains("?B"));
         Assert.IsTrue(table2.Columns.Contains("?C"));
-        Assert.IsTrue(table2.Rows.Count == 2);
+        Assert.AreEqual(2, table2.Rows.Count);
         Assert.IsTrue(table2.Rows[0]["?A"].ToString().Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString()));
         Assert.IsTrue(table2.Rows[0]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en-US").ToString()));
         Assert.IsTrue(table2.Rows[0]["?C"].ToString().Equals(new RDFResource("ex:value0").ToString()));

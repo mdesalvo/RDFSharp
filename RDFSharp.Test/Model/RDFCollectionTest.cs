@@ -34,19 +34,19 @@ public class RDFCollectionTest
         RDFCollection coll = new RDFCollection(itemType);
 
         Assert.IsNotNull(coll);
-        Assert.IsTrue(coll.ItemType == itemType);
-        Assert.IsTrue(coll.ItemsCount == 0);
+        Assert.AreEqual(itemType, coll.ItemType);
+        Assert.AreEqual(0, coll.ItemsCount);
         Assert.IsTrue(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
         Assert.IsTrue(coll.InternalReificationSubject.IsBlank);
         Assert.IsFalse(coll.AcceptDuplicates);
 
         int i = coll.Count();
-        Assert.IsTrue(i == 0);
+        Assert.AreEqual(0, i);
 
         int j = 0;
         IEnumerator<RDFPatternMember> itemsEnumerator = coll.ItemsEnumerator;
         while (itemsEnumerator.MoveNext()) j++;
-        Assert.IsTrue(j == 0);
+        Assert.AreEqual(0, j);
     }
 
     [DataTestMethod]
@@ -61,12 +61,12 @@ public class RDFCollectionTest
             coll.AddItem(new RDFResource("http://item/"));
 
         int i = coll.Count();
-        Assert.IsTrue(i == 1);
+        Assert.AreEqual(1, i);
 
         int j = 0;
         IEnumerator<RDFPatternMember> itemsEnumerator = coll.ItemsEnumerator;
         while (itemsEnumerator.MoveNext()) j++;
-        Assert.IsTrue(j == 1);
+        Assert.AreEqual(1, j);
     }
 
     [DataTestMethod]
@@ -86,7 +86,7 @@ public class RDFCollectionTest
             coll.AddItem(new RDFResource("http://item/"));
         }
 
-        Assert.IsTrue(coll.ItemsCount == 1);
+        Assert.AreEqual(1, coll.ItemsCount);
         Assert.IsFalse(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
     }
 
@@ -101,7 +101,7 @@ public class RDFCollectionTest
         else
             coll.AddItem(new RDFPlainLiteral("lit"));
 
-        Assert.IsTrue(coll.ItemsCount == 0);
+        Assert.AreEqual(0, coll.ItemsCount);
         Assert.IsTrue(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
     }
 
@@ -116,7 +116,7 @@ public class RDFCollectionTest
         else
             coll.AddItem(null as RDFResource);
 
-        Assert.IsTrue(coll.ItemsCount == 0);
+        Assert.AreEqual(0, coll.ItemsCount);
         Assert.IsTrue(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
     }
 
@@ -139,7 +139,7 @@ public class RDFCollectionTest
             coll.RemoveItem(new RDFResource("http://item/"));
         }
 
-        Assert.IsTrue(coll.ItemsCount == 0);
+        Assert.AreEqual(0, coll.ItemsCount);
         Assert.IsTrue(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
     }
 
@@ -162,7 +162,7 @@ public class RDFCollectionTest
             coll.RemoveItem(new RDFPlainLiteral("lit"));
         }
 
-        Assert.IsTrue(coll.ItemsCount == 1);
+        Assert.AreEqual(1, coll.ItemsCount);
         Assert.IsFalse(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
     }
 
@@ -185,7 +185,7 @@ public class RDFCollectionTest
             coll.RemoveItem(null as RDFResource);
         }
 
-        Assert.IsTrue(coll.ItemsCount == 1);
+        Assert.AreEqual(1, coll.ItemsCount);
         Assert.IsFalse(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
     }
 
@@ -207,7 +207,7 @@ public class RDFCollectionTest
         }
 
         coll.ClearItems();
-        Assert.IsTrue(coll.ItemsCount == 0);
+        Assert.AreEqual(0, coll.ItemsCount);
         Assert.IsTrue(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
     }
 
@@ -220,7 +220,7 @@ public class RDFCollectionTest
         RDFGraph graph = coll.ReifyCollection();
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 0);
+        Assert.AreEqual(0, graph.TriplesCount);
     }
 
     [DataTestMethod]
@@ -236,7 +236,7 @@ public class RDFCollectionTest
         RDFGraph graph = coll.ReifyCollection();
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 3);
+        Assert.AreEqual(3, graph.TriplesCount);
         Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST).TripleID));
             
         switch (itemType)
@@ -270,14 +270,14 @@ public class RDFCollectionTest
         RDFGraph graph = coll.ReifyCollection();
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 6);
-        Assert.IsTrue(graph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
+        Assert.AreEqual(6, graph.TriplesCount);
+        Assert.AreEqual(2, graph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
             .SelectTriplesByObject(RDFVocabulary.RDF.LIST)
-            .TriplesCount == 2);
-        Assert.IsTrue(graph.SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST)
-            .TriplesCount == 2);
-        Assert.IsTrue(graph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST)
-            .TriplesCount == 2);
+            .TriplesCount);
+        Assert.AreEqual(2, graph.SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST)
+            .TriplesCount);
+        Assert.AreEqual(2, graph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST)
+            .TriplesCount);
     }
     #endregion
 }

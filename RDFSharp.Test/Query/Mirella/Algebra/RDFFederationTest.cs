@@ -35,19 +35,19 @@ public class RDFFederationTest
 
         Assert.IsNotNull(federation);
         Assert.IsNotNull(federation.DataSources);
-        Assert.IsTrue(federation.DataSourcesCount == 0);
+        Assert.AreEqual(0, federation.DataSourcesCount);
         Assert.IsNotNull(federation.EndpointDataSourcesQueryOptions);
-        Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.Count == 0);
+        Assert.AreEqual(0, federation.EndpointDataSourcesQueryOptions.Count);
         Assert.IsTrue(federation.FederationName.StartsWith("FEDERATION|ID="));
         Assert.IsTrue(federation.ToString().Equals(federation.FederationName));
 
         int i = federation.Count();
-        Assert.IsTrue(i == 0);
+        Assert.AreEqual(0, i);
 
         int j = 0;
         IEnumerator<RDFDataSource> datasourcesEnumerator = federation.DataSourcesEnumerator;
         while (datasourcesEnumerator.MoveNext()) j++;
-        Assert.IsTrue(j == 0);
+        Assert.AreEqual(0, j);
     }
 
     [TestMethod]
@@ -57,16 +57,16 @@ public class RDFFederationTest
         federation.AddGraph(new RDFGraph());
         federation.AddGraph(null); //Will be discarded, since null is not allowed
 
-        Assert.IsTrue(federation.DataSourcesCount == 1);
-        Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.Count == 0);
+        Assert.AreEqual(1, federation.DataSourcesCount);
+        Assert.AreEqual(0, federation.EndpointDataSourcesQueryOptions.Count);
 
         int i = federation.Count();
-        Assert.IsTrue(i == 1);
+        Assert.AreEqual(1, i);
 
         int j = 0;
         IEnumerator<RDFDataSource> datasourcesEnumerator = federation.DataSourcesEnumerator;
         while (datasourcesEnumerator.MoveNext()) j++;
-        Assert.IsTrue(j == 1);
+        Assert.AreEqual(1, j);
     }
 
     [TestMethod]
@@ -76,16 +76,16 @@ public class RDFFederationTest
         federation.AddStore(new RDFMemoryStore());
         federation.AddStore(null); //Will be discarded, since null is not allowed
 
-        Assert.IsTrue(federation.DataSourcesCount == 1);
-        Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.Count == 0);
+        Assert.AreEqual(1, federation.DataSourcesCount);
+        Assert.AreEqual(0, federation.EndpointDataSourcesQueryOptions.Count);
 
         int i = federation.Count();
-        Assert.IsTrue(i == 1);
+        Assert.AreEqual(1, i);
 
         int j = 0;
         IEnumerator<RDFDataSource> datasourcesEnumerator = federation.DataSourcesEnumerator;
         while (datasourcesEnumerator.MoveNext()) j++;
-        Assert.IsTrue(j == 1);
+        Assert.AreEqual(1, j);
     }
 
     [TestMethod]
@@ -96,16 +96,16 @@ public class RDFFederationTest
         federation.AddFederation(federation); //Will be discarded, since self-reference is not allowed
         federation.AddFederation(null); //Will be discarded, since null is not allowed
 
-        Assert.IsTrue(federation.DataSourcesCount == 1);
-        Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.Count == 0);
+        Assert.AreEqual(1, federation.DataSourcesCount);
+        Assert.AreEqual(0, federation.EndpointDataSourcesQueryOptions.Count);
 
         int i = federation.Count();
-        Assert.IsTrue(i == 1);
+        Assert.AreEqual(1, i);
 
         int j = 0;
         IEnumerator<RDFDataSource> datasourcesEnumerator = federation.DataSourcesEnumerator;
         while (datasourcesEnumerator.MoveNext()) j++;
-        Assert.IsTrue(j == 1);
+        Assert.AreEqual(1, j);
     }
 
     [TestMethod]
@@ -120,18 +120,18 @@ public class RDFFederationTest
             QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post, 
             TimeoutMilliseconds = 25000});
 
-        Assert.IsTrue(federation.DataSourcesCount == 2);
-        Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.Count == 2);
+        Assert.AreEqual(2, federation.DataSourcesCount);
+        Assert.AreEqual(2, federation.EndpointDataSourcesQueryOptions.Count);
         Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.ContainsKey("ex:sparqlEndpoint1"));
         Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.ContainsKey("ex:sparqlEndpoint2"));
 
         int i = federation.Count();
-        Assert.IsTrue(i == 2);
+        Assert.AreEqual(2, i);
 
         int j = 0;
         IEnumerator<RDFDataSource> datasourcesEnumerator = federation.DataSourcesEnumerator;
         while (datasourcesEnumerator.MoveNext()) j++;
-        Assert.IsTrue(j == 2);
+        Assert.AreEqual(2, j);
     }
 
     [TestMethod]
@@ -144,17 +144,17 @@ public class RDFFederationTest
 
         Assert.IsNotNull(federation);
         Assert.IsNotNull(federation.DataSources);
-        Assert.IsTrue(federation.DataSourcesCount == 0);
+        Assert.AreEqual(0, federation.DataSourcesCount);
         Assert.IsNotNull(federation.EndpointDataSourcesQueryOptions);
-        Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.Count == 0);
+        Assert.AreEqual(0, federation.EndpointDataSourcesQueryOptions.Count);
 
         int i = federation.Count();
-        Assert.IsTrue(i == 0);
+        Assert.AreEqual(0, i);
 
         int j = 0;
         IEnumerator<RDFDataSource> datasourcesEnumerator = federation.DataSourcesEnumerator;
         while (datasourcesEnumerator.MoveNext()) j++;
-        Assert.IsTrue(j == 0);
+        Assert.AreEqual(0, j);
     }
     #endregion
 }

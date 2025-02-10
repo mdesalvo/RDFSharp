@@ -36,8 +36,8 @@ public class RDFDescribeQueryResultTest
 
         Assert.IsNotNull(describeResult);
         Assert.IsNotNull(describeResult.DescribeResults);
-        Assert.IsTrue(describeResult.DescribeResults.Columns.Count == 0);
-        Assert.IsTrue(describeResult.DescribeResultsCount == 0);
+        Assert.AreEqual(0, describeResult.DescribeResults.Columns.Count);
+        Assert.AreEqual(0, describeResult.DescribeResultsCount);
     }
 
     [TestMethod]
@@ -69,13 +69,13 @@ public class RDFDescribeQueryResultTest
         describeResult.DescribeResults.Rows.Add(row3);
         describeResult.DescribeResults.AcceptChanges();
             
-        Assert.IsTrue(describeResult.DescribeResults.Columns.Count == 3);
-        Assert.IsTrue(describeResult.DescribeResultsCount == 4);
+        Assert.AreEqual(3, describeResult.DescribeResults.Columns.Count);
+        Assert.AreEqual(4, describeResult.DescribeResultsCount);
 
         RDFGraph describeGraph = describeResult.ToRDFGraph();
             
         Assert.IsNotNull(describeGraph);
-        Assert.IsTrue(describeGraph.TriplesCount == 4);
+        Assert.AreEqual(4, describeGraph.TriplesCount);
         Assert.IsTrue(describeGraph.ContainsTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit","en-US"))));
         Assert.IsTrue(describeGraph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:obj"))));
         Assert.IsTrue(describeGraph.ContainsTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit"))));
@@ -111,13 +111,13 @@ public class RDFDescribeQueryResultTest
         describeResult.DescribeResults.Rows.Add(row3);
         describeResult.DescribeResults.AcceptChanges();
             
-        Assert.IsTrue(describeResult.DescribeResults.Columns.Count == 3);
-        Assert.IsTrue(describeResult.DescribeResultsCount == 4);
+        Assert.AreEqual(3, describeResult.DescribeResults.Columns.Count);
+        Assert.AreEqual(4, describeResult.DescribeResultsCount);
 
         RDFGraph describeGraph = await describeResult.ToRDFGraphAsync();
             
         Assert.IsNotNull(describeGraph);
-        Assert.IsTrue(describeGraph.TriplesCount == 4);
+        Assert.AreEqual(4, describeGraph.TriplesCount);
         Assert.IsTrue(describeGraph.ContainsTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit","en-US"))));
         Assert.IsTrue(describeGraph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:obj"))));
         Assert.IsTrue(describeGraph.ContainsTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit"))));
@@ -131,7 +131,7 @@ public class RDFDescribeQueryResultTest
         RDFGraph describeGraph = describeResult.ToRDFGraph();
             
         Assert.IsNotNull(describeGraph);
-        Assert.IsTrue(describeGraph.TriplesCount == 0);
+        Assert.AreEqual(0, describeGraph.TriplesCount);
     }
 
     [TestMethod]
@@ -146,11 +146,11 @@ public class RDFDescribeQueryResultTest
 
         Assert.IsNotNull(describeResult);
         Assert.IsNotNull(describeResult.DescribeResults);
-        Assert.IsTrue(describeResult.DescribeResults.Columns.Count == 3);
+        Assert.AreEqual(3, describeResult.DescribeResults.Columns.Count);
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?SUBJECT"));
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?OBJECT"));
-        Assert.IsTrue(describeResult.DescribeResultsCount == 4);
+        Assert.AreEqual(4, describeResult.DescribeResultsCount);
         Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?SUBJECT"].ToString().Equals("ex:subj"));
         Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?PREDICATE"].ToString().Equals("ex:pred"));
         Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
@@ -177,11 +177,11 @@ public class RDFDescribeQueryResultTest
 
         Assert.IsNotNull(describeResult);
         Assert.IsNotNull(describeResult.DescribeResults);
-        Assert.IsTrue(describeResult.DescribeResults.Columns.Count == 3);
+        Assert.AreEqual(3, describeResult.DescribeResults.Columns.Count);
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?SUBJECT"));
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?OBJECT"));
-        Assert.IsTrue(describeResult.DescribeResultsCount == 4);
+        Assert.AreEqual(4, describeResult.DescribeResultsCount);
         Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?SUBJECT"].ToString().Equals("ex:subj"));
         Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?PREDICATE"].ToString().Equals("ex:pred"));
         Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
@@ -203,8 +203,8 @@ public class RDFDescribeQueryResultTest
 
         Assert.IsNotNull(describeResult);
         Assert.IsNotNull(describeResult.DescribeResults);
-        Assert.IsTrue(describeResult.DescribeResults.Columns.Count == 0);
-        Assert.IsTrue(describeResult.DescribeResultsCount == 0);
+        Assert.AreEqual(0, describeResult.DescribeResults.Columns.Count);
+        Assert.AreEqual(0, describeResult.DescribeResultsCount);
     }
 
     //STORE
@@ -243,13 +243,13 @@ public class RDFDescribeQueryResultTest
         describeResult.DescribeResults.Rows.Add(row3);
         describeResult.DescribeResults.AcceptChanges();
             
-        Assert.IsTrue(describeResult.DescribeResults.Columns.Count == 4);
-        Assert.IsTrue(describeResult.DescribeResultsCount == 4);
+        Assert.AreEqual(4, describeResult.DescribeResults.Columns.Count);
+        Assert.AreEqual(4, describeResult.DescribeResultsCount);
 
         RDFMemoryStore describeStore = describeResult.ToRDFMemoryStore();
             
         Assert.IsNotNull(describeStore);
-        Assert.IsTrue(describeStore.QuadruplesCount == 4);
+        Assert.AreEqual(4, describeStore.QuadruplesCount);
         Assert.IsTrue(describeStore.ContainsQuadruple(new RDFQuadruple(new RDFContext(new Uri("ex:ctx")), new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit","en-US"))));
         Assert.IsTrue(describeStore.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:obj"))));
         Assert.IsTrue(describeStore.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit"))));
@@ -290,13 +290,13 @@ public class RDFDescribeQueryResultTest
         describeResult.DescribeResults.Rows.Add(row3);
         describeResult.DescribeResults.AcceptChanges();
             
-        Assert.IsTrue(describeResult.DescribeResults.Columns.Count == 4);
-        Assert.IsTrue(describeResult.DescribeResultsCount == 4);
+        Assert.AreEqual(4, describeResult.DescribeResults.Columns.Count);
+        Assert.AreEqual(4, describeResult.DescribeResultsCount);
 
         RDFMemoryStore describeStore = await describeResult.ToRDFMemoryStoreAsync();
             
         Assert.IsNotNull(describeStore);
-        Assert.IsTrue(describeStore.QuadruplesCount == 4);
+        Assert.AreEqual(4, describeStore.QuadruplesCount);
         Assert.IsTrue(describeStore.ContainsQuadruple(new RDFQuadruple(new RDFContext(new Uri("ex:ctx")), new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit","en-US"))));
         Assert.IsTrue(describeStore.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:obj"))));
         Assert.IsTrue(describeStore.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit"))));
@@ -310,7 +310,7 @@ public class RDFDescribeQueryResultTest
         RDFMemoryStore describeStore = describeResult.ToRDFMemoryStore();
             
         Assert.IsNotNull(describeStore);
-        Assert.IsTrue(describeStore.QuadruplesCount == 0);
+        Assert.AreEqual(0, describeStore.QuadruplesCount);
     }
 
     [TestMethod]
@@ -325,12 +325,12 @@ public class RDFDescribeQueryResultTest
 
         Assert.IsNotNull(describeResult);
         Assert.IsNotNull(describeResult.DescribeResults);
-        Assert.IsTrue(describeResult.DescribeResults.Columns.Count == 4);
+        Assert.AreEqual(4, describeResult.DescribeResults.Columns.Count);
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?CONTEXT"));
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?SUBJECT"));
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?OBJECT"));
-        Assert.IsTrue(describeResult.DescribeResultsCount == 4);
+        Assert.AreEqual(4, describeResult.DescribeResultsCount);
         Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?CONTEXT"].ToString().Equals("ex:ctx"));
         Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?SUBJECT"].ToString().Equals("ex:subj"));
         Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?PREDICATE"].ToString().Equals("ex:pred"));
@@ -361,12 +361,12 @@ public class RDFDescribeQueryResultTest
 
         Assert.IsNotNull(describeResult);
         Assert.IsNotNull(describeResult.DescribeResults);
-        Assert.IsTrue(describeResult.DescribeResults.Columns.Count == 4);
+        Assert.AreEqual(4, describeResult.DescribeResults.Columns.Count);
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?CONTEXT"));
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?SUBJECT"));
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?OBJECT"));
-        Assert.IsTrue(describeResult.DescribeResultsCount == 4);
+        Assert.AreEqual(4, describeResult.DescribeResultsCount);
         Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?CONTEXT"].ToString().Equals("ex:ctx"));
         Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?SUBJECT"].ToString().Equals("ex:subj"));
         Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?PREDICATE"].ToString().Equals("ex:pred"));
@@ -392,8 +392,8 @@ public class RDFDescribeQueryResultTest
 
         Assert.IsNotNull(describeResult);
         Assert.IsNotNull(describeResult.DescribeResults);
-        Assert.IsTrue(describeResult.DescribeResults.Columns.Count == 0);
-        Assert.IsTrue(describeResult.DescribeResultsCount == 0);
+        Assert.AreEqual(0, describeResult.DescribeResults.Columns.Count);
+        Assert.AreEqual(0, describeResult.DescribeResultsCount);
     }
     #endregion
 }

@@ -36,7 +36,7 @@ public class RDFValidationReportTest
         Assert.IsFalse(vRep.IsBlank);
         Assert.IsTrue(vRep.URI.Equals(new Uri("ex:validationReport")));
         Assert.IsTrue(vRep.Conforms);
-        Assert.IsTrue(vRep.ResultsCount == 0);
+        Assert.AreEqual(0, vRep.ResultsCount);
     }
 
     [TestMethod]
@@ -47,7 +47,7 @@ public class RDFValidationReportTest
         Assert.IsNotNull(vRep);
         Assert.IsTrue(vRep.IsBlank);
         Assert.IsTrue(vRep.Conforms);
-        Assert.IsTrue(vRep.ResultsCount == 0);
+        Assert.AreEqual(0, vRep.ResultsCount);
     }
 
     [TestMethod]
@@ -70,7 +70,7 @@ public class RDFValidationReportTest
         Assert.IsFalse(vRep.IsBlank);
         Assert.IsTrue(vRep.URI.Equals(new Uri("ex:validationReport")));
         Assert.IsFalse(vRep.Conforms);
-        Assert.IsTrue(vRep.ResultsCount == 1);
+        Assert.AreEqual(1, vRep.ResultsCount);
     }
 
     [TestMethod]
@@ -168,10 +168,10 @@ public class RDFValidationReportTest
         int i = 0;
         IEnumerator<RDFValidationResult> resultsEnumerator = vRep.ResultsEnumerator;
         while (resultsEnumerator.MoveNext()) i++;
-        Assert.IsTrue(i == 1);
+        Assert.AreEqual(1, i);
 
         int j = vRep.Count();
-        Assert.IsTrue(j == 1);
+        Assert.AreEqual(1, j);
     }
 
     [TestMethod]
@@ -185,7 +185,7 @@ public class RDFValidationReportTest
         Assert.IsFalse(vRep2.IsBlank);
         Assert.IsTrue(vRep2.URI.Equals(new Uri("ex:validationReport2")));
         Assert.IsTrue(vRep2.Conforms);
-        Assert.IsTrue(vRep2.ResultsCount == 0);
+        Assert.AreEqual(0, vRep2.ResultsCount);
 
         RDFGraph vrGraph = vRep2.ToRDFGraph();
         Assert.IsNotNull(vrGraph);
@@ -225,7 +225,7 @@ public class RDFValidationReportTest
         Assert.IsFalse(vRep2.IsBlank);
         Assert.IsTrue(vRep2.URI.Equals(new Uri("ex:validationReport2")));
         Assert.IsFalse(vRep2.Conforms);
-        Assert.IsTrue(vRep2.ResultsCount == 2);
+        Assert.AreEqual(2, vRep2.ResultsCount);
 
         RDFGraph vrGraph = vRep2.ToRDFGraph();
         Assert.IsNotNull(vrGraph);

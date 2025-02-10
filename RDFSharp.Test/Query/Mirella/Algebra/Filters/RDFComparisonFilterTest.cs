@@ -38,7 +38,7 @@ public class RDFComparisonFilterTest
         RDFComparisonFilter filter = new RDFComparisonFilter(comparisonFlavor, new RDFVariable("?LEFT"), RDFVocabulary.RDF.ALT);
 
         Assert.IsNotNull(filter);
-        Assert.IsTrue(filter.ComparisonFlavor == comparisonFlavor);
+        Assert.AreEqual(comparisonFlavor, filter.ComparisonFlavor);
         Assert.IsNotNull(filter.LeftMember);
         Assert.IsTrue(filter.LeftMember.Equals(new RDFVariable("?LEFT")));
         Assert.IsNotNull(filter.LeftMemberString);

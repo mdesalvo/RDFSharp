@@ -396,7 +396,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store2 = RDFNQuads.Deserialize(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldDeserializeEmptyStore.nq"));
 
         Assert.IsNotNull(store2);
-        Assert.IsTrue(store2.QuadruplesCount == 0);
+        Assert.AreEqual(0, store2.QuadruplesCount);
     }
 
     [TestMethod]
@@ -408,7 +408,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store2 = RDFNQuads.Deserialize(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldDeserializeStore.nq"));
 
         Assert.IsNotNull(store2);
-        Assert.IsTrue(store2.QuadruplesCount == 1);
+        Assert.AreEqual(1, store2.QuadruplesCount);
         Assert.IsTrue(store2.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -421,7 +421,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -434,7 +434,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -446,7 +446,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
     }
 
@@ -459,7 +459,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -471,7 +471,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -484,7 +484,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -496,7 +496,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
     }
 
@@ -509,7 +509,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -521,7 +521,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
     }
 
@@ -534,7 +534,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), RDFPlainLiteral.Empty)));
     }
 
@@ -547,7 +547,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -559,7 +559,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
     }
 
@@ -572,7 +572,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty, "en-US"))));
     }
 
@@ -585,7 +585,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -597,7 +597,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US--ltr"))));
     }
 
@@ -610,7 +610,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
 
@@ -623,7 +623,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral(string.Empty, RDFModelEnums.RDFDatatypes.XSD_STRING))));
     }
 
@@ -636,7 +636,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -648,7 +648,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
     }
 
@@ -661,7 +661,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
     }
 
@@ -674,7 +674,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), RDFPlainLiteral.Empty)));
     }
 
@@ -687,7 +687,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -699,7 +699,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
     }
 
@@ -712,7 +712,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty, "en-US"))));
     }
 
@@ -725,7 +725,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -737,7 +737,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en--rtl"))));
     }
 
@@ -750,7 +750,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
 
@@ -763,7 +763,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral(string.Empty, RDFModelEnums.RDFDatatypes.XSD_STRING))));
     }
 
@@ -776,7 +776,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -1148,7 +1148,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx😃/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -1161,7 +1161,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj😃/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -1174,7 +1174,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred😃/"), new RDFResource("http://obj/"))));
     }
 
@@ -1187,7 +1187,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj😃/"))));
     }
 
@@ -1200,7 +1200,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Smile!😃", "en-US"))));
     }
 
@@ -1213,7 +1213,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/frag#pageβ2"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -1226,7 +1226,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/frag#pageβ2"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -1239,7 +1239,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/frag#pageβ2"), new RDFResource("http://obj/"))));
     }
 
@@ -1252,7 +1252,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/frag#pageβ2"))));
     }
 
@@ -1265,7 +1265,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Beta!β", "en-US"))));
     }
 
@@ -1278,7 +1278,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\r"))));
     }
 
@@ -1291,7 +1291,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\n"))));
     }
 
@@ -1304,7 +1304,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\t"))));
     }
 
@@ -1317,7 +1317,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\\"))));
     }
 
@@ -1330,7 +1330,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\""))));
     }
 
@@ -1343,7 +1343,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -1356,7 +1356,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -1368,7 +1368,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
     }
 
@@ -1381,7 +1381,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -1393,7 +1393,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -1406,7 +1406,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -1418,7 +1418,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
     }
 
@@ -1431,7 +1431,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -1443,7 +1443,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
     }
 
@@ -1456,7 +1456,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), RDFPlainLiteral.Empty)));
     }
 
@@ -1469,7 +1469,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -1481,7 +1481,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
     }
 
@@ -1494,7 +1494,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty, "en-US"))));
     }
 
@@ -1507,7 +1507,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -1519,7 +1519,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
 
@@ -1532,7 +1532,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral(string.Empty, RDFModelEnums.RDFDatatypes.XSD_STRING))));
     }
 
@@ -1545,7 +1545,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -1557,7 +1557,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
     }
 
@@ -1570,7 +1570,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), RDFPlainLiteral.Empty)));
     }
 
@@ -1583,7 +1583,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -1595,7 +1595,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
     }
 
@@ -1608,7 +1608,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty, "en-US"))));
     }
 
@@ -1621,7 +1621,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -1633,7 +1633,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
 
@@ -1646,7 +1646,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral(string.Empty, RDFModelEnums.RDFDatatypes.XSD_STRING))));
     }
 
@@ -1659,7 +1659,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 0);
+        Assert.AreEqual(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -1911,7 +1911,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj😃/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -1924,7 +1924,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred😃/"), new RDFResource("http://obj/"))));
     }
 
@@ -1937,7 +1937,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj😃/"))));
     }
 
@@ -1950,7 +1950,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Smile!😃", "en-US"))));
     }
 
@@ -1963,7 +1963,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/frag#pageβ2"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -1976,7 +1976,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/frag#pageβ2"), new RDFResource("http://obj/"))));
     }
 
@@ -1989,7 +1989,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/frag#pageβ2"))));
     }
 
@@ -2002,7 +2002,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Beta!β", "en-US"))));
     }
 
@@ -2015,7 +2015,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\r"))));
     }
 
@@ -2028,7 +2028,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\n"))));
     }
 
@@ -2041,7 +2041,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\t"))));
     }
 
@@ -2054,7 +2054,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\\"))));
     }
 
@@ -2067,7 +2067,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\""))));
     }
 
@@ -2080,7 +2080,7 @@ public class RDFNQuadsTest
         RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 1);
+        Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\" \""))));
     }
 

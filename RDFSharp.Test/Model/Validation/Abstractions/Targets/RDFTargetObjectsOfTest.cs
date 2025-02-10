@@ -43,7 +43,7 @@ public class RDFTargetObjectsOfTest
         RDFGraph graph = targetObjectsOf.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:nodeShape")));
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.TriplesCount == 1);
+        Assert.AreEqual(1, graph.TriplesCount);
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("ex:nodeShape"), RDFVocabulary.SHACL.TARGET_OBJECTS_OF, targetObjectsOf.TargetValue)));
     }
     #endregion

@@ -35,7 +35,7 @@ public class RDFInFilterTest
         Assert.IsNotNull(filter.TermToSearch);
         Assert.IsTrue(filter.TermToSearch.Equals(new RDFVariable("?VAR")));
         Assert.IsNotNull(filter.InTerms);
-        Assert.IsTrue(filter.InTerms.Count == 4);
+        Assert.AreEqual(4, filter.InTerms.Count);
         Assert.IsTrue(filter.ToString().Equals($"FILTER ( ?VAR IN (<{RDFVocabulary.RDF.ALT}>, <{RDFVocabulary.RDF.BAG}>, \"hello\"@EN-US, \"---25Z\"^^<{RDFVocabulary.XSD.G_DAY}>) )"));
         Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals($"FILTER ( ?VAR IN (rdf:Alt, rdf:Bag, \"hello\"@EN-US, \"---25Z\"^^<{RDFVocabulary.XSD.G_DAY}>) )"));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));

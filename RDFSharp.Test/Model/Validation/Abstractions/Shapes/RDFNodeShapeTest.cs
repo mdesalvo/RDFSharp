@@ -33,10 +33,10 @@ public class RDFNodeShapeTests
         Assert.IsTrue(nodeShape.Equals(new RDFResource("ex:nodeShape")));
         Assert.IsFalse(nodeShape.IsBlank);
         Assert.IsFalse(nodeShape.Deactivated);
-        Assert.IsTrue(nodeShape.Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(nodeShape.MessagesCount == 0);
-        Assert.IsTrue(nodeShape.TargetsCount == 0);
-        Assert.IsTrue(nodeShape.ConstraintsCount == 0);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, nodeShape.Severity);
+        Assert.AreEqual(0, nodeShape.MessagesCount);
+        Assert.AreEqual(0, nodeShape.TargetsCount);
+        Assert.AreEqual(0, nodeShape.ConstraintsCount);
     }
 
     [TestMethod]
@@ -47,10 +47,10 @@ public class RDFNodeShapeTests
         Assert.IsNotNull(nodeShape);
         Assert.IsTrue(nodeShape.IsBlank);
         Assert.IsFalse(nodeShape.Deactivated);
-        Assert.IsTrue(nodeShape.Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-        Assert.IsTrue(nodeShape.MessagesCount == 0);
-        Assert.IsTrue(nodeShape.TargetsCount == 0);
-        Assert.IsTrue(nodeShape.ConstraintsCount == 0);
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, nodeShape.Severity);
+        Assert.AreEqual(0, nodeShape.MessagesCount);
+        Assert.AreEqual(0, nodeShape.TargetsCount);
+        Assert.AreEqual(0, nodeShape.ConstraintsCount);
     }
 
     [TestMethod]
@@ -59,7 +59,7 @@ public class RDFNodeShapeTests
         RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
         int i = nodeShape.Count();
 
-        Assert.IsTrue(i == 0);
+        Assert.AreEqual(0, i);
     }
 
     [TestMethod]
@@ -79,7 +79,7 @@ public class RDFNodeShapeTests
 
         Assert.IsNotNull(nshGraph);
         Assert.IsTrue(nshGraph.Context.Equals(nodeShape.URI));
-        Assert.IsTrue(nshGraph.TriplesCount == 3);
+        Assert.AreEqual(3, nshGraph.TriplesCount);
         Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE)));
         Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.SHACL.SEVERITY_PROPERTY, RDFVocabulary.SHACL.VIOLATION)));
         Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.False)));
@@ -94,7 +94,7 @@ public class RDFNodeShapeTests
 
         Assert.IsNotNull(nshGraph);
         Assert.IsTrue(nshGraph.Context.Equals(nodeShape.URI));
-        Assert.IsTrue(nshGraph.TriplesCount == 3);
+        Assert.AreEqual(3, nshGraph.TriplesCount);
         Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE)));
         Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.SHACL.SEVERITY_PROPERTY, RDFVocabulary.SHACL.VIOLATION)));
         Assert.IsTrue(nshGraph.ContainsTriple(new RDFTriple(nodeShape, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.True)));

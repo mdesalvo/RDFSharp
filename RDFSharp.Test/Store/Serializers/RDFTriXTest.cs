@@ -332,7 +332,7 @@ public class RDFTriXTest
         RDFMemoryStore store2 = RDFSharp.Store.RDFTriX.Deserialize(Path.Combine(Environment.CurrentDirectory, "RDFTriXTest_ShouldDeserializeEmptyStore.trix"));
 
         Assert.IsNotNull(store2);
-        Assert.IsTrue(store2.QuadruplesCount == 0);
+        Assert.AreEqual(0, store2.QuadruplesCount);
     }
 
     [TestMethod]
@@ -344,7 +344,7 @@ public class RDFTriXTest
         RDFMemoryStore store2 = RDFSharp.Store.RDFTriX.Deserialize(Path.Combine(Environment.CurrentDirectory, "RDFTriXTest_ShouldDeserializeStore.trix"));
 
         Assert.IsNotNull(store2);
-        Assert.IsTrue(store2.QuadruplesCount == 1);
+        Assert.AreEqual(1, store2.QuadruplesCount);
         Assert.IsTrue(store2.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
 
@@ -357,7 +357,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
@@ -371,7 +371,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
@@ -385,7 +385,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj1/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
@@ -399,7 +399,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj1/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
@@ -440,7 +440,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj1/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
@@ -490,7 +490,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
     }
@@ -504,7 +504,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
     }
@@ -518,7 +518,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
     }
@@ -532,7 +532,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
     }
@@ -546,7 +546,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), RDFPlainLiteral.Empty)));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), RDFPlainLiteral.Empty)));
     }
@@ -560,7 +560,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US--ltr"))));
     }
@@ -574,7 +574,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty, "en-US"))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty, "en-US"))));
     }
@@ -588,7 +588,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -602,7 +602,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral(string.Empty, RDFModelEnums.RDFDatatypes.XSD_STRING))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral(string.Empty, RDFModelEnums.RDFDatatypes.XSD_STRING))));
     }
@@ -616,7 +616,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
     }
@@ -630,7 +630,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
     }
@@ -644,7 +644,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
     }
@@ -658,7 +658,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
     }
@@ -672,7 +672,7 @@ public class RDFTriXTest
         RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount == 2);
+        Assert.AreEqual(2, store.QuadruplesCount);
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
     }
