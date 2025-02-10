@@ -1614,7 +1614,7 @@ public class RDFConstructQueryTest
     public async Task ShouldApplyConstructQueryToGraphAsyncAndHaveResults()
     {
         RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFConstructQuery query = new RDFConstructQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
@@ -1635,7 +1635,7 @@ public class RDFConstructQueryTest
     public async Task ShouldApplyConstructQueryToGraphAsyncAndNotHaveResults()
     {
         RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFConstructQuery query = new RDFConstructQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
@@ -1720,7 +1720,7 @@ public class RDFConstructQueryTest
     public async Task ShouldApplyConstructQueryToFederationAsyncAndHaveResults()
     {
         RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFFederation federation = new RDFFederation();
         federation.AddGraph(graph);
         RDFConstructQuery query = new RDFConstructQuery()
@@ -1743,7 +1743,7 @@ public class RDFConstructQueryTest
     public async Task ShouldApplyConstructQueryToFederationAsyncAndNotHaveResults()
     {
         RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFFederation federation = new RDFFederation();
         federation.AddGraph(graph);
         RDFConstructQuery query = new RDFConstructQuery()

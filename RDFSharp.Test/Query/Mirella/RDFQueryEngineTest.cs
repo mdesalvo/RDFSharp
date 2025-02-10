@@ -1865,9 +1865,6 @@ public class RDFQueryEngineTest
     [TestMethod]
     public void ShouldEvaluateSelectQueyOnFederationWithResultsSPARQLEndpointsOneThrowingException()
     {
-        string receivedQuery1 = "";
-        string receivedQuery2 = "";
-
         string mockedResponseXml1 =
             """
             <?xml version="1.0" encoding="utf-8"?>
@@ -1926,18 +1923,14 @@ public class RDFQueryEngineTest
             .RespondWith(
                 Response.Create()
                     .WithHeader("Content-Type", "application/sparql-results+xml")
-                    .WithCallback(req => 
-                    { 
-                        receivedQuery1 = req.RawQuery;
-                        return new WireMock.ResponseMessage
+                    .WithCallback(req => new WireMock.ResponseMessage
+                    {
+                        BodyData = new BodyData
                         {
-                            BodyData = new BodyData
-                            {
-                                BodyAsString = mockedResponseXml1,
-                                Encoding = Encoding.UTF8,
-                                DetectedBodyType = BodyType.String
-                            }
-                        }; 
+                            BodyAsString = mockedResponseXml1,
+                            Encoding = Encoding.UTF8,
+                            DetectedBodyType = BodyType.String
+                        }
                     })
                     .WithStatusCode(HttpStatusCode.OK));
         server
@@ -1948,18 +1941,14 @@ public class RDFQueryEngineTest
             .RespondWith(
                 Response.Create()
                     .WithHeader("Content-Type", "application/sparql-results+xml")
-                    .WithCallback(req => 
-                    { 
-                        receivedQuery2 = req.Body;
-                        return new WireMock.ResponseMessage
+                    .WithCallback(req => new WireMock.ResponseMessage
+                    {
+                        BodyData = new BodyData
                         {
-                            BodyData = new BodyData
-                            {
-                                BodyAsString = mockedResponseXml2,
-                                Encoding = Encoding.UTF8,
-                                DetectedBodyType = BodyType.String
-                            }
-                        }; 
+                            BodyAsString = mockedResponseXml2,
+                            Encoding = Encoding.UTF8,
+                            DetectedBodyType = BodyType.String
+                        }
                     })
                     .WithStatusCode(HttpStatusCode.OK)
                     .WithDelay(750));

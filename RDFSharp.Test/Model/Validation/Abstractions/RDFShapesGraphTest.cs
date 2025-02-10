@@ -217,7 +217,7 @@ public class RDFShapesGraphTest
         shape.AddTarget(new RDFTargetClass(new RDFResource("ex:class")));
         shape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:class")));
         shapesGraph.AddShape(shape);
-        RDFGraph graph = shapesGraph.ToRDFGraph();
+        RDFGraph graph = await shapesGraph.ToRDFGraphAsync();
         RDFShapesGraph shapesGraph2 = await RDFShapesGraph.FromRDFGraphAsync(graph);
 
         Assert.IsNotNull(shapesGraph2);

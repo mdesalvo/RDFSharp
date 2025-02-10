@@ -682,7 +682,6 @@ public class RDFSelectQueryTest
     [TestMethod]
     public void ShouldApplySelectQueryOnGraphWithServicePatternGroupAndThrowExceptionAccordingToTimingAndBehavior()
     {
-        string receivedQuery = null;
         string mockedResponseXml =
             """
             <?xml version="1.0" encoding="utf-8"?>
@@ -708,18 +707,14 @@ public class RDFSelectQueryTest
             .RespondWith(
                 Response.Create()
                     .WithHeader("Content-Type", "application/sparql-results+xml")
-                    .WithCallback(req =>
+                    .WithCallback(req => new WireMock.ResponseMessage
                     {
-                        receivedQuery = req.RawQuery;
-                        return new WireMock.ResponseMessage
+                        BodyData = new BodyData
                         {
-                            BodyData = new BodyData
-                            {
-                                BodyAsString = mockedResponseXml,
-                                Encoding = Encoding.UTF8,
-                                DetectedBodyType = BodyType.String
-                            }
-                        };
+                            BodyAsString = mockedResponseXml,
+                            Encoding = Encoding.UTF8,
+                            DetectedBodyType = BodyType.String
+                        }
                     })
                     .WithStatusCode(HttpStatusCode.OK)
                     .WithDelay(750));
@@ -747,7 +742,6 @@ public class RDFSelectQueryTest
     [TestMethod]
     public void ShouldApplySelectQueryOnGraphWithServicePatternGroupAndThrowExceptionAccordingToTimingAndBehaviorViaPost()
     {
-        string receivedQuery = null;
         string mockedResponseXml =
             """
             <?xml version="1.0" encoding="utf-8"?>
@@ -772,18 +766,14 @@ public class RDFSelectQueryTest
             .RespondWith(
                 Response.Create()
                     .WithHeader("Content-Type", "application/sparql-results+xml")
-                    .WithCallback(req =>
+                    .WithCallback(req => new WireMock.ResponseMessage
                     {
-                        receivedQuery = req.RawQuery;
-                        return new WireMock.ResponseMessage
+                        BodyData = new BodyData
                         {
-                            BodyData = new BodyData
-                            {
-                                BodyAsString = mockedResponseXml,
-                                Encoding = Encoding.UTF8,
-                                DetectedBodyType = BodyType.String
-                            }
-                        };
+                            BodyAsString = mockedResponseXml,
+                            Encoding = Encoding.UTF8,
+                            DetectedBodyType = BodyType.String
+                        }
                     })
                     .WithStatusCode(HttpStatusCode.OK)
                     .WithDelay(750));
@@ -812,7 +802,6 @@ public class RDFSelectQueryTest
     [TestMethod]
     public void ShouldApplySelectQueryOnGraphWithServicePatternGroupAndGiveEmptyResultAccordingToTimingAndBehavior()
     {
-        string receivedQuery = null;
         string mockedResponseXml =
             """
             <?xml version="1.0" encoding="utf-8"?>
@@ -838,18 +827,14 @@ public class RDFSelectQueryTest
             .RespondWith(
                 Response.Create()
                     .WithHeader("Content-Type", "application/sparql-results+xml")
-                    .WithCallback(req =>
+                    .WithCallback(req => new WireMock.ResponseMessage
                     {
-                        receivedQuery = req.RawQuery;
-                        return new WireMock.ResponseMessage
+                        BodyData = new BodyData
                         {
-                            BodyData = new BodyData
-                            {
-                                BodyAsString = mockedResponseXml,
-                                Encoding = Encoding.UTF8,
-                                DetectedBodyType = BodyType.String
-                            }
-                        };
+                            BodyAsString = mockedResponseXml,
+                            Encoding = Encoding.UTF8,
+                            DetectedBodyType = BodyType.String
+                        }
                     })
                     .WithStatusCode(HttpStatusCode.OK)
                     .WithDelay(750));
@@ -876,7 +861,6 @@ public class RDFSelectQueryTest
     [TestMethod]
     public void ShouldApplySelectQueryOnGraphWithServicePatternGroupAndGiveEmptyResultAccordingToTimingAndBehaviorViaPost()
     {
-        string receivedQuery = null;
         string mockedResponseXml =
             """
             <?xml version="1.0" encoding="utf-8"?>
@@ -901,18 +885,14 @@ public class RDFSelectQueryTest
             .RespondWith(
                 Response.Create()
                     .WithHeader("Content-Type", "application/sparql-results+xml")
-                    .WithCallback(req =>
+                    .WithCallback(req => new WireMock.ResponseMessage
                     {
-                        receivedQuery = req.RawQuery;
-                        return new WireMock.ResponseMessage
+                        BodyData = new BodyData
                         {
-                            BodyData = new BodyData
-                            {
-                                BodyAsString = mockedResponseXml,
-                                Encoding = Encoding.UTF8,
-                                DetectedBodyType = BodyType.String
-                            }
-                        };
+                            BodyAsString = mockedResponseXml,
+                            Encoding = Encoding.UTF8,
+                            DetectedBodyType = BodyType.String
+                        }
                     })
                     .WithStatusCode(HttpStatusCode.OK)
                     .WithDelay(750));
@@ -2067,7 +2047,7 @@ public class RDFSelectQueryTest
     public async Task ShouldApplySelectQueryToGraphAsyncAndHaveResults()
     {
         RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
@@ -2087,7 +2067,7 @@ public class RDFSelectQueryTest
     public async Task ShouldApplySelectQueryToGraphAsyncAndNotHaveResults()
     {
         RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
@@ -2180,7 +2160,7 @@ public class RDFSelectQueryTest
     public async Task ShouldApplySelectQueryToFederationAsyncAndHaveResults()
     {
         RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFFederation federation = new RDFFederation().AddGraph(graph);
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -2201,7 +2181,7 @@ public class RDFSelectQueryTest
     public async Task ShouldApplySelectQueryToFederationAsyncAndNotHaveResults()
     {
         RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFFederation federation = new RDFFederation().AddGraph(graph);
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -2388,7 +2368,7 @@ public class RDFSelectQueryTest
             case "Graph":
             {
                 RDFGraph graph = new RDFGraph();
-                graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+                await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
                 RDFSelectQuery query = new RDFSelectQuery()
                     .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                     .AddPatternGroup(new RDFPatternGroup()
@@ -2429,7 +2409,7 @@ public class RDFSelectQueryTest
             case "Federation":
             {
                 RDFGraph graph = new RDFGraph();
-                graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+                await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
                 RDFFederation federation = new RDFFederation().AddGraph(graph);
                 RDFSelectQuery query = new RDFSelectQuery()
                     .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))

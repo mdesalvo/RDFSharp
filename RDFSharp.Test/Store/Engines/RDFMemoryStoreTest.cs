@@ -1199,8 +1199,8 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store1 = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-        store1.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
-        store1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFileAsync{fileExtension}"));
+        await (await store1.AddQuadrupleAsync(quadruple1)).AddQuadrupleAsync(quadruple2);
+        await store1.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFileAsync{fileExtension}"));
         RDFMemoryStore store2 = await RDFMemoryStore.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFileAsync{fileExtension}"));
 
         Assert.IsNotNull(store2);
@@ -1217,12 +1217,12 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store1 = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-        store1.AddQuadruple(quadruple1)
-            .AddQuadruple(quadruple2)
-            .MergeGraph(new RDFGraph()
-                .AddDatatype(new RDFDatatype(new Uri($"ex:mydtP{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+        await (await store1.AddQuadruple(quadruple1)
+                .AddQuadrupleAsync(quadruple2))
+            .MergeGraphAsync(await new RDFGraph()
+                .AddDatatypeAsync(new RDFDatatype(new Uri($"ex:mydtP{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
                     new RDFPatternFacet("^ex$") ])));
-        store1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFileAsync{fileExtension}WithEnabledDatatypeDiscovery"));
+        await store1.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFileAsync{fileExtension}WithEnabledDatatypeDiscovery"));
         RDFMemoryStore store2 = await RDFMemoryStore.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFileAsync{fileExtension}WithEnabledDatatypeDiscovery"), true);
 
         Assert.IsNotNull(store2);
@@ -1243,7 +1243,7 @@ public class RDFMemoryStoreTest
     public async Task ShouldImportEmptyFromFileAsync(string fileExtension, RDFStoreEnums.RDFFormats format)
     {
         RDFMemoryStore store1 = new RDFMemoryStore();
-        store1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportEmptyFromFileAsync{fileExtension}"));
+        await store1.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportEmptyFromFileAsync{fileExtension}"));
         RDFMemoryStore store2 = await RDFMemoryStore.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportEmptyFromFileAsync{fileExtension}"));
 
         Assert.IsNotNull(store2);
@@ -1336,8 +1336,8 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store1 = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-        store1.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
-        store1.ToStream(format, stream);
+        await (await store1.AddQuadrupleAsync(quadruple1)).AddQuadrupleAsync(quadruple2);
+        await store1.ToStreamAsync(format, stream);
         RDFMemoryStore store2 = await RDFMemoryStore.FromStreamAsync(format, new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store2);
@@ -1355,12 +1355,12 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store1 = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-        store1.AddQuadruple(quadruple1)
-            .AddQuadruple(quadruple2)
-            .MergeGraph(new RDFGraph()
-                .AddDatatype(new RDFDatatype(new Uri($"ex:mydtQ{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+        await (await store1.AddQuadruple(quadruple1)
+                .AddQuadrupleAsync(quadruple2))
+            .MergeGraphAsync(await new RDFGraph()
+                .AddDatatypeAsync(new RDFDatatype(new Uri($"ex:mydtQ{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
                     new RDFPatternFacet("^ex$") ])));
-        store1.ToStream(format, stream);
+        await store1.ToStreamAsync(format, stream);
         RDFMemoryStore store2 = await RDFMemoryStore.FromStreamAsync(format, new MemoryStream(stream.ToArray()), true);
 
         Assert.IsNotNull(store2);
@@ -1382,7 +1382,7 @@ public class RDFMemoryStoreTest
     {
         MemoryStream stream = new MemoryStream();
         RDFMemoryStore store1 = new RDFMemoryStore();
-        store1.ToStream(format, stream);
+        await store1.ToStreamAsync(format, stream);
         RDFMemoryStore store2 = await RDFMemoryStore.FromStreamAsync(format, new MemoryStream(stream.ToArray()));
 
         Assert.IsNotNull(store2);
@@ -1671,8 +1671,8 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store1 = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-        store1.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
-        DataTable table = store1.ToDataTable();
+        await (await store1.AddQuadrupleAsync(quadruple1)).AddQuadrupleAsync(quadruple2);
+        DataTable table = await store1.ToDataTableAsync();
         RDFMemoryStore store2 = await RDFMemoryStore.FromDataTableAsync(table);
 
         Assert.IsNotNull(store2);
@@ -1686,12 +1686,12 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store1 = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-        store1.AddQuadruple(quadruple1)
-            .AddQuadruple(quadruple2)
-            .MergeGraph(new RDFGraph()
-                .AddDatatype(new RDFDatatype(new Uri("ex:mydtQG"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+        await (await store1.AddQuadruple(quadruple1)
+                .AddQuadrupleAsync(quadruple2))
+            .MergeGraphAsync(await new RDFGraph()
+                .AddDatatypeAsync(new RDFDatatype(new Uri("ex:mydtQG"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
                     new RDFPatternFacet("^ex$") ])));
-        DataTable table = store1.ToDataTable();
+        DataTable table = await store1.ToDataTableAsync();
         RDFMemoryStore store2 = await RDFMemoryStore.FromDataTableAsync(table, true);
 
         Assert.IsNotNull(store2);
@@ -1706,7 +1706,7 @@ public class RDFMemoryStoreTest
     public async Task ShouldImportEmptyFromDataTableAsync()
     {
         RDFMemoryStore store1 = new RDFMemoryStore();
-        DataTable table = store1.ToDataTable();
+        DataTable table = await store1.ToDataTableAsync();
         RDFMemoryStore store2 = await RDFMemoryStore.FromDataTableAsync(table);
 
         Assert.IsNotNull(store2);
@@ -1951,10 +1951,10 @@ public class RDFMemoryStoreTest
     [TestMethod]
     public async Task ShouldMergeGraphAsync()
     {
-        RDFGraph graph = new RDFGraph([
+        RDFGraph graph = await new RDFGraph([
             new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")),
             new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit"))
-        ]).SetContext(new Uri("ex:ctx"));
+        ]).SetContextAsync(new Uri("ex:ctx"));
         RDFMemoryStore store = new RDFMemoryStore();
         await store.MergeGraphAsync(graph);
 
@@ -2576,7 +2576,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore([quadruple1, quadruple2]);
         RDFMemoryStore storeQuadruple1 = quadruple1.ReifyQuadruple();
         RDFMemoryStore storeQuadruple2 = quadruple2.ReifyQuadruple();
-        RDFMemoryStore reifiedStore = storeQuadruple1.UnionWith(storeQuadruple2);
+        RDFMemoryStore reifiedStore = await storeQuadruple1.UnionWithAsync(storeQuadruple2);
 
         Assert.IsFalse(reifiedStore.Equals(store));
 
@@ -2599,7 +2599,7 @@ public class RDFMemoryStoreTest
         await store.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}"));
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}")));
-        Assert.IsTrue(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}")).Length > 90);
+        Assert.IsTrue((await File.ReadAllTextAsync(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}"))).Length > 90);
     }
 
     [TestMethod]
