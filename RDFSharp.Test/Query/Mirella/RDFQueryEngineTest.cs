@@ -1466,7 +1466,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnStore_BindAndProjectionExpressions()
+    public void ShouldEvaluateSelectQueryOnStoreBindAndProjectionExpressions()
     {
         RDFMemoryStore store = new RDFMemoryStore(
         [
@@ -1554,7 +1554,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void houldEvaluateSelectueryOnFederationBindAndProjectionExpressions()
+    public void ShouldEvaluateSelectQueryOnFederationBindAndProjectionExpressions()
     {
         RDFGraph graph = new RDFGraph(
         [
@@ -1605,7 +1605,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void SouldEvaluateSelectQeryOnFederationWithResultsSPARQLEndpoints()
+    public void ShouldEvaluateSelectQueryOnFederationWithResultsSPARQLEndpoints()
     {
         string receivedQuery1 = "";
         string receivedQuery2 = "";
