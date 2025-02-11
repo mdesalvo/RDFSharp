@@ -214,7 +214,7 @@ namespace RDFSharp.Store
                         nquad = nquad.Trim(' ', '\t', '\r', '\n');
 
                         //Skip empty or comment lines
-                        if (nquad == string.Empty || nquad.StartsWith("#"))
+                        if (nquad == string.Empty || nquad.StartsWith("#", StringComparison.Ordinal))
                             continue;
 
                         //Tokenizes the sanitized quad
@@ -235,9 +235,9 @@ namespace RDFSharp.Store
                         #endregion
 
                         #region object
-                        if (tokens[2].StartsWith("<") ||
-                            tokens[2].StartsWith("bnode:") ||
-                            tokens[2].StartsWith("_:"))
+                        if (tokens[2].StartsWith("<", StringComparison.Ordinal) ||
+                            tokens[2].StartsWith("bnode:", StringComparison.OrdinalIgnoreCase) ||
+                            tokens[2].StartsWith("_:", StringComparison.Ordinal))
                         {
                             string obj = tokens[2].TrimStart('<')
                                                   .TrimEnd('>')
@@ -263,7 +263,7 @@ namespace RDFSharp.Store
 
                             #region plain literal
                             if (!tokens[2].Contains("^^")
-                                  || tokens[2].EndsWith("^^")
+                                  || tokens[2].EndsWith("^^", StringComparison.Ordinal)
                                   || tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2, 1) != "<")
                             {
                                 if (RDFNTriples.regexLPL.Value.Match(tokens[2]).Success)
@@ -329,13 +329,13 @@ namespace RDFSharp.Store
         private static string[] TokenizeNQuad(string nquad)
         {
             //A legal N-Quad starts with "_:" of blanks or "<" of non-blanks
-            if (!nquad.StartsWith("_:") && !nquad.StartsWith("<"))
+            if (!nquad.StartsWith("_:", StringComparison.Ordinal) && !nquad.StartsWith("<", StringComparison.Ordinal))
                 throw new Exception("found illegal N-Quad, must start with \"_:\" or with \"<\"");
 
             string[] tokens = new string[4];
 
             //S->->-> quadruple
-            if (nquad.StartsWith("<"))
+            if (nquad.StartsWith("<", StringComparison.Ordinal))
             {
                 //S->P->O->C
                 if (SPOC.Value.Match(nquad).Success)

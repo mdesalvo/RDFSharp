@@ -54,7 +54,7 @@ namespace RDFSharp.Store
             //PlainLiteral
             int lastIndexOfDatatype = literal.LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
             if (!literal.Contains("^^")
-                  || literal.EndsWith("^^")
+                  || literal.EndsWith("^^", StringComparison.Ordinal)
                   || RDFModelUtilities.GetUriFromString(literal.Substring(lastIndexOfDatatype + 2)) == null)
             {
                 RDFPlainLiteral pLit;

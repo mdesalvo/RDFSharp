@@ -62,7 +62,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a geographic expression with given arguments
         /// </summary>
-        public RDFGeoExpression(RDFExpressionArgument leftArgument, RDFExpressionArgument rightArgument)
+        protected RDFGeoExpression(RDFExpressionArgument leftArgument, RDFExpressionArgument rightArgument)
             : base(leftArgument, rightArgument) { }
         #endregion
 

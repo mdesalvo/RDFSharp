@@ -41,25 +41,25 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an expression with given expression arguments
         /// </summary>
-        public RDFExpression(RDFExpression leftArgument, RDFExpression rightArgument)
+        protected RDFExpression(RDFExpression leftArgument, RDFExpression rightArgument)
             : this(leftArgument, rightArgument as RDFExpressionArgument) { }
 
         /// <summary>
         /// Default-ctor to build an expression with given mixed arguments
         /// </summary>
-        public RDFExpression(RDFExpression leftArgument, RDFPatternMember rightArgument)
+        protected RDFExpression(RDFExpression leftArgument, RDFPatternMember rightArgument)
             : this(leftArgument, rightArgument as RDFExpressionArgument) { }
 
         /// <summary>
         /// Default-ctor to build an expression with given mixed arguments
         /// </summary>
-        public RDFExpression(RDFPatternMember leftArgument, RDFExpression rightArgument)
+        protected RDFExpression(RDFPatternMember leftArgument, RDFExpression rightArgument)
             : this(leftArgument, rightArgument as RDFExpressionArgument) { }
 
         /// <summary>
         /// Default-ctor to build an expression with given pattern member arguments
         /// </summary>
-        public RDFExpression(RDFPatternMember leftArgument, RDFPatternMember rightArgument)
+        protected RDFExpression(RDFPatternMember leftArgument, RDFPatternMember rightArgument)
             : this(leftArgument, rightArgument as RDFExpressionArgument) { }
 
         /// <summary>

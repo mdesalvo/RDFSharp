@@ -87,18 +87,20 @@ namespace RDFSharp.Query
         internal RDFOperationResult EvaluateInsertWhereOperation(RDFInsertWhereOperation insertWhereOperation, RDFDataSource datasource)
         {
             RDFOperationResult operationResult = new RDFOperationResult();
+            bool isGraph = datasource.IsGraph();
+            bool isStore = datasource.IsStore();
 
             //Execute the CONSTRUCT query for materialization of the operation templates
             RDFConstructQueryResult constructResult = ExecuteConstructQueryFromOperation(insertWhereOperation, datasource);
 
             //Use materialized templates for execution of the operation
             List<RDFPattern> insertTemplates = new List<RDFPattern>();
-            if (datasource.IsGraph())
+            if (isGraph)
             {
                 RDFGraph insertGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
                 insertTemplates.AddRange(insertGraph.Select(insertTriple => new RDFPattern(insertTriple.Subject, insertTriple.Predicate, insertTriple.Object)));
             }
-            else if (datasource.IsStore())
+            else if (isStore)
             {
                 RDFMemoryStore insertStore = RDFMemoryStore.FromDataTable(constructResult.ConstructResults);
                 insertTemplates.AddRange(insertStore.Select(insertQuadruple => new RDFPattern(insertQuadruple.Context, insertQuadruple.Subject, insertQuadruple.Predicate, insertQuadruple.Object)));
@@ -126,18 +128,20 @@ namespace RDFSharp.Query
         internal RDFOperationResult EvaluateDeleteWhereOperation(RDFDeleteWhereOperation deleteWhereOperation, RDFDataSource datasource)
         {
             RDFOperationResult operationResult = new RDFOperationResult();
-
+            bool isGraph = datasource.IsGraph();
+            bool isStore = datasource.IsStore();
+            
             //Execute the CONSTRUCT query for materialization of the operation templates
             RDFConstructQueryResult constructResult = ExecuteConstructQueryFromOperation(deleteWhereOperation, datasource);
 
             //Use materialized templates for execution of the operation
             List<RDFPattern> deleteTemplates = new List<RDFPattern>();
-            if (datasource.IsGraph())
+            if (isGraph)
             {
                 RDFGraph deleteGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
                 deleteTemplates.AddRange(deleteGraph.Select(deleteTriple => new RDFPattern(deleteTriple.Subject, deleteTriple.Predicate, deleteTriple.Object)));
             }
-            else if (datasource.IsStore())
+            else if (isStore)
             {
                 RDFMemoryStore deleteStore = RDFMemoryStore.FromDataTable(constructResult.ConstructResults);
                 deleteTemplates.AddRange(deleteStore.Select(deleteQuadruple => new RDFPattern(deleteQuadruple.Context, deleteQuadruple.Subject, deleteQuadruple.Predicate, deleteQuadruple.Object)));
@@ -153,7 +157,9 @@ namespace RDFSharp.Query
         internal RDFOperationResult EvaluateDeleteInsertWhereOperation(RDFDeleteInsertWhereOperation deleteInsertWhereOperation, RDFDataSource datasource)
         {
             RDFOperationResult operationResult = new RDFOperationResult();
-
+            bool isGraph = datasource.IsGraph();
+            bool isStore = datasource.IsStore();
+            
             //Execute the CONSTRUCT query for materialization of the operation templates
             RDFConstructQueryResult constructDeleteResult = new RDFOperationEngine().ExecuteConstructQueryFromOperation(deleteInsertWhereOperation, datasource, "DELETE");
             RDFConstructQueryResult constructInsertResult = new RDFOperationEngine().ExecuteConstructQueryFromOperation(deleteInsertWhereOperation, datasource, "INSERT");
@@ -161,7 +167,7 @@ namespace RDFSharp.Query
             //Use materialized templates for execution of the operation
             List<RDFPattern> deleteTemplates = new List<RDFPattern>();
             List<RDFPattern> insertTemplates = new List<RDFPattern>();
-            if (datasource.IsGraph())
+            if (isGraph)
             {
                 RDFGraph deleteGraph = RDFGraph.FromDataTable(constructDeleteResult.ConstructResults);
                 deleteTemplates.AddRange(deleteGraph.Select(deleteTriple => new RDFPattern(deleteTriple.Subject, deleteTriple.Predicate, deleteTriple.Object)));
@@ -169,7 +175,7 @@ namespace RDFSharp.Query
                 RDFGraph insertGraph = RDFGraph.FromDataTable(constructInsertResult.ConstructResults);
                 insertTemplates.AddRange(insertGraph.Select(insertTriple => new RDFPattern(insertTriple.Subject, insertTriple.Predicate, insertTriple.Object)));
             }
-            else if (datasource.IsStore())
+            else if (isStore)
             {
                 RDFMemoryStore deleteStore = RDFMemoryStore.FromDataTable(constructDeleteResult.ConstructResults);
                 deleteTemplates.AddRange(deleteStore.Select(deleteQuadruple => new RDFPattern(deleteQuadruple.Context, deleteQuadruple.Subject, deleteQuadruple.Predicate, deleteQuadruple.Object)));
@@ -189,17 +195,19 @@ namespace RDFSharp.Query
         internal RDFOperationResult EvaluateLoadOperation(RDFLoadOperation loadOperation, RDFDataSource datasource)
         {
             RDFOperationResult operationResult = new RDFOperationResult();
-
+            bool isGraph = datasource.IsGraph();
+            bool isStore = datasource.IsStore();
+            
             try
             {
                 List<RDFPattern> insertTemplates = new List<RDFPattern>();
 
                 //GRAPH => Dereference triples
-                if (datasource.IsGraph())
+                if (isGraph)
                     insertTemplates.AddRange(RDFGraph.FromUri(loadOperation.FromContext).Select(loadTriple => new RDFPattern(loadTriple.Subject, loadTriple.Predicate, loadTriple.Object)));
                 
                 //STORE => Dereference quadruples (respect the target context, if provided by the operation)
-                else if (datasource.IsStore())
+                else if (isStore)
                 {
                     RDFContext targetContext = (loadOperation.ToContext != null ? new RDFContext(loadOperation.ToContext) : null);
                     insertTemplates.AddRange(RDFMemoryStore.FromUri(loadOperation.FromContext).Select(loadQuadruple => new RDFPattern(targetContext ?? loadQuadruple.Context, loadQuadruple.Subject, loadQuadruple.Predicate, loadQuadruple.Object)));
@@ -223,16 +231,18 @@ namespace RDFSharp.Query
         internal RDFOperationResult EvaluateClearOperation(RDFClearOperation clearOperation, RDFDataSource datasource)
         {
             RDFOperationResult operationResult = new RDFOperationResult();
-
+            bool isGraph = datasource.IsGraph();
+            bool isStore = datasource.IsStore();
+            
             //Graphs => automatically execute as "CLEAR ALL" (since they are contextless by design)
-            if (datasource.IsGraph())
+            if (isGraph)
             {
                 operationResult.DeleteResults = ((RDFGraph)datasource).ToDataTable();
                 ((RDFGraph)datasource).ClearTriples();
             }
 
             //Stores => transform into a targeted "DELETE WHERE"
-            else if (datasource.IsStore())
+            else if (isStore)
             {
                 try
                 {
@@ -365,6 +375,7 @@ namespace RDFSharp.Query
         private RDFConstructQueryResult ExecuteConstructQueryFromOperation(RDFOperation operation, RDFDataSource datasource, string deleteInsertCommand = null)
         {
             DataTable resultTable = new DataTable();
+            
             RDFConstructQueryResult constructResult = new RDFConstructQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = operation.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Count > 0)
@@ -405,7 +416,9 @@ namespace RDFSharp.Query
         private DataTable PopulateInsertOperationResults(List<RDFPattern> insertDataTemplates, RDFDataSource datasource)
         {
             DataTable resultTable = new DataTable("INSERT_RESULTS");
-            if (datasource.IsStore())
+            bool isGraph = datasource.IsGraph();
+            bool isStore = datasource.IsStore();
+            if (isStore)
                 resultTable.Columns.Add("?CONTEXT", typeof(string));
             resultTable.Columns.Add("?SUBJECT", typeof(string));
             resultTable.Columns.Add("?PREDICATE", typeof(string));
@@ -415,7 +428,7 @@ namespace RDFSharp.Query
             insertDataTemplates.ForEach(insertTemplate =>
             {
                 //GRAPH
-                if (datasource.IsGraph())
+                if (isGraph)
                 {
                     RDFTriple insertTriple = insertTemplate.Object is RDFLiteral litObj
                                                 ? new RDFTriple((RDFResource)insertTemplate.Subject, (RDFResource)insertTemplate.Predicate, litObj)
@@ -435,7 +448,7 @@ namespace RDFSharp.Query
                 }
 
                 //STORE
-                else if (datasource.IsStore())
+                else if (isStore)
                 {
                     RDFContext insertContext = insertTemplate.Context as RDFContext ?? new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri);
                     RDFQuadruple insertQuadruple = insertTemplate.Object is RDFLiteral litObj
@@ -466,7 +479,9 @@ namespace RDFSharp.Query
         private DataTable PopulateDeleteOperationResults(List<RDFPattern> deleteDataTemplates, RDFDataSource datasource)
         {
             DataTable resultTable = new DataTable("DELETE_RESULTS");
-            if (datasource.IsStore())
+            bool isGraph = datasource.IsGraph();
+            bool isStore = datasource.IsStore();
+            if (isStore)
                 resultTable.Columns.Add("?CONTEXT", typeof(string));
             resultTable.Columns.Add("?SUBJECT", typeof(string));
             resultTable.Columns.Add("?PREDICATE", typeof(string));
@@ -476,7 +491,7 @@ namespace RDFSharp.Query
             deleteDataTemplates.ForEach(deleteTemplate =>
             {
                 //GRAPH
-                if (datasource.IsGraph())
+                if (isGraph)
                 {
                     RDFTriple deleteTriple = deleteTemplate.Object is RDFLiteral litObj
                                                 ? new RDFTriple((RDFResource)deleteTemplate.Subject, (RDFResource)deleteTemplate.Predicate, litObj)
@@ -496,7 +511,7 @@ namespace RDFSharp.Query
                 }
 
                 //STORE
-                else if (datasource.IsStore())
+                else if (isStore)
                 {
                     RDFContext deleteContext = deleteTemplate.Context as RDFContext ?? new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri);
                     RDFQuadruple deleteQuadruple = deleteTemplate.Object is RDFLiteral litObj

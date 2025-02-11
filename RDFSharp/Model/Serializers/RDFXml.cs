@@ -170,7 +170,7 @@ namespace RDFSharp.Model
                             //<rdf:Description rdf:nodeID="blankID">
                             XmlAttribute subjNodeDesc;
                             XmlText subjNodeDescText;
-                            if (triplesGroup.Key.StartsWith("bnode:", StringComparison.Ordinal))
+                            if (triplesGroup.Key.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
                             {
                                 subjNodeDescText = rdfDoc.CreateTextNode(triplesGroup.Key.Replace("bnode:", string.Empty));
                                 subjNodeDesc = rdfDoc.CreateAttribute("rdf:nodeID", RDFVocabulary.RDF.BASE_URI);
@@ -250,7 +250,7 @@ namespace RDFSharp.Model
                                             XmlNode collElementToAppend = rdfDoc.CreateNode(XmlNodeType.Element, "rdf:Description", RDFVocabulary.RDF.BASE_URI);
                                             XmlAttribute collElementAttr;
                                             XmlText collElementAttrText;
-                                            if (collElement.CollectionValue.ToString().StartsWith("bnode:", StringComparison.Ordinal))
+                                            if (collElement.CollectionValue.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
                                             {
                                                 collElementAttrText = rdfDoc.CreateTextNode(collElement.CollectionValue.ToString().Replace("bnode:", string.Empty));
                                                 collElementAttr = rdfDoc.CreateAttribute("rdf:nodeID", RDFVocabulary.RDF.BASE_URI);
@@ -280,7 +280,7 @@ namespace RDFSharp.Model
                                         XmlAttribute predNodeDesc;
                                         XmlText predNodeDescText;
                                         //  rdf:nodeID="blankID">
-                                        if (objString.StartsWith("bnode:"))
+                                        if (objString.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
                                         {
                                             predNodeDescText = rdfDoc.CreateTextNode(objString.Replace("bnode:", string.Empty));
                                             predNodeDesc = rdfDoc.CreateAttribute("rdf:nodeID", RDFVocabulary.RDF.BASE_URI);
@@ -526,8 +526,9 @@ namespace RDFSharp.Model
                         if (predNode.NamespaceURI == string.Empty)
                             pred = new RDFResource(string.Concat(xmlBase, predNode.LocalName), hashContext);
                         else
-                            pred = predNode.LocalName.StartsWith("autoNS") ? new RDFResource(predNode.NamespaceURI, hashContext)
-                                                                           : new RDFResource(string.Concat(predNode.NamespaceURI, predNode.LocalName), hashContext);
+                            pred = predNode.LocalName.StartsWith("autoNS", StringComparison.OrdinalIgnoreCase) 
+                                ? new RDFResource(predNode.NamespaceURI, hashContext)
+                                : new RDFResource(string.Concat(predNode.NamespaceURI, predNode.LocalName), hashContext);
                         #endregion
 
                         #region objList
@@ -760,7 +761,7 @@ namespace RDFSharp.Model
                 //Check if the predicate can be abbreviated to a valid QName
                 if (!string.Equals(nspace.NamespaceUri.ToString(), pred))
                 {
-                    if (nspace.NamespacePrefix.StartsWith("autoNS") && !result.Contains(nspace))
+                    if (nspace.NamespacePrefix.StartsWith("autoNS", StringComparison.OrdinalIgnoreCase) && !result.Contains(nspace))
                         result.Add(new RDFNamespace(string.Concat("autoNS", (result.Count + 1).ToString()), nspace.NamespaceUri.ToString()));
                 }
                 else
@@ -815,9 +816,9 @@ namespace RDFSharp.Model
                 string xmlBaseString = xmlBase.ToString();
 
                 //Adjust corner case for clashes on namespace ending characters ("#", "/")
-                if (xmlBaseString.EndsWith("#") && attrValue.StartsWith("#"))
+                if (xmlBaseString.EndsWith("#", StringComparison.Ordinal) && attrValue.StartsWith("#", StringComparison.Ordinal))
                     attrValue = attrValue.TrimStart('#');
-                if (xmlBaseString.EndsWith("/") && attrValue.StartsWith("/"))
+                if (xmlBaseString.EndsWith("/", StringComparison.Ordinal) && attrValue.StartsWith("/", StringComparison.Ordinal))
                     attrValue = attrValue.TrimStart('/');
 
                 //"rdf:ID" relative Uri: must be resolved against the xmlBase namespace
@@ -825,9 +826,9 @@ namespace RDFSharp.Model
                      || string.Equals(attr.LocalName, "ID", StringComparison.OrdinalIgnoreCase))
                 {
                     //This kind of syntax requires the attribute value to start with "#"
-                    if (!attrValue.StartsWith("#"))
+                    if (!attrValue.StartsWith("#", StringComparison.Ordinal))
                         attrValue = string.Concat("#", attrValue);
-                    if (xmlBaseString.EndsWith("#"))
+                    if (xmlBaseString.EndsWith("#", StringComparison.Ordinal))
                         xmlBaseString = xmlBaseString.TrimEnd('#');
                     attrValue = RDFModelUtilities.GetUriFromString(string.Concat(xmlBaseString, attrValue)).ToString();
                 }   
@@ -836,7 +837,7 @@ namespace RDFSharp.Model
                 else if (string.Equals(attr.LocalName, "rdf:nodeID", StringComparison.OrdinalIgnoreCase)
                           || string.Equals(attr.LocalName, "nodeID", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (!attrValue.StartsWith("bnode:"))
+                    if (!attrValue.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
                         attrValue = string.Concat("bnode:", attrValue);
                 }
 
@@ -1090,7 +1091,7 @@ namespace RDFSharp.Model
                         //Sanitize eventual blank node value detected by presence of "nodeID" attribute
                         if (string.Equals(elemUri.LocalName, "nodeID", StringComparison.OrdinalIgnoreCase))
                         {
-                            if (!elemUri.Value.StartsWith("bnode:"))
+                            if (!elemUri.Value.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
                                 elemUri.Value = string.Concat("bnode:", elemUri.Value);
                         }
 

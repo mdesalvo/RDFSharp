@@ -28,7 +28,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a boolean expression with given arguments
         /// </summary>
-        public RDFBooleanExpression(RDFExpression leftArgument, RDFExpression rightArgument)
+        protected RDFBooleanExpression(RDFExpression leftArgument, RDFExpression rightArgument)
             : base(leftArgument, rightArgument)
         {
             #region Guards

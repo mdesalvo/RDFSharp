@@ -221,7 +221,7 @@ namespace RDFSharp.Model
                         ntriple = ntriple.Trim(trimmableChars);
 
                         //Skip empty or comment lines
-                        if (ntriple == string.Empty || ntriple.StartsWith("#"))
+                        if (ntriple == string.Empty || ntriple.StartsWith("#", StringComparison.Ordinal))
                             continue;
 
                         //Tokenizes the sanitized triple
@@ -244,9 +244,9 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region object
-                        if (tokens[2].StartsWith("<")
-                                || tokens[2].StartsWith("bnode:")
-                                    || tokens[2].StartsWith("_:"))
+                        if (tokens[2].StartsWith("<", StringComparison.Ordinal)
+                             || tokens[2].StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
+                             || tokens[2].StartsWith("_:", StringComparison.Ordinal))
                         {
                             string obj = tokens[2].TrimStart(openingBrackets)
                                                   .TrimEnd(closingBrackets)
@@ -274,13 +274,13 @@ namespace RDFSharp.Model
 
                             #region plain literal
                             if (!tokens[2].Contains("^^")
-                                  || tokens[2].EndsWith("^^")
+                                  || tokens[2].EndsWith("^^", StringComparison.Ordinal)
                                   || tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2, 1) != "<")
                             {
                                 if (regexLPL.Value.Match(tokens[2]).Success)
                                 {
                                     tokens[2] = tokens[2].Replace("\"@", "@");
-                                    int lastIndexOfLanguage = tokens[2].LastIndexOf("@", StringComparison.OrdinalIgnoreCase);
+                                    int lastIndexOfLanguage = tokens[2].LastIndexOf("@", StringComparison.Ordinal);
                                     string pLitValue = tokens[2].Substring(0, lastIndexOfLanguage);
                                     string pLitLang = tokens[2].Substring(lastIndexOfLanguage + 1);
                                     L = new RDFPlainLiteral(HttpUtility.HtmlDecode(pLitValue), pLitLang);
@@ -294,7 +294,7 @@ namespace RDFSharp.Model
                             else
                             {
                                 tokens[2] = tokens[2].Replace("\"^^", "^^");
-                                int lastIndexOfDatatype = tokens[2].LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
+                                int lastIndexOfDatatype = tokens[2].LastIndexOf("^^", StringComparison.Ordinal);
                                 string tLitValue = tokens[2].Substring(0, lastIndexOfDatatype);
                                 string tLitDatatype = tokens[2].Substring(lastIndexOfDatatype + 2)
                                                                .TrimStart('<')
@@ -332,13 +332,13 @@ namespace RDFSharp.Model
         private static string[] TokenizeNTriple(string ntriple)
         {
             //A legal N-Triple starts with "_:" (blank) or "<" (uri)
-            if (!ntriple.StartsWith("_:") && !ntriple.StartsWith("<"))
+            if (!ntriple.StartsWith("_:", StringComparison.Ordinal) && !ntriple.StartsWith("<", StringComparison.Ordinal))
                 throw new Exception("found illegal N-Triple, must start with \"_:\" or with \"<\"");
 
             string[] tokens = new string[3];
 
             //S->-> triple
-            if (ntriple.StartsWith("<"))
+            if (ntriple.StartsWith("<", StringComparison.Ordinal))
             {
                 //S->P->O
                 if (SPO.Value.Match(ntriple).Success)

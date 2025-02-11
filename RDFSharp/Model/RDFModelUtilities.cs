@@ -90,7 +90,7 @@ namespace RDFSharp.Model
             // blank node detection and normalization
             if (uriString?.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase) ?? false)
                 uriString = string.Concat("bnode:", uriString.Substring(6));
-            else if (uriString?.StartsWith("_:") ?? false)
+            else if (uriString?.StartsWith("_:", StringComparison.Ordinal) ?? false)
                 uriString = string.Concat("bnode:", uriString.Substring(2));
 
             Uri.TryCreate(uriString, UriKind.Absolute, out Uri tempUri);
@@ -188,7 +188,7 @@ namespace RDFSharp.Model
         {
             if (string.IsNullOrEmpty(source) 
                  || string.IsNullOrEmpty(value) 
-                 || !source.EndsWith(value))
+                 || !source.EndsWith(value, StringComparison.Ordinal))
                 return source;
 
             return source.Remove(source.LastIndexOf(value, StringComparison.Ordinal));
@@ -527,13 +527,13 @@ namespace RDFSharp.Model
                                                           : string.Empty;
 
                 //Resolve subject Uri
-                result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => subj.StartsWith(ns.ToString())));
+                result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => subj.StartsWith(ns.ToString(), StringComparison.Ordinal)));
 
                 //Resolve predicate Uri
-                result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => pred.StartsWith(ns.ToString())));
+                result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => pred.StartsWith(ns.ToString(), StringComparison.Ordinal)));
 
                 //Resolve object Uri
-                result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => obj.StartsWith(ns.ToString())));
+                result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => obj.StartsWith(ns.ToString(), StringComparison.Ordinal)));
             }
             return result.Distinct().ToList();
         }
@@ -593,8 +593,8 @@ namespace RDFSharp.Model
                     catch { return (false, literalValue); }
 
                 case RDFModelEnums.RDFDatatypes.RDF_JSON:
-                    bool isValidJson = (literalValue.StartsWith("{") && literalValue.EndsWith("}"))
-                                         || (literalValue.StartsWith("[") && literalValue.EndsWith("]"));
+                    bool isValidJson = (literalValue.StartsWith("{", StringComparison.Ordinal) && literalValue.EndsWith("}", StringComparison.Ordinal))
+                                         || (literalValue.StartsWith("[", StringComparison.Ordinal) && literalValue.EndsWith("]", StringComparison.Ordinal));
                     return (isValidJson, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_ANYURI:

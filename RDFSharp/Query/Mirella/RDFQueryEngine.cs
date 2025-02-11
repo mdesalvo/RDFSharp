@@ -1194,7 +1194,7 @@ namespace RDFSharp.Query
             //Remove property path variables
             List<string> propPathCols = (from DataColumn dtCol 
                                          in resultTable.Columns 
-                                         where dtCol.ColumnName.StartsWith("?__PP") 
+                                         where dtCol.ColumnName.StartsWith("?__PP", StringComparison.Ordinal) 
                                          select dtCol.ColumnName).ToList();
             propPathCols.ForEach(ppc => resultTable.Columns.Remove(ppc));
 
@@ -1213,7 +1213,7 @@ namespace RDFSharp.Query
                 int columnsCount = qrTable.Columns.Count;
                 for (int i = 0; i < columnsCount; i++)
                 {
-                    if (!qrTable.Columns[i].ColumnName.StartsWith("?"))
+                    if (!qrTable.Columns[i].ColumnName.StartsWith("?", StringComparison.Ordinal))
                         qrTable.Columns[i].ColumnName = string.Concat("?", qrTable.Columns[i].ColumnName);
                 }
             }

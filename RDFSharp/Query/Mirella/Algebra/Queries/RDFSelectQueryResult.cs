@@ -115,7 +115,7 @@ namespace RDFSharp.Query
                                 RDFPatternMember rdfTerm = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)[resultColumns.Current.ToString()].ToString());
                                 switch (rdfTerm)
                                 {
-                                    case RDFResource _ when rdfTerm.ToString().StartsWith("bnode:"):
+                                    case RDFResource _ when rdfTerm.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase):
                                     {
                                         XmlNode bnodeElement = sparqlDoc.CreateNode(XmlNodeType.Element, "bnode", null);
                                         XmlText bnodeElText = sparqlDoc.CreateTextNode(rdfTerm.ToString());

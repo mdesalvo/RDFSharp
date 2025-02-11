@@ -272,14 +272,14 @@ namespace RDFSharp.Model
             } while (sb.Length < 8);
 
             string directive = sb.ToString();
-            if (directive.StartsWith("@")
-                 || directive.Equals("prefix", StringComparison.InvariantCultureIgnoreCase)
-                 || directive.Equals("base", StringComparison.InvariantCultureIgnoreCase))
+            if (directive.StartsWith("@", StringComparison.Ordinal)
+                 || directive.Equals("prefix", StringComparison.OrdinalIgnoreCase)
+                 || directive.Equals("base", StringComparison.OrdinalIgnoreCase))
             {
                 ParseDirective(turtleData, turtleContext, result, directive);
                 SkipWhitespace(turtleData, turtleContext);
                 // Turtle @base and @prefix directives MUST end with "."
-                if (directive.StartsWith("@"))
+                if (directive.StartsWith("@", StringComparison.Ordinal))
                     VerifyCharacterOrFail(turtleContext, ReadCodePoint(turtleData, turtleContext), ".");
                 // SPARQL BASE and PREFIX directives MUST NOT end with "."
                 else
@@ -963,8 +963,8 @@ namespace RDFSharp.Model
                 {
                     // prefix may actually be a boolean value
                     string value = prefix.ToString();
-                    if (value.Equals("true", StringComparison.InvariantCultureIgnoreCase)
-                            || value.Equals("false", StringComparison.InvariantCultureIgnoreCase))
+                    if (value.Equals("true", StringComparison.OrdinalIgnoreCase)
+                         || value.Equals("false", StringComparison.OrdinalIgnoreCase))
                     {
                         UnreadCodePoint(turtleContext, bufChar);
                         return new RDFTypedLiteral(value, RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);

@@ -74,7 +74,7 @@ namespace RDFSharp.Query
                 //Successful match if an absolute Uri starting with "bnode:" prefix can be created with the variable value
                 if (!Uri.TryCreate(variableValue, UriKind.Absolute, out _))
                     keepRow = false;
-                keepRow = keepRow && variableValue.StartsWith("bnode:");
+                keepRow = keepRow && variableValue.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase);
 
                 //Apply the eventual negation
                 if (applyNegation)

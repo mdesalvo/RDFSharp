@@ -301,7 +301,7 @@ namespace RDFSharp.Model
                 //Sanitize eventual blank node value
                 if (graphChild.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal))
                 {
-                    if (!graphChild.ChildNodes[0].InnerText.StartsWith("bnode:"))
+                    if (!graphChild.ChildNodes[0].InnerText.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
                         graphChild.ChildNodes[0].InnerText = string.Concat("bnode:", graphChild.ChildNodes[0].InnerText.Replace("_:", string.Empty));
                 }
             }
@@ -331,7 +331,7 @@ namespace RDFSharp.Model
                 //Sanitize eventual blank node value
                 if (graphChild.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
                 {
-                    if (!graphChild.ChildNodes[2].InnerText.StartsWith("bnode:"))
+                    if (!graphChild.ChildNodes[2].InnerText.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
                         graphChild.ChildNodes[2].InnerText = string.Concat("bnode:", graphChild.ChildNodes[2].InnerText.Replace("_:", string.Empty));
                 }
 

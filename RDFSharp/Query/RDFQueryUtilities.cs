@@ -48,7 +48,7 @@ namespace RDFSharp.Query
             #region Plain Literal
             int lastIndexOfDatatype = pMember.LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
             if (!pMember.Contains("^^")
-                  || pMember.EndsWith("^^")
+                  || pMember.EndsWith("^^", StringComparison.Ordinal)
                   || RDFModelUtilities.GetUriFromString(pMember.Substring(lastIndexOfDatatype + 2)) == null)
             {
                 RDFPlainLiteral pLit;
@@ -239,7 +239,7 @@ namespace RDFSharp.Query
                 string nspString = nsp.ToString();
                 if (!pmemberString.Equals(nspString, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (pmemberString.StartsWith(nspString))
+                    if (pmemberString.StartsWith(nspString, StringComparison.Ordinal))
                     {
                         pmemberString = pmemberString.Replace(nspString, string.Concat(nsp.NamespacePrefix, ":"))
                                                      .TrimEnd('/');
