@@ -17,6 +17,7 @@
 using RDFSharp.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System;
 
 namespace RDFSharp.Test.Model;
 
@@ -31,7 +32,7 @@ public class RDFResourceTest
 
         Assert.IsNotNull(res);
         Assert.IsTrue(res.IsBlank);
-        Assert.IsTrue(res.ToString().StartsWith("bnode:"));
+        Assert.IsTrue(res.ToString().StartsWith("bnode:", StringComparison.Ordinal));
     }
 
     [DataTestMethod]
@@ -47,7 +48,7 @@ public class RDFResourceTest
 
         Assert.IsNotNull(res);
         Assert.IsTrue(res.IsBlank);
-        Assert.IsTrue(res.ToString().StartsWith("bnode:"));
+        Assert.IsTrue(res.ToString().StartsWith("bnode:", StringComparison.Ordinal));
     }
 
     [DataTestMethod]
