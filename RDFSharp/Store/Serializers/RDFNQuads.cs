@@ -188,11 +188,7 @@ namespace RDFSharp.Store
                     RDFMemoryStore result = new RDFMemoryStore();
                     string nquad;
                     string[] tokens = new string[4];
-                    RDFResource S;
-                    RDFResource P;
-                    RDFResource O;
-                    RDFLiteral L;
-                    RDFContext C = new RDFContext();
+                    RDFContext defaultContext = new RDFContext();
                     Dictionary<string, long> hashContext = new Dictionary<string, long>();
                     while ((nquad = sr.ReadLine()) != null)
                     {
@@ -200,14 +196,14 @@ namespace RDFSharp.Store
 
                         #region sanitize  & tokenize
                         //Cleanup previous data
-                        S = null;
+                        RDFResource S = null;
                         tokens[0] = string.Empty;
-                        P = null;
+                        RDFResource P = null;
                         tokens[1] = string.Empty;
-                        O = null;
-                        L = null;
+                        RDFResource O = null;
+                        RDFLiteral L = null;
                         tokens[2] = string.Empty;
-                        C = new RDFContext();
+                        RDFContext C = defaultContext;
                         tokens[3] = string.Empty;
 
                         //Preliminary sanitizations: clean trailing space-like chars

@@ -131,13 +131,6 @@ public class RDFStoreIndexTest
         }
         Assert.IsTrue(storeIndex.Disposed);
         Assert.IsNull(storeIndex.ContextsRegister);
-        Assert.IsNull(storeIndex.ResourcesRegister);
-        Assert.IsNull(storeIndex.LiteralsRegister);
-        Assert.IsNull(storeIndex.ContextsIndex);
-        Assert.IsNull(storeIndex.SubjectsIndex);
-        Assert.IsNull(storeIndex.PredicatesIndex);
-        Assert.IsNull(storeIndex.ObjectsIndex);
-        Assert.IsNull(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]

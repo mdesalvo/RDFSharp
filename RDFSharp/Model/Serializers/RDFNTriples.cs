@@ -196,8 +196,6 @@ namespace RDFSharp.Model
                     RDFGraph result = new RDFGraph().SetContext(graphContext);
                     string ntriple;
                     string[] tokens = new string[3];
-                    RDFResource S, P, O;
-                    RDFLiteral L;
                     Dictionary<string, long> hashContext = new Dictionary<string, long>();
                     char[] openingBrackets = { '<' };
                     char[] closingBrackets = { '>' };
@@ -209,12 +207,12 @@ namespace RDFSharp.Model
 
                         #region sanitize  & tokenize
                         //Cleanup previous data
-                        S = null; 
+                        RDFResource S = null; 
                         tokens[0] = string.Empty;
-                        P = null; 
+                        RDFResource P = null; 
                         tokens[1] = string.Empty;
-                        O = null; 
-                        L = null; 
+                        RDFResource O = null; 
+                        RDFLiteral L = null; 
                         tokens[2] = string.Empty;
 
                         //Preliminary sanitizations: clean trailing space-like chars
