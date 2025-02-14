@@ -14,11 +14,14 @@
    limitations under the License.
 */
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace RDFSharp.Model
 {
     /// <summary>
     /// RDFVocabulary is an helper for handy usage of supported RDF vocabularies
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static partial class RDFVocabulary
     {
         #region RDFSHARP
