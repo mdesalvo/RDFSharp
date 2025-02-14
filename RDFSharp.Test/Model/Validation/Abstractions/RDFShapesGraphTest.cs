@@ -40,7 +40,7 @@ public class RDFShapesGraphTest
         RDFShapesGraph shapesGraph2 = new RDFShapesGraph();
 
         Assert.IsNotNull(shapesGraph2);
-        Assert.IsTrue(shapesGraph2.URI.ToString().StartsWith("bnode:"));
+        Assert.IsTrue(shapesGraph2.URI.ToString().StartsWith("bnode:", StringComparison.Ordinal));
         Assert.IsNotNull(shapesGraph2.Shapes);
         Assert.AreEqual(0, shapesGraph2.ShapesCount);
     }

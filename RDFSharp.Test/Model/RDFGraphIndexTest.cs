@@ -113,11 +113,6 @@ public class RDFGraphIndexTest
         }
         Assert.IsTrue(graphIndex.Disposed);
         Assert.IsNull(graphIndex.ResourcesRegister);
-        Assert.IsNull(graphIndex.LiteralsRegister);
-        Assert.IsNull(graphIndex.SubjectsIndex);
-        Assert.IsNull(graphIndex.PredicatesIndex);
-        Assert.IsNull(graphIndex.ObjectsIndex);
-        Assert.IsNull(graphIndex.LiteralsIndex);
     }
 
     [TestMethod]

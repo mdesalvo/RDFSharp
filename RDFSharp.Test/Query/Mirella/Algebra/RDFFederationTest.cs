@@ -38,7 +38,7 @@ public class RDFFederationTest
         Assert.AreEqual(0, federation.DataSourcesCount);
         Assert.IsNotNull(federation.EndpointDataSourcesQueryOptions);
         Assert.AreEqual(0, federation.EndpointDataSourcesQueryOptions.Count);
-        Assert.IsTrue(federation.FederationName.StartsWith("FEDERATION|ID="));
+        Assert.IsTrue(federation.FederationName.StartsWith("FEDERATION|ID=", StringComparison.Ordinal));
         Assert.IsTrue(federation.ToString().Equals(federation.FederationName));
 
         int i = federation.Count();

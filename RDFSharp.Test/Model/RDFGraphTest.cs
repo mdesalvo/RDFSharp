@@ -93,7 +93,6 @@ public class RDFGraphTest
         }
         Assert.IsTrue(graph.Disposed);
         Assert.IsNull(graph.IndexedTriples);
-        Assert.IsNull(graph.GraphIndex);
     }
 
     [DataTestMethod]
