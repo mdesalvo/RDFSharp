@@ -44,7 +44,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -68,7 +68,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -89,7 +89,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -113,7 +113,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -140,7 +140,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -167,7 +167,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -191,7 +191,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -218,7 +218,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -245,7 +245,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -271,7 +271,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -300,7 +300,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -328,7 +328,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -356,7 +356,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -381,7 +381,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -406,7 +406,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -430,7 +430,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -457,7 +457,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -484,7 +484,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -510,7 +510,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -539,7 +539,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -569,7 +569,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -597,7 +597,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -626,7 +626,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -651,7 +651,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -676,7 +676,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -703,7 +703,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -730,7 +730,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -760,7 +760,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -790,7 +790,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -818,7 +818,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -846,7 +846,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -889,7 +889,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -927,7 +927,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -965,7 +965,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1028,7 +1028,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1088,7 +1088,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1140,7 +1140,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1189,7 +1189,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1245,7 +1245,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1273,7 +1273,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1301,7 +1301,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1344,7 +1344,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1382,7 +1382,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1420,7 +1420,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1483,7 +1483,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1543,7 +1543,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1595,7 +1595,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1644,7 +1644,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1700,7 +1700,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1732,7 +1732,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1772,7 +1772,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1823,7 +1823,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1874,7 +1874,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1925,7 +1925,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -1979,7 +1979,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2028,7 +2028,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2080,7 +2080,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2135,7 +2135,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2190,7 +2190,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2233,7 +2233,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2281,7 +2281,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2329,7 +2329,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2359,7 +2359,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2378,7 +2378,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2399,7 +2399,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2418,7 +2418,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2437,7 +2437,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2462,7 +2462,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2487,7 +2487,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2509,7 +2509,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2537,7 +2537,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2571,7 +2571,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2607,7 +2607,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2642,7 +2642,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2685,7 +2685,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2732,7 +2732,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2783,7 +2783,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2833,7 +2833,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2891,7 +2891,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2943,7 +2943,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -2978,7 +2978,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3021,7 +3021,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3068,7 +3068,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3119,7 +3119,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3169,7 +3169,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3227,7 +3227,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3279,7 +3279,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3309,7 +3309,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3340,7 +3340,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3374,7 +3374,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3424,7 +3424,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3455,7 +3455,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3489,7 +3489,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3524,7 +3524,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3573,7 +3573,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3623,7 +3623,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3676,7 +3676,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3730,7 +3730,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3797,7 +3797,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3912,7 +3912,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -3990,7 +3990,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -4070,7 +4070,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -4142,7 +4142,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -4214,7 +4214,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -4277,7 +4277,7 @@ public class RDFQueryPrinterTest
       OFFSET 1
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -4337,7 +4337,7 @@ public class RDFQueryPrinterTest
       OFFSET 1
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -4433,7 +4433,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -4524,7 +4524,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -4617,7 +4617,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -4667,7 +4667,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -4720,7 +4720,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -4773,7 +4773,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -4826,7 +4826,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -4884,7 +4884,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -4922,7 +4922,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -4960,7 +4960,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -4997,7 +4997,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -5035,7 +5035,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -5074,7 +5074,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -5115,7 +5115,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -5161,7 +5161,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -5203,7 +5203,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -5258,7 +5258,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -5307,7 +5307,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -5351,7 +5351,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -5446,7 +5446,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -5541,7 +5541,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -5635,7 +5635,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -5752,7 +5752,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -5869,7 +5869,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -5991,7 +5991,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6031,7 +6031,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6071,7 +6071,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6113,7 +6113,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6177,7 +6177,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6239,7 +6239,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6311,7 +6311,7 @@ public class RDFQueryPrinterTest
       }
 
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6331,7 +6331,7 @@ public class RDFQueryPrinterTest
       WHERE {
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6354,7 +6354,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6374,7 +6374,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6397,7 +6397,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6423,7 +6423,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6449,7 +6449,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6472,7 +6472,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6496,7 +6496,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6521,7 +6521,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6539,7 +6539,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6559,7 +6559,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6577,7 +6577,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6602,7 +6602,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6633,7 +6633,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6666,7 +6666,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6698,7 +6698,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6738,7 +6738,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6782,7 +6782,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6829,7 +6829,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6884,7 +6884,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6933,7 +6933,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6962,7 +6962,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -6992,7 +6992,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7021,7 +7021,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7053,7 +7053,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7086,7 +7086,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7132,7 +7132,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7179,7 +7179,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7229,7 +7229,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7293,7 +7293,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7407,7 +7407,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7428,7 +7428,7 @@ public class RDFQueryPrinterTest
       WHERE {
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7452,7 +7452,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7473,7 +7473,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7497,7 +7497,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7524,7 +7524,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7551,7 +7551,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7575,7 +7575,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7600,7 +7600,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7626,7 +7626,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7645,7 +7645,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7666,7 +7666,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7685,7 +7685,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7713,7 +7713,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7747,7 +7747,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7783,7 +7783,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7818,7 +7818,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7861,7 +7861,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7910,7 +7910,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -7960,7 +7960,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8018,7 +8018,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8070,7 +8070,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8102,7 +8102,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8135,7 +8135,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8171,7 +8171,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8220,7 +8220,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8270,7 +8270,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8323,7 +8323,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8390,7 +8390,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8509,7 +8509,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8529,7 +8529,7 @@ public class RDFQueryPrinterTest
       WHERE {
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8552,7 +8552,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8572,7 +8572,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8595,7 +8595,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8621,7 +8621,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8647,7 +8647,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8670,7 +8670,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8694,7 +8694,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8719,7 +8719,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8737,7 +8737,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8757,7 +8757,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8775,7 +8775,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8803,7 +8803,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8837,7 +8837,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8871,7 +8871,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8906,7 +8906,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8947,7 +8947,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -8992,7 +8992,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -9040,7 +9040,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -9096,7 +9096,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -9149,7 +9149,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -9179,7 +9179,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -9210,7 +9210,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -9244,7 +9244,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -9291,7 +9291,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -9339,7 +9339,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -9390,7 +9390,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -9455,7 +9455,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
@@ -9570,7 +9570,7 @@ public class RDFQueryPrinterTest
         }
       }
       """;
-    Assert.IsTrue(string.Equals(queryString, expectedQueryString));
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
