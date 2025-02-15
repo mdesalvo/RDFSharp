@@ -53,11 +53,11 @@ public class RDFMinutesExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMinutesExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFMinutesExpression(null as RDFExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFMinutesExpression(null as RDFExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMinutesExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFMinutesExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFMinutesExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResult()

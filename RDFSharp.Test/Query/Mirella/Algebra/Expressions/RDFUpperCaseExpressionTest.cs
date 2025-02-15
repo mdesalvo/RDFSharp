@@ -53,11 +53,11 @@ public class RDFUpperCaseExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingUCaseExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFUpperCaseExpression(null as RDFExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFUpperCaseExpression(null as RDFExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingUCaseExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFUpperCaseExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFUpperCaseExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNull()

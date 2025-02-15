@@ -105,11 +105,11 @@ public class RDFSubstringExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingESubstringExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSubstringExpression(null as RDFExpression, 5));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSubstringExpression(null as RDFExpression, 5));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingVSubstringExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSubstringExpression(null as RDFVariable, 5));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSubstringExpression(null as RDFVariable, 5));
 
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnResource()

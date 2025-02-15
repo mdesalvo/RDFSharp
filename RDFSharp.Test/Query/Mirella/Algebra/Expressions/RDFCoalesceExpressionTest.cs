@@ -112,19 +112,19 @@ public class RDFCoalesceExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingEECoalesceExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFCoalesceExpression(null as RDFExpression, new RDFVariableExpression(new RDFVariable("?V"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFCoalesceExpression(null as RDFExpression, new RDFVariableExpression(new RDFVariable("?V"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingEVCoalesceExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFCoalesceExpression(null as RDFExpression, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFCoalesceExpression(null as RDFExpression, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingVECoalesceExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFCoalesceExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFCoalesceExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingVVCoalesceExpressionNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFCoalesceExpression(null as RDFVariable, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFCoalesceExpression(null as RDFVariable, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResultCoalesceLeft()

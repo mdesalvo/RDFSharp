@@ -111,59 +111,59 @@ public class RDFGeoCrossesExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOCrossesExpressionWithEEBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoCrossesExpression(null as RDFVariableExpression, new RDFVariableExpression(new RDFVariable("?V"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoCrossesExpression(null as RDFVariableExpression, new RDFVariableExpression(new RDFVariable("?V"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOCrossesExpressionWithEEBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoCrossesExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariableExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoCrossesExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariableExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOCrossesExpressionWithEVBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoCrossesExpression(null as RDFVariableExpression, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoCrossesExpression(null as RDFVariableExpression, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOCrossesExpressionWithEVBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoCrossesExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoCrossesExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOCrossesExpressionWithETBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoCrossesExpression(null as RDFVariableExpression, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoCrossesExpression(null as RDFVariableExpression, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOCrossesExpressionWithETBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoCrossesExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFTypedLiteral));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoCrossesExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFTypedLiteral));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOCrossesExpressionWithETBecauseNotGeographicRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoCrossesExpression(new RDFVariableExpression(new RDFVariable("?V")), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoCrossesExpression(new RDFVariableExpression(new RDFVariable("?V")), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOCrossesExpressionWithVEBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoCrossesExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoCrossesExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOCrossesExpressionWithVEBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoCrossesExpression(new RDFVariable("?V"), null as RDFVariableExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoCrossesExpression(new RDFVariable("?V"), null as RDFVariableExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOCrossesExpressionWithVVBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoCrossesExpression(null as RDFVariable, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoCrossesExpression(null as RDFVariable, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOCrossesExpressionWithVVBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoCrossesExpression(new RDFVariable("?V"), null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoCrossesExpression(new RDFVariable("?V"), null as RDFVariable));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOCrossesExpressionWithVTBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoCrossesExpression(null as RDFVariable, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoCrossesExpression(null as RDFVariable, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOCrossesExpressionWithVTBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoCrossesExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoCrossesExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOCrossesExpressionWithVTBecauseNotGeographicRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoCrossesExpression(new RDFVariable("?V"), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoCrossesExpression(new RDFVariable("?V"), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResult()

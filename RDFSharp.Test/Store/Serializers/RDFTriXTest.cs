@@ -410,7 +410,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><graph><uri>http://ctx/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -419,7 +419,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><trix xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></trix>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -428,7 +428,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03\"><graph><uri>http://ctx/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -451,7 +451,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://uri1/</uri><uri>http://uri2/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -460,7 +460,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graf><uri>http://example.org/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple></graf></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -469,7 +469,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><uri>http://subj/</uri><uri>http://pred/</uri><uri>http://obj/</uri></graph></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -478,7 +478,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><traple><uri>http://subj/</uri><uri>http://pred/</uri><uri>http://obj/</uri></traple></graph></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -683,7 +683,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><triple><uri>hello</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -692,7 +692,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><triple><urz>http://subj/</urz><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -701,7 +701,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><triple><uri/><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -710,7 +710,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><triple><uri>http://subj/</uri><uri>hello</uri><uri>http://obj/</uri></triple></graph></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -719,7 +719,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><triple><uri>http://subj/</uri><uri>bnode:12345</uri><uri>http://obj/</uri></triple></graph></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -728,7 +728,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><triple><uri>http://subj/</uri><urz>http://pred/</urz><uri>http://obj/</uri></triple></graph></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -737,7 +737,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><triple><uri>http://subj/</uri><uri/><uri>http://obj/</uri></triple></graph></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -746,7 +746,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><uri>hello</uri></triple></graph></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -755,7 +755,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><urz>http://obj/</urz></triple></graph></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -764,7 +764,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><uri/></triple></graph></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -773,7 +773,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><triple><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -782,7 +782,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integer\">hello</typedLiteral></triple></graph></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -791,7 +791,7 @@ public class RDFTriXTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><typedLiteral>25</typedLiteral></triple></graph></TriX>");
-        Assert.ThrowsException<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestCleanup]

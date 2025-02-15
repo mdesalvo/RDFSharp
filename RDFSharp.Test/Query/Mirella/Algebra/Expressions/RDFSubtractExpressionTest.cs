@@ -111,51 +111,51 @@ public class RDFSubtractExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAddExpressionWithEEBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSubtractExpression(null as RDFMathExpression, new RDFSubtractExpression(new RDFVariable("?V1"), new RDFVariable("?V2"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSubtractExpression(null as RDFMathExpression, new RDFSubtractExpression(new RDFVariable("?V1"), new RDFVariable("?V2"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAddExpressionWithEVBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSubtractExpression(null as RDFMathExpression, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSubtractExpression(null as RDFMathExpression, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAddExpressionWithETBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSubtractExpression(null as RDFMathExpression, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSubtractExpression(null as RDFMathExpression, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAddExpressionWithVEBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSubtractExpression(null as RDFVariable, new RDFSubtractExpression(new RDFVariable("?V1"), new RDFVariable("?V2"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSubtractExpression(null as RDFVariable, new RDFSubtractExpression(new RDFVariable("?V1"), new RDFVariable("?V2"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAddExpressionWithVVBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSubtractExpression(null as RDFVariable, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSubtractExpression(null as RDFVariable, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAddExpressionWithVTBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSubtractExpression(null as RDFVariable, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSubtractExpression(null as RDFVariable, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAddExpressionWithEEBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSubtractExpression(new RDFSubtractExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFMathExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSubtractExpression(new RDFSubtractExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFMathExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAddExpressionWithEVBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSubtractExpression(new RDFSubtractExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSubtractExpression(new RDFSubtractExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFVariable));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAddExpressionWithETBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSubtractExpression(new RDFSubtractExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFTypedLiteral));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSubtractExpression(new RDFSubtractExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFTypedLiteral));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAddExpressionWithVEBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSubtractExpression(new RDFVariable("?V2"), null as RDFMathExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSubtractExpression(new RDFVariable("?V2"), null as RDFMathExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAddExpressionWithVVBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSubtractExpression(new RDFVariable("?V"), null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSubtractExpression(new RDFVariable("?V"), null as RDFVariable));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAddExpressionWithVTBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSubtractExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSubtractExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResult()

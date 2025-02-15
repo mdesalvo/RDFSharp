@@ -111,59 +111,59 @@ public class RDFGeoDifferenceExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithEEBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDifferenceExpression(null as RDFVariableExpression, new RDFVariableExpression(new RDFVariable("?V"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoDifferenceExpression(null as RDFVariableExpression, new RDFVariableExpression(new RDFVariable("?V"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithEEBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDifferenceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariableExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoDifferenceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariableExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithEVBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDifferenceExpression(null as RDFVariableExpression, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoDifferenceExpression(null as RDFVariableExpression, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithEVBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDifferenceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoDifferenceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithETBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDifferenceExpression(null as RDFVariableExpression, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoDifferenceExpression(null as RDFVariableExpression, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithETBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDifferenceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFTypedLiteral));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoDifferenceExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFTypedLiteral));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithETBecauseNotGeographicRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDifferenceExpression(new RDFVariableExpression(new RDFVariable("?V")), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoDifferenceExpression(new RDFVariableExpression(new RDFVariable("?V")), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithVEBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDifferenceExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoDifferenceExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithVEBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDifferenceExpression(new RDFVariable("?V"), null as RDFVariableExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoDifferenceExpression(new RDFVariable("?V"), null as RDFVariableExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithVVBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDifferenceExpression(null as RDFVariable, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoDifferenceExpression(null as RDFVariable, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithVVBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDifferenceExpression(new RDFVariable("?V"), null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoDifferenceExpression(new RDFVariable("?V"), null as RDFVariable));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithVTBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDifferenceExpression(null as RDFVariable, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoDifferenceExpression(null as RDFVariable, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithVTBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDifferenceExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoDifferenceExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEODifferenceExpressionWithVTBecauseNotGeographicRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDifferenceExpression(new RDFVariable("?V"), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoDifferenceExpression(new RDFVariable("?V"), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResult()

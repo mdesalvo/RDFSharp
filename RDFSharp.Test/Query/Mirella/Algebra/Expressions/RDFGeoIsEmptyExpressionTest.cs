@@ -53,11 +53,11 @@ public class RDFGeoIsEmptyExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOIsEmptyExpressionWithEXPBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoIsEmptyExpression(null as RDFVariableExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoIsEmptyExpression(null as RDFVariableExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOIsEmptyExpressionWithVARBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoIsEmptyExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoIsEmptyExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEXPAndCalculateResult()

@@ -36,7 +36,7 @@ public class RDFHasValueConstraintTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingHasValueResourceConstraint()
-        => Assert.ThrowsException<RDFModelException>(() => new RDFHasValueConstraint(null as RDFResource));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFHasValueConstraint(null as RDFResource));
 
     [TestMethod]
     public void ShouldExportHasValueResourceConstraint()
@@ -62,7 +62,7 @@ public class RDFHasValueConstraintTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingHasValueLiteralConstraint()
-        => Assert.ThrowsException<RDFModelException>(() => new RDFHasValueConstraint(null as RDFLiteral));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFHasValueConstraint(null as RDFLiteral));
         
     [TestMethod]
     public void ShouldExportHasValueLiteralConstraint()

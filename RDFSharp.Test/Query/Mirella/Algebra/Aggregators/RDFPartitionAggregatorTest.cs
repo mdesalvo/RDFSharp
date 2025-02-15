@@ -43,11 +43,11 @@ public class RDFPartitionAggregatorTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPartitionAggregatorBecauseNullAggregatorVariable()
-        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFPartitionAggregator(null, new RDFVariable("?PROJVAR")));
+        =>  Assert.ThrowsExactly<RDFQueryException>(() => new RDFPartitionAggregator(null, new RDFVariable("?PROJVAR")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPartitionAggregatorBecauseNullPartitionVariable()
-        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFPartitionAggregator(new RDFVariable("?AGGVAR"), null));
+        =>  Assert.ThrowsExactly<RDFQueryException>(() => new RDFPartitionAggregator(new RDFVariable("?AGGVAR"), null));
 
     [TestMethod]
     public void ShouldCreateDistinctPartitionAggregator()

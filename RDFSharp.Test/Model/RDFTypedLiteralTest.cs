@@ -408,20 +408,20 @@ public class RDFTypedLiteralTest
     [DataRow("faf", RDFModelEnums.RDFDatatypes.XSD_HEXBINARY)]
     [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_HEXBINARY)]
     public void ShouldNotCreateTypedLiteralOfStringCategory(string value, RDFModelEnums.RDFDatatypes datatype)
-        => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
 
     [DataTestMethod]
     [DataRow("POINT(12.496365)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)]
     [DataRow("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)]
     public void ShouldNotCreateTypedLiteralOfGeographicCategory(string value, RDFModelEnums.RDFDatatypes datatype)
-        => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
 
     [DataTestMethod]
     [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
     [DataRow("", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
     [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
     public void ShouldNotCreateTypedLiteralOfBooleanCategory(string value, RDFModelEnums.RDFDatatypes datatype)
-        => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
 
     [DataTestMethod]
     [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
@@ -526,7 +526,7 @@ public class RDFTypedLiteralTest
     [DataRow("+3", RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH)]
     [DataRow("+61", RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR)]
     public void ShouldNotCreateTypedLiteralOfDatetimeCategory(string value, RDFModelEnums.RDFDatatypes datatype)
-        => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
 
     [DataTestMethod]
     [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)]
@@ -647,7 +647,7 @@ public class RDFTypedLiteralTest
     [DataRow("/-9", RDFModelEnums.RDFDatatypes.OWL_RATIONAL)]
     [DataRow("4/02", RDFModelEnums.RDFDatatypes.OWL_RATIONAL)]
     public void ShouldNotCreateTypedLiteralOfDecimalCategory(string value, RDFModelEnums.RDFDatatypes datatype)
-        => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
 
     [DataTestMethod]
     [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
@@ -656,7 +656,7 @@ public class RDFTypedLiteralTest
     [DataRow("1Y2M3DT4H5M6S", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
     [DataRow("P1YM", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
     public void ShouldNotCreateTypedLiteralOfTimeSpanCategory(string value, RDFModelEnums.RDFDatatypes datatype)
-        => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
         
     [TestMethod]
     public void ShouldCreateCustomTypedLiteral()
@@ -666,7 +666,7 @@ public class RDFTypedLiteralTest
         Assert.IsNotNull(tlit);
         Assert.IsTrue(tlit.Value.Equals("abcdef"));
         Assert.IsTrue(tlit.Datatype.ToString().Equals("ex:length6"));
-        Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral("ab", new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
+        Assert.ThrowsExactly<RDFModelException>(() => new RDFTypedLiteral("ab", new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
             new RDFMinLengthFacet(6), new RDFMaxLengthFacet(14) ])));
 
         RDFTypedLiteral tlit2 = new RDFTypedLiteral("37", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, [
@@ -674,14 +674,14 @@ public class RDFTypedLiteralTest
         Assert.IsNotNull(tlit2);
         Assert.IsTrue(tlit2.Value.Equals("37"));
         Assert.IsTrue(tlit2.Datatype.ToString().Equals("ex:humanTemperature"));
-        Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral("39.5", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_DOUBLE, [
+        Assert.ThrowsExactly<RDFModelException>(() => new RDFTypedLiteral("39.5", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_DOUBLE, [
             new RDFMinInclusiveFacet(36), new RDFMaxInclusiveFacet(39) ])));
 
         RDFTypedLiteral tlit3 = new RDFTypedLiteral("37", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, []));
         Assert.IsNotNull(tlit3);
         Assert.IsTrue(tlit3.Value.Equals("37"));
         Assert.IsTrue(tlit3.Datatype.ToString().Equals("ex:humanTemperature"));
-        Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral("39.5", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, null)));
+        Assert.ThrowsExactly<RDFModelException>(() => new RDFTypedLiteral("39.5", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, null)));
     }
     #endregion
 }

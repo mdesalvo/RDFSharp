@@ -46,7 +46,7 @@ public class RDFExpressionFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullExpression()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFExpressionFilter(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFExpressionFilter(null));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterAndKeepRow()

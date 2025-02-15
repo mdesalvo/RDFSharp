@@ -573,7 +573,7 @@ public class RDFTriGTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"PREFIX pf: <ex:pf>.{Environment.NewLine}GRAPH <ex:org>{{<http://subj/> <http://pred/> <http://obj/> .}}");
-        Assert.ThrowsException<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -582,7 +582,7 @@ public class RDFTriGTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine("GRAPH _:12345{<http://subj/> <http://pred/> <http://obj/> .}");
-        Assert.ThrowsException<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -591,7 +591,7 @@ public class RDFTriGTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <http://example.org/>.{Environment.NewLine}GRAPH <http://ctx3/> <http://subj/> <http://pred/> <http://obj/>.");
-        Assert.ThrowsException<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -600,7 +600,7 @@ public class RDFTriGTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <http://example.org/>.{Environment.NewLine}GRAPH <http://ctx3/> {{<http://subj/> <http://pred/> <http://obj/>.");
-        Assert.ThrowsException<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -609,7 +609,7 @@ public class RDFTriGTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <http://example.org/>.{Environment.NewLine}GRAPH <http://ctx3/> <http://subj/> <http://pred/> <http://obj/>.}}");
-        Assert.ThrowsException<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -618,7 +618,7 @@ public class RDFTriGTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <http://example.org/>.{Environment.NewLine}GRAPH <http://ctx3/> {{{{<http://subj/> <http://pred/> <http://obj/>.}}");
-        Assert.ThrowsException<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -627,7 +627,7 @@ public class RDFTriGTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <http://example.org/>.{Environment.NewLine}GRAPH : <http://subj/> <http://pred/> <http://obj/>.");
-        Assert.ThrowsException<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -636,7 +636,7 @@ public class RDFTriGTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <http://example.org/>.{Environment.NewLine}GRAPH pippo {{<http://subj/> <http://pred/> <http://obj/>.}}");
-        Assert.ThrowsException<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestCleanup]

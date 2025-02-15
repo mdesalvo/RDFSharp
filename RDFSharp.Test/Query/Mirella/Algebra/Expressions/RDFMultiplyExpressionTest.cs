@@ -111,51 +111,51 @@ public class RDFMultiplyExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMultiplyExpressionWithEEBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFMultiplyExpression(null as RDFMathExpression, new RDFMultiplyExpression(new RDFVariable("?V1"), new RDFVariable("?V2"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFMultiplyExpression(null as RDFMathExpression, new RDFMultiplyExpression(new RDFVariable("?V1"), new RDFVariable("?V2"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMultiplyExpressionWithEVBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFMultiplyExpression(null as RDFMathExpression, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFMultiplyExpression(null as RDFMathExpression, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMultiplyExpressionWithETBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFMultiplyExpression(null as RDFMathExpression, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFMultiplyExpression(null as RDFMathExpression, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMultiplyExpressionWithVEBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFMultiplyExpression(null as RDFVariable, new RDFMultiplyExpression(new RDFVariable("?V1"), new RDFVariable("?V2"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFMultiplyExpression(null as RDFVariable, new RDFMultiplyExpression(new RDFVariable("?V1"), new RDFVariable("?V2"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMultiplyExpressionWithVVBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFMultiplyExpression(null as RDFVariable, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFMultiplyExpression(null as RDFVariable, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMultiplyExpressionWithVTBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFMultiplyExpression(null as RDFVariable, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFMultiplyExpression(null as RDFVariable, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMultiplyExpressionWithEEBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFMultiplyExpression(new RDFMultiplyExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFMathExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFMultiplyExpression(new RDFMultiplyExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFMathExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMultiplyExpressionWithEVBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFMultiplyExpression(new RDFMultiplyExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFMultiplyExpression(new RDFMultiplyExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFVariable));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMultiplyExpressionWithETBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFMultiplyExpression(new RDFMultiplyExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFTypedLiteral));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFMultiplyExpression(new RDFMultiplyExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFTypedLiteral));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMultiplyExpressionWithVEBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFMultiplyExpression(new RDFVariable("?V2"), null as RDFMathExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFMultiplyExpression(new RDFVariable("?V2"), null as RDFMathExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMultiplyExpressionWithVVBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFMultiplyExpression(new RDFVariable("?V"), null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFMultiplyExpression(new RDFVariable("?V"), null as RDFVariable));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMultiplyExpressionWithVTBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFMultiplyExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFMultiplyExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResult()

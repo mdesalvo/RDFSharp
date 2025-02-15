@@ -54,19 +54,19 @@ public class RDFBooleanOrFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBooleanOrFilterBecauseNullLeft()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFBooleanOrFilter(null, new RDFIsUriFilter(new RDFVariable("?VAR"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFBooleanOrFilter(null, new RDFIsUriFilter(new RDFVariable("?VAR"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBooleanOrFilterBecauseExistsLeft()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFBooleanOrFilter(new RDFExistsFilter(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?OBJ"))), new RDFIsUriFilter(new RDFVariable("?VAR"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFBooleanOrFilter(new RDFExistsFilter(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?OBJ"))), new RDFIsUriFilter(new RDFVariable("?VAR"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBooleanOrFilterBecauseNullRight()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFBooleanOrFilter(new RDFIsUriFilter(new RDFVariable("?VAR")), null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFBooleanOrFilter(new RDFIsUriFilter(new RDFVariable("?VAR")), null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBooleanOrFilterBecauseExistsRight()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFBooleanOrFilter(new RDFIsUriFilter(new RDFVariable("?VAR")), new RDFExistsFilter(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?OBJ")))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFBooleanOrFilter(new RDFIsUriFilter(new RDFVariable("?VAR")), new RDFExistsFilter(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?OBJ")))));
 
     [TestMethod]
     public void ShouldCreateBooleanOrFilterAndKeepRow()

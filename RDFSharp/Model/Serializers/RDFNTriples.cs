@@ -194,14 +194,14 @@ namespace RDFSharp.Model
                 using (StreamReader sr = new StreamReader(inputStream, Encoding.ASCII))
                 {
                     RDFGraph result = new RDFGraph().SetContext(graphContext);
-                    string ntriple;
+                    string nTriple;
                     string[] tokens = new string[3];
                     Dictionary<string, long> hashContext = new Dictionary<string, long>();
                     char[] openingBrackets = { '<' };
                     char[] closingBrackets = { '>' };
                     char[] trimmableChars  = { ' ', '\t', '\r', '\n' };
 
-                    while ((ntriple = sr.ReadLine()) != null)
+                    while ((nTriple = sr.ReadLine()) != null)
                     {
                         ntripleIndex++;
 
@@ -216,14 +216,14 @@ namespace RDFSharp.Model
                         tokens[2] = string.Empty;
 
                         //Preliminary sanitizations: clean trailing space-like chars
-                        ntriple = ntriple.Trim(trimmableChars);
+                        nTriple = nTriple.Trim(trimmableChars);
 
                         //Skip empty or comment lines
-                        if (ntriple == string.Empty || ntriple.StartsWith("#", StringComparison.Ordinal))
+                        if (nTriple == string.Empty || nTriple.StartsWith("#", StringComparison.Ordinal))
                             continue;
 
                         //Tokenizes the sanitized triple
-                        tokens = TokenizeNTriple(ntriple);
+                        tokens = TokenizeNTriple(nTriple);
                         #endregion
 
                         #region subj
@@ -304,13 +304,7 @@ namespace RDFSharp.Model
                         }
                         #endregion
 
-                        #region addtriple
-
-                        result.AddTriple(O != null ? new RDFTriple(S, P, O) 
-                                                   : new RDFTriple(S, P, L));
-
-                        #endregion
-
+                        result.AddTriple(O != null ? new RDFTriple(S, P, O) : new RDFTriple(S, P, L));
                     }
                     return result;
                 }

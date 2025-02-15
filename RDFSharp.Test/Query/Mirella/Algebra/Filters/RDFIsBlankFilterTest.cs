@@ -40,7 +40,7 @@ public class RDFIsBlankFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingIsBlankFilterBecauseNullVariable()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFIsBlankFilter(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFIsBlankFilter(null));
 
     [TestMethod]
     public void ShouldCreateIsBlankFilterAndKeepRow()

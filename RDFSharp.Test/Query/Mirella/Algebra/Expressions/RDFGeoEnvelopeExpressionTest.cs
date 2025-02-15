@@ -53,11 +53,11 @@ public class RDFGeoEnvelopeExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOEnvelopeExpressionWithEXPBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoEnvelopeExpression(null as RDFVariableExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoEnvelopeExpression(null as RDFVariableExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOEnvelopeExpressionWithVARBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoEnvelopeExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoEnvelopeExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEXPAndCalculateResult()

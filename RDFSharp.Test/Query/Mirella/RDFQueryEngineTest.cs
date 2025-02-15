@@ -1965,7 +1965,7 @@ public class RDFQueryEngineTest
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))));
 
-        Assert.ThrowsException<RDFQueryException>(() => new RDFQueryEngine().EvaluateSelectQuery(query, federation));
+        Assert.ThrowsExactly<RDFQueryException>(() => new RDFQueryEngine().EvaluateSelectQuery(query, federation));
     }
 
     [TestMethod]

@@ -147,59 +147,59 @@ public class RDFGeoEgenhoferExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOEgenhoferExpressionWithEEBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoEgenhoferExpression(null as RDFVariableExpression, new RDFVariableExpression(new RDFVariable("?V")), RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoEgenhoferExpression(null as RDFVariableExpression, new RDFVariableExpression(new RDFVariable("?V")), RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOEgenhoferExpressionWithEEBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoEgenhoferExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariableExpression, RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoEgenhoferExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariableExpression, RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOEgenhoferExpressionWithEVBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoEgenhoferExpression(null as RDFVariableExpression, new RDFVariable("?V"), RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoEgenhoferExpression(null as RDFVariableExpression, new RDFVariable("?V"), RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOEgenhoferExpressionWithEVBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoEgenhoferExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable, RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoEgenhoferExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable, RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOEgenhoferExpressionWithETBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoEgenhoferExpression(null as RDFVariableExpression, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT), RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoEgenhoferExpression(null as RDFVariableExpression, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT), RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOEgenhoferExpressionWithETBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoEgenhoferExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFTypedLiteral, RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoEgenhoferExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFTypedLiteral, RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOEgenhoferExpressionWithETBecauseNotGeographicRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoEgenhoferExpression(new RDFVariableExpression(new RDFVariable("?V")), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING), RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoEgenhoferExpression(new RDFVariableExpression(new RDFVariable("?V")), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING), RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOEgenhoferExpressionWithVEBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoEgenhoferExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V")), RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoEgenhoferExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V")), RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOEgenhoferExpressionWithVEBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoEgenhoferExpression(new RDFVariable("?V"), null as RDFVariableExpression, RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoEgenhoferExpression(new RDFVariable("?V"), null as RDFVariableExpression, RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOEgenhoferExpressionWithVVBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoEgenhoferExpression(null as RDFVariable, new RDFVariable("?V"), RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoEgenhoferExpression(null as RDFVariable, new RDFVariable("?V"), RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOEgenhoferExpressionWithVVBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoEgenhoferExpression(new RDFVariable("?V"), null as RDFVariable, RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoEgenhoferExpression(new RDFVariable("?V"), null as RDFVariable, RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOEgenhoferExpressionWithVTBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoEgenhoferExpression(null as RDFVariable, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT), RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoEgenhoferExpression(null as RDFVariable, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT), RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOEgenhoferExpressionWithVTBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoEgenhoferExpression(new RDFVariable("?V"), null as RDFTypedLiteral, RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoEgenhoferExpression(new RDFVariable("?V"), null as RDFTypedLiteral, RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOEgenhoferExpressionWithVTBecauseNotGeographicRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoEgenhoferExpression(new RDFVariable("?V"), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING), RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoEgenhoferExpression(new RDFVariable("?V"), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING), RDFQueryEnums.RDFGeoEgenhoferRelations.Equals));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResult()

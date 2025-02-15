@@ -363,35 +363,35 @@ public class RDFComparisonExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingEEComparisonExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, null as RDFMathExpression, new RDFVariableExpression(new RDFVariable("?V"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, null as RDFMathExpression, new RDFVariableExpression(new RDFVariable("?V"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingEVComparisonExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, null as RDFMathExpression, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, null as RDFMathExpression, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingVEComparisonExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingVVComparisonExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, null as RDFVariable, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, null as RDFVariable, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingEEComparisonExpressionBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFVariableExpression(new RDFVariable("?V")), null as RDFMathExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFVariableExpression(new RDFVariable("?V")), null as RDFMathExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingEVComparisonExpressionBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFVariable("?V"), null as RDFMathExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFVariable("?V"), null as RDFMathExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingVEComparisonExpressionBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingVVComparisonExpressionBecauseNullRightArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFVariable("?V"), null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFVariable("?V"), null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResultTrue()

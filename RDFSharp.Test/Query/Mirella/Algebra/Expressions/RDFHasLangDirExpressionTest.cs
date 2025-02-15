@@ -53,11 +53,11 @@ public class RDFHasLangDirExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingHasLangDirExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFHasLangDirExpression(null as RDFExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFHasLangDirExpression(null as RDFExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingHasLangDirExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFHasLangDirExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFHasLangDirExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNull()

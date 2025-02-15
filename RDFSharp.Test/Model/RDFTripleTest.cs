@@ -109,22 +109,22 @@ public class RDFTripleTest
     [DataTestMethod]
     [DataRow("http://example.org/subj", "bnode:hdh744", "http://example.org/obj")]
     public void ShouldNotCreateSPOTripleBecauseOfBlankPredicate(string s, string p, string o)
-        => Assert.ThrowsException<RDFModelException>(() => new RDFTriple(new RDFResource(s), new RDFResource(p), new RDFResource(o)));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFTriple(new RDFResource(s), new RDFResource(p), new RDFResource(o)));
 
     [DataTestMethod]
     [DataRow("http://example.org/subj", "http://example.org/obj")]
     public void ShouldNotCreateSPOTripleBecauseOfNullPredicate(string s, string o)
-        => Assert.ThrowsException<RDFModelException>(() => new RDFTriple(new RDFResource(s), null, new RDFResource(o)));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFTriple(new RDFResource(s), null, new RDFResource(o)));
 
     [DataTestMethod]
     [DataRow("http://example.org/subj", "bnode:hdh744", "test")]
     public void ShouldNotCreateSPLTripleBecauseOfBlankPredicate(string s, string p, string l)
-        => Assert.ThrowsException<RDFModelException>(() => new RDFTriple(new RDFResource(s), new RDFResource(p), new RDFPlainLiteral(l)));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFTriple(new RDFResource(s), new RDFResource(p), new RDFPlainLiteral(l)));
 
     [DataTestMethod]
     [DataRow("http://example.org/subj", "test")]
     public void ShouldNotCreateSPLTripleBecauseOfNullPredicate(string s, string l)
-        => Assert.ThrowsException<RDFModelException>(() => new RDFTriple(new RDFResource(s), null, new RDFPlainLiteral(l)));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFTriple(new RDFResource(s), null, new RDFPlainLiteral(l)));
 
     [DataTestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]

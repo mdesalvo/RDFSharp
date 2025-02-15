@@ -53,11 +53,11 @@ public class RDFHasLangExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingHasLangExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFHasLangExpression(null as RDFExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFHasLangExpression(null as RDFExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingHasLangExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFHasLangExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFHasLangExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNull()

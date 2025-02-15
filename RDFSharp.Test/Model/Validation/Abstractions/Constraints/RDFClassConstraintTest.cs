@@ -36,7 +36,7 @@ public class RDFClassConstraintTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingClassConstraint()
-        => Assert.ThrowsException<RDFModelException>(() => new RDFClassConstraint(null));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFClassConstraint(null));
 
     [TestMethod]
     public void ShouldExportClassConstraint()

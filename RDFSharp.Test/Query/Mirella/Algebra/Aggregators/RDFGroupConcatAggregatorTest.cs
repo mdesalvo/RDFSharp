@@ -79,11 +79,11 @@ public class RDFGroupConcatAggregatorTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGroupConcatAggregatorBecauseNullAggregatorVariable()
-        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFGroupConcatAggregator(null, new RDFVariable("?PROJVAR"), ";"));
+        =>  Assert.ThrowsExactly<RDFQueryException>(() => new RDFGroupConcatAggregator(null, new RDFVariable("?PROJVAR"), ";"));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGroupConcatAggregatorBecauseNullPartitionVariable()
-        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFGroupConcatAggregator(new RDFVariable("?AGGVAR"), null, ";"));
+        =>  Assert.ThrowsExactly<RDFQueryException>(() => new RDFGroupConcatAggregator(new RDFVariable("?AGGVAR"), null, ";"));
 
     [TestMethod]
     public void ShouldApplyModifierWithGroupConcatAggregator()

@@ -265,6 +265,6 @@ public class RDFQueryUtilitiesTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnParsingNullPatternMember()
-        => Assert.ThrowsException<RDFQueryException>(() => RDFQueryUtilities.ParseRDFPatternMember(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFQueryUtilities.ParseRDFPatternMember(null));
     #endregion
 }

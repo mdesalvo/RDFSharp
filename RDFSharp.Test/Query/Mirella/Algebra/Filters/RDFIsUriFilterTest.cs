@@ -40,7 +40,7 @@ public class RDFIsUriFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingIsUriFilterBecauseNullVariable()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFIsUriFilter(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFIsUriFilter(null));
 
     [TestMethod]
     public void ShouldCreateIsUriFilterAndKeepRow()

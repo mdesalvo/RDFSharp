@@ -112,19 +112,19 @@ public class RDFStartsExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingEEStartsExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFStartsExpression(null as RDFExpression, new RDFVariableExpression(new RDFVariable("?V"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFStartsExpression(null as RDFExpression, new RDFVariableExpression(new RDFVariable("?V"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingEVStartsExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFStartsExpression(null as RDFExpression, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFStartsExpression(null as RDFExpression, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingVEStartsExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFStartsExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFStartsExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingVVStartsExpressionNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFStartsExpression(null as RDFVariable, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFStartsExpression(null as RDFVariable, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResult()

@@ -51,7 +51,7 @@ public class RDFClearOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionWhenCreatingClearNamedOperationBecauseNullContext()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFClearOperation(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFClearOperation(null));
 
     [TestMethod]
     public void ShouldCreateClearSilentNamedOperation()
@@ -566,7 +566,7 @@ public class RDFClearOperationTest
 
         RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
 
-        Assert.ThrowsException<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(250)));
+        Assert.ThrowsExactly<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(250)));
     }
 
     [TestMethod]
@@ -584,7 +584,7 @@ public class RDFClearOperationTest
 
         RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
 
-        Assert.ThrowsException<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint));
+        Assert.ThrowsExactly<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint));
     }
 
     [TestMethod]

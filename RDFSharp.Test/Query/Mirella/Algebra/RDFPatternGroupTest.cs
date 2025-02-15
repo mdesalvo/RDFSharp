@@ -363,7 +363,7 @@ public class RDFPatternGroupTest
         pGroup.AddBind(bind);
         pGroup.AddBind(null); //Will not be added, since null is not allowed
         pGroup.AddBind(bind); //Will not be added, since duplicate values are not allowed
-        Assert.ThrowsException<RDFQueryException>(() => pGroup.AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?BINDEXP2")), new RDFVariable("?BINDVAR")))); //will raise exception since bind should project a fresh new variable into the pattern group
+        Assert.ThrowsExactly<RDFQueryException>(() => pGroup.AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?BINDEXP2")), new RDFVariable("?BINDVAR")))); //will raise exception since bind should project a fresh new variable into the pattern group
 
         Assert.IsNotNull(pGroup);
         Assert.IsTrue(pGroup.IsEvaluable);

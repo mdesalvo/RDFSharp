@@ -53,11 +53,11 @@ public class RDFGeoDimensionExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEODimensionExpressionWithEXPBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDimensionExpression(null as RDFVariableExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoDimensionExpression(null as RDFVariableExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEODimensionExpressionWithVARBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoDimensionExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoDimensionExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEXPAndCalculateResult()

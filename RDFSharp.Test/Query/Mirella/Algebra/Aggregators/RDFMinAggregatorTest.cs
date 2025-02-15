@@ -48,13 +48,13 @@ public class RDFMinAggregatorTest
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric)]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.String)]
     public void ShouldThrowExceptionOnCreatingStringMinAggregatorBecauseNullAggregatorVariable(RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor)
-        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFMinAggregator(null, new RDFVariable("?PROJVAR"), aggregatorFlavor));
+        =>  Assert.ThrowsExactly<RDFQueryException>(() => new RDFMinAggregator(null, new RDFVariable("?PROJVAR"), aggregatorFlavor));
 
     [DataTestMethod]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric)]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.String)]
     public void ShouldThrowExceptionOnCreatingStringMinAggregatorBecauseNullPartitionVariable(RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor)
-        =>  Assert.ThrowsException<RDFQueryException>(() => new RDFMinAggregator(new RDFVariable("?AGGVAR"), null, aggregatorFlavor));
+        =>  Assert.ThrowsExactly<RDFQueryException>(() => new RDFMinAggregator(new RDFVariable("?AGGVAR"), null, aggregatorFlavor));
 
     [DataTestMethod]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric)]

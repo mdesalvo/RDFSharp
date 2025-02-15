@@ -91,11 +91,11 @@ public class RDFLangMatchesFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingLangMatchesFilterBecauseNullVariable()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFLangMatchesFilter(null, "*"));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFLangMatchesFilter(null, "*"));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingLangMatchesFilterBecauseInvalidLanguage()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFLangMatchesFilter(new RDFVariable("?VAR"), "756"));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFLangMatchesFilter(new RDFVariable("?VAR"), "756"));
 
     [TestMethod]
     public void ShouldCreateNoneLangMatchesFilterAndKeepRow()

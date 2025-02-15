@@ -53,11 +53,11 @@ public class RDFSHA384ExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingSHA384ExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSHA384Expression(null as RDFExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSHA384Expression(null as RDFExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingSHA384ExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSHA384Expression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSHA384Expression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNull()

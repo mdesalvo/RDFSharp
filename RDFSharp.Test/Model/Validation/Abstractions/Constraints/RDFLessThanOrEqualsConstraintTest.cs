@@ -36,7 +36,7 @@ public class RDFLessThanOrEqualsConstraintTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingLessThanOrEqualsConstraint()
-        => Assert.ThrowsException<RDFModelException>(() => new RDFLessThanOrEqualsConstraint(null));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFLessThanOrEqualsConstraint(null));
 
     [TestMethod]
     public void ShouldExportLessThanOrEqualsConstraint()

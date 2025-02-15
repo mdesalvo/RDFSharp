@@ -73,19 +73,19 @@ public class RDFPropertyShapeTests
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyShapeBecauseNullPath()
-        => Assert.ThrowsException<RDFModelException>(() => new RDFPropertyShape(null));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFPropertyShape(null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyShapeBecauseNullInversePath()
-        => Assert.ThrowsException<RDFModelException>(() => new RDFPropertyShape(null, true));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFPropertyShape(null, true));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyShapeBecauseNullAlternativePath()
-        => Assert.ThrowsException<RDFModelException>(() => new RDFPropertyShape(null, RDFPropertyPathStepFlavors.Alternative));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFPropertyShape(null, RDFPropertyPathStepFlavors.Alternative));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyShapeBecauseNullSequencePath()
-        => Assert.ThrowsException<RDFModelException>(() => new RDFPropertyShape(null, RDFPropertyPathStepFlavors.Sequence));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFPropertyShape(null, RDFPropertyPathStepFlavors.Sequence));
 
     [TestMethod]
     public void ShouldEnumeratePropertyShape()

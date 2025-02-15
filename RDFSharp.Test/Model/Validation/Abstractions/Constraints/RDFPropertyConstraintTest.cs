@@ -37,7 +37,7 @@ public class RDFPropertyConstraintTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyConstraint()
-        => Assert.ThrowsException<RDFModelException>(() => new RDFPropertyConstraint(null));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFPropertyConstraint(null));
 
     [TestMethod]
     public void ShouldExportPropertyConstraint()

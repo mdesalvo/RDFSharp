@@ -1611,8 +1611,7 @@ namespace RDFSharp.Model
                         if (triple.Object is RDFTypedLiteral tlitObj)
                         {
                             string dtype = RDFQueryPrinter.PrintPatternMember(
-                                            RDFQueryUtilities.ParseRDFPatternMember(
-                                             tlitObj.Datatype.URI.ToString()), prefixes);
+                                            RDFQueryUtilities.ParseRDFPatternMember(tlitObj.Datatype.URI.ToString()), prefixes);
                             string tLit = string.Concat(litValDelim, tlitObj.Value.Replace("\\", @"\\"), litValDelim, "^^", dtype);
                             result.Append(tLit);
                         }

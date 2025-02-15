@@ -36,7 +36,7 @@ public class RDFNotConstraintTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingNotConstraint()
-        => Assert.ThrowsException<RDFModelException>(() => new RDFNotConstraint(null));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFNotConstraint(null));
 
     [TestMethod]
     public void ShouldExportNotConstraint()

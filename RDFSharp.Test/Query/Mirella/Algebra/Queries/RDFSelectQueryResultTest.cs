@@ -185,7 +185,7 @@ public class RDFSelectQueryResultTest
         </sparql>
         """);
 
-    Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+    Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
   }
 
   [TestMethod]
@@ -203,7 +203,7 @@ public class RDFSelectQueryResultTest
         </sparql>
         """);
 
-    Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+    Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
   }
 
   [TestMethod]
@@ -226,7 +226,7 @@ public class RDFSelectQueryResultTest
         </sparql>
         """);
 
-    Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+    Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
   }
 
   [TestMethod]
@@ -251,7 +251,7 @@ public class RDFSelectQueryResultTest
         </sparql>
         """);
 
-    Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+    Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
   }
 
   [TestMethod]
@@ -276,7 +276,7 @@ public class RDFSelectQueryResultTest
         </sparql>
         """);
 
-    Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+    Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
   }
 
   [TestMethod]
@@ -301,7 +301,7 @@ public class RDFSelectQueryResultTest
         </sparql>
         """);
 
-    Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+    Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
   }
 
   [TestMethod]
@@ -326,7 +326,7 @@ public class RDFSelectQueryResultTest
         </sparql>
         """);
 
-    Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+    Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
   }
 
   [TestMethod]
@@ -351,7 +351,7 @@ public class RDFSelectQueryResultTest
         </sparql>
         """);
 
-    Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+    Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
   }
 
   [TestMethod]
@@ -374,7 +374,7 @@ public class RDFSelectQueryResultTest
         </sparql>
         """);
 
-    Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+    Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
   }
 
   [TestMethod]
@@ -399,7 +399,7 @@ public class RDFSelectQueryResultTest
         </sparql>
         """);
 
-    Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+    Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
   }
 
   [TestMethod]
@@ -424,7 +424,7 @@ public class RDFSelectQueryResultTest
         </sparql>
         """);
 
-    Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+    Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
   }
 
   [TestMethod]
@@ -449,7 +449,7 @@ public class RDFSelectQueryResultTest
         </sparql>
         """);
 
-    Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+    Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
   }
 
   [TestMethod]
@@ -474,7 +474,7 @@ public class RDFSelectQueryResultTest
         </sparql>
         """);
 
-    Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+    Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
   }
 
   [TestCleanup]

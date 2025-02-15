@@ -53,11 +53,11 @@ public class RDFAbsExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAbsExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFAbsExpression(null as RDFMathExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFAbsExpression(null as RDFMathExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAbsExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFAbsExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFAbsExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResult()

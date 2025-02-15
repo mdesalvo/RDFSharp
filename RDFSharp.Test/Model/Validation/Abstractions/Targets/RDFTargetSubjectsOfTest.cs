@@ -34,7 +34,7 @@ public class RDFTargetSubjectsOfTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingTargetSubjectsOfBecauseNullValue()
-        => Assert.ThrowsException<RDFModelException>(() => new RDFTargetSubjectsOf(null));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFTargetSubjectsOf(null));
 
     [TestMethod]
     public void ShouldExportTargetSubjectsOf()

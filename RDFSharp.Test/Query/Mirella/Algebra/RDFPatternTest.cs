@@ -120,31 +120,31 @@ public class RDFPatternTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPatternBecauseNullSubject()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFPattern(null, new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPattern(null, new RDFResource("ex:pred"), new RDFResource("ex:obj")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPatternBecauseUnsupportedSubject()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFPattern(new RDFPlainLiteral("lit"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPattern(new RDFPlainLiteral("lit"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPatternBecauseNullPredicate()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFPattern(new RDFResource("ex:subj"), null, new RDFResource("ex:obj")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPattern(new RDFResource("ex:subj"), null, new RDFResource("ex:obj")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPatternBecauseBlankPredicate()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFPattern(new RDFResource("ex:subj"), new RDFResource(), new RDFResource("ex:obj")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPattern(new RDFResource("ex:subj"), new RDFResource(), new RDFResource("ex:obj")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPatternBecauseUnsupportedPredicate()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFPattern(new RDFResource("ex:subj"), new RDFPlainLiteral("lit"), new RDFResource("ex:obj")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPattern(new RDFResource("ex:subj"), new RDFPlainLiteral("lit"), new RDFResource("ex:obj")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPatternBecauseNullObject()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPatternBecauseUnsupportedObject()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFContext()));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFContext()));
         
     [TestMethod]
     public void ShouldCreateVPOPattern()
@@ -1151,39 +1151,39 @@ public class RDFPatternTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingContextPatternBecauseNullContext()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFPattern(null, new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPattern(null, new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingContextPatternBecauseUnsupportedContext()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFPattern(new RDFPlainLiteral("lit"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPattern(new RDFPlainLiteral("lit"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingContextPatternBecauseNullSubject()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFPattern(new RDFContext("ex:ctx"), null, new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPattern(new RDFContext("ex:ctx"), null, new RDFResource("ex:pred"), new RDFResource("ex:obj")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingContextPatternBecauseUnsupportedSubject()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFPattern(new RDFContext("ex:ctx"), new RDFPlainLiteral("lit"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPattern(new RDFContext("ex:ctx"), new RDFPlainLiteral("lit"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingContextPatternBecauseNullPredicate()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), null, new RDFResource("ex:obj")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), null, new RDFResource("ex:obj")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingContextPatternBecauseBlankPredicate()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource(), new RDFResource("ex:obj")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource(), new RDFResource("ex:obj")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingContextPatternBecauseUnsupportedPredicate()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFPlainLiteral("lit"), new RDFResource("ex:obj")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFPlainLiteral("lit"), new RDFResource("ex:obj")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingContextPatternBecauseNullObject()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingContextPatternBecauseUnsupportedObject()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFContext()));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFContext()));
 
     [TestMethod]
     public void ShouldCreateCVPOPattern()

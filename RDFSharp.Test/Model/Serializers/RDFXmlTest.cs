@@ -85,7 +85,7 @@ public class RDFXmlTest
     {
         RDFGraph graph = new RDFGraph();
         graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
-        Assert.ThrowsException<RDFModelException>(() => RDFXml.Serialize(graph, Path.Combine(Environment.CurrentDirectory, "RDFXmlTest_ShouldThrowExceptionOnSerializingGraphWithSPOTripleBecauseUnreduceablePredicate.rdf")));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFXml.Serialize(graph, Path.Combine(Environment.CurrentDirectory, "RDFXmlTest_ShouldThrowExceptionOnSerializingGraphWithSPOTripleBecauseUnreduceablePredicate.rdf")));
     }
 
     [TestMethod]
@@ -93,7 +93,7 @@ public class RDFXmlTest
     {
         RDFGraph graph = new RDFGraph();
         graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://www.w3.org/1999/02/22-rdf-syntax-ns#1Alt"), new RDFResource("http://obj/")));
-        Assert.ThrowsException<RDFModelException>(() => RDFXml.Serialize(graph, Path.Combine(Environment.CurrentDirectory, "RDFXmlTest_ShouldThrowExceptionOnSerializingGraphWithSPOTripleBecauseInvalidQNameWhenReducedPredicate.rdf")));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFXml.Serialize(graph, Path.Combine(Environment.CurrentDirectory, "RDFXmlTest_ShouldThrowExceptionOnSerializingGraphWithSPOTripleBecauseInvalidQNameWhenReducedPredicate.rdf")));
     }
 
     [TestMethod]
@@ -265,7 +265,7 @@ public class RDFXmlTest
         graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred"), new RDFResource("bnode:12345")));
         graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
         graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.FIRST, new RDFResource("http://item1/")));
-        Assert.ThrowsException<RDFModelException>(() => RDFXml.Serialize(graph, Path.Combine(Environment.CurrentDirectory, "RDFXmlTest_ShouldThrowExceptionOnSerializingGraphWithSPOTripleBecauseBadFormedCollectionAsObject.rdf")));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFXml.Serialize(graph, Path.Combine(Environment.CurrentDirectory, "RDFXmlTest_ShouldThrowExceptionOnSerializingGraphWithSPOTripleBecauseBadFormedCollectionAsObject.rdf")));
     }
 
     [TestMethod]
@@ -843,7 +843,7 @@ public class RDFXmlTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDH {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:resource=\"http://obj/\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDH>");
-        Assert.ThrowsException<RDFModelException>(() => RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -1496,7 +1496,7 @@ public class RDFXmlTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:ID=\"triple1\" rdf:about=\"http://obj/\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
-        Assert.ThrowsException<RDFModelException>(() => RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]

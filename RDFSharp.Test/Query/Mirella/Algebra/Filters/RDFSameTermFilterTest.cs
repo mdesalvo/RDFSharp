@@ -45,11 +45,11 @@ public class RDFSameTermFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingSameTermFilterBecauseNullVariable()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSameTermFilter(null, new RDFVariable("?VAR")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSameTermFilter(null, new RDFVariable("?VAR")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingSameTermFilterBecauseNullTerm()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSameTermFilter(new RDFVariable("?VAR"), null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSameTermFilter(new RDFVariable("?VAR"), null));
 
     [TestMethod]
     public void ShouldCreateSameTermFilterAndKeepRow()

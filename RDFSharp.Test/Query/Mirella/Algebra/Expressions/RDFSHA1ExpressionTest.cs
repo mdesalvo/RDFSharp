@@ -53,11 +53,11 @@ public class RDFSHA1ExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingSHA1ExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSHA1Expression(null as RDFExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSHA1Expression(null as RDFExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingSHA1ExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSHA1Expression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSHA1Expression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNull()

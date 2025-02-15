@@ -786,7 +786,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> <http://obj> http://ctx/ .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -796,7 +796,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> <http://obj> _:12345 .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -806,7 +806,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> <http://obj> \"hello\" .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -816,7 +816,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"http://subj <http://pred/> <http://obj> <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -826,7 +826,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> http://pred/ <http://obj> <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -836,7 +836,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> _:12345 <http://obj> <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -846,7 +846,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> http://obj <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -856,7 +856,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> \"hello <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -866,7 +866,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> \"hello\"@EN@US <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -876,7 +876,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> \"hello\"@ <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -886,7 +886,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> \"hello\"^^ <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -896,7 +896,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> \"hello\" http://ctx/ .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -906,7 +906,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> \"hello\" _:12345 .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -916,7 +916,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"http://subj <http://pred/> \"hello\" <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -926,7 +926,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> http://pred/ \"hello\" <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -936,7 +936,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> _:12345 \"hello\" <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -946,7 +946,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -956,7 +956,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> <http://obj/> <http://ctx/> . <http://subj> <http://pred/> <http://obj/> <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -966,7 +966,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> <http://obj> http://ctx/ .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -976,7 +976,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> <http://obj> _:12345 .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -986,7 +986,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> <http://obj> \"hello\" .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -996,7 +996,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:< <http://pred/> <http://obj> <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1006,7 +1006,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 http://pred/ <http://obj> <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1016,7 +1016,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 _:12345 <http://obj> <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1026,7 +1026,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> http://obj <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1036,7 +1036,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> \"hello <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1046,7 +1046,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> \"hello\"@EN@US <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1056,7 +1056,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> \"hello\"@ <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1066,7 +1066,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> \"hello\"^^ <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1076,7 +1076,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> \"hello\" http://ctx/ .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1086,7 +1086,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> \"hello\" _:12345 .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1096,7 +1096,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:< <http://pred/> \"hello\" <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1106,7 +1106,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 http://pred/ \"hello\" <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1116,7 +1116,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 _:12345 \"hello\" <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1126,7 +1126,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1136,7 +1136,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> <http://obj/> <http://ctx/> . _:12345 <http://pred/> <http://obj/> <http://ctx/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1669,7 +1669,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"http://subj <http://pred/> <http://obj> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1679,7 +1679,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> http://pred/ <http://obj> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1689,7 +1689,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> _:12345 <http://obj> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1699,7 +1699,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> http://obj .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1709,7 +1709,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> \"hello .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1719,7 +1719,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> \"hello\"@EN@US .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1729,7 +1729,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> \"hello\"@ .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1739,7 +1739,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> \"hello\"^^ .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1749,7 +1749,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"http://subj <http://pred/> \"hello\" .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1759,7 +1759,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> http://pred/ \"hello\" .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1769,7 +1769,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> _:12345 \"hello\" .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1779,7 +1779,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> <http://obj/> . <http://subj> <http://pred/> <http://obj/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1789,7 +1789,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:< <http://pred/> <http://obj> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1799,7 +1799,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 http://pred/ <http://obj> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1809,7 +1809,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 _:12345 <http://obj> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1819,7 +1819,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> http://obj .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1829,7 +1829,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> \"hello .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1839,7 +1839,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> \"hello\"@EN@US .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1849,7 +1849,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> \"hello\"@ .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1859,7 +1859,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> \"hello\"^^ .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1869,7 +1869,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:< <http://pred/> \"hello\" .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1879,7 +1879,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 http://pred/ \"hello\" .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1889,7 +1889,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 _:12345 \"hello\" .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -1899,7 +1899,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> <http://obj/> . _:12345 <http://pred/> <http://obj/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -2091,7 +2091,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj/> <http://pred/> <http://obj/> <http://ctx/> ..{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestMethod]
@@ -2101,7 +2101,7 @@ public class RDFNQuadsTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj/> <http://pred/> <http://obj/> <http://ctx/> {Environment.NewLine}");
 
-        Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
     [TestCleanup]

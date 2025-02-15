@@ -746,7 +746,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"http://subj <http://pred/> <http://obj> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -756,7 +756,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> http://pred/ <http://obj> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -766,7 +766,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <_:12345> <http://obj> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -776,7 +776,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> http://obj .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -786,7 +786,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> \"hello .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -796,7 +796,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> \"hello\"@EN@US .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -806,7 +806,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> \"hello\"@ .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -816,7 +816,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> \"hello\"^^ .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -826,7 +826,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"http://subj <http://pred/> \"hello\" .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -836,7 +836,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> http://pred/ \"hello\" .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -846,7 +846,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <_:12345> \"hello\" .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -856,7 +856,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -866,7 +866,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj> <http://pred/> <http://obj/> . <http://subj> <http://pred/> <http://obj/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -876,7 +876,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<_:12345> http://pred/ <http://obj> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -886,7 +886,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<_:12345> <_:12345> <http://obj> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -896,7 +896,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<_:12345> <http://pred/> http://obj .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -906,7 +906,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<_:12345> <http://pred/> \"hello .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -916,7 +916,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<_:12345> <http://pred/> \"hello\"@EN@US .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -926,7 +926,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<_:12345> <http://pred/> \"hello\"@ .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -936,7 +936,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<_:12345> <http://pred/> \"hello\"^^ .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -946,7 +946,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<_:12345> http://pred/ \"hello\" .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -956,7 +956,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<_:12345> <_:12345> \"hello\" .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -966,7 +966,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -976,7 +976,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"_:12345 <http://pred/> <http://obj/> . _:12345 <http://pred/> <http://obj/> .{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -1168,7 +1168,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj/> <http://pred/> <http://obj/> ..{Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -1178,7 +1178,7 @@ public class RDFNTriplesTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<http://subj/> <http://pred/> <http://obj/> {Environment.NewLine}");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestCleanup]

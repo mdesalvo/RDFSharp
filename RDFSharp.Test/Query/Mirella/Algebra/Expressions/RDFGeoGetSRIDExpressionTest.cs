@@ -53,11 +53,11 @@ public class RDFGeoGetSRIDExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOGetSRIDExpressionWithEXPBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoGetSRIDExpression(null as RDFVariableExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoGetSRIDExpression(null as RDFVariableExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOGetSRIDExpressionWithVARBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoGetSRIDExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoGetSRIDExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEXPAndCalculateResult()

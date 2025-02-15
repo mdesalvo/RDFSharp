@@ -40,7 +40,7 @@ public class RDFBoundFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBoundFilterBecauseNullVariable()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFBoundFilter(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFBoundFilter(null));
 
     [TestMethod]
     public void ShouldCreateBoundFilterAndKeepRow()

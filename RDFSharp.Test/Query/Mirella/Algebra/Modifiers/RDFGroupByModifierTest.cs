@@ -52,15 +52,15 @@ public class RDFGroupByModifierTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGroupByModifierBecauseNullVariables()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGroupByModifier(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGroupByModifier(null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGroupByModifierBecauseEmptyVariables()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGroupByModifier([]));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGroupByModifier([]));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGroupByModifierBecauseNullItemInVariables()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGroupByModifier([null]));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGroupByModifier([null]));
 
     [TestMethod]
     public void ShouldAddAggregator()
@@ -104,7 +104,7 @@ public class RDFGroupByModifierTest
         RDFAggregator aggregator2 = new RDFAggregator(variable2, variable3);
         modifier.AddAggregator(aggregator1);
 
-        Assert.ThrowsException<RDFQueryException>(() => modifier.AddAggregator(aggregator2), "Cannot add aggregator to GroupBy modifier because the given projection variable '?VAR3' is already used by another aggregator.");
+        Assert.ThrowsExactly<RDFQueryException>(() => modifier.AddAggregator(aggregator2), "Cannot add aggregator to GroupBy modifier because the given projection variable '?VAR3' is already used by another aggregator.");
     }
 
     [TestMethod]
@@ -133,7 +133,7 @@ public class RDFGroupByModifierTest
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?D")]);
             
-        Assert.ThrowsException<RDFQueryException>(() => modifier.ApplyModifier(table), "Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: ?D");
+        Assert.ThrowsExactly<RDFQueryException>(() => modifier.ApplyModifier(table), "Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: ?D");
     }
 
     [TestMethod]
@@ -164,7 +164,7 @@ public class RDFGroupByModifierTest
         modifier.AddAggregator(new RDFAggregator(new RDFVariable("?D"), new RDFVariable("?A")));
         modifier.AddAggregator(new RDFAggregator(new RDFVariable("?D"), new RDFVariable("?B")));
             
-        Assert.ThrowsException<RDFQueryException>(() => modifier.ApplyModifier(table), "Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: ?D");
+        Assert.ThrowsExactly<RDFQueryException>(() => modifier.ApplyModifier(table), "Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: ?D");
     }
 
     [TestMethod]
@@ -195,7 +195,7 @@ public class RDFGroupByModifierTest
         modifier.AddAggregator(new RDFAggregator(new RDFVariable("?A"), new RDFVariable("?A")));
         modifier.AddAggregator(new RDFAggregator(new RDFVariable("?A"), new RDFVariable("?B")));
             
-        Assert.ThrowsException<RDFQueryException>(() => modifier.ApplyModifier(table), "Cannot apply GroupBy modifier because the following variables have been specified both for partitioning (in GroupBy) and projection (in Aggregator): ?B");
+        Assert.ThrowsExactly<RDFQueryException>(() => modifier.ApplyModifier(table), "Cannot apply GroupBy modifier because the following variables have been specified both for partitioning (in GroupBy) and projection (in Aggregator): ?B");
     }
 
     [TestMethod]

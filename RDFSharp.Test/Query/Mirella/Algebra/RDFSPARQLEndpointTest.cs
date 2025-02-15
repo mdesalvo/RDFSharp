@@ -39,7 +39,7 @@ public class RDFSPARQLEndpointTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingSPARQLEndpointBecauseNullUri()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFSPARQLEndpoint(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFSPARQLEndpoint(null));
 
     [TestMethod]
     public void ShouldAddQueryOptions()

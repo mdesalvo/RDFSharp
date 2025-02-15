@@ -72,7 +72,7 @@ public class RDFResourceTest
     [DataRow("\t")]
     [DataRow(null)]
     public void ShouldNotCreateResourceDueToNullOrEmptyUri(string input)
-        => Assert.ThrowsException<RDFModelException>(() => new RDFResource(input));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFResource(input));
 
     [DataTestMethod]
     [DataRow("hello")]
@@ -82,7 +82,7 @@ public class RDFResourceTest
     [DataRow("http://hello\0")]
     [DataRow("http://hel\0lo/world")]
     public void ShouldNotCreateResourceDueToInvalidUri(string input)
-        => Assert.ThrowsException<RDFModelException>(() => new RDFResource(input));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFResource(input));
 
     [TestMethod]
     public void ShouldCreateResourceExploitingHashContext()
@@ -115,10 +115,10 @@ public class RDFResourceTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingResourceExploitingHashContextBecauseNullUri()
-        => Assert.ThrowsException<RDFModelException>(() => new RDFResource(null, []));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFResource(null, []));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingResourceExploitingHashContextBecauseRelativeUri()
-        => Assert.ThrowsException<RDFModelException>(() => new RDFResource("./example/org", []));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFResource("./example/org", []));
     #endregion
 }

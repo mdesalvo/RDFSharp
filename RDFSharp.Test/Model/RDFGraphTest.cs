@@ -1199,7 +1199,7 @@ public class RDFGraphTest
         RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph.AddTriple(triple1).AddTriple(triple2).AddTriple(triple3);
 
-        Assert.ThrowsException<RDFModelException>(() => graph[null, null, new RDFResource("http://obj/"), new RDFPlainLiteral("lit")]);
+        Assert.ThrowsExactly<RDFModelException>(() => _ = graph[null, null, new RDFResource("http://obj/"), new RDFPlainLiteral("lit")]);
     }
 
     [TestMethod]
@@ -1476,7 +1476,7 @@ public class RDFGraphTest
 
     [TestMethod]
     public void ShouldRaiseExceptionOnExportingToNullOrEmptyFilepath()
-        => Assert.ThrowsException<RDFModelException>(() => new RDFGraph().ToFile(RDFModelEnums.RDFFormats.NTriples, null));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFGraph().ToFile(RDFModelEnums.RDFFormats.NTriples, null));
 
     [DataTestMethod]
     [DataRow(RDFModelEnums.RDFFormats.NTriples)]
@@ -1497,7 +1497,7 @@ public class RDFGraphTest
 
     [TestMethod]
     public void ShouldRaiseExceptionOnExportingToNullStream()
-        => Assert.ThrowsException<RDFModelException>(() => new RDFGraph().ToStream(RDFModelEnums.RDFFormats.NTriples, null));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFGraph().ToStream(RDFModelEnums.RDFFormats.NTriples, null));
 
     [TestMethod]
     public void ShouldExportToDataTable()
@@ -1626,11 +1626,11 @@ public class RDFGraphTest
 
     [TestMethod]
     public void ShouldRaiseExceptionOnImportingFromNullOrEmptyFilepath()
-        => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromFile(RDFModelEnums.RDFFormats.NTriples, null));
+        => Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromFile(RDFModelEnums.RDFFormats.NTriples, null));
 
     [TestMethod]
     public void ShouldRaiseExceptionOnImportingFromUnexistingFilepath()
-        => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromFile(RDFModelEnums.RDFFormats.NTriples, "blablabla"));
+        => Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromFile(RDFModelEnums.RDFFormats.NTriples, "blablabla"));
 
     [DataTestMethod]
     [DataRow(RDFModelEnums.RDFFormats.NTriples)]
@@ -1723,7 +1723,7 @@ public class RDFGraphTest
 
     [TestMethod]
     public void ShouldRaiseExceptionOnImportingFromNullStream()
-        => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromStream(RDFModelEnums.RDFFormats.NTriples, null));
+        => Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromStream(RDFModelEnums.RDFFormats.NTriples, null));
 
     [TestMethod]
     public void ShouldImportFromDataTable()
@@ -1775,7 +1775,7 @@ public class RDFGraphTest
 
     [TestMethod]
     public void ShouldRaiseExceptionOnImportingFromNullDataTable()
-        => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(null));
+        => Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromDataTable(null));
 
     [TestMethod]
     public void ShouldRaiseExceptionOnImportingFromDataTableNotHavingMandatoryColumns()
@@ -1784,7 +1784,7 @@ public class RDFGraphTest
         table.Columns.Add("?SUBJECT", typeof(string));
         table.Columns.Add("?PREDICATE", typeof(string));
 
-        Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromDataTable(table));
     }
 
     [TestMethod]
@@ -1795,7 +1795,7 @@ public class RDFGraphTest
         table.Columns.Add("?PREDICATE", typeof(string));
         table.Columns.Add("?OBJECTTTTT", typeof(string));
 
-        Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromDataTable(table));
     }
 
     [TestMethod]
@@ -1807,7 +1807,7 @@ public class RDFGraphTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add(null, "http://pred/", "http://obj/");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromDataTable(table));
     }
 
     [TestMethod]
@@ -1819,7 +1819,7 @@ public class RDFGraphTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("", "http://pred/", "http://obj/");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromDataTable(table));
     }
 
     [TestMethod]
@@ -1831,7 +1831,7 @@ public class RDFGraphTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("hello@en", "http://pred/", "http://obj/");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromDataTable(table));
     }
 
     [TestMethod]
@@ -1843,7 +1843,7 @@ public class RDFGraphTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://subj/", null, "http://obj/");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromDataTable(table));
     }
 
     [TestMethod]
@@ -1855,7 +1855,7 @@ public class RDFGraphTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://subj/", "", "http://obj/");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromDataTable(table));
     }
 
     [TestMethod]
@@ -1867,7 +1867,7 @@ public class RDFGraphTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://subj/", "bnode:12345", "http://obj/");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromDataTable(table));
     }
 
     [TestMethod]
@@ -1879,7 +1879,7 @@ public class RDFGraphTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://subj/", "hello@en", "http://obj/");
 
-        Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromDataTable(table));
     }
 
     [TestMethod]
@@ -1891,7 +1891,7 @@ public class RDFGraphTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://subj/", "http://pred/", null);
 
-        Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromDataTable(table));
     }
 
     [TestMethod]
@@ -1919,11 +1919,11 @@ public class RDFGraphTest
 
     [TestMethod]
     public void ShouldRaiseExceptionOnImportingFromNullUri()
-        => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromUri(null));
+        => Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromUri(null));
 
     [TestMethod]
     public void ShouldRaiseExceptionOnImportingFromRelativeUri()
-        => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromUri(new Uri("/file/system", UriKind.Relative)));
+        => Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromUri(new Uri("/file/system", UriKind.Relative)));
 
     [TestMethod]
     public void ShouldExtractDatatypeDefinitionsFromGraph()

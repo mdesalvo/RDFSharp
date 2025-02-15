@@ -56,6 +56,6 @@ public class RDFVariableTest
     [DataRow("$$")]
     [DataRow("?  $")]
     public void ShouldThrowExceptionOnCreatingVariable(string varname)
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFVariable(varname));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFVariable(varname));
     #endregion
 }

@@ -57,11 +57,11 @@ public class RDFOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingDeleteGroundTemplateBecauseNullPattern()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddDeleteGroundTemplate<RDFOperation>(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFOperation().AddDeleteGroundTemplate<RDFOperation>(null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingDeleteGroundTemplateBecauseNotGroundPattern()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddDeleteGroundTemplate<RDFOperation>(new RDFPattern(new RDFVariable("?X"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFOperation().AddDeleteGroundTemplate<RDFOperation>(new RDFPattern(new RDFVariable("?X"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
 
     [TestMethod]
     public void ShouldAddDeleteNonGroundTemplate()
@@ -95,7 +95,7 @@ public class RDFOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingDeleteNonGroundTemplateBecauseNullPattern()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddDeleteNonGroundTemplate<RDFOperation>(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFOperation().AddDeleteNonGroundTemplate<RDFOperation>(null));
 
     [TestMethod]
     public void ShouldAddInsertGroundTemplate()
@@ -114,11 +114,11 @@ public class RDFOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingInsertGroundTemplateBecauseNullPattern()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddInsertGroundTemplate<RDFOperation>(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFOperation().AddInsertGroundTemplate<RDFOperation>(null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingInsertGroundTemplateBecauseNotGroundPattern()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddInsertGroundTemplate<RDFOperation>(new RDFPattern(new RDFVariable("?X"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFOperation().AddInsertGroundTemplate<RDFOperation>(new RDFPattern(new RDFVariable("?X"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
 
     [TestMethod]
     public void ShouldAddInsertNonGroundTemplate()
@@ -152,7 +152,7 @@ public class RDFOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingInsertNonGroundTemplateBecauseNullPattern()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddInsertNonGroundTemplate<RDFOperation>(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFOperation().AddInsertNonGroundTemplate<RDFOperation>(null));
 
     [TestMethod]
     public void ShouldAddPrefix()
@@ -172,7 +172,7 @@ public class RDFOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingPrefixBecauseNullPrefix()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddPrefix<RDFOperation>(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFOperation().AddPrefix<RDFOperation>(null));
 
     [TestMethod]
     public void ShouldAddPatternGroup()
@@ -191,7 +191,7 @@ public class RDFOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingPatternGroupBecauseNullPatternGroup()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddPatternGroup<RDFOperation>(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFOperation().AddPatternGroup<RDFOperation>(null));
 
     [TestMethod]
     public void ShouldAddModifier()
@@ -209,7 +209,7 @@ public class RDFOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingModifierBecauseNullModifier()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddModifier<RDFOperation>(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFOperation().AddModifier<RDFOperation>(null));
 
     [TestMethod]
     public void ShouldAddSubQuery()
@@ -228,6 +228,6 @@ public class RDFOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingSubQueryBecauseNullSubQuery()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddSubQuery<RDFOperation>(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFOperation().AddSubQuery<RDFOperation>(null));
     #endregion
 }

@@ -35,7 +35,7 @@ public class RDFModelUtilitiesTest
 
     [TestMethod]
     public void ShouldNotCreateHash()
-        => Assert.ThrowsException<RDFModelException>(() => RDFModelUtilities.CreateHash(null));
+        => Assert.ThrowsExactly<RDFModelException>(() => RDFModelUtilities.CreateHash(null));
 
     [DataTestMethod]
     [DataRow("http://example.org/test#")]

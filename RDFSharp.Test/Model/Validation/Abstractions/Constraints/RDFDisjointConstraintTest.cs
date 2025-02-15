@@ -36,7 +36,7 @@ public class RDFDisjointConstraintTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingDisjointConstraint()
-        => Assert.ThrowsException<RDFModelException>(() => new RDFDisjointConstraint(null));
+        => Assert.ThrowsExactly<RDFModelException>(() => new RDFDisjointConstraint(null));
 
     [TestMethod]
     public void ShouldExportDisjointConstraint()

@@ -53,11 +53,11 @@ public class RDFGeoBoundaryExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOBoundaryExpressionWithEXPBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoBoundaryExpression(null as RDFVariableExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoBoundaryExpression(null as RDFVariableExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOBoundaryExpressionWithVARBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFGeoBoundaryExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoBoundaryExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEXPAndCalculateResult()

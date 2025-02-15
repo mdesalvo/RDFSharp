@@ -2161,7 +2161,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write("@prefix rdf");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2170,7 +2170,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write($"@prefix ex: <http://example.org/>.{Environment.NewLine}@prefix ex: <http://example.org2/>"); //Misses final "."
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2179,7 +2179,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>{Environment.NewLine}<http://subj/> <http://pred/> <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2188,7 +2188,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write("BASE <");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2197,7 +2197,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write("BASE <http://subj\\");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2206,7 +2206,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write("BASE <http://sub j");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2215,7 +2215,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write("BASE <#>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2224,7 +2224,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"<{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> <http://pred/> <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2233,7 +2233,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@bass <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> <http://pred/> <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2242,7 +2242,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/ <http://pred/> <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2251,7 +2251,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}\"subj\" <http://pred/> <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2260,7 +2260,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> http://pred/> <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2269,7 +2269,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> \"pred\" <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2278,7 +2278,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> <http://pred/> http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2300,7 +2300,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}flef:subj <http://pred/> <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2335,7 +2335,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> flef:pred <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2357,7 +2357,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> <http://pred/> flef:obj.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2515,7 +2515,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> <http://pred/> _:12345.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2524,7 +2524,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> <http://pred/> [].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2533,7 +2533,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/ <http://pred/> _:12345.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2542,7 +2542,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/ <http://pred/> [].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2551,7 +2551,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> http://pred/> _:12345.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2560,7 +2560,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> http://pred/> [].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2569,7 +2569,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> <http://pred/> _:.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2578,7 +2578,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write("<http://subj/> <http://pred/> _:");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2587,7 +2587,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write("<http://subj/> <http://pred/> _:-nn2.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2596,7 +2596,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> <http://pred/> [.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2633,7 +2633,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}flef:subj <http://pred/> _:12345.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2642,7 +2642,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}flef:subj <http://pred/> [].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2720,7 +2720,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> flef:pred _:12345.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2729,7 +2729,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> flef:pred [].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2923,7 +2923,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}_:12345 <http://pred/> <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2932,7 +2932,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[] <http://pred/> <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2941,7 +2941,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[ <http://pred/> <http://obj/> ].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2950,7 +2950,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}_: <http://pred/> <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2959,7 +2959,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[]] <http://pred/> <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2968,7 +2968,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[ <http://pred/> <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2977,7 +2977,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}_:12345 http://pred/> <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2986,7 +2986,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[] http://pred/> <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -2995,7 +2995,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[ http://pred/> <http://obj/> ].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3004,7 +3004,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}_:12345 <http://pred/> http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3013,7 +3013,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[] <http://pred/> http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3022,7 +3022,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[ <http://pred/> http://obj/> ].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3117,7 +3117,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}_:12345 flef:pred <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3126,7 +3126,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[] flef:pred <http://obj/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3135,7 +3135,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[ flef:pred <http://obj/> ].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3187,7 +3187,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}_:12345 <http://pred/> flef:obj.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3196,7 +3196,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[] <http://pred/> flef:obj.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3205,7 +3205,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[ <http://pred/> flef:obj ].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3429,7 +3429,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}_:12345 <http://pred/> _:54321.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3438,7 +3438,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[] <http://pred/> [].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3447,7 +3447,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[ <http://pred/> [] ].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3456,7 +3456,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}_: <http://pred/> _:54321.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3465,7 +3465,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[]] <http://pred/> [].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3474,7 +3474,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[[ <http://pred/> [] ].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3483,7 +3483,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}_:12345 http://pred/> _:54321.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3492,7 +3492,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[] http://pred/> [].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3501,7 +3501,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[ http://pred/> [] ].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3510,7 +3510,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}_:12345 <http://pred/> _:.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3519,7 +3519,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[] <http://pred/> []].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3528,7 +3528,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[ <http://pred/> [[ ].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3623,7 +3623,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}_:12345 flef:pred _:54321.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3632,7 +3632,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[] flef:pred [].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3641,7 +3641,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[ flef:pred [] ].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3715,7 +3715,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write("<http://subj/> <http://pred> \"\"\"ciao \\t\\r\\n\\b\\f\\\"\\'\\>\"\"\"");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3724,7 +3724,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write("<http://subj/> <http://pred> \"\"\"ciao \\u\"\"\"");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3733,7 +3733,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write("<http://subj/> <http://pred> \"\"\"ciao \\U\"\"\"");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3742,7 +3742,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write("<http://subj/> <http://pred> \"\"\"ciao \\p\"\"\"");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3751,7 +3751,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write("<http://subj/> <http://pred> \"\"\"ciao \\u000P\"\"\"");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3760,7 +3760,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write("<http://subj/> <http://pred> \"\"\"ciao \\U0000000P\"\"\"");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3769,7 +3769,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/index.html\\");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3778,7 +3778,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/index.html\\a007Epag2");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -3787,7 +3787,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj>. <http://pred/> <http://obj/>");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8564,7 +8564,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> <http://pred/> (<http://item1/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8573,7 +8573,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}_:12345 <http://pred/> (<http://item1/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8582,7 +8582,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] <http://pred/> (<http://item1/>.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8591,7 +8591,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ <http://pred/> (<http://item1/> ].");
-        Assert.ThrowsException<RDFModelException>(() =>RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() =>RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8600,7 +8600,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> <http://pred/> (\"lit\".");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8609,7 +8609,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}_:12345 <http://pred/> (\"lit\".");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8618,7 +8618,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] <http://pred/> (\"lit\".");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8627,7 +8627,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ <http://pred/> (\"lit\" ].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8636,7 +8636,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> <http://pred/> (\"lit\"@en-US.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8645,7 +8645,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}_:12345 <http://pred/> (\"lit\"@en-US.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8654,7 +8654,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] <http://pred/> (\"lit\"@en-US.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8663,7 +8663,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ <http://pred/> (\"lit\"@en-US ].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8672,7 +8672,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> <http://pred/> (\"25\"^^xsd:integer.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8681,7 +8681,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}_:12345 <http://pred/> (\"25\"^^xsd:integer.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8690,7 +8690,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] <http://pred/> (\"25\"^^xsd:integer.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8699,7 +8699,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ <http://pred/> (\"25\"^^xsd:integer ].");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8708,7 +8708,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write(@"_:12345 rdf:\(\(%");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8717,7 +8717,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write(@"_:12345 rdf:\(\(%P2");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8726,7 +8726,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write(@"_:12345 rdf:\(\(%2P");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8735,7 +8735,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write("_:12345 rdf:\\p");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8744,7 +8744,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write("_:12345 rdf:Alt .");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]
@@ -8753,7 +8753,7 @@ public class RDFTurtleTest
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.Write("_:12345 rdf:Alt 0.00E+P.");
-        Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
     [TestMethod]

@@ -64,7 +64,7 @@ public class RDFStoreUtilitiesTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnParsingQuadrupleBecauseNull()
-        => Assert.ThrowsException<RDFStoreException>(() => RDFStoreUtilities.ParseQuadruple(null));
+        => Assert.ThrowsExactly<RDFStoreException>(() => RDFStoreUtilities.ParseQuadruple(null));
 
     [TestMethod]
     public void ShouldNotSelectQuadruplesBecauseNullStore()

@@ -52,7 +52,7 @@ public class RDFLoadOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionWhenCreatingLoadOperationBecauseNullContext()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFLoadOperation(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFLoadOperation(null));
 
     [TestMethod]
     public void ShouldCreateLoadSilentOperation()
@@ -369,7 +369,7 @@ public class RDFLoadOperationTest
 
         RDFGraph graph = new RDFGraph();
         RDFLoadOperation operation = new RDFLoadOperation(new Uri(server.Url + "/RDFLoadOperationTest/ShouldThrowExceptionWhenApplyingNonSilentCrashingLoadOperation"));
-        Assert.ThrowsException<RDFModelException>(() => operation.ApplyToGraph(graph));
+        Assert.ThrowsExactly<RDFModelException>(() => operation.ApplyToGraph(graph));
     }
 
     [TestMethod]
@@ -576,7 +576,7 @@ public class RDFLoadOperationTest
 
         RDFLoadOperation operation = new RDFLoadOperation(new Uri("ex:ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"));
 
-        Assert.ThrowsException<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(250)));
+        Assert.ThrowsExactly<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(250)));
     }
 
     [TestMethod]
@@ -602,7 +602,7 @@ public class RDFLoadOperationTest
 
         RDFLoadOperation operation = new RDFLoadOperation(new Uri("ex:ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpoint"));
 
-        Assert.ThrowsException<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint));
+        Assert.ThrowsExactly<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint));
     }
 
     [TestMethod]

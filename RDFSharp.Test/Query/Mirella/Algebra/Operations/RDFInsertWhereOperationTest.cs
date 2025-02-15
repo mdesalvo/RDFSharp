@@ -93,7 +93,7 @@ public class RDFInsertWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingInsertTemplateBecauseNullTemplate()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFInsertWhereOperation().AddInsertTemplate(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFInsertWhereOperation().AddInsertTemplate(null));
 
     [TestMethod]
     public void ShouldAddPrefix()
@@ -126,7 +126,7 @@ public class RDFInsertWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingPrefixBecauseNullPrefix()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFInsertWhereOperation().AddPrefix(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFInsertWhereOperation().AddPrefix(null));
 
     [TestMethod]
     public void ShouldAddModifier()
@@ -154,7 +154,7 @@ public class RDFInsertWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingModifierBecauseNullModifier()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFInsertWhereOperation().AddModifier(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFInsertWhereOperation().AddModifier(null));
 
     [TestMethod]
     public void ShouldAddPatternGroup()
@@ -282,7 +282,7 @@ public class RDFInsertWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingPatternGroupBecauseNullPatternGroup()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFInsertWhereOperation().AddPatternGroup(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFInsertWhereOperation().AddPatternGroup(null));
 
     [TestMethod]
     public void ShouldAddSubQuery()
@@ -316,7 +316,7 @@ public class RDFInsertWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingSubQueryBecauseNullSubQuery()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFInsertWhereOperation().AddSubQuery(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFInsertWhereOperation().AddSubQuery(null));
 
     [TestMethod]
     public void ShouldPrintComplexOperation()
@@ -1163,7 +1163,7 @@ public class RDFInsertWhereOperationTest
         RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
         operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
 
-        Assert.ThrowsException<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(250)));
+        Assert.ThrowsExactly<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(250)));
     }
 
     [TestMethod]
@@ -1182,7 +1182,7 @@ public class RDFInsertWhereOperationTest
         RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
         operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
 
-        Assert.ThrowsException<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint));
+        Assert.ThrowsExactly<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint));
     }
 
     [TestMethod]

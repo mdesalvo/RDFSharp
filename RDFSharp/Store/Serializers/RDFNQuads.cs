@@ -299,13 +299,7 @@ namespace RDFSharp.Store
                         }
                         #endregion
 
-                        #region addquadruple
-
-                        result.AddQuadruple(O != null ? new RDFQuadruple(C, S, P, O) 
-                                                      : new RDFQuadruple(C, S, P, L));
-
-                        #endregion
-
+                        result.AddQuadruple(O != null ? new RDFQuadruple(C, S, P, O) : new RDFQuadruple(C, S, P, L));
                     }
                     return result;
                 }

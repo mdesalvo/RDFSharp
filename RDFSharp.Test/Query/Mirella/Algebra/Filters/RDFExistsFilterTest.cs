@@ -40,11 +40,11 @@ public class RDFExistsFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExistsFilterBecauseNullPattern()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFExistsFilter(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFExistsFilter(null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExistsFilterBecauseGroundPattern()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFExistsFilter(new RDFPattern(RDFVocabulary.RDF.ALT, RDFVocabulary.RDF.BAG, RDFVocabulary.RDF.SEQ)));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFExistsFilter(new RDFPattern(RDFVocabulary.RDF.ALT, RDFVocabulary.RDF.BAG, RDFVocabulary.RDF.SEQ)));
         
     [TestMethod]
     public void ShouldCreateExistsFilterAndKeepRowDisjointCase()

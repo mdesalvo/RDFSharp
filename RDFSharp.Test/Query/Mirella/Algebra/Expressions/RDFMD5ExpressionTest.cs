@@ -53,11 +53,11 @@ public class RDFMD5ExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMD5ExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFMD5Expression(null as RDFExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFMD5Expression(null as RDFExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMD5ExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFMD5Expression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFMD5Expression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNull()

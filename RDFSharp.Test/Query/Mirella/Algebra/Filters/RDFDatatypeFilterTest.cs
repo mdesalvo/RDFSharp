@@ -60,7 +60,7 @@ public class RDFDatatypeFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingDatatypeFilterBecauseNullVariable()
-        => Assert.ThrowsException<RDFQueryException>(() => new RDFDatatypeFilter(null, RDFModelEnums.RDFDatatypes.RDFS_LITERAL));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDatatypeFilter(null, RDFModelEnums.RDFDatatypes.RDFS_LITERAL));
 
     [TestMethod]
     public void ShouldCreateDatatypeFilterAndKeepRow()
