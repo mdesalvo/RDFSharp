@@ -53,11 +53,11 @@ public class RDFRoundExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingRoundExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFRoundExpression(null as RDFMathExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFRoundExpression(null as RDFMathExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingRoundExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFRoundExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFRoundExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResult()

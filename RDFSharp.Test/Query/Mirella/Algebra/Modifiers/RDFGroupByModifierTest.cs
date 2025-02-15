@@ -52,15 +52,15 @@ public class RDFGroupByModifierTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGroupByModifierBecauseNullVariables()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGroupByModifier(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGroupByModifier(null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGroupByModifierBecauseEmptyVariables()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGroupByModifier([]));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGroupByModifier([]));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGroupByModifierBecauseNullItemInVariables()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGroupByModifier([null]));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGroupByModifier([null]));
 
     [TestMethod]
     public void ShouldAddAggregator()

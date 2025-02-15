@@ -53,11 +53,11 @@ public class RDFGeoIsSimpleExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOIsSimpleExpressionWithEXPBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoIsSimpleExpression(null as RDFVariableExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoIsSimpleExpression(null as RDFVariableExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOIsSimpleExpressionWithVARBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoIsSimpleExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoIsSimpleExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEXPAndCalculateResult()

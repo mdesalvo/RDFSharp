@@ -53,11 +53,11 @@ public class RDFLowerCaseExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingLCaseExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFLowerCaseExpression(null as RDFExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFLowerCaseExpression(null as RDFExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingLCaseExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFLowerCaseExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFLowerCaseExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNull()

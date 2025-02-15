@@ -65,11 +65,11 @@ public class RDFVariableExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingVariableExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFVariableExpression(null as RDFMathExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFVariableExpression(null as RDFMathExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingVariableExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFVariableExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFVariableExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResult()

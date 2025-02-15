@@ -45,15 +45,15 @@ public class RDFContextTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingContextFromStringBecauseBlankNode()
-        => Assert.ThrowsExactly<RDFStoreException>(() => new RDFContext("bnode:12345"));
+        => Assert.ThrowsExactly<RDFStoreException>(() => _ = new RDFContext("bnode:12345"));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingContextFromStringBecauseInvalidUri()
-        => Assert.ThrowsExactly<RDFStoreException>(() => new RDFContext("test"));
+        => Assert.ThrowsExactly<RDFStoreException>(() => _ = new RDFContext("test"));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingContextFromStringBecauseNull()
-        => Assert.ThrowsExactly<RDFStoreException>(() => new RDFContext(null as string));
+        => Assert.ThrowsExactly<RDFStoreException>(() => _ = new RDFContext(null as string));
 
     [TestMethod]
     public void ShouldCreateContextFromUri()
@@ -66,14 +66,14 @@ public class RDFContextTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingContextFromUriBecauseBlankNode()
-        => Assert.ThrowsExactly<RDFStoreException>(() => new RDFContext(new Uri("bnode:12345")));
+        => Assert.ThrowsExactly<RDFStoreException>(() => _ = new RDFContext(new Uri("bnode:12345")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingContextFromUriBecauseInvalidUri()
-        => Assert.ThrowsExactly<RDFStoreException>(() => new RDFContext(new Uri("test", UriKind.Relative)));
+        => Assert.ThrowsExactly<RDFStoreException>(() => _ = new RDFContext(new Uri("test", UriKind.Relative)));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingContextFromUriBecauseNull()
-        => Assert.ThrowsExactly<RDFStoreException>(() => new RDFContext(null as Uri));
+        => Assert.ThrowsExactly<RDFStoreException>(() => _ = new RDFContext(null as Uri));
     #endregion
 }

@@ -54,19 +54,19 @@ public class RDFBooleanAndFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBooleanAndFilterBecauseNullLeft()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFBooleanAndFilter(null, new RDFIsUriFilter(new RDFVariable("?VAR"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanAndFilter(null, new RDFIsUriFilter(new RDFVariable("?VAR"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBooleanAndFilterBecauseExistsLeft()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFBooleanAndFilter(new RDFExistsFilter(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?OBJ"))), new RDFIsUriFilter(new RDFVariable("?VAR"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanAndFilter(new RDFExistsFilter(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?OBJ"))), new RDFIsUriFilter(new RDFVariable("?VAR"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBooleanAndFilterBecauseNullRight()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFBooleanAndFilter(new RDFIsUriFilter(new RDFVariable("?VAR")), null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanAndFilter(new RDFIsUriFilter(new RDFVariable("?VAR")), null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBooleanAndFilterBecauseExistsRight()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFBooleanAndFilter(new RDFIsUriFilter(new RDFVariable("?VAR")), new RDFExistsFilter(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?OBJ")))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanAndFilter(new RDFIsUriFilter(new RDFVariable("?VAR")), new RDFExistsFilter(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?OBJ")))));
 
     [TestMethod]
     public void ShouldCreateBooleanAndFilterAndKeepRow()

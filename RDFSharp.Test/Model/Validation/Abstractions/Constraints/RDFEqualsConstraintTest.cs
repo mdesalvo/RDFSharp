@@ -36,7 +36,7 @@ public class RDFEqualsConstraintTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingEqualsConstraint()
-        => Assert.ThrowsExactly<RDFModelException>(() => new RDFEqualsConstraint(null));
+        => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFEqualsConstraint(null));
 
     [TestMethod]
     public void ShouldExportEqualsConstraint()

@@ -53,11 +53,11 @@ public class RDFEncodeForURIExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingEncodeForURIExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFEncodeForURIExpression(null as RDFExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFEncodeForURIExpression(null as RDFExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingEncodeForURIExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFEncodeForURIExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFEncodeForURIExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNull()

@@ -53,11 +53,11 @@ public class RDFGeoConvexHullExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOConvexHullExpressionWithEXPBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoConvexHullExpression(null as RDFVariableExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoConvexHullExpression(null as RDFVariableExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOConvexHullExpressionWithVARBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoConvexHullExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoConvexHullExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEXPAndCalculateResultPoint()

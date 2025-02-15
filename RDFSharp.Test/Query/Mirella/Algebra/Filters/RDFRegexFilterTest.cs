@@ -59,11 +59,11 @@ public class RDFRegexFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingRegexFilterBecauseNullVariable()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFRegexFilter(null, new Regex("^hello$")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFRegexFilter(null, new Regex("^hello$")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingRegexFilterBecauseNullRegex()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFRegexFilter(new RDFVariable("?VAR"), null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFRegexFilter(new RDFVariable("?VAR"), null));
 
     [TestMethod]
     public void ShouldCreateRegexFilterAndKeepRow()

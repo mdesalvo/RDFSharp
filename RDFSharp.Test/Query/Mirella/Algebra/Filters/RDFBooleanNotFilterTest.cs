@@ -73,11 +73,11 @@ public class RDFBooleanNotFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBooleanNotFilterBecauseNullFilter()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFBooleanNotFilter(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanNotFilter(null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBooleanNotFilterBecauseExistsFilter()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFBooleanNotFilter(new RDFExistsFilter(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?OBJ")))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanNotFilter(new RDFExistsFilter(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?OBJ")))));
 
     [TestMethod]
     public void ShouldCreateBooleanNotFilterAndKeepRow()

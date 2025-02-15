@@ -55,10 +55,10 @@ public class RDFBindTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBindBecauseNullExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFBind(null, new RDFVariable("?BIND")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBind(null, new RDFVariable("?BIND")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBindBecauseNullVariable()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFBind(new RDFVariableExpression(new RDFVariable("?EXP")), null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBind(new RDFVariableExpression(new RDFVariable("?EXP")), null));
     #endregion
 }

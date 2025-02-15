@@ -52,7 +52,7 @@ public class RDFLoadOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionWhenCreatingLoadOperationBecauseNullContext()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFLoadOperation(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFLoadOperation(null));
 
     [TestMethod]
     public void ShouldCreateLoadSilentOperation()

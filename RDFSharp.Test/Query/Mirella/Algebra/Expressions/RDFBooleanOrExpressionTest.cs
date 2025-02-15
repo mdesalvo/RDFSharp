@@ -46,11 +46,11 @@ public class RDFBooleanOrExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBooleanOrExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFBooleanOrExpression(null, new RDFVariableExpression(new RDFVariable("?V"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanOrExpression(null, new RDFVariableExpression(new RDFVariable("?V"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBooleanOrExpressionBecauseNullRightArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFBooleanOrExpression(new RDFVariableExpression(new RDFVariable("?V")), null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanOrExpression(new RDFVariableExpression(new RDFVariable("?V")), null));
 
     [TestMethod]
     public void ShouldApplyExpressionAndCalculateResultTrueBoth()

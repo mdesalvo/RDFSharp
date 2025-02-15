@@ -53,11 +53,11 @@ public class RDFLangExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingLangExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFLangExpression(null as RDFExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFLangExpression(null as RDFExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingLangExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFLangExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFLangExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNull()

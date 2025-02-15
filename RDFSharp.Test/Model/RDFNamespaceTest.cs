@@ -51,37 +51,37 @@ public class RDFNamespaceTest
     [DataRow("", "http://example.org/")]
     [DataRow(null, "http://example.org/")]
     public void ShouldNotCreateNamespaceBecauseOfBlankPrefix(string prefix, string uri)
-        => Assert.ThrowsExactly<RDFModelException>(() => new RDFNamespace(prefix, uri));
+        => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFNamespace(prefix, uri));
 
     [DataTestMethod]
     [DataRow("ex%", "http://example.org/")]
     public void ShouldNotCreateNamespaceBecauseOfInvalidPrefix(string prefix, string uri)
-        => Assert.ThrowsExactly<RDFModelException>(() => new RDFNamespace(prefix, uri));
+        => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFNamespace(prefix, uri));
 
     [DataTestMethod]
     [DataRow("bnode", "http://example.org/")]
     [DataRow("xmlns", "http://example.org/")]
     public void ShouldNotCreateNamespaceBecauseOfReservedPrefix(string prefix, string uri)
-        => Assert.ThrowsExactly<RDFModelException>(() => new RDFNamespace(prefix, uri));
+        => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFNamespace(prefix, uri));
 
     [DataTestMethod]
     [DataRow("ex", " ")]
     [DataRow("ex", "")]
     [DataRow("ex", null)]
     public void ShouldNotCreateNamespaceBecauseOfBlankUri(string prefix, string uri)
-        => Assert.ThrowsExactly<RDFModelException>(() => new RDFNamespace(prefix, uri));
+        => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFNamespace(prefix, uri));
 
     [DataTestMethod]
     [DataRow("ex", "http:/example.org/")]
     [DataRow("ex", "hello")]
     public void ShouldNotCreateNamespaceBecauseOfInvalidUri(string prefix, string uri)
-        => Assert.ThrowsExactly<RDFModelException>(() => new RDFNamespace(prefix, uri));
+        => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFNamespace(prefix, uri));
 
     [DataTestMethod]
     [DataRow("ex", "bnode:/example.org/")]
     [DataRow("ex", "xmlns:/example.org/")]
     public void ShouldNotCreateNamespaceBecauseOfReservedUri(string prefix, string uri)
-        => Assert.ThrowsExactly<RDFModelException>(() => new RDFNamespace(prefix, uri));
+        => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFNamespace(prefix, uri));
 
     [DataTestMethod]
     [DataRow("ex", "http://example.org/", "http://example.org/deref#")]

@@ -93,7 +93,7 @@ public class RDFDeleteWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingDeleteTemplateBecauseNullTemplate()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDeleteWhereOperation().AddDeleteTemplate(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDeleteWhereOperation().AddDeleteTemplate(null));
 
     [TestMethod]
     public void ShouldAddPrefix()
@@ -126,7 +126,7 @@ public class RDFDeleteWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingPrefixBecauseNullPrefix()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDeleteWhereOperation().AddPrefix(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDeleteWhereOperation().AddPrefix(null));
 
     [TestMethod]
     public void ShouldAddModifier()
@@ -154,7 +154,7 @@ public class RDFDeleteWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingModifierBecauseNullModifier()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDeleteWhereOperation().AddModifier(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDeleteWhereOperation().AddModifier(null));
 
     [TestMethod]
     public void ShouldAddPatternGroup()
@@ -187,7 +187,7 @@ public class RDFDeleteWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingPatternGroupBecauseNullPatternGroup()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDeleteWhereOperation().AddPatternGroup(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDeleteWhereOperation().AddPatternGroup(null));
 
     [TestMethod]
     public void ShouldAddSubQuery()
@@ -221,7 +221,7 @@ public class RDFDeleteWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingSubQueryBecauseNullSubQuery()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDeleteWhereOperation().AddSubQuery(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDeleteWhereOperation().AddSubQuery(null));
 
     [TestMethod]
     public void ShouldApplyToNullGraph()

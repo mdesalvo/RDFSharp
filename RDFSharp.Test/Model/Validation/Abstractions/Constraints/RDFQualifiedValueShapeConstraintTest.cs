@@ -55,7 +55,7 @@ public class RDFQualifiedValueShapeConstraintTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingQualifiedValueShapeConstraint()
-        => Assert.ThrowsExactly<RDFModelException>(() => new RDFQualifiedValueShapeConstraint(null, 0, 0));
+        => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFQualifiedValueShapeConstraint(null, 0, 0));
 
     [TestMethod]
     public void ShouldExportQualifiedValueShapeConstraint()

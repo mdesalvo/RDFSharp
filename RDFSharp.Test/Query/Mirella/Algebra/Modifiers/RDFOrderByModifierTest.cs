@@ -60,7 +60,7 @@ public class RDFOrderByModifierTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingOrderByModifierBecauseNullVariable()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFOrderByModifier(null, RDFQueryEnums.RDFOrderByFlavors.ASC));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFOrderByModifier(null, RDFQueryEnums.RDFOrderByFlavors.ASC));
 
     [TestMethod]
     public void ShouldApplyOrderByModifierAscending()

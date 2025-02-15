@@ -53,11 +53,11 @@ public class RDFCeilExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingCeilExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFCeilExpression(null as RDFMathExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFCeilExpression(null as RDFMathExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingCeilExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFCeilExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFCeilExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResult()

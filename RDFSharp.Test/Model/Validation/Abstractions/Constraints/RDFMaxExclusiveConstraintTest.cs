@@ -36,7 +36,7 @@ public class RDFMaxExclusiveConstraintTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMaxExclusiveResourceConstraint()
-        => Assert.ThrowsExactly<RDFModelException>(() => new RDFMaxExclusiveConstraint(null as RDFResource));
+        => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFMaxExclusiveConstraint(null as RDFResource));
 
     [TestMethod]
     public void ShouldExportMaxExclusiveResourceConstraint()
@@ -62,7 +62,7 @@ public class RDFMaxExclusiveConstraintTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMaxExclusiveLiteralConstraint()
-        => Assert.ThrowsExactly<RDFModelException>(() => new RDFMaxExclusiveConstraint(null as RDFLiteral));
+        => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFMaxExclusiveConstraint(null as RDFLiteral));
         
     [TestMethod]
     public void ShouldExportMaxExclusiveLiteralConstraint()

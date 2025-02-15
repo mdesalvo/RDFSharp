@@ -37,7 +37,7 @@ public class RDFPatternConstraintTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPatternConstraint()
-        => Assert.ThrowsExactly<RDFModelException>(() => new RDFPatternConstraint(null));
+        => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFPatternConstraint(null));
 
     [TestMethod]
     public void ShouldExportPatternConstraint()

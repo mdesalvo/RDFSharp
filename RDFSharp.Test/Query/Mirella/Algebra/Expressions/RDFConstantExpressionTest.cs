@@ -78,11 +78,11 @@ public class RDFConstantExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingConstantExpressionWithResourceBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFConstantExpression(null as RDFResource));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFConstantExpression(null as RDFResource));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingConstantExpressionWithLiteralBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFConstantExpression(null as RDFLiteral));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFConstantExpression(null as RDFLiteral));
 
     [TestMethod]
     public void ShouldApplyExpressionWithResourceAndCalculateResult()

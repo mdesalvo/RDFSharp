@@ -43,11 +43,11 @@ public class RDFCountAggregatorTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingCountAggregatorBecauseNullAggregatorVariable()
-        =>  Assert.ThrowsExactly<RDFQueryException>(() => new RDFCountAggregator(null, new RDFVariable("?PROJVAR")));
+        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFCountAggregator(null, new RDFVariable("?PROJVAR")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingCountAggregatorBecauseNullPartitionVariable()
-        =>  Assert.ThrowsExactly<RDFQueryException>(() => new RDFCountAggregator(new RDFVariable("?AGGVAR"), null));
+        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFCountAggregator(new RDFVariable("?AGGVAR"), null));
 
     [TestMethod]
     public void ShouldCreateDistinctCountAggregator()

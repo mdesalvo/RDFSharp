@@ -43,7 +43,7 @@ public class RDFLimitModifierTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingLimitModifierBecauseNegativeValue()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFLimitModifier(-1));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFLimitModifier(-1));
 
     [TestMethod]
     public void ShouldApplyLimitModifier()

@@ -37,7 +37,7 @@ public class RDFNodeConstraintTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingNodeConstraint()
-        => Assert.ThrowsExactly<RDFModelException>(() => new RDFNodeConstraint(null));
+        => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFNodeConstraint(null));
 
     [TestMethod]
     public void ShouldExportNodeConstraint()

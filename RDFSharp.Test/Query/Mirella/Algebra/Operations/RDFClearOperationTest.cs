@@ -51,7 +51,7 @@ public class RDFClearOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionWhenCreatingClearNamedOperationBecauseNullContext()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFClearOperation(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFClearOperation(null));
 
     [TestMethod]
     public void ShouldCreateClearSilentNamedOperation()

@@ -46,28 +46,28 @@ public class RDFPropertyPathTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullStart()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPropertyPath(null, new RDFVariable("?END")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPropertyPath(null, new RDFVariable("?END")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyPathBecauseUnsupportedStart()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPropertyPath(new RDFPlainLiteral("start"), new RDFVariable("?END")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPropertyPath(new RDFPlainLiteral("start"), new RDFVariable("?END")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullEnd()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPropertyPath(new RDFVariable("?START"), null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPropertyPath(new RDFVariable("?START"), null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyPathBecauseUnsupportedEnd()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPropertyPath(new RDFVariable("?START"), new RDFPlainLiteral("end")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPropertyPath(new RDFVariable("?START"), new RDFPlainLiteral("end")));
         
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullSequenceStep()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
             .AddSequenceStep(null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullPropertyPathStepInSequenceStep()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
             .AddSequenceStep(new RDFPropertyPathStep(null)));
 
     [TestMethod]
@@ -436,17 +436,17 @@ public class RDFPropertyPathTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullAlternativeStep()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
             .AddAlternativeSteps(null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyPathBecauseEmptyAlternativeStep()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
             .AddAlternativeSteps([]));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullPropertyPathStepInAlternativeSteps()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
             .AddAlternativeSteps([null]));
         
     [TestMethod]

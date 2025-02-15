@@ -53,11 +53,11 @@ public class RDFFloorExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingFloorExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFFloorExpression(null as RDFMathExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFloorExpression(null as RDFMathExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingFloorExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFFloorExpression(null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFloorExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResult()

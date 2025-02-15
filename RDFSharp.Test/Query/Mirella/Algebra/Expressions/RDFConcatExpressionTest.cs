@@ -112,19 +112,19 @@ public class RDFConcatExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingEEConcatExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFConcatExpression(null as RDFExpression, new RDFVariableExpression(new RDFVariable("?V"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFConcatExpression(null as RDFExpression, new RDFVariableExpression(new RDFVariable("?V"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingEVConcatExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFConcatExpression(null as RDFExpression, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFConcatExpression(null as RDFExpression, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingVEConcatExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFConcatExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFConcatExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingVVConcatExpressionNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFConcatExpression(null as RDFVariable, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFConcatExpression(null as RDFVariable, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResult()

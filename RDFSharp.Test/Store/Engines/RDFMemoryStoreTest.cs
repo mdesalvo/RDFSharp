@@ -1253,11 +1253,11 @@ public class RDFMemoryStoreTest
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromNullOrEmptyFilepathAsync()
-        => await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.NQuads, null));
+        => await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.NQuads, null));
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromUnexistingFilepathAsync()
-        => await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.NQuads, "blablabla"));
+        => await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.NQuads, "blablabla"));
 
     [DataTestMethod]
     [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
@@ -1391,7 +1391,7 @@ public class RDFMemoryStoreTest
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromNullStreamAsync()
-        => await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromStreamAsync(RDFStoreEnums.RDFFormats.NQuads, null));
+        => await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromStreamAsync(RDFStoreEnums.RDFFormats.NQuads, null));
 
     [TestMethod]
     public void ShouldImportFromDataTable()
@@ -1716,7 +1716,7 @@ public class RDFMemoryStoreTest
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromNullDataTableAsync()
-        => await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(null));
+        => await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(null));
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromDataTableNotHavingMandatoryColumnsAsync()
@@ -1725,7 +1725,7 @@ public class RDFMemoryStoreTest
         table.Columns.Add("?SUBJECT", typeof(string));
         table.Columns.Add("?PREDICATE", typeof(string));
 
-        await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -1737,7 +1737,7 @@ public class RDFMemoryStoreTest
         table.Columns.Add("?PREDICATE", typeof(string));
         table.Columns.Add("?OBJECTTTTT", typeof(string));
 
-        await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -1801,7 +1801,7 @@ public class RDFMemoryStoreTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("hello@en", "http://subj/", "http://pred/", "http://obj/");
 
-        await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -1814,7 +1814,7 @@ public class RDFMemoryStoreTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://ctx/", null, "http://pred/", "http://obj/");
 
-        await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -1827,7 +1827,7 @@ public class RDFMemoryStoreTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://ctx/", "", "http://pred/", "http://obj/");
 
-        await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -1840,7 +1840,7 @@ public class RDFMemoryStoreTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://ctx/", "hello@en", "http://pred/", "http://obj/");
 
-        await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -1853,7 +1853,7 @@ public class RDFMemoryStoreTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://ctx/", "http://subj/", null, "http://obj/");
 
-        await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -1866,7 +1866,7 @@ public class RDFMemoryStoreTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://ctx/", "http://subj/", "", "http://obj/");
 
-        await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -1879,7 +1879,7 @@ public class RDFMemoryStoreTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://ctx/", "http://subj/", "bnode:12345", "http://obj/");
 
-        await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -1892,7 +1892,7 @@ public class RDFMemoryStoreTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://ctx/", "http://subj/", "hello@en", "http://obj/");
 
-        await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -1905,7 +1905,7 @@ public class RDFMemoryStoreTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://ctx/", "http://subj/", "http://pred/", null);
 
-        await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -1936,15 +1936,15 @@ public class RDFMemoryStoreTest
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromNullUriAsync()
-        => await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromUriAsync(null));
+        => await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromUriAsync(null));
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromRelativeUriAsync()
-        => await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromUriAsync(new Uri("/file/system", UriKind.Relative)));
+        => await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromUriAsync(new Uri("/file/system", UriKind.Relative)));
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromUnreacheableUriAsync()
-        => await Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromUriAsync(new Uri("http://rdfsharp.test/")));
+        => await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromUriAsync(new Uri("http://rdfsharp.test/")));
     #endregion
 
     #region Tests (Async)

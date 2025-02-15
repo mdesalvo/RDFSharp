@@ -43,7 +43,7 @@ public class RDFOffsetModifierTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingOffsetModifierBecauseNegativeValue()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFOffsetModifier(-1));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFOffsetModifier(-1));
 
     [TestMethod]
     public void ShouldApplyOffsetModifier()

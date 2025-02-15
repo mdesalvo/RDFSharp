@@ -40,7 +40,7 @@ public class RDFIsNumericFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingIsNumericFilterBecauseNullVariable()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFIsNumericFilter(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFIsNumericFilter(null));
 
     [TestMethod]
     public void ShouldCreateIsNumericFilterAndKeepRow()

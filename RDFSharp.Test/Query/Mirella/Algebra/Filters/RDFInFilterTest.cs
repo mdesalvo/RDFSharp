@@ -43,7 +43,7 @@ public class RDFInFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingInFilterBecauseNullSearchTerm()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFInFilter(null, []));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFInFilter(null, []));
 
     [TestMethod]
     public void ShouldCreateInFilterAndKeepRow1()

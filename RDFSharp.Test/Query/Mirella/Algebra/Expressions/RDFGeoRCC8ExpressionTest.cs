@@ -147,59 +147,59 @@ public class RDFGeoRCC8ExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEORCC8ExpressionWithEEBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoRCC8Expression(null as RDFVariableExpression, new RDFVariableExpression(new RDFVariable("?V")), RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoRCC8Expression(null as RDFVariableExpression, new RDFVariableExpression(new RDFVariable("?V")), RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEORCC8ExpressionWithEEBecauseNullRightArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoRCC8Expression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariableExpression, RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoRCC8Expression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariableExpression, RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEORCC8ExpressionWithEVBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoRCC8Expression(null as RDFVariableExpression, new RDFVariable("?V"), RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoRCC8Expression(null as RDFVariableExpression, new RDFVariable("?V"), RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEORCC8ExpressionWithEVBecauseNullRightArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoRCC8Expression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable, RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoRCC8Expression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable, RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEORCC8ExpressionWithETBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoRCC8Expression(null as RDFVariableExpression, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT), RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoRCC8Expression(null as RDFVariableExpression, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT), RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEORCC8ExpressionWithETBecauseNullRightArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoRCC8Expression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFTypedLiteral, RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoRCC8Expression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFTypedLiteral, RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEORCC8ExpressionWithETBecauseNotGeographicRightArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoRCC8Expression(new RDFVariableExpression(new RDFVariable("?V")), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING), RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoRCC8Expression(new RDFVariableExpression(new RDFVariable("?V")), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING), RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEORCC8ExpressionWithVEBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoRCC8Expression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V")), RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoRCC8Expression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V")), RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEORCC8ExpressionWithVEBecauseNullRightArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoRCC8Expression(new RDFVariable("?V"), null as RDFVariableExpression, RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoRCC8Expression(new RDFVariable("?V"), null as RDFVariableExpression, RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEORCC8ExpressionWithVVBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoRCC8Expression(null as RDFVariable, new RDFVariable("?V"), RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoRCC8Expression(null as RDFVariable, new RDFVariable("?V"), RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEORCC8ExpressionWithVVBecauseNullRightArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoRCC8Expression(new RDFVariable("?V"), null as RDFVariable, RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoRCC8Expression(new RDFVariable("?V"), null as RDFVariable, RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEORCC8ExpressionWithVTBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoRCC8Expression(null as RDFVariable, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT), RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoRCC8Expression(null as RDFVariable, new RDFTypedLiteral("POINT (1 1)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT), RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEORCC8ExpressionWithVTBecauseNullRightArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoRCC8Expression(new RDFVariable("?V"), null as RDFTypedLiteral, RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoRCC8Expression(new RDFVariable("?V"), null as RDFTypedLiteral, RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEORCC8ExpressionWithVTBecauseNotGeographicRightArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoRCC8Expression(new RDFVariable("?V"), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING), RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoRCC8Expression(new RDFVariable("?V"), new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING), RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResult()

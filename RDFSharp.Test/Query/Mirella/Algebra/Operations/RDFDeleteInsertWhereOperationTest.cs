@@ -99,11 +99,11 @@ public class RDFDeleteInsertWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingDeleteTemplateBecauseNullTemplate()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDeleteInsertWhereOperation().AddDeleteTemplate(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDeleteInsertWhereOperation().AddDeleteTemplate(null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingInsertTemplateBecauseNullTemplate()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDeleteInsertWhereOperation().AddInsertTemplate(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDeleteInsertWhereOperation().AddInsertTemplate(null));
 
     [TestMethod]
     public void ShouldAddPrefix()
@@ -138,7 +138,7 @@ public class RDFDeleteInsertWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingPrefixBecauseNullPrefix()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDeleteInsertWhereOperation().AddPrefix(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDeleteInsertWhereOperation().AddPrefix(null));
 
     [TestMethod]
     public void ShouldAddModifier()
@@ -168,7 +168,7 @@ public class RDFDeleteInsertWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingModifierBecauseNullModifier()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDeleteInsertWhereOperation().AddModifier(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDeleteInsertWhereOperation().AddModifier(null));
 
     [TestMethod]
     public void ShouldAddPatternGroup()
@@ -237,7 +237,7 @@ public class RDFDeleteInsertWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingPatternGroupBecauseNullPatternGroup()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDeleteInsertWhereOperation().AddPatternGroup(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDeleteInsertWhereOperation().AddPatternGroup(null));
 
     [TestMethod]
     public void ShouldAddSubQuery()
@@ -273,7 +273,7 @@ public class RDFDeleteInsertWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingSubQueryBecauseNullSubQuery()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDeleteInsertWhereOperation().AddSubQuery(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDeleteInsertWhereOperation().AddSubQuery(null));
 
     [TestMethod]
     public void ShouldApplyToNullGraph()

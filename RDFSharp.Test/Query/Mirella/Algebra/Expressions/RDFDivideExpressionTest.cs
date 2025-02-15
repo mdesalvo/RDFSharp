@@ -111,51 +111,51 @@ public class RDFDivideExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingDivideExpressionWithEEBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDivideExpression(null as RDFMathExpression, new RDFDivideExpression(new RDFVariable("?V1"), new RDFVariable("?V2"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDivideExpression(null as RDFMathExpression, new RDFDivideExpression(new RDFVariable("?V1"), new RDFVariable("?V2"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingDivideExpressionWithEVBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDivideExpression(null as RDFMathExpression, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDivideExpression(null as RDFMathExpression, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingDivideExpressionWithETBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDivideExpression(null as RDFMathExpression, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDivideExpression(null as RDFMathExpression, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingDivideExpressionWithVEBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDivideExpression(null as RDFVariable, new RDFDivideExpression(new RDFVariable("?V1"), new RDFVariable("?V2"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDivideExpression(null as RDFVariable, new RDFDivideExpression(new RDFVariable("?V1"), new RDFVariable("?V2"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingDivideExpressionWithVVBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDivideExpression(null as RDFVariable, new RDFVariable("?V")));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDivideExpression(null as RDFVariable, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingDivideExpressionWithVTBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDivideExpression(null as RDFVariable, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDivideExpression(null as RDFVariable, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingDivideExpressionWithEEBecauseNullRightArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDivideExpression(new RDFDivideExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFMathExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDivideExpression(new RDFDivideExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFMathExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingDivideExpressionWithEVBecauseNullRightArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDivideExpression(new RDFDivideExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDivideExpression(new RDFDivideExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFVariable));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingDivideExpressionWithETBecauseNullRightArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDivideExpression(new RDFDivideExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFTypedLiteral));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDivideExpression(new RDFDivideExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), null as RDFTypedLiteral));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingDivideExpressionWithVEBecauseNullRightArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDivideExpression(new RDFVariable("?V2"), null as RDFMathExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDivideExpression(new RDFVariable("?V2"), null as RDFMathExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingDivideExpressionWithVVBecauseNullRightArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDivideExpression(new RDFVariable("?V"), null as RDFVariable));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDivideExpression(new RDFVariable("?V"), null as RDFVariable));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingDivideExpressionWithVTBecauseNullRightArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFDivideExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDivideExpression(new RDFVariable("?V"), null as RDFTypedLiteral));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResult()

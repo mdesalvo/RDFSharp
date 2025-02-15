@@ -40,7 +40,7 @@ public class RDFIsLiteralFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingIsLiteralFilterBecauseNullVariable()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFIsLiteralFilter(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFIsLiteralFilter(null));
 
     [TestMethod]
     public void ShouldCreateIsLiteralFilterAndKeepRow()

@@ -34,7 +34,7 @@ public class RDFTargetClassTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingTargetClassBecauseNullValue()
-        => Assert.ThrowsExactly<RDFModelException>(() => new RDFTargetClass(null));
+        => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTargetClass(null));
 
     [TestMethod]
     public void ShouldExportTargetClass()

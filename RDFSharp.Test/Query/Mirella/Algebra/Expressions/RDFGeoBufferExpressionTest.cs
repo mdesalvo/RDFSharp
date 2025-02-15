@@ -53,11 +53,11 @@ public class RDFGeoBufferExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOBufferExpressionWithEXPBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoBufferExpression(null as RDFVariableExpression, 150));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoBufferExpression(null as RDFVariableExpression, 150));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGEOBufferExpressionWithVARBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFGeoBufferExpression(null as RDFVariable, 150));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoBufferExpression(null as RDFVariable, 150));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEXPAndCalculateResultPoint()

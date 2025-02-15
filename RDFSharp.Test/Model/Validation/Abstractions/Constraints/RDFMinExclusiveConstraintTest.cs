@@ -36,7 +36,7 @@ public class RDFMinExclusiveConstraintTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMinExclusiveResourceConstraint()
-        => Assert.ThrowsExactly<RDFModelException>(() => new RDFMinExclusiveConstraint(null as RDFResource));
+        => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFMinExclusiveConstraint(null as RDFResource));
 
     [TestMethod]
     public void ShouldExportMinExclusiveResourceConstraint()
@@ -62,7 +62,7 @@ public class RDFMinExclusiveConstraintTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMinExclusiveLiteralConstraint()
-        => Assert.ThrowsExactly<RDFModelException>(() => new RDFMinExclusiveConstraint(null as RDFLiteral));
+        => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFMinExclusiveConstraint(null as RDFLiteral));
         
     [TestMethod]
     public void ShouldExportMinExclusiveLiteralConstraint()

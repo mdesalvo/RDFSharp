@@ -92,7 +92,7 @@ public class RDFQuadrupleTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingQuadrupleFromTripleBecauseOfNullTriple()
-        => Assert.ThrowsExactly<RDFStoreException>(() => new RDFQuadruple(new RDFContext("ex:ctx"), null));
+        => Assert.ThrowsExactly<RDFStoreException>(() => _ = new RDFQuadruple(new RDFContext("ex:ctx"), null));
 
     [DataTestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]
@@ -187,22 +187,22 @@ public class RDFQuadrupleTest
     [DataTestMethod]
     [DataRow("http://example.org/subj", "bnode:hdh744", "http://example.org/obj")]
     public void ShouldThrowExceptionOnCreatingSPOQuadrupleBecauseOfBlankPredicate(string s, string p, string o)
-        => Assert.ThrowsExactly<RDFStoreException>(() => new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource(s), new RDFResource(p), new RDFResource(o)));
+        => Assert.ThrowsExactly<RDFStoreException>(() => _ = new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource(s), new RDFResource(p), new RDFResource(o)));
 
     [DataTestMethod]
     [DataRow("http://example.org/subj", "http://example.org/obj")]
     public void ShouldThrowExceptionOnCreatingSPOQuadrupleBecauseOfNullPredicate(string s, string o)
-        => Assert.ThrowsExactly<RDFStoreException>(() => new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource(s), null, new RDFResource(o)));
+        => Assert.ThrowsExactly<RDFStoreException>(() => _ = new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource(s), null, new RDFResource(o)));
 
     [DataTestMethod]
     [DataRow("http://example.org/subj", "bnode:hdh744", "test")]
     public void ShouldThrowExceptionOnCreatingSPLQuadrupleBecauseOfBlankPredicate(string s, string p, string l)
-        => Assert.ThrowsExactly<RDFStoreException>(() => new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource(s), new RDFResource(p), new RDFPlainLiteral(l)));
+        => Assert.ThrowsExactly<RDFStoreException>(() => _ = new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource(s), new RDFResource(p), new RDFPlainLiteral(l)));
 
     [DataTestMethod]
     [DataRow("http://example.org/subj", "test")]
     public void ShouldThrowExceptionOnCreatingSPLQuadrupleBecauseOfNullPredicate(string s, string l)
-        => Assert.ThrowsExactly<RDFStoreException>(() => new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource(s), null, new RDFPlainLiteral(l)));
+        => Assert.ThrowsExactly<RDFStoreException>(() => _ = new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource(s), null, new RDFPlainLiteral(l)));
 
     [DataTestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]

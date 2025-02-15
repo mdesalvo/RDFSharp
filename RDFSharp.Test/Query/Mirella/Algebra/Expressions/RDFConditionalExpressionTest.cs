@@ -44,14 +44,14 @@ public class RDFConditionalExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingConditionalExpressionWithExpressionBecauseNullConditionArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFConditionalExpression(
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFConditionalExpression(
             null,
             new RDFVariableExpression(new RDFVariable("?V1")),
             new RDFVariableExpression(new RDFVariable("?V2"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingConditionalExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFConditionalExpression(
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFConditionalExpression(
             new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan,
                 new RDFVariableExpression(new RDFVariable("?V1")),
                 new RDFConstantExpression(new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_BYTE))),
@@ -60,7 +60,7 @@ public class RDFConditionalExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingConditionalExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFConditionalExpression(
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFConditionalExpression(
             new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan,
                 new RDFVariableExpression(new RDFVariable("?V1")),
                 new RDFConstantExpression(new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_BYTE))),

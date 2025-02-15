@@ -93,7 +93,7 @@ public class RDFInsertWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingInsertTemplateBecauseNullTemplate()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFInsertWhereOperation().AddInsertTemplate(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFInsertWhereOperation().AddInsertTemplate(null));
 
     [TestMethod]
     public void ShouldAddPrefix()
@@ -126,7 +126,7 @@ public class RDFInsertWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingPrefixBecauseNullPrefix()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFInsertWhereOperation().AddPrefix(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFInsertWhereOperation().AddPrefix(null));
 
     [TestMethod]
     public void ShouldAddModifier()
@@ -154,7 +154,7 @@ public class RDFInsertWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingModifierBecauseNullModifier()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFInsertWhereOperation().AddModifier(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFInsertWhereOperation().AddModifier(null));
 
     [TestMethod]
     public void ShouldAddPatternGroup()
@@ -282,7 +282,7 @@ public class RDFInsertWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingPatternGroupBecauseNullPatternGroup()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFInsertWhereOperation().AddPatternGroup(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFInsertWhereOperation().AddPatternGroup(null));
 
     [TestMethod]
     public void ShouldAddSubQuery()
@@ -316,7 +316,7 @@ public class RDFInsertWhereOperationTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnAddingSubQueryBecauseNullSubQuery()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFInsertWhereOperation().AddSubQuery(null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFInsertWhereOperation().AddSubQuery(null));
 
     [TestMethod]
     public void ShouldPrintComplexOperation()
