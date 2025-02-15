@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using System.Collections;
 using System.Data;
 using System.Threading.Tasks;
 using RDFSharp.Model;

@@ -3091,7 +3091,7 @@ public class RDFGraphTest
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnExportingToNullOrEmptyFilepathAsync()
-        => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await new RDFGraph().ToFileAsync(RDFModelEnums.RDFFormats.NTriples, null));
+        => await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await new RDFGraph().ToFileAsync(RDFModelEnums.RDFFormats.NTriples, null));
 
     [DataTestMethod]
     [DataRow(RDFModelEnums.RDFFormats.NTriples)]
@@ -3112,7 +3112,7 @@ public class RDFGraphTest
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnExportingToNullStreamAsync()
-        => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await new RDFGraph().ToStreamAsync(RDFModelEnums.RDFFormats.NTriples, null));
+        => await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await new RDFGraph().ToStreamAsync(RDFModelEnums.RDFFormats.NTriples, null));
 
     [TestMethod]
     public async Task ShouldExportToDataTableAsync()
@@ -3239,11 +3239,11 @@ public class RDFGraphTest
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromNullOrEmptyFilepathAsync()
-        => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.NTriples, null));
+        => await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.NTriples, null));
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromUnexistingFilepathAsync()
-        => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.NTriples, "blablabla"));
+        => await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.NTriples, "blablabla"));
 
     [DataTestMethod]
     [DataRow(RDFModelEnums.RDFFormats.NTriples)]
@@ -3335,7 +3335,7 @@ public class RDFGraphTest
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromNullStreamAsync()
-        => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromStreamAsync(RDFModelEnums.RDFFormats.NTriples, null));
+        => await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromStreamAsync(RDFModelEnums.RDFFormats.NTriples, null));
 
     [TestMethod]
     public async Task ShouldImportFromDataTableAsync()
@@ -3386,7 +3386,7 @@ public class RDFGraphTest
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromNullDataTableAsync()
-        => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(null));
+        => await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(null));
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromDataTableNotHaving3ColumnsAsync()
@@ -3395,7 +3395,7 @@ public class RDFGraphTest
         table.Columns.Add("?SUBJECT", typeof(string));
         table.Columns.Add("?PREDICATE", typeof(string));
 
-        await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -3406,7 +3406,7 @@ public class RDFGraphTest
         table.Columns.Add("?PREDICATE", typeof(string));
         table.Columns.Add("?OBJECTTTTT", typeof(string));
 
-        await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -3418,7 +3418,7 @@ public class RDFGraphTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add(null, "http://pred/", "http://obj/");
 
-        await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -3430,7 +3430,7 @@ public class RDFGraphTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("", "http://pred/", "http://obj/");
 
-        await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -3442,7 +3442,7 @@ public class RDFGraphTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("hello@en", "http://pred/", "http://obj/");
 
-        await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -3454,7 +3454,7 @@ public class RDFGraphTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://subj/", null, "http://obj/");
 
-        await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -3466,7 +3466,7 @@ public class RDFGraphTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://subj/", "", "http://obj/");
 
-        await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -3478,7 +3478,7 @@ public class RDFGraphTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://subj/", "bnode:12345", "http://obj/");
 
-        await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -3490,7 +3490,7 @@ public class RDFGraphTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://subj/", "hello@en", "http://obj/");
 
-        await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -3502,7 +3502,7 @@ public class RDFGraphTest
         table.Columns.Add("?OBJECT", typeof(string));
         table.Rows.Add("http://subj/", "http://pred/", null);
 
-        await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
+        await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromDataTableAsync(table));
     }
 
     [TestMethod]
@@ -3530,14 +3530,14 @@ public class RDFGraphTest
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromNullUriAsync()
-        => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromUriAsync(null));
+        => await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromUriAsync(null));
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromRelativeUriAsync()
-        => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromUriAsync(new Uri("/file/system", UriKind.Relative)));
+        => await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromUriAsync(new Uri("/file/system", UriKind.Relative)));
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromUnreacheableUriAsync()
-        => await Assert.ThrowsExceptionAsync<RDFModelException>(async () => await RDFGraph.FromUriAsync(new Uri("http://rdfsharp.test/")));
+        => await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromUriAsync(new Uri("http://rdfsharp.test/")));
     #endregion
 }

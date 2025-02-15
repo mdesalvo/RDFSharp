@@ -9580,42 +9580,42 @@ public class RDFQueryPrinterTest
 
   [TestMethod]
   public void ShouldPrintPatternMemberVariable()
-    => Assert.IsTrue(string.Equals("?S", RDFQueryPrinter.PrintPatternMember(new RDFVariable("?S"), null)));
+    => Assert.IsTrue(string.Equals("?S", RDFQueryPrinter.PrintPatternMember(new RDFVariable("?S"), null), StringComparison.Ordinal));
 
   [TestMethod]
   public void ShouldPrintPatternMemberResourceBlank()
-    => Assert.IsTrue(string.Equals("_:12345", RDFQueryPrinter.PrintPatternMember(new RDFResource("bnode:12345"), null)));
+    => Assert.IsTrue(string.Equals("_:12345", RDFQueryPrinter.PrintPatternMember(new RDFResource("bnode:12345"), null), StringComparison.Ordinal));
 
   [TestMethod]
   public void ShouldPrintPatternMemberResourceNotBlankUnresolved()
-    => Assert.IsTrue(string.Equals("<http://example.org/test>", RDFQueryPrinter.PrintPatternMember(new RDFResource("http://example.org/test"), null)));
+    => Assert.IsTrue(string.Equals("<http://example.org/test>", RDFQueryPrinter.PrintPatternMember(new RDFResource("http://example.org/test"), null), StringComparison.Ordinal));
 
   [TestMethod]
   public void ShouldPrintPatternMemberResourceNotBlankResolved()
-    => Assert.IsTrue(string.Equals("ex:test", RDFQueryPrinter.PrintPatternMember(new RDFResource("http://example.org/test"), [new RDFNamespace("ex", "http://example.org/")])));
+    => Assert.IsTrue(string.Equals("ex:test", RDFQueryPrinter.PrintPatternMember(new RDFResource("http://example.org/test"), [new RDFNamespace("ex", "http://example.org/")]), StringComparison.Ordinal));
 
   [TestMethod]
   public void ShouldPrintPatternMemberContextUnresolved()
-    => Assert.IsTrue(string.Equals("<http://example.org/test>", RDFQueryPrinter.PrintPatternMember(new RDFContext(new Uri("http://example.org/test")), null)));
+    => Assert.IsTrue(string.Equals("<http://example.org/test>", RDFQueryPrinter.PrintPatternMember(new RDFContext(new Uri("http://example.org/test")), null), StringComparison.Ordinal));
 
   [TestMethod]
   public void ShouldPrintPatternMemberContextResolved()
-    => Assert.IsTrue(string.Equals("ex:test", RDFQueryPrinter.PrintPatternMember(new RDFContext(new Uri("http://example.org/test")), [new RDFNamespace("ex", "http://example.org/")])));
+    => Assert.IsTrue(string.Equals("ex:test", RDFQueryPrinter.PrintPatternMember(new RDFContext(new Uri("http://example.org/test")), [new RDFNamespace("ex", "http://example.org/")]), StringComparison.Ordinal));
 
   [TestMethod]
   public void ShouldPrintPatternMemberPlainLiteral()
-    => Assert.IsTrue(string.Equals("\"hello\"", RDFQueryPrinter.PrintPatternMember(new RDFPlainLiteral("hello"), null)));
+    => Assert.IsTrue(string.Equals("\"hello\"", RDFQueryPrinter.PrintPatternMember(new RDFPlainLiteral("hello"), null), StringComparison.Ordinal));
 
   [TestMethod]
   public void ShouldPrintPatternMemberPlainLiteralWithLanguage()
-    => Assert.IsTrue(string.Equals("\"hello\"@EN-US", RDFQueryPrinter.PrintPatternMember(new RDFPlainLiteral("hello", "en-US"), null)));
+    => Assert.IsTrue(string.Equals("\"hello\"@EN-US", RDFQueryPrinter.PrintPatternMember(new RDFPlainLiteral("hello", "en-US"), null), StringComparison.Ordinal));
 
   [TestMethod]
   public void ShouldPrintPatternMemberTypedLiteralUnresolved()
-    => Assert.IsTrue(string.Equals("\"hello\"^^<http://www.w3.org/2001/XMLSchema#string>", RDFQueryPrinter.PrintPatternMember(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING), null)));
+    => Assert.IsTrue(string.Equals("\"hello\"^^<http://www.w3.org/2001/XMLSchema#string>", RDFQueryPrinter.PrintPatternMember(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING), null), StringComparison.Ordinal));
 
   [TestMethod]
   public void ShouldPrintPatternMemberTypedLiteralResolved()
-    => Assert.IsTrue(string.Equals("\"hello\"^^xsd:string", RDFQueryPrinter.PrintPatternMember(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING), [RDFNamespaceRegister.GetByPrefix("xsd")])));
+    => Assert.IsTrue(string.Equals("\"hello\"^^xsd:string", RDFQueryPrinter.PrintPatternMember(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING), [RDFNamespaceRegister.GetByPrefix("xsd")]), StringComparison.Ordinal));
   #endregion
 }
