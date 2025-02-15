@@ -707,7 +707,7 @@ public class RDFSelectQueryTest
             .RespondWith(
                 Response.Create()
                     .WithHeader("Content-Type", "application/sparql-results+xml")
-                    .WithCallback(req => new WireMock.ResponseMessage
+                    .WithCallback(_ => new WireMock.ResponseMessage
                     {
                         BodyData = new BodyData
                         {
@@ -766,7 +766,7 @@ public class RDFSelectQueryTest
             .RespondWith(
                 Response.Create()
                     .WithHeader("Content-Type", "application/sparql-results+xml")
-                    .WithCallback(req => new WireMock.ResponseMessage
+                    .WithCallback(_ => new WireMock.ResponseMessage
                     {
                         BodyData = new BodyData
                         {
@@ -827,7 +827,7 @@ public class RDFSelectQueryTest
             .RespondWith(
                 Response.Create()
                     .WithHeader("Content-Type", "application/sparql-results+xml")
-                    .WithCallback(req => new WireMock.ResponseMessage
+                    .WithCallback(_ => new WireMock.ResponseMessage
                     {
                         BodyData = new BodyData
                         {
@@ -885,7 +885,7 @@ public class RDFSelectQueryTest
             .RespondWith(
                 Response.Create()
                     .WithHeader("Content-Type", "application/sparql-results+xml")
-                    .WithCallback(req => new WireMock.ResponseMessage
+                    .WithCallback(_ => new WireMock.ResponseMessage
                     {
                         BodyData = new BodyData
                         {

@@ -56,12 +56,11 @@ namespace RDFSharp.Query
             RDFGraph result = new RDFGraph();
             
             //Iterate the datatable rows and generate the corresponding triples to be added to the result graph
-            IEnumerator resultRows = ConstructResults.Rows.GetEnumerator();
-            while (resultRows.MoveNext())
+            foreach (DataRow resultRow in ConstructResults.Rows)
             {
-                RDFPatternMember subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?SUBJECT"].ToString());
-                RDFPatternMember pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?PREDICATE"].ToString());
-                RDFPatternMember obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?OBJECT"].ToString());
+                RDFPatternMember subj = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?SUBJECT"].ToString());
+                RDFPatternMember pred = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?PREDICATE"].ToString());
+                RDFPatternMember obj = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?OBJECT"].ToString());
                 if (obj is RDFResource objRes)
                     result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, objRes));
                 else

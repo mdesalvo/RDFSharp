@@ -172,22 +172,21 @@ namespace RDFSharp.Query
             if (Aggregators.Any(ag => ag.HavingClause.Item1))
             {
                 DataTable filteredTable = resultTable.Clone();
-                IEnumerator rowsEnum = resultTable.Rows.GetEnumerator();
                 List<RDFComparisonFilter> havingFilters = Aggregators.Where(ag => ag.HavingClause.Item1)
                                                                      .Select(ag => new RDFComparisonFilter(ag.HavingClause.Item2, ag.ProjectionVariable, ag.HavingClause.Item3))
                                                                      .ToList();
                 #region ExecuteFilters
-                while (rowsEnum.MoveNext())
+                foreach (DataRow resultRow in resultTable.Rows)
                 {
                     bool keepRow = true;
                     IEnumerator<RDFComparisonFilter> filtersEnum = havingFilters.GetEnumerator();
                     while (keepRow && filtersEnum.MoveNext())
-                        keepRow = filtersEnum.Current.ApplyFilter((DataRow)rowsEnum.Current, false);
+                        keepRow = filtersEnum.Current.ApplyFilter(resultRow, false);
 
                     if (keepRow)
                     {
                         DataRow newRow = filteredTable.NewRow();
-                        newRow.ItemArray = ((DataRow)rowsEnum.Current).ItemArray;
+                        newRow.ItemArray = resultRow.ItemArray;
                         filteredTable.Rows.Add(newRow);
                     }
                 }

@@ -502,14 +502,13 @@ namespace RDFSharp.Model
             RDFSelectQueryResult R = Q.ApplyToGraph(this);
 
             //Iterate results
-            IEnumerator reifiedTriples = R.SelectResults.Rows.GetEnumerator();
-            while (reifiedTriples.MoveNext())
+            foreach (DataRow reifiedTriple in R.SelectResults.Rows)
             {
                 //Get reification data (T, S, P, O)
-                RDFPatternMember tRepresent = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedTriples.Current)["?T"].ToString());
-                RDFPatternMember tSubject = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedTriples.Current)["?S"].ToString());
-                RDFPatternMember tPredicate = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedTriples.Current)["?P"].ToString());
-                RDFPatternMember tObject = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedTriples.Current)["?O"].ToString());
+                RDFPatternMember tRepresent = RDFQueryUtilities.ParseRDFPatternMember(reifiedTriple["?T"].ToString());
+                RDFPatternMember tSubject = RDFQueryUtilities.ParseRDFPatternMember(reifiedTriple["?S"].ToString());
+                RDFPatternMember tPredicate = RDFQueryUtilities.ParseRDFPatternMember(reifiedTriple["?P"].ToString());
+                RDFPatternMember tObject = RDFQueryUtilities.ParseRDFPatternMember(reifiedTriple["?O"].ToString());
 
                 //Cleanup graph from detected reifications
                 RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));

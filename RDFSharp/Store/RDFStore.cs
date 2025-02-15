@@ -345,15 +345,14 @@ namespace RDFSharp.Store
             RDFSelectQueryResult R = Q.ApplyToStore(this);
 
             //Iterate results
-            IEnumerator reifiedQuadruples = R.SelectResults.Rows.GetEnumerator();
-            while (reifiedQuadruples.MoveNext())
+            foreach (DataRow dataRow in R.SelectResults.Rows)
             {
                 //Get reification data (T, C, S, P, O)
-                RDFPatternMember tRepresent = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)?["?T"].ToString());
-                RDFPatternMember tContext = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)?["?C"].ToString());
-                RDFPatternMember tSubject = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)?["?S"].ToString());
-                RDFPatternMember tPredicate = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)?["?P"].ToString());
-                RDFPatternMember tObject = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)?["?O"].ToString());
+                RDFPatternMember tRepresent = RDFQueryUtilities.ParseRDFPatternMember(dataRow["?T"].ToString());
+                RDFPatternMember tContext = RDFQueryUtilities.ParseRDFPatternMember(dataRow["?C"].ToString());
+                RDFPatternMember tSubject = RDFQueryUtilities.ParseRDFPatternMember(dataRow["?S"].ToString());
+                RDFPatternMember tPredicate = RDFQueryUtilities.ParseRDFPatternMember(dataRow["?P"].ToString());
+                RDFPatternMember tObject = RDFQueryUtilities.ParseRDFPatternMember(dataRow["?O"].ToString());
 
                 //Cleanup store from detected reifications
                 if (tObject is RDFResource objRes)

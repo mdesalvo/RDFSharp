@@ -695,19 +695,17 @@ namespace RDFSharp.Model
             XmlAttributeCollection xmlns = rdfRDF.Attributes;
             if (xmlns != null && xmlns.Count > 0)
             {
-                IEnumerator iEnum = xmlns.GetEnumerator();
-                while (iEnum != null && iEnum.MoveNext())
+                foreach (XmlAttribute xmlnsNamespace in xmlns)
                 {
-                    XmlAttribute attr = (XmlAttribute)iEnum.Current;
-                    if (!string.Equals(attr.LocalName, "xmlns", StringComparison.OrdinalIgnoreCase)
-                          && !string.Equals(attr.Name, "xml:lang", StringComparison.OrdinalIgnoreCase)
-                          && !string.Equals(attr.Name, "xml:base", StringComparison.OrdinalIgnoreCase))
+                    if (!string.Equals(xmlnsNamespace.LocalName, "xmlns", StringComparison.OrdinalIgnoreCase)
+                         && !string.Equals(xmlnsNamespace.Name, "xml:lang", StringComparison.OrdinalIgnoreCase)
+                         && !string.Equals(xmlnsNamespace.Name, "xml:base", StringComparison.OrdinalIgnoreCase))
                     {
                         //Try to resolve the current namespace against the namespace register;
                         //if not resolved, create new namespace with scope limited to actual node
-                        RDFNamespace ns = RDFNamespaceRegister.GetByPrefix(attr.LocalName) 
-                                           ?? RDFNamespaceRegister.GetByUri(attr.Value) 
-                                           ?? new RDFNamespace(attr.LocalName, attr.Value);
+                        RDFNamespace ns = RDFNamespaceRegister.GetByPrefix(xmlnsNamespace.LocalName) 
+                                           ?? RDFNamespaceRegister.GetByUri(xmlnsNamespace.Value) 
+                                           ?? new RDFNamespace(xmlnsNamespace.LocalName, xmlnsNamespace.Value);
 
                         nsMgr.AddNamespace(ns.NamespacePrefix, ns.NamespaceUri.ToString());
                     }
@@ -1072,8 +1070,8 @@ namespace RDFSharp.Model
             //Iterate on the container items
             if (container.HasChildNodes)
             {
-                IEnumerator elems = container.ChildNodes.GetEnumerator();
                 List<string> elemVals = new List<string>();
+                IEnumerator elems = container.ChildNodes.GetEnumerator();
                 while (elems != null && elems.MoveNext())
                 {
                     XmlNode elem = (XmlNode)elems.Current;

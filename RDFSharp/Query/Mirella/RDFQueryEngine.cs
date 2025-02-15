@@ -418,22 +418,21 @@ namespace RDFSharp.Query
             if (evaluablePatternGroupMembers.Count > 0 && filters.Count > 0)
             {
                 DataTable filteredTable = QueryMemberResultTables[patternGroup.QueryMemberID].Clone();
-                IEnumerator rowsEnum = QueryMemberResultTables[patternGroup.QueryMemberID].Rows.GetEnumerator();
-
+                
                 //Iterate the rows of the pattern group's result table
-                while (rowsEnum.MoveNext())
+                foreach (DataRow currentRow in QueryMemberResultTables[patternGroup.QueryMemberID].Rows)
                 {
                     //Apply the pattern group's filters on the row
                     bool keepRow = true;
                     List<RDFFilter>.Enumerator filtersEnum = filters.GetEnumerator();
                     while (keepRow && filtersEnum.MoveNext())
-                        keepRow = filtersEnum.Current.ApplyFilter((DataRow)rowsEnum.Current, false);
+                        keepRow = filtersEnum.Current.ApplyFilter(currentRow, false);
 
                     //If the row has passed all the filters, keep it in the filtered result table
                     if (keepRow)
                     {
                         DataRow newRow = filteredTable.NewRow();
-                        newRow.ItemArray = ((DataRow)rowsEnum.Current).ItemArray;
+                        newRow.ItemArray = currentRow.ItemArray;
                         filteredTable.Rows.Add(newRow);
                     }
                 }
@@ -517,7 +516,7 @@ namespace RDFSharp.Query
             //Iterate on the templates
             string defaultContext = RDFNamespaceRegister.DefaultNamespace.ToString();
             foreach (RDFPattern template in templates.Where(tp => tp.Variables.Count == 0
-                                                                             || tp.Variables.TrueForAll(v => resultTable.Columns.Contains(v.ToString()))))
+                                                                   || tp.Variables.TrueForAll(v => resultTable.Columns.Contains(v.ToString()))))
             {
                 string templateCtx = template.Context?.ToString();
                 string templateSubj = template.Subject.ToString();
@@ -538,8 +537,7 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region NON-GROUND TEMPLATE
-                IEnumerator rowsEnum = resultTable.Rows.GetEnumerator();
-                while (rowsEnum.MoveNext())
+                foreach (DataRow resultRow in resultTable.Rows)
                 {
                     #region CONTEXT
                     if (needsContext)
@@ -549,10 +547,10 @@ namespace RDFSharp.Query
                         {
                             //Check if the template must be skipped, in order to not produce illegal triples
                             //Row contains an unbound value in position of the variable corresponding to the template context
-                            if (((DataRow)rowsEnum.Current).IsNull(templateCtx))
+                            if (resultRow.IsNull(templateCtx))
                                 continue;
 
-                            RDFPatternMember ctx = ParseRDFPatternMember(((DataRow)rowsEnum.Current)[templateCtx].ToString());
+                            RDFPatternMember ctx = ParseRDFPatternMember(resultRow[templateCtx].ToString());
                             //Row contains a literal in position of the variable corresponding to the template context
                             if (ctx is RDFLiteral)
                                 continue;
@@ -571,10 +569,10 @@ namespace RDFSharp.Query
                     {
                         //Check if the template must be skipped, in order to not produce illegal triples
                         //Row contains an unbound value in position of the variable corresponding to the template subject
-                        if (((DataRow)rowsEnum.Current).IsNull(templateSubj))
+                        if (resultRow.IsNull(templateSubj))
                             continue;
 
-                        RDFPatternMember subj = ParseRDFPatternMember(((DataRow)rowsEnum.Current)[templateSubj].ToString());
+                        RDFPatternMember subj = ParseRDFPatternMember(resultRow[templateSubj].ToString());
                         //Row contains a literal in position of the variable corresponding to the template subject
                         if (subj is RDFLiteral)
                             continue;
@@ -592,10 +590,10 @@ namespace RDFSharp.Query
                     {
                         //Check if the template must be skipped, in order to not produce illegal triples
                         //Row contains an unbound value in position of the variable corresponding to the template predicate
-                        if (((DataRow)rowsEnum.Current).IsNull(templatePred))
+                        if (resultRow.IsNull(templatePred))
                             continue;
 
-                        RDFPatternMember pred = ParseRDFPatternMember(((DataRow)rowsEnum.Current)[templatePred].ToString());
+                        RDFPatternMember pred = ParseRDFPatternMember(resultRow[templatePred].ToString());
                         //Row contains a blank resource or a literal in position of the variable corresponding to the template predicate
                         if ((pred is RDFResource predRes && predRes.IsBlank) || pred is RDFLiteral)
                             continue;
@@ -613,10 +611,10 @@ namespace RDFSharp.Query
                     {
                         //Check if the template must be skipped, in order to not produce illegal triples
                         //Row contains an unbound value in position of the variable corresponding to the template object
-                        if (((DataRow)rowsEnum.Current).IsNull(templateObj))
+                        if (resultRow.IsNull(templateObj))
                             continue;
 
-                        RDFPatternMember obj = ParseRDFPatternMember(((DataRow)rowsEnum.Current)[templateObj].ToString());
+                        RDFPatternMember obj = ParseRDFPatternMember(resultRow[templateObj].ToString());
                         //Row contains a resource or a literal in position of the variable corresponding to the template object
                         bindings["?OBJECT"] = obj.ToString();
                     }
@@ -789,15 +787,14 @@ namespace RDFSharp.Query
                 return result;
 
             //Iterate the results table's rows to retrieve terms to be described
-            IEnumerator rowsEnum = resultTable.Rows.GetEnumerator();
-            while (rowsEnum.MoveNext())
+            foreach (DataRow resultRow in resultTable.Rows)
             {
                 //In order to be processed this variable must bind a value!
-                if (((DataRow)rowsEnum.Current).IsNull(describeVariableName))
+                if (resultRow.IsNull(describeVariableName))
                     continue;
 
                 //Retrieve the value of the variable
-                RDFPatternMember describeVariableValue = ParseRDFPatternMember(((DataRow)rowsEnum.Current)[describeVariableName].ToString());
+                RDFPatternMember describeVariableValue = ParseRDFPatternMember(resultRow[describeVariableName].ToString());
 
                 //Execute most appropriate strategy, depending on the type of the variable value
                 switch (describeVariableValue)

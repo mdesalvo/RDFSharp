@@ -81,12 +81,11 @@ namespace RDFSharp.Query
 
                     #region sparqlHead
                     XmlNode sparqlHeadElement = sparqlDoc.CreateNode(XmlNodeType.Element, "head", null);
-                    IEnumerator resultColumns = SelectResults.Columns.GetEnumerator();
-                    while (resultColumns.MoveNext())
+                    foreach (DataColumn resultColumn in SelectResults.Columns)
                     {
                         XmlNode variableElement = sparqlDoc.CreateNode(XmlNodeType.Element, "variable", null);
                         XmlAttribute varElName = sparqlDoc.CreateAttribute("name");
-                        XmlText varElNameText = sparqlDoc.CreateTextNode(resultColumns.Current.ToString());
+                        XmlText varElNameText = sparqlDoc.CreateTextNode(resultColumn.ToString());
                         varElName.AppendChild(varElNameText);
                         variableElement.Attributes.Append(varElName);
                         sparqlHeadElement.AppendChild(variableElement);
@@ -96,23 +95,22 @@ namespace RDFSharp.Query
 
                     #region sparqlResults
                     XmlNode sparqlResultsElement = sparqlDoc.CreateNode(XmlNodeType.Element, "results", null);
-                    IEnumerator resultRows = SelectResults.Rows.GetEnumerator();
-                    while (resultRows.MoveNext())
+                    foreach (DataRow resultRow in SelectResults.Rows)
                     {
-                        resultColumns.Reset();
                         XmlNode resultElement = sparqlDoc.CreateNode(XmlNodeType.Element, "result", null);
-                        while (resultColumns.MoveNext())
+                        foreach (DataColumn resultColumn in SelectResults.Columns)
                         {
-                            if (!((DataRow)resultRows.Current).IsNull(resultColumns.Current.ToString()))
+                            string resultColumnString = resultColumn.ToString();
+                            if (!resultRow.IsNull(resultColumnString))
                             {
                                 XmlNode bindingElement = sparqlDoc.CreateNode(XmlNodeType.Element, "binding", null);
                                 XmlAttribute bindElName = sparqlDoc.CreateAttribute("name");
-                                XmlText bindElNameText = sparqlDoc.CreateTextNode(resultColumns.Current.ToString());
+                                XmlText bindElNameText = sparqlDoc.CreateTextNode(resultColumnString);
                                 bindElName.AppendChild(bindElNameText);
                                 bindingElement.Attributes.Append(bindElName);
 
                                 #region RDFTerm
-                                RDFPatternMember rdfTerm = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)[resultColumns.Current.ToString()].ToString());
+                                RDFPatternMember rdfTerm = RDFQueryUtilities.ParseRDFPatternMember(resultRow[resultColumnString].ToString());
                                 switch (rdfTerm)
                                 {
                                     case RDFResource _ when rdfTerm.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase):
