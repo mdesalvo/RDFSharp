@@ -34,17 +34,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// dc
             /// </summary>
-            public const string PREFIX = "dc";
+            public static readonly string PREFIX = "dc";
 
             /// <summary>
             /// http://purl.org/dc/elements/1.1/
             /// </summary>
-            public const string BASE_URI = "http://purl.org/dc/elements/1.1/";
+            public static readonly string BASE_URI = "http://purl.org/dc/elements/1.1/";
 
             /// <summary>
             /// https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_elements.rdf
             /// </summary>
-            public const string DEREFERENCE_URI = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_elements.rdf";
+            public static readonly string DEREFERENCE_URI = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_elements.rdf";
 
             /// <summary>
             /// dc:contributor
@@ -134,17 +134,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// dcam
                 /// </summary>
-                public const string PREFIX = "dcam";
+                public static readonly string PREFIX = "dcam";
 
                 /// <summary>
                 /// http://purl.org/dc/dcam/
                 /// </summary>
-                public const string BASE_URI = "http://purl.org/dc/dcam/";
+                public static readonly string BASE_URI = "http://purl.org/dc/dcam/";
 
                 /// <summary>
                 /// https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_abstract_model.rdf
                 /// </summary>
-                public const string DEREFERENCE_URI = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_abstract_model.rdf";
+                public static readonly string DEREFERENCE_URI = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_abstract_model.rdf";
 
                 /// <summary>
                 /// dcam:memberOf
@@ -169,17 +169,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// dcterms
                 /// </summary>
-                public const string PREFIX = "dcterms";
+                public static readonly string PREFIX = "dcterms";
 
                 /// <summary>
                 /// http://purl.org/dc/terms/
                 /// </summary>
-                public const string BASE_URI = "http://purl.org/dc/terms/";
+                public static readonly string BASE_URI = "http://purl.org/dc/terms/";
 
                 /// <summary>
                 /// https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_terms.rdf
                 /// </summary>
-                public const string DEREFERENCE_URI = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_terms.rdf";
+                public static readonly string DEREFERENCE_URI = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_terms.rdf";
 
                 /// <summary>
                 /// dcterms:abstract
@@ -689,17 +689,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// dctype
                 /// </summary>
-                public const string PREFIX = "dctype";
+                public static readonly string PREFIX = "dctype";
 
                 /// <summary>
                 /// http://purl.org/dc/dcmitype/
                 /// </summary>
-                public const string BASE_URI = "http://purl.org/dc/dcmitype/";
+                public static readonly string BASE_URI = "http://purl.org/dc/dcmitype/";
 
                 /// <summary>
                 /// https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_type.rdf
                 /// </summary>
-                public const string DEREFERENCE_URI = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_type.rdf";
+                public static readonly string DEREFERENCE_URI = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_type.rdf";
 
                 /// <summary>
                 /// dctype:Collection
@@ -778,17 +778,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// foaf
             /// </summary>
-            public const string PREFIX = "foaf";
+            public static readonly string PREFIX = "foaf";
 
             /// <summary>
             /// http://xmlns.com/foaf/0.1/
             /// </summary>
-            public const string BASE_URI = "http://xmlns.com/foaf/0.1/";
+            public static readonly string BASE_URI = "http://xmlns.com/foaf/0.1/";
 
             /// <summary>
             /// http://xmlns.com/foaf/0.1/
             /// </summary>
-            public const string DEREFERENCE_URI = "http://xmlns.com/foaf/0.1/";
+            public static readonly string DEREFERENCE_URI = "http://xmlns.com/foaf/0.1/";
 
             /// <summary>
             /// foaf:Agent
@@ -1158,17 +1158,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// geo
             /// </summary>
-            public const string PREFIX = "geo";
+            public static readonly string PREFIX = "geo";
 
             /// <summary>
             /// http://www.w3.org/2003/01/geo/wgs84_pos#
             /// </summary>
-            public const string BASE_URI = "http://www.w3.org/2003/01/geo/wgs84_pos#";
+            public static readonly string BASE_URI = "http://www.w3.org/2003/01/geo/wgs84_pos#";
 
             /// <summary>
             /// http://www.w3.org/2003/01/geo/wgs84_pos#
             /// </summary>
-            public const string DEREFERENCE_URI = "http://www.w3.org/2003/01/geo/wgs84_pos#";
+            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2003/01/geo/wgs84_pos#";
 
             /// <summary>
             /// geo:lat
@@ -1218,17 +1218,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// geosparql
             /// </summary>
-            public const string PREFIX = "geosparql";
+            public static readonly string PREFIX = "geosparql";
 
             /// <summary>
             /// http://www.opengis.net/ont/geosparql#
             /// </summary>
-            public const string BASE_URI = "http://www.opengis.net/ont/geosparql#";
+            public static readonly string BASE_URI = "http://www.opengis.net/ont/geosparql#";
 
             /// <summary>
             /// http://www.opengis.net/ont/geosparql#
             /// </summary>
-            public const string DEREFERENCE_URI = "http://www.opengis.net/ont/geosparql#";
+            public static readonly string DEREFERENCE_URI = "http://www.opengis.net/ont/geosparql#";
 
             /// <summary>
             /// geosparql:wktLiteral
@@ -1435,17 +1435,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// sf
                 /// </summary>
-                public const string PREFIX = "sf";
+                public static readonly string PREFIX = "sf";
 
                 /// <summary>
                 /// http://www.opengis.net/ont/sf#
                 /// </summary>
-                public const string BASE_URI = "http://www.opengis.net/ont/sf#";
+                public static readonly string BASE_URI = "http://www.opengis.net/ont/sf#";
 
                 /// <summary>
                 /// http://www.opengis.net/ont/sf#
                 /// </summary>
-                public const string DEREFERENCE_URI = "http://www.opengis.net/ont/sf#";
+                public static readonly string DEREFERENCE_URI = "http://www.opengis.net/ont/sf#";
 
                 /// <summary>
                 /// sf:Point
@@ -1536,17 +1536,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// geof
                 /// </summary>
-                public const string PREFIX = "geof";
+                public static readonly string PREFIX = "geof";
 
                 /// <summary>
                 /// http://www.opengis.net/def/function/geosparql/
                 /// </summary>
-                public const string BASE_URI = "http://www.opengis.net/def/function/geosparql/";
+                public static readonly string BASE_URI = "http://www.opengis.net/def/function/geosparql/";
 
                 /// <summary>
                 /// http://www.opengis.net/def/function/geosparql/
                 /// </summary>
-                public const string DEREFERENCE_URI = "http://www.opengis.net/def/function/geosparql/";
+                public static readonly string DEREFERENCE_URI = "http://www.opengis.net/def/function/geosparql/";
 
                 /// <summary>
                 /// geof:boundary
@@ -1737,17 +1737,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// owl
             /// </summary>
-            public const string PREFIX = "owl";
+            public static readonly string PREFIX = "owl";
 
             /// <summary>
             /// http://www.w3.org/2002/07/owl#
             /// </summary>
-            public const string BASE_URI = "http://www.w3.org/2002/07/owl#";
+            public static readonly string BASE_URI = "http://www.w3.org/2002/07/owl#";
 
             /// <summary>
             /// http://www.w3.org/2002/07/owl#
             /// </summary>
-            public const string DEREFERENCE_URI = "http://www.w3.org/2002/07/owl#";
+            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2002/07/owl#";
 
             /// <summary>
             /// owl:Ontology
@@ -2152,17 +2152,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// rdfsharp
             /// </summary>
-            public const string PREFIX = "rdfsharp";
+            public static readonly string PREFIX = "rdfsharp";
 
             /// <summary>
             /// https://rdfsharp.codeplex.com/
             /// </summary>
-            public const string BASE_URI = "https://rdfsharp.codeplex.com/";
+            public static readonly string BASE_URI = "https://rdfsharp.codeplex.com/";
 
             /// <summary>
             /// https://rdfsharp.codeplex.com/
             /// </summary>
-            public const string DEREFERENCE_URI = "https://rdfsharp.codeplex.com/";
+            public static readonly string DEREFERENCE_URI = "https://rdfsharp.codeplex.com/";
             #endregion
         }
         #endregion
@@ -2177,17 +2177,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// rdf
             /// </summary>
-            public const string PREFIX = "rdf";
+            public static readonly string PREFIX = "rdf";
 
             /// <summary>
             /// http://www.w3.org/1999/02/22-rdf-syntax-ns#
             /// </summary>
-            public const string BASE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+            public static readonly string BASE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
             /// <summary>
             /// http://www.w3.org/1999/02/22-rdf-syntax-ns#
             /// </summary>
-            public const string DEREFERENCE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+            public static readonly string DEREFERENCE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
             /// <summary>
             /// rdf:Bag
@@ -2327,17 +2327,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// rdfs
             /// </summary>
-            public const string PREFIX = "rdfs";
+            public static readonly string PREFIX = "rdfs";
 
             /// <summary>
             /// http://www.w3.org/2000/01/rdf-schema#
             /// </summary>
-            public const string BASE_URI = "http://www.w3.org/2000/01/rdf-schema#";
+            public static readonly string BASE_URI = "http://www.w3.org/2000/01/rdf-schema#";
 
             /// <summary>
             /// http://www.w3.org/2000/01/rdf-schema#
             /// </summary>
-            public const string DEREFERENCE_URI = "http://www.w3.org/2000/01/rdf-schema#";
+            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2000/01/rdf-schema#";
 
             /// <summary>
             /// rdfs:Resource
@@ -2427,17 +2427,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// sh
             /// </summary>
-            public const string PREFIX = "sh";
+            public static readonly string PREFIX = "sh";
 
             /// <summary>
             /// http://www.w3.org/ns/shacl#
             /// </summary>
-            public const string BASE_URI = "http://www.w3.org/ns/shacl#";
+            public static readonly string BASE_URI = "http://www.w3.org/ns/shacl#";
 
             /// <summary>
             /// http://www.w3.org/ns/shacl#
             /// </summary>
-            public const string DEREFERENCE_URI = "http://www.w3.org/ns/shacl#";
+            public static readonly string DEREFERENCE_URI = "http://www.w3.org/ns/shacl#";
 
             /// <summary>
             /// sh:Shape
@@ -3337,17 +3337,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// skos
             /// </summary>
-            public const string PREFIX = "skos";
+            public static readonly string PREFIX = "skos";
 
             /// <summary>
             /// http://www.w3.org/2004/02/skos/core#
             /// </summary>
-            public const string BASE_URI = "http://www.w3.org/2004/02/skos/core#";
+            public static readonly string BASE_URI = "http://www.w3.org/2004/02/skos/core#";
 
             /// <summary>
             /// http://www.w3.org/2004/02/skos/core#
             /// </summary>
-            public const string DEREFERENCE_URI = "http://www.w3.org/2004/02/skos/core#";
+            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2004/02/skos/core#";
 
             /// <summary>
             /// skos:Concept
@@ -3525,17 +3525,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// skosxl
                 /// </summary>
-                public const string PREFIX = "skosxl";
+                public static readonly string PREFIX = "skosxl";
 
                 /// <summary>
                 /// http://www.w3.org/2008/05/skos-xl#
                 /// </summary>
-                public const string BASE_URI = "http://www.w3.org/2008/05/skos-xl#";
+                public static readonly string BASE_URI = "http://www.w3.org/2008/05/skos-xl#";
 
                 /// <summary>
                 /// http://www.w3.org/2008/05/skos-xl#
                 /// </summary>
-                public const string DEREFERENCE_URI = "http://www.w3.org/2008/05/skos-xl#";
+                public static readonly string DEREFERENCE_URI = "http://www.w3.org/2008/05/skos-xl#";
 
                 /// <summary>
                 /// skosxl:Label
@@ -3582,17 +3582,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// swrl
             /// </summary>
-            public const string PREFIX = "swrl";
+            public static readonly string PREFIX = "swrl";
 
             /// <summary>
             /// http://www.w3.org/2003/11/swrl#
             /// </summary>
-            public const string BASE_URI = "http://www.w3.org/2003/11/swrl#";
+            public static readonly string BASE_URI = "http://www.w3.org/2003/11/swrl#";
 
             /// <summary>
             /// http://www.w3.org/2003/11/swrl#
             /// </summary>
-            public const string DEREFERENCE_URI = "http://www.w3.org/2003/11/swrl#";
+            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2003/11/swrl#";
 
             /// <summary>
             /// swrl:Imp
@@ -3710,17 +3710,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// swrlb
                 /// </summary>
-                public const string PREFIX = "swrlb";
+                public static readonly string PREFIX = "swrlb";
 
                 /// <summary>
                 /// http://www.w3.org/2003/11/swrlb#
                 /// </summary>
-                public const string BASE_URI = "http://www.w3.org/2003/11/swrlb#";
+                public static readonly string BASE_URI = "http://www.w3.org/2003/11/swrlb#";
 
                 /// <summary>
                 /// http://www.w3.org/2003/11/swrlb#
                 /// </summary>
-                public const string DEREFERENCE_URI = "http://www.w3.org/2003/11/swrlb#";
+                public static readonly string DEREFERENCE_URI = "http://www.w3.org/2003/11/swrlb#";
                 #endregion
             }
             #endregion
@@ -3737,17 +3737,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// time
             /// </summary>
-            public const string PREFIX = "time";
+            public static readonly string PREFIX = "time";
 
             /// <summary>
             /// http://www.w3.org/2006/time#
             /// </summary>
-            public const string BASE_URI = "http://www.w3.org/2006/time#";
+            public static readonly string BASE_URI = "http://www.w3.org/2006/time#";
 
             /// <summary>
             /// http://www.w3.org/2006/time#
             /// </summary>
-            public const string DEREFERENCE_URI = "http://www.w3.org/2006/time#";
+            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2006/time#";
 
             /// <summary>
             /// time:DateTimeDescription
@@ -4259,17 +4259,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// greg
                 /// </summary>
-                public const string PREFIX = "greg";
+                public static readonly string PREFIX = "greg";
 
                 /// <summary>
                 /// http://www.w3.org/ns/time/gregorian#
                 /// </summary>
-                public const string BASE_URI = "http://www.w3.org/ns/time/gregorian#";
+                public static readonly string BASE_URI = "http://www.w3.org/ns/time/gregorian#";
 
                 /// <summary>
                 /// http://www.w3.org/2006/time#
                 /// </summary>
-                public const string DEREFERENCE_URI = "http://www.w3.org/ns/time/gregorian#";
+                public static readonly string DEREFERENCE_URI = "http://www.w3.org/ns/time/gregorian#";
 
                 /// <summary>
                 /// greg:January
@@ -4340,17 +4340,17 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// thors
                 /// </summary>
-                public const string PREFIX = "thors";
+                public static readonly string PREFIX = "thors";
 
                 /// <summary>
                 /// http://resource.geosciml.org/ontology/timescale/thors#
                 /// </summary>
-                public const string BASE_URI = "http://resource.geosciml.org/ontology/timescale/thors#";
+                public static readonly string BASE_URI = "http://resource.geosciml.org/ontology/timescale/thors#";
 
                 /// <summary>
                 /// http://resource.geosciml.org/ontology/timescale/thors
                 /// </summary>
-                public const string DEREFERENCE_URI = "http://resource.geosciml.org/ontology/timescale/thors#";
+                public static readonly string DEREFERENCE_URI = "http://resource.geosciml.org/ontology/timescale/thors#";
 
                 /// <summary>
                 /// thors:Era
@@ -4426,17 +4426,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// xml
             /// </summary>
-            public const string PREFIX = "xml";
+            public static readonly string PREFIX = "xml";
 
             /// <summary>
             /// http://www.w3.org/XML/1998/namespace
             /// </summary>
-            public const string BASE_URI = "http://www.w3.org/XML/1998/namespace";
+            public static readonly string BASE_URI = "http://www.w3.org/XML/1998/namespace";
 
             /// <summary>
             /// http://www.w3.org/XML/1998/namespace
             /// </summary>
-            public const string DEREFERENCE_URI = "http://www.w3.org/XML/1998/namespace";
+            public static readonly string DEREFERENCE_URI = "http://www.w3.org/XML/1998/namespace";
 
             /// <summary>
             /// xml:lang
@@ -4461,17 +4461,17 @@ namespace RDFSharp.Model
             /// <summary>
             /// xsd
             /// </summary>
-            public const string PREFIX = "xsd";
+            public static readonly string PREFIX = "xsd";
 
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#
             /// </summary>
-            public const string BASE_URI = "http://www.w3.org/2001/XMLSchema#";
+            public static readonly string BASE_URI = "http://www.w3.org/2001/XMLSchema#";
 
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#
             /// </summary>
-            public const string DEREFERENCE_URI = "http://www.w3.org/2001/XMLSchema#";
+            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2001/XMLSchema#";
 
             /// <summary>
             /// xsd:string
