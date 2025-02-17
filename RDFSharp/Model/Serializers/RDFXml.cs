@@ -448,13 +448,9 @@ namespace RDFSharp.Model
             Dictionary<string, long> hashContext, RDFResource subjectParent = null)
         {
             List<RDFResource> subjects = new List<RDFResource>();
-            IEnumerator subjNodesEnum = nodeList.GetEnumerator();
-            while (subjNodesEnum != null && subjNodesEnum.MoveNext())
+            foreach (XmlNode subjNode in nodeList)
             {
                 #region subject
-                //Get the current resource node
-                XmlNode subjNode = (XmlNode)subjNodesEnum.Current;
-
                 //Skip subject if it is not an element
                 if (subjNode.NodeType != XmlNodeType.Element)
                     continue;
@@ -509,19 +505,15 @@ namespace RDFSharp.Model
                 //Parse subject children (predicates)
                 if (subjNode.HasChildNodes)
                 {
-                    IEnumerator predNodesEnum = subjNode.ChildNodes.GetEnumerator();
-                    while (predNodesEnum != null && predNodesEnum.MoveNext())
+                    foreach (XmlNode predNode in subjNode.ChildNodes)
                     {
                         #region predicate
-                        //Get the current pred node
-                        RDFResource pred;
-                        XmlNode predNode = (XmlNode)predNodesEnum.Current;
-
                         //Skip predicate if it is not an element
                         if (predNode.NodeType != XmlNodeType.Element)
                             continue;
 
                         //Get the predicate
+                        RDFResource pred;
                         XmlAttribute xmlLangPred = GetXmlLangAttribute(predNode) ?? xmlLangSubj;
                         if (predNode.NamespaceURI == string.Empty)
                             pred = new RDFResource(string.Concat(xmlBase, predNode.LocalName), hashContext);
@@ -1071,11 +1063,8 @@ namespace RDFSharp.Model
             if (container.HasChildNodes)
             {
                 List<string> elemVals = new List<string>();
-                IEnumerator elems = container.ChildNodes.GetEnumerator();
-                while (elems != null && elems.MoveNext())
+                foreach (XmlNode elem in container.ChildNodes)
                 {
-                    XmlNode elem = (XmlNode)elems.Current;
-
                     //Skip container item if it is not an element
                     if (elem.NodeType != XmlNodeType.Element)
                         continue;

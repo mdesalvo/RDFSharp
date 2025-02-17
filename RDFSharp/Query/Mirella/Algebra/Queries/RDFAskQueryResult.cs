@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections;
+using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Xml;
@@ -138,11 +139,8 @@ namespace RDFSharp.Query
                         #region parse
                         bool foundHead = false;
                         bool foundBoolean = false;
-                        IEnumerator nodesEnum = srxDoc.DocumentElement.ChildNodes.GetEnumerator();
-                        while (nodesEnum?.MoveNext() ?? false)
+                        foreach (XmlNode node in srxDoc.DocumentElement.ChildNodes)
                         {
-                            XmlNode node = (XmlNode)nodesEnum.Current;
-
                             #region HEAD
                             if (string.Equals(node.Name, "HEAD", StringComparison.OrdinalIgnoreCase))
                                 foundHead = true;

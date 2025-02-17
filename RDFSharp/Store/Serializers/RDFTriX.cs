@@ -121,10 +121,8 @@ namespace RDFSharp.Store
                             #endregion Guards
 
                             Dictionary<string, long> hashContext = new Dictionary<string, long>();
-                            IEnumerator graphEnum = trixDoc.DocumentElement.ChildNodes.GetEnumerator();
-                            while (graphEnum != null && graphEnum.MoveNext())
+                            foreach (XmlNode graph in trixDoc.DocumentElement.ChildNodes)
                             {
-                                XmlNode graph = (XmlNode)graphEnum.Current;
                                 if (!graph.Name.Equals("graph", StringComparison.Ordinal))
                                     throw new Exception(" a \"<graph>\" element was expected, instead of unrecognized \"<" + graph.Name + ">\".");
                                 
@@ -137,11 +135,8 @@ namespace RDFSharp.Store
                                     graphs.Add(graphID, new RDFGraph().SetContext(graphUri));
 
                                 long encodedUris = 0;
-                                IEnumerator graphChildren = graph.ChildNodes.GetEnumerator();
-                                while (graphChildren != null && graphChildren.MoveNext())
+                                foreach (XmlNode graphChild in graph.ChildNodes)
                                 {
-                                    XmlNode graphChild = (XmlNode)graphChildren.Current;
-
                                     #region <uri>
 
                                     //<uri> gives the context of the graph

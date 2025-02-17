@@ -235,11 +235,8 @@ namespace RDFSharp.Query
                         #region results
                         bool foundHead = false;
                         bool foundResults = false;
-                        IEnumerator nodesEnum = srxDoc.DocumentElement.ChildNodes.GetEnumerator();
-                        while (nodesEnum?.MoveNext() ?? false)
+                        foreach (XmlNode node in srxDoc.DocumentElement.ChildNodes)
                         {
-                            XmlNode node = (XmlNode)nodesEnum.Current;
-
                             #region HEAD
                             if (string.Equals(node.Name, "HEAD", StringComparison.OrdinalIgnoreCase))
                             {
@@ -247,11 +244,9 @@ namespace RDFSharp.Query
                                     throw new Exception("\"head\" node was found without children.");
 
                                 foundHead = true;
-                                IEnumerator variablesEnum = node.ChildNodes.GetEnumerator();
-                                while (variablesEnum?.MoveNext() ?? false)
+                                foreach (XmlNode varNode in node.ChildNodes)
                                 {
                                     #region VARIABLE
-                                    XmlNode varNode = (XmlNode)variablesEnum.Current;
                                     if (string.Equals(varNode.Name, "VARIABLE", StringComparison.OrdinalIgnoreCase))
                                     {
                                         if (varNode.Attributes == null || varNode.Attributes.Count == 0)
@@ -273,21 +268,16 @@ namespace RDFSharp.Query
                                     throw new Exception("\"head\" node was not found, or was after \"results\" node.");
                                 
                                 foundResults = true;
-                                IEnumerator resultsEnum = node.ChildNodes.GetEnumerator();
-                                while (resultsEnum?.MoveNext() ?? false)
+                                foreach (XmlNode resNode in node.ChildNodes)
                                 {
-                                    XmlNode resNode = (XmlNode)resultsEnum.Current;
-
                                     #region RESULT
                                     if (string.Equals(resNode.Name, "RESULT", StringComparison.OrdinalIgnoreCase))
                                     {
                                         if (resNode.HasChildNodes)
                                         {
                                             Dictionary<string, string> results = new Dictionary<string, string>();
-                                            IEnumerator bindingsEnum = resNode.ChildNodes.GetEnumerator();
-                                            while (bindingsEnum?.MoveNext() ?? false)
+                                            foreach (XmlNode bindingNode in resNode.ChildNodes)
                                             {
-                                                XmlNode bindingNode = (XmlNode)bindingsEnum.Current;
                                                 bool foundUri = false;
                                                 bool foundLit = false;
 
