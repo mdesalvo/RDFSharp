@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFTriple represents a triple in the RDF model.
     /// </summary>
-    public class RDFTriple : IEquatable<RDFTriple>
+    public sealed class RDFTriple : IEquatable<RDFTriple>
     {
         #region Properties
         /// <summary>
@@ -158,7 +158,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFIndexedTriple represents the internal hashed representation of a triple in the library
     /// </summary>
-    internal class RDFIndexedTriple : IEquatable<RDFIndexedTriple>
+    internal sealed class RDFIndexedTriple : IEquatable<RDFIndexedTriple>
     {
         #region Properties
         /// <summary>

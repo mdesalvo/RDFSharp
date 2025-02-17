@@ -23,7 +23,7 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFQuadruple represents a quadruple (context-aware triple) in the RDF store.
     /// </summary>
-    public class RDFQuadruple : IEquatable<RDFQuadruple>
+    public sealed class RDFQuadruple : IEquatable<RDFQuadruple>
     {
         #region Properties
         /// <summary>
@@ -178,7 +178,7 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFIndexedQuadruple represents the internal hashed representation of a quadruple
     /// </summary>
-    internal class RDFIndexedQuadruple : IEquatable<RDFIndexedQuadruple>
+    internal sealed class RDFIndexedQuadruple : IEquatable<RDFIndexedQuadruple>
     {
         #region Properties
         /// <summary>
