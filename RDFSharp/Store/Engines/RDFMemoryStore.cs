@@ -36,43 +36,43 @@ namespace RDFSharp.Store
         /// <summary>
         /// Count of the store's quadruples
         /// </summary>
-        public override long QuadruplesCount => IndexedQuadruples.Count;
+        public override long QuadruplesCount 
+            => IndexedQuadruples.Count;
 
         /// <summary>
         /// Gets the enumerator on the store's quadruples for iteration
         /// </summary>
         public IEnumerator<RDFQuadruple> QuadruplesEnumerator
-        {
-            get
-            {
-                foreach (RDFIndexedQuadruple indexedQuadruple in IndexedQuadruples.Values)
-                {
-                    yield return indexedQuadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
-                        ? new RDFQuadruple(StoreIndex.ContextsRegister[indexedQuadruple.ContextID], StoreIndex.ResourcesRegister[indexedQuadruple.SubjectID], StoreIndex.ResourcesRegister[indexedQuadruple.PredicateID], StoreIndex.ResourcesRegister[indexedQuadruple.ObjectID])
-                        : new RDFQuadruple(StoreIndex.ContextsRegister[indexedQuadruple.ContextID], StoreIndex.ResourcesRegister[indexedQuadruple.SubjectID], StoreIndex.ResourcesRegister[indexedQuadruple.PredicateID], StoreIndex.LiteralsRegister[indexedQuadruple.ObjectID]);
-                }
-            }
-        }
+            => IndexedQuadruples.Values.Select(indexedQuadruple =>
+                indexedQuadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
+                    ? new RDFQuadruple(StoreIndex.ContextsRegister[indexedQuadruple.ContextID],
+                        StoreIndex.ResourcesRegister[indexedQuadruple.SubjectID],
+                        StoreIndex.ResourcesRegister[indexedQuadruple.PredicateID],
+                        StoreIndex.ResourcesRegister[indexedQuadruple.ObjectID])
+                    : new RDFQuadruple(StoreIndex.ContextsRegister[indexedQuadruple.ContextID],
+                        StoreIndex.ResourcesRegister[indexedQuadruple.SubjectID],
+                        StoreIndex.ResourcesRegister[indexedQuadruple.PredicateID],
+                        StoreIndex.LiteralsRegister[indexedQuadruple.ObjectID])).GetEnumerator();
 
         /// <summary>
         /// Identifier of the memory store
         /// </summary>
-        internal string StoreGUID { get; set; }
+        internal string StoreGUID { get; }
 
         /// <summary>
         /// Index on the quadruples of the store
         /// </summary>
-        internal RDFStoreIndex StoreIndex { get; set; }
+        internal RDFStoreIndex StoreIndex { get; private set; }
 
         /// <summary>
         /// Indexed quadruples embedded into the store
         /// </summary>
-        internal Dictionary<long, RDFIndexedQuadruple> IndexedQuadruples { get; set; }
+        internal Dictionary<long, RDFIndexedQuadruple> IndexedQuadruples { get; private set; }
 
         /// <summary>
         /// Flag indicating that the store has already been disposed
         /// </summary>
-        internal bool Disposed { get; set; }
+        internal bool Disposed { get; private set; }
         #endregion
 
         #region Ctors
