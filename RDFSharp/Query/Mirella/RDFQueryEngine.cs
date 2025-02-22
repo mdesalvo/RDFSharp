@@ -1366,13 +1366,10 @@ namespace RDFSharp.Query
             bool rowAdded = false;
 
             DataRow resultRow = table.NewRow();
-            foreach (string bindingKey in bindings.Keys)
+            foreach (string bindingKey in bindings.Keys.Where(bk => table.Columns.Contains(bk)))
             {
-                if (table.Columns.Contains(bindingKey))
-                {
-                    resultRow[bindingKey] = bindings[bindingKey];
-                    rowAdded = true;
-                }
+                resultRow[bindingKey] = bindings[bindingKey];
+                rowAdded = true;
             }
 
             if (rowAdded)
@@ -1848,10 +1845,8 @@ namespace RDFSharp.Query
             DataTable finalTable = new DataTable();
             switch (dataTables.Count)
             {
-                case 0:
-                    return finalTable;
-                case 1:
-                    return dataTables[0];
+                case 0: return finalTable;
+                case 1: return dataTables[0];
             }
 
             #region Utilities
@@ -1949,13 +1944,13 @@ namespace RDFSharp.Query
             bool hasDoneUnions = ProcessUnions();
             if (hasDoneUnions)
                 dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) 
-                                                    && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
+                                            && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
 
             //Step 2: process Minus operators
             bool hasDoneMinus = ProcessMinus();
             if (hasDoneMinus)
                 dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) 
-                                                    && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
+                                            && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
 
             //Step 3: compute joins
             ComputeJoins(hasDoneUnions);
