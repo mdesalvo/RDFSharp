@@ -131,14 +131,8 @@ namespace RDFSharp.Query
 
                 if (datasource.IsFederation())
                 {
-                    foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
-                    {
-                        //Ensure to skip tricky empty federations
-                        if (fedDataSource.IsFederation() && ((RDFFederation)fedDataSource).DataSourcesCount == 0)
-                            continue;
-
+                    foreach (RDFDataSource fedDataSource in ((RDFFederation)datasource).Where(fedDataSource => !fedDataSource.IsFederation() || ((RDFFederation)fedDataSource).DataSourcesCount != 0))
                         resultTable.Merge(DescribeTerms(describeQuery, fedDataSource, qResultTable), true, MissingSchemaAction.Add);
-                    }
                 }
                 else
                     resultTable = DescribeTerms(describeQuery, datasource, qResultTable);
@@ -735,7 +729,7 @@ namespace RDFSharp.Query
                 //FEDERATION / SPARQL ENDPOINT
                 default:
                     RDFSelectQuery query = BuildFederationOrSPARQLEndpointQuery();
-                    RDFSelectQueryResult queryResults = 
+                    RDFSelectQueryResult queryResults =
                         dataSource.IsSPARQLEndpoint() ? query.ApplyToSPARQLEndpoint((RDFSPARQLEndpoint)dataSource)
                                                       : query.ApplyToFederation((RDFFederation)dataSource);
                     result.Merge(queryResults.SelectResults, true, MissingSchemaAction.Add);
@@ -1240,7 +1234,6 @@ namespace RDFSharp.Query
                         switch (sparqlEndpointQueryOptions.QueryMethod)
                         {
                             //query via GET with URL-encoded querystring
-                            default:
                             case RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Get:
                                 //Handle user-provided parameters
                                 webClient.QueryString.Add("query", HttpUtility.UrlEncode(query));
