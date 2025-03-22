@@ -213,8 +213,8 @@ namespace RDFSharp.Model
             try
             {
                 string serviceResponse = WebClient.DownloadString(
-                    lookupMode == 1 ? string.Concat("http://prefix.cc/", data, ".file.txt")
-                                    : string.Concat("http://prefix.cc/reverse?uri=", data, "&format=txt"));
+                    lookupMode == 1 ? string.Format("http://prefix.cc/{0}.file.txt", data)
+                                    : string.Format("http://prefix.cc/reverse?uri={0}&format=txt", data));
                 string[] namespaceParts = serviceResponse.Split('\t');
                 RDFNamespace ns = new RDFNamespace(namespaceParts[0], namespaceParts[1].TrimEnd(Environment.NewLine));
 
