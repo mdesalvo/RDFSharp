@@ -1908,13 +1908,30 @@ public class RDFGraphTest
     }
 
     [TestMethod]
-    public void ShouldImportFromUri()
+    public void ShouldImportNTriplesFromUri()
     {
-        RDFGraph graph = RDFGraph.FromUri(new Uri(RDFVocabulary.RDFS.BASE_URI));
+        RDFGraph graph = RDFGraph.FromUri(new Uri("https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-n-triples/nt-syntax-uri-01.nt"));
 
         Assert.IsNotNull(graph);
-        Assert.IsTrue(graph.Context.Equals(new Uri(RDFVocabulary.RDFS.BASE_URI)));
-        Assert.IsTrue(graph.TriplesCount > 0);
+        Assert.AreEqual(1, graph.TriplesCount);
+    }
+
+    [TestMethod]
+    public void ShouldImportXmlFromUri()
+    {
+        RDFGraph graph = RDFGraph.FromUri(new Uri("https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-xml/datatypes/test001.rdf"));
+
+        Assert.IsNotNull(graph);
+        Assert.AreEqual(2, graph.TriplesCount);
+    }
+
+    [TestMethod]
+    public void ShouldImportTurtleFromUri()
+    {
+        RDFGraph graph = RDFGraph.FromUri(new Uri("https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/default_namespace_IRI.ttl"));
+
+        Assert.IsNotNull(graph);
+        Assert.AreEqual(1, graph.TriplesCount);
     }
 
     [TestMethod]

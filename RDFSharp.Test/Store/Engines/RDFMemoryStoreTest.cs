@@ -1909,12 +1909,21 @@ public class RDFMemoryStoreTest
     }
 
     [TestMethod]
-    public void ShouldImportFromUri()
+    public void ShouldImportNQuadsFromUri()
     {
         RDFMemoryStore store = RDFMemoryStore.FromUri(new Uri("https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-n-quads/nq-syntax-uri-01.nq"));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount > 0);
+        Assert.AreEqual(1, store.QuadruplesCount);
+    }
+
+    [TestMethod]
+    public void ShouldImportTrigFromUri()
+    {
+        RDFMemoryStore store = RDFMemoryStore.FromUri(new Uri("https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-trig/alternating_iri_graphs.trig"));
+
+        Assert.IsNotNull(store);
+        Assert.AreEqual(4, store.QuadruplesCount);
     }
 
     [TestMethod]
