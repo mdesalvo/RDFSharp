@@ -1,52 +1,53 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <AssemblyTitle>RDFSharp</AssemblyTitle>
-    <AssemblyName>RDFSharp</AssemblyName>
-    <AssemblyVersion>$(Version)</AssemblyVersion>
-    <Version>3.16.1</Version>
-    <Authors>Marco De Salvo</Authors>
-    <Copyright>Marco De Salvo</Copyright>
-    <Description>Lightweight and friendly .NET library for realizing Semantic Web applications</Description>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <SignAssembly>false</SignAssembly>
-    <Product>RDFSharp</Product>
-    <PackageId>RDFSharp</PackageId>
-    <PackageVersion>$(Version)</PackageVersion>
-    <PackageTags>rdf sparql sparql-update shacl semantic-web linked-data</PackageTags>
-    <PackageProjectUrl>https://github.com/mdesalvo/RDFSharp</PackageProjectUrl>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/mdesalvo/RDFSharp.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>bin\Debug\$(TargetFramework)\RDFSharp.xml</DocumentationFile>
-    <WarningLevel>4</WarningLevel>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>false</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <DefineConstants>TRACE</DefineConstants>
-    <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>bin\Release\$(TargetFramework)\RDFSharp.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
-    <DebugType>portable</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>true</Optimize>
-  </PropertyGroup>
-  <ItemGroup>
-      <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-      <PackageReference Include="NetTopologySuite" Version="2.5.0" />
-      <PackageReference Include="ProjNet" Version="2.0.0" />
-      <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-  </ItemGroup>
+    <PropertyGroup>
+        <AssemblyTitle>RDFSharp</AssemblyTitle>
+        <AssemblyName>RDFSharp</AssemblyName>
+        <AssemblyVersion>$(Version)</AssemblyVersion>
+        <Version>3.18.0</Version>
+        <Authors>Marco De Salvo</Authors>
+        <Copyright>Marco De Salvo</Copyright>
+        <Description>Lightweight and friendly .NET library for realizing Semantic Web applications</Description>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <SignAssembly>false</SignAssembly>
+        <Product>RDFSharp</Product>
+        <PackageId>RDFSharp</PackageId>
+        <PackageVersion>$(Version)</PackageVersion>
+        <PackageTags>rdf sparql sparql-update shacl semantic-web linked-data</PackageTags>
+        <PackageProjectUrl>https://github.com/mdesalvo/RDFSharp</PackageProjectUrl>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/mdesalvo/RDFSharp.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <OutputType>Library</OutputType>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DocumentationFile>bin\Debug\$(TargetFramework)\RDFSharp.xml</DocumentationFile>
+        <WarningLevel>4</WarningLevel>
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <Optimize>false</Optimize>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+        <DefineConstants>TRACE</DefineConstants>
+        <OutputPath>bin\Release\</OutputPath>
+        <DocumentationFile>bin\Release\$(TargetFramework)\RDFSharp.xml</DocumentationFile>
+        <WarningLevel>0</WarningLevel>
+        <DebugType>portable</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <Optimize>true</Optimize>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="NetTopologySuite" Version="2.6.0" />
+        <PackageReference Include="ProjNet" Version="2.0.0" />
+        <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    </ItemGroup>
 </Project>

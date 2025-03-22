@@ -1,0 +1,6 @@
+RDFSharp/bin/Debug/*
+RDFSharp/bin/Release/*
+RDFSharp.Test/bin/Debug/*
+RDFSharp.Test/bin/Release/*
+RDFSharp/obj/*
+RDFSharp.Test/obj/*

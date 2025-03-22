@@ -83,6 +83,11 @@ namespace RDFSharp.Model
         internal static readonly string[] AlternativesBoolFalse = { "0", "zero", "no", "n", "f", "off", "ko", "down" };
 
         /// <summary>
+        /// Characters whose presence is forbidden inside xsd:normalizedString literals
+        /// </summary>
+        internal static readonly char[] NormalizedStringForbiddenChars = { '\n', '\r', '\t' };
+
+        /// <summary>
         /// Gets the Uri corresponding to the given string
         /// </summary>
         internal static Uri GetUriFromString(string uriString)
@@ -660,17 +665,15 @@ namespace RDFSharp.Model
                     catch { return (false, literalValue); }
 
                 case RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING:
-                    bool isValidNormalizedString = literalValue.IndexOfAny(new[] { '\n', '\r', '\t' }) == -1;
-                    return (isValidNormalizedString, literalValue);
+                    return (literalValue.IndexOfAny(NormalizedStringForbiddenChars) == -1, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_LANGUAGE:
-                    bool isValidLanguage = RDFPlainLiteral.LangTagRegex.Match(literalValue).Success;
-                    return (isValidLanguage, literalValue);
+                    return (RDFPlainLiteral.LangTagRegex.Match(literalValue).Success, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY:
                     try
                     {
-                        _ = Convert.FromBase64String(literalValue);
+                        Convert.FromBase64String(literalValue);
                         return (true, literalValue);
                     }
                     catch { return (false, literalValue); }
@@ -683,7 +686,7 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT:
                     try
                     {
-                        _ = RDFGeoExpression.WKTReader.Read(literalValue);
+                        RDFGeoExpression.WKTReader.Read(literalValue);
                         return (true, literalValue);
                     }
                     catch { return (false, literalValue); }
@@ -691,7 +694,7 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.GEOSPARQL_GML:
                     try
                     {
-                        _ = RDFGeoExpression.GMLReader.Read(literalValue);
+                        RDFGeoExpression.GMLReader.Read(literalValue);
                         return (true, literalValue);
                     }
                     catch { return (false, literalValue); }
