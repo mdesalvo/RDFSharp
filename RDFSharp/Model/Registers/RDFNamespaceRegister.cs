@@ -48,6 +48,11 @@ namespace RDFSharp.Model
         internal List<RDFNamespace> Register { get; set; }
 
         /// <summary>
+        /// Client used for namespace lookup to prefix.cc services
+        /// </summary>
+        internal static RDFWebClient WebClient { get; set; }
+
+        /// <summary>
         /// Count of the register's namespaces
         /// </summary>
         public static int NamespacesCount
@@ -101,6 +106,7 @@ namespace RDFSharp.Model
             };
 
             DefaultNamespace = RDFSharpNS;
+            WebClient = new RDFWebClient(2000);
         }
         #endregion
 
@@ -204,27 +210,20 @@ namespace RDFSharp.Model
         /// </summary>
         internal static RDFNamespace LookupPrefixCC(string data, int lookupMode)
         {
-            string lookupString = lookupMode == 1 ? string.Concat("http://prefix.cc/", data, ".file.txt")
-                                                  : string.Concat("http://prefix.cc/reverse?uri=", data, "&format=txt");
-
-            using (RDFWebClient webclient = new RDFWebClient(2000))
+            try
             {
-                try
-                {
-                    string response = webclient.DownloadString(lookupString);
-                    string[] splittedResponse = response.Split('\t');
-                    string prefix = splittedResponse[0];
-                    string nspace = splittedResponse[1].TrimEnd(Environment.NewLine);
-                    RDFNamespace result = new RDFNamespace(prefix, nspace);
+                string serviceResponse = WebClient.DownloadString(
+                    lookupMode == 1 ? string.Concat("http://prefix.cc/", data, ".file.txt")
+                                    : string.Concat("http://prefix.cc/reverse?uri=", data, "&format=txt"));
+                string[] namespaceParts = serviceResponse.Split('\t');
+                RDFNamespace ns = new RDFNamespace(namespaceParts[0], namespaceParts[1].TrimEnd(Environment.NewLine));
 
-                    //Also add the namespace to the register (to avoid future lookups)
-                    AddNamespace(result);
+                //Also add the namespace to the register (to avoid future lookups)
+                AddNamespace(ns);
 
-                    //Return the found result
-                    return result;
-                }
-                catch { return null; }
+                return ns;
             }
+            catch { return null; }
         }
 
         /// <summary>
