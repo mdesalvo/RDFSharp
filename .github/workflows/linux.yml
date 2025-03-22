@@ -2,27 +2,22 @@ name: linux
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
-  build:
+  linux:
     runs-on: ubuntu-latest
     steps:
-
     - name: Checkout
       uses: actions/checkout@v4
-    
     - name: Setup
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
- 
+        dotnet-version: 8 
     - name: Build
       run: dotnet build -c Release
-    
     - name: Test
-      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" -c Release
-      
+      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" -c Release      
     - name: Codecov
       uses: codecov/codecov-action@v4
       with:
