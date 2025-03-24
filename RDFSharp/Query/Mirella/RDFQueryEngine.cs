@@ -47,22 +47,22 @@ namespace RDFSharp.Query
         /// <summary>
         /// Attribute denoting an optional pattern/patternGroup/query
         /// </summary>
-        internal const string IsOptional = "IsOptional";
+        internal const string IsOptional = nameof(IsOptional);
 
         /// <summary>
         /// Attribute denoting a pattern/patternGroup/query to be joined as union
         /// </summary>
-        internal const string JoinAsUnion = "JoinAsUnion";
+        internal const string JoinAsUnion = nameof(JoinAsUnion);
 
         /// <summary>
         /// Attribute denoting a pattern/patternGroup/query to be joined as minus
         /// </summary>
-        internal const string JoinAsMinus = "JoinAsMinus";
+        internal const string JoinAsMinus = nameof(JoinAsMinus);
 
         /// <summary>
         /// Attribute denoting a logically deleted intermediate results table
         /// </summary>
-        internal const string LogicallyDeleted = "LogicallyDeleted";
+        internal const string LogicallyDeleted = nameof(LogicallyDeleted);
         #endregion
 
         #region Ctors
