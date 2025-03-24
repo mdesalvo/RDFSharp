@@ -322,7 +322,7 @@ public class RDFStoreIndexTest
         Assert.AreEqual(2, storeIndex.PredicatesIndex.Count);
         Assert.IsTrue(storeIndex.PredicatesIndex[pred1.PatternMemberID].Contains(quadruple1.QuadrupleID));
         Assert.IsTrue(storeIndex.PredicatesIndex[pred2.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(0, storeIndex.ObjectsIndex.Count);            
+        Assert.AreEqual(0, storeIndex.ObjectsIndex.Count);
         Assert.AreEqual(1, storeIndex.LiteralsIndex.Count);
         Assert.IsTrue(storeIndex.LiteralsIndex[lit.PatternMemberID].Contains(quadruple1.QuadrupleID));
         Assert.IsTrue(storeIndex.LiteralsIndex[lit.PatternMemberID].Contains(quadruple2.QuadrupleID));

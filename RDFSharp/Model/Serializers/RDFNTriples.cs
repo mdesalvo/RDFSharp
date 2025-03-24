@@ -121,7 +121,7 @@ namespace RDFSharp.Model
                     foreach (RDFTriple t in graph)
                     {
                         #region template
-                        string tripleTemplate = t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO 
+                        string tripleTemplate = t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
                             ? TemplateSPO
                             : t.Object is RDFPlainLiteral ? TemplateSPLL : TemplateSPLT;
                         #endregion
@@ -207,12 +207,12 @@ namespace RDFSharp.Model
 
                         #region sanitize  & tokenize
                         //Cleanup previous data
-                        RDFResource S = null; 
+                        RDFResource S = null;
                         tokens[0] = string.Empty;
-                        RDFResource P = null; 
+                        RDFResource P = null;
                         tokens[1] = string.Empty;
-                        RDFResource O = null; 
-                        RDFLiteral L = null; 
+                        RDFResource O = null;
+                        RDFLiteral L = null;
                         tokens[2] = string.Empty;
 
                         //Preliminary sanitizations: clean trailing space-like chars

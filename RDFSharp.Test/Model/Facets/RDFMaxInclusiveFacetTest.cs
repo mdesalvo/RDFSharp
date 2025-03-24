@@ -25,7 +25,7 @@ public class RDFMaxInclusiveFacetTest
 {
     #region Tests
     [TestMethod]
-        
+
     public void ShouldCreateMaxInclusiveFacet()
     {
         RDFMaxInclusiveFacet facet = new RDFMaxInclusiveFacet(6.145);
@@ -36,7 +36,7 @@ public class RDFMaxInclusiveFacetTest
     }
 
     [TestMethod]
-        
+
     public void ShouldValidateMaxInclusiveFacet()
     {
         RDFMaxInclusiveFacet facet = new RDFMaxInclusiveFacet(6);
@@ -55,7 +55,7 @@ public class RDFMaxInclusiveFacetTest
     }
 
     [TestMethod]
-        
+
     public void ShouldConvertMaxInclusiveFacetToGraph()
     {
         RDFMaxInclusiveFacet facet = new RDFMaxInclusiveFacet(6);

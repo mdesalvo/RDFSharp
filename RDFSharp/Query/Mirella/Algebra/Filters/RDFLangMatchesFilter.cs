@@ -102,7 +102,7 @@ namespace RDFSharp.Query
                     case "":
                         keepRow = !AnyLanguageRegex.Value.IsMatch(variableValue);
                         break;
-                    
+
                     //ANY language is acceptable in the variable
                     case "*":
                         keepRow = AnyLanguageRegex.Value.IsMatch(variableValue);

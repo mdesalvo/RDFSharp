@@ -113,13 +113,13 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a blank property shape on the given property
         /// </summary>
-        public RDFPropertyShape(RDFResource path, bool isInversePath=false) 
+        public RDFPropertyShape(RDFResource path, bool isInversePath=false)
             : this(new RDFResource(), path, isInversePath) { }
 
         /// <summary>
         /// Default-ctor to build a blank property shape on the given properties
         /// </summary>
-        public RDFPropertyShape(List<RDFResource> pathSteps, RDFQueryEnums.RDFPropertyPathStepFlavors pathStepsFlavor) 
+        public RDFPropertyShape(List<RDFResource> pathSteps, RDFQueryEnums.RDFPropertyPathStepFlavors pathStepsFlavor)
             : this(new RDFResource(), pathSteps, pathStepsFlavor) { }
         #endregion
 

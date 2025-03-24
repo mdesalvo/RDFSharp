@@ -210,7 +210,7 @@ public class RDFGeoDifferenceExpressionTest
     {
         DataTable table = new DataTable();
         table.Columns.Add("?LS", typeof(string));
-        table.Columns.Add("?PT", typeof(string));            
+        table.Columns.Add("?PT", typeof(string));
         DataRow row = table.NewRow();
         row["?LS"] = new RDFTypedLiteral("<gml:LineString xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:posList>9.18854 45 9.18854 49</gml:posList></gml:LineString>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
         row["?PT"] = new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();

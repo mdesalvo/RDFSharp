@@ -59,7 +59,7 @@ public class RDFIsUriFilterTest
 
         Assert.IsTrue(keepRow);
     }
-        
+
     [TestMethod]
     public void ShouldCreateIsUriFilterAndKeepRowWithUnknownVariable()
     {

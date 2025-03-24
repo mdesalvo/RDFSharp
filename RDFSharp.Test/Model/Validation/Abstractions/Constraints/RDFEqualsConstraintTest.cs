@@ -595,7 +595,7 @@ public class RDFEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[2].ResultValue.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(validationReport.Results[2].ResultPath.Equals(RDFVocabulary.FOAF.AGE));
         Assert.IsTrue(validationReport.Results[2].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT));
-        Assert.IsTrue(validationReport.Results[2].SourceShape.Equals(new RDFResource("ex:PropertyShape")));            
+        Assert.IsTrue(validationReport.Results[2].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
 
     [TestMethod]

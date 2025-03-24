@@ -98,6 +98,7 @@ namespace RDFSharp.Query
 
                 if (leftArgumentPMember == null)
                     return null;
+
                 using (MD5CryptoServiceProvider md5Encryptor = new MD5CryptoServiceProvider())
                 {
                     StringBuilder sb = new StringBuilder();

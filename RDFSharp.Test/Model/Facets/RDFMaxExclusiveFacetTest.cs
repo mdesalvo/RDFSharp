@@ -25,7 +25,7 @@ public class RDFMaxExclusiveFacetTest
 {
     #region Tests
     [TestMethod]
-        
+
     public void ShouldCreateMaxExclusiveFacet()
     {
         RDFMaxExclusiveFacet facet = new RDFMaxExclusiveFacet(6.145);
@@ -36,7 +36,7 @@ public class RDFMaxExclusiveFacetTest
     }
 
     [TestMethod]
-        
+
     public void ShouldValidateMaxExclusiveFacet()
     {
         RDFMaxExclusiveFacet facet = new RDFMaxExclusiveFacet(6);
@@ -55,7 +55,7 @@ public class RDFMaxExclusiveFacetTest
     }
 
     [TestMethod]
-        
+
     public void ShouldConvertMaxExclusiveFacetToGraph()
     {
         RDFMaxExclusiveFacet facet = new RDFMaxExclusiveFacet(6);

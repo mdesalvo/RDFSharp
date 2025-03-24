@@ -36,7 +36,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Count of the store's quadruples
         /// </summary>
-        public override long QuadruplesCount 
+        public override long QuadruplesCount
             => IndexedQuadruples.Count;
 
         /// <summary>
@@ -114,6 +114,7 @@ namespace RDFSharp.Store
         {
             if (other == null || QuadruplesCount != other.QuadruplesCount)
                 return false;
+
             return base.Equals(other) || this.All(other.ContainsQuadruple);
         }
 
@@ -696,7 +697,7 @@ namespace RDFSharp.Store
                 throw new RDFStoreException("Cannot read RDF memory store from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
             #endregion
 
-            RDFMemoryStore memStore = null; 
+            RDFMemoryStore memStore = null;
             switch (rdfFormat)
             {
                 case RDFStoreEnums.RDFFormats.NQuads:
@@ -738,7 +739,7 @@ namespace RDFSharp.Store
                 throw new RDFStoreException("Cannot read RDF memory store from stream because given \"inputStream\" parameter is null.");
             #endregion
 
-            RDFMemoryStore memStore = null; 
+            RDFMemoryStore memStore = null;
             switch (rdfFormat)
             {
                 case RDFStoreEnums.RDFFormats.NQuads:
@@ -811,7 +812,7 @@ namespace RDFSharp.Store
                 #region SUBJECT
                 if (tableRow.IsNull("?SUBJECT") || string.IsNullOrEmpty(tableRow["?SUBJECT"].ToString()))
                     throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having null or empty value in the \"?SUBJECT\" column.");
-                
+
                 RDFPatternMember rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?SUBJECT"].ToString());
                 if (!(rowSubj is RDFResource subj))
                     throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row not having a resource in the \"?SUBJECT\" column.");
@@ -831,7 +832,7 @@ namespace RDFSharp.Store
                 #region OBJECT
                 if (tableRow.IsNull("?OBJECT"))
                     throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having NULL value in the \"?OBJECT\" column.");
-                
+
                 RDFPatternMember rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?OBJECT"].ToString());
                 if (rowObj is RDFResource objRes)
                     memStore.AddQuadruple(new RDFQuadruple(new RDFContext(rowContext.ToString()), subj, pred, objRes));

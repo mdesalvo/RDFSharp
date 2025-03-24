@@ -63,7 +63,7 @@ public class RDFExpressionFilterTest
         RDFExpressionFilter filter = new RDFExpressionFilter(
             new RDFBooleanOrExpression(
                 new RDFComparisonExpression(
-                    RDFQueryEnums.RDFComparisonFlavors.GreaterThan, 
+                    RDFQueryEnums.RDFComparisonFlavors.GreaterThan,
                     new RDFLengthExpression(new RDFVariable("?A")),
                     new RDFConstantExpression(new RDFTypedLiteral("8", RDFModelEnums.RDFDatatypes.XSD_INT))),
                 new RDFStartsExpression(

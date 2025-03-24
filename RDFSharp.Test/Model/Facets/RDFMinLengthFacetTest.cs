@@ -25,7 +25,7 @@ public class RDFMinLengthFacetTest
 {
     #region Tests
     [TestMethod]
-        
+
     public void ShouldCreateMinLengthFacet()
     {
         RDFMinLengthFacet facet = new RDFMinLengthFacet(6);
@@ -36,7 +36,7 @@ public class RDFMinLengthFacetTest
     }
 
     [TestMethod]
-        
+
     public void ShouldValidateMinLengthFacet()
     {
         RDFMinLengthFacet facet = new RDFMinLengthFacet(6);
@@ -54,7 +54,7 @@ public class RDFMinLengthFacetTest
     }
 
     [TestMethod]
-        
+
     public void ShouldConvertMinLengthFacetToGraph()
     {
         RDFMinLengthFacet facet = new RDFMinLengthFacet(6);

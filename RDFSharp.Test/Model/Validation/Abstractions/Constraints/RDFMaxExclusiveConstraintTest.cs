@@ -63,7 +63,7 @@ public class RDFMaxExclusiveConstraintTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMaxExclusiveLiteralConstraint()
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFMaxExclusiveConstraint(null as RDFLiteral));
-        
+
     [TestMethod]
     public void ShouldExportMaxExclusiveLiteralConstraint()
     {

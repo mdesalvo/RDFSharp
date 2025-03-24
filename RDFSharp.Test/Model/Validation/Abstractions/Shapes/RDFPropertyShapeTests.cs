@@ -25,7 +25,7 @@ namespace RDFSharp.Test.Model;
 public class RDFPropertyShapeTests
 {
     #region Tests
-    [TestMethod]        
+    [TestMethod]
     public void ShouldCreatePropertyShape()
     {
         RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME);
@@ -49,7 +49,7 @@ public class RDFPropertyShapeTests
     }
 
     [TestMethod]
-        
+
     public void ShouldCreateBlankPropertyShape()
     {
         RDFPropertyShape propertyShape = new RDFPropertyShape(RDFVocabulary.FOAF.NAME);
@@ -97,7 +97,7 @@ public class RDFPropertyShapeTests
     }
 
     [TestMethod]
-        
+
     public void ShouldDeactivatePropertyShape()
     {
         RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME);
@@ -107,7 +107,7 @@ public class RDFPropertyShapeTests
     }
 
     [TestMethod]
-        
+
     public void ShouldAddNameToPropertyShape()
     {
         RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME);
@@ -118,7 +118,7 @@ public class RDFPropertyShapeTests
     }
 
     [TestMethod]
-        
+
     public void ShouldAddDescriptionToPropertyShape()
     {
         RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME);
@@ -129,17 +129,17 @@ public class RDFPropertyShapeTests
     }
 
     [TestMethod]
-        
+
     public void ShouldSetOrderOfPropertyShape()
     {
         RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME);
         propertyShape.SetOrder(5);
-            
+
         Assert.IsTrue(propertyShape.Order.Equals(new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
     }
 
     [TestMethod]
-        
+
     public void ShouldSetGroupOfPropertyShape()
     {
         RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME);
@@ -200,7 +200,7 @@ public class RDFPropertyShapeTests
     [TestMethod]
     public void ShouldExportPropertyShapeWithAlternativePath()
     {
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), 
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"),
             [RDFVocabulary.FOAF.NAME, RDFVocabulary.FOAF.AGE], RDFPropertyPathStepFlavors.Alternative);
         propertyShape.AddName(new RDFPlainLiteral("PropertyShapeName"));
         propertyShape.AddDescription(new RDFPlainLiteral("PropertyShapeDescription"));

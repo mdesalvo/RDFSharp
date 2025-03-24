@@ -99,7 +99,7 @@ namespace RDFSharp.Model
 
                 #region subject
 
-                XmlNode subjElement = (((RDFResource)t.Subject).IsBlank ? trixDoc.CreateNode(XmlNodeType.Element, "id", null) 
+                XmlNode subjElement = (((RDFResource)t.Subject).IsBlank ? trixDoc.CreateNode(XmlNodeType.Element, "id", null)
                                                                         : trixDoc.CreateNode(XmlNodeType.Element, "uri", null));
                 XmlText subjElementText = trixDoc.CreateTextNode(t.Subject.ToString());
                 subjElement.AppendChild(subjElementText);
@@ -207,7 +207,7 @@ namespace RDFSharp.Model
                         trixReader.Normalization = false;
                         XmlDocument trixDoc = new XmlDocument { XmlResolver = null };
                         trixDoc.Load(trixReader);
-                        
+
                         #region <TriX>
 
                         if (trixDoc.DocumentElement != null)
@@ -297,8 +297,8 @@ namespace RDFSharp.Model
             //Subject unrecognized: exception must be raised
             else
                 throw new Exception("subject (" + graphChild.ChildNodes[0].Name + ") of \"<triple>\" element is neither \"<uri>\" or \"<id>\".");
-            
-            //Predicate is a resource ("<uri>") 
+
+            //Predicate is a resource ("<uri>")
             if (graphChild.ChildNodes[1].Name.Equals("uri", StringComparison.Ordinal))
             {
                 //Predicate without value: exception must be raised
@@ -308,7 +308,7 @@ namespace RDFSharp.Model
             //Predicate unrecognized: exception must be raised
             else
                 throw new Exception("predicate (" + graphChild.ChildNodes[1].Name + ") of \"<triple>\" element must be \"<uri>\".");
-            
+
             //Object is a resource ("<uri>") or a blank node ("<id>")
             if (graphChild.ChildNodes[2].Name.Equals("uri", StringComparison.Ordinal)
                     || graphChild.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
@@ -339,7 +339,7 @@ namespace RDFSharp.Model
                     result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText, hashContext),
                                                    new RDFResource(graphChild.ChildNodes[1].InnerText, hashContext),
                                                    new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)), xmlLang.Value)));
-                
+
                 //Plain literal has not language
                 else
                     result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText, hashContext),

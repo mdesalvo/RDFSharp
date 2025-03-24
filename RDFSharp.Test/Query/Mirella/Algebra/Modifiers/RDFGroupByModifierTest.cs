@@ -81,7 +81,7 @@ public class RDFGroupByModifierTest
         Assert.IsNotNull(modifier.Aggregators);
         Assert.AreEqual(2, modifier.Aggregators.Count);
         Assert.IsTrue(modifier.Aggregators[0].AggregatorVariable.Equals(variable1));
-        Assert.IsTrue(modifier.Aggregators[0].ProjectionVariable.Equals(variable1));            
+        Assert.IsTrue(modifier.Aggregators[0].ProjectionVariable.Equals(variable1));
         Assert.IsTrue(modifier.Aggregators[1].AggregatorVariable.Equals(variable2));
         Assert.IsTrue(modifier.Aggregators[1].ProjectionVariable.Equals(variable3));
         Assert.IsTrue(modifier.IsEvaluable);
@@ -132,7 +132,7 @@ public class RDFGroupByModifierTest
         table.AcceptChanges();
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?D")]);
-            
+
         Assert.ThrowsExactly<RDFQueryException>(() => modifier.ApplyModifier(table), "Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: ?D");
     }
 
@@ -163,7 +163,7 @@ public class RDFGroupByModifierTest
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
         modifier.AddAggregator(new RDFAggregator(new RDFVariable("?D"), new RDFVariable("?A")));
         modifier.AddAggregator(new RDFAggregator(new RDFVariable("?D"), new RDFVariable("?B")));
-            
+
         Assert.ThrowsExactly<RDFQueryException>(() => modifier.ApplyModifier(table), "Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: ?D");
     }
 
@@ -194,7 +194,7 @@ public class RDFGroupByModifierTest
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?B")]);
         modifier.AddAggregator(new RDFAggregator(new RDFVariable("?A"), new RDFVariable("?A")));
         modifier.AddAggregator(new RDFAggregator(new RDFVariable("?A"), new RDFVariable("?B")));
-            
+
         Assert.ThrowsExactly<RDFQueryException>(() => modifier.ApplyModifier(table), "Cannot apply GroupBy modifier because the following variables have been specified both for partitioning (in GroupBy) and projection (in Aggregator): ?B");
     }
 

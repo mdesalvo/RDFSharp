@@ -224,7 +224,7 @@ public class RDFTypedLiteralTest
     public void ShouldCreateTypedLiteralOfDatetimeCategory(string value, RDFModelEnums.RDFDatatypes datatype)
     {
         RDFTypedLiteral tl = new RDFTypedLiteral(value, datatype);
-            
+
         Assert.IsNotNull(tl);
         Assert.IsFalse(tl.HasStringDatatype());
         Assert.IsFalse(tl.HasGeographicDatatype());
@@ -657,7 +657,7 @@ public class RDFTypedLiteralTest
     [DataRow("P1YM", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
     public void ShouldNotCreateTypedLiteralOfTimeSpanCategory(string value, RDFModelEnums.RDFDatatypes datatype)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTypedLiteral(value, datatype));
-        
+
     [TestMethod]
     public void ShouldCreateCustomTypedLiteral()
     {

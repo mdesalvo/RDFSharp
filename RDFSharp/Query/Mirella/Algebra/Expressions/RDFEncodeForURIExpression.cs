@@ -104,6 +104,7 @@ namespace RDFSharp.Query
 
                 if (leftArgumentPMember == null)
                     return null;
+
                 expressionResult = new RDFPlainLiteral(Uri.EscapeDataString(leftArgumentPMember.ToString()));
                 #endregion
             }

@@ -47,7 +47,7 @@ public class RDFDistinctModifierTest
         DataTable table = new DataTable();
         table.Columns.Add("?A", typeof(string));
         table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));            
+        table.Columns.Add("?C", typeof(string));
         DataRow row0 = table.NewRow();
         row0["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
         row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();

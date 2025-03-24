@@ -404,6 +404,7 @@ namespace RDFSharp.Model
                         {
                             if (value != null)
                                 throw new RDFModelException("Illegal subject value: " + value + GetTurtleContextCoordinates(turtleContext));
+
                             break;
                         }
                     }
@@ -443,7 +444,7 @@ namespace RDFSharp.Model
                     return new RDFResource(predicate.ToString(), turtleContext.HashContext);
                 case RDFResource predRes:
                     return predRes;
-                default: 
+                default:
                     throw new RDFModelException("Illegal predicate value: " + predicate + GetTurtleContextCoordinates(turtleContext));
             }
         }
@@ -650,8 +651,10 @@ namespace RDFSharp.Model
 
                 if (IsWhitespace(bufChar))
                     break;
+
                 if (bufChar == -1)
                     throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
+
                 prefixID.Append(char.ConvertFromUtf32(bufChar));
             }
 
@@ -713,6 +716,7 @@ namespace RDFSharp.Model
                 bufChar = ReadCodePoint(turtleData, turtleContext);
                 if (bufChar == '>')
                     break;
+
                 switch (bufChar)
                 {
                     case -1:
@@ -731,6 +735,7 @@ namespace RDFSharp.Model
                         throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
                     if (bufChar != 'u' && bufChar != 'U')
                         throw new RDFModelException("Uri includes string escapes: '\\" + bufChar + "'" + GetTurtleContextCoordinates(turtleContext));
+
                     uriBuf.Append(char.ConvertFromUtf32(bufChar));
                 }
             }
@@ -760,6 +765,7 @@ namespace RDFSharp.Model
                 return ParseURI(turtleData, turtleContext, result); // uriref, e.g. <foo://bar>
             if (bufChar == ':' || IsPrefixStartChar(bufChar))
                 return ParseQNameOrBoolean(turtleData, turtleContext, result); // qname or boolean
+
             switch (bufChar)
             {
                 case '_':
@@ -770,8 +776,10 @@ namespace RDFSharp.Model
             }
             if (IsNumber(bufChar) || bufChar == '.' || bufChar == '+' || bufChar == '-')
                 return ParseNumber(turtleData, turtleContext); // integer or double, e.g. 123 or 1.2e3
+
             if (bufChar == -1)
                 throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
+
             throw new RDFModelException("Expected an RDF value here, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(turtleContext));
         }
 
@@ -897,7 +905,7 @@ namespace RDFSharp.Model
 
                     if (!IsNumber(bufChar))
                         throw new RDFModelException("Exponent value missing" + GetTurtleContextCoordinates(turtleContext));
-                    
+
                     value.Append(char.ConvertFromUtf32(bufChar));
 
                     bufChar = ReadCodePoint(turtleData, turtleContext);
@@ -927,7 +935,7 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
             if (bufChar != ':' && !IsPrefixStartChar(bufChar))
                 throw new RDFModelException("Expected a ':' or a letter, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(turtleContext));
-            
+
             int previousChar;
             string nspace;
             if (bufChar == ':')
@@ -1023,7 +1031,7 @@ namespace RDFSharp.Model
             }
 
             string localNameString = localName.ToString();
-            if (localNameString.Where((t, i) => t == '%' 
+            if (localNameString.Where((t, i) => t == '%'
                                                          && (i > localNameString.Length - 3
                                                               || !Uri.IsHexDigit(localNameString[i + 1])
                                                               || !Uri.IsHexDigit(localNameString[i + 2]))).Any())
@@ -1056,7 +1064,7 @@ namespace RDFSharp.Model
                         throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
                     if (!IsLanguageStartChar(bufChar))
                         throw new RDFModelException("Expected a letter, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(turtleContext));
-                
+
                     lang.Append(char.ConvertFromUtf32(bufChar));
 
                     bufChar = ReadCodePoint(turtleData, turtleContext);
@@ -1089,6 +1097,7 @@ namespace RDFSharp.Model
                     object datatype = ParseValue(turtleData, turtleContext, result);
                     if (datatype is Uri datatypeUri)
                         return new RDFTypedLiteral(label, RDFDatatypeRegister.GetDatatype(datatypeUri.ToString()));
+
                     throw new RDFModelException("Illegal datatype value: " + datatype + GetTurtleContextCoordinates(turtleContext));
                 }
                 default:
@@ -1144,6 +1153,7 @@ namespace RDFSharp.Model
                 int bufChar = ReadCodePoint(turtleData, turtleContext);
                 if (bufChar == closingCharacter)
                     break;
+
                 switch (bufChar)
                 {
                     case -1:
@@ -1161,6 +1171,7 @@ namespace RDFSharp.Model
                     bufChar = ReadCodePoint(turtleData, turtleContext);
                     if (bufChar == -1)
                         throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
+
                     sb.Append(char.ConvertFromUtf32(bufChar));
                 }
             }
@@ -1181,6 +1192,7 @@ namespace RDFSharp.Model
                 int bufChar = ReadCodePoint(turtleData, turtleContext);
                 if (bufChar == -1)
                     throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
+
                 if (bufChar == closingCharacter)
                     doubleQuoteCount++;
                 else
@@ -1194,6 +1206,7 @@ namespace RDFSharp.Model
                     bufChar = ReadCodePoint(turtleData, turtleContext);
                     if (bufChar == -1)
                         throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
+
                     sb.Append(char.ConvertFromUtf32(bufChar));
                 }
             }
@@ -1209,7 +1222,7 @@ namespace RDFSharp.Model
             int backSlashIdx = s.IndexOf('\\');
             if (backSlashIdx == -1)
                 return s; // No escaped characters found
-            
+
             int startIdx = 0;
             int sLength = s.Length;
             StringBuilder sb = new StringBuilder(sLength);
@@ -1220,7 +1233,7 @@ namespace RDFSharp.Model
 
                 if (backSlashIdx + 1 >= sLength)
                     throw new RDFModelException("Unescaped backslash in: " + s + GetTurtleContextCoordinates(turtleContext));
-                
+
                 char bufChar = s[backSlashIdx + 1];
                 switch (bufChar)
                 {
@@ -1382,6 +1395,7 @@ namespace RDFSharp.Model
             int bufChar = ReadCodePoint(turtleData, turtleContext);
             if (IsLocalEscapedChar(bufChar))
                 return (char)bufChar;
+
             throw new RDFModelException("Found '" + char.ConvertFromUtf32(bufChar) + "', expected one of: _~.-!$&\'()*+,;=/?#@%" + GetTurtleContextCoordinates(turtleContext));
         }
         #endregion
@@ -1480,8 +1494,8 @@ namespace RDFSharp.Model
                 || char.IsNumber((char)codePoint)
                 || codePoint == '-'
                 || codePoint == 0x00B7
-                || codePoint >= 0x0300 && codePoint <= 0x036F
-                || codePoint >= 0x203F && codePoint <= 0x2040;
+                || (codePoint >= 0x0300 && codePoint <= 0x036F)
+                || (codePoint >= 0x203F && codePoint <= 0x2040);
 
         /// <summary>
         /// Check if the supplied code point represents either a valid prefixed name base character or an underscore
@@ -1494,18 +1508,18 @@ namespace RDFSharp.Model
         /// </summary>
         internal static bool IsPN_CHARS_BASE(int codePoint)
             => char.IsLetter((char)codePoint)
-                || codePoint >= 0x00C0 && codePoint <= 0x00D6
-                || codePoint >= 0x00D8 && codePoint <= 0x00F6
-                || codePoint >= 0x00F8 && codePoint <= 0x02FF
-                || codePoint >= 0x0370 && codePoint <= 0x037D
-                || codePoint >= 0x037F && codePoint <= 0x1FFF
-                || codePoint >= 0x200C && codePoint <= 0x200D
-                || codePoint >= 0x2070 && codePoint <= 0x218F
-                || codePoint >= 0x2C00 && codePoint <= 0x2FEF
-                || codePoint >= 0x3001 && codePoint <= 0xD7FF
-                || codePoint >= 0xF900 && codePoint <= 0xFDCF
-                || codePoint >= 0xFDF0 && codePoint <= 0xFFFD
-                || codePoint >= 0x10000 && codePoint <= 0xEFFFF;
+                || (codePoint >= 0x00C0 && codePoint <= 0x00D6)
+                || (codePoint >= 0x00D8 && codePoint <= 0x00F6)
+                || (codePoint >= 0x00F8 && codePoint <= 0x02FF)
+                || (codePoint >= 0x0370 && codePoint <= 0x037D)
+                || (codePoint >= 0x037F && codePoint <= 0x1FFF)
+                || (codePoint >= 0x200C && codePoint <= 0x200D)
+                || (codePoint >= 0x2070 && codePoint <= 0x218F)
+                || (codePoint >= 0x2C00 && codePoint <= 0x2FEF)
+                || (codePoint >= 0x3001 && codePoint <= 0xD7FF)
+                || (codePoint >= 0xF900 && codePoint <= 0xFDCF)
+                || (codePoint >= 0xFDF0 && codePoint <= 0xFFFD)
+                || (codePoint >= 0x10000 && codePoint <= 0xEFFFF);
         #endregion
 
         #region Write.Graph

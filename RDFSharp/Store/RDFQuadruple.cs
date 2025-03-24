@@ -90,7 +90,7 @@ namespace RDFSharp.Store
         public RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred, RDFResource obj)
             : this(context, subj, pred)
         {
-            TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;   
+            TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
             Object = obj ?? new RDFResource();
         }
 
@@ -162,7 +162,7 @@ namespace RDFSharp.Store
         public RDFMemoryStore ReifyQuadruple()
         {
             RDFMemoryStore reifStore = new RDFMemoryStore();
-            
+
             reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
             reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)Subject));
             reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)Predicate));

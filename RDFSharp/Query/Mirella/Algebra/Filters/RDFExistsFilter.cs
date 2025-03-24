@@ -93,7 +93,7 @@ namespace RDFSharp.Query
                 if (patternResultsEnumerable?.Count() > 0)
                 {
                     #region Subject
-                    bool subjectCompared = false;                    
+                    bool subjectCompared = false;
                     if (Pattern.Subject is RDFVariable
                          && PatternResults.Columns.Contains(subjectString)
                          && row.Table.Columns.Contains(subjectString))

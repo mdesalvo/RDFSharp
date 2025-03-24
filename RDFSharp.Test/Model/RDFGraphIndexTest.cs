@@ -85,7 +85,7 @@ public class RDFGraphIndexTest
         Assert.IsTrue(graphIndex.SubjectsIndex[subj.PatternMemberID].Contains(triple.TripleID));
         Assert.AreEqual(1, graphIndex.PredicatesIndex.Count);
         Assert.IsTrue(graphIndex.PredicatesIndex[pred.PatternMemberID].Contains(triple.TripleID));
-        Assert.AreEqual(0, graphIndex.ObjectsIndex.Count);            
+        Assert.AreEqual(0, graphIndex.ObjectsIndex.Count);
         Assert.AreEqual(1, graphIndex.LiteralsIndex.Count);
         Assert.IsTrue(graphIndex.LiteralsIndex[lit.PatternMemberID].Contains(triple.TripleID));
     }
@@ -233,7 +233,7 @@ public class RDFGraphIndexTest
         Assert.AreEqual(2, graphIndex.PredicatesIndex.Count);
         Assert.IsTrue(graphIndex.PredicatesIndex[pred1.PatternMemberID].Contains(triple1.TripleID));
         Assert.IsTrue(graphIndex.PredicatesIndex[pred2.PatternMemberID].Contains(triple2.TripleID));
-        Assert.AreEqual(0, graphIndex.ObjectsIndex.Count);            
+        Assert.AreEqual(0, graphIndex.ObjectsIndex.Count);
         Assert.AreEqual(1, graphIndex.LiteralsIndex.Count);
         Assert.IsTrue(graphIndex.LiteralsIndex[lit.PatternMemberID].Contains(triple1.TripleID));
         Assert.IsTrue(graphIndex.LiteralsIndex[lit.PatternMemberID].Contains(triple2.TripleID));

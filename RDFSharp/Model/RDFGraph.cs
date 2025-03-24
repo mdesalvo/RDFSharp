@@ -40,15 +40,15 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the graph's triples
         /// </summary>
-        public long TriplesCount 
+        public long TriplesCount
             => IndexedTriples.Count;
 
         /// <summary>
         /// Gets the enumerator on the graph's triples for iteration
         /// </summary>
-        public IEnumerator<RDFTriple> TriplesEnumerator 
-        { 
-            get 
+        public IEnumerator<RDFTriple> TriplesEnumerator
+        {
+            get
             {
                 foreach (RDFIndexedTriple indexedTriple in IndexedTriples.Values)
                 {
@@ -56,7 +56,7 @@ namespace RDFSharp.Model
                         ? new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.ResourcesRegister[indexedTriple.ObjectID])
                         : new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.LiteralsRegister[indexedTriple.ObjectID]);
                 }
-            } 
+            }
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Destroys the graph instance
         /// </summary>
-        ~RDFGraph() 
+        ~RDFGraph()
             => Dispose(false);
         #endregion
 
@@ -103,7 +103,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the graph
         /// </summary>
-        public override string ToString() 
+        public override string ToString()
             => Context.ToString();
 
         /// <summary>
@@ -120,13 +120,13 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the graph's triples
         /// </summary>
-        IEnumerator<RDFTriple> IEnumerable<RDFTriple>.GetEnumerator() 
+        IEnumerator<RDFTriple> IEnumerable<RDFTriple>.GetEnumerator()
             => TriplesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the graph's triples
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() 
+        IEnumerator IEnumerable.GetEnumerator()
             => TriplesEnumerator;
 
         /// <summary>
@@ -639,7 +639,7 @@ namespace RDFSharp.Model
             //Add triples from this graph
             foreach (RDFTriple t in this)
                 result.AddTriple(t);
-            
+
             //Manage the given graph
             if (graph != null)
             {
@@ -822,7 +822,7 @@ namespace RDFSharp.Model
 
             #region Datatype Discovery
             if (enableDatatypeDiscovery)
-            { 
+            {
                 foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
                     RDFDatatypeRegister.AddDatatype(datatypeDefinition);
             }
@@ -840,7 +840,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Reads a graph from a stream of the given RDF format.
         /// </summary>
-        public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, bool enableDatatypeDiscovery=false) 
+        public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, bool enableDatatypeDiscovery=false)
             => FromStream(rdfFormat, inputStream, null, enableDatatypeDiscovery);
         internal static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, Uri graphContext, bool enableDatatypeDiscovery=false)
         {

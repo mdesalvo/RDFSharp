@@ -29,7 +29,7 @@ public class RDFMultiplyExpressionTest
     public void ShouldCreateMultiplyExpressionWithExpressions()
     {
         RDFMultiplyExpression expression = new RDFMultiplyExpression(
-            new RDFMultiplyExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), 
+            new RDFMultiplyExpression(new RDFVariable("?V1"), new RDFVariable("?V2")),
             new RDFMultiplyExpression(new RDFVariable("?V3"), new RDFVariable("?V4")));
 
         Assert.IsNotNull(expression);
@@ -85,7 +85,7 @@ public class RDFMultiplyExpressionTest
     public void ShouldCreateMultiplyExpressionWithVariables()
     {
         RDFMultiplyExpression expression = new RDFMultiplyExpression(
-            new RDFVariable("?V1"), 
+            new RDFVariable("?V1"),
             new RDFVariable("?V2"));
 
         Assert.IsNotNull(expression);
@@ -99,7 +99,7 @@ public class RDFMultiplyExpressionTest
     public void ShouldCreateMultiplyExpressionWithVariableAndTypedLiteral()
     {
         RDFMultiplyExpression expression = new RDFMultiplyExpression(
-            new RDFVariable("?V"), 
+            new RDFVariable("?V"),
             new RDFTypedLiteral("25.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE));
 
         Assert.IsNotNull(expression);
@@ -478,7 +478,7 @@ public class RDFMultiplyExpressionTest
         table.Columns.Add("?A", typeof(string));
         table.Columns.Add("?B", typeof(string));
         DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(); 
+        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
         row["?B"] = new RDFResource("ex:subj").ToString();
         table.Rows.Add(row);
         table.AcceptChanges();

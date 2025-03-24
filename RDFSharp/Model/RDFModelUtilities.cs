@@ -191,14 +191,14 @@ namespace RDFSharp.Model
         /// </summary>
         internal static string TrimEnd(this string source, string value)
         {
-            if (string.IsNullOrEmpty(source) 
-                 || string.IsNullOrEmpty(value) 
+            if (string.IsNullOrEmpty(source)
+                 || string.IsNullOrEmpty(value)
                  || !source.EndsWith(value, StringComparison.Ordinal))
                 return source;
 
             return source.Remove(source.LastIndexOf(value, StringComparison.Ordinal));
         }
-        
+
         /// <summary>
         /// Gets the short representation of the given Uri
         /// </summary>
@@ -306,7 +306,7 @@ namespace RDFSharp.Model
             }
             return matchResult;
         }
-        
+
         /// <summary>
         /// Extracts the datatype definitions contained in the given graphs (both faceted and aliases)
         /// </summary>
@@ -327,7 +327,7 @@ namespace RDFSharp.Model
                      && graph[datatypeIRI, RDFVocabulary.OWL.ON_DATATYPE, null, null].FirstOrDefault()?.Object is RDFResource onDatatype)
                 {
                     //Detect the target datatype (fallback to rdfs:Literal in case not found)
-                    RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(onDatatype.ToString()) 
+                    RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(onDatatype.ToString())
                                                   ?? RDFDatatypeRegister.RDFSLiteral;
                     RDFModelEnums.RDFDatatypes targetDatatypeEnum = targetDatatype.ToString().GetEnumFromDatatype();
 
@@ -437,7 +437,7 @@ namespace RDFSharp.Model
                 else if (graph[datatypeIRI, RDFVocabulary.OWL.EQUIVALENT_CLASS, null, null].FirstOrDefault()?.Object is RDFResource equivalentDatatype)
                 {
                     //Detect the target datatype (fallback to rdfs:Literal in case not found)
-                    RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(equivalentDatatype.ToString()) 
+                    RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(equivalentDatatype.ToString())
                                                   ?? RDFDatatypeRegister.RDFSLiteral;
                     RDFModelEnums.RDFDatatypes targetDatatypeEnum = targetDatatype.ToString().GetEnumFromDatatype();
 
@@ -527,8 +527,8 @@ namespace RDFSharp.Model
             {
                 string subj = triple.Subject.ToString();
                 string pred = triple.Predicate.ToString();
-                string obj = triple.Object is RDFResource ? triple.Object.ToString() 
-                                                          : triple.Object is RDFTypedLiteral tlitObj ? tlitObj.Datatype.URI.ToString() 
+                string obj = triple.Object is RDFResource ? triple.Object.ToString()
+                                                          : triple.Object is RDFTypedLiteral tlitObj ? tlitObj.Datatype.URI.ToString()
                                                           : string.Empty;
 
                 //Resolve subject Uri
@@ -575,24 +575,18 @@ namespace RDFSharp.Model
             //RDFSharp datetime-based typed literals are automatically converted in UTC timezone (Z)
             (bool,string) TryParseDateTime(string value, string formatToParse, string formatToConvert)
             {
-                return DateTime.TryParseExact(value, formatToParse, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out DateTime parsedDateTime) 
-                    ? (true, parsedDateTime.ToString(formatToConvert, CultureInfo.InvariantCulture)) 
+                return DateTime.TryParseExact(value, formatToParse, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out DateTime parsedDateTime)
+                    ? (true, parsedDateTime.ToString(formatToConvert, CultureInfo.InvariantCulture))
                     : (false, literalValue);
             }
 
             switch (datatype)
             {
                 #region STRING CATEGORY
-                case RDFModelEnums.RDFDatatypes.RDFS_LITERAL:
-                case RDFModelEnums.RDFDatatypes.XSD_STRING:
-                case RDFModelEnums.RDFDatatypes.RDF_HTML:                
-                default:
-                    return (true, literalValue);
-
                 case RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL:
                     try
                     {
-                        _ = XDocument.Parse(literalValue);
+                        XDocument.Parse(literalValue);
                         return (true, literalValue);
                     }
                     catch { return (false, literalValue); }
@@ -603,7 +597,7 @@ namespace RDFSharp.Model
                     return (isValidJson, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_ANYURI:
-                    return Uri.TryCreate(literalValue, UriKind.Absolute, out Uri outUri) ? (true, Convert.ToString(outUri)) 
+                    return Uri.TryCreate(literalValue, UriKind.Absolute, out Uri outUri) ? (true, Convert.ToString(outUri))
                                                                                          : (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_NAME:
@@ -845,8 +839,8 @@ namespace RDFSharp.Model
                 #region NUMERIC CATEGORY
                 case RDFModelEnums.RDFDatatypes.XSD_DECIMAL:
                 case RDFModelEnums.RDFDatatypes.OWL_REAL:
-                    return decimal.TryParse(literalValue, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out decimal outDecimal) 
-                        ? (true, Convert.ToString(outDecimal, CultureInfo.InvariantCulture)) 
+                    return decimal.TryParse(literalValue, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out decimal outDecimal)
+                        ? (true, Convert.ToString(outDecimal, CultureInfo.InvariantCulture))
                         : (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.OWL_RATIONAL:
@@ -854,84 +848,90 @@ namespace RDFSharp.Model
                     return (isValidOwlRational, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_DOUBLE:
-                    return double.TryParse(literalValue, NumberStyles.Float, CultureInfo.InvariantCulture, out double outDouble) 
-                        ? (true, Convert.ToString(outDouble, CultureInfo.InvariantCulture)) 
+                    return double.TryParse(literalValue, NumberStyles.Float, CultureInfo.InvariantCulture, out double outDouble)
+                        ? (true, Convert.ToString(outDouble, CultureInfo.InvariantCulture))
                         : (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_FLOAT:
-                    return float.TryParse(literalValue, NumberStyles.Float, CultureInfo.InvariantCulture, out float outFloat) 
-                        ? (true, Convert.ToString(outFloat, CultureInfo.InvariantCulture)) 
+                    return float.TryParse(literalValue, NumberStyles.Float, CultureInfo.InvariantCulture, out float outFloat)
+                        ? (true, Convert.ToString(outFloat, CultureInfo.InvariantCulture))
                         : (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_INTEGER:
-                    return decimal.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outInteger) 
-                        ? (true, Convert.ToString(outInteger, CultureInfo.InvariantCulture)) 
+                    return decimal.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outInteger)
+                        ? (true, Convert.ToString(outInteger, CultureInfo.InvariantCulture))
                         : (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_LONG:
-                    return long.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out long outLong) 
-                        ? (true, Convert.ToString(outLong, CultureInfo.InvariantCulture)) 
+                    return long.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out long outLong)
+                        ? (true, Convert.ToString(outLong, CultureInfo.InvariantCulture))
                         : (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_INT:
-                    return int.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out int outInt) 
-                        ? (true, Convert.ToString(outInt, CultureInfo.InvariantCulture)) 
+                    return int.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out int outInt)
+                        ? (true, Convert.ToString(outInt, CultureInfo.InvariantCulture))
                         : (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_SHORT:
-                    return short.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out short outShort) 
-                        ? (true, Convert.ToString(outShort, CultureInfo.InvariantCulture)) 
+                    return short.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out short outShort)
+                        ? (true, Convert.ToString(outShort, CultureInfo.InvariantCulture))
                         : (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_BYTE:
-                    return sbyte.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out sbyte outSByte) 
-                        ? (true, Convert.ToString(outSByte, CultureInfo.InvariantCulture)) 
+                    return sbyte.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out sbyte outSByte)
+                        ? (true, Convert.ToString(outSByte, CultureInfo.InvariantCulture))
                         : (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG:
-                    return ulong.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out ulong outULong) 
-                        ? (true, Convert.ToString(outULong, CultureInfo.InvariantCulture)) 
+                    return ulong.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out ulong outULong)
+                        ? (true, Convert.ToString(outULong, CultureInfo.InvariantCulture))
                         : (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT:
-                    return uint.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint outUInt) 
-                        ? (true, Convert.ToString(outUInt, CultureInfo.InvariantCulture)) 
+                    return uint.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint outUInt)
+                        ? (true, Convert.ToString(outUInt, CultureInfo.InvariantCulture))
                         : (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT:
-                    return ushort.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out ushort outUShort) 
-                        ? (true, Convert.ToString(outUShort, CultureInfo.InvariantCulture)) 
+                    return ushort.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out ushort outUShort)
+                        ? (true, Convert.ToString(outUShort, CultureInfo.InvariantCulture))
                         : (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE:
-                    return byte.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out byte outByte) 
-                        ? (true, Convert.ToString(outByte, CultureInfo.InvariantCulture)) 
+                    return byte.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out byte outByte)
+                        ? (true, Convert.ToString(outByte, CultureInfo.InvariantCulture))
                         : (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER:
                     if (decimal.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outNPInteger))
-                        return outNPInteger > 0 ? (false, literalValue) 
+                        return outNPInteger > 0 ? (false, literalValue)
                                                 : (true, Convert.ToString(outNPInteger, CultureInfo.InvariantCulture));
+
                     return (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER:
                     if (decimal.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outNInteger))
-                        return outNInteger > -1 ? (false, literalValue) 
+                        return outNInteger > -1 ? (false, literalValue)
                                                 : (true, Convert.ToString(outNInteger, CultureInfo.InvariantCulture));
+
                     return (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER:
                     if (decimal.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outNNInteger))
-                        return outNNInteger < 0 ? (false, literalValue) 
+                        return outNNInteger < 0 ? (false, literalValue)
                                                 : (true, Convert.ToString(outNNInteger, CultureInfo.InvariantCulture));
+
                     return (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER:
                     if (decimal.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outPInteger))
-                        return outPInteger < 1 ? (false, literalValue) 
+                        return outPInteger < 1 ? (false, literalValue)
                                                : (true, Convert.ToString(outPInteger, CultureInfo.InvariantCulture));
+
                     return (false, literalValue);
                 #endregion
+
+                default: return (true, literalValue);
             }
         }
 

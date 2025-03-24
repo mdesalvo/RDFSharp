@@ -63,7 +63,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// SPO-flavor ctor
         /// </summary>
-        public RDFTriple(RDFResource subj, RDFResource pred, RDFResource obj) 
+        public RDFTriple(RDFResource subj, RDFResource pred, RDFResource obj)
             : this(subj, pred)
         {
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;

@@ -59,7 +59,7 @@ public class RDFPropertyPathTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyPathBecauseUnsupportedEnd()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPropertyPath(new RDFVariable("?START"), new RDFPlainLiteral("end")));
-        
+
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullSequenceStep()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
@@ -198,9 +198,9 @@ public class RDFPropertyPathTest
     public void ShouldAddSingleAlternativeSteps()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.ALT), 
+        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.ALT),
             new RDFPropertyPathStep(RDFVocabulary.RDF.BAG) ]);
-            
+
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
@@ -219,9 +219,9 @@ public class RDFPropertyPathTest
     public void ShouldAddSingleAlternativeStepsWithInverseFirst()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.ALT).Inverse(), 
+        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.ALT).Inverse(),
             new RDFPropertyPathStep(RDFVocabulary.RDF.BAG) ]);
-            
+
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
@@ -240,9 +240,9 @@ public class RDFPropertyPathTest
     public void ShouldAddSingleAlternativeStepsWithInverseLast()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.ALT), 
+        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.ALT),
             new RDFPropertyPathStep(RDFVocabulary.RDF.BAG).Inverse() ]);
-            
+
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
@@ -261,9 +261,9 @@ public class RDFPropertyPathTest
     public void ShouldAddSingleAlternativeStepsWithInverseBoth()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.ALT).Inverse(), 
+        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.ALT).Inverse(),
             new RDFPropertyPathStep(RDFVocabulary.RDF.BAG).Inverse() ]);
-            
+
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
@@ -283,7 +283,7 @@ public class RDFPropertyPathTest
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
         propertyPath.AddAlternativeSteps([new RDFPropertyPathStep(RDFVocabulary.RDF.ALT)]);
-            
+
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
@@ -304,7 +304,7 @@ public class RDFPropertyPathTest
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
         propertyPath.AddAlternativeSteps([new RDFPropertyPathStep(RDFVocabulary.RDF.ALT)]);
         propertyPath.AddAlternativeSteps([new RDFPropertyPathStep(RDFVocabulary.RDF.BAG)]);
-            
+
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
@@ -327,7 +327,7 @@ public class RDFPropertyPathTest
             new RDFPropertyPathStep(RDFVocabulary.RDF.BAG) ]);
         propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
             new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ) ]);
-            
+
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
@@ -349,7 +349,7 @@ public class RDFPropertyPathTest
         propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT));
         propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
             new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ)]);
-            
+
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
@@ -371,7 +371,7 @@ public class RDFPropertyPathTest
         propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
             new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ)]);
         propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT));
-            
+
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
@@ -395,7 +395,7 @@ public class RDFPropertyPathTest
         propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT));
         propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
             new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ)]);
-            
+
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
@@ -419,7 +419,7 @@ public class RDFPropertyPathTest
         propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT).Inverse());
         propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
             new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ)]);
-            
+
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
@@ -448,7 +448,7 @@ public class RDFPropertyPathTest
     public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullPropertyPathStepInAlternativeSteps()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
             .AddAlternativeSteps([null]));
-        
+
     [TestMethod]
     public void ShouldGetPatternListFromEmptyPropertyPath()
     {
@@ -543,7 +543,7 @@ public class RDFPropertyPathTest
     public void ShouldGetPatternListFromSingleAlternativePropertyPath()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE), 
+        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE),
             new RDFPropertyPathStep(RDFVocabulary.RDF.LI),
             new RDFPropertyPathStep(RDFVocabulary.RDF.REST) ]);
         List<RDFPattern> patterns = propertyPath.GetPatternList();
@@ -559,10 +559,10 @@ public class RDFPropertyPathTest
     public void ShouldGetPatternListFromMultipleAlternativePropertyPath()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE), 
+        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE),
             new RDFPropertyPathStep(RDFVocabulary.RDF.LI),
             new RDFPropertyPathStep(RDFVocabulary.RDF.REST) ]);
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG), 
+        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
             new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ) ]);
         List<RDFPattern> patterns = propertyPath.GetPatternList();
 
@@ -579,11 +579,11 @@ public class RDFPropertyPathTest
     public void ShouldGetPatternListFromMultipleAlternativeAndSequenceMiddlePropertyPath()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE), 
+        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE),
             new RDFPropertyPathStep(RDFVocabulary.RDF.LI),
             new RDFPropertyPathStep(RDFVocabulary.RDF.REST) ]);
         propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.HTML));
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG), 
+        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
             new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ) ]);
         List<RDFPattern> patterns = propertyPath.GetPatternList();
 
@@ -601,11 +601,11 @@ public class RDFPropertyPathTest
     public void ShouldGetPatternListFromMultipleAlternativeAndSequenceMiddleAndInversePropertyPath()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE), 
+        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE),
             new RDFPropertyPathStep(RDFVocabulary.RDF.LI).Inverse(),
             new RDFPropertyPathStep(RDFVocabulary.RDF.REST).Inverse() ]);
         propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.HTML));
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG), 
+        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
             new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ) ]);
         List<RDFPattern> patterns = propertyPath.GetPatternList();
 
@@ -623,7 +623,7 @@ public class RDFPropertyPathTest
     public void ShouldGetPatternListFromMultipleAlternativePropertyPathEndingWithSequence()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE), 
+        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE),
             new RDFPropertyPathStep(RDFVocabulary.RDF.LI),
             new RDFPropertyPathStep(RDFVocabulary.RDF.REST) ]);
         propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.HTML));

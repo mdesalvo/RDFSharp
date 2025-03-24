@@ -97,7 +97,7 @@ public class RDFValidationResultTest
                 break;
         }
     }
-        
+
     [DataTestMethod]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Info)]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning)]

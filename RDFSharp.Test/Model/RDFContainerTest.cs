@@ -87,12 +87,12 @@ public class RDFContainerTest
     {
         RDFContainer cont = new RDFContainer(containerType, itemType);
         if (itemType == RDFModelEnums.RDFItemTypes.Literal)
-        { 
+        {
             cont.AddItem(new RDFPlainLiteral("lit"));
             cont.AddItem(new RDFPlainLiteral("lit"));
         }
         else
-        { 
+        {
             cont.AddItem(new RDFResource("http://item/"));
             cont.AddItem(new RDFResource("http://item/"));
         }
@@ -124,7 +124,7 @@ public class RDFContainerTest
             cont.AddItem(new RDFResource("http://item/"));
         else
             cont.AddItem(new RDFPlainLiteral("lit"));
-            
+
         Assert.AreEqual(0, cont.ItemsCount);
     }
 

@@ -178,8 +178,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Custom-ctor to configure options for a SPARQL endpoint query
         /// </summary>
-        public RDFSPARQLEndpointQueryOptions(int timeoutMilliseconds, 
-            RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors? errorBehavior=null, 
+        public RDFSPARQLEndpointQueryOptions(int timeoutMilliseconds,
+            RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors? errorBehavior=null,
             RDFQueryEnums.RDFSPARQLEndpointQueryMethods? queryMethod=null) : this(timeoutMilliseconds)
          {
             ErrorBehavior = errorBehavior ?? RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException;

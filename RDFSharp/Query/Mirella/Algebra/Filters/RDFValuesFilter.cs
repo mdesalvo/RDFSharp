@@ -80,7 +80,7 @@ namespace RDFSharp.Query
                     string filterColumnValue = row[filterColumn].ToString();
 
                     //Filter the enumerable representation of the filter table
-                    valuesTableEnumerable = valuesTableEnumerable.Where(binding => 
+                    valuesTableEnumerable = valuesTableEnumerable.Where(binding =>
                         binding.IsNull(filterColumn) || binding[filterColumn].ToString().Equals(filterColumnValue, StringComparison.Ordinal));
                 });
 

@@ -63,7 +63,7 @@ public class RDFMinInclusiveConstraintTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMinInclusiveLiteralConstraint()
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFMinInclusiveConstraint(null as RDFLiteral));
-        
+
     [TestMethod]
     public void ShouldExportMinInclusiveLiteralConstraint()
     {

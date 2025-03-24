@@ -115,9 +115,9 @@ public class RDFFederationTest
         federation.AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri("ex:sparqlEndpoint1")));
         federation.AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri("ex:sparqlEndpoint1"))); //Will be discarded, since duplicate endpoints are not allowed
         federation.AddSPARQLEndpoint(null); //Will be discarded, since null is not allowed
-        federation.AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri("ex:sparqlEndpoint2")), new RDFSPARQLEndpointQueryOptions { 
-            ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult, 
-            QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post, 
+        federation.AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri("ex:sparqlEndpoint2")), new RDFSPARQLEndpointQueryOptions {
+            ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult,
+            QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post,
             TimeoutMilliseconds = 25000});
 
         Assert.AreEqual(2, federation.DataSourcesCount);

@@ -56,7 +56,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -101,7 +101,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -126,7 +126,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
         .Optional());
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -153,7 +153,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
         .Optional());
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -2475,7 +2475,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
       .AddProjectionVariable(new RDFVariable("?S"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -2499,7 +2499,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
       .AddProjectionVariable(new RDFVariable("?S"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       SELECT ?S
       WHERE {
@@ -2524,7 +2524,7 @@ public class RDFQueryPrinterTest
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -2554,7 +2554,7 @@ public class RDFQueryPrinterTest
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -2589,7 +2589,7 @@ public class RDFQueryPrinterTest
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -2624,7 +2624,7 @@ public class RDFQueryPrinterTest
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -2663,7 +2663,7 @@ public class RDFQueryPrinterTest
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -2707,7 +2707,7 @@ public class RDFQueryPrinterTest
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -2806,7 +2806,7 @@ public class RDFQueryPrinterTest
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -2860,7 +2860,7 @@ public class RDFQueryPrinterTest
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -2915,7 +2915,7 @@ public class RDFQueryPrinterTest
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -3292,7 +3292,7 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -3323,7 +3323,7 @@ public class RDFQueryPrinterTest
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()))
         .AddProjectionVariable(new RDFVariable("?S")));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -3438,7 +3438,7 @@ public class RDFQueryPrinterTest
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())))
       .AddProjectionVariable(new RDFVariable("?S"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -3471,7 +3471,7 @@ public class RDFQueryPrinterTest
         .AddProjectionVariable(new RDFVariable("?T")))
       .AddProjectionVariable(new RDFVariable("?S"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -3506,7 +3506,7 @@ public class RDFQueryPrinterTest
         .AddProjectionVariable(new RDFVariable("?T")))
       .AddProjectionVariable(new RDFVariable("?S"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -3546,7 +3546,7 @@ public class RDFQueryPrinterTest
       .AddProjectionVariable(new RDFVariable("?Z"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -3596,7 +3596,7 @@ public class RDFQueryPrinterTest
       .AddProjectionVariable(new RDFVariable("?Z"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -3646,7 +3646,7 @@ public class RDFQueryPrinterTest
       .AddProjectionVariable(new RDFVariable("?Z"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -3700,7 +3700,7 @@ public class RDFQueryPrinterTest
       .AddProjectionVariable(new RDFVariable("?Z"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -3759,7 +3759,7 @@ public class RDFQueryPrinterTest
       .AddProjectionVariable(new RDFVariable("?Z"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -3845,7 +3845,7 @@ public class RDFQueryPrinterTest
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -3945,7 +3945,7 @@ public class RDFQueryPrinterTest
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta","it"))))
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -6343,7 +6343,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -6386,7 +6386,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -6410,7 +6410,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
         .Optional());
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -6436,7 +6436,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
         .Optional());
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -6590,7 +6590,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Optional()));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -6617,7 +6617,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
         .Optional());
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -6649,7 +6649,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("ex:subj2"), new RDFResource("ex:pred2"), new RDFVariable("?T")).Optional())
         .Optional());
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -6681,7 +6681,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T"))));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -6717,7 +6717,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .UnionWithNext()); //Will not be printed, since this is the last evaluable query member
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -6758,7 +6758,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -6803,7 +6803,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .Optional());
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -6854,7 +6854,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .Optional());
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -6906,7 +6906,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .UnionWithNext()); //UnionWithNext will not be printed, since this is the last evaluable query member
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -6946,7 +6946,7 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -6976,7 +6976,7 @@ public class RDFQueryPrinterTest
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()))
         .AddProjectionVariable(new RDFVariable("?S")));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -7005,7 +7005,7 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -7036,7 +7036,7 @@ public class RDFQueryPrinterTest
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()))
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -7069,7 +7069,7 @@ public class RDFQueryPrinterTest
         .Optional()
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -7106,7 +7106,7 @@ public class RDFQueryPrinterTest
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -7153,7 +7153,7 @@ public class RDFQueryPrinterTest
         .Optional()
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -7200,7 +7200,7 @@ public class RDFQueryPrinterTest
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -7256,7 +7256,7 @@ public class RDFQueryPrinterTest
         .Optional()
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -7341,7 +7341,7 @@ public class RDFQueryPrinterTest
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -7440,7 +7440,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -7485,7 +7485,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -7510,7 +7510,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
         .Optional());
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -7537,7 +7537,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
         .Optional());
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -7699,7 +7699,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Optional()));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -7729,7 +7729,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
         .Optional());
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -7764,7 +7764,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("ex:subj2"), new RDFResource("ex:pred2"), new RDFVariable("?T")).Optional())
         .Optional());
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -7799,7 +7799,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T"))));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -7838,7 +7838,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .UnionWithNext()); //Will not be printed, since this is the last evaluable query member
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -7883,7 +7883,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -7932,7 +7932,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .Optional());
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -7986,7 +7986,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .Optional());
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -8041,7 +8041,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .UnionWithNext()); //UnionWithNext will not be printed, since this is the last evaluable query member
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -8084,7 +8084,7 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -8117,7 +8117,7 @@ public class RDFQueryPrinterTest
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()))
         .AddProjectionVariable(new RDFVariable("?S")));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -8152,7 +8152,7 @@ public class RDFQueryPrinterTest
         .Optional()
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -8192,7 +8192,7 @@ public class RDFQueryPrinterTest
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -8242,7 +8242,7 @@ public class RDFQueryPrinterTest
         .Optional()
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -8292,7 +8292,7 @@ public class RDFQueryPrinterTest
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -8351,7 +8351,7 @@ public class RDFQueryPrinterTest
         .Optional()
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -8440,7 +8440,7 @@ public class RDFQueryPrinterTest
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -8541,7 +8541,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -8584,7 +8584,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -8608,7 +8608,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
         .Optional());
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -8634,7 +8634,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())
         .Optional());
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -8791,7 +8791,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Optional()));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -8821,7 +8821,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
         .Optional());
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -8854,7 +8854,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("ex:subj2"), new RDFResource("ex:pred2"), new RDFVariable("?T")).Optional())
         .Optional());
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -8889,7 +8889,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T"))));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -8926,7 +8926,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .UnionWithNext()); //Will not be printed, since this is the last evaluable query member
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -8968,7 +8968,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -9014,7 +9014,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .Optional());
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -9066,7 +9066,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .Optional());
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -9122,7 +9122,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .UnionWithNext()); //UnionWithNext will not be printed, since this is the last evaluable query member
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -9163,7 +9163,7 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional())));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -9194,7 +9194,7 @@ public class RDFQueryPrinterTest
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Optional()))
         .AddProjectionVariable(new RDFVariable("?S")));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -9227,7 +9227,7 @@ public class RDFQueryPrinterTest
         .Optional()
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -9265,7 +9265,7 @@ public class RDFQueryPrinterTest
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -9313,7 +9313,7 @@ public class RDFQueryPrinterTest
         .Optional()
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -9361,7 +9361,7 @@ public class RDFQueryPrinterTest
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -9418,7 +9418,7 @@ public class RDFQueryPrinterTest
         .Optional()
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -9504,7 +9504,7 @@ public class RDFQueryPrinterTest
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddProjectionVariable(new RDFVariable("?T")));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
-    string expectedQueryString = 
+    string expectedQueryString =
       """
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>

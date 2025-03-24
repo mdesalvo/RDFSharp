@@ -25,7 +25,7 @@ public class RDFLengthFacetTest
 {
     #region Tests
     [TestMethod]
-        
+
     public void ShouldCreateLengthFacet()
     {
         RDFLengthFacet facet = new RDFLengthFacet(6);
@@ -36,7 +36,7 @@ public class RDFLengthFacetTest
     }
 
     [TestMethod]
-        
+
     public void ShouldValidateLengthFacet()
     {
         RDFLengthFacet facet = new RDFLengthFacet(6);
@@ -55,7 +55,7 @@ public class RDFLengthFacetTest
     }
 
     [TestMethod]
-        
+
     public void ShouldConvertLengthFacetToGraph()
     {
         RDFLengthFacet facet = new RDFLengthFacet(6);

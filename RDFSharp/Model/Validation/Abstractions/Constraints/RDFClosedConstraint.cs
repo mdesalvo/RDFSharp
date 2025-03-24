@@ -65,7 +65,7 @@ namespace RDFSharp.Model
         internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
         {
             RDFValidationReport report = new RDFValidationReport();
-            
+
             #region Evaluation
             if (Closed)
             {

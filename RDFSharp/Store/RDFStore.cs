@@ -543,7 +543,7 @@ namespace RDFSharp.Store
         {
             if (string.IsNullOrWhiteSpace(filepath))
                 throw new RDFStoreException("Cannot write RDF store to file because given \"filepath\" parameter is null or empty.");
-            
+
             switch (rdfFormat)
             {
                 case RDFStoreEnums.RDFFormats.NQuads:
@@ -571,7 +571,7 @@ namespace RDFSharp.Store
         {
             if (outputStream == null)
                 throw new RDFStoreException("Cannot write RDF store to stream because given \"outputStream\" parameter is null.");
-            
+
             switch (rdfFormat)
             {
                 case RDFStoreEnums.RDFFormats.NQuads:

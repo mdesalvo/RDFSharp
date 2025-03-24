@@ -112,7 +112,7 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Disposes the store index 
+        /// Disposes the store index
         /// </summary>
         private void Dispose(bool disposing)
         {

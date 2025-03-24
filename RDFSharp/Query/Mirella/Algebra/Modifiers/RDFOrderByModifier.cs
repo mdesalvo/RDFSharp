@@ -61,8 +61,8 @@ namespace RDFSharp.Query
         internal override DataTable ApplyModifier(DataTable table)
         {
             if (table.Columns.Contains(Variable.ToString()))
-                table.DefaultView.Sort = !string.IsNullOrEmpty(table.DefaultView.Sort) 
-                                            ? string.Concat(table.DefaultView.Sort, ", ", Variable, " ", OrderByFlavor) 
+                table.DefaultView.Sort = !string.IsNullOrEmpty(table.DefaultView.Sort)
+                                            ? string.Concat(table.DefaultView.Sort, ", ", Variable, " ", OrderByFlavor)
                                             : string.Concat(Variable, " ", OrderByFlavor);
             return table;
         }

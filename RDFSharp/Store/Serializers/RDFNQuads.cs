@@ -108,13 +108,13 @@ namespace RDFSharp.Store
                             quadrupleTemplate = "<{SUBJ}> <{PRED}> <{OBJ}> <{CTX}> .";
                         else
                         {
-                            quadrupleTemplate = q.Object is RDFPlainLiteral ? "<{SUBJ}> <{PRED}> \"{VAL}\"@{LANG} <{CTX}> ." 
+                            quadrupleTemplate = q.Object is RDFPlainLiteral ? "<{SUBJ}> <{PRED}> \"{VAL}\"@{LANG} <{CTX}> ."
                                                                             : "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> <{CTX}> .";
                         }
                         #endregion
 
                         #region subj
-                        quadrupleTemplate = ((RDFResource)q.Subject).IsBlank ? quadrupleTemplate.Replace("<{SUBJ}>", RDFModelUtilities.Unicode_To_ASCII(q.Subject.ToString()).Replace("bnode:", "_:")) 
+                        quadrupleTemplate = ((RDFResource)q.Subject).IsBlank ? quadrupleTemplate.Replace("<{SUBJ}>", RDFModelUtilities.Unicode_To_ASCII(q.Subject.ToString()).Replace("bnode:", "_:"))
                                                                              : quadrupleTemplate.Replace("{SUBJ}", RDFModelUtilities.Unicode_To_ASCII(q.Subject.ToString()));
                         #endregion
 
@@ -125,7 +125,7 @@ namespace RDFSharp.Store
                         #region object
                         if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                         {
-                            quadrupleTemplate = ((RDFResource)q.Object).IsBlank ? quadrupleTemplate.Replace("<{OBJ}>", RDFModelUtilities.Unicode_To_ASCII(q.Object.ToString())).Replace("bnode:", "_:") 
+                            quadrupleTemplate = ((RDFResource)q.Object).IsBlank ? quadrupleTemplate.Replace("<{OBJ}>", RDFModelUtilities.Unicode_To_ASCII(q.Object.ToString())).Replace("bnode:", "_:")
                                                                                 : quadrupleTemplate.Replace("{OBJ}", RDFModelUtilities.Unicode_To_ASCII(q.Object.ToString()));
                         }
                         #endregion

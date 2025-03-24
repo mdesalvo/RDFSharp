@@ -68,12 +68,12 @@ public class RDFDescribeQueryResultTest
         row3["?OBJECT"] = $"lit^^{RDFVocabulary.XSD.STRING}";
         describeResult.DescribeResults.Rows.Add(row3);
         describeResult.DescribeResults.AcceptChanges();
-            
+
         Assert.AreEqual(3, describeResult.DescribeResults.Columns.Count);
         Assert.AreEqual(4, describeResult.DescribeResultsCount);
 
         RDFGraph describeGraph = describeResult.ToRDFGraph();
-            
+
         Assert.IsNotNull(describeGraph);
         Assert.AreEqual(4, describeGraph.TriplesCount);
         Assert.IsTrue(describeGraph.ContainsTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit","en-US"))));
@@ -110,12 +110,12 @@ public class RDFDescribeQueryResultTest
         row3["?OBJECT"] = $"lit^^{RDFVocabulary.XSD.STRING}";
         describeResult.DescribeResults.Rows.Add(row3);
         describeResult.DescribeResults.AcceptChanges();
-            
+
         Assert.AreEqual(3, describeResult.DescribeResults.Columns.Count);
         Assert.AreEqual(4, describeResult.DescribeResultsCount);
 
         RDFGraph describeGraph = await describeResult.ToRDFGraphAsync();
-            
+
         Assert.IsNotNull(describeGraph);
         Assert.AreEqual(4, describeGraph.TriplesCount);
         Assert.IsTrue(await describeGraph.ContainsTripleAsync(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit","en-US"))));
@@ -129,7 +129,7 @@ public class RDFDescribeQueryResultTest
     {
         RDFDescribeQueryResult describeResult = new RDFDescribeQueryResult();
         RDFGraph describeGraph = describeResult.ToRDFGraph();
-            
+
         Assert.IsNotNull(describeGraph);
         Assert.AreEqual(0, describeGraph.TriplesCount);
     }
@@ -242,12 +242,12 @@ public class RDFDescribeQueryResultTest
         row3["?OBJECT"] = $"lit^^{RDFVocabulary.XSD.STRING}";
         describeResult.DescribeResults.Rows.Add(row3);
         describeResult.DescribeResults.AcceptChanges();
-            
+
         Assert.AreEqual(4, describeResult.DescribeResults.Columns.Count);
         Assert.AreEqual(4, describeResult.DescribeResultsCount);
 
         RDFMemoryStore describeStore = describeResult.ToRDFMemoryStore();
-            
+
         Assert.IsNotNull(describeStore);
         Assert.AreEqual(4, describeStore.QuadruplesCount);
         Assert.IsTrue(describeStore.ContainsQuadruple(new RDFQuadruple(new RDFContext(new Uri("ex:ctx")), new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit","en-US"))));
@@ -289,12 +289,12 @@ public class RDFDescribeQueryResultTest
         row3["?OBJECT"] = $"lit^^{RDFVocabulary.XSD.STRING}";
         describeResult.DescribeResults.Rows.Add(row3);
         describeResult.DescribeResults.AcceptChanges();
-            
+
         Assert.AreEqual(4, describeResult.DescribeResults.Columns.Count);
         Assert.AreEqual(4, describeResult.DescribeResultsCount);
 
         RDFMemoryStore describeStore = await describeResult.ToRDFMemoryStoreAsync();
-            
+
         Assert.IsNotNull(describeStore);
         Assert.AreEqual(4, describeStore.QuadruplesCount);
         Assert.IsTrue(describeStore.ContainsQuadruple(new RDFQuadruple(new RDFContext(new Uri("ex:ctx")), new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit","en-US"))));
@@ -308,7 +308,7 @@ public class RDFDescribeQueryResultTest
     {
         RDFDescribeQueryResult describeResult = new RDFDescribeQueryResult();
         RDFMemoryStore describeStore = describeResult.ToRDFMemoryStore();
-            
+
         Assert.IsNotNull(describeStore);
         Assert.AreEqual(0, describeStore.QuadruplesCount);
     }

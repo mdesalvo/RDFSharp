@@ -52,7 +52,7 @@ namespace RDFSharp.Query
             StringBuilder sb = new StringBuilder();
 
             //L
-            sb.Append(LeftArgument is RDFTypedLiteral tlLeftArgument && tlLeftArgument.HasDecimalDatatype() 
+            sb.Append(LeftArgument is RDFTypedLiteral tlLeftArgument && tlLeftArgument.HasDecimalDatatype()
                         ? tlLeftArgument.Value.ToString(CultureInfo.InvariantCulture)
                         : RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
 

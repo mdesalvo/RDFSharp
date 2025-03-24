@@ -49,7 +49,7 @@ public class RDFAggregatorTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAggregatorBecauseNullPartitionVariable()
         =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFAggregator(new RDFVariable("?AGGVAR"), null));
-        
+
     [TestMethod]
     public void ShouldSetDistinct()
     {

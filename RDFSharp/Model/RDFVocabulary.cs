@@ -767,7 +767,7 @@ namespace RDFSharp.Model
             #endregion
         }
         #endregion
-        
+
         #region FOAF
         /// <summary>
         /// FOAF represents the Friend-of-a-Friend vocabulary.
@@ -1147,7 +1147,7 @@ namespace RDFSharp.Model
             #endregion
         }
         #endregion
-        
+
         #region GEO
         /// <summary>
         /// GEO represents the W3C GEO vocabulary.
@@ -1207,7 +1207,7 @@ namespace RDFSharp.Model
             #endregion
         }
         #endregion
-        
+
         #region GEOSPARQL
         /// <summary>
         /// GEOSPARQL represents the OGC GeoSPARQL 1.0 vocabulary (with SF and GEOF extensions)
@@ -1527,7 +1527,7 @@ namespace RDFSharp.Model
                 /// </summary>
                 public static readonly RDFResource TIN = new RDFResource(string.Concat(BASE_URI, "TIN"));
             }
-            
+
             /// <summary>
             /// Functions extensions
             /// </summary>
@@ -1726,7 +1726,7 @@ namespace RDFSharp.Model
             #endregion
         }
         #endregion
-        
+
         #region OWL
         /// <summary>
         /// OWL represents the OWL vocabulary.
@@ -2141,7 +2141,7 @@ namespace RDFSharp.Model
             #endregion
         }
         #endregion
-        
+
         #region RDFSHARP
         /// <summary>
         /// RDFSHARP represents the vocabulary of this library.
@@ -2166,7 +2166,7 @@ namespace RDFSharp.Model
             #endregion
         }
         #endregion
-        
+
         #region RDF
         /// <summary>
         /// RDF represents the W3C RDF vocabulary.
@@ -2316,7 +2316,7 @@ namespace RDFSharp.Model
             #endregion
         }
         #endregion
-        
+
         #region RDFS
         /// <summary>
         /// RDFS represents the W3C RDF Schema vocabulary.
@@ -2416,7 +2416,7 @@ namespace RDFSharp.Model
             #endregion
         }
         #endregion
-        
+
         #region SHACL
         /// <summary>
         /// SHACL represents the W3C SHACL Core vocabulary.
@@ -3326,7 +3326,7 @@ namespace RDFSharp.Model
             #endregion
         }
         #endregion
-        
+
         #region SKOS
         /// <summary>
         /// SKOS represents the W3C SKOS vocabulary (with SKOS-XL extensions)
@@ -3571,7 +3571,7 @@ namespace RDFSharp.Model
             #endregion
         }
         #endregion
-        
+
         #region SWRL
         /// <summary>
         /// SWRL represents the W3C Semantic Web Rule Language vocabulary.
@@ -3726,7 +3726,7 @@ namespace RDFSharp.Model
             #endregion
         }
         #endregion
-        
+
         #region TIME
         /// <summary>
         /// TIME represents the OWL-Time vocabulary
@@ -4415,7 +4415,7 @@ namespace RDFSharp.Model
             #endregion
         }
         #endregion
-        
+
         #region XML
         /// <summary>
         /// XML represents the XML vocabulary.
@@ -4450,7 +4450,7 @@ namespace RDFSharp.Model
             #endregion
         }
         #endregion
-        
+
         #region XSD
         /// <summary>
         /// XSD represents the W3C XML Schema vocabulary.

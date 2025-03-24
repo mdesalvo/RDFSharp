@@ -32,7 +32,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Builds a facet by initializing its blank URI
         /// </summary>
-        internal RDFFacet() 
+        internal RDFFacet()
             => URI = new RDFResource();
         #endregion
 

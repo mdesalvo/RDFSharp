@@ -32,7 +32,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an arithmetical expression with given arguments
         /// </summary>
-        protected RDFMathExpression(RDFExpression leftArgument, RDFExpression rightArgument) 
+        protected RDFMathExpression(RDFExpression leftArgument, RDFExpression rightArgument)
             : base(leftArgument, rightArgument)
         {
             #region Guards
@@ -44,7 +44,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an arithmetical expression with given arguments
         /// </summary>
-        protected RDFMathExpression(RDFExpression leftArgument, RDFVariable rightArgument) 
+        protected RDFMathExpression(RDFExpression leftArgument, RDFVariable rightArgument)
             : base(leftArgument, rightArgument)
         {
             #region Guards
@@ -56,7 +56,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an arithmetical expression with given arguments
         /// </summary>
-        protected RDFMathExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) 
+        protected RDFMathExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument)
             : base(leftArgument, rightArgument)
         {
             #region Guards
@@ -70,7 +70,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an arithmetical expression with given arguments
         /// </summary>
-        protected RDFMathExpression(RDFVariable leftArgument, RDFExpression rightArgument) 
+        protected RDFMathExpression(RDFVariable leftArgument, RDFExpression rightArgument)
             : base(leftArgument, rightArgument)
         {
             #region Guards
@@ -82,7 +82,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an arithmetical expression with given arguments
         /// </summary>
-        protected RDFMathExpression(RDFVariable leftArgument, RDFVariable rightArgument) 
+        protected RDFMathExpression(RDFVariable leftArgument, RDFVariable rightArgument)
             : base(leftArgument, rightArgument)
         {
             #region Guards
@@ -94,7 +94,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an arithmetical expression with given arguments
         /// </summary>
-        protected RDFMathExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) 
+        protected RDFMathExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument)
             : base(leftArgument, rightArgument)
         {
             #region Guards

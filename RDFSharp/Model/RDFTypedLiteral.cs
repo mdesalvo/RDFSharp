@@ -65,7 +65,8 @@ namespace RDFSharp.Model
             (bool,string) validationResult = Datatype.Validate(value ?? string.Empty);
             if (!validationResult.Item1)
                 throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + Datatype + ") which is based on \"" + Datatype.TargetDatatype + "\" ");
-            Value = validationResult.Item2; 
+
+            Value = validationResult.Item2;
         }
         #endregion
 

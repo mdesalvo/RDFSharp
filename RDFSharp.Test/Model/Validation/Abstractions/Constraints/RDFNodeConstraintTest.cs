@@ -436,7 +436,7 @@ public class RDFNodeConstraintTest
         Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFResource("ex:Bob")));
         Assert.IsNull(validationReport.Results[1].ResultPath);
         Assert.IsTrue(validationReport.Results[1].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.NODE_CONSTRAINT_COMPONENT));
-        Assert.IsTrue(validationReport.Results[1].SourceShape.Equals(new RDFResource("ex:NodeShape")));            
+        Assert.IsTrue(validationReport.Results[1].SourceShape.Equals(new RDFResource("ex:NodeShape")));
     }
 
     [TestMethod]
@@ -813,7 +813,7 @@ public class RDFNodeConstraintTest
         personShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         personShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:AddressPropertyShape")));
         shapesGraph.AddShape(personShape);
-            
+
         RDFPropertyShape postalCodePropertyShape = new RDFPropertyShape(new RDFResource("ex:PostalCodePropertyShape"), new RDFResource("ex:postalCode"));
         postalCodePropertyShape.AddConstraint(new RDFDatatypeConstraint(RDFDatatypeRegister.GetDatatype(RDFModelEnums.RDFDatatypes.XSD_STRING.GetDatatypeFromEnum())));
         postalCodePropertyShape.AddConstraint(new RDFMaxCountConstraint(1));
@@ -856,7 +856,7 @@ public class RDFNodeConstraintTest
         personShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         personShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:AddressPropertyShape")));
         shapesGraph.AddShape(personShape);
-            
+
         RDFPropertyShape postalCodePropertyShape = new RDFPropertyShape(new RDFResource("ex:PostalCodePropertyShape"), new RDFResource("ex:postalCode"));
         postalCodePropertyShape.AddConstraint(new RDFDatatypeConstraint(RDFDatatypeRegister.GetDatatype(RDFModelEnums.RDFDatatypes.XSD_STRING.GetDatatypeFromEnum())));
         postalCodePropertyShape.AddConstraint(new RDFMaxCountConstraint(1));

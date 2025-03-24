@@ -58,11 +58,11 @@ namespace RDFSharp.Query
             {
                 List<RDFNamespace> prefixes = insertWhereOperation.GetPrefixes();
                 sb.Append(PrintPrefixes(prefixes));
-                
+
                 sb.AppendLine("INSERT {");
                 insertWhereOperation.InsertTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
                 sb.AppendLine("}");
-                
+
                 RDFQueryPrinter.PrintWhereClause(insertWhereOperation, sb, prefixes, string.Empty, 0, false);
             }
 
@@ -80,7 +80,7 @@ namespace RDFSharp.Query
             {
                 List<RDFNamespace> prefixes = deleteDataOperation.GetPrefixes();
                 sb.Append(PrintPrefixes(prefixes));
-                
+
                 sb.AppendLine("DELETE DATA {");
                 deleteDataOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
                 sb.Append('}');
@@ -191,7 +191,7 @@ namespace RDFSharp.Query
                             sb.Append("ALL");
                             break;
                     }
-                }                    
+                }
             }
 
             return sb.ToString();

@@ -110,7 +110,7 @@ namespace RDFSharp.Query
                 #region Calculate Result
 
                 Geometry rightGeometryLAZ = null;
-                if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral 
+                if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
                      && leftArgumentTypedLiteral.HasGeographicDatatype())
                 {
                     //Parse WGS84 WKT/GML left geometry
@@ -129,7 +129,7 @@ namespace RDFSharp.Query
                     if (HasRightArgument)
                     {
                         //If so, it must be a well-formed GEO literal (WKT/GML)
-                        if (rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral 
+                        if (rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
                              && rightArgumentTypedLiteral.HasGeographicDatatype())
                         {
                             //Parse WGS84 WKT/GML right geometry

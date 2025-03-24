@@ -1035,7 +1035,7 @@ public class RDFMemoryStoreTest
 
         Assert.IsFalse(reifiedStore.Equals(store));
 
-        reifiedStore.UnreifyQuadruples();            
+        reifiedStore.UnreifyQuadruples();
 
         Assert.IsTrue(reifiedStore.Equals(store));
     }
@@ -1479,7 +1479,7 @@ public class RDFMemoryStoreTest
         table.Rows.Add(null, "http://subj/", "http://pred/", "http://obj/");
 
         RDFMemoryStore store = RDFMemoryStore.FromDataTable(table);
-            
+
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
         Assert.AreEqual(1, store[new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"), null].QuadruplesCount);
@@ -1496,7 +1496,7 @@ public class RDFMemoryStoreTest
         table.Rows.Add("", "http://subj/", "http://pred/", "http://obj/");
 
         RDFMemoryStore store = RDFMemoryStore.FromDataTable(table);
-            
+
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
         Assert.AreEqual(1, store[new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"), null].QuadruplesCount);
@@ -1512,7 +1512,7 @@ public class RDFMemoryStoreTest
         table.Rows.Add("http://subj/", "http://pred/", "http://obj/");
 
         RDFMemoryStore store = RDFMemoryStore.FromDataTable(table);
-            
+
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
         Assert.AreEqual(1, store[new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"), null].QuadruplesCount);
@@ -1529,7 +1529,7 @@ public class RDFMemoryStoreTest
         table.Rows.Add("http://ctx/", "http://subj/", "http://pred/", "http://obj/");
 
         RDFMemoryStore store = RDFMemoryStore.FromDataTable(table);
-            
+
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
         Assert.AreEqual(1, store[new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"), null].QuadruplesCount);
@@ -1785,7 +1785,7 @@ public class RDFMemoryStoreTest
         table.Rows.Add("http://ctx/", "http://subj/", "http://pred/", "http://obj/");
 
         RDFMemoryStore store = await RDFMemoryStore.FromDataTableAsync(table);
-            
+
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
         Assert.AreEqual(1, store[new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"), null].QuadruplesCount);

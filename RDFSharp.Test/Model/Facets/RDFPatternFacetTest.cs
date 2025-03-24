@@ -25,7 +25,7 @@ public class RDFPatternFacetTest
 {
     #region Tests
     [TestMethod]
-        
+
     public void ShouldCreatePatternFacet()
     {
         RDFPatternFacet facet = new RDFPatternFacet("^ex");
@@ -36,7 +36,7 @@ public class RDFPatternFacetTest
     }
 
     [TestMethod]
-        
+
     public void ShouldValidatePatternFacet()
     {
         RDFPatternFacet facet = new RDFPatternFacet("^ex");
@@ -53,7 +53,7 @@ public class RDFPatternFacetTest
     }
 
     [TestMethod]
-        
+
     public void ShouldConvertPatternFacetToGraph()
     {
         RDFPatternFacet facet = new RDFPatternFacet("^ex");

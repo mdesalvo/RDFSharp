@@ -238,7 +238,7 @@ public class RDFCollectionTest
         Assert.IsNotNull(graph);
         Assert.AreEqual(3, graph.TriplesCount);
         Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST).TripleID));
-            
+
         switch (itemType)
         {
             case RDFModelEnums.RDFItemTypes.Literal:
@@ -258,12 +258,12 @@ public class RDFCollectionTest
     {
         RDFCollection coll = new RDFCollection(itemType);
         if (itemType == RDFModelEnums.RDFItemTypes.Literal)
-        { 
+        {
             coll.AddItem(new RDFPlainLiteral("lit1"));
             coll.AddItem(new RDFPlainLiteral("lit2"));
         }
         else
-        { 
+        {
             coll.AddItem(new RDFResource("http://item1/"));
             coll.AddItem(new RDFResource("http://item2/"));
         }

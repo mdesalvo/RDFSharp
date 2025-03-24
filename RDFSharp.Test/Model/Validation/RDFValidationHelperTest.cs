@@ -714,7 +714,7 @@ public class RDFValidationHelperTest
         Assert.AreEqual(1, shapesGraph2.ShapesCount);
         RDFNodeShape shape2 = shapesGraph2.SelectShape("ex:nodeShape") as RDFNodeShape;
         Assert.IsNotNull(shape2);
-            
+
         //Attributes
         Assert.IsFalse(shape2.Deactivated);
         Assert.AreEqual(severity, shape2.Severity);
@@ -872,7 +872,7 @@ public class RDFValidationHelperTest
         shape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         shape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
         shape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
-            
+
         //Constraints
         shape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Human")));
         shape.AddConstraint(new RDFAndConstraint().AddShape(shape));
@@ -1058,7 +1058,7 @@ public class RDFValidationHelperTest
         Assert.IsTrue(shape2XoneConstraint.XoneShapes.ContainsKey(shape2.PatternMemberID));
         #endregion
     }
-        
+
     [TestMethod]
     public void ShouldDetectInlinePropertyShapes()
     {

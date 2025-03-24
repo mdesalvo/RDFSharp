@@ -443,7 +443,7 @@ public class RDFSelectQueryTest
                 .AddBind(new RDFBind(new RDFLengthExpression(new RDFVariable("?V")), new RDFVariable("?VLENGTH"))))
             .AddProjectionVariable(new RDFVariable("?V"))
             .AddProjectionVariable(new RDFVariable("?VLENGTH"))
-            .AddProjectionVariable(new RDFVariable("?VLENGTHISMORETHAN7"), 
+            .AddProjectionVariable(new RDFVariable("?VLENGTHISMORETHAN7"),
                 new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFVariable("?VLENGTH"), new RDFConstantExpression(new RDFTypedLiteral("14/2", RDFModelEnums.RDFDatatypes.OWL_RATIONAL))));
         RDFSelectQueryResult result = query.ApplyToGraph(graph);
 
@@ -718,7 +718,7 @@ public class RDFSelectQueryTest
                     })
                     .WithStatusCode(HttpStatusCode.OK)
                     .WithDelay(750));
-                            
+
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryOnGraphWithServicePatternGroupAndThrowExceptionAccordingToTimingAndBehavior/sparql"));
         RDFSelectQuery query = new RDFSelectQuery()
@@ -733,7 +733,7 @@ public class RDFSelectQueryTest
         {
             _ = query.ApplyToGraph(new RDFGraph());
         }
-        catch (RDFQueryException qex) 
+        catch (RDFQueryException qex)
         {
             Assert.IsTrue(string.Equals(qex.Message, "SELECT query on SPARQL endpoint failed because: The operation has timed out."));
         }
@@ -777,7 +777,7 @@ public class RDFSelectQueryTest
                     })
                     .WithStatusCode(HttpStatusCode.OK)
                     .WithDelay(750));
-                            
+
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryOnGraphWithServicePatternGroupAndThrowExceptionAccordingToTimingAndBehaviorViaPost/sparql"));
         RDFSelectQuery query = new RDFSelectQuery()
@@ -786,14 +786,14 @@ public class RDFSelectQueryTest
                 .UnionWithNext())
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(250, 
+                .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(250,
                     RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException, RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post)));
 
         try
         {
             _ = query.ApplyToGraph(new RDFGraph());
         }
-        catch (RDFQueryException qex) 
+        catch (RDFQueryException qex)
         {
             Assert.IsTrue(string.Equals(qex.Message, "SELECT query on SPARQL endpoint failed because: The operation has timed out."));
         }
@@ -905,7 +905,7 @@ public class RDFSelectQueryTest
                 .UnionWithNext())
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(250, 
+                .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(250,
                     RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult, RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post)));
         RDFSelectQueryResult result = query.ApplyToGraph(new RDFGraph());
 
@@ -1111,7 +1111,7 @@ public class RDFSelectQueryTest
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAndHaveResultsViaPost/sparql"));
-        RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions { 
+        RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions {
             QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
 
         Assert.IsNotNull(result);
@@ -1301,7 +1301,7 @@ public class RDFSelectQueryTest
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAndHaveResultsWithBasicAuthorizationHeaderViaPost/sparql"));
         endpoint.SetBasicAuthorizationHeader(authHeaderValue);
 
-        RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions { 
+        RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions {
             QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
 
         Assert.IsNotNull(result);
@@ -1322,7 +1322,7 @@ public class RDFSelectQueryTest
             .AddModifier(new RDFLimitModifier(2));
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri("http://statistics.gov.scot/sparql"));
 
-        RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions { 
+        RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions {
             QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Get });
 
         Assert.IsNotNull(result);
@@ -1344,7 +1344,7 @@ public class RDFSelectQueryTest
             .AddModifier(new RDFLimitModifier(2));
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri("http://statistics.gov.scot/sparql"));
 
-        RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions { 
+        RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions {
             QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
 
         Assert.IsNotNull(result);
@@ -1612,7 +1612,7 @@ public class RDFSelectQueryTest
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAndNotHaveResultsViaPost/sparql"));
-        RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions { 
+        RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions {
             QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post });
 
         Assert.IsNotNull(result);
@@ -1711,7 +1711,7 @@ public class RDFSelectQueryTest
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldThrowExceptionWhenApplyingSelectQueryToSPARQLEndpointAccordingToTimingAndBehaviorViaPost/sparql"));
 
-        Assert.ThrowsExactly<RDFQueryException>(() => query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(250, 
+        Assert.ThrowsExactly<RDFQueryException>(() => query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(250,
             RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException, RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post)));
     }
 
@@ -1847,7 +1847,7 @@ public class RDFSelectQueryTest
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldThrowExceptionWhenApplyingSelectQueryToSPARQLEndpointAccordingToBehaviorViaPost/sparql"));
 
-        Assert.ThrowsExactly<RDFQueryException>(() => query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(750, 
+        Assert.ThrowsExactly<RDFQueryException>(() => query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(750,
             RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException, RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post)));
     }
 
@@ -1900,7 +1900,7 @@ public class RDFSelectQueryTest
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldGiveEmptyResultWhenApplyingSelectQueryToSPARQLEndpointAccordingToBehaviorViaPost/sparql"));
 
-        RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(1000, 
+        RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(1000,
             RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult, RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post));
 
         Assert.IsNotNull(result);

@@ -296,7 +296,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a SPARQL query's WHERE clause
         /// </summary>
-        internal static void PrintWhereClause(RDFQuery query, StringBuilder sb, List<RDFNamespace> prefixes, 
+        internal static void PrintWhereClause(RDFQuery query, StringBuilder sb, List<RDFNamespace> prefixes,
             string subqueryBodySpaces, double indentLevel, bool fromUnionOrMinus)
         {
             sb.AppendLine(string.Concat(subqueryBodySpaces, "WHERE {"));
@@ -391,7 +391,7 @@ namespace RDFSharp.Query
                                         subqueryBodySpaces = new string(' ', subqueryBodySpaces.Length - 2);
                                 }
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
-                        
+
                                 //Unsignal UNION/MINUS semantic
                                 printingUnion = false;
                                 printingMinus = false;
@@ -496,7 +496,7 @@ namespace RDFSharp.Query
         {
             StringBuilder result = new StringBuilder();
             string spaces = new StringBuilder().Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
-            
+
             //OPTIONAL
             if (patternGroup.IsOptional && !skipOptional)
             {
@@ -515,7 +515,7 @@ namespace RDFSharp.Query
 
             //OPEN-BRACKET
             result.AppendLine(string.Concat(spaces, "  {"));
-            
+
             //MEMBERS
             PrintPatternGroupMembers(patternGroup, result, spaces, prefixes);
 
@@ -523,13 +523,13 @@ namespace RDFSharp.Query
             patternGroup.GetFilters().Where(f => !(f is RDFValuesFilter))
                                      .ToList()
                                      .ForEach(f => result.AppendLine(string.Concat(spaces, "    ", f.ToString(prefixes), " ")));
-            
+
             //CLOSE-BRACKET
             result.AppendLine(string.Concat(spaces, "  }"));
-            
+
             //SERVICE
             if (patternGroup.EvaluateAsService.HasValue)
-            { 
+            {
                 result.AppendLine(string.Concat(spaces, "}"));
                 if (spaces.Length > 2)
                     spaces = spaces.Substring(2);
@@ -564,7 +564,7 @@ namespace RDFSharp.Query
                         if (ptPgMember.JoinAsUnion && !isLastPgMemberOrNextPgMemberIsBind)
                         {
                             //In case we are opening UNION semantic, but we are also under MINUS semantic, we need to print its opening bracket
-                            //and to keep care of reflecting this in the indentation spaces (+2) 
+                            //and to keep care of reflecting this in the indentation spaces (+2)
                             if (!printingUnion && printingMinus)
                             {
                                 openedBrackets++;
@@ -715,12 +715,12 @@ namespace RDFSharp.Query
             if (pattern.Context != null)
             {
                 string ctx = PrintPatternMember(pattern.Context, prefixes);
-                return pattern.IsOptional ? string.Concat("OPTIONAL { GRAPH ", ctx, " { ", subj, " ", pred, " ", obj, " } }") 
+                return pattern.IsOptional ? string.Concat("OPTIONAL { GRAPH ", ctx, " { ", subj, " ", pred, " ", obj, " } }")
                                           : string.Concat("GRAPH ", ctx, " { ", subj, " ", pred, " ", obj, " }");
             }
 
             //SPO pattern
-            return pattern.IsOptional ? string.Concat("OPTIONAL { ", subj, " ", pred, " ", obj, " }") 
+            return pattern.IsOptional ? string.Concat("OPTIONAL { ", subj, " ", pred, " ", obj, " }")
                                       : string.Concat(subj, " ", pred, " ", obj);
         }
 

@@ -104,7 +104,7 @@ public class RDFSameTermFilterTest
 
         Assert.IsTrue(keepRow);
     }
-        
+
     [TestMethod]
     public void ShouldCreateSameTermFilterAndKeepRowWithUnknownVariable()
     {

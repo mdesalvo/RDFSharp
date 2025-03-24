@@ -25,7 +25,7 @@ public class RDFMinInclusiveFacetTest
 {
     #region Tests
     [TestMethod]
-        
+
     public void ShouldCreateMinInclusiveFacet()
     {
         RDFMinInclusiveFacet facet = new RDFMinInclusiveFacet(6.145);
@@ -36,7 +36,7 @@ public class RDFMinInclusiveFacetTest
     }
 
     [TestMethod]
-        
+
     public void ShouldValidateMinInclusiveFacet()
     {
         RDFMinInclusiveFacet facet = new RDFMinInclusiveFacet(6);
@@ -55,7 +55,7 @@ public class RDFMinInclusiveFacetTest
     }
 
     [TestMethod]
-        
+
     public void ShouldConvertMinInclusiveFacetToGraph()
     {
         RDFMinInclusiveFacet facet = new RDFMinInclusiveFacet(6);

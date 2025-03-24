@@ -130,7 +130,7 @@ namespace RDFSharp.Query
             RDFOperationResult operationResult = new RDFOperationResult();
             bool isGraph = datasource.IsGraph();
             bool isStore = datasource.IsStore();
-            
+
             //Execute the CONSTRUCT query for materialization of the operation templates
             RDFConstructQueryResult constructResult = ExecuteConstructQueryFromOperation(deleteWhereOperation, datasource);
 
@@ -159,7 +159,7 @@ namespace RDFSharp.Query
             RDFOperationResult operationResult = new RDFOperationResult();
             bool isGraph = datasource.IsGraph();
             bool isStore = datasource.IsStore();
-            
+
             //Execute the CONSTRUCT query for materialization of the operation templates
             RDFConstructQueryResult constructDeleteResult = new RDFOperationEngine().ExecuteConstructQueryFromOperation(deleteInsertWhereOperation, datasource, "DELETE");
             RDFConstructQueryResult constructInsertResult = new RDFOperationEngine().ExecuteConstructQueryFromOperation(deleteInsertWhereOperation, datasource, "INSERT");
@@ -197,7 +197,7 @@ namespace RDFSharp.Query
             RDFOperationResult operationResult = new RDFOperationResult();
             bool isGraph = datasource.IsGraph();
             bool isStore = datasource.IsStore();
-            
+
             try
             {
                 List<RDFPattern> insertTemplates = new List<RDFPattern>();
@@ -205,7 +205,7 @@ namespace RDFSharp.Query
                 //GRAPH => Dereference triples
                 if (isGraph)
                     insertTemplates.AddRange(RDFGraph.FromUri(loadOperation.FromContext).Select(loadTriple => new RDFPattern(loadTriple.Subject, loadTriple.Predicate, loadTriple.Object)));
-                
+
                 //STORE => Dereference quadruples (respect the target context, if provided by the operation)
                 else if (isStore)
                 {
@@ -233,7 +233,7 @@ namespace RDFSharp.Query
             RDFOperationResult operationResult = new RDFOperationResult();
             bool isGraph = datasource.IsGraph();
             bool isStore = datasource.IsStore();
-            
+
             //Graphs => automatically execute as "CLEAR ALL" (since they are contextless by design)
             if (isGraph)
             {
@@ -375,7 +375,7 @@ namespace RDFSharp.Query
         private RDFConstructQueryResult ExecuteConstructQueryFromOperation(RDFOperation operation, RDFDataSource datasource, string deleteInsertCommand = null)
         {
             DataTable resultTable = new DataTable();
-            
+
             RDFConstructQueryResult constructResult = new RDFConstructQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = operation.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Count > 0)

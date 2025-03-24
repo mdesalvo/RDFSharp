@@ -98,6 +98,7 @@ namespace RDFSharp.Query
 
                 if (leftArgumentPMember == null)
                     return null;
+
                 using (SHA256CryptoServiceProvider SHA256Encryptor = new SHA256CryptoServiceProvider())
                 {
                     StringBuilder sb = new StringBuilder();

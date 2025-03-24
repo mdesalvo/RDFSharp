@@ -36,13 +36,13 @@ namespace RDFSharp.Query
         /// <summary>
         /// Count of the federation's data sources
         /// </summary>
-        public int DataSourcesCount 
+        public int DataSourcesCount
             => DataSources.Count;
 
         /// <summary>
         /// Gets the enumerator on the federation's data sources for iteration
         /// </summary>
-        public IEnumerator<RDFDataSource> DataSourcesEnumerator 
+        public IEnumerator<RDFDataSource> DataSourcesEnumerator
             => DataSources.GetEnumerator();
 
         /// <summary>
@@ -72,19 +72,19 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the federation
         /// </summary>
-        public override string ToString() 
+        public override string ToString()
             => FederationName;
 
         /// <summary>
         /// Exposes a typed enumerator on the federation's data sources
         /// </summary>
-        IEnumerator<RDFDataSource> IEnumerable<RDFDataSource>.GetEnumerator() 
+        IEnumerator<RDFDataSource> IEnumerable<RDFDataSource>.GetEnumerator()
             => DataSourcesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the federation's data sources
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() 
+        IEnumerator IEnumerable.GetEnumerator()
             => DataSourcesEnumerator;
         #endregion
 
@@ -130,7 +130,7 @@ namespace RDFSharp.Query
             {
                 DataSources.Add(sparqlEndpoint);
                 EndpointDataSourcesQueryOptions.Add(sparqlEndpoint.ToString(), sparqlEndpointQueryOptions ?? new RDFSPARQLEndpointQueryOptions());
-            }                
+            }
             return this;
         }
         #endregion
@@ -139,7 +139,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Clears the data sources of the federation
         /// </summary>
-        public void ClearDataSources() 
+        public void ClearDataSources()
         {
             DataSources.Clear();
             EndpointDataSourcesQueryOptions.Clear();

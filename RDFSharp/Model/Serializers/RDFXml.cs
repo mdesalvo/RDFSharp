@@ -93,7 +93,7 @@ namespace RDFSharp.Model
                     var containersXML = new Dictionary<long, XmlNode>();
                     var containers = rdfType.SelectTriplesByObject(RDFVocabulary.RDF.ALT)
                                             .UnionWith(rdfType.SelectTriplesByObject(RDFVocabulary.RDF.BAG))
-                                            .UnionWith(rdfType.SelectTriplesByObject(RDFVocabulary.RDF.SEQ))                                          
+                                            .UnionWith(rdfType.SelectTriplesByObject(RDFVocabulary.RDF.SEQ))
                                             .Select(t => new
                                             {
                                                 ContainerUri = (RDFResource)t.Subject,
@@ -157,11 +157,11 @@ namespace RDFSharp.Model
 
                         //It is a collection subject of resources and it is not floating => do not append its triples because
                         //we will reconstruct the collection later and append it as "rdf:parseType=Collection"
-                        else if (subjCollection != null 
-                                  && !subjCollection.IsFloatingCollection 
+                        else if (subjCollection != null
+                                  && !subjCollection.IsFloatingCollection
                                   && subjCollection.HasAllResourceItems)
                             continue;
-                        
+
                         //It is a traditional subject
                         else
                         {
@@ -226,8 +226,8 @@ namespace RDFSharp.Model
                                         predNode.AppendChild(containersXML[containerObj.ContainerUri.PatternMemberID]);
 
                                     //Object is a collection subject of resources and it is not floating => append its "rdf:parseType=Collection" representation
-                                    else if (collectionObj != null 
-                                              && !collectionObj.IsFloatingCollection 
+                                    else if (collectionObj != null
+                                              && !collectionObj.IsFloatingCollection
                                               && collectionObj.HasAllResourceItems)
                                     {
                                         //Append "rdf:parseType=Collection" attribute
@@ -408,7 +408,7 @@ namespace RDFSharp.Model
                         Uri xmlBase = null;
                         if (xmlnsAttrs != null && xmlnsAttrs.Count > 0)
                         {
-                            XmlAttribute xmlBaseAttr = rdfRDF.Attributes?["xml:base"] 
+                            XmlAttribute xmlBaseAttr = rdfRDF.Attributes?["xml:base"]
                                                         ?? rdfRDF.Attributes?["xmlns"];
                             if (xmlBaseAttr != null)
                                 xmlBase = RDFModelUtilities.GetUriFromString(xmlBaseAttr.Value);
@@ -456,8 +456,8 @@ namespace RDFSharp.Model
 
                 //Assert resource as subject
                 XmlAttribute xmlLangSubj = GetXmlLangAttribute(subjNode) ?? xmlLangParent;
-                RDFResource subj = subjectParent 
-                                    ?? GetSubjectNode(subjNode, xmlBase, result, hashContext) 
+                RDFResource subj = subjectParent
+                                    ?? GetSubjectNode(subjNode, xmlBase, result, hashContext)
                                     ?? new RDFResource();
                 subjects.Add(subj);
                 #endregion
@@ -517,7 +517,7 @@ namespace RDFSharp.Model
                         if (predNode.NamespaceURI == string.Empty)
                             pred = new RDFResource(string.Concat(xmlBase, predNode.LocalName), hashContext);
                         else
-                            pred = predNode.LocalName.StartsWith("autoNS", StringComparison.OrdinalIgnoreCase) 
+                            pred = predNode.LocalName.StartsWith("autoNS", StringComparison.OrdinalIgnoreCase)
                                 ? new RDFResource(predNode.NamespaceURI, hashContext)
                                 : new RDFResource(string.Concat(predNode.NamespaceURI, predNode.LocalName), hashContext);
                         #endregion
@@ -639,8 +639,8 @@ namespace RDFSharp.Model
                         #region plain literal
                         //Check if predicate has a unique textual child
                         bool hasOneChildNode = predNode.HasChildNodes && predNode.ChildNodes.Count == 1;
-                        if (hasOneChildNode && 
-                              (predNode.ChildNodes[0].NodeType == XmlNodeType.Text 
+                        if (hasOneChildNode &&
+                              (predNode.ChildNodes[0].NodeType == XmlNodeType.Text
                                 || predNode.ChildNodes[0].NodeType == XmlNodeType.EntityReference))
                         {
                             RDFPlainLiteral pLit = new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerText)), xmlLangPred?.Value);
@@ -672,8 +672,8 @@ namespace RDFSharp.Model
         /// </summary>
         private static XmlNode GetRdfRootNode(XmlDocument xmlDoc, XmlNamespaceManager nsMgr)
         {
-            XmlNode rdf = xmlDoc.SelectSingleNode("rdf:RDF", nsMgr) 
-                           ?? xmlDoc.SelectSingleNode("RDF", nsMgr) 
+            XmlNode rdf = xmlDoc.SelectSingleNode("rdf:RDF", nsMgr)
+                           ?? xmlDoc.SelectSingleNode("RDF", nsMgr)
                            ?? throw new Exception("Given file has not a valid \"rdf:RDF\" or \"RDF\" root node");
             return rdf;
         }
@@ -694,8 +694,8 @@ namespace RDFSharp.Model
                     {
                         //Try to resolve the current namespace against the namespace register;
                         //if not resolved, create new namespace with scope limited to actual node
-                        RDFNamespace ns = RDFNamespaceRegister.GetByPrefix(xmlnsNamespace.LocalName) 
-                                           ?? RDFNamespaceRegister.GetByUri(xmlnsNamespace.Value) 
+                        RDFNamespace ns = RDFNamespaceRegister.GetByPrefix(xmlnsNamespace.LocalName)
+                                           ?? RDFNamespaceRegister.GetByUri(xmlnsNamespace.Value)
                                            ?? new RDFNamespace(xmlnsNamespace.LocalName, xmlnsNamespace.Value);
 
                         nsMgr.AddNamespace(ns.NamespacePrefix, ns.NamespaceUri.ToString());
@@ -713,7 +713,7 @@ namespace RDFSharp.Model
             if (namespaceString != null && namespaceString.Trim() != string.Empty)
             {
                 //Extract the prefixable part from the Uri
-                Uri uriNS = RDFModelUtilities.GetUriFromString(namespaceString) 
+                Uri uriNS = RDFModelUtilities.GetUriFromString(namespaceString)
                              ?? throw new RDFModelException("Cannot create RDFNamespace because given \"namespaceString\" (" + namespaceString + ") parameter cannot be converted to a valid Uri");
                 string nspace = uriNS.AbsoluteUri;
 
@@ -786,7 +786,7 @@ namespace RDFSharp.Model
             //the case we can directly build a triple with "rdf:type" pred
             if (!CheckIfRdfDescriptionNode(subjNode))
             {
-                RDFResource obj = subjNode.NamespaceURI == string.Empty ? new RDFResource(string.Concat(xmlBase, subjNode.LocalName), hashContext) 
+                RDFResource obj = subjNode.NamespaceURI == string.Empty ? new RDFResource(string.Concat(xmlBase, subjNode.LocalName), hashContext)
                                                                         : new RDFResource(string.Concat(subjNode.NamespaceURI, subjNode.LocalName), hashContext);
                 result.AddTriple(new RDFTriple(subj, RDFVocabulary.RDF.TYPE, obj));
             }
@@ -820,7 +820,7 @@ namespace RDFSharp.Model
                     if (xmlBaseString.EndsWith("#", StringComparison.Ordinal))
                         xmlBaseString = xmlBaseString.TrimEnd('#');
                     attrValue = RDFModelUtilities.GetUriFromString(string.Concat(xmlBaseString, attrValue)).ToString();
-                }   
+                }
 
                 //"rdf:nodeID" relative Uri: must be resolved against the "bnode:" prefix
                 else if (string.Equals(attr.LocalName, "rdf:nodeID", StringComparison.OrdinalIgnoreCase)
@@ -850,41 +850,41 @@ namespace RDFSharp.Model
         /// Given an element, return the attribute which can correspond to the RDF subject
         /// </summary>
         private static XmlAttribute GetRdfAboutAttribute(XmlNode subjNode)
-            => subjNode.Attributes?["rdf:about"] 
-                ?? subjNode.Attributes?["about"] 
-                ?? subjNode.Attributes?["rdf:nodeID"] 
-                ?? subjNode.Attributes?["nodeID"] 
-                ?? subjNode.Attributes?["rdf:ID"] 
+            => subjNode.Attributes?["rdf:about"]
+                ?? subjNode.Attributes?["about"]
+                ?? subjNode.Attributes?["rdf:nodeID"]
+                ?? subjNode.Attributes?["nodeID"]
+                ?? subjNode.Attributes?["rdf:ID"]
                 ?? subjNode.Attributes?["ID"];
 
         /// <summary>
         /// Given an element, return the attribute which can correspond to the RDF object
         /// </summary>
         private static XmlAttribute GetRdfResourceAttribute(XmlNode predNode)
-            => predNode.Attributes?["rdf:resource"] 
-                ?? predNode.Attributes?["resource"] 
-                ?? predNode.Attributes?["rdf:nodeID"] 
+            => predNode.Attributes?["rdf:resource"]
+                ?? predNode.Attributes?["resource"]
+                ?? predNode.Attributes?["rdf:nodeID"]
                 ?? predNode.Attributes?["nodeID"];
 
         /// <summary>
         /// Given an element, return the attribute which can correspond to the RDF ID
         /// </summary>
         private static XmlAttribute GetRdfIdAttribute(XmlNode subjNode)
-            => subjNode.Attributes?["rdf:ID"] 
+            => subjNode.Attributes?["rdf:ID"]
                 ?? subjNode.Attributes?["ID"];
 
         /// <summary>
         /// Given an element, return the attribute which can correspond to the RDF typed literal datatype
         /// </summary>
         private static XmlAttribute GetRdfDatatypeAttribute(XmlNode predNode)
-            => predNode.Attributes?["rdf:datatype"] 
+            => predNode.Attributes?["rdf:datatype"]
                 ?? predNode.Attributes?["datatype"];
 
         /// <summary>
         /// Given an element, return the attribute which can correspond to the RDF plain literal language
         /// </summary>
         private static XmlAttribute GetXmlLangAttribute(XmlNode predNode)
-            => predNode.Attributes?["xml:lang"] 
+            => predNode.Attributes?["xml:lang"]
                 ?? predNode.Attributes?["lang"];
 
         /// <summary>
@@ -917,7 +917,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Given an element, return the triple corresponding to the RDF ID
         /// </summary>
-        private static RDFTriple GetRdfIdTriple(XmlNode predNode, RDFResource subject, RDFResource predicate, Uri xmlBase, 
+        private static RDFTriple GetRdfIdTriple(XmlNode predNode, RDFResource subject, RDFResource predicate, Uri xmlBase,
             XmlAttribute xmlLangPred, Dictionary<string, long> hashContext)
         {
             //Try to resolve SPO triple by "rdf:Resource" or "rdf:nodeID" attributes
@@ -941,7 +941,7 @@ namespace RDFSharp.Model
 
             //Try to resolve SPL triple (SPLL by "xml:lang")
             bool hasOneChildNode = predNode.HasChildNodes && predNode.ChildNodes.Count == 1;
-            if (hasOneChildNode && 
+            if (hasOneChildNode &&
                     (predNode.ChildNodes[0].NodeType == XmlNodeType.Text || predNode.ChildNodes[0].NodeType == XmlNodeType.EntityReference))
             {
                 RDFPlainLiteral pLit = new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerText)), xmlLangPred?.Value);
@@ -972,7 +972,7 @@ namespace RDFSharp.Model
         /// Given an attribute representing a RDF collection, iterates on its constituent elements
         /// to build its standard reification triples.
         /// </summary>
-        private static void ParseCollectionElements(Uri xmlBase, XmlNode predNode, RDFResource subj, RDFResource pred, 
+        private static void ParseCollectionElements(Uri xmlBase, XmlNode predNode, RDFResource subj, RDFResource pred,
             RDFGraph result, XmlAttribute xmlLangSubj, Dictionary<string, long> hashContext)
         {
             //Attach the collection as the blank object of the current predicate
@@ -996,7 +996,7 @@ namespace RDFSharp.Model
                     result.AddTriple(new RDFTriple(obj, RDFVocabulary.RDF.FIRST, elem));
 
                     //Last element of a collection must give a triple to a "rdf:nil" object
-                    RDFResource newObj = elem != lastElement 
+                    RDFResource newObj = elem != lastElement
                         ? new RDFResource()      // obj -> rdf:rest -> newObj
                         : RDFVocabulary.RDF.NIL; // obj -> rdf:rest -> rdf:nil
                     result.AddTriple(new RDFTriple(obj, RDFVocabulary.RDF.REST, newObj));
@@ -1037,7 +1037,7 @@ namespace RDFSharp.Model
         /// Given an element representing a RDF container, iterates on its constituent elements
         /// to build its standard reification triples.
         /// </summary>
-        private static void ParseContainerElements(RDFModelEnums.RDFContainerTypes contType, XmlNode container, RDFResource subj, RDFResource pred, 
+        private static void ParseContainerElements(RDFModelEnums.RDFContainerTypes contType, XmlNode container, RDFResource subj, RDFResource pred,
             RDFGraph result, XmlAttribute xmlLangPred, Dictionary<string, long> hashContext)
         {
             //Attach the container as the blank object of the current pred

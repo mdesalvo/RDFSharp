@@ -39,7 +39,7 @@ namespace RDFSharp.Query
         {
             if (pMember == null)
                 throw new RDFQueryException("Cannot parse pattern member because given \"pMember\" parameter is null.");
-            
+
             #region Resource
             if (Uri.TryCreate(pMember, UriKind.Absolute, out _))
                 return new RDFResource(pMember);
@@ -83,12 +83,13 @@ namespace RDFSharp.Query
             {
                 if (right == null)
                     return 0;
+
                 return -1;
             }
             if (right == null)
                 return 1;
             #endregion
-            
+
             switch (left)
             {
                 case RDFResource _:
@@ -97,10 +98,11 @@ namespace RDFSharp.Query
                     //RESOURCE/CONTEXT VS RESOURCE/CONTEXT/PLAINLITERAL
                     if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
                         return string.Compare(left.ToString(), right.ToString(), StringComparison.Ordinal);
-                
+
                     //RESOURCE/CONTEXT VS TYPEDLITERAL
                     if (((RDFTypedLiteral)right).HasStringDatatype())
                         return string.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
+
                     return -99; //Type Error
                 }
                 //PLAINLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
@@ -118,6 +120,7 @@ namespace RDFSharp.Query
                     {
                         if (((RDFTypedLiteral)left).HasStringDatatype())
                             return string.Compare(((RDFTypedLiteral)left).Value, right.ToString(), StringComparison.Ordinal);
+
                         return -99; //Type Error
                     }
 
@@ -141,12 +144,12 @@ namespace RDFSharp.Query
                         if (((RDFTypedLiteral)right).HasDecimalDatatype())
                         {
                             //owl:rational needs parsing and evaluation before being compared (LEFT)
-                            decimal leftValueDecimal = ((RDFTypedLiteral)left).Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL 
-                                ? RDFModelUtilities.ComputeOWLRationalValue((RDFTypedLiteral)left) 
+                            decimal leftValueDecimal = ((RDFTypedLiteral)left).Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
+                                ? RDFModelUtilities.ComputeOWLRationalValue((RDFTypedLiteral)left)
                                 : decimal.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture);
                             //owl:rational needs parsing and evaluation before being compared (RIGHT)
-                            decimal rightValueDecimal = ((RDFTypedLiteral)right).Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL 
-                                ? RDFModelUtilities.ComputeOWLRationalValue((RDFTypedLiteral)right) 
+                            decimal rightValueDecimal = ((RDFTypedLiteral)right).Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
+                                ? RDFModelUtilities.ComputeOWLRationalValue((RDFTypedLiteral)right)
                                 : decimal.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
                             return leftValueDecimal.CompareTo(rightValueDecimal);
                         }
@@ -170,8 +173,8 @@ namespace RDFSharp.Query
                     {
                         if (((RDFTypedLiteral)right).HasGeographicDatatype())
                         {
-                            Geometry leftGeometry = ((RDFTypedLiteral)left).Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString()) 
-                                ? RDFGeoExpression.WKTReader.Read(((RDFTypedLiteral)left).Value) 
+                            Geometry leftGeometry = ((RDFTypedLiteral)left).Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString())
+                                ? RDFGeoExpression.WKTReader.Read(((RDFTypedLiteral)left).Value)
                                 : RDFGeoExpression.GMLReader.Read(((RDFTypedLiteral)left).Value);
                             leftGeometry.SRID = 4326;
                             Geometry rightGeometry = ((RDFTypedLiteral)right).Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString())
@@ -232,7 +235,7 @@ namespace RDFSharp.Query
             #endregion
 
             #region Namespace Search
-            //Check if the pattern member starts with a known namespace, if so replace it with its prefix            
+            //Check if the pattern member starts with a known namespace, if so replace it with its prefix
             bool hasAbbreviation = false;
             foreach (RDFNamespace nsp in prefixes)
             {
@@ -281,7 +284,7 @@ namespace RDFSharp.Query
             }
             return results;
         }
-        
+
         /// <summary>
         /// RDFWebClient extends WebClient with support for customization of timeout
         /// </summary>

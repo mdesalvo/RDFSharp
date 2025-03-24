@@ -90,7 +90,7 @@ public class RDFComparisonFilterTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingComparisonFilterBecauseNullRightMember()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFVariable("?LEFT"), null));
-        
+
     [TestMethod]
     public void ShouldCreateComparisonFilterWithVariableVsLiteralAndKeepRow1()
     {

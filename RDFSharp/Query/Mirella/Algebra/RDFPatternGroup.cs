@@ -157,7 +157,7 @@ namespace RDFSharp.Query
                     if (!Variables.Any(v => v.Equals(valuesVariable)))
                         Variables.Add(valuesVariable);
                 }
-            }   
+            }
             return this;
         }
 

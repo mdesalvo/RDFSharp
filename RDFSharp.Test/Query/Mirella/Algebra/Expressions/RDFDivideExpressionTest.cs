@@ -29,7 +29,7 @@ public class RDFDivideExpressionTest
     public void ShouldCreateDivideExpressionWithExpressions()
     {
         RDFDivideExpression expression = new RDFDivideExpression(
-            new RDFDivideExpression(new RDFVariable("?V1"), new RDFVariable("?V2")), 
+            new RDFDivideExpression(new RDFVariable("?V1"), new RDFVariable("?V2")),
             new RDFDivideExpression(new RDFVariable("?V3"), new RDFVariable("?V4")));
 
         Assert.IsNotNull(expression);
@@ -85,7 +85,7 @@ public class RDFDivideExpressionTest
     public void ShouldCreateDivideExpressionWithVariables()
     {
         RDFDivideExpression expression = new RDFDivideExpression(
-            new RDFVariable("?V1"), 
+            new RDFVariable("?V1"),
             new RDFVariable("?V2"));
 
         Assert.IsNotNull(expression);
@@ -99,7 +99,7 @@ public class RDFDivideExpressionTest
     public void ShouldCreateDivideExpressionWithVariableAndTypedLiteral()
     {
         RDFDivideExpression expression = new RDFDivideExpression(
-            new RDFVariable("?V"), 
+            new RDFVariable("?V"),
             new RDFTypedLiteral("25.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE));
 
         Assert.IsNotNull(expression);
@@ -538,7 +538,7 @@ public class RDFDivideExpressionTest
         table.Columns.Add("?A", typeof(string));
         table.Columns.Add("?B", typeof(string));
         DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(); 
+        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
         row["?B"] = new RDFResource("ex:subj").ToString();
         table.Rows.Add(row);
         table.AcceptChanges();

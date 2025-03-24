@@ -106,9 +106,9 @@ namespace RDFSharp.Model
                                 //Compute property path on the given focus node
                                 DataTable pathResult = new RDFQueryEngine().ApplyPropertyPath(
                                     isAlternativePath ? propertyShape.AlternativePath : propertyShape.SequencePath, dataGraph);
-                                result.AddRange(from DataRow pathResultRow 
-                                                in pathResult.Rows 
-                                                select pathResultRow["?END"]?.ToString() into prValue where !string.IsNullOrEmpty(prValue) 
+                                result.AddRange(from DataRow pathResultRow
+                                                in pathResult.Rows
+                                                select pathResultRow["?END"]?.ToString() into prValue where !string.IsNullOrEmpty(prValue)
                                                 select RDFQueryUtilities.ParseRDFPatternMember(prValue));
 
                                 //Recontextualize property path to the initial configuration
@@ -214,7 +214,7 @@ namespace RDFSharp.Model
                         RDFTriple inversePath = graph[declaredPropertyShapePathObject, RDFVocabulary.SHACL.INVERSE_PATH, null, null].FirstOrDefault();
                         if (inversePath?.Object is RDFResource inversePathObject)
                         {
-                            propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject, 
+                            propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject,
                                 inversePathObject, true);
 
                             DetectShapeTargets(graph, propertyShape);
@@ -231,9 +231,9 @@ namespace RDFSharp.Model
                         RDFTriple alternativePath = graph[declaredPropertyShapePathObject, RDFVocabulary.SHACL.ALTERNATIVE_PATH, null, null].FirstOrDefault();
                         if (alternativePath?.Object is RDFResource alternativePathObject)
                         {
-                            RDFCollection alternativePathCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, 
+                            RDFCollection alternativePathCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph,
                                 alternativePathObject, RDFModelEnums.RDFTripleFlavors.SPO);
-                            propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject, 
+                            propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject,
                                 alternativePathCollection.Items.OfType<RDFResource>().ToList(), RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative);
 
                             DetectShapeTargets(graph, propertyShape);
@@ -355,7 +355,7 @@ namespace RDFSharp.Model
             //sh:deactivated (accepted occurrences: 1)
             RDFTriple shapeDeactivated = shapeDefinition[null, RDFVocabulary.SHACL.DEACTIVATED, null, null].FirstOrDefault();
             if (shapeDeactivated?.Object is RDFTypedLiteral shapeDeactivatedLiteral
-                    && shapeDeactivatedLiteral.HasBooleanDatatype() 
+                    && shapeDeactivatedLiteral.HasBooleanDatatype()
                     && bool.Parse(shapeDeactivatedLiteral.Value))
                 shape.Deactivate();
 

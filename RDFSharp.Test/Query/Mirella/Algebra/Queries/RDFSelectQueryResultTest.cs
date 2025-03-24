@@ -57,11 +57,11 @@ public class RDFSelectQueryResultTest
     row2["?T"] = "hello";
     selectResult.SelectResults.Rows.Add(row2);
     selectResult.SelectResults.AcceptChanges();
-            
+
     MemoryStream stream = new MemoryStream();
     selectResult.ToSparqlXmlResult(stream);
     byte[] streamData = stream.ToArray();
-            
+
     Assert.IsTrue(streamData.Length > 100);
 
     RDFSelectQueryResult selectResult2 = RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(streamData));
@@ -91,11 +91,11 @@ public class RDFSelectQueryResultTest
     row["?T"] = "hello@EN-US";
     selectResult.SelectResults.Rows.Add(row);
     selectResult.SelectResults.AcceptChanges();
-            
+
     MemoryStream stream = new MemoryStream();
     await selectResult.ToSparqlXmlResultAsync(stream);
     byte[] streamData = stream.ToArray();
-            
+
     Assert.IsTrue(streamData.Length > 100);
 
     RDFSelectQueryResult selectResult2 = await RDFSelectQueryResult.FromSparqlXmlResultAsync(new MemoryStream(streamData));
@@ -121,9 +121,9 @@ public class RDFSelectQueryResultTest
     row["?T"] = "hello@EN-US";
     selectResult.SelectResults.Rows.Add(row);
     selectResult.SelectResults.AcceptChanges();
-            
+
     selectResult.ToSparqlXmlResult(Path.Combine(Environment.CurrentDirectory, "RDFSelectQueryResultTest_ShouldSerializeSelectQueryResultToFile.srx"));
-            
+
     Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFSelectQueryResultTest_ShouldSerializeSelectQueryResultToFile.srx")));
 
     RDFSelectQueryResult selectResult2 = RDFSelectQueryResult.FromSparqlXmlResult(Path.Combine(Environment.CurrentDirectory, "RDFSelectQueryResultTest_ShouldSerializeSelectQueryResultToFile.srx"));
@@ -149,9 +149,9 @@ public class RDFSelectQueryResultTest
     row["?T"] = "hello@EN-US";
     selectResult.SelectResults.Rows.Add(row);
     selectResult.SelectResults.AcceptChanges();
-            
+
     await selectResult.ToSparqlXmlResultAsync(Path.Combine(Environment.CurrentDirectory, "RDFSelectQueryResultTest_ShouldSerializeSelectQueryResultToFileAsync.srx"));
-            
+
     Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFSelectQueryResultTest_ShouldSerializeSelectQueryResultToFileAsync.srx")));
 
     RDFSelectQueryResult selectResult2 = await RDFSelectQueryResult.FromSparqlXmlResultAsync(Path.Combine(Environment.CurrentDirectory, "RDFSelectQueryResultTest_ShouldSerializeSelectQueryResultToFileAsync.srx"));

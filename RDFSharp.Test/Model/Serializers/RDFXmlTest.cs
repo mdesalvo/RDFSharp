@@ -272,7 +272,7 @@ public class RDFXmlTest
     public void ShouldSerializeGraphWithSPBTripleHavingMixedCollectionAsObject()
     {
         RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
-        coll.AddItemInternal(new RDFResource("urn:swrl:var#V"));  
+        coll.AddItemInternal(new RDFResource("urn:swrl:var#V"));
         coll.AddItemInternal(new RDFPlainLiteral("item1"));
         coll.AddItemInternal(new RDFResource("http://item2/"));
         coll.ReificationSubject = new RDFResource("http://coll/");
@@ -284,10 +284,10 @@ public class RDFXmlTest
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingMixedCollectionAsObject.rdf")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingMixedCollectionAsObject.rdf"));
         Assert.IsNotNull(fileContent);
-            
+
         string adjustedFileContent = Regex.Replace(fileContent, "rdf:nodeID=\"(.)+\"", "rdf:nodeID=\"12345\"");
         Assert.IsNotNull(adjustedFileContent);
-        Assert.IsTrue(adjustedFileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:resource=\"http://coll/\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://coll/\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#List\" />{Environment.NewLine}{" ",4}<rdf:first rdf:resource=\"urn:swrl:var#V\" />{Environment.NewLine}{" ",4}<rdf:rest rdf:nodeID=\"12345\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#List\" />{Environment.NewLine}{" ",4}<rdf:first>item1</rdf:first>{Environment.NewLine}{" ",4}<rdf:rest rdf:parseType=\"Collection\">{Environment.NewLine}{" ",6}<rdf:Description rdf:about=\"http://item2/\" />{Environment.NewLine}{" ",4}</rdf:rest>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));      
+        Assert.IsTrue(adjustedFileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:resource=\"http://coll/\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://coll/\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#List\" />{Environment.NewLine}{" ",4}<rdf:first rdf:resource=\"urn:swrl:var#V\" />{Environment.NewLine}{" ",4}<rdf:rest rdf:nodeID=\"12345\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#List\" />{Environment.NewLine}{" ",4}<rdf:first>item1</rdf:first>{Environment.NewLine}{" ",4}<rdf:rest rdf:parseType=\"Collection\">{Environment.NewLine}{" ",6}<rdf:Description rdf:about=\"http://item2/\" />{Environment.NewLine}{" ",4}</rdf:rest>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
     }
 
     [TestMethod]
@@ -372,7 +372,7 @@ public class RDFXmlTest
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"{XmlHeader}{Environment.NewLine}<!DOCTYPE foo [ <!ENTITY ent \"test\"> ]>{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred>&ent;</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
         RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
-            
+
         Assert.IsNotNull(graph);
         Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred"), new RDFPlainLiteral("test")))); //DTD entity will be resolved
@@ -384,7 +384,7 @@ public class RDFXmlTest
         string filePath = Path.Combine(Environment.CurrentDirectory, "rdfxmlxxe.txt");
         using (StreamWriter fileWriter = File.CreateText(filePath))
             fileWriter.Write("test");
-            
+
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
             writer.WriteLine($"{XmlHeader}{Environment.NewLine}<!DOCTYPE foo [ <!ENTITY ent SYSTEM \"file://{filePath}\"> ]>{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred>&ent;</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");

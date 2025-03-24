@@ -39,7 +39,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an arithmetical rand function
         /// </summary>
         public RDFRandExpression()
-            => Source = new Random(); 
+            => Source = new Random();
         #endregion
 
         #region Interfaces

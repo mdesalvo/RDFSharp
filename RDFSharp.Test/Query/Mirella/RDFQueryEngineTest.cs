@@ -1658,7 +1658,7 @@ public class RDFQueryEngineTest
               </results>
             </sparql>
             """;
-            
+
         server
             .Given(
                 Request.Create()
@@ -1668,8 +1668,8 @@ public class RDFQueryEngineTest
             .RespondWith(
                 Response.Create()
                     .WithHeader("Content-Type", "application/sparql-results+xml")
-                    .WithCallback(req => 
-                    { 
+                    .WithCallback(req =>
+                    {
                         receivedQuery1 = req.RawQuery;
                         return new WireMock.ResponseMessage
                         {
@@ -1679,7 +1679,7 @@ public class RDFQueryEngineTest
                                 Encoding = Encoding.UTF8,
                                 DetectedBodyType = BodyType.String
                             }
-                        }; 
+                        };
                     })
                     .WithStatusCode(HttpStatusCode.OK));
         server
@@ -1690,8 +1690,8 @@ public class RDFQueryEngineTest
             .RespondWith(
                 Response.Create()
                     .WithHeader("Content-Type", "application/sparql-results+xml")
-                    .WithCallback(req => 
-                    { 
+                    .WithCallback(req =>
+                    {
                         receivedQuery2 = req.Body;
                         return new WireMock.ResponseMessage
                         {
@@ -1701,7 +1701,7 @@ public class RDFQueryEngineTest
                                 Encoding = Encoding.UTF8,
                                 DetectedBodyType = BodyType.String
                             }
-                        }; 
+                        };
                     })
                     .WithStatusCode(HttpStatusCode.OK));
 
@@ -1786,7 +1786,7 @@ public class RDFQueryEngineTest
               </results>
             </sparql>
             """;
-            
+
         server
             .Given(
                 Request.Create()
@@ -1796,8 +1796,8 @@ public class RDFQueryEngineTest
             .RespondWith(
                 Response.Create()
                     .WithHeader("Content-Type", "application/sparql-results+xml")
-                    .WithCallback(req => 
-                    { 
+                    .WithCallback(req =>
+                    {
                         receivedQuery1 = req.RawQuery;
                         return new WireMock.ResponseMessage
                         {
@@ -1807,7 +1807,7 @@ public class RDFQueryEngineTest
                                 Encoding = Encoding.UTF8,
                                 DetectedBodyType = BodyType.String
                             }
-                        }; 
+                        };
                     })
                     .WithStatusCode(HttpStatusCode.OK));
         server
@@ -1818,8 +1818,8 @@ public class RDFQueryEngineTest
             .RespondWith(
                 Response.Create()
                     .WithHeader("Content-Type", "application/sparql-results+xml")
-                    .WithCallback(req => 
-                    { 
+                    .WithCallback(req =>
+                    {
                         receivedQuery2 = req.Body;
                         return new WireMock.ResponseMessage
                         {
@@ -1829,7 +1829,7 @@ public class RDFQueryEngineTest
                                 Encoding = Encoding.UTF8,
                                 DetectedBodyType = BodyType.String
                             }
-                        }; 
+                        };
                     })
                     .WithStatusCode(HttpStatusCode.OK)
                     .WithDelay(750));
@@ -1838,8 +1838,8 @@ public class RDFQueryEngineTest
         RDFSPARQLEndpoint endpoint2 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneGivingEmptyResult2/sparql"));
         RDFFederation federation = new RDFFederation()
             .AddSPARQLEndpoint(endpoint1)
-            .AddSPARQLEndpoint(endpoint2, new RDFSPARQLEndpointQueryOptions { 
-                ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult, 
+            .AddSPARQLEndpoint(endpoint2, new RDFSPARQLEndpointQueryOptions {
+                ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult,
                 QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post,
                 TimeoutMilliseconds = 250 });
         RDFSelectQuery query = new RDFSelectQuery()
@@ -1913,7 +1913,7 @@ public class RDFQueryEngineTest
               </results>
             </sparql>
             """;
-            
+
         server
             .Given(
                 Request.Create()
@@ -1957,8 +1957,8 @@ public class RDFQueryEngineTest
         RDFSPARQLEndpoint endpoint2 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneThrowingException2/sparql"));
         RDFFederation federation = new RDFFederation()
             .AddSPARQLEndpoint(endpoint1)
-            .AddSPARQLEndpoint(endpoint2, new RDFSPARQLEndpointQueryOptions { 
-                ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException, 
+            .AddSPARQLEndpoint(endpoint2, new RDFSPARQLEndpointQueryOptions {
+                ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException,
                 QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post,
                 TimeoutMilliseconds = 250 });
         RDFSelectQuery query = new RDFSelectQuery()

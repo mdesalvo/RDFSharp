@@ -53,7 +53,7 @@ namespace RDFSharp.Query
         public RDFGraph ToRDFGraph()
         {
             RDFGraph result = new RDFGraph();
-            
+
             //Iterate the datatable rows and generate the corresponding triples to be added to the result graph
             foreach (DataRow resultRow in ConstructResults.Rows)
             {

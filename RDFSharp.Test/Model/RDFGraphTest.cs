@@ -85,7 +85,7 @@ public class RDFGraphTest
         RDFGraph graph;
         using (graph = new RDFGraph([
                    new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFResource("http://obj/")),
-                   new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit")) ])) 
+                   new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit")) ]))
         {
             Assert.IsFalse(graph.Disposed);
             Assert.IsNotNull(graph.IndexedTriples);
@@ -1277,7 +1277,7 @@ public class RDFGraphTest
         RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
         RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph1.AddTriple(triple1).AddTriple(triple2);
-            
+
         RDFGraph intersect12 = graph1.IntersectWith(null);
         Assert.IsNotNull(intersect12);
         Assert.AreEqual(0, intersect12.TriplesCount);
@@ -1290,7 +1290,7 @@ public class RDFGraphTest
         RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
         RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph1.AddTriple(triple1).AddTriple(triple2);
-            
+
         RDFGraph intersect12 = graph1.IntersectWith(graph1);
         Assert.IsNotNull(intersect12);
         Assert.AreEqual(2, intersect12.TriplesCount);
@@ -1557,13 +1557,13 @@ public class RDFGraphTest
         //triples with a predicate ending with "/" will loose this character once abbreviated:
         //this is correct (being a glitch of RDF/XML specs) so at the end the graphs will differ
         if (format == RDFModelEnums.RDFFormats.RdfXml)
-        { 
+        {
             Assert.IsFalse(graph2.Equals(graph1));
             Assert.AreEqual(0, graph2.SelectTriplesByPredicate(new RDFResource("http://ex/pred/")).TriplesCount);
             Assert.AreEqual(2, graph2.SelectTriplesByPredicate(new RDFResource("http://ex/pred")).TriplesCount);
         }
         else
-        { 
+        {
             Assert.IsTrue(graph2.Equals(graph1));
         }
     }

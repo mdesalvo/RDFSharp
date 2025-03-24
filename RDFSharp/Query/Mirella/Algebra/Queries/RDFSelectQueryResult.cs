@@ -217,7 +217,7 @@ namespace RDFSharp.Query
 
             try
             {
-                #region deserialize                
+                #region deserialize
                 using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
                     using (XmlTextReader xmlReader = new XmlTextReader(streamReader))
@@ -265,7 +265,7 @@ namespace RDFSharp.Query
                             {
                                 if (!foundHead)
                                     throw new Exception("\"head\" node was not found, or was after \"results\" node.");
-                                
+
                                 foundResults = true;
                                 foreach (XmlNode resNode in node.ChildNodes)
                                 {
@@ -291,7 +291,7 @@ namespace RDFSharp.Query
                                                         throw new Exception("one \"binding\" node was found without children.");
 
                                                     #region URI / BNODE
-                                                    if (string.Equals(bindingNode.FirstChild.Name, "URI", StringComparison.OrdinalIgnoreCase) 
+                                                    if (string.Equals(bindingNode.FirstChild.Name, "URI", StringComparison.OrdinalIgnoreCase)
                                                          || string.Equals(bindingNode.FirstChild.Name, "BNODE", StringComparison.OrdinalIgnoreCase))
                                                     {
                                                         if (RDFModelUtilities.GetUriFromString(bindingNode.InnerText) == null)

@@ -121,14 +121,14 @@ namespace RDFSharp.Query
                                                                            .ToList();
             if (unavailablePartitionVariables.Any())
                 throw new RDFQueryException($"Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: {string.Join(",", unavailablePartitionVariables.Distinct())}");
-            
+
             //Every aggregator variable must be found in the working table as a column
             List<string> unavailableAggregatorVariables = Aggregators.Where(ag => !table.Columns.Contains(ag.AggregatorVariable.ToString()))
                                                                      .Select(ag => ag.AggregatorVariable.ToString())
                                                                      .ToList();
             if (unavailableAggregatorVariables.Any())
                 throw new RDFQueryException($"Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: {string.Join(",", unavailableAggregatorVariables.Distinct())}");
-            
+
             //There should NOT be intersection between partition variables (GroupBy) and projection variables (Aggregators)
             List<string> commonPartitionProjectionVariables = PartitionVariables.Where(pv => Aggregators.Any(ag => (!(ag is RDFPartitionAggregator)) && pv.Equals(ag.ProjectionVariable)))
                                                                                 .Select(pav => pav.ToString())

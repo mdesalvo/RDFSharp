@@ -531,7 +531,7 @@ public class RDFTriGTest
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.Any(q => q.Context.Equals(new RDFContext())
-                                     && q.Subject is RDFResource { IsBlank: true } 
+                                     && q.Subject is RDFResource { IsBlank: true }
                                      && q.Predicate.Equals(new RDFResource("http://pred/"))
                                      && q.Object.Equals(new RDFResource("http://obj/"))));
     }
@@ -547,7 +547,7 @@ public class RDFTriGTest
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
         Assert.IsTrue(store.Any(q => q.Context.Equals(new RDFContext())
-                                     && q.Subject is RDFResource { IsBlank: true } 
+                                     && q.Subject is RDFResource { IsBlank: true }
                                      && q.Predicate.Equals(new RDFResource("http://pred/"))
                                      && q.Object.Equals(new RDFResource("http://obj/"))));
     }

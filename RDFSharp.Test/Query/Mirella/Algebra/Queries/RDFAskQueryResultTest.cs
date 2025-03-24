@@ -42,7 +42,7 @@ public class RDFAskQueryResultTest
         RDFAskQueryResult askResult = new RDFAskQueryResult();
         askResult.ToSparqlXmlResult(stream);
         byte[] streamData = stream.ToArray();
-            
+
         Assert.IsTrue(streamData.Length > 100);
 
         RDFAskQueryResult askResult2 = RDFAskQueryResult.FromSparqlXmlResult(new MemoryStream(streamData));
@@ -58,7 +58,7 @@ public class RDFAskQueryResultTest
         RDFAskQueryResult askResult = new RDFAskQueryResult();
         await askResult.ToSparqlXmlResultAsync(stream);
         byte[] streamData = stream.ToArray();
-            
+
         Assert.IsTrue(streamData.Length > 100);
 
         RDFAskQueryResult askResult2 = await RDFAskQueryResult.FromSparqlXmlResultAsync(new MemoryStream(streamData));
@@ -77,7 +77,7 @@ public class RDFAskQueryResultTest
         };
         askResult.ToSparqlXmlResult(stream);
         byte[] streamData = stream.ToArray();
-            
+
         Assert.IsTrue(streamData.Length > 100);
 
         RDFAskQueryResult askResult2 = RDFAskQueryResult.FromSparqlXmlResult(new MemoryStream(streamData));
@@ -96,7 +96,7 @@ public class RDFAskQueryResultTest
         };
         await askResult.ToSparqlXmlResultAsync(stream);
         byte[] streamData = stream.ToArray();
-            
+
         Assert.IsTrue(streamData.Length > 100);
 
         RDFAskQueryResult askResult2 = await RDFAskQueryResult.FromSparqlXmlResultAsync(new MemoryStream(streamData));
@@ -110,7 +110,7 @@ public class RDFAskQueryResultTest
     {
         RDFAskQueryResult askResult = new RDFAskQueryResult();
         askResult.ToSparqlXmlResult(Path.Combine(Environment.CurrentDirectory, "RDFAskQueryResultTest_ShouldSerializeFalseAskQueryResultToFile.srx"));
-            
+
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFAskQueryResultTest_ShouldSerializeFalseAskQueryResultToFile.srx")));
 
         RDFAskQueryResult askResult2 = RDFAskQueryResult.FromSparqlXmlResult(Path.Combine(Environment.CurrentDirectory, "RDFAskQueryResultTest_ShouldSerializeFalseAskQueryResultToFile.srx"));
@@ -124,7 +124,7 @@ public class RDFAskQueryResultTest
     {
         RDFAskQueryResult askResult = new RDFAskQueryResult();
         await askResult.ToSparqlXmlResultAsync(Path.Combine(Environment.CurrentDirectory, "RDFAskQueryResultTest_ShouldSerializeFalseAskQueryResultToFileAsync.srx"));
-            
+
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFAskQueryResultTest_ShouldSerializeFalseAskQueryResultToFileAsync.srx")));
 
         RDFAskQueryResult askResult2 = await RDFAskQueryResult.FromSparqlXmlResultAsync(Path.Combine(Environment.CurrentDirectory, "RDFAskQueryResultTest_ShouldSerializeFalseAskQueryResultToFileAsync.srx"));
@@ -141,7 +141,7 @@ public class RDFAskQueryResultTest
             AskResult = true
         };
         askResult.ToSparqlXmlResult(Path.Combine(Environment.CurrentDirectory, "RDFAskQueryResultTest_ShouldSerializeTrueAskQueryResultToFile.srx"));
-            
+
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFAskQueryResultTest_ShouldSerializeTrueAskQueryResultToFile.srx")));
 
         RDFAskQueryResult askResult2 = RDFAskQueryResult.FromSparqlXmlResult(Path.Combine(Environment.CurrentDirectory, "RDFAskQueryResultTest_ShouldSerializeTrueAskQueryResultToFile.srx"));
@@ -158,7 +158,7 @@ public class RDFAskQueryResultTest
             AskResult = true
         };
         await askResult.ToSparqlXmlResultAsync(Path.Combine(Environment.CurrentDirectory, "RDFAskQueryResultTest_ShouldSerializeTrueAskQueryResultToFileAsync.srx"));
-            
+
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFAskQueryResultTest_ShouldSerializeTrueAskQueryResultToFileAsync.srx")));
 
         RDFAskQueryResult askResult2 = await RDFAskQueryResult.FromSparqlXmlResultAsync(Path.Combine(Environment.CurrentDirectory, "RDFAskQueryResultTest_ShouldSerializeTrueAskQueryResultToFileAsync.srx"));

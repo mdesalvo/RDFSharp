@@ -37,8 +37,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a conditional expression with given arguments
         /// </summary>
-        public RDFConditionalExpression(RDFExpression conditionArgument, RDFExpression leftArgument, RDFExpression rightArgument) 
-            : base(leftArgument, rightArgument) 
+        public RDFConditionalExpression(RDFExpression conditionArgument, RDFExpression leftArgument, RDFExpression rightArgument)
+            : base(leftArgument, rightArgument)
         {
             #region Guards
             if (rightArgument == null)

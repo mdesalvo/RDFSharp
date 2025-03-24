@@ -120,7 +120,7 @@ namespace RDFSharp.Query
 
             try
             {
-                #region deserialize                
+                #region deserialize
                 using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
                     using (XmlTextReader xmlReader = new XmlTextReader(streamReader))
@@ -164,7 +164,7 @@ namespace RDFSharp.Query
                             throw new Exception("mandatory \"boolean\" node was not found");
                         #endregion
                     }
-                }                
+                }
                 #endregion
             }
             catch (Exception ex) { throw new RDFQueryException("Cannot read given \"SPARQL Query Results XML Format\" source because: " + ex.Message, ex); }

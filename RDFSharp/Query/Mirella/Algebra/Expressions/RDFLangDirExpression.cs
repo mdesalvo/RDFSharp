@@ -87,7 +87,7 @@ namespace RDFSharp.Query
                 #region Calculate Result
                 if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLiteral)
                 {
-                    expressionResult = leftArgumentPMemberPLiteral.HasDirection() 
+                    expressionResult = leftArgumentPMemberPLiteral.HasDirection()
                                         ? new RDFPlainLiteral(leftArgumentPMemberPLiteral.Language.Substring(leftArgumentPMemberPLiteral.Language.Length-3).ToLower()) //ltr / rtl
                                         : RDFPlainLiteral.Empty;
                 }

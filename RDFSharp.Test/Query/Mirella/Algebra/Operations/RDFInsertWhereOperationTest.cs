@@ -334,7 +334,7 @@ public class RDFInsertWhereOperationTest
             .AddSubQuery(new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?X"))
-                        .AddAlternativeSteps([ 
+                        .AddAlternativeSteps([
                             new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
                             new RDFPropertyPathStep(RDFVocabulary.RDFS.COMMENT)])))
                 .AddProjectionVariable(new RDFVariable("?Y"))

@@ -84,7 +84,7 @@ public class RDFValidationReportTest
         Assert.IsTrue(vrGraph.TriplesCount.Equals(2));
         Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(new RDFResource("ex:validationReport"), RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.VALIDATION_REPORT)));
         Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(new RDFResource("ex:validationReport"), RDFVocabulary.SHACL.CONFORMS, RDFTypedLiteral.True)));
-    }       
+    }
 
     [TestMethod]
     public void ShouldExportNotConformingValidationReport()
@@ -180,7 +180,7 @@ public class RDFValidationReportTest
         RDFValidationReport vRep1 = new RDFValidationReport(new RDFResource("ex:validationReport"));
         RDFValidationReport vRep2 = new RDFValidationReport(new RDFResource("ex:validationReport2"));
         vRep2.MergeResults(vRep1);
-            
+
         Assert.IsNotNull(vRep2);
         Assert.IsFalse(vRep2.IsBlank);
         Assert.IsTrue(vRep2.URI.Equals(new Uri("ex:validationReport2")));

@@ -35,7 +35,7 @@ public class RDFNamespaceTest
         Assert.IsTrue(ns.NamespaceUri.Equals(new Uri(uri.Trim())));
         Assert.IsTrue(ns.DereferenceUri.Equals(ns.NamespaceUri));
         Assert.IsFalse(ns.IsTemporary);
-            
+
         string nsString = ns.ToString();
         Assert.IsTrue(nsString.Equals(uri.Trim()));
 

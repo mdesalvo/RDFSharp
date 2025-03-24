@@ -62,7 +62,7 @@ namespace RDFSharp.Query
 
             //Apply the eventual negation
             if (applyNegation)
-                keepRow = !keepRow;         
+                keepRow = !keepRow;
 
             return keepRow;
         }

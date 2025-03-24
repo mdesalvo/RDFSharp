@@ -42,7 +42,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a substring function with given arguments
         /// </summary>
-        public RDFSubstringExpression(RDFExpression leftArgument, int start, int? length=null) 
+        public RDFSubstringExpression(RDFExpression leftArgument, int start, int? length=null)
             : base(leftArgument, null as RDFExpression)
         {
             Start = start;
@@ -52,7 +52,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a substring function with given arguments
         /// </summary>
-        public RDFSubstringExpression(RDFVariable leftArgument, int start, int? length=null) 
+        public RDFSubstringExpression(RDFVariable leftArgument, int start, int? length=null)
             : base(leftArgument, null as RDFExpression)
         {
             Start = start;
@@ -146,7 +146,7 @@ namespace RDFSharp.Query
                 }
                 else
                 {
-                    expressionResult = start >= workingPLit.Value.Length ? new RDFPlainLiteral(string.Empty, workingPLit.Language) 
+                    expressionResult = start >= workingPLit.Value.Length ? new RDFPlainLiteral(string.Empty, workingPLit.Language)
                                                                          : new RDFPlainLiteral(workingPLit.Value.Substring(start), workingPLit.Language);
                 }
                 #endregion

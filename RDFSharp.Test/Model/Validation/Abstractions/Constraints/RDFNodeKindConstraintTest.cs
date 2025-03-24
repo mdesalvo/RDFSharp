@@ -86,7 +86,7 @@ public class RDFNodeKindConstraintTest
                                                             && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.NODE_KIND.PatternMemberID)
                                                             && t.Value.ObjectID.Equals(RDFVocabulary.SHACL.LITERAL.PatternMemberID)));
                 break;
-        }            
+        }
     }
 
     //NS-CONFORMS: TRUE

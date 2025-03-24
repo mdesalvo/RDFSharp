@@ -25,7 +25,7 @@ public class RDFMinExclusiveFacetTest
 {
     #region Tests
     [TestMethod]
-        
+
     public void ShouldCreateMinExclusiveFacet()
     {
         RDFMinExclusiveFacet facet = new RDFMinExclusiveFacet(6.145);
@@ -36,7 +36,7 @@ public class RDFMinExclusiveFacetTest
     }
 
     [TestMethod]
-        
+
     public void ShouldValidateMinExclusiveFacet()
     {
         RDFMinExclusiveFacet facet = new RDFMinExclusiveFacet(6);
@@ -56,7 +56,7 @@ public class RDFMinExclusiveFacetTest
     }
 
     [TestMethod]
-        
+
     public void ShouldConvertMinExclusiveFacetToGraph()
     {
         RDFMinExclusiveFacet facet = new RDFMinExclusiveFacet(6);

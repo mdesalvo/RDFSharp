@@ -30,7 +30,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a variable expression with given argument
         /// </summary>
-        public RDFVariableExpression(RDFExpression leftArgument) 
+        public RDFVariableExpression(RDFExpression leftArgument)
             : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace RDFSharp.Query
                 RDFPatternMember leftArgumentPMember;
                 if (LeftArgument is RDFExpression leftArgumentExpression)
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
-                else 
+                else
                     leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
                 #endregion
 

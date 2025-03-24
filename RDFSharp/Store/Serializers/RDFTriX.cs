@@ -124,7 +124,7 @@ namespace RDFSharp.Store
                             {
                                 if (!graph.Name.Equals("graph", StringComparison.Ordinal))
                                     throw new Exception(" a \"<graph>\" element was expected, instead of unrecognized \"<" + graph.Name + ">\".");
-                                
+
                                 #region <graph>
 
                                 //Setup defaults for the current iterating graph
@@ -144,7 +144,7 @@ namespace RDFSharp.Store
                                         encodedUris++;
                                         if (encodedUris > 1)
                                             throw new Exception(" given file encodes a graph with more than one \"<uri>\" element.");
-                                        
+
                                         graphUri = RDFModelUtilities.GetUriFromString(graphChild.ChildNodes[0]?.InnerText)
                                                     ?? RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
                                         graphID = RDFModelUtilities.CreateHash(graphUri.ToString());
@@ -159,7 +159,7 @@ namespace RDFSharp.Store
                                     //<triple> gives a triple of the graph
                                     else if (graphChild.Name.Equals("triple", StringComparison.Ordinal) && graphChild.ChildNodes.Count == 3)
                                         Model.RDFTriX.ParseTriXTriple(graphs[graphID], graphChild, hashContext);
-                                    
+
                                     //Neither <uri> or a well-formed <triple>: exception must be raised
                                     else
                                         throw new Exception("found a TriX element (" + graphChild.Name + ") which is neither \"<uri>\" or \"<triple>\", or is a \"<triple>\" without the required 3 childs.");

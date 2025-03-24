@@ -99,7 +99,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Disposes the graph index 
+        /// Disposes the graph index
         /// </summary>
         private void Dispose(bool disposing)
         {

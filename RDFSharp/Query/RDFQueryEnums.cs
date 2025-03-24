@@ -167,7 +167,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// RDFClearOperationFlavor represents an enumeration for supported flavors of implicit SPARQL CLEAR operation 
+        /// RDFClearOperationFlavor represents an enumeration for supported flavors of implicit SPARQL CLEAR operation
         /// </summary>
         public enum RDFClearOperationFlavor
         {

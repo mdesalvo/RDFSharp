@@ -92,7 +92,7 @@ namespace RDFSharp.Query
                         break;
                     case RDFPlainLiteral leftArgumentPMemberPLiteral:
                         expressionResult = leftArgumentPMemberPLiteral.HasLanguage() ?
-                            leftArgumentPMemberPLiteral.HasDirection() ? RDFVocabulary.RDF.DIR_LANG_STRING 
+                            leftArgumentPMemberPLiteral.HasDirection() ? RDFVocabulary.RDF.DIR_LANG_STRING
                                                                        : RDFVocabulary.RDF.LANG_STRING
                                                                        : RDFVocabulary.XSD.STRING;
                         break;

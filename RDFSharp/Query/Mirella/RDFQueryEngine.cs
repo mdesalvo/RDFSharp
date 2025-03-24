@@ -643,7 +643,7 @@ namespace RDFSharp.Query
                     .UnionWith(dsGraph[null, null, describeResource, null]);
 
             RDFMemoryStore QueryStore(RDFStore dsStore)
-                => describeResource.IsBlank 
+                => describeResource.IsBlank
                    ? dsStore.SelectQuadruplesBySubject(describeResource)
                             .UnionWith(dsStore.SelectQuadruplesByObject(describeResource))
                    : dsStore.SelectQuadruplesByContext(new RDFContext(describeResource.URI))
@@ -652,7 +652,7 @@ namespace RDFSharp.Query
                             .UnionWith(dsStore.SelectQuadruplesByObject(describeResource));
 
             RDFSelectQuery BuildFederationOrSPARQLEndpointQuery()
-                => describeResource.IsBlank 
+                => describeResource.IsBlank
                    ? new RDFSelectQuery()
                         .AddPatternGroup(new RDFPatternGroup()
                           .AddPattern(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
@@ -1171,9 +1171,9 @@ namespace RDFSharp.Query
             DataTable resultTable = CombineTables(patternTables);
 
             //Remove property path variables
-            List<string> propPathCols = (from DataColumn dtCol 
-                                         in resultTable.Columns 
-                                         where dtCol.ColumnName.StartsWith("?__PP", StringComparison.Ordinal) 
+            List<string> propPathCols = (from DataColumn dtCol
+                                         in resultTable.Columns
+                                         where dtCol.ColumnName.StartsWith("?__PP", StringComparison.Ordinal)
                                          select dtCol.ColumnName).ToList();
             propPathCols.ForEach(ppc => resultTable.Columns.Remove(ppc));
 
@@ -1679,7 +1679,7 @@ namespace RDFSharp.Query
             DataTable joinTable = new DataTable();
 
             //Determine common columns
-            bool rightIsOptionalTable = rightTable.ExtendedProperties.ContainsKey(IsOptional) 
+            bool rightIsOptionalTable = rightTable.ExtendedProperties.ContainsKey(IsOptional)
                                           && rightTable.ExtendedProperties[IsOptional].Equals(true);
             DataColumn[] leftColumns = leftTable.Columns.OfType<DataColumn>().ToArray();
             DataColumn[] rightColumns = rightTable.Columns.OfType<DataColumn>().ToArray();
@@ -1711,7 +1711,7 @@ namespace RDFSharp.Query
             {
                 //Leverage a relation between left row and right table based on common columns
                 //(this helps at slightly reducing O(N^2) complexity to O(N*K) where K << N)
-                EnumerableRowCollection<DataRow> relatedRows = commonColumns.Aggregate(rightTable.AsEnumerable(), 
+                EnumerableRowCollection<DataRow> relatedRows = commonColumns.Aggregate(rightTable.AsEnumerable(),
                                                                     (current, commonColumn) => current.Where(relatedRow => CheckJoin(leftRow, relatedRow, commonColumn.ColumnName)));
                 List<DataRow> relatedRowsList = relatedRows.ToList();
 
@@ -1829,7 +1829,7 @@ namespace RDFSharp.Query
 
                 //Leverage a relation between left row and right table based on common columns
                 //(this helps at slightly reducing O(N^2) complexity to O(N*K) where K << N)
-                EnumerableRowCollection<DataRow> relatedRows = commonColumns.Aggregate(rightTable.AsEnumerable(), 
+                EnumerableRowCollection<DataRow> relatedRows = commonColumns.Aggregate(rightTable.AsEnumerable(),
                                                                     (current, commonColumn) => current.Where(relatedRow => CheckJoin(leftRow, relatedRow, commonColumn.ColumnName)));
                 List<DataRow> relatedRowsList = relatedRows.ToList();
 
@@ -1864,16 +1864,16 @@ namespace RDFSharp.Query
                 bool hasProcessedUnion = false;
                 for (int i = 1; i < dataTables.Count; i++)
                 {
-                    bool previousTableRequiresUnion = dataTables[i-1].ExtendedProperties.ContainsKey(JoinAsUnion) 
+                    bool previousTableRequiresUnion = dataTables[i-1].ExtendedProperties.ContainsKey(JoinAsUnion)
                                                         && dataTables[i-1].ExtendedProperties[JoinAsUnion].Equals(true);
                     if (previousTableRequiresUnion)
                     {
                         //Backup extended attributes of the current table
-                        bool currentTableRequiresOptional = dataTables[i].ExtendedProperties.ContainsKey(IsOptional) 
+                        bool currentTableRequiresOptional = dataTables[i].ExtendedProperties.ContainsKey(IsOptional)
                                                               && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
-                        bool currentTableRequiresUnion = dataTables[i].ExtendedProperties.ContainsKey(JoinAsUnion) 
+                        bool currentTableRequiresUnion = dataTables[i].ExtendedProperties.ContainsKey(JoinAsUnion)
                                                            && dataTables[i].ExtendedProperties[JoinAsUnion].Equals(true);
-                        bool currentTableRequiresMinus = dataTables[i].ExtendedProperties.ContainsKey(JoinAsMinus) 
+                        bool currentTableRequiresMinus = dataTables[i].ExtendedProperties.ContainsKey(JoinAsMinus)
                                                            && dataTables[i].ExtendedProperties[JoinAsMinus].Equals(true);
 
                         //Merge the previous table into the current one
@@ -1901,16 +1901,16 @@ namespace RDFSharp.Query
                 bool hasProcessedMinus = false;
                 for (int i = 1; i < dataTables.Count; i++)
                 {
-                    bool previousTableRequiresMinus = dataTables[i-1].ExtendedProperties.ContainsKey(JoinAsMinus) 
+                    bool previousTableRequiresMinus = dataTables[i-1].ExtendedProperties.ContainsKey(JoinAsMinus)
                                                         && dataTables[i-1].ExtendedProperties[JoinAsMinus].Equals(true);
                     if (previousTableRequiresMinus)
                     {
                         //Backup extended attributes of the current table
-                        bool currentTableRequiresOptional = dataTables[i].ExtendedProperties.ContainsKey(IsOptional) 
+                        bool currentTableRequiresOptional = dataTables[i].ExtendedProperties.ContainsKey(IsOptional)
                                                               && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
-                        bool currentTableRequiresUnion = dataTables[i].ExtendedProperties.ContainsKey(JoinAsUnion) 
+                        bool currentTableRequiresUnion = dataTables[i].ExtendedProperties.ContainsKey(JoinAsUnion)
                                                            && dataTables[i].ExtendedProperties[JoinAsUnion].Equals(true);
-                        bool currentTableRequiresMinus = dataTables[i].ExtendedProperties.ContainsKey(JoinAsMinus) 
+                        bool currentTableRequiresMinus = dataTables[i].ExtendedProperties.ContainsKey(JoinAsMinus)
                                                            && dataTables[i].ExtendedProperties[JoinAsMinus].Equals(true);
 
                         //Diff the previous table against the current one (which is replaced)
@@ -1943,7 +1943,7 @@ namespace RDFSharp.Query
                                        && dataTables[i].ExtendedProperties[IsOptional].Equals(true);
 
                     //Proceed with most proper join strategy for current table
-                    finalTable = needsOuterJoin ? OuterJoinTables(finalTable, dataTables[i]) 
+                    finalTable = needsOuterJoin ? OuterJoinTables(finalTable, dataTables[i])
                                                 : InnerJoinTables(finalTable, dataTables[i]);
                 }
             }
@@ -1952,13 +1952,13 @@ namespace RDFSharp.Query
             //Step 1: process Union operators
             bool hasDoneUnions = ProcessUnions();
             if (hasDoneUnions)
-                dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) 
+                dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted)
                                             && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
 
             //Step 2: process Minus operators
             bool hasDoneMinus = ProcessMinus();
             if (hasDoneMinus)
-                dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted) 
+                dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted)
                                             && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
 
             //Step 3: compute joins

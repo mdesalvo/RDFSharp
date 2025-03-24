@@ -25,7 +25,7 @@ public class RDFMaxLengthFacetTest
 {
     #region Tests
     [TestMethod]
-        
+
     public void ShouldCreateMaxLengthFacet()
     {
         RDFMaxLengthFacet facet = new RDFMaxLengthFacet(6);
@@ -36,7 +36,7 @@ public class RDFMaxLengthFacetTest
     }
 
     [TestMethod]
-        
+
     public void ShouldValidateMaxLengthFacet()
     {
         RDFMaxLengthFacet facet = new RDFMaxLengthFacet(6);
@@ -56,7 +56,7 @@ public class RDFMaxLengthFacetTest
     }
 
     [TestMethod]
-        
+
     public void ShouldConvertMaxLengthFacetToGraph()
     {
         RDFMaxLengthFacet facet = new RDFMaxLengthFacet(6);

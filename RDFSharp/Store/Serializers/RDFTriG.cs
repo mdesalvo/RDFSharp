@@ -70,7 +70,7 @@ namespace RDFSharp.Store
                     for (int i = 0; i < graphs.Count; i++)
                     {
                         //Opening decorators
-                        if (i > 0) 
+                        if (i > 0)
                             sw.WriteLine();
                         if (!graphs[i].Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri))
                             sw.WriteLine($"GRAPH <{graphs[i].Context}>");
@@ -83,7 +83,7 @@ namespace RDFSharp.Store
                             sw.Write("}");
                         else
                             sw.WriteLine("}");
-                    }                        
+                    }
                 }
                 #endregion
             }
@@ -232,7 +232,7 @@ namespace RDFSharp.Store
         /// Parses the TriG data in order to detect a valid graph
         /// </summary>
         internal static void ParseGraph(string trigData, RDFTriGContext trigContext)
-        { 
+        {
             RDFResource contextOrSubject = null;
             bool foundContextOrSubject = false;
             int c = ReadCodePoint(trigData, trigContext);

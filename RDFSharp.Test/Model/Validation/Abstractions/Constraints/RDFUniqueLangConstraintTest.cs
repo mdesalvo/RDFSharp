@@ -257,7 +257,7 @@ public class RDFUniqueLangConstraintTest
         Assert.IsNull(validationReport.Results[0].ResultValue);
         Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.NAME));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT));
-        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape"))); 
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
 
     [TestMethod]
@@ -293,7 +293,7 @@ public class RDFUniqueLangConstraintTest
         Assert.IsNull(validationReport.Results[0].ResultValue);
         Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.NAME));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT));
-        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape"))); 
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
 
     [TestMethod]
@@ -329,7 +329,7 @@ public class RDFUniqueLangConstraintTest
         Assert.IsNull(validationReport.Results[0].ResultValue);
         Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.NAME));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT));
-        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape"))); 
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
 
     [TestMethod]
@@ -366,7 +366,7 @@ public class RDFUniqueLangConstraintTest
         Assert.IsNull(validationReport.Results[0].ResultValue);
         Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.NAME));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT));
-        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape"))); 
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
     #endregion
 }

@@ -96,7 +96,7 @@ namespace RDFSharp.Query
             IsOptional = false;
             JoinAsUnion = false;
             JoinAsMinus = false;
-            
+
             //Subject
             Subject = subject;
             if (subject is RDFVariable subjVar && !Variables.Any(v => v.Equals(subjVar)))

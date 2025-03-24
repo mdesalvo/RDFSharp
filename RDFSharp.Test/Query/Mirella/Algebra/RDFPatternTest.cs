@@ -145,7 +145,7 @@ public class RDFPatternTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPatternBecauseUnsupportedObject()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFContext()));
-        
+
     [TestMethod]
     public void ShouldCreateVPOPattern()
     {

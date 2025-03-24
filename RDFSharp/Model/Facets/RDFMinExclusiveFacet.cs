@@ -55,6 +55,7 @@ namespace RDFSharp.Model
         {
             if (double.TryParse(literalValue, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double parseLiteralValue))
                 return parseLiteralValue > ExclusiveLowerBound;
+
             return false;
         }
         #endregion

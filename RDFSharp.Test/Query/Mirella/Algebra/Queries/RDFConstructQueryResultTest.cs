@@ -65,12 +65,12 @@ public class RDFConstructQueryResultTest
         row3["?OBJECT"] = $"lit^^{RDFVocabulary.XSD.STRING}";
         constructResult.ConstructResults.Rows.Add(row3);
         constructResult.ConstructResults.AcceptChanges();
-            
+
         Assert.AreEqual(3, constructResult.ConstructResults.Columns.Count);
         Assert.AreEqual(4, constructResult.ConstructResultsCount);
 
         RDFGraph constructGraph = constructResult.ToRDFGraph();
-            
+
         Assert.IsNotNull(constructGraph);
         Assert.AreEqual(4, constructGraph.TriplesCount);
         Assert.IsTrue(constructGraph.ContainsTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit","en-US"))));
@@ -107,12 +107,12 @@ public class RDFConstructQueryResultTest
         row3["?OBJECT"] = $"lit^^{RDFVocabulary.XSD.STRING}";
         constructResult.ConstructResults.Rows.Add(row3);
         constructResult.ConstructResults.AcceptChanges();
-            
+
         Assert.AreEqual(3, constructResult.ConstructResults.Columns.Count);
         Assert.AreEqual(4, constructResult.ConstructResultsCount);
 
         RDFGraph constructGraph = await constructResult.ToRDFGraphAsync();
-            
+
         Assert.IsNotNull(constructGraph);
         Assert.AreEqual(4, constructGraph.TriplesCount);
         Assert.IsTrue(await constructGraph.ContainsTripleAsync(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit","en-US"))));
@@ -126,7 +126,7 @@ public class RDFConstructQueryResultTest
     {
         RDFConstructQueryResult constructResult = new RDFConstructQueryResult();
         RDFGraph constructGraph = constructResult.ToRDFGraph();
-            
+
         Assert.IsNotNull(constructGraph);
         Assert.AreEqual(0, constructGraph.TriplesCount);
     }

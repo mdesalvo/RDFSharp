@@ -64,7 +64,7 @@ namespace RDFSharp.Query
         internal override bool ApplyFilter(DataRow row, bool applyNegation)
         {
             bool keepRow = true;
-            
+
             //Check is performed only if the row contains a column named like the filter's variable
             if (row.Table.Columns.Contains(VariableName))
             {

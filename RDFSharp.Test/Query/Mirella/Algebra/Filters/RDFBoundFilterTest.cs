@@ -59,7 +59,7 @@ public class RDFBoundFilterTest
 
         Assert.IsTrue(keepRow);
     }
-        
+
     [TestMethod]
     public void ShouldCreateBoundFilterAndKeepRowWithEmptyVariable()
     {

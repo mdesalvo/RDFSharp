@@ -76,7 +76,7 @@ public class RDFPatternConstraintTest
         nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         nodeShape.AddConstraint(new RDFPatternConstraint(new Regex("^ex:")));
         shapesGraph.AddShape(nodeShape);
-            
+
         //Validate
         RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
 
@@ -103,7 +103,7 @@ public class RDFPatternConstraintTest
         nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         nodeShape.AddConstraint(new RDFPatternConstraint(new Regex("ce$")));
         shapesGraph.AddShape(nodeShape);
-            
+
         //Validate
         RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
 
@@ -130,7 +130,7 @@ public class RDFPatternConstraintTest
         nodeShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
         nodeShape.AddConstraint(new RDFPatternConstraint(new Regex("^ex:")));
         shapesGraph.AddShape(nodeShape);
-            
+
         //Validate
         RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
 
@@ -157,7 +157,7 @@ public class RDFPatternConstraintTest
         nodeShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         nodeShape.AddConstraint(new RDFPatternConstraint(new Regex("^ex:")));
         shapesGraph.AddShape(nodeShape);
-            
+
         //Validate
         RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
 
@@ -324,7 +324,7 @@ public class RDFPatternConstraintTest
         nodeShape.AddConstraint(new RDFPatternConstraint(new Regex("^ex:[BS]")));
         nodeShape.AddMessage(new RDFPlainLiteral("ErrorMessage"));
         shapesGraph.AddShape(nodeShape);
-            
+
         //Validate
         RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
 
@@ -338,7 +338,7 @@ public class RDFPatternConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
         Assert.IsNull(validationReport.Results[0].ResultPath);
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT));
-        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));   
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));
     }
 
     [TestMethod]
@@ -361,7 +361,7 @@ public class RDFPatternConstraintTest
         nodeShape.AddConstraint(new RDFPatternConstraint(new Regex("^ex:[BS]")));
         nodeShape.AddMessage(new RDFPlainLiteral("ErrorMessage"));
         shapesGraph.AddShape(nodeShape);
-            
+
         //Validate
         RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
 
@@ -375,7 +375,7 @@ public class RDFPatternConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
         Assert.IsNull(validationReport.Results[0].ResultPath);
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT));
-        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));   
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));
     }
 
     [TestMethod]
@@ -398,7 +398,7 @@ public class RDFPatternConstraintTest
         nodeShape.AddConstraint(new RDFPatternConstraint(new Regex("^bnode:A"))); //This constraint does not allow blank nodes as values
         nodeShape.AddMessage(new RDFPlainLiteral("ErrorMessage"));
         shapesGraph.AddShape(nodeShape);
-            
+
         //Validate
         RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
 
@@ -412,7 +412,7 @@ public class RDFPatternConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("bnode:Alice")));
         Assert.IsNull(validationReport.Results[0].ResultPath);
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT));
-        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));   
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));
     }
 
     [TestMethod]
@@ -435,7 +435,7 @@ public class RDFPatternConstraintTest
         nodeShape.AddConstraint(new RDFPatternConstraint(new Regex("^ex:B")));
         nodeShape.AddMessage(new RDFPlainLiteral("ErrorMessage"));
         shapesGraph.AddShape(nodeShape);
-            
+
         //Validate
         RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
 
@@ -449,7 +449,7 @@ public class RDFPatternConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
         Assert.IsNull(validationReport.Results[0].ResultPath);
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT));
-        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));   
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));
     }
 
     [TestMethod]
@@ -472,7 +472,7 @@ public class RDFPatternConstraintTest
         nodeShape.AddConstraint(new RDFPatternConstraint(new Regex("^ex:S")));
         nodeShape.AddMessage(new RDFPlainLiteral("ErrorMessage"));
         shapesGraph.AddShape(nodeShape);
-            
+
         //Validate
         RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
 
@@ -486,11 +486,11 @@ public class RDFPatternConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
         Assert.IsNull(validationReport.Results[0].ResultPath);
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT));
-        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));   
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));
     }
 
     //PS-CONFORMS: FALSE
-        
+
     [TestMethod]
     public void ShouldNotConformPropertyShapeWithClassTarget()
     {
@@ -524,7 +524,7 @@ public class RDFPatternConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT));
-        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape"))); 
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
 
     [TestMethod]
@@ -560,7 +560,7 @@ public class RDFPatternConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("bnode:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT));
-        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape"))); 
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
 
     [TestMethod]
@@ -596,7 +596,7 @@ public class RDFPatternConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFPlainLiteral("Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT));
-        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape"))); 
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
 
     [TestMethod]
@@ -632,7 +632,7 @@ public class RDFPatternConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT));
-        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape"))); 
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
 
     [TestMethod]
@@ -668,7 +668,7 @@ public class RDFPatternConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
         Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT));
-        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape"))); 
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
     #endregion
 }

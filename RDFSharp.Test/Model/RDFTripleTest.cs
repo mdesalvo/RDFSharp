@@ -39,7 +39,7 @@ public class RDFTripleTest
         Assert.IsTrue(triple.Predicate.Equals(pred));
         Assert.IsTrue(triple.Object.Equals(obj));
         Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", triple.TripleID.ToString()))));
-            
+
         string tripleString = triple.ToString();
         Assert.IsTrue(tripleString.Equals(string.Concat(triple.Subject.ToString(), " ", triple.Predicate.ToString(), " ", triple.Object.ToString())));
 
@@ -96,7 +96,7 @@ public class RDFTripleTest
     public void ShouldCreateSPLTripleFromNullInputs(string p)
     {
         RDFResource pred = new RDFResource(p);
-            
+
         RDFTriple triple = new RDFTriple(null, pred, null as RDFPlainLiteral);
         Assert.IsNotNull(triple);
         Assert.AreEqual(RDFModelEnums.RDFTripleFlavors.SPL, triple.TripleFlavor);

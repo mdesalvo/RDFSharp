@@ -80,7 +80,7 @@ public class RDFQueryUtilitiesTest
     [DataRow("ex:res1", null, 1)]
     [DataRow("lit1", null, 1)]
     [DataRow("lit1@en-US", null, 1)]
-    [DataRow("lit^^http://www.w3.org/2001/XMLSchema#string", null, 1)]      
+    [DataRow("lit^^http://www.w3.org/2001/XMLSchema#string", null, 1)]
     public void ShouldCompareNullPatternMembers(string leftVal, string rightVal, int expectedCompare)
     {
         RDFPatternMember leftPMember = null, rightPMember = null;
