@@ -6,7 +6,7 @@
         <Version>3.18.0</Version>
         <Authors>Marco De Salvo</Authors>
         <Copyright>Marco De Salvo</Copyright>
-        <Description>Lightweight and friendly .NET library for realizing Semantic Web applications</Description>
+        <Description>Lightweight and friendly .NET library for realizing Semantic Web applications (RDF, SPARQL, SHACL)</Description>
         <TargetFramework>netstandard2.0</TargetFramework>
         <SignAssembly>false</SignAssembly>
         <Product>RDFSharp</Product>
