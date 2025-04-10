@@ -22,7 +22,7 @@ namespace RDFSharp.Store
     /// RDFStoreException represents an exception thrown during manipulation of RDF stores
     /// </summary>
     [Serializable]
-    public class RDFStoreException : Exception
+    public sealed class RDFStoreException : Exception
     {
         #region Ctors
         /// <summary>

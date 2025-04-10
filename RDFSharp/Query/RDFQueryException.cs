@@ -22,7 +22,7 @@ namespace RDFSharp.Query
     /// RDFQueryException represents an exception thrown during creation and execution of SPARQL queries
     /// </summary>
     [Serializable]
-    public class RDFQueryException : Exception
+    public sealed class RDFQueryException : Exception
     {
         #region Ctors
         /// <summary>

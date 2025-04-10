@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// RDFModelException represents an exception thrown during manipulation of RDF models
     /// </summary>
     [Serializable]
-    public class RDFModelException : Exception
+    public sealed class RDFModelException : Exception
     {
         #region Ctors
         /// <summary>
