@@ -21,7 +21,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFInsertWhereOperation is the SPARQL "INSERT WHERE" operation implementation
     /// </summary>
-    public class RDFInsertWhereOperation : RDFOperation
+    public sealed class RDFInsertWhereOperation : RDFOperation
     {
         #region Interfaces
         /// <summary>

@@ -19,7 +19,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFMinutesExpression represents a datetime minutes function to be applied on a query results table.
     /// </summary>
-    public class RDFMinutesExpression : RDFDateTimeExpression
+    public sealed class RDFMinutesExpression : RDFDateTimeExpression
     {
         #region Ctors
         /// <summary>

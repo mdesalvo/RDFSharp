@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// GEOIsSimpleExpression represents "geosparql:isSimple" geographic function to be applied on a query results table.<br/>
     /// The result of this function is a boolean typed literal indicating that the working geometry is simple.
     /// </summary>
-    public class RDFGeoIsSimpleExpression : RDFGeoExpression
+    public sealed class RDFGeoIsSimpleExpression : RDFGeoExpression
     {
         #region Ctors
         /// <summary>

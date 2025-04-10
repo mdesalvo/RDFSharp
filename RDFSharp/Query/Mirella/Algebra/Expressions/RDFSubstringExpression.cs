@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFSubstringExpression represents a substring function to be applied on a query results table.
     /// </summary>
-    public class RDFSubstringExpression : RDFExpression
+    public sealed class RDFSubstringExpression : RDFExpression
     {
         #region Properties
         /// <summary>

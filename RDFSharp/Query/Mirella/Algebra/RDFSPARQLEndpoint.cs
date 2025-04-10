@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFSPARQLEndpoint represents a SPARQL endpoint
     /// </summary>
-    public class RDFSPARQLEndpoint : RDFDataSource
+    public sealed class RDFSPARQLEndpoint : RDFDataSource
     {
         #region Properties
         /// <summary>
@@ -139,7 +139,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFSPARQLEndpointQueryOptions customizes the default behavior of a SPARQL endpoint query
     /// </summary>
-    public class RDFSPARQLEndpointQueryOptions
+    public sealed class RDFSPARQLEndpointQueryOptions
     {
         #region Properties
         /// <summary>
@@ -191,7 +191,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFSPARQLEndpointOperationOptions customizes the default behavior of a SPARQL UPDATE endpoint operation
     /// </summary>
-    public class RDFSPARQLEndpointOperationOptions
+    public sealed class RDFSPARQLEndpointOperationOptions
     {
         #region Properties
         /// <summary>

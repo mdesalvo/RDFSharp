@@ -19,7 +19,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFTargetNode represents a SHACL target of type "Node" within a shape.
     /// </summary>
-    public class RDFTargetNode : RDFTarget
+    public sealed class RDFTargetNode : RDFTarget
     {
         #region Ctors
         /// <summary>

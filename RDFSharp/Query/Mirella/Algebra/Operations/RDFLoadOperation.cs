@@ -21,7 +21,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFLoadOperation is the SPARQL "LOAD" operation implementation
     /// </summary>
-    public class RDFLoadOperation : RDFOperation
+    public sealed class RDFLoadOperation : RDFOperation
     {
         #region Properties
         /// <summary>

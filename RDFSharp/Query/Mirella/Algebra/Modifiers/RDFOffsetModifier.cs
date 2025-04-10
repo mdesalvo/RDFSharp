@@ -22,7 +22,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFOffsetModifier is a modifier which makes the first N query results to be not considered.
     /// </summary>
-    public class RDFOffsetModifier : RDFModifier
+    public sealed class RDFOffsetModifier : RDFModifier
     {
         #region Properties
         /// <summary>

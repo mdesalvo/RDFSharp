@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFRandExpression represents an arithmetical rand function to be applied on a query results table.
     /// </summary>
-    public class RDFRandExpression : RDFExpression
+    public sealed class RDFRandExpression : RDFExpression
     {
         #region Properties
         /// <summary>

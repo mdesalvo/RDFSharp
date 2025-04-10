@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFMinAggregator represents a MAX aggregation function applied by a GroupBy modifier
     /// </summary>
-    public class RDFMaxAggregator : RDFAggregator
+    public sealed class RDFMaxAggregator : RDFAggregator
     {
         #region Properties
         /// <summary>

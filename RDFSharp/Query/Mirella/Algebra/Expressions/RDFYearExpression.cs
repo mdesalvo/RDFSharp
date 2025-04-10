@@ -19,7 +19,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFYearExpression represents a datetime year function to be applied on a query results table.
     /// </summary>
-    public class RDFYearExpression : RDFDateTimeExpression
+    public sealed class RDFYearExpression : RDFDateTimeExpression
     {
         #region Ctors
         /// <summary>

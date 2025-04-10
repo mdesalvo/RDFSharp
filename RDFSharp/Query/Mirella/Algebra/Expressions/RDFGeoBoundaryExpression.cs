@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// GEOBoundaryExpression represents "geof:boundary" geographic function to be applied on a query results table.<br/>
     /// The result of this function is a WKT typed literal representing a sf:Geometry expressed in WGS84 Lon/Lat.
     /// </summary>
-    public class RDFGeoBoundaryExpression : RDFGeoExpression
+    public sealed class RDFGeoBoundaryExpression : RDFGeoExpression
     {
         #region Ctors
         /// <summary>

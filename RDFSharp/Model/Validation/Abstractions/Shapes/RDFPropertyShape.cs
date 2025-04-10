@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFPropertyShape represents a SHACL property shape definition
     /// </summary>
-    public class RDFPropertyShape : RDFShape
+    public sealed class RDFPropertyShape : RDFShape
     {
         #region Properties
         /// <summary>

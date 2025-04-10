@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFNodeKindConstraint represents a SHACL constraint on the specified type for a given RDF term
     /// </summary>
-    public class RDFNodeKindConstraint : RDFConstraint
+    public sealed class RDFNodeKindConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// GEOGetSRIDExpression represents "geof:getSRID" geographic function to be applied on a query results table.<br/>
     /// The result of this function is xsd:anyURI typed literal representing the SRID of the working geometry.
     /// </summary>
-    public class RDFGeoGetSRIDExpression : RDFGeoExpression
+    public sealed class RDFGeoGetSRIDExpression : RDFGeoExpression
     {
         #region Ctors
         /// <summary>

@@ -22,7 +22,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFLimitModifier is a modifier which applies an upper-bound counter to the number of query results to be considered.
     /// </summary>
-    public class RDFLimitModifier : RDFModifier
+    public sealed class RDFLimitModifier : RDFModifier
     {
         #region Properties
         /// <summary>

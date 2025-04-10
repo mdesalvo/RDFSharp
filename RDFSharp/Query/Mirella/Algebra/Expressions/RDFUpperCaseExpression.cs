@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFUpperCaseExpression represents a string uppercase function to be applied on a query results table.
     /// </summary>
-    public class RDFUpperCaseExpression : RDFExpression
+    public sealed class RDFUpperCaseExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

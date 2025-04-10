@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFContainsExpression represents a string contains function to be applied on a query results table.
     /// </summary>
-    public class RDFContainsExpression : RDFExpression
+    public sealed class RDFContainsExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

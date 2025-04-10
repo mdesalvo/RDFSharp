@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFDatatype represents a custom datatype obtained by faceting the behavior of a base datatype
     /// </summary>
-    public class RDFDatatype
+    public sealed class RDFDatatype
     {
         #region Properties
         /// <summary>

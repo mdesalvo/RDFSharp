@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFMD5Expression represents a MD5 hash function to be applied on a query results table.
     /// </summary>
-    public class RDFMD5Expression : RDFExpression
+    public sealed class RDFMD5Expression : RDFExpression
     {
         #region Ctors
         /// <summary>

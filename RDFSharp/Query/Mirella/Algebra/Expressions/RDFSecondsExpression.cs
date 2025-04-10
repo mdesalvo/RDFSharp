@@ -19,7 +19,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFSecondsExpression represents a datetime seconds function to be applied on a query results table.
     /// </summary>
-    public class RDFSecondsExpression : RDFDateTimeExpression
+    public sealed class RDFSecondsExpression : RDFDateTimeExpression
     {
         #region Ctors
         /// <summary>

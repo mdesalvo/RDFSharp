@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFMaxLengthConstraint represents a SHACL constraint on the maximum allowed length for a given RDF term
     /// </summary>
-    public class RDFMaxLengthConstraint : RDFConstraint
+    public sealed class RDFMaxLengthConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

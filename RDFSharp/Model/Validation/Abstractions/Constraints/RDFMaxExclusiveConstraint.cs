@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFMaxExclusiveConstraint represents a SHACL constraint on an exclusive upper-bound value for a given RDF term
     /// </summary>
-    public class RDFMaxExclusiveConstraint : RDFConstraint
+    public sealed class RDFMaxExclusiveConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

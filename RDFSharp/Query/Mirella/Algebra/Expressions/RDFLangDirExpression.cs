@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFLangDirExpression represents a direction-extractor function to be applied on a query results table.
     /// </summary>
-    public class RDFLangDirExpression : RDFExpression
+    public sealed class RDFLangDirExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

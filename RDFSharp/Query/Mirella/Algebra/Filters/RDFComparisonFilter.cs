@@ -23,7 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFComparisonFilter represents a filter applying a comparison between the given RDF terms.
     /// </summary>
-    public class RDFComparisonFilter : RDFFilter
+    public sealed class RDFComparisonFilter : RDFFilter
     {
         #region Properties
         /// <summary>

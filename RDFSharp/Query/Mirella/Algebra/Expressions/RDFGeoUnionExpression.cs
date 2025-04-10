@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// GEOUnionExpression represents "geof:union" geographic function to be applied on a query results table.<br/>
     /// The result of this function is a WKT typed literal representing a geosparql:Geometry expressed in WGS84 Lon/Lat.
     /// </summary>
-    public class RDFGeoUnionExpression : RDFGeoExpression
+    public sealed class RDFGeoUnionExpression : RDFGeoExpression
     {
         #region Ctors
         /// <summary>

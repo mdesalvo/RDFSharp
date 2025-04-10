@@ -23,7 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFPropertyPath represents a chain of properties connecting two terms in a RDF datasource.
     /// </summary>
-    public class RDFPropertyPath : RDFPatternGroupMember
+    public sealed class RDFPropertyPath : RDFPatternGroupMember
     {
         #region Properties
         /// <summary>
@@ -232,7 +232,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFPropertyPathStep represents a step of a property path
     /// </summary>
-    public class RDFPropertyPathStep
+    public sealed class RDFPropertyPathStep
     {
         #region Properties
         /// <summary>

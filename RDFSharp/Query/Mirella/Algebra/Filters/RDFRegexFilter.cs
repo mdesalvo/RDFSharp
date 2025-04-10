@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFRegexFilter represents a filter applying a regular expression on the values of a variable.
     /// </summary>
-    public class RDFRegexFilter : RDFFilter
+    public sealed class RDFRegexFilter : RDFFilter
     {
         #region Properties
         /// <summary>

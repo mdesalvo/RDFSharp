@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFMaxLengthFacet represents a constraint requiring the values of a literal to have a maximum length
     /// </summary>
-    public class RDFMaxLengthFacet : RDFFacet
+    public sealed class RDFMaxLengthFacet : RDFFacet
     {
         #region Properties
         /// <summary>

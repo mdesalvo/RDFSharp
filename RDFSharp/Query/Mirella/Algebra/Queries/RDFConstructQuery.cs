@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFConstructQuery is the SPARQL "CONSTRUCT" query implementation.
     /// </summary>
-    public class RDFConstructQuery : RDFQuery
+    public sealed class RDFConstructQuery : RDFQuery
     {
         #region Properties
         /// <summary>

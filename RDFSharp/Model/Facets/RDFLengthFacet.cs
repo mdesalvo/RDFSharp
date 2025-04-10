@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFLengthFacet represents a constraint requiring the values of a literal to have an exact length
     /// </summary>
-    public class RDFLengthFacet : RDFFacet
+    public sealed class RDFLengthFacet : RDFFacet
     {
         #region Properties
         /// <summary>

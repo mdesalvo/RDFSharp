@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFStartsExpression represents a string starts function to be applied on a query results table.
     /// </summary>
-    public class RDFStartsExpression : RDFExpression
+    public sealed class RDFStartsExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

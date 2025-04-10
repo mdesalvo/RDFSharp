@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFMaxCountConstraint represents a SHACL constraint on the maximum required occurrences for a given RDF term
     /// </summary>
-    public class RDFMaxCountConstraint : RDFConstraint
+    public sealed class RDFMaxCountConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

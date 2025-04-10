@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFDatatypeFilter represents a filter on the datatype of a variable.
     /// </summary>
-    public class RDFDatatypeFilter : RDFFilter
+    public sealed class RDFDatatypeFilter : RDFFilter
     {
         #region Properties
         /// <summary>

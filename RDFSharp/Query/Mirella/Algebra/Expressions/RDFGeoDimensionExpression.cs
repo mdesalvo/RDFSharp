@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// GEODimensionExpression represents "geosparql:dimension" geographic function to be applied on a query results table.<br/>
     /// The result of this function is a numeric typed literal representing the dimension of the working geometry (0=Point,1=LineString,2=Polygon).
     /// </summary>
-    public class RDFGeoDimensionExpression : RDFGeoExpression
+    public sealed class RDFGeoDimensionExpression : RDFGeoExpression
     {
         #region Ctors
         /// <summary>

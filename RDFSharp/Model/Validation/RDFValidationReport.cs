@@ -24,7 +24,7 @@ namespace RDFSharp.Model
     /// <summary>
     ///  RDFValidationReport represents a detailed report of a shapes graph's validation.
     /// </summary>
-    public class RDFValidationReport : RDFResource, IEnumerable<RDFValidationResult>
+    public sealed class RDFValidationReport : RDFResource, IEnumerable<RDFValidationResult>
     {
         #region Properties
         /// <summary>

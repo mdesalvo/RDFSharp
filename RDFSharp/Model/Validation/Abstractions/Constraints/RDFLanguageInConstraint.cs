@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFLanguageInConstraint represents a SHACL constraint on the allowed language tags for a given RDF term
     /// </summary>
-    public class RDFLanguageInConstraint : RDFConstraint
+    public sealed class RDFLanguageInConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

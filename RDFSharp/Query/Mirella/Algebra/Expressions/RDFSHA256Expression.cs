@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFSHA256Expression represents a SHA256 hash function to be applied on a query results table.
     /// </summary>
-    public class RDFSHA256Expression : RDFExpression
+    public sealed class RDFSHA256Expression : RDFExpression
     {
         #region Ctors
         /// <summary>

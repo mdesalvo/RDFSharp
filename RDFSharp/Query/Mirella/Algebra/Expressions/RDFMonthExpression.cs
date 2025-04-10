@@ -19,7 +19,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFMonthExpression represents a datetime month function to be applied on a query results table.
     /// </summary>
-    public class RDFMonthExpression : RDFDateTimeExpression
+    public sealed class RDFMonthExpression : RDFDateTimeExpression
     {
         #region Ctors
         /// <summary>

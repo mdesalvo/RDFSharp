@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     /// RDFValuesFilter represents an explicit binding of variables provided for filtering a SPARQL query.
     /// (This filter is NOT intended to be public: in fact, it is injected by RDFValues during evaluation).
     /// </summary>
-    internal class RDFValuesFilter : RDFFilter
+    internal sealed class RDFValuesFilter : RDFFilter
     {
         #region Properties
         /// <summary>

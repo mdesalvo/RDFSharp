@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFUniqueLangConstraint represents a SHACL constraint on the uniqueness of language tags for a given RDF term
     /// </summary>
-    public class RDFUniqueLangConstraint : RDFConstraint
+    public sealed class RDFUniqueLangConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

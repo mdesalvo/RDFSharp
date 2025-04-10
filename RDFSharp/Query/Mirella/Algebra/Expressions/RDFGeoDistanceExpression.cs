@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// GEODistanceExpression represents "geof:distance" geographic function to be applied on a query results table.<br/>
     /// The result of this function is a numeric typed literal representing distance expressed in meters.
     /// </summary>
-    public class RDFGeoDistanceExpression : RDFGeoExpression
+    public sealed class RDFGeoDistanceExpression : RDFGeoExpression
     {
         #region Ctors
         /// <summary>

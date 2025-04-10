@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFPlainLiteral represents a literal eventually decorated with a language tag
     /// </summary>
-    public class RDFPlainLiteral : RDFLiteral
+    public sealed class RDFPlainLiteral : RDFLiteral
     {
         #region Properties
         /// <summary>

@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFQualifiedValueShapeConstraint represents a SHACL constraint requiring min/max occurrencies of the specified shape for a given RDF term
     /// </summary>
-    public class RDFQualifiedValueShapeConstraint : RDFConstraint
+    public sealed class RDFQualifiedValueShapeConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

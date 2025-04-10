@@ -24,7 +24,7 @@ namespace RDFSharp.Store
     /// RDFContext is an Uri representing the "provenance" of a triple in the worldwide LinkedData network.<br/>
     /// It cannot be a blank resource, since its meaning is to answer "where does this triple come from?".
     /// </summary>
-    public class RDFContext : RDFPatternMember
+    public sealed class RDFContext : RDFPatternMember
     {
         #region Properties
         /// <summary>

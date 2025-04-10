@@ -22,7 +22,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFClearOperation is the SPARQL "CLEAR" operation implementation
     /// </summary>
-    public class RDFClearOperation : RDFOperation
+    public sealed class RDFClearOperation : RDFOperation
     {
         #region Properties
         /// <summary>

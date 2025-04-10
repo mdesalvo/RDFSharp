@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFSameTermFilter represents an equality filter between a variable and a RDF term.
     /// </summary>
-    public class RDFSameTermFilter : RDFFilter
+    public sealed class RDFSameTermFilter : RDFFilter
     {
         #region Properties
         /// <summary>

@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFVariableExpression represents a single-argument variable expression to be applied on a query results table.
     /// </summary>
-    public class RDFVariableExpression : RDFExpression
+    public sealed class RDFVariableExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

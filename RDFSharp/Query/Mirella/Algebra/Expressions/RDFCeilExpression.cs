@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFCeilExpression represents an arithmetical ceil function to be applied on a query results table.
     /// </summary>
-    public class RDFCeilExpression : RDFExpression
+    public sealed class RDFCeilExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

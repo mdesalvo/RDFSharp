@@ -21,7 +21,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFSubtractExpression represents an arithmetical subtraction expression to be applied on a query results table.
     /// </summary>
-    public class RDFSubtractExpression : RDFMathExpression
+    public sealed class RDFSubtractExpression : RDFMathExpression
     {
         #region Ctors
         /// <summary>

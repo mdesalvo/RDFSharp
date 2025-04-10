@@ -21,7 +21,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFDeleteWhereOperation is the SPARQL "DELETE/INSERT WHERE" operation implementation
     /// </summary>
-    public class RDFDeleteInsertWhereOperation : RDFOperation
+    public sealed class RDFDeleteInsertWhereOperation : RDFOperation
     {
         #region Interfaces
         /// <summary>

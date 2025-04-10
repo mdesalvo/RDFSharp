@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFCoalesceExpression represents a string coalesce function to be applied on a query results table.
     /// </summary>
-    public class RDFCoalesceExpression : RDFExpression
+    public sealed class RDFCoalesceExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

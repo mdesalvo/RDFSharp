@@ -28,7 +28,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFSelectQueryResult is a container for SPARQL "SELECT" query results.
     /// </summary>
-    public class RDFSelectQueryResult : RDFQueryResult
+    public sealed class RDFSelectQueryResult : RDFQueryResult
     {
         #region Properties
         /// <summary>

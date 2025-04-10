@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFEncodeForURIExpression represents a string encoding function to be applied on a query results table.
     /// </summary>
-    public class RDFEncodeForURIExpression : RDFExpression
+    public sealed class RDFEncodeForURIExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

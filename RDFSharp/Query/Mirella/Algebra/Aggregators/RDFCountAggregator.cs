@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFCountAggregator represents a COUNT aggregation function applied by a GroupBy modifier
     /// </summary>
-    public class RDFCountAggregator : RDFAggregator
+    public sealed class RDFCountAggregator : RDFAggregator
     {
         #region Ctors
         /// <summary>

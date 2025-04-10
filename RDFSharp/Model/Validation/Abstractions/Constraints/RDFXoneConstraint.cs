@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFXoneConstraint represents a SHACL constraint requiring exactly one of the given shapes for a given RDF term
     /// </summary>
-    public class RDFXoneConstraint : RDFConstraint
+    public sealed class RDFXoneConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

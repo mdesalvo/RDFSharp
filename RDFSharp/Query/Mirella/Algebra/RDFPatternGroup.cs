@@ -23,7 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFPatternGroup represents a named group of patterns having its own filters.
     /// </summary>
-    public class RDFPatternGroup : RDFQueryMember
+    public sealed class RDFPatternGroup : RDFQueryMember
     {
         #region Properties
         /// <summary>

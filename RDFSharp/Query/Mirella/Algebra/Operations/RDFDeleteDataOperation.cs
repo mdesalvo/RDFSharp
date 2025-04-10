@@ -21,7 +21,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFDeleteDataOperation is the SPARQL "DELETE DATA" operation implementation
     /// </summary>
-    public class RDFDeleteDataOperation : RDFOperation
+    public sealed class RDFDeleteDataOperation : RDFOperation
     {
         #region Interfaces
         /// <summary>

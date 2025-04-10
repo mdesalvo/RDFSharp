@@ -19,7 +19,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFDayExpression represents a datetime day function to be applied on a query results table.
     /// </summary>
-    public class RDFDayExpression : RDFDateTimeExpression
+    public sealed class RDFDayExpression : RDFDateTimeExpression
     {
         #region Ctors
         /// <summary>

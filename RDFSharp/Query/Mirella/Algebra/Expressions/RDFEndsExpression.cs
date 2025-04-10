@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFEndsExpression represents a string ends function to be applied on a query results table.
     /// </summary>
-    public class RDFEndsExpression : RDFExpression
+    public sealed class RDFEndsExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

@@ -23,7 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFExpressionFilter represents a filter executing any kind of supported expressions
     /// </summary>
-    public class RDFExpressionFilter : RDFFilter
+    public sealed class RDFExpressionFilter : RDFFilter
     {
         #region Properties
         /// <summary>

@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFInFilter represents a filter checking if a RDF term is found in a given set of RDF terms.
     /// </summary>
-    public class RDFInFilter : RDFFilter
+    public sealed class RDFInFilter : RDFFilter
     {
         #region Properties
         /// <summary>

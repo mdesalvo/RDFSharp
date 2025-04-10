@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFHasLangExpression represents a language-detector function to be applied on a query results table.
     /// </summary>
-    public class RDFHasLangExpression : RDFExpression
+    public sealed class RDFHasLangExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

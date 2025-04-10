@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFSHA384Expression represents a SHA384 hash function to be applied on a query results table.
     /// </summary>
-    public class RDFSHA384Expression : RDFExpression
+    public sealed class RDFSHA384Expression : RDFExpression
     {
         #region Ctors
         /// <summary>

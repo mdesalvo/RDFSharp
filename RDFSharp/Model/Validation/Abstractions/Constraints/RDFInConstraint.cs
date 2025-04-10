@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFInConstraint represents a SHACL constraint on the allowed values for a given RDF term
     /// </summary>
-    public class RDFInConstraint : RDFConstraint
+    public sealed class RDFInConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

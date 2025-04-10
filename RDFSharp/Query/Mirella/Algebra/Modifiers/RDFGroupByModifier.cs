@@ -23,7 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFGroupByModifier represents an aggregator modifier to be applied on a query results table.
     /// </summary>
-    public class RDFGroupByModifier : RDFModifier
+    public sealed class RDFGroupByModifier : RDFModifier
     {
         #region Properties
         /// <summary>

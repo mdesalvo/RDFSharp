@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFMinCountConstraint represents a SHACL constraint on the minimum required occurrences for a given RDF term
     /// </summary>
-    public class RDFMinCountConstraint : RDFConstraint
+    public sealed class RDFMinCountConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

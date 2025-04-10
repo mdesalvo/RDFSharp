@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// GEOEqualsExpression represents "geof:sfEquals" geographic function to be applied on a query results table.<br/>
     /// The result of this function is a boolean typed literal.
     /// </summary>
-    public class RDFGeoEqualsExpression : RDFGeoExpression
+    public sealed class RDFGeoEqualsExpression : RDFGeoExpression
     {
         #region Ctors
         /// <summary>

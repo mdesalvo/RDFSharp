@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFConstantExpression represents a single-argument constant expression to be applied on a query results table.
     /// </summary>
-    public class RDFConstantExpression : RDFExpression
+    public sealed class RDFConstantExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

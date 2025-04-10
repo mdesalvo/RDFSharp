@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFClosedConstraint represents a SHACL constraint on the predicates allowed for a given RDF term
     /// </summary>
-    public class RDFClosedConstraint : RDFConstraint
+    public sealed class RDFClosedConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFLangMatchesFilter represents a filter on the language of a variable.
     /// </summary>
-    public class RDFLangMatchesFilter : RDFFilter
+    public sealed class RDFLangMatchesFilter : RDFFilter
     {
         #region Properties
         /// <summary>

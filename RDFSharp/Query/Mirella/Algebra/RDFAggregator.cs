@@ -193,7 +193,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFAggregatorContext represents a registry for keeping track of aggregator's execution
     /// </summary>
-    internal class RDFAggregatorContext
+    internal sealed class RDFAggregatorContext
     {
         #region Properties
         /// <summary>

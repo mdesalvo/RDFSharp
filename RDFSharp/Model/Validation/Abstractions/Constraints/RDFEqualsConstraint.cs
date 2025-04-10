@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFEqualsConstraint represents a SHACL constraint on presence of a given RDF term for the specified predicate
     /// </summary>
-    public class RDFEqualsConstraint : RDFConstraint
+    public sealed class RDFEqualsConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

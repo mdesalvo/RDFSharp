@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFGroupConcatAggregator represents a GROUP_CONCAT aggregation function applied by a GroupBy modifier
     /// </summary>
-    public class RDFGroupConcatAggregator : RDFAggregator
+    public sealed class RDFGroupConcatAggregator : RDFAggregator
     {
         #region Properties
         /// <summary>

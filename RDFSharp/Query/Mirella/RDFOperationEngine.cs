@@ -29,7 +29,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFOperationEngine is the engine for execution of SPARQL UPDATE operations
     /// </summary>
-    internal class RDFOperationEngine : RDFQueryEngine
+    internal sealed class RDFOperationEngine : RDFQueryEngine
     {
         #region Methods
 

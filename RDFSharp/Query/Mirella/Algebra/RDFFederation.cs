@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFFederation represents a virtually integrated collection of RDF data sources
     /// </summary>
-    public class RDFFederation : RDFDataSource, IEnumerable<RDFDataSource>
+    public sealed class RDFFederation : RDFDataSource, IEnumerable<RDFDataSource>
     {
         #region Properties
         /// <summary>

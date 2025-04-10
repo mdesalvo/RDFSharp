@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFMinExclusiveFacet represents a constraint requiring the values of a literal to have a minimum numeric lower bound (excluded)
     /// </summary>
-    public class RDFMinExclusiveFacet : RDFFacet
+    public sealed class RDFMinExclusiveFacet : RDFFacet
     {
         #region Properties
         /// <summary>

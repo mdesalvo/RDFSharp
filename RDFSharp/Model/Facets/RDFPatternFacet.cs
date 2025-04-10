@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFPatternFacet represents a constraint requiring the values of a literal to match a pattern
     /// </summary>
-    public class RDFPatternFacet : RDFFacet
+    public sealed class RDFPatternFacet : RDFFacet
     {
         #region Properties
         /// <summary>

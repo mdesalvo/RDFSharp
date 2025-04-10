@@ -24,7 +24,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFShapesGraph represents a SHACL shapes graph definition
     /// </summary>
-    public class RDFShapesGraph : RDFResource, IEnumerable<RDFShape>
+    public sealed class RDFShapesGraph : RDFResource, IEnumerable<RDFShape>
     {
         #region Properties
         /// <summary>

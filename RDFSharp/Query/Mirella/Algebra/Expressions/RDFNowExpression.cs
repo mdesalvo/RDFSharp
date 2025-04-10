@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFNowExpression represents a datetime now function (represented in UTC) to be applied on a query results table.
     /// </summary>
-    public class RDFNowExpression : RDFExpression
+    public sealed class RDFNowExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

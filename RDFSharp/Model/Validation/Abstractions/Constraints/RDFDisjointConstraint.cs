@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFDisjointConstraint represents a SHACL constraint on absence of a given RDF term for the specified predicate
     /// </summary>
-    public class RDFDisjointConstraint : RDFConstraint
+    public sealed class RDFDisjointConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

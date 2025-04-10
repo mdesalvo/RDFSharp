@@ -23,7 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFIsNumericFilter represents a filter for numeric typed literal values of a variable.
     /// </summary>
-    public class RDFIsNumericFilter : RDFFilter
+    public sealed class RDFIsNumericFilter : RDFFilter
     {
         #region Properties
         /// <summary>

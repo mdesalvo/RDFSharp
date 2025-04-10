@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFLangExpression represents a language-extractor function to be applied on a query results table.
     /// </summary>
-    public class RDFLangExpression : RDFExpression
+    public sealed class RDFLangExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

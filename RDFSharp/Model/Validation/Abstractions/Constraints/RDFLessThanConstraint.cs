@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFLessThanConstraint represents a SHACL constraint on minority comparison of a given RDF term for the specified predicate
     /// </summary>
-    public class RDFLessThanConstraint : RDFConstraint
+    public sealed class RDFLessThanConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

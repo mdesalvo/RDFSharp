@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFFloorExpression represents an arithmetical floor function to be applied on a query results table.
     /// </summary>
-    public class RDFFloorExpression : RDFExpression
+    public sealed class RDFFloorExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

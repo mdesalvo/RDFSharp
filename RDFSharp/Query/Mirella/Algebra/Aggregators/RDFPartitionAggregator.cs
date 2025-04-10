@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFPartitionAggregator represents a PARTITION aggregation function applied by a GroupBy modifier
     /// </summary>
-    internal class RDFPartitionAggregator : RDFSampleAggregator
+    internal sealed class RDFPartitionAggregator : RDFSampleAggregator
     {
         #region Ctors
         /// <summary>

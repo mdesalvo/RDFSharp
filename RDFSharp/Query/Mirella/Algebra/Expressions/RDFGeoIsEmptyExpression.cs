@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// GEOIsEmptyExpression represents "geosparql:isEmpty" geographic function to be applied on a query results table.<br/>
     /// The result of this function is a boolean typed literal indicating that the working geometry has no points.
     /// </summary>
-    public class RDFGeoIsEmptyExpression : RDFGeoExpression
+    public sealed class RDFGeoIsEmptyExpression : RDFGeoExpression
     {
         #region Ctors
         /// <summary>

@@ -19,7 +19,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFTargetSubjectsOf represents a SHACL target of type "SubjectsOf" within a shape.
     /// </summary>
-    public class RDFTargetSubjectsOf : RDFTarget
+    public sealed class RDFTargetSubjectsOf : RDFTarget
     {
         #region Ctors
         /// <summary>

@@ -21,7 +21,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFDivideExpression represents an arithmetical division expression to be applied on a query results table.
     /// </summary>
-    public class RDFDivideExpression : RDFMathExpression
+    public sealed class RDFDivideExpression : RDFMathExpression
     {
         #region Ctors
         /// <summary>

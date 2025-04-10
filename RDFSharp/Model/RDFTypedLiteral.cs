@@ -19,7 +19,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFTypedLiteral represents a literal decorated with an XML Schema datatype.
     /// </summary>
-    public class RDFTypedLiteral : RDFLiteral
+    public sealed class RDFTypedLiteral : RDFLiteral
     {
         #region Statics
         /// <summary>

@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// GEOWithinExpression represents "geof:sfWithin" geographic function to be applied on a query results table.<br/>
     /// The result of this function is a boolean typed literal.
     /// </summary>
-    public class RDFGeoWithinExpression : RDFGeoExpression
+    public sealed class RDFGeoWithinExpression : RDFGeoExpression
     {
         #region Ctors
         /// <summary>

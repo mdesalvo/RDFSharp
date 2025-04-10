@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFMinLengthConstraint represents a SHACL constraint on the minimum allowed length for a given RDF term
     /// </summary>
-    public class RDFMinLengthConstraint : RDFConstraint
+    public sealed class RDFMinLengthConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

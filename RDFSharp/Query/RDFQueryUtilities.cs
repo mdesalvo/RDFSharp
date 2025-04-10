@@ -289,10 +289,10 @@ namespace RDFSharp.Query
         /// RDFWebClient extends WebClient with support for customization of timeout
         /// </summary>
         [ExcludeFromCodeCoverage]
-        internal class RDFWebClient : WebClient
+        internal sealed class RDFWebClient : WebClient
         {
             #region Properties
-            private int TimeOut { get; set; }
+            private int TimeOut { get; }
             #endregion
 
             #region Ctors

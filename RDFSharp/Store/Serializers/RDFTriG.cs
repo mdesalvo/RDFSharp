@@ -146,7 +146,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Represents the context of the TriG parser
         /// </summary>
-        internal class RDFTriGContext : RDFTurtleContext
+        internal sealed class RDFTriGContext : RDFTurtleContext
         {
             /// <summary>
             /// Indicates the current TriG context

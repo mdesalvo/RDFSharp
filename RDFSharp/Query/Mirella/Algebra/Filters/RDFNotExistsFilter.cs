@@ -23,7 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFNotExistsFilter represents a filter for checking absence of given RDF pattern.
     /// </summary>
-    public class RDFNotExistsFilter : RDFExistsFilter
+    public sealed class RDFNotExistsFilter : RDFExistsFilter
     {
         #region Ctors
         /// <summary>

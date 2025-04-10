@@ -23,7 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFDistinctModifier is a modifier which drops duplicate rows for the level of detail of a SELECT query.
     /// </summary>
-    public class RDFDistinctModifier : RDFModifier
+    public sealed class RDFDistinctModifier : RDFModifier
     {
         #region Ctors
         /// <summary>

@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFNotConstraint represents a SHACL constraint not allowing the given shape for a given RDF term
     /// </summary>
-    public class RDFNotConstraint : RDFConstraint
+    public sealed class RDFNotConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

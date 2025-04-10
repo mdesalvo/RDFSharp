@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFAbsExpression represents an arithmetical abs function to be applied on a query results table.
     /// </summary>
-    public class RDFAbsExpression : RDFExpression
+    public sealed class RDFAbsExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFMinInclusiveConstraint represents a SHACL constraint on an inclusive lower-bound value for a given RDF term
     /// </summary>
-    public class RDFMinInclusiveConstraint : RDFConstraint
+    public sealed class RDFMinInclusiveConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

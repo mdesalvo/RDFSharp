@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFLengthExpression represents a string length function to be applied on a query results table.
     /// </summary>
-    public class RDFLengthExpression : RDFExpression
+    public sealed class RDFLengthExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

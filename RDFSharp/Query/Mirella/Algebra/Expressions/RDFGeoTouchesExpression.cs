@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// GEOTouchesExpression represents "geof:sfTouches" geographic function to be applied on a query results table.<br/>
     /// The result of this function is a boolean typed literal.
     /// </summary>
-    public class RDFGeoTouchesExpression : RDFGeoExpression
+    public sealed class RDFGeoTouchesExpression : RDFGeoExpression
     {
         #region Ctors
         /// <summary>

@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFDatatypeConstraint represents a SHACL constraint on the specified datatype for a given RDF term
     /// </summary>
-    public class RDFDatatypeConstraint : RDFConstraint
+    public sealed class RDFDatatypeConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

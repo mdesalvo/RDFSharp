@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFRoundExpression represents an arithmetical round function to be applied on a query results table.
     /// </summary>
-    public class RDFRoundExpression : RDFExpression
+    public sealed class RDFRoundExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

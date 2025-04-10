@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFAvgAggregator represents an AVG aggregation function applied by a GroupBy modifier
     /// </summary>
-    public class RDFAvgAggregator : RDFAggregator
+    public sealed class RDFAvgAggregator : RDFAggregator
     {
         #region Ctors
         /// <summary>

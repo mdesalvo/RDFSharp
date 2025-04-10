@@ -19,7 +19,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFNodeShape represents a SHACL node shape definition
     /// </summary>
-    public class RDFNodeShape : RDFShape
+    public sealed class RDFNodeShape : RDFShape
     {
         #region Ctors
         /// <summary>

@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFPropertyConstraint represents a SHACL constraint requiring the specified property shape for a given RDF term
     /// </summary>
-    public class RDFPropertyConstraint : RDFConstraint
+    public sealed class RDFPropertyConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

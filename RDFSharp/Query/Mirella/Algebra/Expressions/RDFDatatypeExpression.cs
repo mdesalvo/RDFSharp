@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFDatatypeExpression represents a datatype-extractor function to be applied on a query results table.
     /// </summary>
-    public class RDFDatatypeExpression : RDFExpression
+    public sealed class RDFDatatypeExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

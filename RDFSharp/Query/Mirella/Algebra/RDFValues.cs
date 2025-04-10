@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFValues represents a binding of variables provided directly inside a SPARQL query.
     /// </summary>
-    public class RDFValues : RDFPatternGroupMember
+    public sealed class RDFValues : RDFPatternGroupMember
     {
         #region Properties
         /// <summary>

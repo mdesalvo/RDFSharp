@@ -23,7 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFBooleanNotFilter represents a filter applying a negation on the logics of the given filter.
     /// </summary>
-    public class RDFBooleanNotFilter : RDFFilter
+    public sealed class RDFBooleanNotFilter : RDFFilter
     {
         #region Properties
         /// <summary>

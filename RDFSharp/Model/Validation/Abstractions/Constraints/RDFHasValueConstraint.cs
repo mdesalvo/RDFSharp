@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFHasValueConstraint represents a SHACL constraint on a required value for a given RDF term
     /// </summary>
-    public class RDFHasValueConstraint : RDFConstraint
+    public sealed class RDFHasValueConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFLowerCaseExpression represents a string lowercase function to be applied on a query results table.
     /// </summary>
-    public class RDFLowerCaseExpression : RDFExpression
+    public sealed class RDFLowerCaseExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

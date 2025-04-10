@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     /// GEOBufferExpression represents "geof:buffer" geographic function to be applied on a query results table.<br/>
     /// The result of this function is a WKT typed literal representing a sf:Polygon expressed in WGS84 Lon/Lat.
     /// </summary>
-    public class RDFGeoBufferExpression : RDFGeoExpression
+    public sealed class RDFGeoBufferExpression : RDFGeoExpression
     {
         #region Properties
         /// <summary>

@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFMaxExclusiveFacet represents a constraint requiring the values of a literal to have a maximum numeric upper bound (excluded)
     /// </summary>
-    public class RDFMaxExclusiveFacet : RDFFacet
+    public sealed class RDFMaxExclusiveFacet : RDFFacet
     {
         #region Properties
         /// <summary>

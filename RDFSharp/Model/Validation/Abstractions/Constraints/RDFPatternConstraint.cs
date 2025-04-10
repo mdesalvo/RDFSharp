@@ -24,7 +24,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFPatternConstraint represents a SHACL constraint on the specified regular expression for a given RDF term
     /// </summary>
-    public class RDFPatternConstraint : RDFConstraint
+    public sealed class RDFPatternConstraint : RDFConstraint
     {
         #region Properties
         /// <summary>

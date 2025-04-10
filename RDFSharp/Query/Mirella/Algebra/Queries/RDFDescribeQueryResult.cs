@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFDescribeQueryResult is a container for SPARQL "DESCRIBE" query results.
     /// </summary>
-    public class RDFDescribeQueryResult : RDFQueryResult
+    public sealed class RDFDescribeQueryResult : RDFQueryResult
     {
         #region Properties
         /// <summary>

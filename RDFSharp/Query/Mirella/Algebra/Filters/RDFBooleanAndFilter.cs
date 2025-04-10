@@ -23,7 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFBooleanAndFilter represents a filter applying an "AND" on the logics of the given filters.
     /// </summary>
-    public class RDFBooleanAndFilter : RDFFilter
+    public sealed class RDFBooleanAndFilter : RDFFilter
     {
         #region Properties
         /// <summary>

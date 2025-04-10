@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFSelectQuery is the SPARQL "SELECT" query implementation.
     /// </summary>
-    public class RDFSelectQuery : RDFQuery
+    public sealed class RDFSelectQuery : RDFQuery
     {
         #region Properties
         /// <summary>

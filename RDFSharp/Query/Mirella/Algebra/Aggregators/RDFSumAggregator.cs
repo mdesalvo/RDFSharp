@@ -27,7 +27,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFSumAggregator represents a SUM aggregation function applied by a GroupBy modifier
     /// </summary>
-    public class RDFSumAggregator : RDFAggregator
+    public sealed class RDFSumAggregator : RDFAggregator
     {
         #region Ctors
         /// <summary>

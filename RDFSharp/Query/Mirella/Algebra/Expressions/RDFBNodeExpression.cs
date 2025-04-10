@@ -23,7 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFBNodeExpression represents a blank node generator function to be applied on a query results table.
     /// </summary>
-    public class RDFBNodeExpression : RDFExpression
+    public sealed class RDFBNodeExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

@@ -21,7 +21,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFMultiplyExpression represents an arithmetical multiplication expression to be applied on a query results table.
     /// </summary>
-    public class RDFMultiplyExpression : RDFMathExpression
+    public sealed class RDFMultiplyExpression : RDFMathExpression
     {
         #region Ctors
         /// <summary>

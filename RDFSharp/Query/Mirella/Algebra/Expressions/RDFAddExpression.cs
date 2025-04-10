@@ -21,7 +21,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFAddExpression represents an arithmetical addition expression to be applied on a query results table.
     /// </summary>
-    public class RDFAddExpression : RDFMathExpression
+    public sealed class RDFAddExpression : RDFMathExpression
     {
         #region Ctors
         /// <summary>

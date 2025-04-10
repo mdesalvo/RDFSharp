@@ -23,7 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFBooleanAndExpression represents a boolean "AND" expression to be applied on a query results table.
     /// </summary>
-    public class RDFBooleanAndExpression : RDFBooleanExpression
+    public sealed class RDFBooleanAndExpression : RDFBooleanExpression
     {
         #region Ctors
         /// <summary>

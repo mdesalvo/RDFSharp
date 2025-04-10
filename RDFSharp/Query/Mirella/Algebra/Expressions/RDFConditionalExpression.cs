@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFConditionalExpression represents an IF-THEN-ELSE expression to be applied on a query results table.
     /// </summary>
-    public class RDFConditionalExpression : RDFExpression
+    public sealed class RDFConditionalExpression : RDFExpression
     {
         #region Properties
         /// <summary>

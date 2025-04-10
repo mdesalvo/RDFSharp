@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFHasLangDirExpression represents a direction-detector function to be applied on a query results table.
     /// </summary>
-    public class RDFHasLangDirExpression : RDFExpression
+    public sealed class RDFHasLangDirExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

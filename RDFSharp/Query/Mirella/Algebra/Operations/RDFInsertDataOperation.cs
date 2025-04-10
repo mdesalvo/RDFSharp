@@ -21,7 +21,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFInsertDataOperation is the SPARQL "INSERT DATA" operation implementation
     /// </summary>
-    public class RDFInsertDataOperation : RDFOperation
+    public sealed class RDFInsertDataOperation : RDFOperation
     {
         #region Interfaces
         /// <summary>

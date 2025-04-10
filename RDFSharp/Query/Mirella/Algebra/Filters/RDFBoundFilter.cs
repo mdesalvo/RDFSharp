@@ -23,7 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFBoundFilter represents a filter checking if a variable is bound to a value.
     /// </summary>
-    public class RDFBoundFilter : RDFFilter
+    public sealed class RDFBoundFilter : RDFFilter
     {
         #region Properties
         /// <summary>

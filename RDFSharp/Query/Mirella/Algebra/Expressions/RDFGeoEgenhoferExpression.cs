@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// GEOEgenhoferExpression represents "geof:eh*" geographic function to be applied on a query results table.<br/>
     /// The result of this function is a boolean typed literal.
     /// </summary>
-    public class RDFGeoEgenhoferExpression : RDFGeoExpression
+    public sealed class RDFGeoEgenhoferExpression : RDFGeoExpression
     {
         #region Properties
         /// <summary>

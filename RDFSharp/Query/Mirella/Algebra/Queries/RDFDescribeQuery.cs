@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFDescribeQuery is the SPARQL "DESCRIBE" query implementation.
     /// </summary>
-    public class RDFDescribeQuery : RDFQuery
+    public sealed class RDFDescribeQuery : RDFQuery
     {
         #region Properties
         /// <summary>

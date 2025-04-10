@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFConcatExpression represents a string concat function to be applied on a query results table.
     /// </summary>
-    public class RDFConcatExpression : RDFExpression
+    public sealed class RDFConcatExpression : RDFExpression
     {
         #region Ctors
         /// <summary>

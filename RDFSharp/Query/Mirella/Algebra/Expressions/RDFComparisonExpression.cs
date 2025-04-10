@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFComparisonExpression represents an expression applying a comparison between the given arguments.
     /// </summary>
-    public class RDFComparisonExpression : RDFExpression
+    public sealed class RDFComparisonExpression : RDFExpression
     {
         #region Properties
         /// <summary>

@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFMinAggregator represents a MIN aggregation function applied by a GroupBy modifier
     /// </summary>
-    public class RDFMinAggregator : RDFAggregator
+    public sealed class RDFMinAggregator : RDFAggregator
     {
         #region Properties
         /// <summary>

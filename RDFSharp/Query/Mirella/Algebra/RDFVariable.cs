@@ -19,7 +19,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFVariable represents a named "hole" in a pattern, to be filled with values during queries.
     /// </summary>
-    public class RDFVariable : RDFPatternMember
+    public sealed class RDFVariable : RDFPatternMember
     {
         #region Properties
         /// <summary>

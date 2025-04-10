@@ -22,7 +22,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFBind represents an operator which binds a new variable to results of an expression.
     /// </summary>
-    public class RDFBind : RDFPatternGroupMember
+    public sealed class RDFBind : RDFPatternGroupMember
     {
         #region Properties
         /// <summary>

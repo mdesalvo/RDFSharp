@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     ///  RDFValidationResult represents an evidence reported by a shape's validation.
     /// </summary>
-    public class RDFValidationResult : RDFResource
+    public sealed class RDFValidationResult : RDFResource
     {
         #region Properties
         /// <summary>

@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFPattern represents a search pattern over a collection of RDF data.
     /// </summary>
-    public class RDFPattern : RDFPatternGroupMember
+    public sealed class RDFPattern : RDFPatternGroupMember
     {
         #region Properties
         /// <summary>

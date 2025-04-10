@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFMinLengthFacet represents a constraint requiring the values of a literal to have a minimum length
     /// </summary>
-    public class RDFMinLengthFacet : RDFFacet
+    public sealed class RDFMinLengthFacet : RDFFacet
     {
         #region Properties
         /// <summary>

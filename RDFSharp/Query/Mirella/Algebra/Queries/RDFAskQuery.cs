@@ -23,7 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFAskQuery is the SPARQL "ASK" query implementation.
     /// </summary>
-    public class RDFAskQuery : RDFQuery
+    public sealed class RDFAskQuery : RDFQuery
     {
         #region Ctors
         /// <summary>

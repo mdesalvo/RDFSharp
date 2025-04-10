@@ -21,7 +21,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFOperationResult is a container for SPARQL UPDATE operation results
     /// </summary>
-    public class RDFOperationResult
+    public sealed class RDFOperationResult
     {
         #region Properties
         /// <summary>

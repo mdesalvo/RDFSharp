@@ -21,7 +21,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFOrderByModifier is a modifier which applies a sort on the results of a SELECT query for the given variable.
     /// </summary>
-    public class RDFOrderByModifier : RDFModifier
+    public sealed class RDFOrderByModifier : RDFModifier
     {
         #region Properties
         /// <summary>

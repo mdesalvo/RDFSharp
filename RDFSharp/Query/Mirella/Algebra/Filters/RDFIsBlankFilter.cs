@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFIsBlankFilter represents a filter for Blank Uri values of a variable.
     /// </summary>
-    public class RDFIsBlankFilter : RDFFilter
+    public sealed class RDFIsBlankFilter : RDFFilter
     {
         #region Properties
         /// <summary>

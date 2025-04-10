@@ -23,7 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFBooleanOrFilter represents a filter applying an "OR" on the logics of the given filters.
     /// </summary>
-    public class RDFBooleanOrFilter : RDFFilter
+    public sealed class RDFBooleanOrFilter : RDFFilter
     {
         #region Properties
         /// <summary>

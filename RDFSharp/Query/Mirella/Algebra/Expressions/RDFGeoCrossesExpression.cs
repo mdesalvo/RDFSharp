@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// GEOCrossesExpression represents "geof:sfCrosses" geographic function to be applied on a query results table.<br/>
     /// The result of this function is a boolean typed literal.
     /// </summary>
-    public class RDFGeoCrossesExpression : RDFGeoExpression
+    public sealed class RDFGeoCrossesExpression : RDFGeoExpression
     {
         #region Ctors
         /// <summary>
