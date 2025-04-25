@@ -470,7 +470,7 @@ namespace RDFSharp.Query
             AddColumn(result, "?OBJECT");
 
             //Initialize working variables
-            Dictionary<string, string> bindings = new Dictionary<string, string>();
+            Dictionary<string, string> bindings = new Dictionary<string, string>(needsContext ? 4 : 3);
             if (needsContext)
                 bindings.Add("?CONTEXT", null);
             bindings.Add("?SUBJECT", null);
