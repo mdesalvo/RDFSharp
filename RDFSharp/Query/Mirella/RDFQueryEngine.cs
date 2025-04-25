@@ -1373,7 +1373,7 @@ namespace RDFSharp.Query
             string patternSubject = pattern.Subject.ToString();
             string patternPredicate = pattern.Predicate.ToString();
             string patternObject = pattern.Object.ToString();
-            Dictionary<string, string> bindings = new Dictionary<string, string>();
+            Dictionary<string, string> bindings = new Dictionary<string, string>(3);
 
             //Iterate result graph's triples
             foreach (RDFTriple triple in triples)
@@ -1439,7 +1439,7 @@ namespace RDFSharp.Query
             string patternSubject = pattern.Subject.ToString();
             string patternPredicate = pattern.Predicate.ToString();
             string patternObject = pattern.Object.ToString();
-            Dictionary<string, string> bindings = new Dictionary<string, string>();
+            Dictionary<string, string> bindings = new Dictionary<string, string>(4);
 
             //Iterate result store's quadruples
             foreach (RDFQuadruple quadruple in store)
