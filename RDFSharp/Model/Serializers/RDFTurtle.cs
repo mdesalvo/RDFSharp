@@ -183,7 +183,6 @@ namespace RDFSharp.Model
             int highSurrogate = turtleData[turtleContext.Position];
             UpdateTurtleContextPosition(turtleContext, 1);
             if (char.IsHighSurrogate((char)highSurrogate))
-            {
                 if (turtleContext.Position < turtleData.Length)
                 {
                     int lowSurrogate = turtleData[turtleContext.Position];
@@ -191,7 +190,7 @@ namespace RDFSharp.Model
                     if (char.IsLowSurrogate((char)lowSurrogate))
                         highSurrogate = char.ConvertToUtf32((char)highSurrogate, (char)lowSurrogate);
                 }
-            }
+
             return highSurrogate;
         }
 
@@ -221,10 +220,8 @@ namespace RDFSharp.Model
         internal static void UnreadCodePoint(RDFTurtleContext turtleContext, string codePoints)
         {
             if (!string.IsNullOrEmpty(codePoints))
-            {
                 foreach (char cp in codePoints)
                     UnreadCodePoint(turtleContext, cp);
-            }
         }
         #endregion
 
@@ -426,10 +423,8 @@ namespace RDFSharp.Model
                 int bufChar2 = ReadCodePoint(turtleData, turtleContext);
 
                 if (IsWhitespace(bufChar2))
-                {
                     // Short-cut is used, return the rdf:type URI
                     return RDFVocabulary.RDF.TYPE;
-                }
 
                 // Short-cut is not used, unread all characters
                 UnreadCodePoint(turtleContext, bufChar2);
@@ -465,16 +460,11 @@ namespace RDFSharp.Model
                 ReadCodePoint(turtleData, turtleContext);
 
                 int bufChar = SkipWhitespace(turtleData, turtleContext);
-                if (bufChar == '.' || bufChar == ']' || bufChar == '}')
-                {
-                    break;
-                }
+                if (bufChar == '.' || bufChar == ']' || bufChar == '}') break;
 
                 if (bufChar == ';')
-                {
                     // empty predicateObjectList, skip to next
                     continue;
-                }
 
                 turtleContext.Predicate = ParsePredicate(turtleData, turtleContext, result);
 
@@ -872,10 +862,8 @@ namespace RDFSharp.Model
                         }
 
                         if (value.Length == 1)
-                        {
                             // We've only parsed a '.'
                             throw new RDFModelException("Object for statement missing" + GetTurtleContextCoordinates(turtleContext));
-                        }
 
                         // We're parsing a decimal or a double
                         dt = RDFModelEnums.RDFDatatypes.XSD_DECIMAL;
@@ -884,10 +872,8 @@ namespace RDFSharp.Model
                 else
                 {
                     if (value.Length == 0)
-                    {
                         // We've only parsed a '.'
                         throw new RDFModelException("Object for statement missing" + GetTurtleContextCoordinates(turtleContext));
-                    }
                 }
 
                 // read optional exponent
@@ -981,10 +967,8 @@ namespace RDFSharp.Model
                 else
                 {
                     if (previousChar == '.')
-                    {
                         // '.' is a legal prefix name char, but can not appear at the end
                         throw new RDFModelException("prefix can not end with with '.'" + GetTurtleContextCoordinates(turtleContext));
-                    }
                 }
 
                 VerifyCharacterOrFail(turtleContext, bufChar, ":");

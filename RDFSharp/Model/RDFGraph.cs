@@ -51,11 +51,9 @@ namespace RDFSharp.Model
             get
             {
                 foreach (RDFIndexedTriple indexedTriple in IndexedTriples.Values)
-                {
                     yield return indexedTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
                         ? new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.ResourcesRegister[indexedTriple.ObjectID])
                         : new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.LiteralsRegister[indexedTriple.ObjectID]);
-                }
             }
         }
 
@@ -208,11 +206,9 @@ namespace RDFSharp.Model
         public RDFGraph AddContainer(RDFContainer container)
         {
             if (container != null)
-            {
                 //Reify the container to get its graph representation
                 foreach (RDFTriple t in container.ReifyContainer())
                     AddTriple(t);
-            }
             return this;
         }
 
@@ -228,11 +224,9 @@ namespace RDFSharp.Model
         public RDFGraph AddCollection(RDFCollection collection)
         {
             if (collection != null)
-            {
                 //Reify the collection to get its graph representation
                 foreach (RDFTriple t in collection.ReifyCollection())
                     AddTriple(t);
-            }
             return this;
         }
 
@@ -248,11 +242,9 @@ namespace RDFSharp.Model
         public RDFGraph AddDatatype(RDFDatatype datatype)
         {
             if (datatype != null)
-            {
                 //Reify the datatype to get its graph representation
                 foreach (RDFTriple t in datatype.ToRDFGraph())
                     AddTriple(t);
-            }
             return this;
         }
 
@@ -291,10 +283,8 @@ namespace RDFSharp.Model
         public RDFGraph RemoveTriplesBySubject(RDFResource subjectResource)
         {
             if (subjectResource != null)
-            {
                 foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource))
                     RemoveTriple(triple);
-            }
             return this;
         }
 
@@ -310,10 +300,8 @@ namespace RDFSharp.Model
         public RDFGraph RemoveTriplesByPredicate(RDFResource predicateResource)
         {
             if (predicateResource != null)
-            {
                 foreach (RDFTriple triple in SelectTriplesByPredicate(predicateResource))
                     RemoveTriple(triple);
-            }
             return this;
         }
 
@@ -329,10 +317,8 @@ namespace RDFSharp.Model
         public RDFGraph RemoveTriplesByObject(RDFResource objectResource)
         {
             if (objectResource != null)
-            {
                 foreach (RDFTriple triple in SelectTriplesByObject(objectResource))
                     RemoveTriple(triple);
-            }
             return this;
         }
 
@@ -348,10 +334,8 @@ namespace RDFSharp.Model
         public RDFGraph RemoveTriplesByLiteral(RDFLiteral literal)
         {
             if (literal != null)
-            {
                 foreach (RDFTriple triple in SelectTriplesByLiteral(literal))
                     RemoveTriple(triple);
-            }
             return this;
         }
 
@@ -367,11 +351,9 @@ namespace RDFSharp.Model
         public RDFGraph RemoveTriplesBySubjectPredicate(RDFResource subjectResource, RDFResource predicateResource)
         {
             if (subjectResource != null && predicateResource != null)
-            {
                 foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource)
-                                             .SelectTriplesByPredicate(predicateResource))
+                             .SelectTriplesByPredicate(predicateResource))
                     RemoveTriple(triple);
-            }
             return this;
         }
 
@@ -387,11 +369,9 @@ namespace RDFSharp.Model
         public RDFGraph RemoveTriplesBySubjectObject(RDFResource subjectResource, RDFResource objectResource)
         {
             if (subjectResource != null && objectResource != null)
-            {
                 foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource)
-                                             .SelectTriplesByObject(objectResource))
+                             .SelectTriplesByObject(objectResource))
                     RemoveTriple(triple);
-            }
             return this;
         }
 
@@ -407,11 +387,9 @@ namespace RDFSharp.Model
         public RDFGraph RemoveTriplesBySubjectLiteral(RDFResource subjectResource, RDFLiteral literal)
         {
             if (subjectResource != null && literal != null)
-            {
                 foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource)
-                                              .SelectTriplesByLiteral(literal))
+                             .SelectTriplesByLiteral(literal))
                     RemoveTriple(triple);
-            }
             return this;
         }
 
@@ -427,11 +405,9 @@ namespace RDFSharp.Model
         public RDFGraph RemoveTriplesByPredicateObject(RDFResource predicateResource, RDFResource objectResource)
         {
             if (predicateResource != null && objectResource != null)
-            {
                 foreach (RDFTriple triple in SelectTriplesByPredicate(predicateResource)
-                                             .SelectTriplesByObject(objectResource))
+                             .SelectTriplesByObject(objectResource))
                     RemoveTriple(triple);
-            }
             return this;
         }
 
@@ -447,11 +423,9 @@ namespace RDFSharp.Model
         public RDFGraph RemoveTriplesByPredicateLiteral(RDFResource predicateResource, RDFLiteral objectLiteral)
         {
             if (predicateResource != null && objectLiteral != null)
-            {
                 foreach (RDFTriple triple in SelectTriplesByPredicate(predicateResource)
-                                             .SelectTriplesByLiteral(objectLiteral))
+                             .SelectTriplesByLiteral(objectLiteral))
                     RemoveTriple(triple);
-            }
             return this;
         }
 
@@ -612,14 +586,11 @@ namespace RDFSharp.Model
         {
             RDFGraph result = new RDFGraph();
             if (graph != null)
-            {
                 //Add intersection triples
                 foreach (RDFTriple t in this)
-                {
                     if (graph.IndexedTriples.ContainsKey(t.TripleID))
                         result.AddTriple(t);
-                }
-            }
+
             return result;
         }
 
@@ -642,11 +613,9 @@ namespace RDFSharp.Model
 
             //Manage the given graph
             if (graph != null)
-            {
                 //Add triples from the given graph
                 foreach (RDFTriple t in graph)
                     result.AddTriple(t);
-            }
 
             return result;
         }
@@ -667,10 +636,8 @@ namespace RDFSharp.Model
             {
                 //Add difference triples
                 foreach (RDFTriple t in this)
-                {
                     if (!graph.IndexedTriples.ContainsKey(t.TripleID))
                         result.AddTriple(t);
-                }
             }
             else
             {
@@ -822,10 +789,9 @@ namespace RDFSharp.Model
 
             #region Datatype Discovery
             if (enableDatatypeDiscovery)
-            {
                 foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
                     RDFDatatypeRegister.AddDatatype(datatypeDefinition);
-            }
+
             #endregion
 
             return graph;
@@ -868,10 +834,9 @@ namespace RDFSharp.Model
 
             #region Datatype Discovery
             if (enableDatatypeDiscovery)
-            {
                 foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
                     RDFDatatypeRegister.AddDatatype(datatypeDefinition);
-            }
+
             #endregion
 
             return graph;
@@ -945,10 +910,9 @@ namespace RDFSharp.Model
 
             #region Datatype Discovery
             if (enableDatatypeDiscovery)
-            {
                 foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
                     RDFDatatypeRegister.AddDatatype(datatypeDefinition);
-            }
+
             #endregion
 
             return graph;
@@ -1031,10 +995,9 @@ namespace RDFSharp.Model
 
             #region Datatype Discovery
             if (enableDatatypeDiscovery)
-            {
                 foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
                     RDFDatatypeRegister.AddDatatype(datatypeDefinition);
-            }
+
             #endregion
 
             return graph;

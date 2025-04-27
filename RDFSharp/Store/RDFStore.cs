@@ -386,8 +386,8 @@ namespace RDFSharp.Store
         /// (null values are handled as * selectors. Ensure to keep object and literal mutually exclusive!)
         /// </summary>
         public RDFMemoryStore this[RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
-            => (obj != null && lit != null) ? throw new RDFStoreException("Cannot access a store when both object and literals are given: they must be mutually exclusive!")
-                                            : SelectQuadruples(ctx, subj, pred, obj, lit);
+            => obj != null && lit != null ? throw new RDFStoreException("Cannot access a store when both object and literals are given: they must be mutually exclusive!")
+                                          : SelectQuadruples(ctx, subj, pred, obj, lit);
 
         /// <summary>
         /// Checks if the store contains the given quadruple
@@ -489,7 +489,7 @@ namespace RDFSharp.Store
         public List<RDFGraph> ExtractGraphs()
         {
             Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>();
-            foreach (RDFQuadruple q in (this as RDFMemoryStore ?? SelectAllQuadruples()))
+            foreach (RDFQuadruple q in this as RDFMemoryStore ?? SelectAllQuadruples())
             {
                 // Step 1: Cache-Update
                 if (!graphs.ContainsKey(q.Context.PatternMemberID))
@@ -518,11 +518,9 @@ namespace RDFSharp.Store
         public List<RDFContext> ExtractContexts()
         {
             Dictionary<long, RDFPatternMember> contexts = new Dictionary<long, RDFPatternMember>();
-            foreach (RDFQuadruple q in (this as RDFMemoryStore ?? SelectAllQuadruples()))
-            {
+            foreach (RDFQuadruple q in this as RDFMemoryStore ?? SelectAllQuadruples())
                 if (!contexts.ContainsKey(q.Context.PatternMemberID))
                     contexts.Add(q.Context.PatternMemberID, q.Context);
-            }
             return contexts.Values.OfType<RDFContext>().ToList();
         }
 

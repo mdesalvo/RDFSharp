@@ -70,31 +70,23 @@ namespace RDFSharp.Query
 
                 //Context
                 if (template.Context is RDFVariable ctxVar)
-                {
                     if (!Variables.Any(v => v.Equals(template.Context)))
                         Variables.Add(ctxVar);
-                }
 
                 //Subject
                 if (template.Subject is RDFVariable subjVar)
-                {
                     if (!Variables.Any(v => v.Equals(template.Subject)))
                         Variables.Add(subjVar);
-                }
 
                 //Predicate
                 if (template.Predicate is RDFVariable predVar)
-                {
                     if (!Variables.Any(v => v.Equals(template.Predicate)))
                         Variables.Add(predVar);
-                }
 
                 //Object
                 if (template.Object is RDFVariable objVar)
-                {
                     if (!Variables.Any(v => v.Equals(template.Object)))
                         Variables.Add(objVar);
-                }
             }
             return this;
         }

@@ -34,10 +34,8 @@ namespace RDFSharp.Model
         {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
             if (dataGraph != null)
-            {
                 foreach (RDFShape shape in shapesGraph)
                     report.MergeResults(ValidateShape(shapesGraph, dataGraph, shape));
-            }
             return report;
         }
 

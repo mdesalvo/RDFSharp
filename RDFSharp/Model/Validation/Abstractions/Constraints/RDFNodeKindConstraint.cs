@@ -64,30 +64,26 @@ namespace RDFSharp.Model
                             if (NodeKind == RDFValidationEnums.RDFNodeKinds.IRI
                                  || NodeKind == RDFValidationEnums.RDFNodeKinds.IRIOrLiteral
                                  || NodeKind == RDFValidationEnums.RDFNodeKinds.Literal)
-                            {
                                 report.AddResult(new RDFValidationResult(shape,
-                                                                         RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
-                                                                         focusNode,
-                                                                         pShape?.Path,
-                                                                         valueNode,
-                                                                         shapeMessages,
-                                                                         shape.Severity));
-                            }
+                                    RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
+                                    focusNode,
+                                    pShape?.Path,
+                                    valueNode,
+                                    shapeMessages,
+                                    shape.Severity));
                         }
                         else
                         {
                             if (NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNode
                                  || NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral
                                  || NodeKind == RDFValidationEnums.RDFNodeKinds.Literal)
-                            {
                                 report.AddResult(new RDFValidationResult(shape,
-                                                                         RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
-                                                                         focusNode,
-                                                                         pShape?.Path,
-                                                                         valueNode,
-                                                                         shapeMessages,
-                                                                         shape.Severity));
-                            }
+                                    RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
+                                    focusNode,
+                                    pShape?.Path,
+                                    valueNode,
+                                    shapeMessages,
+                                    shape.Severity));
                         }
                         break;
 
@@ -96,15 +92,13 @@ namespace RDFSharp.Model
                         if (NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNode
                              || NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI
                              || NodeKind == RDFValidationEnums.RDFNodeKinds.IRI)
-                        {
                             report.AddResult(new RDFValidationResult(shape,
-                                                                     RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
-                                                                     focusNode,
-                                                                     pShape?.Path,
-                                                                     valueNode,
-                                                                     shapeMessages,
-                                                                     shape.Severity));
-                        }
+                                RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
+                                focusNode,
+                                pShape?.Path,
+                                valueNode,
+                                shapeMessages,
+                                shape.Severity));
                         break;
                 }
             #endregion
@@ -119,7 +113,6 @@ namespace RDFSharp.Model
         {
             RDFGraph result = new RDFGraph();
             if (shape != null)
-            {
                 //sh:nodeKind
                 switch (NodeKind)
                 {
@@ -142,7 +135,7 @@ namespace RDFSharp.Model
                         result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NODE_KIND, RDFVocabulary.SHACL.LITERAL));
                         break;
                 }
-            }
+
             return result;
         }
         #endregion

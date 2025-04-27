@@ -91,10 +91,8 @@ namespace RDFSharp.Model
         {
             RDFGraph result = new RDFGraph();
             if (shape != null)
-            {
                 //sh:equals
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.EQUALS, EqualsPredicate));
-            }
             return result;
         }
         #endregion

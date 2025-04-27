@@ -82,10 +82,8 @@ namespace RDFSharp.Query
         {
             RDFConstructQueryResult result = new RDFConstructQueryResult();
             if (graph != null)
-            {
                 //Transform the graph into a datatable and assign it to the query result
                 result.ConstructResults = graph.ToDataTable();
-            }
             return result;
         }
 

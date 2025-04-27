@@ -107,10 +107,9 @@ namespace RDFSharp.Store
                         if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                             quadrupleTemplate = "<{SUBJ}> <{PRED}> <{OBJ}> <{CTX}> .";
                         else
-                        {
                             quadrupleTemplate = q.Object is RDFPlainLiteral ? "<{SUBJ}> <{PRED}> \"{VAL}\"@{LANG} <{CTX}> ."
-                                                                            : "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> <{CTX}> .";
-                        }
+                                : "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> <{CTX}> .";
+
                         #endregion
 
                         #region subj

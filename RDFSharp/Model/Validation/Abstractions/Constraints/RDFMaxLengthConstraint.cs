@@ -93,10 +93,8 @@ namespace RDFSharp.Model
         {
             RDFGraph result = new RDFGraph();
             if (shape != null)
-            {
                 //sh:maxLength
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MAX_LENGTH, new RDFTypedLiteral(MaxLength.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            }
             return result;
         }
         #endregion

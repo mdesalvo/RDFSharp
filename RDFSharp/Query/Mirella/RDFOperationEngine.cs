@@ -209,7 +209,7 @@ namespace RDFSharp.Query
                 //STORE => Dereference quadruples (respect the target context, if provided by the operation)
                 else if (isStore)
                 {
-                    RDFContext targetContext = (loadOperation.ToContext != null ? new RDFContext(loadOperation.ToContext) : null);
+                    RDFContext targetContext = loadOperation.ToContext != null ? new RDFContext(loadOperation.ToContext) : null;
                     insertTemplates.AddRange(RDFMemoryStore.FromUri(loadOperation.FromContext).Select(loadQuadruple => new RDFPattern(targetContext ?? loadQuadruple.Context, loadQuadruple.Subject, loadQuadruple.Predicate, loadQuadruple.Object)));
                 }
 
@@ -250,16 +250,13 @@ namespace RDFSharp.Query
 
                     //Explicit => delete quadruples having the given context
                     if (clearOperation.FromContext != null)
-                    {
                         deleteWhereOperation
                             .AddPatternGroup(new RDFPatternGroup()
                                 .AddPattern(new RDFPattern(new RDFContext(clearOperation.FromContext), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O"))))
                             .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFContext(clearOperation.FromContext), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
-                    }
 
                     //Implicit => delete quadruples according to the given operation flavor
                     else
-                    {
                         switch (clearOperation.OperationFlavor)
                         {
                             //Default => delete quadruples having the default namespace as context
@@ -287,7 +284,6 @@ namespace RDFSharp.Query
                                     .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFVariable("C"), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
                                 break;
                         }
-                    }
 
                     operationResult = EvaluateOperationOnGraphOrStore(deleteWhereOperation, datasource);
                 }

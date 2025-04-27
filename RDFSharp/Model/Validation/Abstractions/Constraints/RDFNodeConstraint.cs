@@ -88,10 +88,8 @@ namespace RDFSharp.Model
         {
             RDFGraph result = new RDFGraph();
             if (shape != null)
-            {
                 //sh:node
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NODE, NodeShapeUri));
-            }
             return result;
         }
         #endregion

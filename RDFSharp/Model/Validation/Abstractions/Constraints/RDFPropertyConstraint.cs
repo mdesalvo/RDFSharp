@@ -67,10 +67,8 @@ namespace RDFSharp.Model
         {
             RDFGraph result = new RDFGraph();
             if (shape != null)
-            {
                 //sh:property
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.PROPERTY, PropertyShapeUri));
-            }
             return result;
         }
         #endregion

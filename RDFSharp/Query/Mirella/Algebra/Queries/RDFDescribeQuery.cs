@@ -65,10 +65,8 @@ namespace RDFSharp.Query
         public RDFDescribeQuery AddDescribeTerm(RDFResource describeTerm)
         {
             if (describeTerm != null)
-            {
                 if (!DescribeTerms.Any(dt => dt.Equals(describeTerm)))
                     DescribeTerms.Add(describeTerm);
-            }
             return this;
         }
 
@@ -78,7 +76,6 @@ namespace RDFSharp.Query
         public RDFDescribeQuery AddDescribeTerm(RDFVariable describeVar)
         {
             if (describeVar != null)
-            {
                 if (!DescribeTerms.Any(dt => dt.Equals(describeVar)))
                 {
                     DescribeTerms.Add(describeVar);
@@ -87,7 +84,7 @@ namespace RDFSharp.Query
                     if (!Variables.Any(v => v.Equals(describeVar)))
                         Variables.Add(describeVar);
                 }
-            }
+
             return this;
         }
 

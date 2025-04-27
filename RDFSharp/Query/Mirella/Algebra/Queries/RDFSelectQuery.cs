@@ -83,10 +83,8 @@ namespace RDFSharp.Query
         public RDFSelectQuery AddProjectionVariable(RDFVariable projectionVariable, RDFExpression projectionExpression=null)
         {
             if (projectionVariable != null)
-            {
                 if (!ProjectionVars.Any(pv => pv.Key.Equals(projectionVariable)))
                     ProjectionVars.Add(projectionVariable, (ProjectionVars.Count, projectionExpression));
-            }
             return this;
         }
 
@@ -226,7 +224,6 @@ namespace RDFSharp.Query
         internal RDFSelectQueryResult ApplyToDataSource(RDFDataSource dataSource)
         {
             if (dataSource != null)
-            {
                 switch (dataSource)
                 {
                     case RDFGraph graph:
@@ -238,7 +235,7 @@ namespace RDFSharp.Query
                     case RDFSPARQLEndpoint sparqlEndpoint:
                         return ApplyToSPARQLEndpoint(sparqlEndpoint);
                 }
-            }
+
             return new RDFSelectQueryResult();
         }
 

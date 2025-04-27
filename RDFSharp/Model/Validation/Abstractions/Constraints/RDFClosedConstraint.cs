@@ -73,10 +73,8 @@ namespace RDFSharp.Model
                 List<RDFResource> allowedProperties = new List<RDFResource>(IgnoredProperties.Values);
                 IEnumerable<RDFPropertyConstraint> propertyConstraints = shape.Constraints.OfType<RDFPropertyConstraint>();
                 foreach (RDFPropertyConstraint propertyConstraint in propertyConstraints)
-                {
                     if (shapesGraph.SelectShape(propertyConstraint.PropertyShapeUri.ToString()) is RDFPropertyShape propertyShape)
                         allowedProperties.Add(propertyShape.Path);
-                }
 
                 //In case no shape messages have been provided, this constraint emits a default one (for usability)
                 List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);

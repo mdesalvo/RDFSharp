@@ -87,11 +87,9 @@ namespace RDFSharp.Model
         public RDFShapesGraph MergeShapes(RDFShapesGraph shapesGraph)
         {
             if (shapesGraph != null)
-            {
                 foreach (RDFShape shape in shapesGraph)
                     if (!Shapes.ContainsKey(shape.PatternMemberID))
                         Shapes.Add(shape.PatternMemberID, shape);
-            }
             return this;
         }
         #endregion

@@ -109,9 +109,7 @@ namespace RDFSharp.Query
                 #region Calculate Result
                 if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
                      && leftArgumentTypedLiteral.HasDatetimeDatatype())
-                {
                     if (DateTime.TryParse(leftArgumentTypedLiteral.Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out DateTime leftArgumentDateTimeValue))
-                    {
                         switch (this)
                         {
                             //Execute the datetime expression's comparison logics
@@ -134,8 +132,7 @@ namespace RDFSharp.Query
                                 expressionResult = new RDFTypedLiteral($"{leftArgumentDateTimeValue.Second}.{leftArgumentDateTimeValue.Millisecond}", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
                                 break;
                         }
-                    }
-                }
+
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }

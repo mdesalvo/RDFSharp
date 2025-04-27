@@ -83,10 +83,8 @@ namespace RDFSharp.Model
         {
             RDFGraph result = new RDFGraph();
             if (shape != null)
-            {
                 //sh:not
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NOT, NotShape));
-            }
             return result;
         }
         #endregion

@@ -32,15 +32,13 @@ namespace RDFSharp.Model
         {
             List<RDFPatternMember> result = new List<RDFPatternMember>();
             if (shape != null && dataGraph != null)
-            {
                 foreach (RDFTarget target in shape.Targets)
-                {
                     switch (target)
                     {
                         //sh:targetClass
                         case RDFTargetClass _:
                             result.AddRange(dataGraph.GetInstancesOfClass(target.TargetValue)
-                                                     .OfType<RDFResource>());
+                                .OfType<RDFResource>());
                             break;
 
                         //sh:targetNode
@@ -51,19 +49,18 @@ namespace RDFSharp.Model
                         //sh:targetSubjectsOf
                         case RDFTargetSubjectsOf _:
                             result.AddRange(dataGraph[null, target.TargetValue, null, null]
-                                  .Select(x => x.Subject)
-                                  .OfType<RDFResource>());
+                                .Select(x => x.Subject)
+                                .OfType<RDFResource>());
                             break;
 
                         //sh:targetObjectsOf
                         case RDFTargetObjectsOf _:
                             result.AddRange(dataGraph[null, target.TargetValue, null, null]
-                                  .Select(x => x.Object)
-                                  .OfType<RDFResource>());
+                                .Select(x => x.Object)
+                                .OfType<RDFResource>());
                             break;
                     }
-                }
-            }
+
             return RDFQueryUtilities.RemoveDuplicates(result);
         }
 
@@ -74,7 +71,6 @@ namespace RDFSharp.Model
         {
             List<RDFPatternMember> result = new List<RDFPatternMember>();
             if (shape != null && dataGraph != null && focusNode != null)
-            {
                 switch (shape)
                 {
                     //sh:NodeShape
@@ -89,7 +85,7 @@ namespace RDFSharp.Model
                             #region inversePath
                             if (propertyShape.IsInversePath)
                                 result.AddRange(dataGraph[null, propertyShape.Path, focusNodeResource, null]
-                                      .Select(t => t.Object));
+                                    .Select(t => t.Object));
                             #endregion
 
                             #region [alternative|sequence]Path
@@ -107,9 +103,9 @@ namespace RDFSharp.Model
                                 DataTable pathResult = new RDFQueryEngine().ApplyPropertyPath(
                                     isAlternativePath ? propertyShape.AlternativePath : propertyShape.SequencePath, dataGraph);
                                 result.AddRange(from DataRow pathResultRow
-                                                in pathResult.Rows
-                                                select pathResultRow["?END"]?.ToString() into prValue where !string.IsNullOrEmpty(prValue)
-                                                select RDFQueryUtilities.ParseRDFPatternMember(prValue));
+                                        in pathResult.Rows
+                                    select pathResultRow["?END"]?.ToString() into prValue where !string.IsNullOrEmpty(prValue)
+                                    select RDFQueryUtilities.ParseRDFPatternMember(prValue));
 
                                 //Recontextualize property path to the initial configuration
                                 if (isAlternativePath)
@@ -122,12 +118,12 @@ namespace RDFSharp.Model
                             #region path
                             else
                                 result.AddRange(dataGraph[focusNodeResource, propertyShape.Path, null, null]
-                                      .Select(t => t.Object));
+                                    .Select(t => t.Object));
                             #endregion
                         }
                         break;
                 }
-            }
+
             return RDFQueryUtilities.RemoveDuplicates(result);
         }
 
@@ -284,12 +280,11 @@ namespace RDFSharp.Model
         {
             RDFGraph inlinePropertyShapes = graph[null, RDFVocabulary.SHACL.PROPERTY, null, null];
             foreach (RDFTriple inlinePropertyShape in inlinePropertyShapes)
-            {
                 //Inline property shapes are blank objects of "sh:property" constraints:
                 //we wont find their explicit shape definition within the shapes graph.
                 if (inlinePropertyShape.Object is RDFResource inlinePropertyShapeResource
-                      && inlinePropertyShapeResource.IsBlank
-                        && shapesGraph.SelectShape(inlinePropertyShapeResource.ToString()) == null)
+                    && inlinePropertyShapeResource.IsBlank
+                    && shapesGraph.SelectShape(inlinePropertyShapeResource.ToString()) == null)
                 {
                     RDFTriple inlinePropertyShapePath = graph[inlinePropertyShapeResource, RDFVocabulary.SHACL.PATH, null, null].FirstOrDefault();
                     if (inlinePropertyShapePath?.Object is RDFResource inlinePropertyShapePathObject)
@@ -304,7 +299,6 @@ namespace RDFSharp.Model
                         shapesGraph.AddShape(propertyShape);
                     }
                 }
-            }
         }
 
         /// <summary>
@@ -452,7 +446,6 @@ namespace RDFSharp.Model
             //sh:hasValue (accepted occurrences: N)
             RDFGraph shapeHasValueConstraints = shapeDefinition[null, RDFVocabulary.SHACL.HAS_VALUE, null, null];
             foreach (RDFTriple shapeHasValueConstraint in shapeHasValueConstraints)
-            {
                 switch (shapeHasValueConstraint.Object)
                 {
                     case RDFResource shapeHasValueConstraintObject:
@@ -462,7 +455,6 @@ namespace RDFSharp.Model
                         shape.AddConstraint(new RDFHasValueConstraint(shapeHasValueConstraintLiteral));
                         break;
                 }
-            }
 
             //sh:in (accepted occurrences: N)
             RDFGraph shapeInConstraints = shapeDefinition[null, RDFVocabulary.SHACL.IN, null, null];

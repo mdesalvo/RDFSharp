@@ -99,8 +99,9 @@ namespace RDFSharp.Model
 
                 #region subject
 
-                XmlNode subjElement = (((RDFResource)t.Subject).IsBlank ? trixDoc.CreateNode(XmlNodeType.Element, "id", null)
-                                                                        : trixDoc.CreateNode(XmlNodeType.Element, "uri", null));
+                XmlNode subjElement = ((RDFResource)t.Subject).IsBlank
+                    ? trixDoc.CreateNode(XmlNodeType.Element, "id", null)
+                    : trixDoc.CreateNode(XmlNodeType.Element, "uri", null);
                 XmlText subjElementText = trixDoc.CreateTextNode(t.Subject.ToString());
                 subjElement.AppendChild(subjElementText);
                 tripleElement.AppendChild(subjElement);
@@ -120,8 +121,9 @@ namespace RDFSharp.Model
 
                 if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                 {
-                    XmlNode objElement = (((RDFResource)t.Object).IsBlank ? trixDoc.CreateNode(XmlNodeType.Element, "id", null) :
-                                                                                trixDoc.CreateNode(XmlNodeType.Element, "uri", null));
+                    XmlNode objElement = ((RDFResource)t.Object).IsBlank ?
+                        trixDoc.CreateNode(XmlNodeType.Element, "id", null) :
+                        trixDoc.CreateNode(XmlNodeType.Element, "uri", null);
                     XmlText objElementText = trixDoc.CreateTextNode(t.Object.ToString());
                     objElement.AppendChild(objElementText);
                     tripleElement.AppendChild(objElement);
@@ -289,10 +291,8 @@ namespace RDFSharp.Model
 
                 //Sanitize eventual blank node value
                 if (graphChild.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal))
-                {
                     if (!graphChild.ChildNodes[0].InnerText.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
                         graphChild.ChildNodes[0].InnerText = string.Concat("bnode:", graphChild.ChildNodes[0].InnerText.Replace("_:", string.Empty));
-                }
             }
             //Subject unrecognized: exception must be raised
             else
@@ -319,10 +319,8 @@ namespace RDFSharp.Model
 
                 //Sanitize eventual blank node value
                 if (graphChild.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
-                {
                     if (!graphChild.ChildNodes[2].InnerText.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
                         graphChild.ChildNodes[2].InnerText = string.Concat("bnode:", graphChild.ChildNodes[2].InnerText.Replace("_:", string.Empty));
-                }
 
                 result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText, hashContext),
                                                new RDFResource(graphChild.ChildNodes[1].InnerText, hashContext),

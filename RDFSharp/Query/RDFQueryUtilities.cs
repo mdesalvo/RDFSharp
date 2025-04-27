@@ -241,11 +241,10 @@ namespace RDFSharp.Query
             {
                 string nspString = nsp.ToString();
                 if (!pmemberString.Equals(nspString, StringComparison.OrdinalIgnoreCase))
-                {
                     if (pmemberString.StartsWith(nspString, StringComparison.Ordinal))
                     {
                         pmemberString = pmemberString.Replace(nspString, string.Concat(nsp.NamespacePrefix, ":"))
-                                                     .TrimEnd('/');
+                            .TrimEnd('/');
 
                         //Accept the abbreviation only if it has generated a valid XSD QName
                         try
@@ -259,7 +258,6 @@ namespace RDFSharp.Query
                             pmemberString = pmemberStringOriginal;
                         }
                     }
-                }
             }
             return (hasAbbreviation, pmemberString);
             #endregion
@@ -276,10 +274,7 @@ namespace RDFSharp.Query
                 HashSet<long> lookup = new HashSet<long>();
                 elements.ForEach(element =>
                 {
-                    if (lookup.Add(element.PatternMemberID))
-                    {
-                        results.Add(element);
-                    }
+                    if (lookup.Add(element.PatternMemberID)) results.Add(element);
                 });
             }
             return results;

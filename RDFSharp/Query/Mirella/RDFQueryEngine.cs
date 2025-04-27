@@ -130,10 +130,8 @@ namespace RDFSharp.Query
                 DataTable resultTable = new DataTable();
 
                 if (datasource.IsFederation())
-                {
                     foreach (RDFDataSource fedDataSource in ((RDFFederation)datasource).Where(fedDataSource => !fedDataSource.IsFederation() || ((RDFFederation)fedDataSource).DataSourcesCount != 0))
                         resultTable.Merge(DescribeTerms(describeQuery, fedDataSource, qResultTable), true, MissingSchemaAction.Add);
-                }
                 else
                     resultTable = DescribeTerms(describeQuery, datasource, qResultTable);
 
@@ -181,7 +179,7 @@ namespace RDFSharp.Query
                 DataTable queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList());
 
                 //Transform the result into a boolean response
-                askResult.AskResult = (queryResultTable.Rows.Count > 0);
+                askResult.AskResult = queryResultTable.Rows.Count > 0;
             }
 
             return askResult;
@@ -193,7 +191,6 @@ namespace RDFSharp.Query
         internal void EvaluateQueryMembers(List<RDFQueryMember> evaluableQueryMembers, RDFDataSource datasource)
         {
             foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
-            {
                 switch (evaluableQueryMember)
                 {
                     case RDFPatternGroup patternGroup:
@@ -213,7 +210,7 @@ namespace RDFSharp.Query
 
                         //Populate its metadata (IsOptional)
                         subQueryResult.SelectResults.ExtendedProperties[IsOptional] = subQuery.IsOptional
-                          || subQueryResult.SelectResults.ExtendedProperties[IsOptional] is true;
+                                                                                      || subQueryResult.SelectResults.ExtendedProperties[IsOptional] is true;
 
                         //Populate its metadata (JoinAsUnion)
                         subQueryResult.SelectResults.ExtendedProperties[JoinAsUnion] = subQuery.JoinAsUnion;
@@ -225,7 +222,6 @@ namespace RDFSharp.Query
                         QueryMemberResultTables[subQuery.QueryMemberID] = subQueryResult.SelectResults;
                         break;
                 }
-            }
         }
 
         /// <summary>
@@ -273,7 +269,6 @@ namespace RDFSharp.Query
             else
             {
                 foreach (RDFPatternGroupMember evaluablePGMember in patternGroup.GetEvaluablePatternGroupMembers().Distinct().ToList())
-                {
                     switch (evaluablePGMember)
                     {
                         case RDFPattern pattern:
@@ -309,11 +304,11 @@ namespace RDFSharp.Query
                             break;
 
                         case RDFBind bind:
+
                             //Bind operator is evaluated like an artificial ending of the pattern group:
                             // first we combine the tables collected until this moment
                             // then we evaluate the bind expression and project the bind variable, producing the comprehensive bind table
                             // finally we drop all tables collected until this moment, except the comprehensive bind table
-
                             //Populate current patternGroup result table
                             DataTable currentPatternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID]);
 
@@ -338,7 +333,6 @@ namespace RDFSharp.Query
                             existsFilter.PatternResults = existsFilterResultsTable;
                             break;
                     }
-                }
             }
         }
 
@@ -615,7 +609,6 @@ namespace RDFSharp.Query
 
             //Iterate the describe terms of the query
             foreach (RDFPatternMember describeTerm in describeQuery.DescribeTerms)
-            {
                 switch (describeTerm)
                 {
                     case RDFResource describeResource:
@@ -626,7 +619,6 @@ namespace RDFSharp.Query
                         result.Merge(DescribeVariableTerm(describeVariable, dataSource, result, resultTable), true, MissingSchemaAction.Add);
                         break;
                 }
-            }
 
             return result;
         }
@@ -756,7 +748,6 @@ namespace RDFSharp.Query
                      from DataRow resultRow in resultTable.Rows
                      where !resultRow.IsNull(describeVariableName)
                      select ParseRDFPatternMember(resultRow[describeVariableName].ToString()))
-            {
                 //Execute most appropriate strategy, depending on the type of the variable value
                 switch (describeVariableValue)
                 {
@@ -772,7 +763,6 @@ namespace RDFSharp.Query
                         result.Merge(describeLiteralTable, true, MissingSchemaAction.Add);
                         break;
                 }
-            }
 
             return result;
         }
@@ -917,7 +907,7 @@ namespace RDFSharp.Query
             StringBuilder templateHoleDetector = new StringBuilder();
 
             //Analyze context of the pattern
-            bool hasContext = (pattern.Context != null);
+            bool hasContext = pattern.Context != null;
             if (hasContext && pattern.Context is RDFVariable)
             {
                 templateHoleDetector.Append('C');
@@ -1111,7 +1101,6 @@ namespace RDFSharp.Query
 
             //Iterate data sources of the federation
             foreach (RDFDataSource dataSource in federation)
-            {
                 switch (dataSource)
                 {
                     case RDFGraph dataSourceGraph:
@@ -1138,7 +1127,6 @@ namespace RDFSharp.Query
                         resultTable.Merge(sparqlEndpointTable.SelectResults, true, MissingSchemaAction.Add);
                         break;
                 }
-            }
 
             return resultTable;
         }
@@ -1191,10 +1179,8 @@ namespace RDFSharp.Query
                 //Eventually adjust column names (should start with "?")
                 int columnsCount = qrTable.Columns.Count;
                 for (int i = 0; i < columnsCount; i++)
-                {
                     if (!qrTable.Columns[i].ColumnName.StartsWith("?", StringComparison.Ordinal))
                         qrTable.Columns[i].ColumnName = string.Concat("?", qrTable.Columns[i].ColumnName);
-                }
             }
             #endregion
 
@@ -1585,17 +1571,16 @@ namespace RDFSharp.Query
                 //Loop left table
                 joinTable.BeginLoadData();
                 foreach (DataRow leftRow in leftTable.Rows)
-                {
                     //Loop right table
-                    foreach (DataRow rightRow in rightTable.Rows)
-                    {
-                        //Join left array with right array
-                        object[] joinArray = new object[leftRow.ItemArray.Length + rightRow.ItemArray.Length];
-                        Array.Copy(leftRow.ItemArray, 0, joinArray, 0, leftRow.ItemArray.Length);
-                        Array.Copy(rightRow.ItemArray, 0, joinArray, leftRow.ItemArray.Length, rightRow.ItemArray.Length);
-                        joinTable.LoadDataRow(joinArray, true);
-                    }
+                foreach (DataRow rightRow in rightTable.Rows)
+                {
+                    //Join left array with right array
+                    object[] joinArray = new object[leftRow.ItemArray.Length + rightRow.ItemArray.Length];
+                    Array.Copy(leftRow.ItemArray, 0, joinArray, 0, leftRow.ItemArray.Length);
+                    Array.Copy(rightRow.ItemArray, 0, joinArray, leftRow.ItemArray.Length, rightRow.ItemArray.Length);
+                    joinTable.LoadDataRow(joinArray, true);
                 }
+
                 joinTable.EndLoadData();
             }
 
@@ -1624,7 +1609,6 @@ namespace RDFSharp.Query
                     for (int i = 0; i < dataSet.Tables[0].Columns.Count; i++)
                         joinTable.Columns.Add(dataSet.Tables[0].Columns[i].ColumnName, dataSet.Tables[0].Columns[i].DataType);
                     for (int i = 0; i < dataSet.Tables[1].Columns.Count; i++)
-                    {
                         if (!joinTable.Columns.Contains(dataSet.Tables[1].Columns[i].ColumnName))
                             joinTable.Columns.Add(dataSet.Tables[1].Columns[i].ColumnName, dataSet.Tables[1].Columns[i].DataType);
                         else
@@ -1634,7 +1618,6 @@ namespace RDFSharp.Query
                             joinTable.Columns.Add(duplicateColKey, dataSet.Tables[1].Columns[i].DataType);
                             duplicateColumns.Add(duplicateColKey);
                         }
-                    }
 
                     //Loop left table
                     joinTable.BeginLoadData();
@@ -1642,7 +1625,6 @@ namespace RDFSharp.Query
                     {
                         DataRow[] relatedRows = leftRow.GetChildRows(dataRelation);
                         if (relatedRows.Length > 0)
-                        {
                             //Loop right table (only rows from relation)
                             foreach (DataRow relatedRow in relatedRows)
                             {
@@ -1652,7 +1634,6 @@ namespace RDFSharp.Query
                                 Array.Copy(relatedRow.ItemArray, 0, joinArray, leftRow.ItemArray.Length, relatedRow.ItemArray.Length);
                                 joinTable.LoadDataRow(joinArray, true);
                             }
-                        }
                     }
                     joinTable.EndLoadData();
 
@@ -1723,7 +1704,6 @@ namespace RDFSharp.Query
                         //Create the candidate outer-join row
                         DataRow joinRow = joinTable.NewRow();
                         foreach (DataColumn joinColumn in joinTable.Columns)
-                        {
                             //NON-COMMON column
                             if (!joinColumnsAttribution[joinColumn.ColumnName].Item1)
                             {
@@ -1744,17 +1724,13 @@ namespace RDFSharp.Query
                                 {
                                     //Right value is NULL
                                     if (relatedRow.IsNull(joinColumn.ColumnName))
-                                    {
                                         //Take NULL value
                                         joinRow[joinColumn.ColumnName] = DBNull.Value;
-                                    }
 
                                     //Right value is NOT NULL
                                     else
-                                    {
                                         //Take value from related
                                         joinRow[joinColumn.ColumnName] = relatedRow[joinColumn.ColumnName];
-                                    }
                                 }
 
                                 //Left value is NOT NULL
@@ -1764,7 +1740,6 @@ namespace RDFSharp.Query
                                     joinRow[joinColumn.ColumnName] = leftRow[joinColumn.ColumnName];
                                 }
                             }
-                        }
 
                         //Add the join row to the outer-join table
                         joinTable.Rows.Add(joinRow);

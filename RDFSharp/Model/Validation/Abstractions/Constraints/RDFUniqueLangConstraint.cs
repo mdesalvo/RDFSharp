@@ -66,19 +66,15 @@ namespace RDFSharp.Model
                     foreach (RDFPlainLiteral outerlanglitValueNode in langlitValueNodes)
                         if (!innerlanglitValueNode.Equals(outerlanglitValueNode)
                               && innerlanglitValueNode.Language.Equals(outerlanglitValueNode.Language))
-                        {
                             //Ensure to not report twice the same language tag
                             if (reportedLangs.Add(innerlanglitValueNode.Language))
-                            {
                                 report.AddResult(new RDFValidationResult(shape,
-                                                                         RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
-                                                                         focusNode,
-                                                                         pShape?.Path,
-                                                                         null,
-                                                                         shapeMessages,
-                                                                         shape.Severity));
-                            }
-                        }
+                                    RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
+                                    focusNode,
+                                    pShape?.Path,
+                                    null,
+                                    shapeMessages,
+                                    shape.Severity));
             }
             #endregion
 
@@ -92,10 +88,8 @@ namespace RDFSharp.Model
         {
             RDFGraph result = new RDFGraph();
             if (shape != null)
-            {
                 //sh:uniqueLang
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.UNIQUE_LANG, UniqueLang ? RDFTypedLiteral.True : RDFTypedLiteral.False));
-            }
             return result;
         }
         #endregion

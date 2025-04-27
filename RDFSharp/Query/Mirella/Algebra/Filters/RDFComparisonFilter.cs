@@ -126,29 +126,27 @@ namespace RDFSharp.Query
 
                 //Type Correct
                 else
-                {
                     switch (ComparisonFlavor)
                     {
                         case RDFQueryEnums.RDFComparisonFlavors.LessThan:
-                            keepRow = (comparison  < 0);
+                            keepRow = comparison  < 0;
                             break;
                         case RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan:
-                            keepRow = (comparison <= 0);
+                            keepRow = comparison <= 0;
                             break;
                         case RDFQueryEnums.RDFComparisonFlavors.EqualTo:
-                            keepRow = (comparison == 0);
+                            keepRow = comparison == 0;
                             break;
                         case RDFQueryEnums.RDFComparisonFlavors.NotEqualTo:
-                            keepRow = (comparison != 0);
+                            keepRow = comparison != 0;
                             break;
                         case RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan:
-                            keepRow = (comparison >= 0);
+                            keepRow = comparison >= 0;
                             break;
                         case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
-                            keepRow = (comparison  > 0);
+                            keepRow = comparison  > 0;
                             break;
                     }
-                }
             }
 
             //Apply the eventual negation

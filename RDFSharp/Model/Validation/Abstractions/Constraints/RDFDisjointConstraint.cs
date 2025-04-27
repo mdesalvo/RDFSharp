@@ -78,10 +78,8 @@ namespace RDFSharp.Model
         {
             RDFGraph result = new RDFGraph();
             if (shape != null)
-            {
                 //sh:disjoint
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.DISJOINT, DisjointPredicate));
-            }
             return result;
         }
         #endregion

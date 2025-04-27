@@ -87,10 +87,8 @@ namespace RDFSharp.Query
 
             //Finalization
             foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
-            {
                 //Update result's table
                 UpdateProjectionTable(partitionKey, projFuncTable);
-            }
 
             return projFuncTable;
         }

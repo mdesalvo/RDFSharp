@@ -95,16 +95,12 @@ namespace RDFSharp.Query
                 if (selectQuery.ProjectionVars.Count == 0)
                     sb.Append(" *");
                 else
-                {
                     foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionElement in selectQuery.ProjectionVars.OrderBy(pv => pv.Value.Item1))
-                    {
                         sb.Append(projectionElement.Value.Item2 == null
                             //Projection Variable
                             ? $" {projectionElement.Key}"
                             //Projection Expression
                             : $" ({projectionElement.Value.Item2.ToString(prefixes)} AS {projectionElement.Key})");
-                    }
-                }
             }
 
             sb.AppendLine();
@@ -117,22 +113,20 @@ namespace RDFSharp.Query
             #region MODIFIERS
             //GROUP BY
             if (modifiers.Any(mod => mod is RDFGroupByModifier))
-            {
                 modifiers.OfType<RDFGroupByModifier>()
-                         .ToList()
-                         .ForEach(gm =>
-                         {
-                             //GROUP BY
-                             sb.AppendLine();
-                             sb.Append(subqueryBodySpaces + gm);
-                             //HAVING
-                             if (gm.Aggregators.Any(ag => ag.HavingClause.Item1))
-                             {
-                                 sb.AppendLine();
-                                 sb.Append(string.Format(string.Concat(subqueryBodySpaces, "HAVING ({0})"), string.Join(" && ", gm.Aggregators.Where(ag => ag.HavingClause.Item1).Select(x => x.PrintHavingClause(selectQuery.Prefixes)))));
-                             }
-                         });
-            }
+                    .ToList()
+                    .ForEach(gm =>
+                    {
+                        //GROUP BY
+                        sb.AppendLine();
+                        sb.Append(subqueryBodySpaces + gm);
+                        //HAVING
+                        if (gm.Aggregators.Any(ag => ag.HavingClause.Item1))
+                        {
+                            sb.AppendLine();
+                            sb.Append(string.Format(string.Concat(subqueryBodySpaces, "HAVING ({0})"), string.Join(" && ", gm.Aggregators.Where(ag => ag.HavingClause.Item1).Select(x => x.PrintHavingClause(selectQuery.Prefixes)))));
+                        }
+                    });
 
             // ORDER BY
             if (modifiers.Any(mod => mod is RDFOrderByModifier))
@@ -536,10 +530,7 @@ namespace RDFSharp.Query
             }
 
             //OPTIONAL
-            if (patternGroup.IsOptional && !skipOptional)
-            {
-                result.AppendLine(string.Concat(spaces, "}"));
-            }
+            if (patternGroup.IsOptional && !skipOptional) result.AppendLine(string.Concat(spaces, "}"));
 
             return result.ToString();
         }
@@ -553,7 +544,7 @@ namespace RDFSharp.Query
             {
                 RDFPatternGroupMember pgMember = evaluablePGMembers[i];
                 RDFPatternGroupMember nextPgMember = i < evaluablePGMembers.Count-1 ? evaluablePGMembers[i+1] : null;
-                bool isLastPgMemberOrNextPgMemberIsBind = (nextPgMember == null || nextPgMember is RDFBind);
+                bool isLastPgMemberOrNextPgMemberIsBind = nextPgMember == null || nextPgMember is RDFBind;
 
                 #region PATTERN
                 switch (pgMember)
@@ -753,7 +744,6 @@ namespace RDFSharp.Query
 
                 //Iterate properties
                 for (int i = 0; i < propertyPath.Steps.Count; i++)
-                {
                     //Alternative: generate union pattern
                     if (propertyPath.Steps[i].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
                     {
@@ -803,7 +793,6 @@ namespace RDFSharp.Query
                         else
                             result.Append(PrintPatternMember(propPath, prefixes));
                     }
-                }
             }
             #endregion
 

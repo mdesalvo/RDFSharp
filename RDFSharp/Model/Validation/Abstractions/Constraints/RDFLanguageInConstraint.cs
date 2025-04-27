@@ -73,7 +73,6 @@ namespace RDFSharp.Model
                         bool langMatches = false;
                         HashSet<string>.Enumerator langTagsEnumerator = LanguageTags.GetEnumerator();
                         while (langTagsEnumerator.MoveNext() && !langMatches)
-                        {
                             switch (langTagsEnumerator.Current)
                             {
                                 //NO language is found in the variable
@@ -89,7 +88,7 @@ namespace RDFSharp.Model
                                     langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), string.Concat("@", langTagsEnumerator.Current, RDFPlainLiteral.LangTagSubMask, "$"), RegexOptions.IgnoreCase);
                                     break;
                             }
-                        }
+
                         if (!langMatches)
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,

@@ -60,7 +60,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"variable\" parameter is null.");
             #endregion
 
-            bool acceptsNoneOrAnyLanguageTag = (string.IsNullOrEmpty(language) || language == "*");
+            bool acceptsNoneOrAnyLanguageTag = string.IsNullOrEmpty(language) || language == "*";
             if (acceptsNoneOrAnyLanguageTag || RDFPlainLiteral.LangTagRegex.Match(language).Success)
             {
                 VariableName = variable.ToString();

@@ -85,10 +85,8 @@ namespace RDFSharp.Model
         {
             RDFGraph result = new RDFGraph();
             if (shape != null)
-            {
                 //sh:lessThanOrEquals
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS, LessThanOrEqualsPredicate));
-            }
             return result;
         }
         #endregion

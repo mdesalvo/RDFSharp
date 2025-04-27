@@ -94,10 +94,8 @@ namespace RDFSharp.Model
         {
             RDFGraph result = new RDFGraph();
             if (shape != null)
-            {
                 //sh:minLength
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_LENGTH, new RDFTypedLiteral(MinLength.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            }
             return result;
         }
         #endregion

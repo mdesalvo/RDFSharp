@@ -3108,7 +3108,7 @@ public class RDFGraphTest
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnExportingToNullOrEmptyFilepathAsync()
-        => await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await new RDFGraph().ToFileAsync(RDFModelEnums.RDFFormats.NTriples, null));
+        => await Assert.ThrowsExactlyAsync<RDFModelException>(() => new RDFGraph().ToFileAsync(RDFModelEnums.RDFFormats.NTriples, null));
 
     [DataTestMethod]
     [DataRow(RDFModelEnums.RDFFormats.NTriples)]
@@ -3129,7 +3129,7 @@ public class RDFGraphTest
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnExportingToNullStreamAsync()
-        => await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await new RDFGraph().ToStreamAsync(RDFModelEnums.RDFFormats.NTriples, null));
+        => await Assert.ThrowsExactlyAsync<RDFModelException>(() => new RDFGraph().ToStreamAsync(RDFModelEnums.RDFFormats.NTriples, null));
 
     [TestMethod]
     public async Task ShouldExportToDataTableAsync()

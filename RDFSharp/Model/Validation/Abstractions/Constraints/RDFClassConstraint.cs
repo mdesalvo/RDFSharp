@@ -94,10 +94,8 @@ namespace RDFSharp.Model
         {
             RDFGraph result = new RDFGraph();
             if (shape != null)
-            {
                 //sh:class
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLASS, ClassType));
-            }
             return result;
         }
         #endregion

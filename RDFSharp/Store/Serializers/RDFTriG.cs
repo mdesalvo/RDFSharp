@@ -60,9 +60,7 @@ namespace RDFSharp.Store
                     HashSet<string> printedNamespaces = new HashSet<string>();
                     foreach (RDFNamespace ns in prefixes.OrderBy(n => n.NamespacePrefix))
                         if (printedNamespaces.Add(ns.NamespacePrefix))
-                        {
                             sw.WriteLine(string.Concat("@prefix ", ns.NamespacePrefix, ": <", ns.NamespaceUri, ">."));
-                        }
                     if (printedNamespaces.Count > 0)
                         sw.WriteLine();
 

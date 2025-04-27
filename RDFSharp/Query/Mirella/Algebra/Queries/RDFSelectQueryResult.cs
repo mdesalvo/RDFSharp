@@ -271,7 +271,6 @@ namespace RDFSharp.Query
                                 {
                                     #region RESULT
                                     if (string.Equals(resNode.Name, "RESULT", StringComparison.OrdinalIgnoreCase))
-                                    {
                                         if (resNode.HasChildNodes)
                                         {
                                             Dictionary<string, string> results = new Dictionary<string, string>();
@@ -292,7 +291,7 @@ namespace RDFSharp.Query
 
                                                     #region URI / BNODE
                                                     if (string.Equals(bindingNode.FirstChild.Name, "URI", StringComparison.OrdinalIgnoreCase)
-                                                         || string.Equals(bindingNode.FirstChild.Name, "BNODE", StringComparison.OrdinalIgnoreCase))
+                                                        || string.Equals(bindingNode.FirstChild.Name, "BNODE", StringComparison.OrdinalIgnoreCase))
                                                     {
                                                         if (RDFModelUtilities.GetUriFromString(bindingNode.InnerText) == null)
                                                             throw new Exception("one \"uri\" node contained data not corresponding to a valid Uri.");
@@ -324,7 +323,7 @@ namespace RDFSharp.Query
                                             }
                                             RDFQueryEngine.AddRow(result.SelectResults, results);
                                         }
-                                    }
+
                                     #endregion
                                 }
                             }

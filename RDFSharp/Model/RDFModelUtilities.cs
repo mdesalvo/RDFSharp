@@ -143,7 +143,6 @@ namespace RDFSharp.Model
             //https://docs.microsoft.com/en-us/dotnet/api/system.text.rune?view=net-5.0&viewFallbackFrom=netstandard-2.0
             StringBuilder b = new StringBuilder();
             for (int i = 0; i < unicodeString.Length; i++)
-            {
                 //ASCII
                 if (unicodeString[i] <= 127)
                     b.Append(unicodeString[i]);
@@ -163,7 +162,7 @@ namespace RDFSharp.Model
                 //ERROR
                 else
                     throw new RDFModelException("Cannot convert string '" + unicodeString + "' to ASCII because it is not well-formed UTF-16");
-            }
+
             return b.ToString();
         }
 
@@ -177,12 +176,10 @@ namespace RDFSharp.Model
 
             StringBuilder b = new StringBuilder();
             foreach (char c in data)
-            {
                 if (char.IsControl(c) && c != '\u0009' && c != '\u000A' && c != '\u000D')
                     b.Append(string.Concat("\\u", ((int)c).ToString("X4")));
                 else
                     b.Append(c);
-            }
             return b.ToString();
         }
 
@@ -424,9 +421,7 @@ namespace RDFSharp.Model
                         //xsd:pattern
                         if (graph[facet, RDFVocabulary.XSD.PATTERN, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetPattern
                              && facetPattern.HasStringDatatype())
-                        {
                             targetFacets.Add(new RDFPatternFacet(facetPattern.Value));
-                        }
                     }
 
                     //Finally collect the datatype

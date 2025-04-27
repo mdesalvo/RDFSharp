@@ -121,10 +121,8 @@ namespace RDFSharp.Query
         {
             RDFDescribeQueryResult result = new RDFDescribeQueryResult();
             if (graph != null)
-            {
                 //Transform the graph into a datatable and assign it to the query result
                 result.DescribeResults = graph.ToDataTable();
-            }
             return result;
         }
 
@@ -141,10 +139,8 @@ namespace RDFSharp.Query
         {
             RDFDescribeQueryResult result = new RDFDescribeQueryResult();
             if (store != null)
-            {
                 //Transform the memory store into a datatable and assign it to the query result
                 result.DescribeResults = store.ToDataTable();
-            }
             return result;
         }
 

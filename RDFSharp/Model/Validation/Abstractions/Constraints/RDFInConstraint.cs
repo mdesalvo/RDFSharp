@@ -55,10 +55,8 @@ namespace RDFSharp.Model
         public RDFInConstraint AddValue(RDFResource resource)
         {
             if (ItemType == RDFModelEnums.RDFItemTypes.Resource)
-            {
                 if (resource != null && !InValues.ContainsKey(resource.PatternMemberID))
                     InValues.Add(resource.PatternMemberID, resource);
-            }
             return this;
         }
 
@@ -68,10 +66,8 @@ namespace RDFSharp.Model
         public RDFInConstraint AddValue(RDFLiteral literal)
         {
             if (ItemType == RDFModelEnums.RDFItemTypes.Literal)
-            {
                 if (literal != null && !InValues.ContainsKey(literal.PatternMemberID))
                     InValues.Add(literal.PatternMemberID, literal);
-            }
             return this;
         }
 
@@ -114,12 +110,10 @@ namespace RDFSharp.Model
                 //Get collection from inValues
                 RDFCollection inValues = new RDFCollection(ItemType) { InternalReificationSubject = this };
                 foreach (RDFPatternMember inValue in InValues.Values)
-                {
                     if (ItemType == RDFModelEnums.RDFItemTypes.Literal)
                         inValues.AddItem((RDFLiteral)inValue);
                     else
                         inValues.AddItem((RDFResource)inValue);
-                }
                 result.AddCollection(inValues);
 
                 //sh:in

@@ -77,7 +77,7 @@ namespace RDFSharp.Query
                 //Populate bindings of the given variable
                 //(null indicates the special UNDEF binding)
                 if (bindings?.Count > 0)
-                    bindings.ForEach(b => Bindings[variableString].Add((b is RDFResource || b is RDFLiteral) ? b : null));
+                    bindings.ForEach(b => Bindings[variableString].Add(b is RDFResource || b is RDFLiteral ? b : null));
                 else
                     Bindings[variableString].Add(null);
 

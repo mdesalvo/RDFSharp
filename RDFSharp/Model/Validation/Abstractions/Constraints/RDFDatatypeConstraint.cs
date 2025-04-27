@@ -110,10 +110,8 @@ namespace RDFSharp.Model
         {
             RDFGraph result = new RDFGraph();
             if (shape != null)
-            {
                 //sh:datatype
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.DATATYPE, new RDFResource(Datatype.ToString())));
-            }
             return result;
         }
         #endregion

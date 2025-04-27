@@ -56,10 +56,8 @@ namespace RDFSharp.Query
         internal T AddPatternGroup<T>(RDFPatternGroup patternGroup) where T: RDFQuery
         {
             if (patternGroup != null)
-            {
                 if (!GetPatternGroups().Any(q => q.Equals(patternGroup)))
                     QueryMembers.Add(patternGroup);
-            }
             return (T)this;
         }
 
@@ -69,10 +67,8 @@ namespace RDFSharp.Query
         internal T AddModifier<T>(RDFDistinctModifier modifier) where T : RDFQuery
         {
             if (modifier != null)
-            {
                 if (!GetModifiers().Any(m => m is RDFDistinctModifier))
                     QueryMembers.Add(modifier);
-            }
             return (T)this;
         }
 
@@ -82,10 +78,8 @@ namespace RDFSharp.Query
         internal T AddModifier<T>(RDFLimitModifier modifier) where T : RDFQuery
         {
             if (modifier != null)
-            {
                 if (!GetModifiers().Any(m => m is RDFLimitModifier))
                     QueryMembers.Add(modifier);
-            }
             return (T)this;
         }
 
@@ -95,10 +89,8 @@ namespace RDFSharp.Query
         internal T AddModifier<T>(RDFOffsetModifier modifier) where T : RDFQuery
         {
             if (modifier != null)
-            {
                 if (!GetModifiers().Any(m => m is RDFOffsetModifier))
                     QueryMembers.Add(modifier);
-            }
             return (T)this;
         }
 
@@ -108,10 +100,8 @@ namespace RDFSharp.Query
         internal T AddPrefix<T>(RDFNamespace prefix) where T : RDFQuery
         {
             if (prefix != null)
-            {
                 if (!Prefixes.Any(p => p.Equals(prefix)))
                     Prefixes.Add(prefix);
-            }
             return (T)this;
         }
 
@@ -121,10 +111,8 @@ namespace RDFSharp.Query
         internal T AddSubQuery<T>(RDFSelectQuery subQuery) where T : RDFQuery
         {
             if (subQuery != null)
-            {
                 if (!GetSubQueries().Any(q => q.Equals(subQuery)))
                     QueryMembers.Add(subQuery.SubQuery());
-            }
             return (T)this;
         }
 

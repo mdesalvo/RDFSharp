@@ -111,9 +111,7 @@ namespace RDFSharp.Model
                   dereferenceUri.IsAbsoluteUri &&
                     !dereferenceUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase) &&
                       !dereferenceUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
-            {
                 DereferenceUri = dereferenceUri;
-            }
             return this;
         }
 

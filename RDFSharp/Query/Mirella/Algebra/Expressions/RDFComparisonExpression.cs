@@ -180,22 +180,22 @@ namespace RDFSharp.Query
                 switch (ComparisonFlavor)
                 {
                     case RDFQueryEnums.RDFComparisonFlavors.LessThan:
-                        expressionResult = (comparison  < 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
+                        expressionResult = comparison  < 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                         break;
                     case RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan:
-                        expressionResult = (comparison <= 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
+                        expressionResult = comparison <= 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                         break;
                     case RDFQueryEnums.RDFComparisonFlavors.EqualTo:
-                        expressionResult = (comparison == 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
+                        expressionResult = comparison == 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                         break;
                     case RDFQueryEnums.RDFComparisonFlavors.NotEqualTo:
-                        expressionResult = (comparison != 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
+                        expressionResult = comparison != 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                         break;
                     case RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan:
-                        expressionResult = (comparison >= 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
+                        expressionResult = comparison >= 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                         break;
                     case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
-                        expressionResult = (comparison  > 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False);
+                        expressionResult = comparison  > 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                         break;
                 }
                 #endregion

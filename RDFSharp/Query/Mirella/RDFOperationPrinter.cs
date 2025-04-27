@@ -176,7 +176,6 @@ namespace RDFSharp.Query
                 if (clearOperation.FromContext != null)
                     sb.Append($"GRAPH <{clearOperation.FromContext}>");
                 else
-                {
                     switch (clearOperation.OperationFlavor)
                     {
                         case RDFQueryEnums.RDFClearOperationFlavor.DEFAULT:
@@ -191,7 +190,6 @@ namespace RDFSharp.Query
                             sb.Append("ALL");
                             break;
                     }
-                }
             }
 
             return sb.ToString();

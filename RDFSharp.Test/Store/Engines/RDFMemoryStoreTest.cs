@@ -2613,7 +2613,7 @@ public class RDFMemoryStoreTest
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnExportingToNullOrEmptyFilepathAsync()
-        => await Assert.ThrowsExactlyAsync<RDFStoreException>(async () => await new RDFMemoryStore().ToFileAsync(RDFStoreEnums.RDFFormats.NQuads, null));
+        => await Assert.ThrowsExactlyAsync<RDFStoreException>(() => new RDFMemoryStore().ToFileAsync(RDFStoreEnums.RDFFormats.NQuads, null));
 
     [DataTestMethod]
     [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
