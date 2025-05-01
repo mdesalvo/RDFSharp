@@ -121,12 +121,14 @@ namespace RDFSharp.Store
         /// <summary>
         /// Exposes a typed enumerator on the store's quadruples
         /// </summary>
-        IEnumerator<RDFQuadruple> IEnumerable<RDFQuadruple>.GetEnumerator() => QuadruplesEnumerator;
+        IEnumerator<RDFQuadruple> IEnumerable<RDFQuadruple>.GetEnumerator()
+            => QuadruplesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the store's quadruples
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() => QuadruplesEnumerator;
+        IEnumerator IEnumerable.GetEnumerator()
+            => QuadruplesEnumerator;
 
         /// <summary>
         /// Disposes the memory store (IDisposable)
@@ -147,10 +149,10 @@ namespace RDFSharp.Store
 
             if (disposing)
             {
-                StoreIndex.Dispose();
+                StoreIndex?.Dispose();
                 StoreIndex = null;
 
-                IndexedQuadruples.Clear();
+                IndexedQuadruples?.Clear();
                 IndexedQuadruples = null;
             }
 

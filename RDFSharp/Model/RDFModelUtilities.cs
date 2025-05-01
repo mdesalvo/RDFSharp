@@ -547,8 +547,8 @@ namespace RDFSharp.Model
             => ((DescriptionAttribute)RDFModelEnums_RDFDatatypes_EnumType
                 .GetField(datatype.ToString())
                 .GetCustomAttributes(typeof(DescriptionAttribute), false)[0]).Description;
-        internal static readonly Type RDFModelEnums_RDFDatatypes_EnumType = typeof(RDFModelEnums.RDFDatatypes);
-        internal static readonly Array RDFModelEnums_RDFDatatypes_EnumValues = RDFModelEnums_RDFDatatypes_EnumType.GetEnumValues();
+        private static readonly Type RDFModelEnums_RDFDatatypes_EnumType = typeof(RDFModelEnums.RDFDatatypes);
+        private static readonly Array RDFModelEnums_RDFDatatypes_EnumValues = RDFModelEnums_RDFDatatypes_EnumType.GetEnumValues();
 
         /// <summary>
         /// Gives the Enum representation of the given datatype
@@ -581,14 +581,14 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL:
                     try
                     {
-                        XDocument.Parse(literalValue);
+                        _ = XDocument.Parse(literalValue);
                         return (true, literalValue);
                     }
                     catch { return (false, literalValue); }
 
                 case RDFModelEnums.RDFDatatypes.RDF_JSON:
                     bool isValidJson = (literalValue.StartsWith("{", StringComparison.Ordinal) && literalValue.EndsWith("}", StringComparison.Ordinal))
-                                         || (literalValue.StartsWith("[", StringComparison.Ordinal) && literalValue.EndsWith("]", StringComparison.Ordinal));
+                                        || (literalValue.StartsWith("[", StringComparison.Ordinal) && literalValue.EndsWith("]", StringComparison.Ordinal));
                     return (isValidJson, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_ANYURI:
@@ -598,7 +598,7 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_NAME:
                     try
                     {
-                        XmlConvert.VerifyName(literalValue);
+                        _ = XmlConvert.VerifyName(literalValue);
                         return (true, literalValue);
                     }
                     catch { return (false, literalValue); }
@@ -610,7 +610,7 @@ namespace RDFSharp.Model
                         case 1:
                             try
                             {
-                                XmlConvert.VerifyNCName(prefixedQName[0]);
+                                _ = XmlConvert.VerifyNCName(prefixedQName[0]);
                                 return (true, literalValue);
                             }
                             catch { return (false, literalValue); }
@@ -618,8 +618,8 @@ namespace RDFSharp.Model
                         case 2:
                             try
                             {
-                                XmlConvert.VerifyNCName(prefixedQName[0]);
-                                XmlConvert.VerifyNCName(prefixedQName[1]);
+                                _ = XmlConvert.VerifyNCName(prefixedQName[0]);
+                                _ = XmlConvert.VerifyNCName(prefixedQName[1]);
                                 return (true, literalValue);
                             }
                             catch { return (false, literalValue); }
@@ -632,7 +632,7 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_ID:
                     try
                     {
-                        XmlConvert.VerifyNCName(literalValue);
+                        _ = XmlConvert.VerifyNCName(literalValue);
                         return (true, literalValue);
                     }
                     catch { return (false, literalValue); }
@@ -640,7 +640,7 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_TOKEN:
                     try
                     {
-                        XmlConvert.VerifyTOKEN(literalValue);
+                        _ = XmlConvert.VerifyTOKEN(literalValue);
                         return (true, literalValue);
                     }
                     catch { return (false, literalValue); }
@@ -648,7 +648,7 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_NMTOKEN:
                     try
                     {
-                        XmlConvert.VerifyNMTOKEN(literalValue);
+                        _ = XmlConvert.VerifyNMTOKEN(literalValue);
                         return (true, literalValue);
                     }
                     catch { return (false, literalValue); }
@@ -662,7 +662,7 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY:
                     try
                     {
-                        Convert.FromBase64String(literalValue);
+                        _ = Convert.FromBase64String(literalValue);
                         return (true, literalValue);
                     }
                     catch { return (false, literalValue); }
@@ -675,7 +675,7 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT:
                     try
                     {
-                        RDFGeoExpression.WKTReader.Read(literalValue);
+                        _ = RDFGeoExpression.WKTReader.Read(literalValue);
                         return (true, literalValue);
                     }
                     catch { return (false, literalValue); }
@@ -683,7 +683,7 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.GEOSPARQL_GML:
                     try
                     {
-                        RDFGeoExpression.GMLReader.Read(literalValue);
+                        _ = RDFGeoExpression.GMLReader.Read(literalValue);
                         return (true, literalValue);
                     }
                     catch { return (false, literalValue); }
@@ -825,7 +825,7 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_DURATION:
                     try
                     {
-                        XmlConvert.ToTimeSpan(literalValue);
+                        _ = XmlConvert.ToTimeSpan(literalValue);
                         return (true, literalValue);
                     }
                     catch { return (false, literalValue); }

@@ -146,10 +146,10 @@ namespace RDFSharp.Model
 
             if (disposing)
             {
-                GraphIndex.Dispose();
+                GraphIndex?.Dispose();
                 GraphIndex = null;
 
-                IndexedTriples.Clear();
+                IndexedTriples?.Clear();
                 IndexedTriples = null;
             }
 
@@ -574,8 +574,8 @@ namespace RDFSharp.Model
         /// (null values are handled as * selectors. Ensure to keep object and literal mutually exclusive!)
         /// </summary>
         public RDFGraph this[RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
-            => (obj != null && lit != null) ? throw new RDFModelException("Cannot access a graph when both object and literals are given: they must be mutually exclusive!")
-                                            : new RDFGraph(RDFModelUtilities.SelectTriples(this, subj, pred, obj, lit));
+            => obj != null && lit != null ? throw new RDFModelException("Cannot access a graph when both object and literals are given: they must be mutually exclusive!")
+                                          : new RDFGraph(RDFModelUtilities.SelectTriples(this, subj, pred, obj, lit));
         #endregion
 
         #region Set
