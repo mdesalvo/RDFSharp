@@ -2889,7 +2889,7 @@ public class RDFQueryEngineTest
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")]))))
             .AddModifier(new RDFOrderByModifier(new RDFVariable("?Y"), RDFQueryEnums.RDFOrderByFlavors.ASC));
-        List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
+        List<RDFQueryMember> evaluableQueryMembers = [.. query.GetEvaluableQueryMembers()];
 
         RDFQueryEngine queryEngine = new RDFQueryEngine();
         queryEngine.EvaluateQueryMembers(evaluableQueryMembers, graph);
@@ -2940,7 +2940,7 @@ public class RDFQueryEngineTest
                     .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")])))
                 .UnionWithNext())
             .AddModifier(new RDFOrderByModifier(new RDFVariable("?Y"), RDFQueryEnums.RDFOrderByFlavors.ASC));
-        List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
+        List<RDFQueryMember> evaluableQueryMembers = [.. query.GetEvaluableQueryMembers()];
 
         RDFQueryEngine queryEngine = new RDFQueryEngine();
         queryEngine.EvaluateQueryMembers(evaluableQueryMembers, graph);
@@ -2991,7 +2991,7 @@ public class RDFQueryEngineTest
                     .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")])))
                 .Optional())
             .AddModifier(new RDFOrderByModifier(new RDFVariable("?Y"), RDFQueryEnums.RDFOrderByFlavors.ASC));
-        List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
+        List<RDFQueryMember> evaluableQueryMembers = [.. query.GetEvaluableQueryMembers()];
 
         RDFQueryEngine queryEngine = new RDFQueryEngine();
         queryEngine.EvaluateQueryMembers(evaluableQueryMembers, graph);
@@ -3040,7 +3040,7 @@ public class RDFQueryEngineTest
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")]))))
             .AddModifier(new RDFOrderByModifier(new RDFVariable("?Y"), RDFQueryEnums.RDFOrderByFlavors.ASC));
-        List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
+        List<RDFQueryMember> evaluableQueryMembers = [.. query.GetEvaluableQueryMembers()];
 
         RDFQueryEngine queryEngine = new RDFQueryEngine();
         queryEngine.EvaluateQueryMembers(evaluableQueryMembers, graph);
