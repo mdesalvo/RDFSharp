@@ -54,6 +54,16 @@ namespace RDFSharp.Query
         /// Context for keeping track of aggregator's execution
         /// </summary>
         internal RDFAggregatorContext AggregatorContext { get; set; }
+
+        /// <summary>
+        /// Placeholders indicating presence of an aggregator key
+        /// </summary>
+        internal readonly string[] ProjectionKeyPlaceholder = { "§PK§" };
+
+        /// <summary>
+        /// Placeholders indicating presence of an aggregator value
+        /// </summary>
+        internal readonly string[] ProjectionValuePlaceholder = { "§PV§" };
         #endregion
 
         #region Ctors
