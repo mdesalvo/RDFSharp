@@ -586,13 +586,13 @@ namespace RDFSharp.Model
                 if (shapeFlagsConstraint?.Object is RDFTypedLiteral shapeFlagsConstraintLiteral
                       && shapeFlagsConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.STRING.ToString()))
                 {
-                    if (shapeFlagsConstraintLiteral.Value.Contains("i"))
+                    if (shapeFlagsConstraintLiteral.Value.Contains('i'))
                         regexOptions |= RegexOptions.IgnoreCase;
-                    if (shapeFlagsConstraintLiteral.Value.Contains("s"))
+                    if (shapeFlagsConstraintLiteral.Value.Contains('s'))
                         regexOptions |= RegexOptions.Singleline;
-                    if (shapeFlagsConstraintLiteral.Value.Contains("m"))
+                    if (shapeFlagsConstraintLiteral.Value.Contains('m'))
                         regexOptions |= RegexOptions.Multiline;
-                    if (shapeFlagsConstraintLiteral.Value.Contains("x"))
+                    if (shapeFlagsConstraintLiteral.Value.Contains('x'))
                         regexOptions |= RegexOptions.IgnorePatternWhitespace;
                 }
                 shape.AddConstraint(new RDFPatternConstraint(new Regex(shapePatternConstraintLiteral.Value, regexOptions)));

@@ -492,14 +492,14 @@ namespace RDFSharp.Store
             foreach (RDFQuadruple q in this as RDFMemoryStore ?? SelectAllQuadruples())
             {
                 // Step 1: Cache-Update
-                if (!graphs.ContainsKey(q.Context.PatternMemberID))
+                if (!graphs.TryGetValue(q.Context.PatternMemberID, out RDFGraph graph))
                 {
-                    graphs.Add(q.Context.PatternMemberID, new RDFGraph());
+                    graph = new RDFGraph();
+                    graphs.Add(q.Context.PatternMemberID, graph);
                     graphs[q.Context.PatternMemberID].SetContext(((RDFContext)q.Context).Context);
                 }
 
-                // Step 2: Result-Update
-                graphs[q.Context.PatternMemberID].AddTriple(q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
+                graph.AddTriple(q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
                     ? new RDFTriple((RDFResource)q.Subject, (RDFResource)q.Predicate, (RDFResource)q.Object)
                     : new RDFTriple((RDFResource)q.Subject, (RDFResource)q.Predicate, (RDFLiteral)q.Object));
             }
