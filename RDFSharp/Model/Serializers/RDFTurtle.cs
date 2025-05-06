@@ -1368,7 +1368,7 @@ namespace RDFSharp.Model
                 }
                 msg.Append(", found '");
                 msg.Append(supplied);
-                msg.Append("'");
+                msg.Append('\'');
 
                 throw new RDFModelException(msg.ToString());
             }
