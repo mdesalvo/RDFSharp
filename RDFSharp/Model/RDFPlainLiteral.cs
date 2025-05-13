@@ -35,7 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex for validation of language tags (with support for optional direction)
         /// </summary>
-        internal static readonly Regex LangTagRegex = new Regex(string.Concat("^", LangTagMask, "$"), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        internal static readonly Regex LangTagRegex = new Regex($"^{LangTagMask}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Optional language of the literal's value
@@ -68,7 +68,7 @@ namespace RDFSharp.Model
         /// Gives the string representation of the plain literal
         /// </summary>
         public override string ToString()
-            => HasLanguage() ? string.Concat(base.ToString(), "@", Language) : base.ToString();
+            => HasLanguage() ? $"{base.ToString()}@{Language}" : base.ToString();
         #endregion
 
         #region Methods

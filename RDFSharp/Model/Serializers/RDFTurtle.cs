@@ -61,7 +61,7 @@ namespace RDFSharp.Model
 
                     //Write namespaces
                     foreach (RDFNamespace ns in prefixes.OrderBy(n => n.NamespacePrefix))
-                        sw.WriteLine(string.Concat("@prefix ", ns.NamespacePrefix, ": <", ns.NamespaceUri, ">."));
+                        sw.WriteLine($"@prefix {ns.NamespacePrefix}: <{ns.NamespaceUri}>.");
                     sw.WriteLine(string.Concat("@base <", graph.Context, $">.{Environment.NewLine}"));
 
                     //Write graph
@@ -230,7 +230,7 @@ namespace RDFSharp.Model
         /// Gets the actual coordinates within Turtle context
         /// </summary>
         internal static string GetTurtleContextCoordinates(RDFTurtleContext turtleContext)
-            => string.Concat("[POSITION:", turtleContext.Position, "]");
+            => $"[POSITION:{turtleContext.Position}]";
 
         /// <summary>
         /// Updates the position of the cursor within Turtle context
@@ -814,7 +814,7 @@ namespace RDFSharp.Model
                     UnreadCodePoint(turtleContext, bufChar);
             }
 
-            return new RDFResource(string.Concat("bnode:", name.ToString()));
+            return new RDFResource($"bnode:{name}");
         }
 
         /// <summary>
@@ -1120,9 +1120,7 @@ namespace RDFSharp.Model
             }
 
             // Unescape any escape sequences
-            result = DecodeString(turtleContext, result);
-
-            return result;
+            return DecodeString(turtleContext, result);
         }
 
         /// <summary>
@@ -1213,7 +1211,7 @@ namespace RDFSharp.Model
 
             while (backSlashIdx != -1)
             {
-                sb.Append(s.Substring(startIdx, backSlashIdx - startIdx));
+                sb.Append(s, startIdx, backSlashIdx - startIdx);
 
                 if (backSlashIdx + 1 >= sLength)
                     throw new RDFModelException("Unescaped backslash in: " + s + GetTurtleContextCoordinates(turtleContext));
@@ -1302,7 +1300,7 @@ namespace RDFSharp.Model
                 backSlashIdx = s.IndexOf('\\', startIdx);
             }
 
-            sb.Append(s.Substring(startIdx));
+            sb.Append(s, startIdx, s.Length - startIdx);
 
             return sb.ToString();
         }
@@ -1610,14 +1608,14 @@ namespace RDFSharp.Model
                         {
                             string dtype = RDFQueryPrinter.PrintPatternMember(
                                             RDFQueryUtilities.ParseRDFPatternMember(tlitObj.Datatype.URI.ToString()), prefixes);
-                            string tLit = string.Concat(litValDelim, tlitObj.Value.Replace("\\", @"\\"), litValDelim, "^^", dtype);
+                            string tLit = $"{litValDelim}{tlitObj.Value.Replace("\\", @"\\")}{litValDelim}^^{dtype}";
                             result.Append(tLit);
                         }
                         else
                         {
                             string pLit = string.Concat(litValDelim, ((RDFPlainLiteral)triple.Object).Value.Replace("\\", @"\\"), litValDelim);
                             if (((RDFPlainLiteral)triple.Object).HasLanguage())
-                                pLit = string.Concat(pLit, "@", ((RDFPlainLiteral)triple.Object).Language);
+                                pLit = $"{pLit}@{((RDFPlainLiteral)triple.Object).Language}";
                             result.Append(pLit);
                         }
                     }

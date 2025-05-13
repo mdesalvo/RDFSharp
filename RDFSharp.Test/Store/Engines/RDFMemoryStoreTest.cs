@@ -2634,7 +2634,7 @@ public class RDFMemoryStoreTest
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnExportingToNullStreamAsync()
-        => await Assert.ThrowsExactlyAsync<RDFStoreException>(async () => await new RDFMemoryStore().ToStreamAsync(RDFStoreEnums.RDFFormats.NQuads, null));
+        => await Assert.ThrowsExactlyAsync<RDFStoreException>(() => new RDFMemoryStore().ToStreamAsync(RDFStoreEnums.RDFFormats.NQuads, null));
 
     [TestMethod]
     public async Task ShouldExportToDataTableAsync()

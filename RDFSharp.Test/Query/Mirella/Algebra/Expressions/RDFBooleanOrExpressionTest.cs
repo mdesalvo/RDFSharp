@@ -75,7 +75,6 @@ public class RDFBooleanOrExpressionTest
         Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
     }
 
-
     [TestMethod]
     public void ShouldApplyExpressionAndCalculateResultTrueLeft()
     {

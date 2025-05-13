@@ -165,10 +165,9 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph SetContext(Uri contextUri)
         {
-            if (contextUri != null
-                 && contextUri.IsAbsoluteUri
-                 && !contextUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
-                 && !contextUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
+            if (contextUri?.IsAbsoluteUri == true
+                && !contextUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
+                && !contextUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
                 Context = contextUri;
             return this;
         }

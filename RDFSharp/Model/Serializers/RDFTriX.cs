@@ -292,7 +292,7 @@ namespace RDFSharp.Model
                 //Sanitize eventual blank node value
                 if (graphChild.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal))
                     if (!graphChild.ChildNodes[0].InnerText.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
-                        graphChild.ChildNodes[0].InnerText = string.Concat("bnode:", graphChild.ChildNodes[0].InnerText.Replace("_:", string.Empty));
+                        graphChild.ChildNodes[0].InnerText = $"bnode:{graphChild.ChildNodes[0].InnerText.Replace("_:", string.Empty)}";
             }
             //Subject unrecognized: exception must be raised
             else
@@ -320,7 +320,7 @@ namespace RDFSharp.Model
                 //Sanitize eventual blank node value
                 if (graphChild.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
                     if (!graphChild.ChildNodes[2].InnerText.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
-                        graphChild.ChildNodes[2].InnerText = string.Concat("bnode:", graphChild.ChildNodes[2].InnerText.Replace("_:", string.Empty));
+                        graphChild.ChildNodes[2].InnerText = $"bnode:{graphChild.ChildNodes[2].InnerText.Replace("_:", string.Empty)}";
 
                 result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText, hashContext),
                                                new RDFResource(graphChild.ChildNodes[1].InnerText, hashContext),

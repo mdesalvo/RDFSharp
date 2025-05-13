@@ -88,7 +88,7 @@ public class RDFTypedLiteralTest
         Assert.IsFalse(tl.HasDatetimeDatatype());
         Assert.IsFalse(tl.HasDecimalDatatype());
         Assert.IsFalse(tl.HasTimespanDatatype());
-        Assert.IsTrue(tl.ToString().Equals(string.Concat(value ?? "", "^^", datatype.GetDatatypeFromEnum())));
+        Assert.IsTrue(tl.ToString().Equals($"{value ?? ""}^^{datatype.GetDatatypeFromEnum()}"));
     }
 
     [DataTestMethod]
@@ -105,7 +105,7 @@ public class RDFTypedLiteralTest
         Assert.IsFalse(tl.HasDatetimeDatatype());
         Assert.IsFalse(tl.HasDecimalDatatype());
         Assert.IsFalse(tl.HasTimespanDatatype());
-        Assert.IsTrue(tl.ToString().Equals(string.Concat(value ?? "", "^^", datatype.GetDatatypeFromEnum())));
+        Assert.IsTrue(tl.ToString().Equals($"{value ?? ""}^^{datatype.GetDatatypeFromEnum()}"));
     }
 
     [DataTestMethod]
@@ -140,8 +140,8 @@ public class RDFTypedLiteralTest
         Assert.IsFalse(tl.HasDatetimeDatatype());
         Assert.IsFalse(tl.HasDecimalDatatype());
         Assert.IsFalse(tl.HasTimespanDatatype());
-        Assert.IsTrue(tl.ToString().Equals(string.Concat("true^^", datatype.GetDatatypeFromEnum()))
-                      || tl.ToString().Equals(string.Concat("false^^", datatype.GetDatatypeFromEnum())));
+        Assert.IsTrue(tl.ToString().Equals($"true^^{datatype.GetDatatypeFromEnum()}")
+                      || tl.ToString().Equals($"false^^{datatype.GetDatatypeFromEnum()}"));
     }
 
     [DataTestMethod]

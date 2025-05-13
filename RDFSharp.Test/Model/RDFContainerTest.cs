@@ -336,12 +336,12 @@ public class RDFContainerTest
         switch (itemType)
         {
             case RDFModelEnums.RDFItemTypes.Literal:
-                Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(cont.ReificationSubject, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, "_1")), new RDFPlainLiteral("lit1")).TripleID));
-                Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(cont.ReificationSubject, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, "_2")), new RDFPlainLiteral("lit2")).TripleID));
+                Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(cont.ReificationSubject, new RDFResource($"{RDFVocabulary.RDF.BASE_URI}_1"), new RDFPlainLiteral("lit1")).TripleID));
+                Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(cont.ReificationSubject, new RDFResource($"{RDFVocabulary.RDF.BASE_URI}_2"), new RDFPlainLiteral("lit2")).TripleID));
                 break;
             case RDFModelEnums.RDFItemTypes.Resource:
-                Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(cont.ReificationSubject, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, "_1")), new RDFResource("http://item1/")).TripleID));
-                Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(cont.ReificationSubject, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, "_2")), new RDFResource("http://item2/")).TripleID));
+                Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(cont.ReificationSubject, new RDFResource($"{RDFVocabulary.RDF.BASE_URI}_1"), new RDFResource("http://item1/")).TripleID));
+                Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(cont.ReificationSubject, new RDFResource($"{RDFVocabulary.RDF.BASE_URI}_2"), new RDFResource("http://item2/")).TripleID));
                 break;
         }
     }

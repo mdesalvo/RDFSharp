@@ -354,7 +354,6 @@ public class RDFPatternGroupTest
         Assert.AreEqual(1, pGroup.GetEvaluablePatternGroupMembers().Count());
     }
 
-
     [TestMethod]
     public void ShouldAddBind()
     {

@@ -150,7 +150,7 @@ namespace RDFSharp.Query
             if (HavingClause.Item1)
             {
                 result.Append('(');
-                result.Append(ToString().Substring(1, ToString().LastIndexOf(" AS ?", StringComparison.Ordinal)));
+                result.Append(ToString(), 1, ToString().LastIndexOf(" AS ?", StringComparison.Ordinal));
                 switch (HavingClause.Item2)
                 {
                     case RDFQueryEnums.RDFComparisonFlavors.LessThan:

@@ -58,7 +58,7 @@ namespace RDFSharp.Query
         public override string ToString()
             => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-            => string.Concat("FILTER ( SAMETERM(", VariableName, ", ", RDFQueryPrinter.PrintPatternMember(RDFTerm, prefixes), ") )");
+            => $"FILTER ( SAMETERM({VariableName}, {RDFQueryPrinter.PrintPatternMember(RDFTerm, prefixes)}) )";
         #endregion
 
         #region Methods

@@ -206,8 +206,8 @@ namespace RDFSharp.Query
             PartitionVariables.ForEach(pv =>
             {
                 partitionKey.Add(tableRow.IsNull(pv.VariableName)
-                    ? string.Concat(pv.VariableName, "§PV§", string.Empty)
-                    : string.Concat(pv.VariableName, "§PV§", tableRow[pv.VariableName].ToString()));
+                    ? $"{pv.VariableName}§PV§{string.Empty}"
+                    : $"{pv.VariableName}§PV§{tableRow[pv.VariableName]}");
             });
             return string.Join("§PK§", partitionKey);
         }

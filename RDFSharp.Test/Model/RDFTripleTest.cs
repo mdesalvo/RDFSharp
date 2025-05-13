@@ -38,10 +38,10 @@ public class RDFTripleTest
         Assert.IsTrue(triple.Subject.Equals(subj));
         Assert.IsTrue(triple.Predicate.Equals(pred));
         Assert.IsTrue(triple.Object.Equals(obj));
-        Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", triple.TripleID.ToString()))));
+        Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID.ToString()}")));
 
         string tripleString = triple.ToString();
-        Assert.IsTrue(tripleString.Equals(string.Concat(triple.Subject.ToString(), " ", triple.Predicate.ToString(), " ", triple.Object.ToString())));
+        Assert.IsTrue(tripleString.Equals($"{triple.Subject} {triple.Predicate} {triple.Object}"));
 
         long tripleID = RDFModelUtilities.CreateHash(tripleString);
         Assert.IsTrue(triple.TripleID.Equals(tripleID));
@@ -62,7 +62,7 @@ public class RDFTripleTest
         Assert.IsTrue(((RDFResource)triple.Subject).IsBlank);
         Assert.IsTrue(triple.Predicate.Equals(pred));
         Assert.IsTrue(((RDFResource)triple.Object).IsBlank);
-        Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", triple.TripleID.ToString()))));
+        Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID.ToString()}")));
     }
 
     [DataTestMethod]
@@ -79,10 +79,10 @@ public class RDFTripleTest
         Assert.IsTrue(triple.Subject.Equals(subj));
         Assert.IsTrue(triple.Predicate.Equals(pred));
         Assert.IsTrue(triple.Object.Equals(lit));
-        Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", triple.TripleID.ToString()))));
+        Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID.ToString()}")));
 
         string tripleString = triple.ToString();
-        Assert.IsTrue(tripleString.Equals(string.Concat(triple.Subject.ToString(), " ", triple.Predicate.ToString(), " ", triple.Object.ToString())));
+        Assert.IsTrue(tripleString.Equals($"{triple.Subject} {triple.Predicate} {triple.Object}"));
 
         long tripleID = RDFModelUtilities.CreateHash(tripleString);
         Assert.IsTrue(triple.TripleID.Equals(tripleID));
@@ -103,7 +103,7 @@ public class RDFTripleTest
         Assert.IsTrue(((RDFResource)triple.Subject).IsBlank);
         Assert.IsTrue(triple.Predicate.Equals(pred));
         Assert.IsTrue(((RDFPlainLiteral)triple.Object).Equals(RDFPlainLiteral.Empty));
-        Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", triple.TripleID.ToString()))));
+        Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID.ToString()}")));
     }
 
     [DataTestMethod]

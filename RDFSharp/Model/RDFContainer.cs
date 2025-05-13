@@ -185,7 +185,7 @@ namespace RDFSharp.Model
             int index = 0;
             foreach (RDFPatternMember item in this)
             {
-                RDFResource ordPred = new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, "_", (++index).ToString()));
+                RDFResource ordPred = new RDFResource($"{RDFVocabulary.RDF.BASE_URI}_{(++index).ToString()}");
                 reifCont.AddTriple(ItemType == RDFModelEnums.RDFItemTypes.Resource
                     ? new RDFTriple(ReificationSubject, ordPred, (RDFResource)item)
                     : new RDFTriple(ReificationSubject, ordPred, (RDFLiteral)item));

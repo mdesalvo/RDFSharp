@@ -105,7 +105,7 @@ namespace RDFSharp.Store
         /// Gives the string representation of the Memory store
         /// </summary>
         public override string ToString()
-            => string.Concat(base.ToString(), "|ID=", StoreGUID);
+            => $"{base.ToString()}|ID={StoreGUID}";
 
         /// <summary>
         /// Performs the equality comparison between two memory stores

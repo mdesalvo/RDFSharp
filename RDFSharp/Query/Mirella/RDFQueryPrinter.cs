@@ -40,7 +40,7 @@ namespace RDFSharp.Query
 
             #region INDENT
             int subqueryHeaderSpacesFunc()
-                => subqueryBodySpacesFunc() - 2 < 0 ? 0 : subqueryBodySpacesFunc() - 2;
+                => subqueryBodySpacesFunc() < 2 ? 0 : subqueryBodySpacesFunc() - 2;
             int subqueryBodySpacesFunc()
                 => Convert.ToInt32(4.0d * indentLevel);
             int subqueryUnionOrMinusSpacesFunc(bool unionOrMinus)
@@ -62,14 +62,14 @@ namespace RDFSharp.Query
                 else
                     sb.AppendLine(string.Concat(subquerySpaces, "{"));
             }
-            sb.Append(string.Concat(subqueryBodySpaces, "SELECT"));
+            sb.Append($"{subqueryBodySpaces}SELECT");
             #endregion
 
             #region DISTINCT
             selectQuery.GetModifiers()
                        .OfType<RDFDistinctModifier>()
                        .ToList()
-                       .ForEach(dm => sb.Append(string.Concat(" ", dm)));
+                       .ForEach(dm => sb.Append($" {dm}"));
             #endregion
 
             #region VARIABLES/AGGREGATORS
@@ -124,7 +124,7 @@ namespace RDFSharp.Query
                         if (gm.Aggregators.Any(ag => ag.HavingClause.Item1))
                         {
                             sb.AppendLine();
-                            sb.Append(string.Format(string.Concat(subqueryBodySpaces, "HAVING ({0})"), string.Join(" && ", gm.Aggregators.Where(ag => ag.HavingClause.Item1).Select(x => x.PrintHavingClause(selectQuery.Prefixes)))));
+                            sb.AppendFormat(string.Concat(subqueryBodySpaces, "HAVING ({0})"), string.Join(" && ", gm.Aggregators.Where(ag => ag.HavingClause.Item1).Select(x => x.PrintHavingClause(selectQuery.Prefixes))));
                         }
                     });
 
@@ -132,10 +132,10 @@ namespace RDFSharp.Query
             if (modifiers.Any(mod => mod is RDFOrderByModifier))
             {
                 sb.AppendLine();
-                sb.Append(string.Concat(subqueryBodySpaces, "ORDER BY"));
+                sb.Append($"{subqueryBodySpaces}ORDER BY");
                 modifiers.OfType<RDFOrderByModifier>()
                          .ToList()
-                         .ForEach(om => sb.Append(string.Concat(" ", om.ToString())));
+                         .ForEach(om => sb.Append($" {om}"));
             }
 
             // LIMIT/OFFSET
@@ -174,7 +174,7 @@ namespace RDFSharp.Query
             #region DESCRIBE
             sb.Append("DESCRIBE");
             if (describeQuery.DescribeTerms.Count > 0)
-                describeQuery.DescribeTerms.ForEach(dt => sb.Append(string.Concat(" ", PrintPatternMember(dt, describeQuery.Prefixes))));
+                describeQuery.DescribeTerms.ForEach(dt => sb.Append($" {PrintPatternMember(dt, describeQuery.Prefixes)}"));
             else
                 sb.Append(" *");
             sb.AppendLine();
@@ -231,7 +231,7 @@ namespace RDFSharp.Query
                 if (tp.IsOptional)
                     tpString = tpString.Replace("OPTIONAL { ", string.Empty).TrimEnd(' ', '}');
 
-                sb.AppendLine(string.Concat("  ", tpString, " ."));
+                sb.AppendLine($"  {tpString} .");
             });
             sb.AppendLine("}");
             #endregion
@@ -281,7 +281,7 @@ namespace RDFSharp.Query
             List<RDFNamespace> prefixes = query.GetPrefixes();
             if (enablePrinting && prefixes.Count > 0)
             {
-                prefixes.ForEach(pf => sb.AppendLine(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">")));
+                prefixes.ForEach(pf => sb.AppendLine($"PREFIX {pf.NamespacePrefix}: <{pf.NamespaceUri}>"));
                 sb.AppendLine();
             }
             return prefixes;
@@ -339,13 +339,13 @@ namespace RDFSharp.Query
 
                                 //In case we are already under MINUS semantic, keep care of reflecting this in the indentation spaces (+2)
                                 if (printingMinus)
-                                    subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
+                                    subqueryBodySpaces = $"{subqueryBodySpaces}  ";
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                             }
 
                             //Then we can print the pattern group, along with its UNION operator
                             PrintWrappedPatternGroup(pgQueryMember);
-                            sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
+                            sb.AppendLine($"{subqueryBodySpaces}    UNION");
                         }
 
                         //PatternGroup is set as MINUS with the next query member and it IS NOT the last one => append MINUS
@@ -359,13 +359,13 @@ namespace RDFSharp.Query
 
                                 //In case we are already under UNION semantic, keep care of reflecting this in the indentation spaces (+2)
                                 if (printingUnion)
-                                    subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
+                                    subqueryBodySpaces = $"{subqueryBodySpaces}  ";
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                             }
 
                             //Then we can print the pattern group, along with its MINUS operator
                             PrintWrappedPatternGroup(pgQueryMember);
-                            sb.AppendLine(string.Concat(subqueryBodySpaces, "    MINUS"));
+                            sb.AppendLine($"{subqueryBodySpaces}    MINUS");
                         }
 
                         //PatternGroup is set as INTERSECT with the next query member or it IS the last one => do not append UNION/MINUS
@@ -413,7 +413,7 @@ namespace RDFSharp.Query
                                 //In case we are already under MINUS semantic, keep care of reflecting this in the indentation spaces (+2)
                                 if (printingMinus)
                                 {
-                                    subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
+                                    subqueryBodySpaces = $"{subqueryBodySpaces}  ";
                                     indentLevel += 0.5;
                                 }
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
@@ -421,7 +421,7 @@ namespace RDFSharp.Query
 
                             //Then we can print the subquery, along with its UNION operator
                             sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnionOrMinus ? 0.5 : 0), true));
-                            sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
+                            sb.AppendLine($"{subqueryBodySpaces}    UNION");
                         }
 
                         //SubQuery is set as MINUS with the next query member and it IS NOT the last one => append MINUS
@@ -436,7 +436,7 @@ namespace RDFSharp.Query
                                 //In case we are already under UNION semantic, keep care of reflecting this in the indentation spaces (+2)
                                 if (printingUnion)
                                 {
-                                    subqueryBodySpaces = string.Concat(subqueryBodySpaces, "  ");
+                                    subqueryBodySpaces = $"{subqueryBodySpaces}  ";
                                     indentLevel += 0.5;
                                 }
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
@@ -444,7 +444,7 @@ namespace RDFSharp.Query
 
                             //Then we can print the subquery, along with its MINUS operator
                             sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnionOrMinus ? 0.5 : 0), true));
-                            sb.AppendLine(string.Concat(subqueryBodySpaces, "    MINUS"));
+                            sb.AppendLine($"{subqueryBodySpaces}    MINUS");
                         }
 
                         //SubQuery is set as INTERSECT with the next query member or it IS the last one => do not append UNION/MINUS
@@ -495,16 +495,16 @@ namespace RDFSharp.Query
             if (patternGroup.IsOptional && !skipOptional)
             {
                 result.AppendLine(string.Concat("  ", spaces, "OPTIONAL {"));
-                spaces = string.Concat(spaces, "  ");
+                spaces = $"{spaces}  ";
             }
 
             //SERVICE
             if (patternGroup.EvaluateAsService.HasValue)
             {
                 bool isSilent = patternGroup.EvaluateAsService.Value.Item2.ErrorBehavior == RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult;
-                string service = string.Concat("SERVICE ",  isSilent ? "SILENT " : string.Empty);
+                string service = $"SERVICE {(isSilent ? "SILENT " : string.Empty)}";
                 result.AppendLine(string.Concat("  ", spaces, service, "<", patternGroup.EvaluateAsService.Value.Item1 , "> {"));
-                spaces = string.Concat(spaces, "  ");
+                spaces = $"{spaces}  ";
             }
 
             //OPEN-BRACKET
@@ -516,7 +516,7 @@ namespace RDFSharp.Query
             //FILTERS
             patternGroup.GetFilters().Where(f => !(f is RDFValuesFilter))
                                      .ToList()
-                                     .ForEach(f => result.AppendLine(string.Concat(spaces, "    ", f.ToString(prefixes), " ")));
+                                     .ForEach(f => result.AppendLine($"{spaces}    {f.ToString(prefixes)} "));
 
             //CLOSE-BRACKET
             result.AppendLine(string.Concat(spaces, "  }"));
@@ -559,13 +559,13 @@ namespace RDFSharp.Query
                             if (!printingUnion && printingMinus)
                             {
                                 openedBrackets++;
-                                spaces = string.Concat(spaces, "  ");
+                                spaces = $"{spaces}  ";
                                 result.AppendLine(string.Concat(spaces, "  {"));
                             }
 
                             //Then we can print the bracketed pattern, along with its UNION operator
                             result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
-                            result.AppendLine(string.Concat(spaces, "    UNION"));
+                            result.AppendLine($"{spaces}    UNION");
 
                             //Signal UNION semantic
                             printingUnion = true;
@@ -576,7 +576,7 @@ namespace RDFSharp.Query
                         {
                             //We can directly print the bracketed pattern, along with its MINUS operator
                             result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(ptPgMember, prefixes), " }"));
-                            result.AppendLine(string.Concat(spaces, "    MINUS"));
+                            result.AppendLine($"{spaces}    MINUS");
 
                             //Signal MINUS semantic
                             printingMinus = true;
@@ -608,7 +608,7 @@ namespace RDFSharp.Query
                                 printingMinus = false;
                             }
                             else
-                                result.AppendLine(string.Concat(spaces, "    ", PrintPattern(ptPgMember, prefixes), " ."));
+                                result.AppendLine($"{spaces}    {PrintPattern(ptPgMember, prefixes)} .");
                         }
 
                         break;
@@ -636,7 +636,7 @@ namespace RDFSharp.Query
                             printingMinus = false;
                         }
                         else
-                            result.AppendLine(string.Concat(spaces, "    ", PrintPropertyPath(ppPgMember, prefixes), " ."));
+                            result.AppendLine($"{spaces}    {PrintPropertyPath(ppPgMember, prefixes)} .");
 
                         break;
                     }
@@ -663,14 +663,14 @@ namespace RDFSharp.Query
                             printingMinus = false;
                         }
                         else
-                            result.AppendLine(string.Concat(spaces, "    ", PrintValues(vlPgMember, prefixes, spaces), " ."));
+                            result.AppendLine($"{spaces}    {PrintValues(vlPgMember, prefixes, spaces)} .");
 
                         break;
                     }
                     case RDFBind bdPgMember:
                     {
                         //We can directly print the bind
-                        result.AppendLine(string.Concat(spaces, "    ", PrintBind(bdPgMember, prefixes), " ."));
+                        result.AppendLine($"{spaces}    {PrintBind(bdPgMember, prefixes)} .");
 
                         //Then we need to print all the pending brackets and to keep care of
                         //reflecting this in the indentation spaces (-2) which must be consumed
@@ -692,7 +692,6 @@ namespace RDFSharp.Query
             }
         }
 
-
         /// <summary>
         /// Prints the string representation of a pattern
         /// </summary>
@@ -712,7 +711,7 @@ namespace RDFSharp.Query
 
             //SPO pattern
             return pattern.IsOptional ? string.Concat("OPTIONAL { ", subj, " ", pred, " ", obj, " }")
-                                      : string.Concat(subj, " ", pred, " ", obj);
+                                      : $"{subj} {pred} {obj}";
         }
 
         /// <summary>
@@ -828,7 +827,7 @@ namespace RDFSharp.Query
                 result.AppendLine(" {");
                 for (int i = 0; i < values.MaxBindingsLength(); i++)
                 {
-                    result.Append(string.Concat(spaces, "      ( "));
+                    result.Append($"{spaces}      ( ");
                     values.Bindings.ToList().ForEach(binding =>
                     {
                         RDFPatternMember bindingValue = binding.Value.ElementAtOrDefault(i);
@@ -870,18 +869,18 @@ namespace RDFSharp.Query
 
                     #region NonBlank
                     (bool, string) abbreviatedPM = RDFQueryUtilities.AbbreviateRDFPatternMember(patternMember, prefixes);
-                    return abbreviatedPM.Item1 ? abbreviatedPM.Item2 : string.Concat("<", abbreviatedPM.Item2, ">");
+                    return abbreviatedPM.Item1 ? abbreviatedPM.Item2 : $"<{abbreviatedPM.Item2}>";
                     #endregion
                 }
                 case RDFPlainLiteral plPatternMember when plPatternMember.HasLanguage():
-                    return string.Concat("\"", plPatternMember.Value, "\"@", plPatternMember.Language);
+                    return $"\"{plPatternMember.Value}\"@{plPatternMember.Language}";
                 case RDFPlainLiteral plPatternMember:
-                    return string.Concat("\"", plPatternMember.Value, "\"");
+                    return $"\"{plPatternMember.Value}\"";
                 case RDFTypedLiteral tlPatternMember:
                 {
                     string tlDatatype = tlPatternMember.Datatype.URI.ToString();
                     (bool, string) abbreviatedPM = RDFQueryUtilities.AbbreviateRDFPatternMember(RDFQueryUtilities.ParseRDFPatternMember(tlDatatype), prefixes);
-                    return abbreviatedPM.Item1 ? string.Concat("\"", tlPatternMember.Value, "\"^^", abbreviatedPM.Item2) : string.Concat("\"", tlPatternMember.Value, "\"^^<", abbreviatedPM.Item2, ">");
+                    return abbreviatedPM.Item1 ? $"\"{tlPatternMember.Value}\"^^{abbreviatedPM.Item2}" : $"\"{tlPatternMember.Value}\"^^<{abbreviatedPM.Item2}>";
                 }
             }
         }

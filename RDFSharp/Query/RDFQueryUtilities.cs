@@ -97,20 +97,20 @@ namespace RDFSharp.Query
                 {
                     //RESOURCE/CONTEXT VS RESOURCE/CONTEXT/PLAINLITERAL
                     if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
-                        return string.Compare(left.ToString(), right.ToString(), StringComparison.Ordinal);
+                        return string.CompareOrdinal(left.ToString(), right.ToString());
 
                     //RESOURCE/CONTEXT VS TYPEDLITERAL
                     if (((RDFTypedLiteral)right).HasStringDatatype())
-                        return string.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
+                        return string.CompareOrdinal(left.ToString(), ((RDFTypedLiteral)right).Value);
 
                     return -99; //Type Error
                 }
                 //PLAINLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
                 case RDFPlainLiteral _ when right is RDFResource || right is RDFContext || right is RDFPlainLiteral:
-                    return string.Compare(left.ToString(), right.ToString(), StringComparison.Ordinal);
+                    return string.CompareOrdinal(left.ToString(), right.ToString());
                 //PLAINLITERAL VS TYPEDLITERAL
                 case RDFPlainLiteral _ when ((RDFTypedLiteral)right).HasStringDatatype():
-                    return string.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
+                    return string.CompareOrdinal(left.ToString(), ((RDFTypedLiteral)right).Value);
                 case RDFPlainLiteral _:
                     return -99; //Type Error
                 default:
@@ -119,7 +119,7 @@ namespace RDFSharp.Query
                     if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
                     {
                         if (((RDFTypedLiteral)left).HasStringDatatype())
-                            return string.Compare(((RDFTypedLiteral)left).Value, right.ToString(), StringComparison.Ordinal);
+                            return string.CompareOrdinal(((RDFTypedLiteral)left).Value, right.ToString());
 
                         return -99; //Type Error
                     }
@@ -163,7 +163,7 @@ namespace RDFSharp.Query
                         {
                             string leftValueString = ((RDFTypedLiteral)left).Value;
                             string rightValueString = ((RDFTypedLiteral)right).Value;
-                            return string.Compare(leftValueString, rightValueString, StringComparison.Ordinal);
+                            return string.CompareOrdinal(leftValueString, rightValueString);
                         }
                         return -99; //Type Error
                     }
@@ -240,11 +240,10 @@ namespace RDFSharp.Query
             foreach (RDFNamespace nsp in prefixes)
             {
                 string nspString = nsp.ToString();
-                if (!pmemberString.Equals(nspString, StringComparison.OrdinalIgnoreCase))
+                if (!string.Equals(pmemberString, nspString, StringComparison.OrdinalIgnoreCase))
                     if (pmemberString.StartsWith(nspString, StringComparison.Ordinal))
                     {
-                        pmemberString = pmemberString.Replace(nspString, string.Concat(nsp.NamespacePrefix, ":"))
-                            .TrimEnd('/');
+                        pmemberString = pmemberString.Replace(nspString, $"{nsp.NamespacePrefix}:").TrimEnd('/');
 
                         //Accept the abbreviation only if it has generated a valid XSD QName
                         try

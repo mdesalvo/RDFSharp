@@ -62,7 +62,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFFederation()
         {
-            FederationName = string.Concat("FEDERATION|ID=", Guid.NewGuid().ToString("N"));
+            FederationName = $"FEDERATION|ID={Guid.NewGuid().ToString("N")}";
             DataSources = new List<RDFDataSource>();
             EndpointDataSourcesQueryOptions = new Dictionary<string, RDFSPARQLEndpointQueryOptions>();
         }
@@ -116,7 +116,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFFederation AddFederation(RDFFederation federation)
         {
-            if (federation != null && !federation.Equals(this))
+            if (federation?.Equals(this) == false)
                 DataSources.Add(federation);
             return this;
         }

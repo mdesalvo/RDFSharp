@@ -125,7 +125,7 @@ namespace RDFSharp.Query
         /// Gets the current max length of the bindings
         /// </summary>
         internal int MaxBindingsLength()
-            => Bindings?.Count > 0 ? Bindings.Select(x => x.Value.Count).Max() : 0;
+            => Bindings?.Count > 0 ? Bindings.Max(x => x.Value.Count) : 0;
 
         /// <summary>
         /// Gets the filter representation of the SPARQL values

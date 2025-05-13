@@ -135,7 +135,7 @@ namespace RDFSharp.Query
                                         {
                                             if (rdfTermPLit.HasLanguage())
                                             {
-                                                XmlAttribute xmlLang = sparqlDoc.CreateAttribute(string.Concat(RDFVocabulary.XML.PREFIX, ":lang"), RDFVocabulary.XML.BASE_URI);
+                                                XmlAttribute xmlLang = sparqlDoc.CreateAttribute($"{RDFVocabulary.XML.PREFIX}:lang", RDFVocabulary.XML.BASE_URI);
                                                 XmlText xmlLangText = sparqlDoc.CreateTextNode(rdfTermPLit.Language);
                                                 xmlLang.AppendChild(xmlLangText);
                                                 litElement.Attributes.Append(xmlLang);
@@ -308,9 +308,9 @@ namespace RDFSharp.Query
                                                         if (bindingNode.FirstChild.Attributes == null || bindingNode.FirstChild.Attributes.Count == 0)
                                                             results.Add(bindingNode.Attributes["name"].Value, bindingNode.InnerText);
                                                         else if (!string.IsNullOrEmpty(bindingNode.FirstChild.Attributes["datatype"]?.Value))
-                                                            results.Add(bindingNode.Attributes["name"].Value, string.Concat(bindingNode.FirstChild.InnerText, "^^", bindingNode.FirstChild.Attributes["datatype"].Value));
+                                                            results.Add(bindingNode.Attributes["name"].Value, $"{bindingNode.FirstChild.InnerText}^^{bindingNode.FirstChild.Attributes["datatype"].Value}");
                                                         else if (!string.IsNullOrEmpty(bindingNode.FirstChild.Attributes["xml:lang"]?.Value))
-                                                            results.Add(bindingNode.Attributes["name"].Value, string.Concat(bindingNode.FirstChild.InnerText, "@", bindingNode.FirstChild.Attributes["xml:lang"].Value));
+                                                            results.Add(bindingNode.Attributes["name"].Value, $"{bindingNode.FirstChild.InnerText}@{bindingNode.FirstChild.Attributes["xml:lang"].Value}");
                                                         else
                                                             throw new Exception("one \"literal\" node was found with attribute different from \"datatype\" or \"xml:lang\".");
                                                     }

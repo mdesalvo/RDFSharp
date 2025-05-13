@@ -108,22 +108,22 @@ namespace RDFSharp.Query
             switch (ComparisonFlavor)
             {
                 case RDFQueryEnums.RDFComparisonFlavors.LessThan:
-                    sb.Append(string.Concat(leftValue, " < ", rightValue));
+                    sb.Append($"{leftValue} < {rightValue}");
                     break;
                 case RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan:
-                    sb.Append(string.Concat(leftValue, " <= ", rightValue));
+                    sb.Append($"{leftValue} <= {rightValue}");
                     break;
                 case RDFQueryEnums.RDFComparisonFlavors.EqualTo:
-                    sb.Append(string.Concat(leftValue, " = ", rightValue));
+                    sb.Append($"{leftValue} = {rightValue}");
                     break;
                 case RDFQueryEnums.RDFComparisonFlavors.NotEqualTo:
-                    sb.Append(string.Concat(leftValue, " != ", rightValue));
+                    sb.Append($"{leftValue} != {rightValue}");
                     break;
                 case RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan:
-                    sb.Append(string.Concat(leftValue, " >= ", rightValue));
+                    sb.Append($"{leftValue} >= {rightValue}");
                     break;
                 case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
-                    sb.Append(string.Concat(leftValue, " > ", rightValue));
+                    sb.Append($"{leftValue} > {rightValue}");
                     break;
             }
             sb.Append(')');

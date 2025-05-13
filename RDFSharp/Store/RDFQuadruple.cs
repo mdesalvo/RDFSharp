@@ -81,7 +81,7 @@ namespace RDFSharp.Store
             Predicate = triple.Predicate;
             Object = triple.Object;
             LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
-            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", QuadrupleID.ToString())));
+            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{QuadrupleID}"));
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace RDFSharp.Store
             Subject = subj ?? new RDFResource();
             Predicate = pred;
             LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
-            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", QuadrupleID.ToString())));
+            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{QuadrupleID.ToString()}"));
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace RDFSharp.Store
             else
                 Object = storeIndex.LiteralsRegister[indexedQuadruple.ObjectID];
             LazyQuadrupleID = new Lazy<long>(() => indexedQuadruple.QuadrupleID);
-            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", QuadrupleID.ToString())));
+            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{QuadrupleID.ToString()}"));
         }
         #endregion
 
@@ -146,7 +146,7 @@ namespace RDFSharp.Store
         /// Gives the string representation of the quadruple
         /// </summary>
         public override string ToString()
-            => string.Concat(Context.ToString(), " ", Subject.ToString(), " ", Predicate.ToString(), " ", Object.ToString());
+            => $"{Context} {Subject} {Predicate} {Object}";
 
         /// <summary>
         /// Performs the equality comparison between two quadruples

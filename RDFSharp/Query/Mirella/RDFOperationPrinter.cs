@@ -205,7 +205,7 @@ namespace RDFSharp.Query
             StringBuilder sb = new StringBuilder();
             if (operationPrefixes.Count > 0)
             {
-                operationPrefixes.ForEach(pf => sb.AppendLine(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">")));
+                operationPrefixes.ForEach(pf => sb.AppendLine($"PREFIX {pf.NamespacePrefix}: <{pf.NamespaceUri}>"));
                 sb.AppendLine();
             }
             return sb.ToString();
@@ -222,7 +222,7 @@ namespace RDFSharp.Query
             if (tp.IsOptional)
                 tpString = tpString.Replace("OPTIONAL { ", string.Empty).TrimEnd(' ', '}');
 
-            return string.Concat("  ", tpString, " .", Environment.NewLine);
+            return $"  {tpString} .{Environment.NewLine}";
         }
         #endregion
     }

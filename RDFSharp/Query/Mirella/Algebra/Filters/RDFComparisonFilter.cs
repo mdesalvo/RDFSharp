@@ -71,17 +71,17 @@ namespace RDFSharp.Query
             switch (ComparisonFlavor)
             {
                 case RDFQueryEnums.RDFComparisonFlavors.LessThan:
-                    return string.Concat("FILTER ( ", leftValue, " < ",  rightValue, " )");
+                    return $"FILTER ( {leftValue} < {rightValue} )";
                 case RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan:
-                    return string.Concat("FILTER ( ", leftValue, " <= ", rightValue, " )");
+                    return $"FILTER ( {leftValue} <= {rightValue} )";
                 case RDFQueryEnums.RDFComparisonFlavors.EqualTo:
-                    return string.Concat("FILTER ( ", leftValue, " = ",  rightValue, " )");
+                    return $"FILTER ( {leftValue} = {rightValue} )";
                 case RDFQueryEnums.RDFComparisonFlavors.NotEqualTo:
-                    return string.Concat("FILTER ( ", leftValue, " != ", rightValue, " )");
+                    return $"FILTER ( {leftValue} != {rightValue} )";
                 case RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan:
-                    return string.Concat("FILTER ( ", leftValue, " >= ", rightValue, " )");
+                    return $"FILTER ( {leftValue} >= {rightValue} )";
                 case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
-                    return string.Concat("FILTER ( ", leftValue, " > ",  rightValue, " )");
+                    return $"FILTER ( {leftValue} > {rightValue} )";
                 default: throw new RDFQueryException("Cannot get string representation of unknown '" + ComparisonFlavor + "' RDFComparisonFilter.");
             }
         }

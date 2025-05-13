@@ -215,11 +215,9 @@ namespace RDFSharp.Query
 
                 operationResult.InsertResults = PopulateInsertOperationResults(insertTemplates, datasource);
             }
-            catch
+            catch when (loadOperation.IsSilent)
             {
                 //In case the operation is silent, the exception must be suppressed
-                if (!loadOperation.IsSilent)
-                    throw;
             }
 
             return operationResult;
@@ -287,11 +285,9 @@ namespace RDFSharp.Query
 
                     operationResult = EvaluateOperationOnGraphOrStore(deleteWhereOperation, datasource);
                 }
-                catch
+                catch when (clearOperation.IsSilent)
                 {
                     //In case the operation is silent, the exception must be suppressed
-                    if (!clearOperation.IsSilent)
-                        throw;
                 }
             }
 
@@ -321,12 +317,12 @@ namespace RDFSharp.Query
                     //update via POST with URL-encoded body
                     case RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded:
                         webClient.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");
-                        operationString = string.Concat("update=", HttpUtility.UrlEncode(operationString));
+                        operationString = $"update={HttpUtility.UrlEncode(operationString)}";
                         //Handle user-provided parameters
                         if (!string.IsNullOrEmpty(defaultGraphUri))
-                            operationString = string.Concat("using-graph-uri=", HttpUtility.UrlEncode(defaultGraphUri), "&", operationString);
+                            operationString = $"using-graph-uri={HttpUtility.UrlEncode(defaultGraphUri)}&{operationString}";
                         if (!string.IsNullOrEmpty(namedGraphUri))
-                            operationString = string.Concat("using-named-graph-uri=", HttpUtility.UrlEncode(namedGraphUri), "&", operationString);
+                            operationString = $"using-named-graph-uri={HttpUtility.UrlEncode(namedGraphUri)}&{operationString}";
                         break;
 
                     //update via POST directly

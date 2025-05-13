@@ -6500,7 +6500,6 @@ public class RDFQueryPrinterTest
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
-
   [TestMethod]
   public void ShouldPrintAskQueryWithSingleUnionPatternAndSingleUnionPatternGroup()
   {
@@ -7604,7 +7603,6 @@ public class RDFQueryPrinterTest
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
 
-
   [TestMethod]
   public void ShouldPrintConstructQueryEmptyTemplatesWithSingleUnionPatternAndSingleUnionPatternGroup()
   {
@@ -8697,7 +8695,6 @@ public class RDFQueryPrinterTest
     Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
     Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
   }
-
 
   [TestMethod]
   public void ShouldPrintDescribeQueryStarTermsWithSingleUnionPatternAndSingleUnionPatternGroup()

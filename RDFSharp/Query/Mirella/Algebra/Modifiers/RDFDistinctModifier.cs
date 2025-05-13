@@ -50,8 +50,7 @@ namespace RDFSharp.Query
             int columnsCount = table.Columns.Count;
             for (int i = 0; i < columnsCount; i++)
                 colNames.Add(table.Columns[i].ColumnName);
-            table = table.DefaultView.ToTable(true, colNames.ToArray<string>());
-            return table;
+            return table.DefaultView.ToTable(true, colNames.ToArray<string>());
         }
         #endregion
     }

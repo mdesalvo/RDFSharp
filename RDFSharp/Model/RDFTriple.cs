@@ -95,7 +95,7 @@ namespace RDFSharp.Model
             Subject = subj ?? new RDFResource();
             Predicate = pred;
             LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
-            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", TripleID.ToString())));
+            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{TripleID}"));
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace RDFSharp.Model
             else
                 Object = graphIndex.LiteralsRegister[indexedTriple.ObjectID];
             LazyTripleID = new Lazy<long>(() => indexedTriple.TripleID);
-            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", TripleID.ToString())));
+            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{TripleID.ToString()}"));
         }
         #endregion
 
@@ -120,7 +120,7 @@ namespace RDFSharp.Model
         /// Gives the string representation of the triple
         /// </summary>
         public override string ToString()
-            => string.Concat(Subject.ToString(), " ", Predicate.ToString(), " ", Object.ToString());
+            => $"{Subject} {Predicate} {Object}";
 
         /// <summary>
         /// Performs the equality comparison between two triples

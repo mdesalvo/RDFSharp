@@ -1180,7 +1180,7 @@ namespace RDFSharp.Query
                 int columnsCount = qrTable.Columns.Count;
                 for (int i = 0; i < columnsCount; i++)
                     if (!qrTable.Columns[i].ColumnName.StartsWith("?", StringComparison.Ordinal))
-                        qrTable.Columns[i].ColumnName = string.Concat("?", qrTable.Columns[i].ColumnName);
+                        qrTable.Columns[i].ColumnName = $"?{qrTable.Columns[i].ColumnName}";
             }
             #endregion
 
@@ -1232,11 +1232,11 @@ namespace RDFSharp.Query
                             case RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post:
                                 webClient.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");
                                 //Handle user-provided parameters
-                                string queryString = string.Concat("query=", HttpUtility.UrlEncode(query));
+                                string queryString = $"query={HttpUtility.UrlEncode(query)}";
                                 if (!string.IsNullOrEmpty(defaultGraphUri))
-                                    queryString = string.Concat("using-graph-uri=", HttpUtility.UrlEncode(defaultGraphUri), "&", queryString);
+                                    queryString = $"using-graph-uri={HttpUtility.UrlEncode(defaultGraphUri)}&{queryString}";
                                 if (!string.IsNullOrEmpty(namedGraphUri))
-                                    queryString = string.Concat("using-named-graph-uri=", HttpUtility.UrlEncode(namedGraphUri), "&", queryString);
+                                    queryString = $"using-named-graph-uri={HttpUtility.UrlEncode(namedGraphUri)}&{queryString}";
                                 //Send query to SPARQL endpoint
                                 sparqlResponse = Encoding.UTF8.GetBytes(webClient.UploadString(sparqlEndpoint.BaseAddress, queryString));
                                 break;
@@ -1614,7 +1614,7 @@ namespace RDFSharp.Query
                         else
                         {
                             //Keep track of duplicate columns by appending a known identifier to their name
-                            string duplicateColKey = string.Concat(dataSet.Tables[1].Columns[i].ColumnName, "_DUPLICATE_");
+                            string duplicateColKey = $"{dataSet.Tables[1].Columns[i].ColumnName}_DUPLICATE_";
                             joinTable.Columns.Add(duplicateColKey, dataSet.Tables[1].Columns[i].DataType);
                             duplicateColumns.Add(duplicateColKey);
                         }
@@ -1983,8 +1983,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal static void ProjectExpressions(RDFSelectQuery query, DataTable table)
         {
-            foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionExpression in query.ProjectionVars.OrderBy(pv => pv.Value.Item1)
-                                                                                                                 .Where(pv => pv.Value.Item2 != null))
+            foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionExpression in query.ProjectionVars.Where(pv => pv.Value.Item2 != null)
+                                                                                                                 .OrderBy(pv => pv.Value.Item1))
                 EvaluateExpression(projectionExpression.Value.Item2, projectionExpression.Key, table);
         }
 

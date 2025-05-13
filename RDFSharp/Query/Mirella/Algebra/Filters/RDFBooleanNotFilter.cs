@@ -58,7 +58,7 @@ namespace RDFSharp.Query
         public override string ToString()
             => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-            => string.Concat("FILTER ( !", Filter.ToString(prefixes).Replace("FILTER ", string.Empty).Trim(), " )");
+            => $"FILTER ( !{Filter.ToString(prefixes).Replace("FILTER ", string.Empty).Trim()} )";
         #endregion
 
         #region Methods

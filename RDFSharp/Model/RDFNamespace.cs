@@ -107,10 +107,9 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFNamespace SetDereferenceUri(Uri dereferenceUri)
         {
-            if (dereferenceUri != null &&
-                  dereferenceUri.IsAbsoluteUri &&
-                    !dereferenceUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase) &&
-                      !dereferenceUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
+            if (dereferenceUri?.IsAbsoluteUri == true
+                && !dereferenceUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
+                && !dereferenceUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
                 DereferenceUri = dereferenceUri;
             return this;
         }

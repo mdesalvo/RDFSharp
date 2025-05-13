@@ -21,7 +21,6 @@ namespace RDFSharp.Model
     /// </summary>
     public static class RDFValidationEnums
     {
-
         /// <summary>
         /// RDFShapeSeverity represents an enumeration for possible severity levels of shape validation evidence
         /// </summary>
@@ -71,6 +70,5 @@ namespace RDFSharp.Model
             /// </summary>
             Literal = 5
         }
-
     }
 }

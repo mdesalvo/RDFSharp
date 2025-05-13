@@ -72,7 +72,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Sets the "Basic {basicAuthHeaderValue}" authorization header which will be sent to the the SPARQL endpoint
+        /// Sets the "Basic {basicAuthHeaderValue}" authorization header which will be sent to the SPARQL endpoint
         /// </summary>
         public RDFSPARQLEndpoint SetBasicAuthorizationHeader(string basicAuthHeaderValue)
         {
@@ -85,7 +85,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the "Bearer {bearerAuthHeaderValue}" authorization header which will be sent to the the SPARQL endpoint
+        /// Sets the "Bearer {bearerAuthHeaderValue}" authorization header which will be sent to the SPARQL endpoint
         /// </summary>
         public RDFSPARQLEndpoint SetBearerAuthorizationHeader(string bearerAuthHeaderValue)
         {

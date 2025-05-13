@@ -75,7 +75,7 @@ namespace RDFSharp.Model
         /// Gives the string representation of the typed literal
         /// </summary>
         public override string ToString()
-            => string.Concat(base.ToString(), "^^", Datatype.ToString());
+            => $"{base.ToString()}^^{Datatype}";
         #endregion
 
         #region Methods

@@ -38,7 +38,7 @@ namespace RDFSharp.Query
             if (string.IsNullOrWhiteSpace(trimmedVariableName))
                 throw new RDFQueryException("Cannot create RDFVariable because given \"variableName\" parameter is null or empty or contains only whitespaces.");
 
-            VariableName = string.Concat("?", trimmedVariableName.ToUpperInvariant());
+            VariableName = $"?{trimmedVariableName.ToUpperInvariant()}";
         }
         #endregion
 

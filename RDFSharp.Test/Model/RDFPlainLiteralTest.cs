@@ -84,7 +84,7 @@ public class RDFPlainLiteralTest
         Assert.IsNotNull(pl);
         Assert.IsTrue(pl.HasLanguage());
         Assert.IsFalse(pl.HasDirection());
-        Assert.IsTrue(pl.ToString().Equals(string.Concat(value, "@", language.ToUpperInvariant())));
+        Assert.IsTrue(pl.ToString().Equals($"{value}@{language.ToUpperInvariant()}"));
     }
 
     [DataTestMethod]
@@ -104,7 +104,7 @@ public class RDFPlainLiteralTest
         Assert.IsNotNull(pl);
         Assert.IsTrue(pl.HasLanguage());
         Assert.IsTrue(pl.HasDirection());
-        Assert.IsTrue(pl.ToString().Equals(string.Concat(value, "@", language.ToUpperInvariant())));
+        Assert.IsTrue(pl.ToString().Equals($"{value}@{language.ToUpperInvariant()}"));
     }
     #endregion
 }

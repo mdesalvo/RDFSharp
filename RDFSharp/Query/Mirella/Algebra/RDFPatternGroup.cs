@@ -100,7 +100,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPatternGroup AddPattern(RDFPattern pattern)
         {
-            if (pattern != null && pattern.Variables.Count > 0 && !GetPatterns().Any(p => p.Equals(pattern)))
+            if (pattern?.Variables.Count > 0 && !GetPatterns().Any(p => p.Equals(pattern)))
             {
                 GroupMembers.Add(pattern);
 

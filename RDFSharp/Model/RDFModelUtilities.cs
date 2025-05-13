@@ -94,9 +94,9 @@ namespace RDFSharp.Model
         {
             // blank node detection and normalization
             if (uriString?.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase) ?? false)
-                uriString = string.Concat("bnode:", uriString.Substring(6));
+                uriString = $"bnode:{uriString.Substring(6)}";
             else if (uriString?.StartsWith("_:", StringComparison.Ordinal) ?? false)
-                uriString = string.Concat("bnode:", uriString.Substring(2));
+                uriString = $"bnode:{uriString.Substring(2)}";
 
             Uri.TryCreate(uriString, UriKind.Absolute, out Uri tempUri);
             return tempUri;
@@ -149,13 +149,13 @@ namespace RDFSharp.Model
 
                 //UNICODE (UTF-8)
                 else if (!char.IsSurrogate(unicodeString[i]))
-                    b.Append(string.Concat("\\u", ((int)unicodeString[i]).ToString("X4")));
+                    b.Append($"\\u{((int)unicodeString[i]).ToString("X4")}");
 
                 //UNICODE (UTF-16)
                 else if (i + 1 < unicodeString.Length && char.IsSurrogatePair(unicodeString[i], unicodeString[i + 1]))
                 {
                     int codePoint = char.ConvertToUtf32(unicodeString[i], unicodeString[i+1]);
-                    b.Append(string.Concat("\\U", codePoint.ToString("X8")));
+                    b.Append($"\\U{codePoint.ToString("X8")}");
                     i++;
                 }
 
@@ -177,7 +177,7 @@ namespace RDFSharp.Model
             StringBuilder b = new StringBuilder();
             foreach (char c in data)
                 if (char.IsControl(c) && c != '\u0009' && c != '\u000A' && c != '\u000D')
-                    b.Append(string.Concat("\\u", ((int)c).ToString("X4")));
+                    b.Append($"\\u{((int)c).ToString("X4")}");
                 else
                     b.Append(c);
             return b.ToString();

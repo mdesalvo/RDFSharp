@@ -41,7 +41,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Regex to intercept values having any language tag
         /// </summary>
-        internal static readonly Lazy<Regex> AnyLanguageRegex = new Lazy<Regex>(() => new Regex(string.Concat("@", RDFPlainLiteral.LangTagMask, "$"), RegexOptions.Compiled | RegexOptions.IgnoreCase));
+        internal static readonly Lazy<Regex> AnyLanguageRegex = new Lazy<Regex>(() => new Regex($"@{RDFPlainLiteral.LangTagMask}$", RegexOptions.Compiled | RegexOptions.IgnoreCase));
 
         /// <summary>
         /// Regex to intercept values having specific language tag
@@ -66,7 +66,7 @@ namespace RDFSharp.Query
                 VariableName = variable.ToString();
                 Language = language?.ToUpperInvariant() ?? string.Empty;
                 if (!acceptsNoneOrAnyLanguageTag)
-                    ExactLanguageRegex = new Regex(string.Concat("@", Language, RDFPlainLiteral.LangTagSubMask, "$"), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    ExactLanguageRegex = new Regex($"@{Language}{RDFPlainLiteral.LangTagSubMask}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             }
             else
                 throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"language\" parameter (" + language + ") does not represent an acceptable language.");
@@ -80,7 +80,7 @@ namespace RDFSharp.Query
         public override string ToString()
             => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-            => string.Concat("FILTER ( LANGMATCHES(LANG(", VariableName, "), \"", Language, "\") )");
+            => $"FILTER ( LANGMATCHES(LANG({VariableName}), \"{Language}\") )";
         #endregion
 
         #region Methods
