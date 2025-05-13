@@ -1334,9 +1334,13 @@ public class RDFSelectQueryTest
         }
         catch (RDFQueryException qex)
         {
-            //Do not fail test in case of explicit timeout
-            if (!string.Equals(qex.Message, "SELECT query on SPARQL endpoint failed because: The remote server returned an error: (504) Connection Timed Out.", StringComparison.OrdinalIgnoreCase))
-                throw;
+            switch (qex.InnerException)
+            {
+                case WebException { Status: WebExceptionStatus.Timeout }:
+                    break;
+                default:
+                    throw;
+            }
         }
     }
 
@@ -1366,9 +1370,13 @@ public class RDFSelectQueryTest
         }
         catch (RDFQueryException qex)
         {
-            //Do not fail test in case of explicit timeout
-            if (!string.Equals(qex.Message, "SELECT query on SPARQL endpoint failed because: The remote server returned an error: (504) Connection Timed Out.", StringComparison.OrdinalIgnoreCase))
-                throw;
+            switch (qex.InnerException)
+            {
+                case WebException { Status: WebExceptionStatus.Timeout }:
+                    break;
+                default:
+                    throw;
+            }
         }
     }
 
