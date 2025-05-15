@@ -1309,75 +1309,49 @@ public class RDFSelectQueryTest
     }
 
     [TestMethod]
-    [TestProperty("Warning", "This is a physical test! It tries to contact http://statistics.gov.scot/sparql service, which may be unavailable! We are not going to mock tests like this.")]
+    [TestProperty("Warning", "This is a physical test! It tries to contact https://dbpedia.org/sparql service, which may be unavailable! We are not going to mock tests like this.")]
     public void ShouldApplySelectQueryToRealSPARQLEndpointAndHaveResults()
     {
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFVariable("?O"))))
             .AddModifier(new RDFLimitModifier(2));
-        RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri("http://statistics.gov.scot/sparql"));
+        RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri("https://dbpedia.org/sparql"));
 
-        try
-        {
-            RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions {
-                QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Get,
-                TimeoutMilliseconds = 45000 });
+        RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions {
+            QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Get,
+            TimeoutMilliseconds = 30000 });
 
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.SelectResults);
-            Assert.AreEqual(2, result.SelectResultsCount);
-            Assert.AreEqual(3, result.SelectResults.Columns.Count);
-            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?P"));
-            Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?O"));
-        }
-        catch (RDFQueryException qex)
-        {
-            switch (qex.InnerException)
-            {
-                case WebException { Status: WebExceptionStatus.Timeout }:
-                    break;
-                default:
-                    throw;
-            }
-        }
+        Assert.IsNotNull(result);
+        Assert.IsNotNull(result.SelectResults);
+        Assert.AreEqual(2, result.SelectResultsCount);
+        Assert.AreEqual(3, result.SelectResults.Columns.Count);
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?P"));
+        Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?O"));
     }
 
     [TestMethod]
-    [TestProperty("Warning", "This is a physical test! It tries to contact http://statistics.gov.scot/sparql service, which may be unavailable! We are not going to mock tests like this.")]
+    [TestProperty("Warning", "This is a physical test! It tries to contact https://dbpedia.org/sparql service, which may be unavailable! We are not going to mock tests like this.")]
     public void ShouldApplySelectQueryToRealSPARQLEndpointAndHaveResultsViaPost()
     {
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFVariable("?O"))))
             .AddModifier(new RDFLimitModifier(2));
-        RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri("http://statistics.gov.scot/sparql"));
+        RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri("https://dbpedia.org/sparql"));
 
-        try
-        {
-            RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions {
-                QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Get,
-                TimeoutMilliseconds = 45000 });
+        RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions {
+            QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Get,
+            TimeoutMilliseconds = 30000 });
 
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.SelectResults);
-            Assert.AreEqual(2, result.SelectResultsCount);
-            Assert.AreEqual(3, result.SelectResults.Columns.Count);
-            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-            Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?P"));
-            Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?O"));
-        }
-        catch (RDFQueryException qex)
-        {
-            switch (qex.InnerException)
-            {
-                case WebException { Status: WebExceptionStatus.Timeout }:
-                    break;
-                default:
-                    throw;
-            }
-        }
+        Assert.IsNotNull(result);
+        Assert.IsNotNull(result.SelectResults);
+        Assert.AreEqual(2, result.SelectResultsCount);
+        Assert.AreEqual(3, result.SelectResults.Columns.Count);
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?P"));
+        Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?O"));
     }
 
     [TestMethod]
