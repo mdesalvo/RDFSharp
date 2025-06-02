@@ -111,7 +111,7 @@ namespace RDFSharp.Model
             else
                 Object = graphIndex.LiteralsRegister[indexedTriple.ObjectID];
             LazyTripleID = new Lazy<long>(() => indexedTriple.TripleID);
-            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{TripleID.ToString()}"));
+            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{TripleID}"));
         }
         #endregion
 

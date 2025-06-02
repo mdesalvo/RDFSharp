@@ -38,7 +38,7 @@ public class RDFTripleTest
         Assert.IsTrue(triple.Subject.Equals(subj));
         Assert.IsTrue(triple.Predicate.Equals(pred));
         Assert.IsTrue(triple.Object.Equals(obj));
-        Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID.ToString()}")));
+        Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID}")));
 
         string tripleString = triple.ToString();
         Assert.IsTrue(tripleString.Equals($"{triple.Subject} {triple.Predicate} {triple.Object}"));
@@ -62,7 +62,7 @@ public class RDFTripleTest
         Assert.IsTrue(((RDFResource)triple.Subject).IsBlank);
         Assert.IsTrue(triple.Predicate.Equals(pred));
         Assert.IsTrue(((RDFResource)triple.Object).IsBlank);
-        Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID.ToString()}")));
+        Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID}")));
     }
 
     [DataTestMethod]
@@ -79,7 +79,7 @@ public class RDFTripleTest
         Assert.IsTrue(triple.Subject.Equals(subj));
         Assert.IsTrue(triple.Predicate.Equals(pred));
         Assert.IsTrue(triple.Object.Equals(lit));
-        Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID.ToString()}")));
+        Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID}")));
 
         string tripleString = triple.ToString();
         Assert.IsTrue(tripleString.Equals($"{triple.Subject} {triple.Predicate} {triple.Object}"));
@@ -103,7 +103,7 @@ public class RDFTripleTest
         Assert.IsTrue(((RDFResource)triple.Subject).IsBlank);
         Assert.IsTrue(triple.Predicate.Equals(pred));
         Assert.IsTrue(((RDFPlainLiteral)triple.Object).Equals(RDFPlainLiteral.Empty));
-        Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID.ToString()}")));
+        Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID}")));
     }
 
     [DataTestMethod]

@@ -120,7 +120,7 @@ namespace RDFSharp.Store
             Subject = subj ?? new RDFResource();
             Predicate = pred;
             LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
-            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{QuadrupleID.ToString()}"));
+            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{QuadrupleID}"));
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace RDFSharp.Store
             else
                 Object = storeIndex.LiteralsRegister[indexedQuadruple.ObjectID];
             LazyQuadrupleID = new Lazy<long>(() => indexedQuadruple.QuadrupleID);
-            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{QuadrupleID.ToString()}"));
+            LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{QuadrupleID}"));
         }
         #endregion
 

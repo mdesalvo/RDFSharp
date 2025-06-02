@@ -751,7 +751,7 @@ namespace RDFSharp.Model
                 if (!string.Equals(nspace.NamespaceUri.ToString(), pred))
                 {
                     if (nspace.NamespacePrefix.StartsWith("autoNS", StringComparison.OrdinalIgnoreCase) && !result.Contains(nspace))
-                        result.Add(new RDFNamespace($"autoNS{(result.Count + 1).ToString()}", nspace.NamespaceUri.ToString()));
+                        result.Add(new RDFNamespace($"autoNS{result.Count + 1}", nspace.NamespaceUri.ToString()));
                 }
                 else
                     throw new RDFModelException($"found '{pred}' predicate which cannot be abbreviated to a valid QName.");
