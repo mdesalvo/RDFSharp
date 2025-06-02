@@ -3,7 +3,7 @@
         <AssemblyTitle>RDFSharp</AssemblyTitle>
         <AssemblyName>RDFSharp</AssemblyName>
         <AssemblyVersion>$(Version)</AssemblyVersion>
-        <Version>3.16.2</Version>
+        <Version>3.18.0</Version>
         <Authors>Marco De Salvo</Authors>
         <Copyright>Marco De Salvo</Copyright>
         <Description>Lightweight and friendly .NET library for realizing Semantic Web applications (RDF, SPARQL, SHACL)</Description>
@@ -22,6 +22,7 @@
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <OutputType>Library</OutputType>
+        <Title>RDFSharp</Title>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Debug'">
         <DefineConstants>DEBUG;TRACE</DefineConstants>
