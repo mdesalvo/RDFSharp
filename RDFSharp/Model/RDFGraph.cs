@@ -970,21 +970,29 @@ namespace RDFSharp.Model
 
                     //RDF/XML
                     if (responseContentType.Contains("application/rdf+xml"))
+                    {
                         graph = FromStream(RDFModelEnums.RDFFormats.RdfXml, webResponse.GetResponseStream(), webRequest.Address);
+                    }
 
                     //TURTLE
                     else if (responseContentType.Contains("text/turtle") ||
                                 responseContentType.Contains("application/turtle") ||
                                    responseContentType.Contains("application/x-turtle"))
+                    {
                         graph = FromStream(RDFModelEnums.RDFFormats.Turtle, webResponse.GetResponseStream(), webRequest.Address);
+                    }
 
                     //N-TRIPLES
                     else if (responseContentType.Contains("application/n-triples"))
+                    {
                         graph = FromStream(RDFModelEnums.RDFFormats.NTriples, webResponse.GetResponseStream(), webRequest.Address);
+                    }
 
                     //TRIX
                     else if (responseContentType.Contains("application/trix"))
+                    {
                         graph = FromStream(RDFModelEnums.RDFFormats.TriX, webResponse.GetResponseStream(), webRequest.Address);
+                    }
                 }
             }
             catch (Exception ex)

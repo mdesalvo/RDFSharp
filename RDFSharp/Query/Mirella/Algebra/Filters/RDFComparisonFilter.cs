@@ -122,14 +122,17 @@ namespace RDFSharp.Query
 
                 //Type Error
                 if (comparison == -99)
+                {
                     keepRow = false;
+                }
 
                 //Type Correct
                 else
+                {
                     switch (ComparisonFlavor)
                     {
                         case RDFQueryEnums.RDFComparisonFlavors.LessThan:
-                            keepRow = comparison  < 0;
+                            keepRow = comparison < 0;
                             break;
                         case RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan:
                             keepRow = comparison <= 0;
@@ -144,9 +147,10 @@ namespace RDFSharp.Query
                             keepRow = comparison >= 0;
                             break;
                         case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
-                            keepRow = comparison  > 0;
+                            keepRow = comparison > 0;
                             break;
                     }
+                }
             }
 
             //Apply the eventual negation

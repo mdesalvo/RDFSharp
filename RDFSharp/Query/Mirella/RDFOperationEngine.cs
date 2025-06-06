@@ -39,34 +39,24 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFOperationResult EvaluateOperationOnGraphOrStore(RDFOperation operation, RDFDataSource datasource)
         {
-            RDFOperationResult result = new RDFOperationResult();
-
             switch (operation)
             {
                 case RDFDeleteDataOperation deleteDataOperation:
-                    result = EvaluateDeleteDataOperation(deleteDataOperation, datasource);
-                    break;
+                    return EvaluateDeleteDataOperation(deleteDataOperation, datasource);
                 case RDFDeleteWhereOperation deleteWhereOperation:
-                    result = EvaluateDeleteWhereOperation(deleteWhereOperation, datasource);
-                    break;
+                    return EvaluateDeleteWhereOperation(deleteWhereOperation, datasource);
                 case RDFInsertDataOperation insertDataOperation:
-                    result = EvaluateInsertDataOperation(insertDataOperation, datasource);
-                    break;
+                    return EvaluateInsertDataOperation(insertDataOperation, datasource);
                 case RDFInsertWhereOperation insertWhereOperation:
-                    result = EvaluateInsertWhereOperation(insertWhereOperation, datasource);
-                    break;
+                    return EvaluateInsertWhereOperation(insertWhereOperation, datasource);
                 case RDFDeleteInsertWhereOperation deleteInsertWhereOperation:
-                    result = EvaluateDeleteInsertWhereOperation(deleteInsertWhereOperation, datasource);
-                    break;
+                    return EvaluateDeleteInsertWhereOperation(deleteInsertWhereOperation, datasource);
                 case RDFLoadOperation loadOperation:
-                    result = EvaluateLoadOperation(loadOperation, datasource);
-                    break;
+                    return EvaluateLoadOperation(loadOperation, datasource);
                 case RDFClearOperation clearOperation:
-                    result = EvaluateClearOperation(clearOperation, datasource);
-                    break;
+                    return EvaluateClearOperation(clearOperation, datasource);
             }
-
-            return result;
+            return new RDFOperationResult();
         }
 
         /// <summary>
@@ -204,7 +194,9 @@ namespace RDFSharp.Query
 
                 //GRAPH => Dereference triples
                 if (isGraph)
+                {
                     insertTemplates.AddRange(RDFGraph.FromUri(loadOperation.FromContext).Select(loadTriple => new RDFPattern(loadTriple.Subject, loadTriple.Predicate, loadTriple.Object)));
+                }
 
                 //STORE => Dereference quadruples (respect the target context, if provided by the operation)
                 else if (isStore)
@@ -248,13 +240,16 @@ namespace RDFSharp.Query
 
                     //Explicit => delete quadruples having the given context
                     if (clearOperation.FromContext != null)
+                    {
                         deleteWhereOperation
-                            .AddPatternGroup(new RDFPatternGroup()
-                                .AddPattern(new RDFPattern(new RDFContext(clearOperation.FromContext), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O"))))
-                            .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFContext(clearOperation.FromContext), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
+                                                .AddPatternGroup(new RDFPatternGroup()
+                                                    .AddPattern(new RDFPattern(new RDFContext(clearOperation.FromContext), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O"))))
+                                                .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFContext(clearOperation.FromContext), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
+                    }
 
                     //Implicit => delete quadruples according to the given operation flavor
                     else
+                    {
                         switch (clearOperation.OperationFlavor)
                         {
                             //Default => delete quadruples having the default namespace as context
@@ -282,6 +277,7 @@ namespace RDFSharp.Query
                                     .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFVariable("C"), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
                                 break;
                         }
+                    }
 
                     operationResult = EvaluateOperationOnGraphOrStore(deleteWhereOperation, datasource);
                 }

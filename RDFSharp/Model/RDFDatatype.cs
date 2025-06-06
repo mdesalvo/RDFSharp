@@ -88,7 +88,9 @@ namespace RDFSharp.Model
                 Facets.ForEach(facet => datatypeGraph = datatypeGraph.UnionWith(facet.ToRDFGraph()));
             }
             else
+            {
                 datatypeGraph.AddTriple(new RDFTriple(datatypeURI, RDFVocabulary.OWL.EQUIVALENT_CLASS, new RDFResource(TargetDatatype.GetDatatypeFromEnum())));
+            }
 
             return datatypeGraph;
         }

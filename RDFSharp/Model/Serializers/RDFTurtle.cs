@@ -277,7 +277,9 @@ namespace RDFSharp.Model
                 SkipWhitespace(turtleData, turtleContext);
                 // Turtle @base and @prefix directives MUST end with "."
                 if (directive.StartsWith("@", StringComparison.Ordinal))
+                {
                     VerifyCharacterOrFail(turtleContext, ReadCodePoint(turtleData, turtleContext), ".");
+                }
                 // SPARQL BASE and PREFIX directives MUST NOT end with "."
                 else
                 {
@@ -668,7 +670,9 @@ namespace RDFSharp.Model
             //Support eventual redefinement of temporary namespaces
             RDFNamespace registerNSpace = RDFNamespaceRegister.GetByPrefix(prefixStr);
             if (registerNSpace == null)
+            {
                 RDFNamespaceRegister.AddNamespace(new RDFNamespace(prefixStr, namespaceStr).SetTemporary(true));
+            }
             else
             {
                 if (registerNSpace.IsTemporary)

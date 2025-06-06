@@ -105,11 +105,14 @@ namespace RDFSharp.Store
                         #region template
                         string quadrupleTemplate;
                         if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                        {
                             quadrupleTemplate = "<{SUBJ}> <{PRED}> <{OBJ}> <{CTX}> .";
+                        }
                         else
+                        {
                             quadrupleTemplate = q.Object is RDFPlainLiteral ? "<{SUBJ}> <{PRED}> \"{VAL}\"@{LANG} <{CTX}> ."
-                                : "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> <{CTX}> .";
-
+                                                        : "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> <{CTX}> .";
+                        }
                         #endregion
 
                         #region subj
@@ -270,7 +273,9 @@ namespace RDFSharp.Store
                                     L = new RDFPlainLiteral(HttpUtility.HtmlDecode(pLitValue), pLitLang);
                                 }
                                 else
+                                {
                                     L = new RDFPlainLiteral(HttpUtility.HtmlDecode(tokens[2]));
+                                }
                             }
                             #endregion
 

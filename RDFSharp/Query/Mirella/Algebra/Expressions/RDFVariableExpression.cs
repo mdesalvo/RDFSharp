@@ -52,7 +52,9 @@ namespace RDFSharp.Query
 
             //Variable => ?L
             if (LeftArgument is RDFVariable variable)
+            {
                 sb.Append(RDFQueryPrinter.PrintPatternMember(variable, prefixes));
+            }
 
             //Expression => (?L)
             else

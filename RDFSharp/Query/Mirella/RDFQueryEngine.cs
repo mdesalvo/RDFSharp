@@ -130,10 +130,14 @@ namespace RDFSharp.Query
                 DataTable resultTable = new DataTable();
 
                 if (datasource.IsFederation())
+                {
                     foreach (RDFDataSource fedDataSource in ((RDFFederation)datasource).Where(fedDataSource => !fedDataSource.IsFederation() || ((RDFFederation)fedDataSource).DataSourcesCount != 0))
                         resultTable.Merge(DescribeTerms(describeQuery, fedDataSource, qResultTable), true, MissingSchemaAction.Add);
+                }
                 else
+                {
                     resultTable = DescribeTerms(describeQuery, datasource, qResultTable);
+                }
 
                 return resultTable;
             }
@@ -517,7 +521,9 @@ namespace RDFSharp.Query
                         }
                         //Context of the template is a resource
                         else
+                        {
                             bindings["?CONTEXT"] = templateCtx ?? defaultContext;
+                        }
                     }
                     #endregion
 
@@ -539,7 +545,9 @@ namespace RDFSharp.Query
                     }
                     //Subject of the template is a resource
                     else
+                    {
                         bindings["?SUBJECT"] = templateSubj;
+                    }
                     #endregion
 
                     #region PREDICATE
@@ -560,7 +568,9 @@ namespace RDFSharp.Query
                     }
                     //Predicate of the template is a resource
                     else
+                    {
                         bindings["?PREDICATE"] = templatePred;
+                    }
                     #endregion
 
                     #region OBJECT
@@ -578,7 +588,9 @@ namespace RDFSharp.Query
                     }
                     //Object of the template is a resource or a literal
                     else
+                    {
                         bindings["?OBJECT"] = templateObj;
+                    }
                     #endregion
 
                     //Insert the triple into the final table
@@ -1281,20 +1293,16 @@ namespace RDFSharp.Query
             switch (queryType)
             {
                 case "ASK":
-                    queryResult = queryResult ?? new RDFAskQueryResult();
-                    break;
+                    return queryResult ?? new RDFAskQueryResult();
 
                 case "SELECT":
-                    queryResult = queryResult ?? new RDFSelectQueryResult();
-                    break;
+                    return queryResult ?? new RDFSelectQueryResult();
 
                 case "CONSTRUCT":
-                    queryResult = queryResult ?? new RDFConstructQueryResult();
-                    break;
+                    return queryResult ?? new RDFConstructQueryResult();
 
                 case "DESCRIBE":
-                    queryResult = queryResult ?? new RDFDescribeQueryResult();
-                    break;
+                    return queryResult ?? new RDFDescribeQueryResult();
             }
 
             return queryResult;
@@ -1610,7 +1618,9 @@ namespace RDFSharp.Query
                         joinTable.Columns.Add(dataSet.Tables[0].Columns[i].ColumnName, dataSet.Tables[0].Columns[i].DataType);
                     for (int i = 0; i < dataSet.Tables[1].Columns.Count; i++)
                         if (!joinTable.Columns.Contains(dataSet.Tables[1].Columns[i].ColumnName))
+                        {
                             joinTable.Columns.Add(dataSet.Tables[1].Columns[i].ColumnName, dataSet.Tables[1].Columns[i].DataType);
+                        }
                         else
                         {
                             //Keep track of duplicate columns by appending a known identifier to their name
@@ -1724,13 +1734,17 @@ namespace RDFSharp.Query
                                 {
                                     //Right value is NULL
                                     if (relatedRow.IsNull(joinColumn.ColumnName))
+                                    {
                                         //Take NULL value
                                         joinRow[joinColumn.ColumnName] = DBNull.Value;
+                                    }
 
                                     //Right value is NOT NULL
                                     else
+                                    {
                                         //Take value from related
                                         joinRow[joinColumn.ColumnName] = relatedRow[joinColumn.ColumnName];
+                                    }
                                 }
 
                                 //Left value is NOT NULL

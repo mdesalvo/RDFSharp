@@ -69,7 +69,9 @@ namespace RDFSharp.Query
                     ExactLanguageRegex = new Regex($"@{Language}{RDFPlainLiteral.LangTagSubMask}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             }
             else
+            {
                 throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"language\" parameter (" + language + ") does not represent an acceptable language.");
+            }
         }
         #endregion
 

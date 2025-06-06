@@ -217,7 +217,9 @@ namespace RDFSharp.Model
             }
             //Path
             else
+            {
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, Path));
+            }
 
             //Descriptions
             Descriptions.ForEach(description => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DESCRIPTION, description)));

@@ -143,26 +143,33 @@ namespace RDFSharp.Model
             //https://docs.microsoft.com/en-us/dotnet/api/system.text.rune?view=net-5.0&viewFallbackFrom=netstandard-2.0
             StringBuilder b = new StringBuilder();
             for (int i = 0; i < unicodeString.Length; i++)
+            {
                 //ASCII
                 if (unicodeString[i] <= 127)
+                {
                     b.Append(unicodeString[i]);
+                }
 
                 //UNICODE (UTF-8)
                 else if (!char.IsSurrogate(unicodeString[i]))
+                {
                     b.Append($"\\u{(int)unicodeString[i]:X4}");
+                }
 
                 //UNICODE (UTF-16)
                 else if (i + 1 < unicodeString.Length && char.IsSurrogatePair(unicodeString[i], unicodeString[i + 1]))
                 {
-                    int codePoint = char.ConvertToUtf32(unicodeString[i], unicodeString[i+1]);
+                    int codePoint = char.ConvertToUtf32(unicodeString[i], unicodeString[i + 1]);
                     b.Append($"\\U{codePoint:X8}");
                     i++;
                 }
 
                 //ERROR
                 else
+                {
                     throw new RDFModelException("Cannot convert string '" + unicodeString + "' to ASCII because it is not well-formed UTF-16");
-
+                }
+            }
             return b.ToString();
         }
 
@@ -203,13 +210,11 @@ namespace RDFSharp.Model
         {
             if (uri == null)
                 return null;
-
-            string shortUri = uri.ToString();
             if (!string.IsNullOrEmpty(uri.Fragment))
-                shortUri = uri.Fragment.TrimStart('#');
+                return uri.Fragment.TrimStart('#');
             else if (uri.Segments.Length > 1)
-                shortUri = uri.Segments.Last();
-            return shortUri;
+                return uri.Segments.Last();
+            return uri.ToString();
         }
         #endregion
 
@@ -471,10 +476,14 @@ namespace RDFSharp.Model
                             collection.AddItemInternal(firstObjRes);
                     }
                     else
+                    {
                         collection.AddItemInternal((RDFLiteral)first.Object);
+                    }
                 }
                 else
+                {
                     nilFound = true;
+                }
                 #endregion
 
                 #region rdf:rest
@@ -485,7 +494,9 @@ namespace RDFSharp.Model
                     if (rest != null)
                     {
                         if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
+                        {
                             nilFound = true;
+                        }
                         else
                         {
                             itemRest = (RDFResource)rest.Object;
@@ -495,7 +506,9 @@ namespace RDFSharp.Model
                         }
                     }
                     else
+                    {
                         nilFound = true;
+                    }
                 }
                 #endregion
             }
@@ -692,7 +705,9 @@ namespace RDFSharp.Model
                 #region BOOLEAN CATEGORY
                 case RDFModelEnums.RDFDatatypes.XSD_BOOLEAN:
                     if (bool.TryParse(literalValue, out bool outBool))
+                    {
                         literalValue = outBool ? "true" : "false";
+                    }
                     else
                     {
                         //Support intelligent detection of alternative boolean representations

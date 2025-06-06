@@ -296,7 +296,9 @@ namespace RDFSharp.Model
             }
             //Subject unrecognized: exception must be raised
             else
+            {
                 throw new Exception("subject (" + graphChild.ChildNodes[0].Name + ") of \"<triple>\" element is neither \"<uri>\" or \"<id>\".");
+            }
 
             //Predicate is a resource ("<uri>")
             if (graphChild.ChildNodes[1].Name.Equals("uri", StringComparison.Ordinal))
@@ -307,11 +309,13 @@ namespace RDFSharp.Model
             }
             //Predicate unrecognized: exception must be raised
             else
+            {
                 throw new Exception("predicate (" + graphChild.ChildNodes[1].Name + ") of \"<triple>\" element must be \"<uri>\".");
+            }
 
             //Object is a resource ("<uri>") or a blank node ("<id>")
             if (graphChild.ChildNodes[2].Name.Equals("uri", StringComparison.Ordinal)
-                    || graphChild.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
+                 || graphChild.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
             {
                 //Object without value: exception must be raised
                 if (string.IsNullOrEmpty(graphChild.ChildNodes[2].InnerText))
@@ -334,15 +338,19 @@ namespace RDFSharp.Model
 
                 //Plain literal has language
                 if (xmlLang != null)
+                {
                     result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText, hashContext),
-                                                   new RDFResource(graphChild.ChildNodes[1].InnerText, hashContext),
-                                                   new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)), xmlLang.Value)));
+                                                                   new RDFResource(graphChild.ChildNodes[1].InnerText, hashContext),
+                                                                   new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)), xmlLang.Value)));
+                }
 
                 //Plain literal has not language
                 else
+                {
                     result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText, hashContext),
-                                                   new RDFResource(graphChild.ChildNodes[1].InnerText, hashContext),
-                                                   new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)))));
+                                                                   new RDFResource(graphChild.ChildNodes[1].InnerText, hashContext),
+                                                                   new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)))));
+                }
             }
 
             //Object is a typed literal ("<typedLiteral>")
@@ -352,18 +360,24 @@ namespace RDFSharp.Model
 
                 //Typed literal has datatype
                 if (datatype != null)
+                {
                     result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText, hashContext),
-                                                   new RDFResource(graphChild.ChildNodes[1].InnerText, hashContext),
-                                                   new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)), RDFDatatypeRegister.GetDatatype(datatype.Value))));
+                                                                   new RDFResource(graphChild.ChildNodes[1].InnerText, hashContext),
+                                                                   new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)), RDFDatatypeRegister.GetDatatype(datatype.Value))));
+                }
 
                 //Typed literal has not datatype: exception must be raised
                 else
+                {
                     throw new Exception(" found typed literal without required \"datatype\" attribute.");
+                }
             }
 
             //Object unrecognized: exception must be raised
             else
+            {
                 throw new Exception("object (" + graphChild.ChildNodes[2].Name + ") of \"<triple>\" element is neither \"<uri>\" or \"<id>\" or \"<plainLiteral>\" or \"<typedLiteral>\".");
+            }
         }
 
         #endregion Read

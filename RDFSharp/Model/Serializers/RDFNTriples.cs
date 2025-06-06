@@ -283,7 +283,9 @@ namespace RDFSharp.Model
                                     L = new RDFPlainLiteral(HttpUtility.HtmlDecode(pLitValue), pLitLang);
                                 }
                                 else
+                                {
                                     L = new RDFPlainLiteral(HttpUtility.HtmlDecode(tokens[2]));
+                                }
                             }
                             #endregion
 

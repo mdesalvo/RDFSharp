@@ -87,7 +87,9 @@ namespace RDFSharp.Query
 
                 //Equality comparison with a RDFTerm being RDFResource/RDFLiteral
                 else
+                {
                     keepRow = string.Equals(variableValue, RDFTermString, StringComparison.Ordinal);
+                }
 
                 //Apply the eventual negation
                 if (applyNegation)

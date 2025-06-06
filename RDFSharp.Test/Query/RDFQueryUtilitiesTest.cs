@@ -138,7 +138,6 @@ public class RDFQueryUtilitiesTest
     [DataRow("hello^^http://www.w3.org/2001/XMLSchema#string", "hello^^http://www.w3.org/2001/XMLSchema#string", 0)]
     [DataRow("hellu^^http://www.w3.org/2001/XMLSchema#string", "hello^^http://www.w3.org/2001/XMLSchema#string", 1)]
     [DataRow("hello^^http://www.w3.org/2001/XMLSchema#string", "ex:res", 1)]
-    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "ex:res", -99)]
     [DataRow("hello^^http://www.w3.org/2001/XMLSchema#string", "hello", 0)]
     [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "hello", -99)]
     [DataRow("hello^^http://www.w3.org/2001/XMLSchema#string", "hello@en-US", -1)]

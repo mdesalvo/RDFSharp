@@ -48,20 +48,20 @@ namespace RDFSharp.Query
             #region Plain Literal
             int lastIndexOfDatatype = pMember.LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
             if (!pMember.Contains("^^")
-                  || pMember.EndsWith("^^", StringComparison.Ordinal)
-                  || RDFModelUtilities.GetUriFromString(pMember.Substring(lastIndexOfDatatype + 2)) == null)
+                 || pMember.EndsWith("^^", StringComparison.Ordinal)
+                 || RDFModelUtilities.GetUriFromString(pMember.Substring(lastIndexOfDatatype + 2)) == null)
             {
-                RDFPlainLiteral pLit;
                 if (RDFNTriples.regexLPL.Value.Match(pMember).Success)
                 {
                     int lastIndexOfLanguage = pMember.LastIndexOf("@", StringComparison.OrdinalIgnoreCase);
                     string pLitVal = pMember.Substring(0, lastIndexOfLanguage);
                     string pLitLng = pMember.Substring(lastIndexOfLanguage + 1);
-                    pLit = new RDFPlainLiteral(pLitVal, pLitLng);
+                    return new RDFPlainLiteral(pLitVal, pLitLng);
                 }
                 else
-                    pLit = new RDFPlainLiteral(pMember);
-                return pLit;
+                {
+                    return new RDFPlainLiteral(pMember);
+                }
             }
             #endregion
 
@@ -240,23 +240,23 @@ namespace RDFSharp.Query
             foreach (RDFNamespace nsp in prefixes)
             {
                 string nspString = nsp.ToString();
-                if (!string.Equals(pmemberString, nspString, StringComparison.OrdinalIgnoreCase))
-                    if (pmemberString.StartsWith(nspString, StringComparison.Ordinal))
-                    {
-                        pmemberString = pmemberString.Replace(nspString, $"{nsp.NamespacePrefix}:").TrimEnd('/');
+                if (!string.Equals(pmemberString, nspString, StringComparison.OrdinalIgnoreCase)
+                     && pmemberString.StartsWith(nspString, StringComparison.Ordinal))
+                {
+                    pmemberString = pmemberString.Replace(nspString, $"{nsp.NamespacePrefix}:").TrimEnd('/');
 
-                        //Accept the abbreviation only if it has generated a valid XSD QName
-                        try
-                        {
-                            _ = new RDFTypedLiteral(pmemberString, RDFModelEnums.RDFDatatypes.XSD_QNAME);
-                            hasAbbreviation = true;
-                            break;
-                        }
-                        catch
-                        {
-                            pmemberString = pmemberStringOriginal;
-                        }
+                    //Accept the abbreviation only if it has generated a valid XSD QName
+                    try
+                    {
+                        _ = new RDFTypedLiteral(pmemberString, RDFModelEnums.RDFDatatypes.XSD_QNAME);
+                        hasAbbreviation = true;
+                        break;
                     }
+                    catch
+                    {
+                        pmemberString = pmemberStringOriginal;
+                    }
+                }
             }
             return (hasAbbreviation, pmemberString);
             #endregion

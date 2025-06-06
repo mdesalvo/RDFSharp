@@ -768,7 +768,9 @@ namespace RDFSharp.Store
                 if (hasContextColumn)
                 {
                     if (tableRow.IsNull("?CONTEXT") || string.IsNullOrEmpty(tableRow["?CONTEXT"].ToString()))
+                    {
                         rowContext = defaultContext;
+                    }
                     else
                     {
                         rowContext = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?CONTEXT"].ToString());
@@ -779,7 +781,9 @@ namespace RDFSharp.Store
                     }
                 }
                 else
+                {
                     rowContext = defaultContext;
+                }
                 #endregion
 
                 #region SUBJECT

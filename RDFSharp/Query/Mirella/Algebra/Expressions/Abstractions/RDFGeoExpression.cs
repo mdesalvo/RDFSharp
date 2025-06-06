@@ -143,7 +143,9 @@ namespace RDFSharp.Query
 
                         //Otherwise, return null to signal binding error
                         else
+                        {
                             return null;
+                        }
                     }
 
                     switch (this)

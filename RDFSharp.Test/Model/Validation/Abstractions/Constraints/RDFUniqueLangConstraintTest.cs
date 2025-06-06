@@ -47,13 +47,17 @@ public class RDFUniqueLangConstraintTest
         Assert.IsNotNull(graph);
         Assert.AreEqual(1, graph.TriplesCount);
         if (uniqueLang)
+        {
             Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                        && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.UNIQUE_LANG.PatternMemberID)
-                                                        && t.Value.ObjectID.Equals(RDFTypedLiteral.True.PatternMemberID)));
+                                                                && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.UNIQUE_LANG.PatternMemberID)
+                                                                && t.Value.ObjectID.Equals(RDFTypedLiteral.True.PatternMemberID)));
+        }
         else
+        {
             Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                        && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.UNIQUE_LANG.PatternMemberID)
-                                                        && t.Value.ObjectID.Equals(RDFTypedLiteral.False.PatternMemberID)));
+                                                                && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.UNIQUE_LANG.PatternMemberID)
+                                                                && t.Value.ObjectID.Equals(RDFTypedLiteral.False.PatternMemberID)));
+        }
     }
 
     //PS-CONFORMS:TRUE
