@@ -171,7 +171,6 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot annotate RDFTriple because given \"ttPredicate\" parameter is a blank resource");
             if (ttObject == null)
                 throw new RDFModelException("Cannot annotate RDFTriple because given \"ttObject\" parameter is null");
-
             if (Annotations == null)
                 Annotations = new Dictionary<long, (RDFResource ttPredicate, RDFPatternMember ttObject)>();
             #endregion
@@ -213,6 +212,7 @@ namespace RDFSharp.Model
                             : new RDFTriple(TTReificationSubject, RDFVocabulary.RDF.TT_OBJECT, (RDFLiteral)Object));
             }
 
+            // Annotations
             foreach ((RDFResource ttPredicate, RDFPatternMember ttObject) in Annotations?.Values ?? Enumerable.Empty<(RDFResource, RDFPatternMember)>())
             {
                 reifGraph.AddTriple(ttObject is RDFResource annResTTObject

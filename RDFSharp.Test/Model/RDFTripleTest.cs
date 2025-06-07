@@ -39,6 +39,8 @@ public class RDFTripleTest
         Assert.IsTrue(triple.Predicate.Equals(pred));
         Assert.IsTrue(triple.Object.Equals(obj));
         Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID}")));
+        Assert.IsTrue(triple.TTReificationSubject.Equals(new RDFResource($"bnode:TT{triple.TripleID}")));
+        Assert.IsNull(triple.Annotations);
 
         string tripleString = triple.ToString();
         Assert.IsTrue(tripleString.Equals($"{triple.Subject} {triple.Predicate} {triple.Object}"));
@@ -63,6 +65,8 @@ public class RDFTripleTest
         Assert.IsTrue(triple.Predicate.Equals(pred));
         Assert.IsTrue(((RDFResource)triple.Object).IsBlank);
         Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID}")));
+        Assert.IsTrue(triple.TTReificationSubject.Equals(new RDFResource($"bnode:TT{triple.TripleID}")));
+        Assert.IsNull(triple.Annotations);
     }
 
     [DataTestMethod]
@@ -80,6 +84,8 @@ public class RDFTripleTest
         Assert.IsTrue(triple.Predicate.Equals(pred));
         Assert.IsTrue(triple.Object.Equals(lit));
         Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID}")));
+        Assert.IsTrue(triple.TTReificationSubject.Equals(new RDFResource($"bnode:TT{triple.TripleID}")));
+        Assert.IsNull(triple.Annotations);
 
         string tripleString = triple.ToString();
         Assert.IsTrue(tripleString.Equals($"{triple.Subject} {triple.Predicate} {triple.Object}"));
@@ -104,6 +110,8 @@ public class RDFTripleTest
         Assert.IsTrue(triple.Predicate.Equals(pred));
         Assert.IsTrue(((RDFPlainLiteral)triple.Object).Equals(RDFPlainLiteral.Empty));
         Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID}")));
+        Assert.IsTrue(triple.TTReificationSubject.Equals(new RDFResource($"bnode:TT{triple.TripleID}")));
+        Assert.IsNull(triple.Annotations);
     }
 
     [DataTestMethod]
@@ -125,6 +133,27 @@ public class RDFTripleTest
     [DataRow("http://example.org/subj", "test")]
     public void ShouldNotCreateSPLTripleBecauseOfNullPredicate(string s, string l)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTriple(new RDFResource(s), null, new RDFPlainLiteral(l)));
+
+    [TestMethod]
+    public void ShouldAnnotateSPOTriple()
+    {
+        RDFTriple triple = new RDFTriple(new RDFResource("http://example.org/subj"), new RDFResource("http://example.org/pred"), new RDFResource("http://example.org/obj"));
+
+        Assert.IsNull(triple.Annotations);
+
+        triple.Annotate(new RDFResource("http://example.org/pred2"), new RDFResource("http://example.org/obj2"));
+
+        Assert.IsNotNull(triple.Annotations);
+
+        triple.Annotate(new RDFResource("http://example.org/pred2"), new RDFResource("http://example.org/obj2")); // Should not be considered because duplicate annotations are not allowed
+        triple.Annotate(new RDFResource("http://example.org/pred2"), new RDFResource("http://example.org/obj3"));
+
+        Assert.IsTrue(triple.Annotations.Count == 2);
+
+        Assert.ThrowsExactly<RDFModelException>(() => triple.Annotate(null, new RDFResource("http://example.org/obj2")));
+        Assert.ThrowsExactly<RDFModelException>(() => triple.Annotate(new RDFResource("bnode:12345"), new RDFResource("http://example.org/obj2")));
+        Assert.ThrowsExactly<RDFModelException>(() => triple.Annotate(new RDFResource("ex:subj"), null as RDFResource));
+    }
 
     [DataTestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]
@@ -220,6 +249,27 @@ public class RDFTripleTest
         Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)triple.Subject)));
         Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate)));
         Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)triple.Object)));
+    }
+
+    [TestMethod]
+    public void ShouldAnnotateSPLTriple()
+    {
+        RDFTriple triple = new RDFTriple(new RDFResource("http://example.org/subj"), new RDFResource("http://example.org/pred"), new RDFPlainLiteral("test"));
+
+        Assert.IsNull(triple.Annotations);
+
+        triple.Annotate(new RDFResource("http://example.org/pred2"), new RDFPlainLiteral("test2"));
+
+        Assert.IsNotNull(triple.Annotations);
+
+        triple.Annotate(new RDFResource("http://example.org/pred2"), new RDFPlainLiteral("test2")); // Should not be considered because duplicate annotations are not allowed
+        triple.Annotate(new RDFResource("http://example.org/pred2"), new RDFPlainLiteral("test3"));
+
+        Assert.IsTrue(triple.Annotations.Count == 2);
+
+        Assert.ThrowsExactly<RDFModelException>(() => triple.Annotate(null, new RDFPlainLiteral("test5")));
+        Assert.ThrowsExactly<RDFModelException>(() => triple.Annotate(new RDFResource("bnode:12345"), new RDFPlainLiteral("test5")));
+        Assert.ThrowsExactly<RDFModelException>(() => triple.Annotate(new RDFResource("ex:subj"), null as RDFLiteral));
     }
 
     [DataTestMethod]
