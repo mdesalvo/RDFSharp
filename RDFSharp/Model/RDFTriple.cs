@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using RDFSharp.Query;
 
@@ -38,17 +39,17 @@ namespace RDFSharp.Model
         public RDFModelEnums.RDFTripleFlavors TripleFlavor { get; internal set; }
 
         /// <summary>
-        /// Member acting as subject token of the triple
+        /// Member acting as subject of the triple
         /// </summary>
         public RDFPatternMember Subject { get; internal set; }
 
         /// <summary>
-        /// Member acting as predicate token of the triple
+        /// Member acting as predicate of the triple
         /// </summary>
         public RDFPatternMember Predicate { get; internal set; }
 
         /// <summary>
-        /// Member acting as object token of the triple
+        /// Member acting as object of the triple
         /// </summary>
         public RDFPatternMember Object { get; internal set; }
 
@@ -57,6 +58,19 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFResource ReificationSubject => LazyReificationSubject.Value;
         private readonly Lazy<RDFResource> LazyReificationSubject;
+
+        // RDF 1.2
+
+        /// <summary>
+        /// Subject of the triple's classicized reification (RDF 1.2)
+        /// </summary>
+        internal RDFResource TTReificationSubject => LazyTTReificationSubject.Value;
+        private readonly Lazy<RDFResource> LazyTTReificationSubject;
+
+        /// <summary>
+        /// Annotations of the triple (RDF 1.2)
+        /// </summary>
+        internal Dictionary<long, (RDFResource ttPredicate, RDFPatternMember ttObject)> Annotations { get; set; }
         #endregion
 
         #region Ctors
@@ -96,6 +110,7 @@ namespace RDFSharp.Model
             Predicate = pred;
             LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
             LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{TripleID}"));
+            LazyTTReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:TT{TripleID}"));
         }
 
         /// <summary>
@@ -112,6 +127,7 @@ namespace RDFSharp.Model
                 Object = graphIndex.LiteralsRegister[indexedTriple.ObjectID];
             LazyTripleID = new Lazy<long>(() => indexedTriple.TripleID);
             LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{TripleID}"));
+            LazyTTReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:TT{TripleID}"));
         }
         #endregion
 
@@ -131,18 +147,65 @@ namespace RDFSharp.Model
 
         #region Methods
         /// <summary>
-        /// Builds the reification graph of the triple
+        /// Annotates the triple with the given value, enabling rdf:TripleTerm classicization (RDF 1.2)
+        /// </summary>
+        public RDFTriple Annotate(RDFResource ttPredicate, RDFPatternMember ttObject)
+        {
+            #region Guards
+            if (ttPredicate == null)
+                throw new RDFModelException("Cannot annotate RDFTriple because given \"ttPredicate\" parameter is null");
+            if (ttPredicate.IsBlank)
+                throw new RDFModelException("Cannot annotate RDFTriple because given \"ttPredicate\" parameter is a blank resource");
+            if (ttObject == null)
+                throw new RDFModelException("Cannot annotate RDFTriple because given \"ttObject\" parameter is null");
+
+            if (Annotations == null)
+                Annotations = new Dictionary<long, (RDFResource ttPredicate, RDFPatternMember ttObject)>();
+            #endregion
+
+            long annotationID = RDFModelUtilities.CreateHash($"{ttPredicate} {ttObject}");
+            if (!Annotations.ContainsKey(annotationID))
+                Annotations.Add(annotationID, (ttPredicate, ttObject));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Builds the reification graph of the triple, supporting rdf:TripleTerm classicization (RDF 1.2)
         /// </summary>
         public RDFGraph ReifyTriple()
         {
             RDFGraph reifGraph = new RDFGraph();
 
-            reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
-            reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)Subject));
-            reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)Predicate));
-            reifGraph.AddTriple(TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
-                ? new RDFTriple(ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)Object)
-                : new RDFTriple(ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)Object));
+            // RDF 1.1 (rdf:Statement)
+            if (Annotations == null || Annotations.Count == 0)
+            {
+                reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
+                reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)Subject));
+                reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)Predicate));
+                reifGraph.AddTriple(TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
+                    ? new RDFTriple(ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)Object)
+                    : new RDFTriple(ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)Object));
+            }
+
+            // RDF 1.2 (rdf:TripleTerm)
+            else
+            {
+                reifGraph.AddTriple(new RDFTriple(TTReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM));
+                reifGraph.AddTriple(new RDFTriple(TTReificationSubject, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)Subject));
+                reifGraph.AddTriple(new RDFTriple(TTReificationSubject, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)Predicate));
+                reifGraph.AddTriple(TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
+                    ? new RDFTriple(TTReificationSubject, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)Object)
+                    : new RDFTriple(TTReificationSubject, RDFVocabulary.RDF.TT_OBJECT, (RDFLiteral)Object));
+
+                reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.REIFIES, TTReificationSubject));
+                foreach ((RDFResource ttPredicate, RDFPatternMember ttObject) in Annotations.Values)
+                {
+                    reifGraph.AddTriple(ttObject is RDFResource annResTTObject
+                        ? new RDFTriple(ReificationSubject, ttPredicate, annResTTObject)
+                        : new RDFTriple(ReificationSubject, ttPredicate, (RDFLiteral)ttObject));
+                }
+            }
 
             return reifGraph;
         }

@@ -51,9 +51,11 @@ namespace RDFSharp.Model
             get
             {
                 foreach (RDFIndexedTriple indexedTriple in IndexedTriples.Values)
+                {
                     yield return indexedTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
                         ? new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.ResourcesRegister[indexedTriple.ObjectID])
                         : new RDFTriple(GraphIndex.ResourcesRegister[indexedTriple.SubjectID], GraphIndex.ResourcesRegister[indexedTriple.PredicateID], GraphIndex.LiteralsRegister[indexedTriple.ObjectID]);
+                }
             }
         }
 
@@ -351,7 +353,7 @@ namespace RDFSharp.Model
         {
             if (subjectResource != null && predicateResource != null)
                 foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource)
-                             .SelectTriplesByPredicate(predicateResource))
+                                              .SelectTriplesByPredicate(predicateResource))
                     RemoveTriple(triple);
             return this;
         }
@@ -369,7 +371,7 @@ namespace RDFSharp.Model
         {
             if (subjectResource != null && objectResource != null)
                 foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource)
-                             .SelectTriplesByObject(objectResource))
+                                              .SelectTriplesByObject(objectResource))
                     RemoveTriple(triple);
             return this;
         }
@@ -387,7 +389,7 @@ namespace RDFSharp.Model
         {
             if (subjectResource != null && literal != null)
                 foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource)
-                             .SelectTriplesByLiteral(literal))
+                                              .SelectTriplesByLiteral(literal))
                     RemoveTriple(triple);
             return this;
         }
@@ -405,7 +407,7 @@ namespace RDFSharp.Model
         {
             if (predicateResource != null && objectResource != null)
                 foreach (RDFTriple triple in SelectTriplesByPredicate(predicateResource)
-                             .SelectTriplesByObject(objectResource))
+                                              .SelectTriplesByObject(objectResource))
                     RemoveTriple(triple);
             return this;
         }
@@ -423,7 +425,7 @@ namespace RDFSharp.Model
         {
             if (predicateResource != null && objectLiteral != null)
                 foreach (RDFTriple triple in SelectTriplesByPredicate(predicateResource)
-                             .SelectTriplesByLiteral(objectLiteral))
+                                              .SelectTriplesByLiteral(objectLiteral))
                     RemoveTriple(triple);
             return this;
         }
@@ -452,10 +454,11 @@ namespace RDFSharp.Model
             => Task.Run(ClearTriples);
 
         /// <summary>
-        /// Turns back the reified triples into their compact representation
+        /// Turns back the reified triples into their compact representation, supporting rdf:TripleTerm declassicization (RDF 1.2)
         /// </summary>
         public void UnreifyTriples()
         {
+            #region RDF 1.1 (rdf:Statement)
             //Create SPARQL SELECT query for detecting reified triples
             RDFVariable T = new RDFVariable("T");
             RDFVariable S = new RDFVariable("S");
@@ -498,6 +501,57 @@ namespace RDFSharp.Model
                     AddTriple(new RDFTriple((RDFResource)tSubject, (RDFResource)tPredicate, (RDFLiteral)tObject));
                 }
             }
+            #endregion
+
+            #region RDF 1.2 (rdf:TripleTerm)
+            //Create SPARQL SELECT query for detecting reified classicized triples
+            RDFVariable TT0 = new RDFVariable("TT0");
+            RDFVariable TT1 = new RDFVariable("TT1");
+            RDFVariable TS = new RDFVariable("TS");
+            RDFVariable TP = new RDFVariable("TP");
+            RDFVariable TO = new RDFVariable("TO");
+            RDFSelectQuery TQ = new RDFSelectQuery()
+                                    .AddPatternGroup(new RDFPatternGroup()
+                                      .AddPattern(new RDFPattern(TT0, RDFVocabulary.RDF.REIFIES, TT1))
+                                      .AddPattern(new RDFPattern(TT1, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM))
+                                      .AddPattern(new RDFPattern(TT1, RDFVocabulary.RDF.TT_SUBJECT, TS))
+                                      .AddPattern(new RDFPattern(TT1, RDFVocabulary.RDF.TT_PREDICATE, TP))
+                                      .AddPattern(new RDFPattern(TT1, RDFVocabulary.RDF.TT_OBJECT, TO))
+                                      .AddFilter(new RDFIsUriFilter(TT0))
+                                      .AddFilter(new RDFIsUriFilter(TT1))
+                                      .AddFilter(new RDFIsUriFilter(TS))
+                                      .AddFilter(new RDFIsUriFilter(TP)));
+
+            //Apply it to the graph
+            RDFSelectQueryResult TR = TQ.ApplyToGraph(this);
+
+            //Iterate results
+            foreach (DataRow reifiedTTriple in TR.SelectResults.Rows)
+            {
+                //Get reification data (TT0, TT1, TS, TP, TO)
+                RDFPatternMember tt0Represent = RDFQueryUtilities.ParseRDFPatternMember(reifiedTTriple["?TT0"].ToString());
+                RDFPatternMember tt1Represent = RDFQueryUtilities.ParseRDFPatternMember(reifiedTTriple["?TT1"].ToString());
+                RDFPatternMember ttSubject = RDFQueryUtilities.ParseRDFPatternMember(reifiedTTriple["?TS"].ToString());
+                RDFPatternMember ttPredicate = RDFQueryUtilities.ParseRDFPatternMember(reifiedTTriple["?TP"].ToString());
+                RDFPatternMember ttObject = RDFQueryUtilities.ParseRDFPatternMember(reifiedTTriple["?TO"].ToString());
+
+                //Cleanup graph from detected reifications
+                RemoveTriple(new RDFTriple((RDFResource)tt0Represent, RDFVocabulary.RDF.REIFIES, (RDFResource)tt1Represent));
+                RemoveTriple(new RDFTriple((RDFResource)tt1Represent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM));
+                RemoveTriple(new RDFTriple((RDFResource)tt1Represent, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)ttSubject));
+                RemoveTriple(new RDFTriple((RDFResource)tt1Represent, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)ttPredicate));
+                if (ttObject is RDFResource tObjRes)
+                {
+                    RemoveTriple(new RDFTriple((RDFResource)tt1Represent, RDFVocabulary.RDF.TT_OBJECT, tObjRes));
+                    AddTriple(new RDFTriple((RDFResource)ttSubject, (RDFResource)ttPredicate, tObjRes));
+                }
+                else
+                {
+                    RemoveTriple(new RDFTriple((RDFResource)tt1Represent, RDFVocabulary.RDF.TT_OBJECT, (RDFLiteral)ttObject));
+                    AddTriple(new RDFTriple((RDFResource)ttSubject, (RDFResource)ttPredicate, (RDFLiteral)ttObject));
+                }
+            }
+            #endregion
         }
 
         /// <summary>
