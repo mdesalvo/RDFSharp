@@ -78,7 +78,7 @@ public class RDFDatatypeConstraintTest
     }
 
     [TestMethod]
-    public void ShouldConformPropertyShapeWithClassTargetThreatingPlainLiteralValueNodes()
+    public void ShouldConformPropertyShapeWithClassTargetTreatingPlainLiteralValueNodes()
     {
         //DataGraph
         RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
@@ -228,7 +228,7 @@ public class RDFDatatypeConstraintTest
     }
 
     [TestMethod]
-    public void ShouldNotConformPropertyShapeWithClassTargetThreatingResourceValueNodes()
+    public void ShouldNotConformPropertyShapeWithClassTargetTreatingResourceValueNodes()
     {
         //DataGraph
         RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
@@ -264,7 +264,7 @@ public class RDFDatatypeConstraintTest
     }
 
     [TestMethod]
-    public void ShouldNotConformPropertyShapeWithClassTargetThreatingPlainLiteralValueNodes()
+    public void ShouldNotConformPropertyShapeWithClassTargetTreatingPlainLiteralValueNodes()
     {
         //DataGraph
         RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));

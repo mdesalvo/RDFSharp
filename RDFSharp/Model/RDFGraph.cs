@@ -181,7 +181,9 @@ namespace RDFSharp.Model
             => Task.Run(() => SetContext(contextUri));
 
         /// <summary>
-        /// Adds the given triple to the graph, avoiding duplicate insertions
+        /// Adds the given triple to the graph, avoiding duplicate insertions.<br/><br/>
+        /// Annotations are NOT included, because they are treated as unasserted triples.<br/>
+        /// If you need them in the graph, consider also merging the triple's reification graph.
         /// </summary>
         public RDFGraph AddTriple(RDFTriple triple)
         {
@@ -196,7 +198,9 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Asynchronously adds the given triple to the graph, avoiding duplicate insertions
+        /// Asynchronously adds the given triple to the graph, avoiding duplicate insertions.<br/><br/>
+        /// Annotations are NOT included, because they are treated as unasserted triples.<br/>
+        /// If you need them in the graph, consider also merging the triple's reification graph.
         /// </summary>
         public Task<RDFGraph> AddTripleAsync(RDFTriple triple)
             => Task.Run(() => AddTriple(triple));

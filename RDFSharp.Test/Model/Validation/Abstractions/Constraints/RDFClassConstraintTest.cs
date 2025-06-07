@@ -430,7 +430,7 @@ public class RDFClassConstraintTest
     }
 
     [TestMethod]
-    public void ShouldNotConformPropertyShapeWithClassTargetThreatingLiteralValueNodes()
+    public void ShouldNotConformPropertyShapeWithClassTargetTreatingLiteralValueNodes()
     {
         //DataGraph
         RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
