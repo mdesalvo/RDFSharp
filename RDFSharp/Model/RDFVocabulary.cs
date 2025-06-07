@@ -2289,6 +2289,8 @@ namespace RDFSharp.Model
             /// </summary>
             public static readonly RDFResource LANGUAGE = new RDFResource($"{BASE_URI}language");
 
+            // RDF 1.2
+
             /// <summary>
             /// rdf:langRange
             /// </summary>
@@ -2313,6 +2315,26 @@ namespace RDFSharp.Model
             /// rdf:reifies
             /// </summary>
             public static readonly RDFResource REIFIES = new RDFResource($"{BASE_URI}reifies");
+
+            /// <summary>
+            /// rdf:TripleTerm
+            /// </summary>
+            public static readonly RDFResource TRIPLE_TERM = new RDFResource($"{BASE_URI}TripleTerm");
+
+            /// <summary>
+            /// rdf:ttSubject
+            /// </summary>
+            public static readonly RDFResource TT_SUBJECT = new RDFResource($"{BASE_URI}ttSubject");
+
+            /// <summary>
+            /// rdf:ttPredicate
+            /// </summary>
+            public static readonly RDFResource TT_PREDICATE = new RDFResource($"{BASE_URI}ttPredicate");
+
+            /// <summary>
+            /// rdf:ttObject
+            /// </summary>
+            public static readonly RDFResource TT_OBJECT = new RDFResource($"{BASE_URI}ttObject");
             #endregion
         }
         #endregion
