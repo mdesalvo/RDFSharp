@@ -24,6 +24,21 @@ namespace RDFSharp.Model
     public static class RDFModelEnums
     {
         /// <summary>
+        /// RDFSyntaxes represents an enumeration for supported RDF syntaxes.
+        /// </summary>
+        public enum RDFSyntaxes
+        {
+            /// <summary>
+            /// Represents the RDF 1.1 syntax (https://www.w3.org/TR/rdf11-primer/)
+            /// </summary>
+            RDF_11 = 11,
+            /// <summary>
+            /// Represents the RDF 1.2 syntax (https://www.w3.org/TR/rdf12-primer/)
+            /// </summary>
+            RDF_12 = 12
+        }
+
+        /// <summary>
         /// RDFFormats represents an enumeration for supported RDF graph serialization data formats.
         /// </summary>
         public enum RDFFormats

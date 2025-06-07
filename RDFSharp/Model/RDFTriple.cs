@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using RDFSharp.Query;
 
@@ -147,9 +148,21 @@ namespace RDFSharp.Model
 
         #region Methods
         /// <summary>
+        /// Annotates the triple with the given resource value (RDF 1.2)
+        /// </summary>
+        public RDFTriple Annotate(RDFResource ttPredicate, RDFResource ttObject)
+            => AnnotateInternal(ttPredicate, ttObject);
+
+        /// <summary>
+        /// Annotates the triple with the given literal value (RDF 1.2)
+        /// </summary>
+        public RDFTriple Annotate(RDFResource ttPredicate, RDFLiteral ttObject)
+            => AnnotateInternal(ttPredicate, ttObject);
+
+        /// <summary>
         /// Annotates the triple with the given value (RDF 1.2)
         /// </summary>
-        public RDFTriple Annotate(RDFResource ttPredicate, RDFPatternMember ttObject)
+        internal RDFTriple AnnotateInternal(RDFResource ttPredicate, RDFPatternMember ttObject)
         {
             #region Guards
             if (ttPredicate == null)
@@ -171,48 +184,50 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Builds the reification graph of the triple, eventually supporting rdf:TripleTerm serialization (RDF 1.2)
+        /// Builds the reification graph of the triple, according to the specified RDF syntax
         /// </summary>
-        public RDFGraph ReifyTriple(bool useRDF12Syntax=false)
+        public RDFGraph ReifyTriple(RDFModelEnums.RDFSyntaxes rdfSyntax=RDFModelEnums.RDFSyntaxes.RDF_11)
         {
             RDFGraph reifGraph = new RDFGraph();
 
-            if (useRDF12Syntax)
+            // RDF 1.1 (rdf:Statement, rdf:subject, rdf:predicate, rdf:object)
+            if (rdfSyntax == RDFModelEnums.RDFSyntaxes.RDF_11)
             {
-                reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.REIFIES, TTReificationSubject));
-                reifGraph.AddTriple(new RDFTriple(TTReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM));
-                reifGraph.AddTriple(new RDFTriple(TTReificationSubject, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)Subject));
-                reifGraph.AddTriple(new RDFTriple(TTReificationSubject, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)Predicate));
-                reifGraph.AddTriple(TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
-                    ? new RDFTriple(TTReificationSubject, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)Object)
-                    : new RDFTriple(TTReificationSubject, RDFVocabulary.RDF.TT_OBJECT, (RDFLiteral)Object));
-            }
-            else
-            {
-                reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
-                reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)Subject));
-                reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)Predicate));
-                reifGraph.AddTriple(TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
-                    ? new RDFTriple(ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)Object)
-                    : new RDFTriple(ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)Object));
+                reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT))
+                         .AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)Subject))
+                         .AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)Predicate))
+                         .AddTriple(TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
+                            ? new RDFTriple(ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)Object)
+                            : new RDFTriple(ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)Object));
             }
 
-            if (Annotations?.Count > 0)
+            // RDF 1.2 (rdf:TripleTerm, rdf:ttSubject, rdf:ttPredicate, rdf:ttObject)
+            else
             {
-                foreach ((RDFResource ttPredicate, RDFPatternMember ttObject) in Annotations.Values)
-                    reifGraph.AddTriple(ttObject is RDFResource annResTTObject
-                        ? new RDFTriple(ReificationSubject, ttPredicate, annResTTObject)
-                        : new RDFTriple(ReificationSubject, ttPredicate, (RDFLiteral)ttObject));
+                reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.REIFIES, TTReificationSubject))
+                         .AddTriple(new RDFTriple(TTReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM))
+                         .AddTriple(new RDFTriple(TTReificationSubject, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)Subject))
+                         .AddTriple(new RDFTriple(TTReificationSubject, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)Predicate))
+                         .AddTriple(TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
+                            ? new RDFTriple(TTReificationSubject, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)Object)
+                            : new RDFTriple(TTReificationSubject, RDFVocabulary.RDF.TT_OBJECT, (RDFLiteral)Object));
+            }
+
+            foreach ((RDFResource ttPredicate, RDFPatternMember ttObject) in Annotations?.Values ?? Enumerable.Empty<(RDFResource, RDFPatternMember)>())
+            {
+                reifGraph.AddTriple(ttObject is RDFResource annResTTObject
+                            ? new RDFTriple(ReificationSubject, ttPredicate, annResTTObject)
+                            : new RDFTriple(ReificationSubject, ttPredicate, (RDFLiteral)ttObject));
             }
 
             return reifGraph;
         }
 
         /// <summary>
-        /// Asynchronously builds the reification graph of the triple, eventually supporting rdf:TripleTerm serialization (RDF 1.2)
+        /// Asynchronously builds the reification graph of the triple, according to the specified RDF syntax
         /// </summary>
-        public Task<RDFGraph> ReifyTripleAsync(bool useRDF12Syntax=false)
-            => Task.Run(() => ReifyTriple(useRDF12Syntax));
+        public Task<RDFGraph> ReifyTripleAsync(RDFModelEnums.RDFSyntaxes rdfSyntax=RDFModelEnums.RDFSyntaxes.RDF_11)
+            => Task.Run(() => ReifyTriple(rdfSyntax));
         #endregion
     }
 

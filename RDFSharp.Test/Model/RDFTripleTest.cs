@@ -145,6 +145,66 @@ public class RDFTripleTest
     }
 
     [DataTestMethod]
+    [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj", "http://example.org/pred2", "http://example.org/obj2")]
+    public void ShouldReifySPOTripleWithAnnotations(string s, string p, string o, string p2, string o2)
+    {
+        RDFResource subj = new RDFResource(s);
+        RDFResource pred = new RDFResource(p);
+        RDFResource obj = new RDFResource(o);
+
+        RDFTriple triple = new RDFTriple(subj, pred, obj);
+        triple.Annotate(new RDFResource(p2), new RDFResource(o2));
+        RDFGraph graph = triple.ReifyTriple();
+        Assert.IsNotNull(graph);
+        Assert.AreEqual(5, graph.TriplesCount);
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)triple.Subject)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)triple.Object)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, new RDFResource(p2), new RDFResource(o2))));
+    }
+
+    [DataTestMethod]
+    [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]
+    public void ShouldReifySPOTripleWithRDF12Syntax(string s, string p, string o)
+    {
+        RDFResource subj = new RDFResource(s);
+        RDFResource pred = new RDFResource(p);
+        RDFResource obj = new RDFResource(o);
+
+        RDFTriple triple = new RDFTriple(subj, pred, obj);
+        RDFGraph graph = triple.ReifyTriple(RDFModelEnums.RDFSyntaxes.RDF_12);
+        Assert.IsNotNull(graph);
+        Assert.AreEqual(5, graph.TriplesCount);
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.REIFIES, triple.TTReificationSubject)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.TTReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.TTReificationSubject, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)triple.Subject)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.TTReificationSubject, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)triple.Predicate)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.TTReificationSubject, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)triple.Object)));
+    }
+
+    [DataTestMethod]
+    [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj", "http://example.org/pred2", "http://example.org/obj2")]
+    public void ShouldReifySPOTripleWithRDF12SyntaxAndAnnotations(string s, string p, string o, string p2, string o2)
+    {
+        RDFResource subj = new RDFResource(s);
+        RDFResource pred = new RDFResource(p);
+        RDFResource obj = new RDFResource(o);
+
+        RDFTriple triple = new RDFTriple(subj, pred, obj);
+        triple.Annotate(new RDFResource(p2), new RDFResource(o2));
+        RDFGraph graph = triple.ReifyTriple(RDFModelEnums.RDFSyntaxes.RDF_12);
+        Assert.IsNotNull(graph);
+        Assert.AreEqual(6, graph.TriplesCount);
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.REIFIES, triple.TTReificationSubject)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.TTReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.TTReificationSubject, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)triple.Subject)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.TTReificationSubject, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)triple.Predicate)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.TTReificationSubject, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)triple.Object)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, new RDFResource(p2), new RDFResource(o2))));
+    }
+
+    [DataTestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]
     public async Task ShouldReifySPOTripleAsync(string s, string p, string o)
     {
@@ -178,6 +238,66 @@ public class RDFTripleTest
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)triple.Subject)));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate)));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)triple.Object)));
+    }
+
+    [DataTestMethod]
+    [DataRow("http://example.org/subj", "http://example.org/pred", "test", "http://example.org/pred2", "test2")]
+    public void ShouldReifySPLTripleWithAnnotations(string s, string p, string l, string p2, string l2)
+    {
+        RDFResource subj = new RDFResource(s);
+        RDFResource pred = new RDFResource(p);
+        RDFPlainLiteral lit = new RDFPlainLiteral(l);
+
+        RDFTriple triple = new RDFTriple(subj, pred, lit);
+        triple.Annotate(new RDFResource(p2), new RDFPlainLiteral(l2));
+        RDFGraph graph = triple.ReifyTriple();
+        Assert.IsNotNull(graph);
+        Assert.AreEqual(5, graph.TriplesCount);
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)triple.Subject)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)triple.Object)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, new RDFResource(p2), new RDFPlainLiteral(l2))));
+    }
+
+    [DataTestMethod]
+    [DataRow("http://example.org/subj", "http://example.org/pred", "test")]
+    public void ShouldReifySPLTripleWithRDF12Syntax(string s, string p, string l)
+    {
+        RDFResource subj = new RDFResource(s);
+        RDFResource pred = new RDFResource(p);
+        RDFPlainLiteral lit = new RDFPlainLiteral(l);
+
+        RDFTriple triple = new RDFTriple(subj, pred, lit);
+        RDFGraph graph = triple.ReifyTriple(RDFModelEnums.RDFSyntaxes.RDF_12);
+        Assert.IsNotNull(graph);
+        Assert.AreEqual(5, graph.TriplesCount);
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.REIFIES, triple.TTReificationSubject)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.TTReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.TTReificationSubject, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)triple.Subject)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.TTReificationSubject, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)triple.Predicate)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.TTReificationSubject, RDFVocabulary.RDF.TT_OBJECT, (RDFLiteral)triple.Object)));
+    }
+
+    [DataTestMethod]
+    [DataRow("http://example.org/subj", "http://example.org/pred", "test", "http://example.org/pred2", "test2")]
+    public void ShouldReifySPLTripleWithRDF12SyntaxAndAnnotations(string s, string p, string l, string p2, string l2)
+    {
+        RDFResource subj = new RDFResource(s);
+        RDFResource pred = new RDFResource(p);
+        RDFPlainLiteral lit = new RDFPlainLiteral(l);
+
+        RDFTriple triple = new RDFTriple(subj, pred, lit);
+        triple.Annotate(new RDFResource(p2), new RDFPlainLiteral(l2));
+        RDFGraph graph = triple.ReifyTriple(RDFModelEnums.RDFSyntaxes.RDF_12);
+        Assert.IsNotNull(graph);
+        Assert.AreEqual(6, graph.TriplesCount);
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.REIFIES, triple.TTReificationSubject)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.TTReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.TTReificationSubject, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)triple.Subject)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.TTReificationSubject, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)triple.Predicate)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.TTReificationSubject, RDFVocabulary.RDF.TT_OBJECT, (RDFLiteral)triple.Object)));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, new RDFResource(p2), new RDFPlainLiteral(l2))));
     }
 
     [DataTestMethod]
