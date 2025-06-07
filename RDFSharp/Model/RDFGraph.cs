@@ -183,7 +183,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Adds the given triple to the graph, avoiding duplicate insertions.<br/><br/>
         /// Its annotations are NOT included, because they are treated as unasserted triples.<br/>
-        /// If you need them, consider to merge also the triple's reification graph.
+        /// If you need them, you have to explicitly merge the triple's reification graph.
         /// </summary>
         public RDFGraph AddTriple(RDFTriple triple)
         {
@@ -200,7 +200,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Asynchronously adds the given triple to the graph, avoiding duplicate insertions.<br/><br/>
         /// Its annotations are NOT included, because they are treated as unasserted triples.<br/>
-        /// If you need them, consider to merge also the triple's reification graph.
+        /// If you need them, you have to explicitly merge the triple's reification graph.
         /// </summary>
         public Task<RDFGraph> AddTripleAsync(RDFTriple triple)
             => Task.Run(() => AddTriple(triple));
