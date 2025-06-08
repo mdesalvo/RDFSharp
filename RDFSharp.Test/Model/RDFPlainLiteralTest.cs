@@ -26,7 +26,7 @@ public class RDFPlainLiteralTest
     [DataTestMethod]
     [DataRow("donald duck")]
     [DataRow("donald duck@")]
-    [DataRow("donald duck@en-US")] //Even if well-formed, this input will be threated as unlanguaged (in fact the ctor is for unlanguaged ones)
+    [DataRow("donald duck@en-US")] //Even if well-formed, this input will be treated as unlanguaged (in fact the ctor is for unlanguaged ones)
     [DataRow("@en")]
     [DataRow("")]
     [DataRow(null)]

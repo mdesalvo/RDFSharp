@@ -480,7 +480,7 @@ namespace RDFSharp.Model
                             case "xml:lang":
                                 break;
 
-                            //Threat rdf:type attribute as SPO
+                            //Treat rdf:type attribute as SPO
                             case "rdf:type":
                                 Uri rdfTypeValue = RDFModelUtilities.GetUriFromString(subjAttr.Value);
                                 if (rdfTypeValue != null)
@@ -490,7 +490,7 @@ namespace RDFSharp.Model
                                 }
                                 break;
 
-                            //Threat other attributes as SPL
+                            //Treat other attributes as SPL
                             default:
                                 RDFResource subjAttrPred = string.IsNullOrEmpty(subjAttr.NamespaceURI) ? new RDFResource(string.Concat(xmlBase, subjAttr.LocalName), hashContext)
                                                                                                        : new RDFResource(string.Concat(subjAttr.NamespaceURI, subjAttr.LocalName), hashContext);

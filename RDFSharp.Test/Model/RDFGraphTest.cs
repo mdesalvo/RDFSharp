@@ -798,30 +798,6 @@ public class RDFGraphTest
     }
 
     [TestMethod]
-    public void ShouldUnreifySPOTriples()
-    {
-        RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-        RDFGraph graph = triple.ReifyTriple();
-        graph.UnreifyTriples();
-
-        Assert.IsNotNull(graph);
-        Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple.TripleID));
-    }
-
-    [TestMethod]
-    public void ShouldUnreifySPLTriples()
-    {
-        RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
-        RDFGraph graph = triple.ReifyTriple();
-        graph.UnreifyTriples();
-
-        Assert.IsNotNull(graph);
-        Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsTrue(graph.IndexedTriples.ContainsKey(triple.TripleID));
-    }
-
-    [TestMethod]
     public void ShouldContainTriple()
     {
         RDFGraph graph = new RDFGraph();
@@ -2616,28 +2592,6 @@ public class RDFGraphTest
         await graph.ClearTriplesAsync();
 
         Assert.AreEqual(0, graph.TriplesCount);
-    }
-
-    [TestMethod]
-    public async Task ShouldUnreifySPOTriplesAsync()
-    {
-        RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-        RDFGraph graph = await triple.ReifyTripleAsync();
-        await graph.UnreifyTriplesAsync();
-
-        Assert.IsNotNull(graph);
-        Assert.AreEqual(1, graph.TriplesCount);
-    }
-
-    [TestMethod]
-    public async Task ShouldUnreifySPLTriplesAsync()
-    {
-        RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
-        RDFGraph graph = await triple.ReifyTripleAsync();
-        await graph.UnreifyTriplesAsync();
-
-        Assert.IsNotNull(graph);
-        Assert.AreEqual(1, graph.TriplesCount);
     }
 
     [TestMethod]

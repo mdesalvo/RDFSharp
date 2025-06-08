@@ -1023,23 +1023,6 @@ public class RDFMemoryStoreTest
         Assert.AreEqual(3, differenceNull.QuadruplesCount);
     }
 
-    [TestMethod]
-    public void ShouldUnreifyQuadruples()
-    {
-        RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"));
-        RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit"));
-        RDFMemoryStore store = new RDFMemoryStore([quadruple1, quadruple2]);
-        RDFMemoryStore storeQuadruple1 = quadruple1.ReifyQuadruple();
-        RDFMemoryStore storeQuadruple2 = quadruple2.ReifyQuadruple();
-        RDFMemoryStore reifiedStore = storeQuadruple1.UnionWith(storeQuadruple2);
-
-        Assert.IsFalse(reifiedStore.Equals(store));
-
-        reifiedStore.UnreifyQuadruples();
-
-        Assert.IsTrue(reifiedStore.Equals(store));
-    }
-
     [DataTestMethod]
     [DataRow(".nq",RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
@@ -2575,23 +2558,6 @@ public class RDFMemoryStoreTest
         Assert.AreEqual(2, graphs.Count);
         Assert.IsTrue(graphs.Any(g => g.Context.Equals(new Uri("ex:ctx1"))));
         Assert.IsTrue(graphs.Any(g => g.Context.Equals(new Uri("ex:ctx2"))));
-    }
-
-    [TestMethod]
-    public async Task ShouldUnreifyQuadruplesAsync()
-    {
-        RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"));
-        RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit"));
-        RDFMemoryStore store = new RDFMemoryStore([quadruple1, quadruple2]);
-        RDFMemoryStore storeQuadruple1 = quadruple1.ReifyQuadruple();
-        RDFMemoryStore storeQuadruple2 = quadruple2.ReifyQuadruple();
-        RDFMemoryStore reifiedStore = await storeQuadruple1.UnionWithAsync(storeQuadruple2);
-
-        Assert.IsFalse(reifiedStore.Equals(store));
-
-        await reifiedStore.UnreifyQuadruplesAsync();
-
-        Assert.AreEqual(2, reifiedStore.QuadruplesCount);
     }
 
     [DataTestMethod]

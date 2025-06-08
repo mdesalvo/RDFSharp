@@ -317,67 +317,6 @@ namespace RDFSharp.Store
         /// </summary>
         public Task ClearQuadruplesAsync()
             => Task.Run(ClearQuadruples);
-
-        /// <summary>
-        /// Compacts the reified quadruples by removing their 4 standard statements
-        /// </summary>
-        public void UnreifyQuadruples()
-        {
-            //Create SPARQL SELECT query for detecting reified quadruples
-            RDFVariable T = new RDFVariable("T");
-            RDFVariable C = new RDFVariable("C");
-            RDFVariable S = new RDFVariable("S");
-            RDFVariable P = new RDFVariable("P");
-            RDFVariable O = new RDFVariable("O");
-            RDFSelectQuery Q = new RDFSelectQuery()
-                                .AddPatternGroup(new RDFPatternGroup()
-                                  .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT))
-                                  .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.SUBJECT, S))
-                                  .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.PREDICATE, P))
-                                  .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.OBJECT, O))
-                                  .AddFilter(new RDFIsUriFilter(C))
-                                  .AddFilter(new RDFIsUriFilter(T))
-                                  .AddFilter(new RDFIsUriFilter(S))
-                                  .AddFilter(new RDFIsUriFilter(P)));
-
-            //Apply it to the store
-            RDFSelectQueryResult R = Q.ApplyToStore(this);
-
-            //Iterate results
-            foreach (DataRow dataRow in R.SelectResults.Rows)
-            {
-                //Get reification data (T, C, S, P, O)
-                RDFPatternMember tRepresent = RDFQueryUtilities.ParseRDFPatternMember(dataRow["?T"].ToString());
-                RDFPatternMember tContext = RDFQueryUtilities.ParseRDFPatternMember(dataRow["?C"].ToString());
-                RDFPatternMember tSubject = RDFQueryUtilities.ParseRDFPatternMember(dataRow["?S"].ToString());
-                RDFPatternMember tPredicate = RDFQueryUtilities.ParseRDFPatternMember(dataRow["?P"].ToString());
-                RDFPatternMember tObject = RDFQueryUtilities.ParseRDFPatternMember(dataRow["?O"].ToString());
-
-                //Cleanup store from detected reifications
-                if (tObject is RDFResource objRes)
-                {
-                    AddQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tSubject, (RDFResource)tPredicate, objRes));
-                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
-                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT, (RDFResource)tSubject));
-                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
-                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, objRes));
-                }
-                else
-                {
-                    AddQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tSubject, (RDFResource)tPredicate, (RDFLiteral)tObject));
-                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
-                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT, (RDFResource)tSubject));
-                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
-                    RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, (RDFLiteral)tObject));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Asynchronously compacts the reified quadruples by removing their 4 standard statements
-        /// </summary>
-        public Task UnreifyQuadruplesAsync()
-            => Task.Run(UnreifyQuadruples);
         #endregion
 
         #region Select
