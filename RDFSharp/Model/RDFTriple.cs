@@ -38,22 +38,22 @@ namespace RDFSharp.Model
         public RDFModelEnums.RDFTripleFlavors TripleFlavor { get; internal set; }
 
         /// <summary>
-        /// Member acting as subject token of the triple
+        /// Member acting as subject of the triple
         /// </summary>
         public RDFPatternMember Subject { get; internal set; }
 
         /// <summary>
-        /// Member acting as predicate token of the triple
+        /// Member acting as predicate of the triple
         /// </summary>
         public RDFPatternMember Predicate { get; internal set; }
 
         /// <summary>
-        /// Member acting as object token of the triple
+        /// Member acting as object of the triple
         /// </summary>
         public RDFPatternMember Object { get; internal set; }
 
         /// <summary>
-        /// Subject of the triple's reification
+        /// Representative of the triple's reification
         /// </summary>
         public RDFResource ReificationSubject => LazyReificationSubject.Value;
         private readonly Lazy<RDFResource> LazyReificationSubject;

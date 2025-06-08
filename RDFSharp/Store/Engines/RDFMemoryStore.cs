@@ -688,10 +688,10 @@ namespace RDFSharp.Store
 
             #region Datatype Discovery
             if (enableDatatypeDiscovery)
+            {
                 foreach (RDFGraph graph in memStore.ExtractGraphs())
-                foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
-                    RDFDatatypeRegister.AddDatatype(datatypeDefinition);
-
+                    RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
+            }
             #endregion
 
             return memStore;
@@ -729,10 +729,10 @@ namespace RDFSharp.Store
 
             #region Datatype Discovery
             if (enableDatatypeDiscovery)
+            {
                 foreach (RDFGraph graph in memStore.ExtractGraphs())
-                foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
-                    RDFDatatypeRegister.AddDatatype(datatypeDefinition);
-
+                    RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
+            }
             #endregion
 
             return memStore;
@@ -821,10 +821,10 @@ namespace RDFSharp.Store
 
             #region Datatype Discovery
             if (enableDatatypeDiscovery)
+            {
                 foreach (RDFGraph graph in memStore.ExtractGraphs())
-                foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
-                    RDFDatatypeRegister.AddDatatype(datatypeDefinition);
-
+                    RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
+            }
             #endregion
 
             return memStore;
@@ -898,10 +898,10 @@ namespace RDFSharp.Store
 
             #region Datatype Discovery
             if (enableDatatypeDiscovery)
+            {
                 foreach (RDFGraph graph in memStore.ExtractGraphs())
-                foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
-                    RDFDatatypeRegister.AddDatatype(datatypeDefinition);
-
+                    RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
+            }
             #endregion
 
             return memStore;

@@ -787,13 +787,7 @@ namespace RDFSharp.Model
 
             #region Datatype Discovery
             if (enableDatatypeDiscovery)
-            {
-                foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
-                {
-                    RDFDatatypeRegister.AddDatatype(datatypeDefinition);
-                }
-            }
-
+                RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
             #endregion
 
             return graph;
@@ -838,13 +832,7 @@ namespace RDFSharp.Model
 
             #region Datatype Discovery
             if (enableDatatypeDiscovery)
-            {
-                foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
-                {
-                    RDFDatatypeRegister.AddDatatype(datatypeDefinition);
-                }
-            }
-
+                RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
             #endregion
 
             return graph;
@@ -942,13 +930,7 @@ namespace RDFSharp.Model
 
             #region Datatype Discovery
             if (enableDatatypeDiscovery)
-            {
-                foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
-                {
-                    RDFDatatypeRegister.AddDatatype(datatypeDefinition);
-                }
-            }
-
+                RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
             #endregion
 
             return graph;
@@ -1046,13 +1028,7 @@ namespace RDFSharp.Model
 
             #region Datatype Discovery
             if (enableDatatypeDiscovery)
-            {
-                foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
-                {
-                    RDFDatatypeRegister.AddDatatype(datatypeDefinition);
-                }
-            }
-
+                RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
             #endregion
 
             return graph;

@@ -953,6 +953,15 @@ namespace RDFSharp.Model
             string[] owlRationalParts = typedLiteral.Value.Split('/');
             return decimal.Parse(owlRationalParts[0]) / decimal.Parse(owlRationalParts[1]);
         }
+
+        /// <summary>
+        /// Extracts and registers the datatypes contained in the given graph
+        /// </summary>
+        internal static void ExtractAndRegisterDatatypes(RDFGraph graph)
+        {
+            foreach (RDFDatatype datatypeDefinition in graph.ExtractDatatypeDefinitions())
+                RDFDatatypeRegister.AddDatatype(datatypeDefinition);
+        }
         #endregion
     }
 }
