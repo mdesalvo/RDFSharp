@@ -197,5 +197,43 @@ public class RDFTripleTest
         Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate)));
         Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)triple.Object)));
     }
+
+    [DataTestMethod]
+    [DataRow("http://example.org/subj", "http://example.org/pred", "test")]
+    public void ShouldReifySPLTripleAsTripleTerm(string s, string p, string l)
+    {
+        RDFResource subj = new RDFResource(s);
+        RDFResource pred = new RDFResource(p);
+        RDFPlainLiteral lit = new RDFPlainLiteral(l);
+
+        RDFTriple triple = new RDFTriple(subj, pred, lit);
+        RDFGraph graph = triple.ReifyTripleAsTripleTerm();
+        Assert.IsNotNull(graph);
+        Assert.AreEqual(5, graph.TriplesCount);
+        Assert.AreEqual(1, graph[triple.ReificationSubject, RDFVocabulary.RDF.REIFIES, null, null].TriplesCount);
+        Assert.AreEqual(1, graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM, null].TriplesCount);
+        Assert.AreEqual(1, graph[null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)triple.Subject, null].TriplesCount);
+        Assert.AreEqual(1, graph[null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)triple.Predicate, null].TriplesCount);
+        Assert.AreEqual(1, graph[null, RDFVocabulary.RDF.TT_OBJECT, null, (RDFLiteral)triple.Object].TriplesCount);
+    }
+
+    [DataTestMethod]
+    [DataRow("http://example.org/subj", "http://example.org/pred", "test")]
+    public async Task ShouldReifySPLTripleAsTripleTermAsync(string s, string p, string l)
+    {
+        RDFResource subj = new RDFResource(s);
+        RDFResource pred = new RDFResource(p);
+        RDFPlainLiteral lit = new RDFPlainLiteral(l);
+
+        RDFTriple triple = new RDFTriple(subj, pred, lit);
+        RDFGraph graph = await triple.ReifyTripleAsTripleTermAsync();
+        Assert.IsNotNull(graph);
+        Assert.AreEqual(5, graph.TriplesCount);
+        Assert.AreEqual(1, graph[triple.ReificationSubject, RDFVocabulary.RDF.REIFIES, null, null].TriplesCount);
+        Assert.AreEqual(1, graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM, null].TriplesCount);
+        Assert.AreEqual(1, graph[null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)triple.Subject, null].TriplesCount);
+        Assert.AreEqual(1, graph[null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)triple.Predicate, null].TriplesCount);
+        Assert.AreEqual(1, graph[null, RDFVocabulary.RDF.TT_OBJECT, null, (RDFLiteral)triple.Object].TriplesCount);
+    }
     #endregion
 }

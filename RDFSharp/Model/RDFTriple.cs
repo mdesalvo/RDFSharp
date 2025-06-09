@@ -148,10 +148,35 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
+        /// Builds the reification graph of the triple using rdf:TripleTerm syntax (RDF 1.2)
+        /// </summary>
+        public RDFGraph ReifyTripleAsTripleTerm()
+        {
+            RDFGraph reifGraph = new RDFGraph();
+            RDFResource ttIdentifier = new RDFResource($"bnode:TT{TripleID}");
+
+            reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.REIFIES, ttIdentifier));
+            reifGraph.AddTriple(new RDFTriple(ttIdentifier, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM));
+            reifGraph.AddTriple(new RDFTriple(ttIdentifier, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)Subject));
+            reifGraph.AddTriple(new RDFTriple(ttIdentifier, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)Predicate));
+            reifGraph.AddTriple(TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
+                ? new RDFTriple(ttIdentifier, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)Object)
+                : new RDFTriple(ttIdentifier, RDFVocabulary.RDF.TT_OBJECT, (RDFLiteral)Object));
+
+            return reifGraph;
+        }
+
+        /// <summary>
         /// Asynchronously builds the reification graph of the triple
         /// </summary>
         public Task<RDFGraph> ReifyTripleAsync()
             => Task.Run(ReifyTriple);
+
+        /// <summary>
+        /// Asynchronously builds the reification graph of the triple using rdf:TripleTerm syntax (RDF 1.2)
+        /// </summary>
+        public Task<RDFGraph> ReifyTripleAsTripleTermAsync()
+            => Task.Run(ReifyTripleAsTripleTerm);
         #endregion
     }
 
