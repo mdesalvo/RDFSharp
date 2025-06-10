@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using RDFSharp.Query;
 
@@ -131,12 +132,14 @@ namespace RDFSharp.Model
 
         #region Methods
         /// <summary>
-        /// Builds the reification graph of the triple
+        /// Builds the reification graph of the triple and includes the given annotations.<br/>
+        /// Use this method to assert knowledge about the triple when it IS NOT rdf:TripleTerm
         /// </summary>
-        public RDFGraph ReifyTriple()
+        public RDFGraph ReifyTriple(List<(RDFResource annPredicate,RDFPatternMember annObject)> tripleAnnotations=null)
         {
             RDFGraph reifGraph = new RDFGraph();
 
+            // Standard reification
             reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
             reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)Subject));
             reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)Predicate));
@@ -144,17 +147,43 @@ namespace RDFSharp.Model
                 ? new RDFTriple(ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)Object)
                 : new RDFTriple(ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)Object));
 
+            // Linked annotations
+            if (tripleAnnotations?.Count > 0)
+            {
+                foreach ((RDFResource annPredicate, RDFPatternMember annObject) in tripleAnnotations)
+                {
+                    switch (annObject)
+                    {
+                        case RDFResource annObjRes:
+                            reifGraph.AddTriple(new RDFTriple(ReificationSubject, annPredicate, annObjRes));
+                            break;
+                        case RDFLiteral annObjLit:
+                            reifGraph.AddTriple(new RDFTriple(ReificationSubject, annPredicate, annObjLit));
+                            break;
+                    }
+                }
+            }
+
             return reifGraph;
         }
 
         /// <summary>
-        /// Builds the reification graph of the triple using rdf:TripleTerm syntax (RDF 1.2)
+        /// Asynchronously builds the reification graph of the triple and includes the given annotations.<br/>
+        /// Use this method to assert knowledge about the triple when it IS NOT rdf:TripleTerm
         /// </summary>
-        public RDFGraph ReifyTripleAsTripleTerm()
+        public Task<RDFGraph> ReifyTripleAsync(List<(RDFResource annPredicate, RDFPatternMember annObject)> tripleAnnotations = null)
+            => Task.Run(() => ReifyTriple(tripleAnnotations));
+
+        /// <summary>
+        /// Builds the reification graph of the triple and includes the given annotations.<br/>
+        /// Use this method to assert knowledge about the triple when it IS rdf:TripleTerm (RDF 1.2)
+        /// </summary>
+        public RDFGraph ReifyTripleTerm(List<(RDFResource annPredicate, RDFPatternMember annObject)> tripleAnnotations=null)
         {
             RDFGraph reifGraph = new RDFGraph();
             RDFResource ttIdentifier = new RDFResource($"bnode:TT{TripleID}");
 
+            // TripleTerm reification
             reifGraph.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.REIFIES, ttIdentifier));
             reifGraph.AddTriple(new RDFTriple(ttIdentifier, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM));
             reifGraph.AddTriple(new RDFTriple(ttIdentifier, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)Subject));
@@ -163,20 +192,32 @@ namespace RDFSharp.Model
                 ? new RDFTriple(ttIdentifier, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)Object)
                 : new RDFTriple(ttIdentifier, RDFVocabulary.RDF.TT_OBJECT, (RDFLiteral)Object));
 
+            // Linked annotations
+            if (tripleAnnotations?.Count > 0)
+            {
+                foreach ((RDFResource annPredicate, RDFPatternMember annObject) in tripleAnnotations)
+                {
+                    switch (annObject)
+                    {
+                        case RDFResource annObjRes:
+                            reifGraph.AddTriple(new RDFTriple(ReificationSubject, annPredicate, annObjRes));
+                            break;
+                        case RDFLiteral annObjLit:
+                            reifGraph.AddTriple(new RDFTriple(ReificationSubject, annPredicate, annObjLit));
+                            break;
+                    }
+                }
+            }
+
             return reifGraph;
         }
 
         /// <summary>
-        /// Asynchronously builds the reification graph of the triple
+        /// Asynchonously builds the reification graph of the triple and includes the given annotations.<br/>
+        /// Use this method to assert knowledge about the triple when it IS rdf:TripleTerm (RDF 1.2)
         /// </summary>
-        public Task<RDFGraph> ReifyTripleAsync()
-            => Task.Run(ReifyTriple);
-
-        /// <summary>
-        /// Asynchronously builds the reification graph of the triple using rdf:TripleTerm syntax (RDF 1.2)
-        /// </summary>
-        public Task<RDFGraph> ReifyTripleAsTripleTermAsync()
-            => Task.Run(ReifyTripleAsTripleTerm);
+        public Task<RDFGraph> ReifyTripleTermAsync(List<(RDFResource annPredicate, RDFPatternMember annObject)> tripleAnnotations=null)
+            => Task.Run(() => ReifyTripleTerm(tripleAnnotations));
         #endregion
     }
 
