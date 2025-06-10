@@ -68,8 +68,7 @@ namespace RDFSharp.Query
             #region Typed Literal
             string tLitValue = pMember.Substring(0, lastIndexOfDatatype);
             string tLitDatatype = pMember.Substring(lastIndexOfDatatype + 2);
-            RDFTypedLiteral tLit = new RDFTypedLiteral(tLitValue, RDFDatatypeRegister.GetDatatype(tLitDatatype));
-            return tLit;
+            return new RDFTypedLiteral(tLitValue, RDFDatatypeRegister.GetDatatype(tLitDatatype));
             #endregion
         }
 
@@ -273,7 +272,8 @@ namespace RDFSharp.Query
                 HashSet<long> lookup = new HashSet<long>();
                 elements.ForEach(element =>
                 {
-                    if (lookup.Add(element.PatternMemberID)) results.Add(element);
+                    if (lookup.Add(element.PatternMemberID))
+                        results.Add(element);
                 });
             }
             return results;
