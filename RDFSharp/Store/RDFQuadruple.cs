@@ -14,9 +14,11 @@
    limitations under the License.
 */
 
-using System;
 using RDFSharp.Model;
 using RDFSharp.Query;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Store
 {
@@ -157,12 +159,14 @@ namespace RDFSharp.Store
 
         #region Methods
         /// <summary>
-        /// Builds the reification store of the quadruple
+        /// Builds the reification store of the quadruple and includes the given annotations.<br/>
+        /// Use this method to assert knowledge about the quadruple when it IS NOT rdf:TripleTerm
         /// </summary>
-        public RDFMemoryStore ReifyQuadruple()
+        public RDFMemoryStore ReifyQuadruple(List<(RDFResource annPredicate, RDFPatternMember annObject)> quadrupleAnnotations=null)
         {
             RDFMemoryStore reifStore = new RDFMemoryStore();
 
+            // Standard reification
             reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
             reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)Subject));
             reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)Predicate));
@@ -170,8 +174,77 @@ namespace RDFSharp.Store
                 ? new RDFQuadruple((RDFContext)Context, ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)Object)
                 : new RDFQuadruple((RDFContext)Context, ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)Object));
 
+            // Linked annotations
+            if (quadrupleAnnotations?.Count > 0)
+            {
+                foreach ((RDFResource annPredicate, RDFPatternMember annObject) in quadrupleAnnotations)
+                {
+                    switch (annObject)
+                    {
+                        case RDFResource annObjRes:
+                            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ReificationSubject, annPredicate, annObjRes));
+                            break;
+                        case RDFLiteral annObjLit:
+                            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ReificationSubject, annPredicate, annObjLit));
+                            break;
+                    }
+                }
+            }
+
             return reifStore;
         }
+
+        /// <summary>
+        /// Asynchronously builds the reification store of the quadruple and includes the given annotations.<br/>
+        /// Use this method to assert knowledge about the quadruple when it IS NOT rdf:TripleTerm
+        /// </summary>
+        public Task<RDFMemoryStore> ReifyQuadrupleAsync(List<(RDFResource annPredicate, RDFPatternMember annObject)> quadrupleAnnotations=null)
+            => Task.Run(() => ReifyQuadruple(quadrupleAnnotations));
+
+        /// <summary>
+        /// Builds the reification store of the quadruple and includes the given annotations.<br/>
+        /// Use this method to assert knowledge about the quadruple when it IS rdf:TripleTerm
+        /// </summary>
+        public RDFMemoryStore ReifyQuadrupleTerm(List<(RDFResource annPredicate, RDFPatternMember annObject)> quadrupleAnnotations=null)
+        {
+            RDFMemoryStore reifStore = new RDFMemoryStore();
+            RDFResource ttIdentifier = new RDFResource($"bnode:TT{QuadrupleID}");
+
+            // TripleTerm reification
+            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ReificationSubject, RDFVocabulary.RDF.REIFIES, ttIdentifier));
+            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ttIdentifier, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM));
+            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ttIdentifier, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)Subject));
+            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ttIdentifier, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)Predicate));
+            reifStore.AddQuadruple(TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
+                ? new RDFQuadruple((RDFContext)Context, ttIdentifier, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)Object)
+                : new RDFQuadruple((RDFContext)Context, ttIdentifier, RDFVocabulary.RDF.TT_OBJECT, (RDFLiteral)Object));
+
+            // Linked annotations
+            if (quadrupleAnnotations?.Count > 0)
+            {
+                foreach ((RDFResource annPredicate, RDFPatternMember annObject) in quadrupleAnnotations)
+                {
+                    switch (annObject)
+                    {
+                        case RDFResource annObjRes:
+                            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ReificationSubject, annPredicate, annObjRes));
+                            break;
+                        case RDFLiteral annObjLit:
+                            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)Context, ReificationSubject, annPredicate, annObjLit));
+                            break;
+                    }
+                }
+            }
+
+            return reifStore;
+        }
+
+        /// <summary>
+        /// Asynchronously builds the reification store of the quadruple and includes the given annotations.<br/>
+        /// Use this method to assert knowledge about the quadruple when it IS rdf:TripleTerm
+        /// </summary>
+        public Task<RDFMemoryStore> ReifyQuadrupleTermAsync(List<(RDFResource annPredicate, RDFPatternMember annObject)> quadrupleAnnotations = null)
+            => Task.Run(() => ReifyQuadrupleTerm(quadrupleAnnotations));
         #endregion
     }
 
