@@ -20,4 +20,5 @@ jobs:
       run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" -c Release
     - name: Coveralls
       uses: coverallsapp/github-action@v2
-      github-token: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
