@@ -20,7 +20,7 @@ using System.Text.RegularExpressions;
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFPlainLiteral represents a literal eventually decorated with a language tag
+    /// RDFPlainLiteral represents a literal which can be eventually decorated with a language tag and a base direction
     /// </summary>
     public sealed class RDFPlainLiteral : RDFLiteral
     {
