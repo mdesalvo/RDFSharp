@@ -969,7 +969,7 @@ namespace RDFSharp.Model
                 webRequest.MaximumAutomaticRedirections = 4;
                 webRequest.AllowAutoRedirect = true;
                 webRequest.Timeout = timeoutMilliseconds;
-                webRequest.Accept = "application/rdf+xml;text/turtle;application/turtle;application/x-turtle;application/n-triples;application/trix";
+                webRequest.Accept = "application/rdf+xml,text/turtle,application/turtle,application/x-turtle,application/n-triples,application/trix";
 
                 HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
                 if (webRequest.HaveResponse)

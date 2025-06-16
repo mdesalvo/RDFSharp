@@ -3,7 +3,7 @@
         <AssemblyTitle>RDFSharp.Test</AssemblyTitle>
         <AssemblyName>RDFSharp.Test</AssemblyName>
         <AssemblyVersion>$(Version)</AssemblyVersion>
-        <Version>3.18.1</Version>
+        <Version>3.18.2</Version>
         <Authors>Marco De Salvo</Authors>
         <Copyright>Marco De Salvo</Copyright>
         <TargetFramework>net8.0</TargetFramework>
