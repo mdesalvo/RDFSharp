@@ -58,10 +58,7 @@ namespace RDFSharp.Query
                     string pLitLng = pMember.Substring(lastIndexOfLanguage + 1);
                     return new RDFPlainLiteral(pLitVal, pLitLng);
                 }
-                else
-                {
-                    return new RDFPlainLiteral(pMember);
-                }
+                return new RDFPlainLiteral(pMember);
             }
             #endregion
 

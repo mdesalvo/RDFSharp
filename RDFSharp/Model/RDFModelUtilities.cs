@@ -212,7 +212,7 @@ namespace RDFSharp.Model
                 return null;
             if (!string.IsNullOrEmpty(uri.Fragment))
                 return uri.Fragment.TrimStart('#');
-            else if (uri.Segments.Length > 1)
+            if (uri.Segments.Length > 1)
                 return uri.Segments.Last();
             return uri.ToString();
         }
