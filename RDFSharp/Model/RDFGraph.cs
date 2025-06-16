@@ -969,16 +969,7 @@ namespace RDFSharp.Model
                 webRequest.MaximumAutomaticRedirections = 4;
                 webRequest.AllowAutoRedirect = true;
                 webRequest.Timeout = timeoutMilliseconds;
-                //RDF/XML
-                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml");
-                //TURTLE
-                webRequest.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
-                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
-                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/x-turtle");
-                //N-TRIPLES
-                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/n-triples");
-                //TRIX
-                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/trix");
+                webRequest.Accept = "application/rdf+xml;text/turtle;application/turtle;application/x-turtle;application/n-triples;application/trix";
 
                 HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
                 if (webRequest.HaveResponse)
@@ -997,7 +988,7 @@ namespace RDFSharp.Model
                     //RDF/XML
                     if (responseContentType.Contains("application/rdf+xml"))
                     {
-                        graph = FromStream(RDFModelEnums.RDFFormats.RdfXml, webResponse.GetResponseStream(), webRequest.Address);
+                        graph = FromStream(RDFModelEnums.RDFFormats.RdfXml, webResponse.GetResponseStream(), remappedUri);
                     }
 
                     //TURTLE
@@ -1005,19 +996,19 @@ namespace RDFSharp.Model
                                 responseContentType.Contains("application/turtle") ||
                                    responseContentType.Contains("application/x-turtle"))
                     {
-                        graph = FromStream(RDFModelEnums.RDFFormats.Turtle, webResponse.GetResponseStream(), webRequest.Address);
+                        graph = FromStream(RDFModelEnums.RDFFormats.Turtle, webResponse.GetResponseStream(), remappedUri);
                     }
 
                     //N-TRIPLES
                     else if (responseContentType.Contains("application/n-triples"))
                     {
-                        graph = FromStream(RDFModelEnums.RDFFormats.NTriples, webResponse.GetResponseStream(), webRequest.Address);
+                        graph = FromStream(RDFModelEnums.RDFFormats.NTriples, webResponse.GetResponseStream(), remappedUri);
                     }
 
                     //TRIX
                     else if (responseContentType.Contains("application/trix"))
                     {
-                        graph = FromStream(RDFModelEnums.RDFFormats.TriX, webResponse.GetResponseStream(), webRequest.Address);
+                        graph = FromStream(RDFModelEnums.RDFFormats.TriX, webResponse.GetResponseStream(), remappedUri);
                     }
                 }
             }

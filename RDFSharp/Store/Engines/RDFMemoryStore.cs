@@ -859,12 +859,7 @@ namespace RDFSharp.Store
                 webRequest.MaximumAutomaticRedirections = 4;
                 webRequest.AllowAutoRedirect = true;
                 webRequest.Timeout = timeoutMilliseconds;
-                //N-QUADS
-                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/n-quads");
-                //TRIX
-                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/trix");
-                //TRIG
-                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/trig");
+                webRequest.Accept = "application/n-quads;application/trix;application/trig";
 
                 HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
                 if (webRequest.HaveResponse)
