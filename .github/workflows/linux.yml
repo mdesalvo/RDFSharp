@@ -17,4 +17,9 @@ jobs:
     - name: Build
       run: dotnet build -c Release
     - name: Test
-      run: dotnet test --no-build --verbosity normal -c Release
+      run: dotnet test -c Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
+    - name: Coverage
+      uses: codecov/codecov-action@v5
+      with:
+        fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
