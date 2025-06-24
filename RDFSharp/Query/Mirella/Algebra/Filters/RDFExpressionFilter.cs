@@ -27,16 +27,22 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Expression to be executed by the filtering
+        /// Expression to be executed by the filtering (should return a boolean typed literal)
         /// </summary>
-        public RDFBooleanExpression Expression { get; internal set; }
+        public RDFExpression Expression { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a filter on the given expression
+        /// Default-ctor to build a filter on the given boolean expression
         /// </summary>
         public RDFExpressionFilter(RDFBooleanExpression expression)
+            => Expression = expression ?? throw new RDFQueryException("Cannot create RDFExpressionFilter because given \"expression\" parameter is null.");
+
+        /// <summary>
+        /// Default-ctor to build a filter on the given IsUri expression
+        /// </summary>
+        public RDFExpressionFilter(RDFIsUriExpression expression)
             => Expression = expression ?? throw new RDFQueryException("Cannot create RDFExpressionFilter because given \"expression\" parameter is null.");
         #endregion
 
