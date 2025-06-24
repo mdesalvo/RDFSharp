@@ -40,6 +40,12 @@ namespace RDFSharp.Query
             => Expression = expression ?? throw new RDFQueryException("Cannot create RDFExpressionFilter because given \"expression\" parameter is null.");
 
         /// <summary>
+        /// Default-ctor to build a filter on the given IsLiteral expression
+        /// </summary>
+        public RDFExpressionFilter(RDFIsLiteralExpression expression)
+            => Expression = expression ?? throw new RDFQueryException("Cannot create RDFExpressionFilter because given \"expression\" parameter is null.");
+
+        /// <summary>
         /// Default-ctor to build a filter on the given IsUri expression
         /// </summary>
         public RDFExpressionFilter(RDFIsUriExpression expression)

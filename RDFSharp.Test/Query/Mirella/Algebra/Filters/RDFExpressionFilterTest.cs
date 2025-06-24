@@ -45,6 +45,27 @@ public class RDFExpressionFilterTest
     }
 
     [TestMethod]
+    public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullBooleanExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFBooleanExpression));
+
+    [TestMethod]
+    public void ShouldCreateExpressionFilterWithIsLiteralExpression()
+    {
+        RDFExpressionFilter filter = new RDFExpressionFilter(
+            new RDFIsLiteralExpression(new RDFVariableExpression(new RDFVariable("?V1"))));
+
+        Assert.IsNotNull(filter);
+        Assert.IsNotNull(filter.Expression);
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (ISLITERAL(?V1)) )"));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (ISLITERAL(?V1)) )"));
+        Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullIsLiteralExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFIsLiteralExpression));
+
+    [TestMethod]
     public void ShouldCreateExpressionFilterWithIsUriExpression()
     {
         RDFExpressionFilter filter = new RDFExpressionFilter(
@@ -56,10 +77,6 @@ public class RDFExpressionFilterTest
         Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (ISURI(?V1)) )"));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
-
-    [TestMethod]
-    public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullBooleanExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFBooleanExpression));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullIsUriExpression()
@@ -117,6 +134,30 @@ public class RDFExpressionFilterTest
 
         Assert.IsTrue(keepRow);
         Assert.IsTrue(string.Equals(filter.ToString(), "FILTER ( (((STRLEN(?A)) > 35) || (STRSTARTS(?B, \"pol\"^^<http://www.w3.org/2001/XMLSchema#string>))) )"));
+    }
+
+    [TestMethod]
+    public void ShouldCreateExpressionFilterWithIsuriExpressionAndKeepRow()
+    {
+        DataTable table = new DataTable();
+        table.Columns.Add("?A", typeof(string));
+        table.Columns.Add("?B", typeof(string));
+        DataRow row = table.NewRow();
+        row["?A"] = new RDFResource("http://example.org/").ToString();
+        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+        table.Rows.Add(row);
+        table.AcceptChanges();
+
+        RDFExpressionFilter filter = new RDFExpressionFilter(
+            new RDFBooleanAndExpression(
+                new RDFIsUriExpression(new RDFVariable("?A")),
+                new RDFStartsExpression(
+                    new RDFVariable("?B"),
+                    new RDFConstantExpression(new RDFTypedLiteral("he", RDFModelEnums.RDFDatatypes.XSD_STRING)))));
+        bool keepRow = filter.ApplyFilter(table.Rows[0], false);
+
+        Assert.IsTrue(keepRow);
+        Assert.IsTrue(string.Equals(filter.ToString(), "FILTER ( ((ISURI(?A)) && (STRSTARTS(?B, \"he\"^^<http://www.w3.org/2001/XMLSchema#string>))) )"));
     }
 
     [TestMethod]
