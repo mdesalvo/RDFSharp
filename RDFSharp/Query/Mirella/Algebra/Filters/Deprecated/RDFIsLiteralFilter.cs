@@ -24,6 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFIsLiteralFilter represents a filter for literal values of a variable.
     /// </summary>
+    [Obsolete("This filter is going to be replaced by RDFExpressionFilter(RDFIsLiteralExpression)")]
     public sealed class RDFIsLiteralFilter : RDFFilter
     {
         #region Properties
