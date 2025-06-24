@@ -24,6 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFIsUriFilter represents a filter for Uri values of a variable.
     /// </summary>
+    [Obsolete("This filter is going to be replaced by RDFExpressionFilter(RDFIsUriExpression)")]
     public sealed class RDFIsUriFilter : RDFFilter
     {
         #region Properties
