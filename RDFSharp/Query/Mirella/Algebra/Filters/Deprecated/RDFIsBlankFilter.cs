@@ -24,6 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFIsBlankFilter represents a filter for Blank Uri values of a variable.
     /// </summary>
+    [Obsolete("This filter is going to be replaced by RDFExpressionFilter(RDFIsBlankExpression) in v3.20")]
     public sealed class RDFIsBlankFilter : RDFFilter
     {
         #region Properties
