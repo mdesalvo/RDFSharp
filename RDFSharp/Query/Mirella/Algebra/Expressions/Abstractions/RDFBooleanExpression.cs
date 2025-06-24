@@ -61,8 +61,10 @@ namespace RDFSharp.Query
                      && leftArgumentTypedLiteral.HasBooleanDatatype()
                      && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
                      && rightArgumentTypedLiteral.HasBooleanDatatype())
+                {
                     if (bool.TryParse(leftArgumentTypedLiteral.Value, out bool leftArgumentBooleanValue)
-                        && bool.TryParse(rightArgumentTypedLiteral.Value, out bool rightArgumentBooleanValue))
+                         && bool.TryParse(rightArgumentTypedLiteral.Value, out bool rightArgumentBooleanValue))
+                    {
                         switch (this)
                         {
                             //Execute the boolean expression's comparison logics
@@ -73,7 +75,8 @@ namespace RDFSharp.Query
                                 expressionResult = leftArgumentBooleanValue || rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                                 break;
                         }
-
+                    }
+                }
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
