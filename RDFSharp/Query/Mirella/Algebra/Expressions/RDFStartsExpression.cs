@@ -44,7 +44,7 @@ namespace RDFSharp.Query
         public RDFStartsExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a a string starts function with given arguments
+        /// Default-ctor to build a string starts function with given arguments
         /// </summary>
         public RDFStartsExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
         #endregion

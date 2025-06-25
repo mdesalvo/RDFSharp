@@ -23,35 +23,35 @@ using RDFSharp.Model;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFEndsExpression represents a string ends function to be applied on a query results table.
+    /// RDFSameTermExpression represents a RDF term equality function to be applied on a query results table.
     /// </summary>
-    public sealed class RDFEndsExpression : RDFExpression
+    public sealed class RDFSameTermExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a string ends function with given arguments
+        /// Default-ctor to build a RDF term equality function with given arguments
         /// </summary>
-        public RDFEndsExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFSameTermExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string ends function with given arguments
+        /// Default-ctor to build a RDF term equality function with given arguments
         /// </summary>
-        public RDFEndsExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFSameTermExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string ends function with given arguments
+        /// Default-ctor to build a RDF term equality function with given arguments
         /// </summary>
-        public RDFEndsExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFSameTermExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string ends function with given arguments
+        /// Default-ctor to build a RDF term equality function with given arguments
         /// </summary>
-        public RDFEndsExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFSameTermExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the string ends function
+        /// Gives the string representation of the RDF term equality function
         /// </summary>
         public override string ToString()
             => ToString(new List<RDFNamespace>());
@@ -59,8 +59,8 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(STRENDS(L,R))
-            sb.Append("(STRENDS(");
+            //(SAMETERM(L,R))
+            sb.Append("(SAMETERM(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
@@ -78,7 +78,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the string ends function on the given datarow
+        /// Applies the RDF term equality function on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {
@@ -110,43 +110,8 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-
-                switch (leftArgumentPMember)
-                {
-                    //Transform left argument result into a plain literal
-                    case RDFResource _:
-                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMember.ToString());
-                        break;
-                    case RDFPlainLiteral plitLeftArgumentPMember:
-                        leftArgumentPMember = new RDFPlainLiteral(plitLeftArgumentPMember.Value);
-                        break;
-                    case RDFTypedLiteral tlitLeftArgumentPMember when tlitLeftArgumentPMember.HasStringDatatype():
-                        leftArgumentPMember = new RDFPlainLiteral(tlitLeftArgumentPMember.Value);
-                        break;
-                    default:
-                        leftArgumentPMember = null; //binding error => cleanup
-                        break;
-                }
-
-                switch (rightArgumentPMember)
-                {
-                    //Transform right argument result into a plain literal
-                    case RDFResource _:
-                        rightArgumentPMember = new RDFPlainLiteral(rightArgumentPMember.ToString());
-                        break;
-                    case RDFPlainLiteral plitRightArgumentPMember:
-                        rightArgumentPMember = new RDFPlainLiteral(plitRightArgumentPMember.Value);
-                        break;
-                    case RDFTypedLiteral tlitRightArgumentPMember when tlitRightArgumentPMember.HasStringDatatype():
-                        rightArgumentPMember = new RDFPlainLiteral(tlitRightArgumentPMember.Value);
-                        break;
-                    default:
-                        rightArgumentPMember = null; //binding error => cleanup
-                        break;
-                }
-
                 if (leftArgumentPMember != null && rightArgumentPMember != null)
-                    expressionResult = leftArgumentPMember.ToString().EndsWith(rightArgumentPMember.ToString(), StringComparison.Ordinal) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    expressionResult = leftArgumentPMember.Equals(rightArgumentPMember) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }

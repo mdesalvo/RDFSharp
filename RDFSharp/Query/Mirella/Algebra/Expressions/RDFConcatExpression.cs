@@ -43,7 +43,7 @@ namespace RDFSharp.Query
         public RDFConcatExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a a string concat function with given arguments
+        /// Default-ctor to build a string concat function with given arguments
         /// </summary>
         public RDFConcatExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
         #endregion

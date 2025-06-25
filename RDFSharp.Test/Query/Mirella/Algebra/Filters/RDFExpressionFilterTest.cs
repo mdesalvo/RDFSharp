@@ -134,6 +134,23 @@ public class RDFExpressionFilterTest
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFIsUriExpression));
 
     [TestMethod]
+    public void ShouldCreateExpressionFilterWithSameTermExpression()
+    {
+        RDFExpressionFilter filter = new RDFExpressionFilter(
+            new RDFSameTermExpression(new RDFVariableExpression(new RDFVariable("?V1")), new RDFVariableExpression(new RDFVariable("?V2"))));
+
+        Assert.IsNotNull(filter);
+        Assert.IsNotNull(filter.Expression);
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (SAMETERM(?V1, ?V2)) )"));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (SAMETERM(?V1, ?V2)) )"));
+        Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullSameTermExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFSameTermExpression));
+
+    [TestMethod]
     public void ShouldCreateExpressionFilterAndKeepRow()
     {
         DataTable table = new DataTable();
@@ -188,7 +205,7 @@ public class RDFExpressionFilterTest
     }
 
     [TestMethod]
-    public void ShouldCreateExpressionFilterWithIsuriExpressionAndKeepRow()
+    public void ShouldCreateExpressionFilterWithIsUriExpressionAndKeepRow()
     {
         DataTable table = new DataTable();
         table.Columns.Add("?A", typeof(string));

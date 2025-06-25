@@ -43,7 +43,7 @@ namespace RDFSharp.Query
         public RDFCoalesceExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a a string coalesce function with given arguments
+        /// Default-ctor to build a string coalesce function with given arguments
         /// </summary>
         public RDFCoalesceExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
         #endregion

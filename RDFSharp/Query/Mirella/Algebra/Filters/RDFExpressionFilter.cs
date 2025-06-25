@@ -68,6 +68,11 @@ namespace RDFSharp.Query
         /// Default-ctor to build a filter on the given IsUri expression
         /// </summary>
         public RDFExpressionFilter(RDFIsUriExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Default-ctor to build a filter on the given SameTerm expression
+        /// </summary>
+        public RDFExpressionFilter(RDFSameTermExpression expression) : this(expression, true) { }
         #endregion
 
         #region Interfaces
