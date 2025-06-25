@@ -163,7 +163,8 @@ public class RDFIsUriExpressionTest
             new RDFVariableExpression(new RDFVariable("?Q")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
-        Assert.IsNull(expressionResult);
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
     }
 
     [TestMethod]

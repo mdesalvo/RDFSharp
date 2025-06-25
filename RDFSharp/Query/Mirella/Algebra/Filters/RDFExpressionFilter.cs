@@ -55,6 +55,11 @@ namespace RDFSharp.Query
         public RDFExpressionFilter(RDFIsLiteralExpression expression) : this(expression, true) { }
 
         /// <summary>
+        /// Default-ctor to build a filter on the given IsNumeric expression
+        /// </summary>
+        public RDFExpressionFilter(RDFIsNumericExpression expression) : this(expression, true) { }
+
+        /// <summary>
         /// Default-ctor to build a filter on the given IsUri expression
         /// </summary>
         public RDFExpressionFilter(RDFIsUriExpression expression) : this(expression, true) { }

@@ -86,7 +86,7 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                expressionResult = Uri.TryCreate(leftArgumentPMember.ToString(), UriKind.Absolute, out Uri leftArgUri) 
+                expressionResult = Uri.TryCreate(leftArgumentPMember?.ToString(), UriKind.Absolute, out Uri leftArgUri)
                                     && leftArgUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
                                     ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                 #endregion

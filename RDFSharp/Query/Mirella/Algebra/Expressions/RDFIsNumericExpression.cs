@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -23,25 +22,25 @@ using RDFSharp.Model;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFIsLiteralExpression represents a literal-checking function to be applied on a query results table.
+    /// RDFIsNumericExpression represents a number-checking function to be applied on a query results table.
     /// </summary>
-    public sealed class RDFIsLiteralExpression : RDFExpression
+    public sealed class RDFIsNumericExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a literal-checking function with given arguments
+        /// Default-ctor to build a number-checking function with given arguments
         /// </summary>
-        public RDFIsLiteralExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFIsNumericExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a literal-checking function with given arguments
+        /// Default-ctor to build a number-checking function with given arguments
         /// </summary>
-        public RDFIsLiteralExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFIsNumericExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the literal-checking function
+        /// Gives the string representation of the number-checking function
         /// </summary>
         public override string ToString()
             => ToString(new List<RDFNamespace>());
@@ -49,8 +48,8 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(ISLITERAL(L))
-            sb.Append("(ISLITERAL(");
+            //(ISNUMERIC(L))
+            sb.Append("(ISNUMERIC(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
@@ -63,7 +62,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the literal-checking function on the given datarow
+        /// Applies the number-checking function on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {
@@ -86,8 +85,9 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                expressionResult = Uri.TryCreate(leftArgumentPMember?.ToString(), UriKind.Absolute, out _)
-                                    ? RDFTypedLiteral.False : RDFTypedLiteral.True;
+                expressionResult = leftArgumentPMember is RDFTypedLiteral leftArgumentPMemberTLit
+                                    && leftArgumentPMemberTLit.HasDecimalDatatype()
+                                    ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }

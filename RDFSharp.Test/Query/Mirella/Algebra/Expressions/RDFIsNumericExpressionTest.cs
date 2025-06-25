@@ -22,42 +22,42 @@ using RDFSharp.Query;
 namespace RDFSharp.Test.Query;
 
 [TestClass]
-public class RDFIsLiteralExpressionTest
+public class RDFIsNumericExpressionTest
 {
     #region Tests
     [TestMethod]
-    public void ShouldCreateIsLiteralExpressionWithExpression()
+    public void ShouldCreateIsNumericExpressionWithExpression()
     {
-        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+        RDFIsNumericExpression expression = new RDFIsNumericExpression(
             new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")));
 
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(ISLITERAL((?V1 + ?V2)))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(ISLITERAL((?V1 + ?V2)))"));
+        Assert.IsTrue(expression.ToString().Equals("(ISNUMERIC((?V1 + ?V2)))"));
+        Assert.IsTrue(expression.ToString([]).Equals("(ISNUMERIC((?V1 + ?V2)))"));
     }
 
     [TestMethod]
-    public void ShouldCreateIsLiteralExpressionWithVariable()
+    public void ShouldCreateIsNumericExpressionWithVariable()
     {
-        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+        RDFIsNumericExpression expression = new RDFIsNumericExpression(
             new RDFVariable("?V1"));
 
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(ISLITERAL(?V1))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(ISLITERAL(?V1))"));
+        Assert.IsTrue(expression.ToString().Equals("(ISNUMERIC(?V1))"));
+        Assert.IsTrue(expression.ToString([]).Equals("(ISNUMERIC(?V1))"));
     }
 
     [TestMethod]
-    public void ShouldThrowExceptionOnCreatingIsLiteralExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFIsLiteralExpression(null as RDFExpression));
+    public void ShouldThrowExceptionOnCreatingIsNumericExpressionWithExpressionBecauseNullLeftArgument()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFIsNumericExpression(null as RDFExpression));
 
     [TestMethod]
-    public void ShouldThrowExceptionOnCreatingIsLiteralExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFIsLiteralExpression(null as RDFVariable));
+    public void ShouldThrowExceptionOnCreatingIsNumericExpressionWithVariableBecauseNullLeftArgument()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFIsNumericExpression(null as RDFVariable));
 
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNull()
@@ -69,12 +69,12 @@ public class RDFIsLiteralExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+        RDFIsNumericExpression expression = new RDFIsNumericExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNotNull(expressionResult);
-        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
     }
 
     [TestMethod]
@@ -87,12 +87,12 @@ public class RDFIsLiteralExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+        RDFIsNumericExpression expression = new RDFIsNumericExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNotNull(expressionResult);
-        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
     }
 
     [TestMethod]
@@ -105,12 +105,12 @@ public class RDFIsLiteralExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+        RDFIsNumericExpression expression = new RDFIsNumericExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNotNull(expressionResult);
-        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
     }
 
     [TestMethod]
@@ -123,7 +123,25 @@ public class RDFIsLiteralExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+        RDFIsNumericExpression expression = new RDFIsNumericExpression(
+            new RDFVariableExpression(new RDFVariable("?A")));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
+    }
+
+    [TestMethod]
+    public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNumericTypedLiteral()
+    {
+        DataTable table = new DataTable();
+        table.Columns.Add("?A", typeof(string));
+        DataRow row = table.NewRow();
+        row["?A"] = new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_BYTE).ToString();
+        table.Rows.Add(row);
+        table.AcceptChanges();
+
+        RDFIsNumericExpression expression = new RDFIsNumericExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -141,7 +159,7 @@ public class RDFIsLiteralExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+        RDFIsNumericExpression expression = new RDFIsNumericExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -159,12 +177,12 @@ public class RDFIsLiteralExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+        RDFIsNumericExpression expression = new RDFIsNumericExpression(
             new RDFVariableExpression(new RDFVariable("?Q")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNotNull(expressionResult);
-        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
     }
 
     [TestMethod]
@@ -177,12 +195,12 @@ public class RDFIsLiteralExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+        RDFIsNumericExpression expression = new RDFIsNumericExpression(
             new RDFVariable("?A"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNotNull(expressionResult);
-        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
     }
 
     [TestMethod]
@@ -195,12 +213,12 @@ public class RDFIsLiteralExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+        RDFIsNumericExpression expression = new RDFIsNumericExpression(
             new RDFVariable("?A"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNotNull(expressionResult);
-        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
     }
 
     [TestMethod]
@@ -213,12 +231,12 @@ public class RDFIsLiteralExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+        RDFIsNumericExpression expression = new RDFIsNumericExpression(
             new RDFVariable("?A"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNotNull(expressionResult);
-        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
     }
 
     [TestMethod]
@@ -231,7 +249,25 @@ public class RDFIsLiteralExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+        RDFIsNumericExpression expression = new RDFIsNumericExpression(
+            new RDFVariable("?A"));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
+    }
+
+    [TestMethod]
+    public void ShouldApplyExpressionWithVariableAndCalculateResultOnNumericTypedLiteral()
+    {
+        DataTable table = new DataTable();
+        table.Columns.Add("?A", typeof(string));
+        DataRow row = table.NewRow();
+        row["?A"] = new RDFTypedLiteral("8.14", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+        table.Rows.Add(row);
+        table.AcceptChanges();
+
+        RDFIsNumericExpression expression = new RDFIsNumericExpression(
             new RDFVariable("?A"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -249,7 +285,7 @@ public class RDFIsLiteralExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+        RDFIsNumericExpression expression = new RDFIsNumericExpression(
             new RDFVariable("?A"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
@@ -267,7 +303,7 @@ public class RDFIsLiteralExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+        RDFIsNumericExpression expression = new RDFIsNumericExpression(
             new RDFVariable("?Q"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 

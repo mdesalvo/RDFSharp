@@ -83,6 +83,23 @@ public class RDFExpressionFilterTest
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFIsLiteralExpression));
 
     [TestMethod]
+    public void ShouldCreateExpressionFilterWithIsNumericExpression()
+    {
+        RDFExpressionFilter filter = new RDFExpressionFilter(
+            new RDFIsNumericExpression(new RDFVariableExpression(new RDFVariable("?V1"))));
+
+        Assert.IsNotNull(filter);
+        Assert.IsNotNull(filter.Expression);
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (ISNUMERIC(?V1)) )"));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (ISNUMERIC(?V1)) )"));
+        Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullIsNumericExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFIsNumericExpression));
+
+    [TestMethod]
     public void ShouldCreateExpressionFilterWithIsUriExpression()
     {
         RDFExpressionFilter filter = new RDFExpressionFilter(

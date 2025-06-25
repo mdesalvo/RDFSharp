@@ -86,7 +86,7 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                expressionResult = Uri.TryCreate(leftArgumentPMember.ToString(), UriKind.Absolute, out _)
+                expressionResult = Uri.TryCreate(leftArgumentPMember?.ToString(), UriKind.Absolute, out _)
                                     ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                 #endregion
             }

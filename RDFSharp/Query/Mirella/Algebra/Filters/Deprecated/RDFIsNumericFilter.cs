@@ -14,15 +14,17 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
     /// <summary>
     /// RDFIsNumericFilter represents a filter for numeric typed literal values of a variable.
     /// </summary>
+    [Obsolete("This filter is going to be replaced by RDFExpressionFilter(RDFIsNumericExpression) in v3.20")]
     public sealed class RDFIsNumericFilter : RDFFilter
     {
         #region Properties
