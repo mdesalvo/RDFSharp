@@ -265,7 +265,7 @@ namespace RDFSharp.Query
                                 deleteWhereOperation
                                     .AddPatternGroup(new RDFPatternGroup()
                                         .AddPattern(new RDFPattern(new RDFVariable("C"), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")))
-                                        .AddFilter(new RDFBooleanNotFilter(new RDFSameTermFilter(new RDFVariable("C"), new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri)))))
+                                        .AddFilter(new RDFBooleanNotFilter(new RDFExpressionFilter(new RDFSameTermExpression(new RDFVariable("C"), new RDFConstantExpression(new RDFResource(RDFNamespaceRegister.DefaultNamespace.NamespaceUri.ToString())))))))
                                     .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFVariable("C"), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
                                 break;
 
