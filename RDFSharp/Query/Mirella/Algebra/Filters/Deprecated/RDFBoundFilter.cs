@@ -14,15 +14,17 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
     /// <summary>
     /// RDFBoundFilter represents a filter checking if a variable is bound to a value.
     /// </summary>
+    [Obsolete("This filter is going to be replaced by RDFExpressionFilter(RDFBoundExpression) in v3.20")]
     public sealed class RDFBoundFilter : RDFFilter
     {
         #region Properties

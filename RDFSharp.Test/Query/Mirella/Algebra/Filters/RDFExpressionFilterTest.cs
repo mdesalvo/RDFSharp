@@ -26,7 +26,7 @@ public class RDFExpressionFilterTest
 {
     #region Tests
     [TestMethod]
-    public void ShouldCreateExpressionFilter()
+    public void ShouldCreateExpressionFilterWithBooleanExpression()
     {
         RDFExpressionFilter filter = new RDFExpressionFilter(
             new RDFBooleanAndExpression(
@@ -47,6 +47,23 @@ public class RDFExpressionFilterTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullBooleanExpression()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFBooleanExpression));
+
+    [TestMethod]
+    public void ShouldCreateExpressionFilterWithBoundExpression()
+    {
+        RDFExpressionFilter filter = new RDFExpressionFilter(
+            new RDFBoundExpression(new RDFVariableExpression(new RDFVariable("?V1"))));
+
+        Assert.IsNotNull(filter);
+        Assert.IsNotNull(filter.Expression);
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (BOUND(?V1)) )"));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (BOUND(?V1)) )"));
+        Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullBoundExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFBoundExpression));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterWithIsBlankExpression()
