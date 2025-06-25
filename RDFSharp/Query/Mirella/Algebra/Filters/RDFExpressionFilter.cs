@@ -70,6 +70,11 @@ namespace RDFSharp.Query
         public RDFExpressionFilter(RDFIsUriExpression expression) : this(expression, true) { }
 
         /// <summary>
+        /// Default-ctor to build a filter on the given Regex expression
+        /// </summary>
+        public RDFExpressionFilter(RDFRegexExpression expression) : this(expression, true) { }
+        
+        /// <summary>
         /// Default-ctor to build a filter on the given SameTerm expression
         /// </summary>
         public RDFExpressionFilter(RDFSameTermExpression expression) : this(expression, true) { }

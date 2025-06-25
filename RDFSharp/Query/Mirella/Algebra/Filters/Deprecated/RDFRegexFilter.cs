@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -25,6 +26,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFRegexFilter represents a filter applying a regular expression on the values of a variable.
     /// </summary>
+    [Obsolete("This filter is going to be replaced by RDFExpressionFilter(RDFRegexExpression) in v3.20")]
     public sealed class RDFRegexFilter : RDFFilter
     {
         #region Properties

@@ -16,6 +16,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data;
+using System.Text.RegularExpressions;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -133,6 +134,23 @@ public class RDFExpressionFilterTest
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullIsUriExpression()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFIsUriExpression));
 
+    [TestMethod]
+    public void ShouldCreateExpressionFilterWithRegexExpression()
+    {
+        RDFExpressionFilter filter = new RDFExpressionFilter(
+            new RDFRegexExpression(new RDFVariableExpression(new RDFVariable("?V1")), new Regex("^hello$")));
+
+        Assert.IsNotNull(filter);
+        Assert.IsNotNull(filter.Expression);
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (REGEX(STR(?V1), \"^hello$\")) )"));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (REGEX(STR(?V1), \"^hello$\")) )"));
+        Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullRegexExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFRegexExpression));
+    
     [TestMethod]
     public void ShouldCreateExpressionFilterWithSameTermExpression()
     {
