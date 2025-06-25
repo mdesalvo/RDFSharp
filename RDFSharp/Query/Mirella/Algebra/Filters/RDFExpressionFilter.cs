@@ -34,22 +34,30 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
+        /// Private-ctor to build a filter on the given expression
+        /// </summary>
+        private RDFExpressionFilter(RDFExpression expression, bool _)
+            => Expression = expression ?? throw new RDFQueryException("Cannot create RDFExpressionFilter because given \"expression\" parameter is null.");
+
+        /// <summary>
         /// Default-ctor to build a filter on the given boolean expression
         /// </summary>
-        public RDFExpressionFilter(RDFBooleanExpression expression)
-            => Expression = expression ?? throw new RDFQueryException("Cannot create RDFExpressionFilter because given \"expression\" parameter is null.");
+        public RDFExpressionFilter(RDFBooleanExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Default-ctor to build a filter on the given IsBlank expression
+        /// </summary>
+        public RDFExpressionFilter(RDFIsBlankExpression expression) : this(expression, true) { }
 
         /// <summary>
         /// Default-ctor to build a filter on the given IsLiteral expression
         /// </summary>
-        public RDFExpressionFilter(RDFIsLiteralExpression expression)
-            => Expression = expression ?? throw new RDFQueryException("Cannot create RDFExpressionFilter because given \"expression\" parameter is null.");
+        public RDFExpressionFilter(RDFIsLiteralExpression expression) : this(expression, true) { }
 
         /// <summary>
         /// Default-ctor to build a filter on the given IsUri expression
         /// </summary>
-        public RDFExpressionFilter(RDFIsUriExpression expression)
-            => Expression = expression ?? throw new RDFQueryException("Cannot create RDFExpressionFilter because given \"expression\" parameter is null.");
+        public RDFExpressionFilter(RDFIsUriExpression expression) : this(expression, true) { }
         #endregion
 
         #region Interfaces

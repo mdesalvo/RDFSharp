@@ -49,6 +49,23 @@ public class RDFExpressionFilterTest
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFBooleanExpression));
 
     [TestMethod]
+    public void ShouldCreateExpressionFilterWithIsBlankExpression()
+    {
+        RDFExpressionFilter filter = new RDFExpressionFilter(
+            new RDFIsBlankExpression(new RDFVariableExpression(new RDFVariable("?V1"))));
+
+        Assert.IsNotNull(filter);
+        Assert.IsNotNull(filter.Expression);
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (ISBLANK(?V1)) )"));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (ISBLANK(?V1)) )"));
+        Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullIsBlankExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFIsBlankExpression));
+
+    [TestMethod]
     public void ShouldCreateExpressionFilterWithIsLiteralExpression()
     {
         RDFExpressionFilter filter = new RDFExpressionFilter(
