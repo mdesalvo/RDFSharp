@@ -148,7 +148,7 @@ public class RDFIsBlankExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnBlankResource()
     {
@@ -274,7 +274,7 @@ public class RDFIsBlankExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnBlankResource()
     {

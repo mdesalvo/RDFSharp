@@ -148,7 +148,7 @@ public class RDFBoundExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnBlankResource()
     {
@@ -274,7 +274,7 @@ public class RDFBoundExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnBlankResource()
     {
