@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFInFilter represents a filter checking if a RDF term is found in a given set of RDF terms.
     /// </summary>
+    [Obsolete("This filter is going to be replaced by RDFExpressionFilter(RDFInExpression) in v3.20")]
     public sealed class RDFInFilter : RDFFilter
     {
         #region Properties

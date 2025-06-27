@@ -84,6 +84,23 @@ public class RDFExpressionFilterTest
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFComparisonExpression));
     
     [TestMethod]
+    public void ShouldCreateExpressionFilterWithInExpression()
+    {
+        RDFExpressionFilter filter = new RDFExpressionFilter(
+            new RDFInExpression(new RDFVariableExpression(new RDFVariable("?V1")), [new RDFPlainLiteral("hello","en-US")]));
+
+        Assert.IsNotNull(filter);
+        Assert.IsNotNull(filter.Expression);
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (?V1 IN (\"hello\"@EN-US)) )"));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (?V1 IN (\"hello\"@EN-US)) )"));
+        Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullInExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFInExpression));
+    
+    [TestMethod]
     public void ShouldCreateExpressionFilterWithIsBlankExpression()
     {
         RDFExpressionFilter filter = new RDFExpressionFilter(
