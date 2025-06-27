@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
@@ -24,6 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFDatatypeFilter represents a filter on the datatype of a variable.
     /// </summary>
+    [Obsolete("This filter is going to be replaced by RDFExpressionFilter(RDFDatataypeExpression) in v3.20")]
     public sealed class RDFDatatypeFilter : RDFFilter
     {
         #region Properties
