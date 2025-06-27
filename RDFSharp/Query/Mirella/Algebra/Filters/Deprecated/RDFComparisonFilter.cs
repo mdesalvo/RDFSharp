@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using RDFSharp.Model;
@@ -23,6 +24,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFComparisonFilter represents a filter applying a comparison between the given RDF terms.
     /// </summary>
+    [Obsolete("This filter is going to be replaced by RDFExpressionFilter(RDFComparisonExpression) in v3.20")]
     public sealed class RDFComparisonFilter : RDFFilter
     {
         #region Properties

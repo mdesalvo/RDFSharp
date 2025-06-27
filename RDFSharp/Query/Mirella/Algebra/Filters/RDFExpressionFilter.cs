@@ -53,6 +53,11 @@ namespace RDFSharp.Query
         /// Default-ctor to build a filter on the given IsBlank expression
         /// </summary>
         public RDFExpressionFilter(RDFIsBlankExpression expression) : this(expression, true) { }
+        
+        /// <summary>
+        /// Default-ctor to build a filter on the given Comparison expression
+        /// </summary>
+        public RDFExpressionFilter(RDFComparisonExpression expression) : this(expression, true) { }
 
         /// <summary>
         /// Default-ctor to build a filter on the given IsLiteral expression
