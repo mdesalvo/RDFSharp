@@ -17,6 +17,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
@@ -171,16 +172,28 @@ namespace RDFSharp.Query
             if (Aggregators.Any(ag => ag.HavingClause.Item1))
             {
                 DataTable filteredTable = resultTable.Clone();
-                List<RDFComparisonFilter> havingFilters = Aggregators.Where(ag => ag.HavingClause.Item1)
-                                                                     .Select(ag => new RDFComparisonFilter(ag.HavingClause.Item2, ag.ProjectionVariable, ag.HavingClause.Item3))
-                                                                     .ToList();
+                List<RDFComparisonExpression> havingExpressions = Aggregators
+                    .Where(ag => ag.HavingClause.Item1)
+                    .Select(ag => new RDFComparisonExpression(
+                        ag.HavingClause.Item2,
+                        ag.ProjectionVariable, 
+                        ag.HavingClause.Item3 is RDFResource havingRes ? new RDFConstantExpression(havingRes)
+                         : ag.HavingClause.Item3 is RDFLiteral havingLit ?  new RDFConstantExpression(havingLit)
+                         : ag.HavingClause.Item3 is RDFVariable havingVar ? new RDFVariableExpression(havingVar)
+                         : null as RDFExpression))
+                    .ToList();
+                
                 #region ExecuteFilters
                 foreach (DataRow resultRow in resultTable.Rows)
                 {
                     bool keepRow = true;
-                    IEnumerator<RDFComparisonFilter> filtersEnum = havingFilters.GetEnumerator();
-                    while (keepRow && filtersEnum.MoveNext())
-                        keepRow = filtersEnum.Current.ApplyFilter(resultRow, false);
+                    IEnumerator<RDFComparisonExpression> comparisonsEnum = havingExpressions.GetEnumerator();
+                    while (keepRow && comparisonsEnum.MoveNext())
+                    {
+                        RDFPatternMember comparisonResult = comparisonsEnum.Current?.ApplyExpression(resultRow);
+                        if (!(comparisonResult?.Equals(RDFTypedLiteral.True) ?? false))
+                            keepRow = false;
+                    }
 
                     if (keepRow)
                     {

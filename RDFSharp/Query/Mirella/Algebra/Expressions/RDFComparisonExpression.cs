@@ -30,7 +30,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Comparison to be applied between the expression arguments
         /// </summary>
-        public RDFQueryEnums.RDFComparisonFlavors ComparisonFlavor { get; internal set; }
+        public RDFQueryEnums.RDFComparisonFlavors ComparisonFlavor { get; }
         #endregion
 
         #region Ctors
