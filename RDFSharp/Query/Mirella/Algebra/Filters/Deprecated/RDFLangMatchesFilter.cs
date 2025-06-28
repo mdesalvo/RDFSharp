@@ -25,6 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFLangMatchesFilter represents a filter on the language of a variable.
     /// </summary>
+    [Obsolete("This filter is going to be replaced by RDFExpressionFilter(RDFLangMatchesExpression) in v3.20")]
     public sealed class RDFLangMatchesFilter : RDFFilter
     {
         #region Properties

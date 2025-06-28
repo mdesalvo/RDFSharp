@@ -24,11 +24,18 @@ namespace RDFSharp.Model
     /// </summary>
     public sealed class RDFPlainLiteral : RDFLiteral
     {
-        #region Properties
+        #region Statics
         /// <summary>
         /// Represents an handy plain literal for empty strings
         /// </summary>
         public static readonly RDFPlainLiteral Empty = new RDFPlainLiteral(string.Empty);
+        /// <summary>
+        /// Represents an handy plain literal for querying any language tags (*)
+        /// </summary>
+        public static readonly RDFPlainLiteral Star = new RDFPlainLiteral("*");
+        #endregion
+        
+        #region Properties
         internal const string LangTagDirection = "(--ltr|--rtl)?";
         internal static readonly string LangTagSubMask = string.Concat("(-[a-zA-Z0-9]{1,8})*", LangTagDirection);
         internal static readonly string LangTagMask = string.Concat("[a-zA-Z]{1,8}", LangTagSubMask);

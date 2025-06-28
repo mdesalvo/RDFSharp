@@ -78,6 +78,11 @@ namespace RDFSharp.Query
         /// Default-ctor to build a filter on the given IsUri expression
         /// </summary>
         public RDFExpressionFilter(RDFIsUriExpression expression) : this(expression, true) { }
+        
+        /// <summary>
+        /// Default-ctor to build a filter on the given LangMatches expression
+        /// </summary>
+        public RDFExpressionFilter(RDFLangMatchesExpression expression) : this(expression, true) { }
 
         /// <summary>
         /// Default-ctor to build a filter on the given Regex expression

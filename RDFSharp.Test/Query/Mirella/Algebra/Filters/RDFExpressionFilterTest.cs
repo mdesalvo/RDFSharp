@@ -169,6 +169,23 @@ public class RDFExpressionFilterTest
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFIsUriExpression));
 
     [TestMethod]
+    public void ShouldCreateExpressionFilterWithLangMatchesExpression()
+    {
+        RDFExpressionFilter filter = new RDFExpressionFilter(
+            new RDFLangMatchesExpression(new RDFVariableExpression(new RDFVariable("?V1")), new RDFConstantExpression(new RDFPlainLiteral("en-US"))));
+
+        Assert.IsNotNull(filter);
+        Assert.IsNotNull(filter.Expression);
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (LANGMATCHES(LANG(?V1),\"en-US\")) )"));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (LANGMATCHES(LANG(?V1),\"en-US\")) )"));
+        Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullIsLangMatchesExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFLangMatchesExpression));
+    
+    [TestMethod]
     public void ShouldCreateExpressionFilterWithRegexExpression()
     {
         RDFExpressionFilter filter = new RDFExpressionFilter(
