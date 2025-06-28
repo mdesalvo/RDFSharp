@@ -137,21 +137,21 @@ namespace RDFSharp.Query
                 if (leftArgumentPMember is RDFPlainLiteral leftArgPLit 
                      && rightArgumentPMember is RDFPlainLiteral rightArgPLit)
                 {
-                    switch (rightArgPLit.Value) //Discard the language...of the constraining language
+                    switch (rightArgPLit.Value)
                     {
-                        //NO language is acceptable
+                        //NO language is acceptable in the evaluating left argument
                         case "":
                             expressionResult = !Regex.IsMatch(leftArgPLit.ToString(), $"@{RDFPlainLiteral.LangTagMask}$", RegexOptions.IgnoreCase)
                                                  ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                             break;
 
-                        //ANY language is acceptable
+                        //ANY language is acceptable in the evaluating left argument
                         case "*":
                             expressionResult = Regex.IsMatch(leftArgPLit.ToString(), $"@{RDFPlainLiteral.LangTagMask}$", RegexOptions.IgnoreCase)
                                                  ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                             break;
 
-                        //GIVEN language is acceptable
+                        //GIVEN language is acceptable in the evaluating left argument
                         default:
                             expressionResult = Regex.IsMatch(leftArgPLit.ToString(), $"@{rightArgPLit.Value}{RDFPlainLiteral.LangTagSubMask}$", RegexOptions.IgnoreCase)
                                                  ? RDFTypedLiteral.True : RDFTypedLiteral.False;
