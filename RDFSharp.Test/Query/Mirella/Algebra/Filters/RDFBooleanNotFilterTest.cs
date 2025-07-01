@@ -109,7 +109,8 @@ public class RDFBooleanNotFilterTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFBooleanNotFilter filter = new RDFBooleanNotFilter(new RDFLangMatchesFilter(new RDFVariable("?B"), "en-US"));
+        RDFBooleanNotFilter filter = new RDFBooleanNotFilter(
+            new RDFExpressionFilter(new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("en-US")))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
         Assert.IsTrue(keepRow);

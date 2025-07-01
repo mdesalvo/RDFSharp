@@ -80,7 +80,9 @@ public class RDFBooleanAndFilterTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFBooleanAndFilter filter = new RDFBooleanAndFilter(new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_FLOAT), new RDFLangMatchesFilter(new RDFVariable("?B"), "*"));
+        RDFBooleanAndFilter filter = new RDFBooleanAndFilter(
+            new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_FLOAT),
+            new RDFExpressionFilter(new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Star))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsTrue(keepRow);
@@ -98,7 +100,9 @@ public class RDFBooleanAndFilterTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFBooleanAndFilter filter = new RDFBooleanAndFilter(new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_FLOAT), new RDFLangMatchesFilter(new RDFVariable("?B"), null));
+        RDFBooleanAndFilter filter = new RDFBooleanAndFilter(
+            new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_FLOAT),
+            new RDFExpressionFilter(new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Empty))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
         Assert.IsTrue(keepRow);
@@ -116,7 +120,9 @@ public class RDFBooleanAndFilterTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFBooleanAndFilter filter = new RDFBooleanAndFilter(new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_FLOAT), new RDFLangMatchesFilter(new RDFVariable("?B"), "*"));
+        RDFBooleanAndFilter filter = new RDFBooleanAndFilter(
+            new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_FLOAT),
+            new RDFExpressionFilter(new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Star))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
         Assert.IsFalse(keepRow);
@@ -134,7 +140,9 @@ public class RDFBooleanAndFilterTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFBooleanAndFilter filter = new RDFBooleanAndFilter(new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN), new RDFLangMatchesFilter(new RDFVariable("?B"), "*"));
+        RDFBooleanAndFilter filter = new RDFBooleanAndFilter(
+            new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN),
+            new RDFExpressionFilter(new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Star))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsFalse(keepRow);
@@ -152,7 +160,9 @@ public class RDFBooleanAndFilterTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFBooleanAndFilter filter = new RDFBooleanAndFilter(new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_FLOAT), new RDFLangMatchesFilter(new RDFVariable("?B"), null));
+        RDFBooleanAndFilter filter = new RDFBooleanAndFilter(
+            new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_FLOAT),
+            new RDFExpressionFilter(new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Empty))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsFalse(keepRow);
