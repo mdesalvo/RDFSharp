@@ -3468,7 +3468,7 @@ public class RDFQueryEngineTest
         RDFPatternGroup patternGroup = new RDFPatternGroup()
             .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
             .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-            .AddFilter(new RDFRegexFilter(new RDFVariable("?Y"), new Regex("^ex:[a-zA-Z]+o$")))
+            .AddFilter(new RDFExpressionFilter(new RDFRegexExpression(new RDFVariable("?Y"), new Regex("^ex:[a-zA-Z]+o$"))))
             .AddFilter(new RDFInFilter(new RDFVariable("?Y"), [new RDFResource("ex:pluto")]));
         RDFQueryEngine queryEngine = new RDFQueryEngine();
         queryEngine.EvaluatePatternGroup(patternGroup, graph); //Just to obtain real pattern tables (instead of mocking them)
