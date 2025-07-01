@@ -33,7 +33,7 @@ namespace RDFSharp.Query
         /// </summary>
         public Regex RegEx { get; }
         #endregion
-        
+
         #region Ctors
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace RDFSharp.Query
                 flags.Append('m');
             if (RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
                 flags.Append('x');
-            
+
             //(REGEX(STR(L),regex,flags))
             sb.Append("(REGEX(STR(");
             if (LeftArgument is RDFExpression expLeftArgument)

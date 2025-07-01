@@ -34,7 +34,7 @@ namespace RDFSharp.Model
         /// </summary>
         public static readonly RDFPlainLiteral Star = new RDFPlainLiteral("*");
         #endregion
-        
+
         #region Properties
         internal const string LangTagDirection = "(--ltr|--rtl)?";
         internal static readonly string LangTagSubMask = string.Concat("(-[a-zA-Z0-9]{1,8})*", LangTagDirection);

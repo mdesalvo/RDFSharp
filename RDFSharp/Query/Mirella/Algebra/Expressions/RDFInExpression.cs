@@ -33,7 +33,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal List<RDFPatternMember> InTerms { get; set; }
         #endregion
-        
+
         #region Ctors
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace RDFSharp.Query
             if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
                 return null;
             #endregion
-            
+
             bool keepRow = false;
             try
             {

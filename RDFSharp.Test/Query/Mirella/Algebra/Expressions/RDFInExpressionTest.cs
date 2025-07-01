@@ -38,7 +38,7 @@ public class RDFInExpressionTest
         Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) IN (\"hello\"@EN-US))"));
         Assert.IsTrue(expression.ToString([]).Equals("((?V1 + ?V2) IN (\"hello\"@EN-US))"));
     }
-    
+
     [TestMethod]
     public void ShouldCreateInExpressionWithVariable()
     {
@@ -73,7 +73,7 @@ public class RDFInExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultTrueWithSearchVariable()
     {
@@ -96,7 +96,7 @@ public class RDFInExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultFalse()
     {
@@ -117,7 +117,7 @@ public class RDFInExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultFalseBecauseNoTerms()
     {
@@ -138,7 +138,7 @@ public class RDFInExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultFalseBecauseUnknownColumn()
     {
@@ -159,7 +159,7 @@ public class RDFInExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultTrue()
     {
@@ -180,7 +180,7 @@ public class RDFInExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultTrueWithSearchVariable()
     {
@@ -201,7 +201,7 @@ public class RDFInExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultFalse()
     {
@@ -222,7 +222,7 @@ public class RDFInExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultFalseBecauseNoTerms()
     {
@@ -243,7 +243,7 @@ public class RDFInExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultFalseBecauseUnknownColumn()
     {

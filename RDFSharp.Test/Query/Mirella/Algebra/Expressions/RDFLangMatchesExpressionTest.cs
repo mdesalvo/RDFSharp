@@ -39,7 +39,7 @@ public class RDFLangMatchesExpressionTest
         Assert.IsTrue(expression.ToString().Equals("(LANGMATCHES(LANG((?V1 + ?V2)),\"en-US--ltr\"))"));
         Assert.IsTrue(expression.ToString([]).Equals("(LANGMATCHES(LANG((?V1 + ?V2)),\"en-US--ltr\"))"));
     }
-    
+
     [TestMethod]
     public void ShouldCreateLangMatchesExpressionWithExpressionVariable()
     {
@@ -53,7 +53,7 @@ public class RDFLangMatchesExpressionTest
         Assert.IsTrue(expression.ToString().Equals("(LANGMATCHES(LANG((?V1 + ?V2)),?L))"));
         Assert.IsTrue(expression.ToString([]).Equals("(LANGMATCHES(LANG((?V1 + ?V2)),?L))"));
     }
-    
+
     [TestMethod]
     public void ShouldCreateLangMatchesExpressionWithVariableExpression()
     {
@@ -67,7 +67,7 @@ public class RDFLangMatchesExpressionTest
         Assert.IsTrue(expression.ToString().Equals("(LANGMATCHES(LANG(?L),(?V1 + ?V2)))"));
         Assert.IsTrue(expression.ToString([]).Equals("(LANGMATCHES(LANG(?L),(?V1 + ?V2)))"));
     }
-    
+
     [TestMethod]
     public void ShouldCreateLangMatchesExpressionWithVariableVariable()
     {
@@ -81,7 +81,7 @@ public class RDFLangMatchesExpressionTest
         Assert.IsTrue(expression.ToString().Equals("(LANGMATCHES(LANG(?L),?V1))"));
         Assert.IsTrue(expression.ToString([]).Equals("(LANGMATCHES(LANG(?L),?V1))"));
     }
-    
+
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingLangMatchesExpressionWithExpressionBecauseNullLeftArgument()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFLangMatchesExpression(null as RDFExpression, new RDFVariable("?V")));
@@ -97,7 +97,7 @@ public class RDFLangMatchesExpressionTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingLangMatchesExpressionWithVariableBecauseNullRightArgument()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFLangMatchesExpression(new RDFVariable("?V"), null as RDFVariable));
-    
+
     [TestMethod]
     public void ShouldCreateExactLangMatchesExpressionAndCalculateResultTrue()
     {
@@ -112,11 +112,11 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("en-us")));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-        
+
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Equals(RDFTypedLiteral.True));
     }
-    
+
     [TestMethod]
     public void ShouldCreateExactLangMatchesExpressionWithLeftExpressionAndCalculateResultTrue()
     {
@@ -131,11 +131,11 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariableExpression(new RDFVariable("?B")), new RDFConstantExpression(new RDFPlainLiteral("en-us")));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-        
+
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Equals(RDFTypedLiteral.True));
     }
-    
+
     [TestMethod]
     public void ShouldCreateExactLangMatchesExpressionAndCalculateResultTrueOnSuperLangTag()
     {
@@ -150,11 +150,11 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("EN")));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-        
+
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Equals(RDFTypedLiteral.True));
     }
-    
+
     [TestMethod]
     public void ShouldCreateExactLangMatchesExpressionWithLeftExpressionAndCalculateResultTrueOnSuperLangTag()
     {
@@ -169,11 +169,11 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariableExpression(new RDFVariable("?B")), new RDFConstantExpression(new RDFPlainLiteral("EN")));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-        
+
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Equals(RDFTypedLiteral.True));
     }
-    
+
     [TestMethod]
     public void ShouldCreateExactLangMatchesExpressionAndCalculateResultTrueOnRightVariable()
     {
@@ -188,11 +188,11 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFVariable("?A"));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-        
+
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Equals(RDFTypedLiteral.True));
     }
-    
+
     [TestMethod]
     public void ShouldCreateExactLangMatchesExpressionWithLeftExpressionAndCalculateResultTrueOnRightVariable()
     {
@@ -207,11 +207,11 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariableExpression(new RDFVariable("?B")), new RDFVariable("?A"));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-        
+
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Equals(RDFTypedLiteral.True));
     }
-    
+
     [TestMethod]
     public void ShouldCreateExactLangMatchesExpressionAndCalculateResultFalseOnSuperLangTag()
     {
@@ -226,11 +226,11 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("EN-US")));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-        
+
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Equals(RDFTypedLiteral.False));
     }
-    
+
     [TestMethod]
     public void ShouldCreateExactLangMatchesExpressionAndCalculateResultFalse()
     {
@@ -245,11 +245,11 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("en-UK")));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-        
+
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Equals(RDFTypedLiteral.False));
     }
-    
+
     [TestMethod]
     public void ShouldCreateExactLangMatchesExpressionAndCalculateResultFalseOnNullLeftColumn()
     {
@@ -264,11 +264,11 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Empty));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-        
+
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Equals(RDFTypedLiteral.True));
     }
-    
+
     [TestMethod]
     public void ShouldCreateExactLangMatchesExpressionAndCalculateResultFalseOnUnlanguagedLiteral()
     {
@@ -283,11 +283,11 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("en-UK")));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-        
+
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Equals(RDFTypedLiteral.False));
     }
-    
+
     [TestMethod]
     public void ShouldCreateExactLangMatchesExpressionAndCalculateResultFalseOnResource()
     {
@@ -302,10 +302,10 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?A"), new RDFConstantExpression(new RDFPlainLiteral("EN-US")));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-        
+
         Assert.IsNull(result);
     }
-    
+
     [TestMethod]
     public void ShouldCreateExactLangMatchesExpressionAndNotCalculateResultBecauseUnkownLeftColumn()
     {
@@ -320,10 +320,10 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?Q"), new RDFConstantExpression(new RDFPlainLiteral("en-us")));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-        
+
         Assert.IsNull(result);
     }
-    
+
     [TestMethod]
     public void ShouldCreateExactLangMatchesExpressionAndNotCalculateResultBecauseUnkownRightColumn()
     {
@@ -338,10 +338,10 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFVariable("?Q"));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-        
+
         Assert.IsNull(result);
     }
-    
+
     [TestMethod]
     public void ShouldCreateStarLangMatchesExpressionAndCalculateResultTrue()
     {
@@ -356,11 +356,11 @@ public class RDFLangMatchesExpressionTest
 
        RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Star));
        RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-       
+
        Assert.IsNotNull(result);
        Assert.IsTrue(result.Equals(RDFTypedLiteral.True));
     }
-    
+
     [TestMethod]
     public void ShouldCreateStarLangMatchesExpressionAndCalculateResultTrueOnRightVariable()
     {
@@ -375,11 +375,11 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFVariable("?A"));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-       
+
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Equals(RDFTypedLiteral.True));
     }
-    
+
     [TestMethod]
     public void ShouldCreateStarLangMatchesExpressionAndCalculateResultFalse()
     {
@@ -394,11 +394,11 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Star));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-       
+
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Equals(RDFTypedLiteral.False));
     }
-    
+
     [TestMethod]
     public void ShouldCreateNoLangMatchesExpressionAndCalculateResultTrue()
     {
@@ -413,11 +413,11 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Empty));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-        
+
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Equals(RDFTypedLiteral.True));
     }
-    
+
     [TestMethod]
     public void ShouldCreateNoLangMatchesExpressionAndCalculateResultTrueOnRightVariable()
     {
@@ -432,11 +432,11 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFVariableExpression(new RDFVariable("?A")));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-        
+
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Equals(RDFTypedLiteral.True));
     }
-    
+
     [TestMethod]
     public void ShouldCreateNoLangMatchesExpressionAndCalculateResultFalse()
     {
@@ -451,11 +451,11 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Empty));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-        
+
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Equals(RDFTypedLiteral.False));
     }
-    
+
     [TestMethod]
     public void ShouldCreateLangMatchesExpressionAndNotCalculateResultBecauseLeftVariableResolvingToResource()
     {
@@ -470,10 +470,10 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?A"), new RDFVariable("?B"));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-       
+
         Assert.IsNull(result);
     }
-    
+
     [TestMethod]
     public void ShouldCreateLangMatchesExpressionAndNotCalculateResultBecauseRightVariableResolvingToResource()
     {
@@ -488,7 +488,7 @@ public class RDFLangMatchesExpressionTest
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFVariable("?A"));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
-       
+
         Assert.IsNull(result);
     }
     #endregion

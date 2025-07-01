@@ -82,7 +82,7 @@ public class RDFExpressionFilterTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullComparisonExpression()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFComparisonExpression));
-    
+
     [TestMethod]
     public void ShouldCreateExpressionFilterWithInExpression()
     {
@@ -99,7 +99,7 @@ public class RDFExpressionFilterTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullInExpression()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFInExpression));
-    
+
     [TestMethod]
     public void ShouldCreateExpressionFilterWithIsBlankExpression()
     {
@@ -184,7 +184,7 @@ public class RDFExpressionFilterTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullIsLangMatchesExpression()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFLangMatchesExpression));
-    
+
     [TestMethod]
     public void ShouldCreateExpressionFilterWithRegexExpression()
     {
@@ -201,7 +201,7 @@ public class RDFExpressionFilterTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullRegexExpression()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFRegexExpression));
-    
+
     [TestMethod]
     public void ShouldCreateExpressionFilterWithSameTermExpression()
     {

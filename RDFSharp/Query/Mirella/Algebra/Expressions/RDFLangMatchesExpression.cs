@@ -49,7 +49,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
             #endregion
         }
-        
+
         /// <summary>
         /// Default-ctor to build a Language-checking function with given arguments
         /// </summary>
@@ -60,7 +60,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
             #endregion
         }
-        
+
         /// <summary>
         /// Default-ctor to build a Language-checking function with given arguments
         /// </summary>
@@ -124,7 +124,7 @@ namespace RDFSharp.Query
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else
                     leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
-                
+
                 //Evaluate right argument (Expression VS Variable)
                 RDFPatternMember rightArgumentPMember;
                 if (RightArgument is RDFExpression rightArgumentExpression)
@@ -134,7 +134,7 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                if (leftArgumentPMember is RDFPlainLiteral leftArgPLit 
+                if (leftArgumentPMember is RDFPlainLiteral leftArgPLit
                      && rightArgumentPMember is RDFPlainLiteral rightArgPLit)
                 {
                     switch (rightArgPLit.Value)

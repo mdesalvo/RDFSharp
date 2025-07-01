@@ -55,7 +55,7 @@ public class RDFRegexExpressionTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingRegexExpressionWithExpressionBecauseNullLeftArgument()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFRegexExpression(null as RDFExpression, new Regex("^hello$")));
-    
+
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingRegexExpressionWithExpressionBecauseNullRegex()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFRegexExpression(new RDFVariableExpression(new RDFVariable("?V1")), null));
@@ -63,7 +63,7 @@ public class RDFRegexExpressionTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingRegexExpressionWithVariableBecauseNullLeftArgument()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFRegexExpression(null as RDFVariable, new Regex("^hello$")));
-    
+
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingRegexExpressionWithVariableBecauseNullRegex()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFRegexExpression(new RDFVariable("?V1"), null));

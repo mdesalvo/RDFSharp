@@ -176,13 +176,13 @@ namespace RDFSharp.Query
                     .Where(ag => ag.HavingClause.Item1)
                     .Select(ag => new RDFComparisonExpression(
                         ag.HavingClause.Item2,
-                        ag.ProjectionVariable, 
+                        ag.ProjectionVariable,
                         ag.HavingClause.Item3 is RDFResource havingRes ? new RDFConstantExpression(havingRes)
                          : ag.HavingClause.Item3 is RDFLiteral havingLit ?  new RDFConstantExpression(havingLit)
                          : ag.HavingClause.Item3 is RDFVariable havingVar ? new RDFVariableExpression(havingVar)
                          : null as RDFExpression))
                     .ToList();
-                
+
                 #region ExecuteFilters
                 foreach (DataRow resultRow in resultTable.Rows)
                 {
