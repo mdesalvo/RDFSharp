@@ -28,45 +28,45 @@ public class RDFBooleanAndFilterTest
     [TestMethod]
     public void ShouldCreateBooleanAndFilter()
     {
-        RDFBooleanAndFilter filter = new RDFBooleanAndFilter(new RDFIsUriFilter(new RDFVariable("?VARU")), new RDFDatatypeFilter(new RDFVariable("?VARL"), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN));
+        RDFBooleanAndFilter filter = new RDFBooleanAndFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?VARU"))), new RDFDatatypeFilter(new RDFVariable("?VARL"), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN));
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.LeftFilter);
         Assert.IsNotNull(filter.RightFilter);
-        Assert.IsTrue(filter.ToString().Equals($"FILTER ( ( ISURI(?VARU) ) && ( DATATYPE(?VARL) = <{RDFVocabulary.XSD.BOOLEAN}> ) )"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( ( ISURI(?VARU) ) && ( DATATYPE(?VARL) = xsd:boolean ) )"));
+        Assert.IsTrue(filter.ToString().Equals($"FILTER ( ( (ISURI(?VARU)) ) && ( DATATYPE(?VARL) = <{RDFVocabulary.XSD.BOOLEAN}> ) )"));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( ( (ISURI(?VARU)) ) && ( DATATYPE(?VARL) = xsd:boolean ) )"));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
     [TestMethod]
     public void ShouldCreateNestedBooleanAndFilter()
     {
-        RDFBooleanAndFilter filterA = new RDFBooleanAndFilter(new RDFIsUriFilter(new RDFVariable("?VARU")), new RDFDatatypeFilter(new RDFVariable("?VARL"), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN));
+        RDFBooleanAndFilter filterA = new RDFBooleanAndFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?VARU"))), new RDFDatatypeFilter(new RDFVariable("?VARL"), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN));
         RDFBooleanAndFilter filterB = new RDFBooleanAndFilter(filterA, new RDFExpressionFilter(new RDFSameTermExpression(new RDFVariable("?VARL"), new RDFConstantExpression(RDFVocabulary.RDF.ALT))));
 
         Assert.IsNotNull(filterB);
         Assert.IsNotNull(filterB.LeftFilter);
         Assert.IsNotNull(filterB.RightFilter);
-        Assert.IsTrue(filterB.ToString().Equals("FILTER ( ( ( ISURI(?VARU) ) && ( DATATYPE(?VARL) = <http://www.w3.org/2001/XMLSchema#boolean> ) ) && ( (SAMETERM(?VARL, <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>)) ) )"));
-        Assert.IsTrue(filterB.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( ( ( ISURI(?VARU) ) && ( DATATYPE(?VARL) = xsd:boolean ) ) && ( (SAMETERM(?VARL, <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>)) ) )"));
+        Assert.IsTrue(filterB.ToString().Equals("FILTER ( ( ( (ISURI(?VARU)) ) && ( DATATYPE(?VARL) = <http://www.w3.org/2001/XMLSchema#boolean> ) ) && ( (SAMETERM(?VARL, <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>)) ) )"));
+        Assert.IsTrue(filterB.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( ( ( (ISURI(?VARU)) ) && ( DATATYPE(?VARL) = xsd:boolean ) ) && ( (SAMETERM(?VARL, <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>)) ) )"));
         Assert.IsTrue(filterB.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filterB.PatternGroupMemberStringID)));
     }
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBooleanAndFilterBecauseNullLeft()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanAndFilter(null, new RDFIsUriFilter(new RDFVariable("?VAR"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanAndFilter(null, new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?VAR")))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBooleanAndFilterBecauseExistsLeft()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanAndFilter(new RDFExistsFilter(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?OBJ"))), new RDFIsUriFilter(new RDFVariable("?VAR"))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanAndFilter(new RDFExistsFilter(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?OBJ"))), new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?VAR")))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBooleanAndFilterBecauseNullRight()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanAndFilter(new RDFIsUriFilter(new RDFVariable("?VAR")), null));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanAndFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?VAR"))), null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingBooleanAndFilterBecauseExistsRight()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanAndFilter(new RDFIsUriFilter(new RDFVariable("?VAR")), new RDFExistsFilter(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?OBJ")))));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanAndFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?VAR"))), new RDFExistsFilter(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?OBJ")))));
 
     [TestMethod]
     public void ShouldCreateBooleanAndFilterAndKeepRow()

@@ -194,7 +194,7 @@ public class RDFPatternGroupTest
         RDFPattern pattern2 = new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o"));
         RDFPattern pattern3 = new RDFPattern(new RDFVariable("c"), new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
         RDFPattern groundPattern = new RDFPattern(RDFVocabulary.OWL.CLASS, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
-        RDFIsUriFilter filter = new RDFIsUriFilter(new RDFVariable("s"));
+        RDFExpressionFilter filter = new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("s")));
         RDFPatternGroup pGroup = new RDFPatternGroup(
             [
                 pattern1,
@@ -219,8 +219,8 @@ public class RDFPatternGroupTest
         Assert.AreEqual(4, pGroup.GroupMembers.Count);
         Assert.IsNotNull(pGroup.Variables);
         Assert.AreEqual(4, pGroup.Variables.Count);
-        Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "    ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .", Environment.NewLine, "    ?S ?P ?O .", Environment.NewLine, "    GRAPH ?C { ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> } .", Environment.NewLine, "    FILTER ( ISURI(?S) ) ", Environment.NewLine, "  }", Environment.NewLine)));
-        Assert.IsTrue(pGroup.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals(string.Concat("  {", Environment.NewLine, "    ?S rdf:type <http://www.w3.org/2002/07/owl#Class> .", Environment.NewLine,"    ?S ?P ?O .", Environment.NewLine, "    GRAPH ?C { ?S rdf:type <http://www.w3.org/2002/07/owl#Class> } .", Environment.NewLine, "    FILTER ( ISURI(?S) ) ", Environment.NewLine, "  }", Environment.NewLine)));
+        Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "    ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .", Environment.NewLine, "    ?S ?P ?O .", Environment.NewLine, "    GRAPH ?C { ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> } .", Environment.NewLine, "    FILTER ( (ISURI(?S)) ) ", Environment.NewLine, "  }", Environment.NewLine)));
+        Assert.IsTrue(pGroup.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals(string.Concat("  {", Environment.NewLine, "    ?S rdf:type <http://www.w3.org/2002/07/owl#Class> .", Environment.NewLine,"    ?S ?P ?O .", Environment.NewLine, "    GRAPH ?C { ?S rdf:type <http://www.w3.org/2002/07/owl#Class> } .", Environment.NewLine, "    FILTER ( (ISURI(?S)) ) ", Environment.NewLine, "  }", Environment.NewLine)));
         Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
         Assert.AreEqual(3, pGroup.GetPatterns().Count());
         Assert.AreEqual(1, pGroup.GetFilters().Count());
@@ -268,7 +268,7 @@ public class RDFPatternGroupTest
     [TestMethod]
     public void ShouldAddFilter()
     {
-        RDFIsUriFilter filter = new RDFIsUriFilter(new RDFVariable("s"));
+        RDFExpressionFilter filter = new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("s")));
         RDFPatternGroup pGroup = new RDFPatternGroup();
         pGroup.AddFilter(filter);
         pGroup.AddFilter(null); //Will not be added, since null is not allowed
@@ -283,8 +283,8 @@ public class RDFPatternGroupTest
         Assert.AreEqual(1, pGroup.GroupMembers.Count);
         Assert.IsNotNull(pGroup.Variables);
         Assert.AreEqual(0, pGroup.Variables.Count);
-        Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "    FILTER ( ISURI(?S) ) ", Environment.NewLine, "  }", Environment.NewLine)));
-        Assert.IsTrue(pGroup.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals(string.Concat("  {", Environment.NewLine, "    FILTER ( ISURI(?S) ) ", Environment.NewLine, "  }", Environment.NewLine)));
+        Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "    FILTER ( (ISURI(?S)) ) ", Environment.NewLine, "  }", Environment.NewLine)));
+        Assert.IsTrue(pGroup.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals(string.Concat("  {", Environment.NewLine, "    FILTER ( (ISURI(?S)) ) ", Environment.NewLine, "  }", Environment.NewLine)));
         Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
         Assert.AreEqual(0, pGroup.GetPatterns().Count());
         Assert.AreEqual(1, pGroup.GetFilters().Count());

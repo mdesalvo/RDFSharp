@@ -28,25 +28,25 @@ public class RDFBooleanNotFilterTest
     [TestMethod]
     public void ShouldCreateBooleanNotFilter()
     {
-        RDFBooleanNotFilter filter = new RDFBooleanNotFilter(new RDFIsUriFilter(new RDFVariable("?VARU")));
+        RDFBooleanNotFilter filter = new RDFBooleanNotFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?VARU"))));
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Filter);
-        Assert.IsTrue(filter.ToString().Equals("FILTER ( !( ISURI(?VARU) ) )"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( !( ISURI(?VARU) ) )"));
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( !( (ISURI(?VARU)) ) )"));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( !( (ISURI(?VARU)) ) )"));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
     [TestMethod]
     public void ShouldCreateNestedBooleanNotFilter()
     {
-        RDFBooleanNotFilter filterA = new RDFBooleanNotFilter(new RDFIsUriFilter(new RDFVariable("?VARU")));
+        RDFBooleanNotFilter filterA = new RDFBooleanNotFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?VARU"))));
         RDFBooleanNotFilter filterB = new RDFBooleanNotFilter(filterA);
 
         Assert.IsNotNull(filterB);
         Assert.IsNotNull(filterB.Filter);
-        Assert.IsTrue(filterB.ToString().Equals("FILTER ( !( !( ISURI(?VARU) ) ) )"));
-        Assert.IsTrue(filterB.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( !( !( ISURI(?VARU) ) ) )"));
+        Assert.IsTrue(filterB.ToString().Equals("FILTER ( !( !( (ISURI(?VARU)) ) ) )"));
+        Assert.IsTrue(filterB.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( !( !( (ISURI(?VARU)) ) ) )"));
         Assert.IsTrue(filterB.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filterB.PatternGroupMemberStringID)));
     }
 
