@@ -91,7 +91,12 @@ public class RDFBooleanNotFilterTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFBooleanNotFilter filter = new RDFBooleanNotFilter(new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN));
+        RDFBooleanNotFilter filter = new RDFBooleanNotFilter(
+            new RDFExpressionFilter(
+                new RDFComparisonExpression(
+                    RDFQueryEnums.RDFComparisonFlavors.EqualTo,
+                    new RDFDatatypeExpression(new RDFVariable("?A")),
+                    new RDFConstantExpression(RDFVocabulary.XSD.BOOLEAN))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsTrue(keepRow);
@@ -128,7 +133,12 @@ public class RDFBooleanNotFilterTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFBooleanNotFilter filter = new RDFBooleanNotFilter(new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_FLOAT));
+        RDFBooleanNotFilter filter = new RDFBooleanNotFilter(
+            new RDFExpressionFilter(
+                new RDFComparisonExpression(
+                    RDFQueryEnums.RDFComparisonFlavors.EqualTo,
+                    new RDFDatatypeExpression(new RDFVariable("?A")),
+                    new RDFConstantExpression(RDFVocabulary.XSD.FLOAT))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsFalse(keepRow);
@@ -146,7 +156,12 @@ public class RDFBooleanNotFilterTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFBooleanNotFilter filter = new RDFBooleanNotFilter(new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN));
+        RDFBooleanNotFilter filter = new RDFBooleanNotFilter(
+            new RDFExpressionFilter(
+                new RDFComparisonExpression(
+                    RDFQueryEnums.RDFComparisonFlavors.EqualTo,
+                    new RDFDatatypeExpression(new RDFVariable("?A")),
+                    new RDFConstantExpression(RDFVocabulary.XSD.BOOLEAN))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
         Assert.IsFalse(keepRow);

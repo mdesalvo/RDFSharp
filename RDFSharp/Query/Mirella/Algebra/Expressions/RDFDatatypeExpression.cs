@@ -91,7 +91,7 @@ namespace RDFSharp.Query
                         expressionResult = new RDFResource(leftArgumentPMemberTLiteral.Datatype.ToString());
                         break;
                     case RDFPlainLiteral leftArgumentPMemberPLiteral:
-                        expressionResult = 
+                        expressionResult =
                             leftArgumentPMemberPLiteral.HasLanguage() ?
                              leftArgumentPMemberPLiteral.HasDirection() ? RDFVocabulary.RDF.DIR_LANG_STRING
                                                                         : RDFVocabulary.RDF.LANG_STRING

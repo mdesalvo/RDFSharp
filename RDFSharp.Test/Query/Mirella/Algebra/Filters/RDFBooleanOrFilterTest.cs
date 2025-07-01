@@ -28,27 +28,43 @@ public class RDFBooleanOrFilterTest
     [TestMethod]
     public void ShouldCreateBooleanOrFilter()
     {
-        RDFBooleanOrFilter filter = new RDFBooleanOrFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?VARU"))), new RDFDatatypeFilter(new RDFVariable("?VARL"), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN));
+        RDFBooleanOrFilter filter = new RDFBooleanOrFilter(
+            new RDFExpressionFilter(
+                new RDFIsUriExpression(new RDFVariable("?VARU"))),
+            new RDFExpressionFilter(
+                new RDFComparisonExpression(
+                    RDFQueryEnums.RDFComparisonFlavors.EqualTo,
+                    new RDFDatatypeExpression(new RDFVariable("?VARL")),
+                    new RDFConstantExpression(RDFVocabulary.XSD.BOOLEAN))));
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.LeftFilter);
         Assert.IsNotNull(filter.RightFilter);
-        Assert.IsTrue(filter.ToString().Equals($"FILTER ( ( (ISURI(?VARU)) ) || ( DATATYPE(?VARL) = <{RDFVocabulary.XSD.BOOLEAN}> ) )"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( ( (ISURI(?VARU)) ) || ( DATATYPE(?VARL) = xsd:boolean ) )"));
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( ( (ISURI(?VARU)) ) || ( ((DATATYPE(?VARL)) = <http://www.w3.org/2001/XMLSchema#boolean>) ) )"));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( ( (ISURI(?VARU)) ) || ( ((DATATYPE(?VARL)) = xsd:boolean) ) )"));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
     [TestMethod]
     public void ShouldCreateNestedBooleanOrFilter()
     {
-        RDFBooleanOrFilter filterA = new RDFBooleanOrFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?VARU"))), new RDFDatatypeFilter(new RDFVariable("?VARL"), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN));
-        RDFBooleanOrFilter filterB = new RDFBooleanOrFilter(filterA, new RDFExpressionFilter(new RDFSameTermExpression(new RDFVariable("?VARL"), new RDFConstantExpression(RDFVocabulary.RDF.ALT))));
+        RDFBooleanOrFilter filterA = new RDFBooleanOrFilter(
+            new RDFExpressionFilter(
+                new RDFIsUriExpression(new RDFVariable("?VARU"))),
+                new RDFExpressionFilter(
+                    new RDFComparisonExpression(
+                        RDFQueryEnums.RDFComparisonFlavors.EqualTo,
+                        new RDFDatatypeExpression(new RDFVariable("?VARL")),
+                        new RDFConstantExpression(RDFVocabulary.XSD.BOOLEAN))));
+        RDFBooleanOrFilter filterB = new RDFBooleanOrFilter(
+            filterA,
+            new RDFExpressionFilter(new RDFSameTermExpression(new RDFVariable("?VARL"), new RDFConstantExpression(RDFVocabulary.RDF.ALT))));
 
         Assert.IsNotNull(filterB);
         Assert.IsNotNull(filterB.LeftFilter);
         Assert.IsNotNull(filterB.RightFilter);
-        Assert.IsTrue(filterB.ToString().Equals("FILTER ( ( ( (ISURI(?VARU)) ) || ( DATATYPE(?VARL) = <http://www.w3.org/2001/XMLSchema#boolean> ) ) || ( (SAMETERM(?VARL, <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>)) ) )"));
-        Assert.IsTrue(filterB.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( ( ( (ISURI(?VARU)) ) || ( DATATYPE(?VARL) = xsd:boolean ) ) || ( (SAMETERM(?VARL, <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>)) ) )"));
+        Assert.IsTrue(filterB.ToString().Equals("FILTER ( ( ( (ISURI(?VARU)) ) || ( ((DATATYPE(?VARL)) = <http://www.w3.org/2001/XMLSchema#boolean>) ) ) || ( (SAMETERM(?VARL, <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>)) ) )"));
+        Assert.IsTrue(filterB.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( ( ( (ISURI(?VARU)) ) || ( ((DATATYPE(?VARL)) = xsd:boolean) ) ) || ( (SAMETERM(?VARL, <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>)) ) )"));
         Assert.IsTrue(filterB.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filterB.PatternGroupMemberStringID)));
     }
 
@@ -81,7 +97,11 @@ public class RDFBooleanOrFilterTest
         table.AcceptChanges();
 
         RDFBooleanOrFilter filter = new RDFBooleanOrFilter(
-            new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN),
+            new RDFExpressionFilter(
+                new RDFComparisonExpression(
+                    RDFQueryEnums.RDFComparisonFlavors.EqualTo,
+                    new RDFDatatypeExpression(new RDFVariable("?A")),
+                    new RDFConstantExpression(RDFVocabulary.XSD.BOOLEAN))),
             new RDFExpressionFilter(new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Star))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
@@ -101,7 +121,11 @@ public class RDFBooleanOrFilterTest
         table.AcceptChanges();
 
         RDFBooleanOrFilter filter = new RDFBooleanOrFilter(
-            new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN),
+            new RDFExpressionFilter(
+                new RDFComparisonExpression(
+                    RDFQueryEnums.RDFComparisonFlavors.EqualTo,
+                    new RDFDatatypeExpression(new RDFVariable("?A")),
+                    new RDFConstantExpression(RDFVocabulary.XSD.BOOLEAN))),
             new RDFExpressionFilter(new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Empty))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
@@ -121,7 +145,11 @@ public class RDFBooleanOrFilterTest
         table.AcceptChanges();
 
         RDFBooleanOrFilter filter = new RDFBooleanOrFilter(
-            new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN),
+            new RDFExpressionFilter(
+                new RDFComparisonExpression(
+                    RDFQueryEnums.RDFComparisonFlavors.EqualTo,
+                    new RDFDatatypeExpression(new RDFVariable("?A")),
+                    new RDFConstantExpression(RDFVocabulary.XSD.BOOLEAN))),
             new RDFExpressionFilter(new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("en")))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
@@ -141,7 +169,11 @@ public class RDFBooleanOrFilterTest
         table.AcceptChanges();
 
         RDFBooleanOrFilter filter = new RDFBooleanOrFilter(
-            new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_FLOAT),
+            new RDFExpressionFilter(
+                new RDFComparisonExpression(
+                    RDFQueryEnums.RDFComparisonFlavors.EqualTo,
+                    new RDFDatatypeExpression(new RDFVariable("?A")),
+                    new RDFConstantExpression(RDFVocabulary.XSD.FLOAT))),
             new RDFExpressionFilter(new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Empty))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
