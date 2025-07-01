@@ -42,13 +42,13 @@ public class RDFBooleanOrFilterTest
     public void ShouldCreateNestedBooleanOrFilter()
     {
         RDFBooleanOrFilter filterA = new RDFBooleanOrFilter(new RDFIsUriFilter(new RDFVariable("?VARU")), new RDFDatatypeFilter(new RDFVariable("?VARL"), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN));
-        RDFBooleanOrFilter filterB = new RDFBooleanOrFilter(filterA, new RDFSameTermFilter(new RDFVariable("?VARL"), RDFVocabulary.RDF.ALT));
+        RDFBooleanOrFilter filterB = new RDFBooleanOrFilter(filterA, new RDFExpressionFilter(new RDFSameTermExpression(new RDFVariable("?VARL"), new RDFConstantExpression(RDFVocabulary.RDF.ALT))));
 
         Assert.IsNotNull(filterB);
         Assert.IsNotNull(filterB.LeftFilter);
         Assert.IsNotNull(filterB.RightFilter);
-        Assert.IsTrue(filterB.ToString().Equals($"FILTER ( ( ( ISURI(?VARU) ) || ( DATATYPE(?VARL) = <{RDFVocabulary.XSD.BOOLEAN}> ) ) || ( SAMETERM(?VARL, <{RDFVocabulary.RDF.ALT}>) ) )"));
-        Assert.IsTrue(filterB.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals($"FILTER ( ( ( ISURI(?VARU) ) || ( DATATYPE(?VARL) = xsd:boolean ) ) || ( SAMETERM(?VARL, <{RDFVocabulary.RDF.ALT}>) ) )"));
+        Assert.IsTrue(filterB.ToString().Equals("FILTER ( ( ( ISURI(?VARU) ) || ( DATATYPE(?VARL) = <http://www.w3.org/2001/XMLSchema#boolean> ) ) || ( (SAMETERM(?VARL, <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>)) ) )"));
+        Assert.IsTrue(filterB.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( ( ( ISURI(?VARU) ) || ( DATATYPE(?VARL) = xsd:boolean ) ) || ( (SAMETERM(?VARL, <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>)) ) )"));
         Assert.IsTrue(filterB.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filterB.PatternGroupMemberStringID)));
     }
 
