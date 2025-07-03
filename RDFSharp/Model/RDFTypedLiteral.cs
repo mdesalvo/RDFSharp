@@ -64,7 +64,7 @@ namespace RDFSharp.Model
             //Validation against semantic of given datatype
             (bool,string) validationResult = Datatype.Validate(value ?? string.Empty);
             if (!validationResult.Item1)
-                throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + Datatype + ") which is based on \"" + Datatype.TargetDatatype + "\" ");
+                throw new RDFModelException($"Cannot create RDFTypedLiteral because given \"value\" parameter ({value}) is not well-formed against given \"datatype\" parameter ({Datatype}) which is based on \"{Datatype.TargetDatatype}\" standard datatype");
 
             Value = validationResult.Item2;
         }
