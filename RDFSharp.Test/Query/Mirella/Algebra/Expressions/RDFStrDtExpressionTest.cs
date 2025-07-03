@@ -343,6 +343,27 @@ public class RDFStrDtExpressionTest
     }
 
     [TestMethod]
+    public void ShouldApplyExpressionWithVVAndCalculateResultOnLeftResourceAndKnownDatatype()
+    {
+        DataTable table = new DataTable();
+        table.Columns.Add("?A", typeof(string));
+        table.Columns.Add("?B", typeof(string));
+        DataRow row = table.NewRow();
+        row["?A"] = "http://example.org/";
+        row["?B"] = RDFVocabulary.XSD.ANY_URI;
+        table.Rows.Add(row);
+        table.AcceptChanges();
+
+        RDFStrDtExpression expression = new RDFStrDtExpression(
+            new RDFVariable("?A"),
+            new RDFVariable("?B"));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("http://example.org/", RDFModelEnums.RDFDatatypes.XSD_ANYURI)));
+    }
+
+    [TestMethod]
     public void ShouldApplyExpressionWithVVAndCalculateResultOnUnknownDatatype()
     {
         DataTable table = new DataTable();
