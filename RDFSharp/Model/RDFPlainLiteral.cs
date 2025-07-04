@@ -40,13 +40,9 @@ namespace RDFSharp.Model
         internal static readonly string LangTagSubMask = string.Concat("(-[a-zA-Z0-9]{1,8})*", LangTagDirection);
         internal static readonly string LangTagMask = string.Concat("[a-zA-Z]{1,8}", LangTagSubMask);
         /// <summary>
-        /// Regex for validation of language tags (with support for optional direction)
+        /// Regex for validation of language tags (with support for direction)
         /// </summary>
         internal static readonly Regex LangTagRegex = new Regex($"^{LangTagMask}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        /// <summary>
-        /// Regex for validation of language tags (with support for mandatory direction)
-        /// </summary>
-        internal static readonly Regex LangTagDirRegex = new Regex($"^{LangTagMask.TrimEnd("?")}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         /// <summary>
         /// Regex for validation of language tags (without support for direction)
         /// </summary>

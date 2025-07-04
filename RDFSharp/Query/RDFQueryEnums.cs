@@ -42,6 +42,21 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// RDFLanguageDirections represents an enumeration for possible directions of a plainliteral's language tag.
+        /// </summary>
+        public enum RDFLanguageDirections
+        {
+            /// <summary>
+            /// Left-to-Right
+            /// </summary>
+            LTR = 1,
+            /// <summary>
+            /// Right-to-Left
+            /// </summary>
+            RTL = 2
+        }
+
+        /// <summary>
         /// RDFComparisonFlavors represents an enumeration for possible comparison modes between two patten members.
         /// </summary>
         public enum RDFComparisonFlavors

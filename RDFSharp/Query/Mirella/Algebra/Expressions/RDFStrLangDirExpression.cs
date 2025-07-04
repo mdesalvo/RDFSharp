@@ -22,35 +22,46 @@ using RDFSharp.Model;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFStrLangExpression represents a language plainliteral creator function to be applied on a query results table.
+    /// RDFStrLangDirExpression represents a language+direction plainliteral creator function to be applied on a query results table.
     /// </summary>
-    public sealed class RDFStrLangExpression : RDFExpression
+    public sealed class RDFStrLangDirExpression : RDFExpression
     {
+        #region Properties
+        /// <summary>
+        /// Indicates the direction used for the plainlitera's language tags emitted by this expression
+        /// </summary>
+        public RDFQueryEnums.RDFLanguageDirections Direction { get; }
+        #endregion
+
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a language plainliteral creator function with given arguments
+        /// Default-ctor to build a language+direction plainliteral creator function with given arguments
         /// </summary>
-        public RDFStrLangExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFStrLangDirExpression(RDFExpression leftArgument, RDFExpression rightArgument, RDFQueryEnums.RDFLanguageDirections direction)
+            : base(leftArgument, rightArgument) => Direction = direction;
 
         /// <summary>
-        /// Default-ctor to build a language plainliteral creator function with given arguments
+        /// Default-ctor to build a language+direction plainliteral creator function with given arguments
         /// </summary>
-        public RDFStrLangExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFStrLangDirExpression(RDFExpression leftArgument, RDFVariable rightArgument, RDFQueryEnums.RDFLanguageDirections direction)
+            : base(leftArgument, rightArgument) => Direction = direction;
 
         /// <summary>
-        /// Default-ctor to build a language plainliteral creator function with given arguments
+        /// Default-ctor to build a language+direction plainliteral creator function with given arguments
         /// </summary>
-        public RDFStrLangExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFStrLangDirExpression(RDFVariable leftArgument, RDFExpression rightArgument, RDFQueryEnums.RDFLanguageDirections direction)
+            : base(leftArgument, rightArgument) => Direction = direction;
 
         /// <summary>
-        /// Default-ctor to build a language plainliteral creator function with given arguments
+        /// Default-ctor to build a language+direction plainliteral creator function with given arguments
         /// </summary>
-        public RDFStrLangExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFStrLangDirExpression(RDFVariable leftArgument, RDFVariable rightArgument, RDFQueryEnums.RDFLanguageDirections direction)
+            : base(leftArgument, rightArgument) => Direction = direction;
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the language plainliteral creator function
+        /// Gives the string representation of the language+direction plainliteral creator function
         /// </summary>
         public override string ToString()
             => ToString(new List<RDFNamespace>());
@@ -58,8 +69,8 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(STRLANG(L,R))
-            sb.Append("(STRLANG(");
+            //(STRLANGDIR(L,R,D))
+            sb.Append("(STRLANGDIR(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
@@ -69,6 +80,8 @@ namespace RDFSharp.Query
                 sb.Append(expRightArgument.ToString(prefixes));
             else
                 sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
+            sb.Append(", ");
+            sb.Append(Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "ltr" : "rtl");
             sb.Append("))");
 
             return sb.ToString();
@@ -77,7 +90,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the language plainliteral creator function on the given datarow
+        /// Applies the language+direction plainliteral creator function on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {
@@ -117,14 +130,14 @@ namespace RDFSharp.Query
                     if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLit
                          && !leftArgumentPMemberPLit.HasLanguage())
                     {
-                        expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLit.Value, rightArgumentPMemberLiteral.Value);
+                        expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLit.Value, string.Concat(rightArgumentPMemberLiteral.Value, Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "--ltr" : "--rtl"));
                     }
 
                     //Or a string-based typed literal
                     else if (leftArgumentPMember is RDFTypedLiteral leftArgumentPMemberTLit
                               && leftArgumentPMemberTLit.HasStringDatatype())
                     {
-                        expressionResult = new RDFPlainLiteral(leftArgumentPMemberTLit.Value, rightArgumentPMemberLiteral.Value);
+                        expressionResult = new RDFPlainLiteral(leftArgumentPMemberTLit.Value, string.Concat(rightArgumentPMemberLiteral.Value, Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "--ltr" : "--rtl"));
                     }
                 }
                 #endregion
