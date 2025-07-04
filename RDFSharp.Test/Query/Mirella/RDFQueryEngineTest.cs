@@ -376,7 +376,7 @@ public class RDFQueryEngineTest
             .AddProjectionVariable(new RDFVariable("?Y"))
             .AddProjectionVariable(new RDFVariable("?X"))
             .AddProjectionVariable(new RDFVariable("?XBIND"))
-            .AddProjectionVariable(new RDFVariable("?XBINDLENGTH"), new RDFLengthExpression(new RDFVariable("?XBIND")))
+            .AddProjectionVariable(new RDFVariable("?XBINDLENGTH"), new RDFStrLenExpression(new RDFVariable("?XBIND")))
             .AddProjectionVariable(new RDFVariable("?NEVERBOUND"));
         RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
@@ -423,7 +423,7 @@ public class RDFQueryEngineTest
             .AddProjectionVariable(new RDFVariable("?Y"))
             .AddProjectionVariable(new RDFVariable("?X"))
             .AddProjectionVariable(new RDFVariable("?XBIND"))
-            .AddProjectionVariable(new RDFVariable("?XBINDLENGTH"), new RDFLengthExpression(new RDFVariable("?XBIND")))
+            .AddProjectionVariable(new RDFVariable("?XBINDLENGTH"), new RDFStrLenExpression(new RDFVariable("?XBIND")))
             .AddProjectionVariable(new RDFVariable("?NEVERBOUND"));
         RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
@@ -470,7 +470,7 @@ public class RDFQueryEngineTest
             .AddProjectionVariable(new RDFVariable("?Y"))
             .AddProjectionVariable(new RDFVariable("?X"))
             .AddProjectionVariable(new RDFVariable("?XBIND"))
-            .AddProjectionVariable(new RDFVariable("?XBINDLENGTH"), new RDFLengthExpression(new RDFVariable("?XBIND")))
+            .AddProjectionVariable(new RDFVariable("?XBINDLENGTH"), new RDFStrLenExpression(new RDFVariable("?XBIND")))
             .AddProjectionVariable(new RDFVariable("?NEVERBOUND"));
         RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
@@ -520,7 +520,7 @@ public class RDFQueryEngineTest
             .AddProjectionVariable(new RDFVariable("?Y"))
             .AddProjectionVariable(new RDFVariable("?X"))
             .AddProjectionVariable(new RDFVariable("?XBIND"))
-            .AddProjectionVariable(new RDFVariable("?XBINDLENGTH"), new RDFLengthExpression(new RDFVariable("?XBIND")))
+            .AddProjectionVariable(new RDFVariable("?XBINDLENGTH"), new RDFStrLenExpression(new RDFVariable("?XBIND")))
             .AddProjectionVariable(new RDFVariable("?NEVERBOUND"));
         RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
@@ -575,7 +575,7 @@ public class RDFQueryEngineTest
             .AddProjectionVariable(new RDFVariable("?Y"))
             .AddProjectionVariable(new RDFVariable("?X"))
             .AddProjectionVariable(new RDFVariable("?XBIND"))
-            .AddProjectionVariable(new RDFVariable("?XBINDLENGTH"), new RDFLengthExpression(new RDFVariable("?XBIND")))
+            .AddProjectionVariable(new RDFVariable("?XBINDLENGTH"), new RDFStrLenExpression(new RDFVariable("?XBIND")))
             .AddProjectionVariable(new RDFVariable("?NEVERBOUND"));
         RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
@@ -734,9 +734,9 @@ public class RDFQueryEngineTest
         RDFGraph graph = new RDFGraph();
 
         RDFSelectQuery query = new RDFSelectQuery()
-            .AddProjectionVariable(new RDFVariable("?Y"), new RDFLengthExpression(
+            .AddProjectionVariable(new RDFVariable("?Y"), new RDFStrLenExpression(
                 new RDFConcatExpression(new RDFConstantExpression(new RDFPlainLiteral("hello","en-US")),
-                    new RDFLengthExpression(new RDFMD5Expression(new RDFConstantExpression(new RDFPlainLiteral("hello","en-US")))))));
+                    new RDFStrLenExpression(new RDFMD5Expression(new RDFConstantExpression(new RDFPlainLiteral("hello","en-US")))))));
         RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
         Assert.IsNotNull(result);
@@ -753,7 +753,7 @@ public class RDFQueryEngineTest
 
         RDFSelectQuery query = new RDFSelectQuery()
             .AddProjectionVariable(new RDFVariable("?Y"), new RDFAddExpression(
-                new RDFLengthExpression(new RDFConstantExpression(new RDFPlainLiteral("hello", "en-US"))),
+                new RDFStrLenExpression(new RDFConstantExpression(new RDFPlainLiteral("hello", "en-US"))),
                 new RDFAddExpression(new RDFConstantExpression(new RDFTypedLiteral("3", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)),
                     new RDFMultiplyExpression(new RDFConstantExpression(new RDFTypedLiteral("3", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)), new RDFTypedLiteral("4.5", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)))));
         RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
@@ -771,7 +771,7 @@ public class RDFQueryEngineTest
         RDFGraph graph = new RDFGraph();
 
         RDFSelectQuery query = new RDFSelectQuery()
-            .AddProjectionVariable(new RDFVariable("?Y"), new RDFConditionalExpression(
+            .AddProjectionVariable(new RDFVariable("?Y"), new RDFIfExpression(
                 new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFRandExpression(), new RDFConstantExpression(new RDFTypedLiteral("0.50", RDFModelEnums.RDFDatatypes.XSD_FLOAT))),
                 new RDFConstantExpression(new RDFPlainLiteral(">0.50")),
                 new RDFConstantExpression(new RDFPlainLiteral("<=0.50"))));
@@ -1487,7 +1487,7 @@ public class RDFQueryEngineTest
             .AddProjectionVariable(new RDFVariable("?Y"))
             .AddProjectionVariable(new RDFVariable("?X"))
             .AddProjectionVariable(new RDFVariable("?XBIND"))
-            .AddProjectionVariable(new RDFVariable("?XBINDLENGTH"), new RDFLengthExpression(new RDFVariable("?XBIND")))
+            .AddProjectionVariable(new RDFVariable("?XBINDLENGTH"), new RDFStrLenExpression(new RDFVariable("?XBIND")))
             .AddProjectionVariable(new RDFVariable("?NEVERBOUND"));
         RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, store);
 
@@ -1579,7 +1579,7 @@ public class RDFQueryEngineTest
             .AddProjectionVariable(new RDFVariable("?Y"))
             .AddProjectionVariable(new RDFVariable("?X"))
             .AddProjectionVariable(new RDFVariable("?XBIND"))
-            .AddProjectionVariable(new RDFVariable("?XBINDLENGTH"), new RDFLengthExpression(new RDFVariable("?XBIND")))
+            .AddProjectionVariable(new RDFVariable("?XBINDLENGTH"), new RDFStrLenExpression(new RDFVariable("?XBIND")))
             .AddProjectionVariable(new RDFVariable("?NEVERBOUND"));
         RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, federation);
 

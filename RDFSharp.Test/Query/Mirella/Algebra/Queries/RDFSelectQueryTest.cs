@@ -440,7 +440,7 @@ public class RDFSelectQueryTest
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?V"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
-                .AddBind(new RDFBind(new RDFLengthExpression(new RDFVariable("?V")), new RDFVariable("?VLENGTH"))))
+                .AddBind(new RDFBind(new RDFStrLenExpression(new RDFVariable("?V")), new RDFVariable("?VLENGTH"))))
             .AddProjectionVariable(new RDFVariable("?V"))
             .AddProjectionVariable(new RDFVariable("?VLENGTH"))
             .AddProjectionVariable(new RDFVariable("?VLENGTHISMORETHAN7"),
@@ -467,7 +467,7 @@ public class RDFSelectQueryTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
-                .AddBind(new RDFBind(new RDFLengthExpression(new RDFVariable("?V")), new RDFVariable("?VLENGTH")))
+                .AddBind(new RDFBind(new RDFStrLenExpression(new RDFVariable("?V")), new RDFVariable("?VLENGTH")))
                 .AddPattern(new RDFPattern(new RDFVariable("?V"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)))
             .AddProjectionVariable(new RDFVariable("?V"))
             .AddProjectionVariable(new RDFVariable("?VLENGTH"))

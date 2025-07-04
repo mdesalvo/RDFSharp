@@ -22,20 +22,20 @@ using RDFSharp.Model;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFLengthExpression represents a string length function to be applied on a query results table.
+    /// RDFStrLenExpression represents a string length function to be applied on a query results table.
     /// </summary>
-    public sealed class RDFLengthExpression : RDFExpression
+    public sealed class RDFStrLenExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
         /// Default-ctor to build a string length function with given arguments
         /// </summary>
-        public RDFLengthExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFStrLenExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
         /// Default-ctor to build a string length function with given arguments
         /// </summary>
-        public RDFLengthExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFStrLenExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion
 
         #region Interfaces
@@ -88,13 +88,13 @@ namespace RDFSharp.Query
                 switch (leftArgumentPMember)
                 {
                     case RDFResource _:
-                        expressionResult = new RDFTypedLiteral(leftArgumentPMember.ToString().Length.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                        expressionResult = new RDFTypedLiteral($"{leftArgumentPMember.ToString().Length}", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
                         break;
                     case RDFPlainLiteral leftArgumentPMemberPLiteral:
-                        expressionResult = new RDFTypedLiteral(leftArgumentPMemberPLiteral.Value.Length.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                        expressionResult = new RDFTypedLiteral($"{leftArgumentPMemberPLiteral.Value.Length}", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
                         break;
                     case RDFTypedLiteral leftArgumentPMemberTLiteral when leftArgumentPMemberTLiteral.HasStringDatatype():
-                        expressionResult = new RDFTypedLiteral(leftArgumentPMemberTLiteral.Value.Length.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                        expressionResult = new RDFTypedLiteral($"{leftArgumentPMemberTLiteral.Value.Length}", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
                         break;
                 }
                 #endregion

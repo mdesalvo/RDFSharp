@@ -23,35 +23,35 @@ using RDFSharp.Model;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFEndsExpression represents a string ends function to be applied on a query results table.
+    /// RDFStrStartsExpression represents a string starts function to be applied on a query results table.
     /// </summary>
-    public sealed class RDFEndsExpression : RDFExpression
+    public sealed class RDFStrStartsExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a string ends function with given arguments
+        /// Default-ctor to build a string starts function with given arguments
         /// </summary>
-        public RDFEndsExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFStrStartsExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string ends function with given arguments
+        /// Default-ctor to build a string starts function with given arguments
         /// </summary>
-        public RDFEndsExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFStrStartsExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string ends function with given arguments
+        /// Default-ctor to build a string starts function with given arguments
         /// </summary>
-        public RDFEndsExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFStrStartsExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string ends function with given arguments
+        /// Default-ctor to build a string starts function with given arguments
         /// </summary>
-        public RDFEndsExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        public RDFStrStartsExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the string ends function
+        /// Gives the string representation of the string starts function
         /// </summary>
         public override string ToString()
             => ToString(new List<RDFNamespace>());
@@ -59,8 +59,8 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(STRENDS(L,R))
-            sb.Append("(STRENDS(");
+            //(STRSTARTS(L,R))
+            sb.Append("(STRSTARTS(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
@@ -78,7 +78,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the string ends function on the given datarow
+        /// Applies the string starts function on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(DataRow row)
         {
@@ -146,7 +146,7 @@ namespace RDFSharp.Query
                 }
 
                 if (leftArgumentPMember != null && rightArgumentPMember != null)
-                    expressionResult = leftArgumentPMember.ToString().EndsWith(rightArgumentPMember.ToString(), StringComparison.Ordinal) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                    expressionResult = leftArgumentPMember.ToString().StartsWith(rightArgumentPMember.ToString(), StringComparison.Ordinal) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }

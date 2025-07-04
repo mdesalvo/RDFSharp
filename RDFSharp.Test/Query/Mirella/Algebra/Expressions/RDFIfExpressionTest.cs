@@ -22,13 +22,13 @@ using RDFSharp.Query;
 namespace RDFSharp.Test.Query;
 
 [TestClass]
-public class RDFConditionalExpressionTest
+public class RDFIfExpressionTest
 {
     #region Tests
     [TestMethod]
     public void ShouldCreateConditionalExpression()
     {
-        RDFConditionalExpression expression = new RDFConditionalExpression(
+        RDFIfExpression expression = new RDFIfExpression(
             new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan,
                 new RDFVariableExpression(new RDFVariable("?V1")),
                 new RDFConstantExpression(new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_BYTE))),
@@ -44,14 +44,14 @@ public class RDFConditionalExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingConditionalExpressionWithExpressionBecauseNullConditionArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFConditionalExpression(
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFIfExpression(
             null,
             new RDFVariableExpression(new RDFVariable("?V1")),
             new RDFVariableExpression(new RDFVariable("?V2"))));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingConditionalExpressionWithExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFConditionalExpression(
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFIfExpression(
             new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan,
                 new RDFVariableExpression(new RDFVariable("?V1")),
                 new RDFConstantExpression(new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_BYTE))),
@@ -60,7 +60,7 @@ public class RDFConditionalExpressionTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingConditionalExpressionWithVariableBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFConditionalExpression(
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFIfExpression(
             new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan,
                 new RDFVariableExpression(new RDFVariable("?V1")),
                 new RDFConstantExpression(new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_BYTE))),
@@ -79,7 +79,7 @@ public class RDFConditionalExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFConditionalExpression expression = new RDFConditionalExpression(
+        RDFIfExpression expression = new RDFIfExpression(
             new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan,
                 new RDFVariableExpression(new RDFVariable("?A")),
                 new RDFConstantExpression(new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_BYTE))),
@@ -103,7 +103,7 @@ public class RDFConditionalExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFConditionalExpression expression = new RDFConditionalExpression(
+        RDFIfExpression expression = new RDFIfExpression(
             new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
                 new RDFVariableExpression(new RDFVariable("?A")),
                 new RDFConstantExpression(new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_BYTE))),
@@ -127,7 +127,7 @@ public class RDFConditionalExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFConditionalExpression expression = new RDFConditionalExpression(
+        RDFIfExpression expression = new RDFIfExpression(
             new RDFAddExpression(
                 new RDFVariable("?A"),
                 new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_BYTE)),
@@ -150,7 +150,7 @@ public class RDFConditionalExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFConditionalExpression expression = new RDFConditionalExpression(
+        RDFIfExpression expression = new RDFIfExpression(
             new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan,
                 new RDFVariableExpression(new RDFVariable("?Q")),
                 new RDFConstantExpression(new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_BYTE))),
@@ -173,7 +173,7 @@ public class RDFConditionalExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFConditionalExpression expression = new RDFConditionalExpression(
+        RDFIfExpression expression = new RDFIfExpression(
             new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan,
                 new RDFVariableExpression(new RDFVariable("?A")),
                 new RDFConstantExpression(new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_BYTE))),
@@ -196,7 +196,7 @@ public class RDFConditionalExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFConditionalExpression expression = new RDFConditionalExpression(
+        RDFIfExpression expression = new RDFIfExpression(
             new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
                 new RDFVariableExpression(new RDFVariable("?A")),
                 new RDFConstantExpression(new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_BYTE))),

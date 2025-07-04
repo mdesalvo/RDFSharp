@@ -22,109 +22,109 @@ using RDFSharp.Query;
 namespace RDFSharp.Test.Query;
 
 [TestClass]
-public class RDFEndsExpressionTest
+public class RDFStrStartsExpressionTest
 {
     #region Tests
     [TestMethod]
-    public void ShouldCreateEEEndsExpression1()
+    public void ShouldCreateEEStartsExpression1()
     {
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")),
             new RDFVariableExpression(new RDFVariable("?V3")));
 
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRENDS((?V1 + ?V2), ?V3))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRENDS((?V1 + ?V2), ?V3))"));
+        Assert.IsTrue(expression.ToString().Equals("(STRSTARTS((?V1 + ?V2), ?V3))"));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRSTARTS((?V1 + ?V2), ?V3))"));
     }
 
     [TestMethod]
-    public void ShouldCreateEEEndsExpression2()
+    public void ShouldCreateEEStartsExpression2()
     {
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")),
             new RDFConstantExpression(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING)));
 
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(STRENDS((?V1 + ?V2), \"hello\"^^<{RDFVocabulary.XSD.STRING}>))"));
-        Assert.IsTrue(expression.ToString([]).Equals($"(STRENDS((?V1 + ?V2), \"hello\"^^<{RDFVocabulary.XSD.STRING}>))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(STRENDS((?V1 + ?V2), \"hello\"^^xsd:string))"));
+        Assert.IsTrue(expression.ToString().Equals($"(STRSTARTS((?V1 + ?V2), \"hello\"^^<{RDFVocabulary.XSD.STRING}>))"));
+        Assert.IsTrue(expression.ToString([]).Equals($"(STRSTARTS((?V1 + ?V2), \"hello\"^^<{RDFVocabulary.XSD.STRING}>))"));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(STRSTARTS((?V1 + ?V2), \"hello\"^^xsd:string))"));
     }
 
     [TestMethod]
-    public void ShouldCreateEEEndsExpressionNested()
+    public void ShouldCreateEEStartsExpressionNested()
     {
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")),
-            new RDFEndsExpression(new RDFVariableExpression(new RDFVariable("?V3")), new RDFConstantExpression(new RDFPlainLiteral("hello","EN-US"))));
+            new RDFStrStartsExpression(new RDFVariableExpression(new RDFVariable("?V3")), new RDFConstantExpression(new RDFPlainLiteral("hello","EN-US"))));
 
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRENDS((?V1 + ?V2), (STRENDS(?V3, \"hello\"@EN-US))))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRENDS((?V1 + ?V2), (STRENDS(?V3, \"hello\"@EN-US))))"));
+        Assert.IsTrue(expression.ToString().Equals("(STRSTARTS((?V1 + ?V2), (STRSTARTS(?V3, \"hello\"@EN-US))))"));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRSTARTS((?V1 + ?V2), (STRSTARTS(?V3, \"hello\"@EN-US))))"));
     }
 
     [TestMethod]
-    public void ShouldCreateEVEndsExpression()
+    public void ShouldCreateEVStartsExpression()
     {
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")),
             new RDFVariable("?V3"));
 
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRENDS((?V1 + ?V2), ?V3))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRENDS((?V1 + ?V2), ?V3))"));
+        Assert.IsTrue(expression.ToString().Equals("(STRSTARTS((?V1 + ?V2), ?V3))"));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRSTARTS((?V1 + ?V2), ?V3))"));
     }
 
     [TestMethod]
-    public void ShouldCreateVEEndsExpression()
+    public void ShouldCreateVEStartsExpression()
     {
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariable("?V3"),
             new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")));
 
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRENDS(?V3, (?V1 + ?V2)))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRENDS(?V3, (?V1 + ?V2)))"));
+        Assert.IsTrue(expression.ToString().Equals("(STRSTARTS(?V3, (?V1 + ?V2)))"));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRSTARTS(?V3, (?V1 + ?V2)))"));
     }
 
     [TestMethod]
-    public void ShouldCreateVVEndsExpression()
+    public void ShouldCreateVVStartsExpression()
     {
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariable("?V3"),
             new RDFVariable("?V1"));
 
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRENDS(?V3, ?V1))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRENDS(?V3, ?V1))"));
+        Assert.IsTrue(expression.ToString().Equals("(STRSTARTS(?V3, ?V1))"));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRSTARTS(?V3, ?V1))"));
     }
 
     [TestMethod]
-    public void ShouldThrowExceptionOnCreatingEEEndsExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFEndsExpression(null as RDFExpression, new RDFVariableExpression(new RDFVariable("?V"))));
+    public void ShouldThrowExceptionOnCreatingEEStartsExpressionBecauseNullLeftArgument()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFStrStartsExpression(null as RDFExpression, new RDFVariableExpression(new RDFVariable("?V"))));
 
     [TestMethod]
-    public void ShouldThrowExceptionOnCreatingEVEndsExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFEndsExpression(null as RDFExpression, new RDFVariable("?V")));
+    public void ShouldThrowExceptionOnCreatingEVStartsExpressionBecauseNullLeftArgument()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFStrStartsExpression(null as RDFExpression, new RDFVariable("?V")));
 
     [TestMethod]
-    public void ShouldThrowExceptionOnCreatingVEEndsExpressionBecauseNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFEndsExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
+    public void ShouldThrowExceptionOnCreatingVEStartsExpressionBecauseNullLeftArgument()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFStrStartsExpression(null as RDFVariable, new RDFVariableExpression(new RDFVariable("?V"))));
 
     [TestMethod]
-    public void ShouldThrowExceptionOnCreatingVVEndsExpressionNullLeftArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFEndsExpression(null as RDFVariable, new RDFVariable("?V")));
+    public void ShouldThrowExceptionOnCreatingVVStartsExpressionNullLeftArgument()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFStrStartsExpression(null as RDFVariable, new RDFVariable("?V")));
 
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResult()
@@ -134,11 +134,11 @@ public class RDFEndsExpressionTest
         table.Columns.Add("?B", typeof(string));
         DataRow row = table.NewRow();
         row["?A"] = new RDFPlainLiteral("HELLO","EN-US");
-        row["?B"] = new RDFPlainLiteral("LO");
+        row["?B"] = new RDFPlainLiteral("HE");
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
             new RDFVariableExpression(new RDFVariable("?B")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -155,11 +155,11 @@ public class RDFEndsExpressionTest
         table.Columns.Add("?B", typeof(string));
         DataRow row = table.NewRow();
         row["?A"] = new RDFResource("http://example.org/test1");
-        row["?B"] = new RDFResource("http://example.org/test1");
+        row["?B"] = new RDFResource("http://example.org/");
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
             new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -176,11 +176,11 @@ public class RDFEndsExpressionTest
         table.Columns.Add("?B", typeof(string));
         DataRow row = table.NewRow();
         row["?A"] = new RDFResource("ex:org");
-        row["?B"] = new RDFPlainLiteral(":org");
+        row["?B"] = new RDFPlainLiteral("ex:");
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariable("?A"),
             new RDFVariableExpression(new RDFVariable("?B")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -197,11 +197,11 @@ public class RDFEndsExpressionTest
         table.Columns.Add("?B", typeof(string));
         DataRow row = table.NewRow();
         row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL);
-        row["?B"] = new RDFTypedLiteral("lo", RDFModelEnums.RDFDatatypes.XSD_STRING);
+        row["?B"] = new RDFTypedLiteral("he", RDFModelEnums.RDFDatatypes.XSD_STRING);
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariable("?A"),
             new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -222,7 +222,7 @@ public class RDFEndsExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
             new RDFVariableExpression(new RDFVariable("?B")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -239,11 +239,11 @@ public class RDFEndsExpressionTest
         table.Columns.Add("?B", typeof(string));
         DataRow row = table.NewRow();
         row["?A"] = new RDFResource("http://e.org/test1");
-        row["?B"] = new RDFResource("http://e.org/test12");
+        row["?B"] = new RDFResource("http://example.org/");
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
             new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -260,11 +260,11 @@ public class RDFEndsExpressionTest
         table.Columns.Add("?B", typeof(string));
         DataRow row = table.NewRow();
         row["?A"] = new RDFPlainLiteral("I am ex:Org literal");
-        row["?B"] = new RDFResource("ex:org literal");
+        row["?B"] = new RDFResource("ex:org");
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariable("?A"),
             new RDFVariableExpression(new RDFVariable("?B")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -285,7 +285,7 @@ public class RDFEndsExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariable("?A"),
             new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -306,7 +306,7 @@ public class RDFEndsExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariable("?A"),
             new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -327,7 +327,7 @@ public class RDFEndsExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariable("?A"),
             new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -348,7 +348,7 @@ public class RDFEndsExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariable("?A"),
             new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -369,7 +369,7 @@ public class RDFEndsExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariable("?A"),
             new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -392,7 +392,7 @@ public class RDFEndsExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")),
             new RDFVariable("?C"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -414,7 +414,7 @@ public class RDFEndsExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariable("?C"),
             new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -436,7 +436,7 @@ public class RDFEndsExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariable("?Q"),
             new RDFVariable("?A"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -458,7 +458,7 @@ public class RDFEndsExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariable("?A"),
             new RDFVariable("?Q"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -480,7 +480,7 @@ public class RDFEndsExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariable("?A"),
             new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -502,7 +502,7 @@ public class RDFEndsExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFEndsExpression expression = new RDFEndsExpression(
+        RDFStrStartsExpression expression = new RDFStrStartsExpression(
             new RDFVariable("?B"),
             new RDFVariable("?A"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);

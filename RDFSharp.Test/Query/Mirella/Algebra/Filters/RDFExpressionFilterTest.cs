@@ -235,9 +235,9 @@ public class RDFExpressionFilterTest
             new RDFBooleanOrExpression(
                 new RDFComparisonExpression(
                     RDFQueryEnums.RDFComparisonFlavors.GreaterThan,
-                    new RDFLengthExpression(new RDFVariable("?A")),
+                    new RDFStrLenExpression(new RDFVariable("?A")),
                     new RDFConstantExpression(new RDFTypedLiteral("8", RDFModelEnums.RDFDatatypes.XSD_INT))),
-                new RDFStartsExpression(
+                new RDFStrStartsExpression(
                     new RDFVariable("?B"),
                     new RDFConstantExpression(new RDFTypedLiteral("he", RDFModelEnums.RDFDatatypes.XSD_STRING)))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
@@ -262,9 +262,9 @@ public class RDFExpressionFilterTest
             new RDFBooleanOrExpression(
                 new RDFComparisonExpression(
                     RDFQueryEnums.RDFComparisonFlavors.GreaterThan,
-                    new RDFLengthExpression(new RDFVariable("?A")),
+                    new RDFStrLenExpression(new RDFVariable("?A")),
                     new RDFConstantExpression(new RDFTypedLiteral("35", RDFModelEnums.RDFDatatypes.XSD_INT))),
-                new RDFStartsExpression(
+                new RDFStrStartsExpression(
                     new RDFVariable("?B"),
                     new RDFConstantExpression(new RDFTypedLiteral("pol", RDFModelEnums.RDFDatatypes.XSD_STRING)))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], true);
@@ -288,7 +288,7 @@ public class RDFExpressionFilterTest
         RDFExpressionFilter filter = new RDFExpressionFilter(
             new RDFBooleanAndExpression(
                 new RDFIsUriExpression(new RDFVariable("?A")),
-                new RDFStartsExpression(
+                new RDFStrStartsExpression(
                     new RDFVariable("?B"),
                     new RDFConstantExpression(new RDFTypedLiteral("he", RDFModelEnums.RDFDatatypes.XSD_STRING)))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
@@ -313,9 +313,9 @@ public class RDFExpressionFilterTest
             new RDFBooleanOrExpression(
                 new RDFComparisonExpression(
                     RDFQueryEnums.RDFComparisonFlavors.GreaterThan,
-                    new RDFLengthExpression(new RDFVariable("?A")),
+                    new RDFStrLenExpression(new RDFVariable("?A")),
                     new RDFConstantExpression(new RDFTypedLiteral("35", RDFModelEnums.RDFDatatypes.XSD_INT))),
-                new RDFStartsExpression(
+                new RDFStrStartsExpression(
                     new RDFVariable("?B"),
                     new RDFConstantExpression(new RDFTypedLiteral("pol", RDFModelEnums.RDFDatatypes.XSD_STRING)))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
@@ -340,9 +340,9 @@ public class RDFExpressionFilterTest
             new RDFBooleanOrExpression(
                 new RDFComparisonExpression(
                     RDFQueryEnums.RDFComparisonFlavors.GreaterThan,
-                    new RDFLengthExpression(new RDFVariable("?A")),
+                    new RDFStrLenExpression(new RDFVariable("?A")),
                     new RDFConstantExpression(new RDFTypedLiteral("8", RDFModelEnums.RDFDatatypes.XSD_INT))),
-                new RDFStartsExpression(
+                new RDFStrStartsExpression(
                     new RDFVariable("?B"),
                     new RDFConstantExpression(new RDFTypedLiteral("he", RDFModelEnums.RDFDatatypes.XSD_STRING)))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], true);

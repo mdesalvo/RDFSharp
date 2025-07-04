@@ -22,9 +22,9 @@ using RDFSharp.Model;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFConditionalExpression represents an IF-THEN-ELSE expression to be applied on a query results table.
+    /// RDFIfExpression represents an IF-THEN-ELSE expression to be applied on a query results table.
     /// </summary>
-    public sealed class RDFConditionalExpression : RDFExpression
+    public sealed class RDFIfExpression : RDFExpression
     {
         #region Properties
         /// <summary>
@@ -37,7 +37,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a conditional expression with given arguments
         /// </summary>
-        public RDFConditionalExpression(RDFExpression conditionArgument, RDFExpression leftArgument, RDFExpression rightArgument)
+        public RDFIfExpression(RDFExpression conditionArgument, RDFExpression leftArgument, RDFExpression rightArgument)
             : base(leftArgument, rightArgument)
         {
             #region Guards

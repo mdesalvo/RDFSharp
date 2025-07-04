@@ -5914,7 +5914,7 @@ public class RDFQueryPrinterTest
               ]))
             .AddBind(new RDFBind(new RDFAbsExpression(new RDFVariable("?T")), new RDFVariable("?ABST"))))
           .AddProjectionVariable(new RDFVariable("?START"))
-          .AddProjectionVariable(new RDFVariable("?STARTLEN"), new RDFLengthExpression(new RDFVariable("?START")))))
+          .AddProjectionVariable(new RDFVariable("?STARTLEN"), new RDFStrLenExpression(new RDFVariable("?START")))))
       .AddSubQuery(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
