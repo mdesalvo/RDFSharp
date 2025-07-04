@@ -43,6 +43,14 @@ namespace RDFSharp.Model
         /// Regex for validation of language tags (with support for optional direction)
         /// </summary>
         internal static readonly Regex LangTagRegex = new Regex($"^{LangTagMask}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        /// <summary>
+        /// Regex for validation of language tags (with support for mandatory direction)
+        /// </summary>
+        internal static readonly Regex LangTagDirRegex = new Regex($"^{LangTagMask.TrimEnd("?")}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        /// <summary>
+        /// Regex for validation of language tags (without support for direction)
+        /// </summary>
+        internal static readonly Regex LangTagNoDirRegex = new Regex($"^{LangTagMask.Replace(LangTagDirection, string.Empty)}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Optional language of the literal's value
