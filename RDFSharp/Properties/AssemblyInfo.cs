@@ -19,5 +19,7 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible(false)]
 [assembly: Guid("1EF76FD3-C935-4965-9621-6CA0CBC275BF")]
-[assembly: InternalsVisibleTo("OWLSharp")]
 [assembly: InternalsVisibleTo("RDFSharp.Test")]
+[assembly: InternalsVisibleTo("RDFSharp.Extensions")]
+[assembly: InternalsVisibleTo("OWLSharp")]
+[assembly: InternalsVisibleTo("OWLSharp.Extensions")]
