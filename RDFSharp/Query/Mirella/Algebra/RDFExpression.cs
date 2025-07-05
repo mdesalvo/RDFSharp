@@ -70,7 +70,10 @@ namespace RDFSharp.Query
             #region Guards
             bool isRandExpression = this is RDFRandExpression;
             bool isBNodeExpression = this is RDFBNodeExpression;
-            if (!isRandExpression && !isBNodeExpression && leftArgument == null)
+            bool isNowExpression = this is RDFNowExpression;
+            bool isUUIDExpression = this is RDFUUIDExpression;
+            bool isStrUUIDExpression = this is RDFStrUUIDExpression;
+            if (leftArgument == null && !isRandExpression && !isBNodeExpression && !isNowExpression && !isUUIDExpression && !isStrUUIDExpression)
                 throw new RDFQueryException("Cannot create expression because given \"leftArgument\" parameter is null");
             #endregion
 

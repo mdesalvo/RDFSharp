@@ -98,7 +98,7 @@ namespace RDFSharp.Model
             else if (uriString?.StartsWith("_:", StringComparison.Ordinal) ?? false)
                 uriString = $"bnode:{uriString.Substring(2)}";
 
-            Uri.TryCreate(uriString, UriKind.Absolute, out Uri tempUri);
+            _ = Uri.TryCreate(uriString, UriKind.Absolute, out Uri tempUri);
             return tempUri;
         }
 
