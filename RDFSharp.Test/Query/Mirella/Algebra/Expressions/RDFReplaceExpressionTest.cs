@@ -41,7 +41,7 @@ public class RDFReplaceExpressionTest
         Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR((?V1 + ?V2)), \"ismx\"))"));
         Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR((?V1 + ?V2)), \"ismx\"))"));
     }
-    
+
     [TestMethod]
     public void ShouldCreateRegexExpressionWithExpressionAndNoFlags()
     {
@@ -57,7 +57,7 @@ public class RDFReplaceExpressionTest
         Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR((?V1 + ?V2))))"));
         Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR((?V1 + ?V2))))"));
     }
-    
+
     [TestMethod]
     public void ShouldCreateRegexExpressionWithVariable()
     {
@@ -73,7 +73,7 @@ public class RDFReplaceExpressionTest
         Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR(?V1), \"ismx\"))"));
         Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR(?V1), \"ismx\"))"));
     }
-    
+
     [TestMethod]
     public void ShouldCreateRegexExpressionWithVariableAndNoFlags()
     {
@@ -89,7 +89,7 @@ public class RDFReplaceExpressionTest
         Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR(?V1)))"));
         Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR(?V1)))"));
     }
-    
+
     [TestMethod]
     public void ShouldCreateRegexVariableWithExpression()
     {
@@ -105,7 +105,7 @@ public class RDFReplaceExpressionTest
         Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR(?V1), \"^hello$\", STR((?V1 + ?V2)), \"ismx\"))"));
         Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR(?V1), \"^hello$\", STR((?V1 + ?V2)), \"ismx\"))"));
     }
-    
+
     [TestMethod]
     public void ShouldCreateRegexVariableWithExpressionAndNoFlags()
     {
@@ -121,7 +121,7 @@ public class RDFReplaceExpressionTest
         Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR(?V1), \"^hello$\", STR((?V1 + ?V2))))"));
         Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR(?V1), \"^hello$\", STR((?V1 + ?V2))))"));
     }
-    
+
     [TestMethod]
     public void ShouldCreateRegexVariableWithVariable()
     {
@@ -137,7 +137,7 @@ public class RDFReplaceExpressionTest
         Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR(?V1), \"^hello$\", STR(?V2), \"ismx\"))"));
         Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR(?V1), \"^hello$\", STR(?V2), \"ismx\"))"));
     }
-    
+
     [TestMethod]
     public void ShouldCreateRegexVariableWithVariableAndNoFlags()
     {
@@ -161,7 +161,7 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingRegexExpressionWithExpressionBecauseNullRightArgument()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFReplaceExpression(new RDFVariableExpression(new RDFVariable("?V1")), null as RDFExpression, new Regex("^hello$")));
-    
+
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingRegexExpressionWithExpressionBecauseNullRegex()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFReplaceExpression(new RDFVariableExpression(new RDFVariable("?V1")), new RDFVariableExpression(new RDFVariable("?V2")), null));
@@ -173,7 +173,7 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingRegexExpressionWithVariableBecauseNullRightArgument()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFReplaceExpression(new RDFVariableExpression(new RDFVariable("?V1")), null as RDFVariable, new Regex("^hello$")));
-    
+
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingRegexExpressionWithVariableBecauseNullRegex()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFReplaceExpression(new RDFVariableExpression(new RDFVariable("?V1")), new RDFVariable("?V2"), null));
@@ -185,11 +185,11 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingRegexVariableWithExpressionBecauseNullRightArgument()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFReplaceExpression(new RDFVariable("?V1"), null as RDFExpression, new Regex("^hello$")));
-    
+
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingRegexVariableWithExpressionBecauseNullRegex()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFReplaceExpression(new RDFVariable("?V1"), new RDFVariableExpression(new RDFVariable("?V2")), null));
-    
+
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingRegexVariableWithVariableBecauseNullLeftArgument()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFReplaceExpression(null as RDFVariable, new RDFVariable("?V1"), new Regex("^hello$")));
@@ -197,13 +197,13 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingRegexVariableWithVariableBecauseNullRightArgument()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFReplaceExpression(new RDFVariable("?V1"), null as RDFVariable, new Regex("^hello$")));
-    
+
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingRegexVariableWithVariableBecauseNullRegex()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFReplaceExpression(new RDFVariable("?V1"), new RDFVariable("?V2"), null));
-    
+
     //EE
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNullLeft()
     {
@@ -225,7 +225,7 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNullRight()
     {
@@ -269,7 +269,7 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnPlainLiterals()
     {
@@ -291,7 +291,7 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("aZb")));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnStringTypedLiterals()
     {
@@ -313,7 +313,7 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("aZb")));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnResources()
     {
@@ -335,9 +335,9 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(new RDFResource("http://example.com/test/ex1")));
     }
-    
+
     //EV
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnNullLeft()
     {
@@ -359,7 +359,7 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnNullRight()
     {
@@ -403,7 +403,7 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnPlainLiterals()
     {
@@ -425,7 +425,7 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("aZb")));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnStringTypedLiterals()
     {
@@ -447,7 +447,7 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("aZb")));
     }
-    
+
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnResources()
     {
@@ -469,9 +469,9 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(new RDFResource("http://example.com/test/ex1")));
     }
-    
+
     //VE
-    
+
     [TestMethod]
     public void ShouldApplyVariableWithExpressionAndCalculateResultOnNullLeft()
     {
@@ -493,7 +493,7 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
     }
-    
+
     [TestMethod]
     public void ShouldApplyVariableWithExpressionAndCalculateResultOnNullRight()
     {
@@ -537,7 +537,7 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
     }
-    
+
     [TestMethod]
     public void ShouldApplyVariableWithExpressionAndCalculateResultOnPlainLiterals()
     {
@@ -559,7 +559,7 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("aZb")));
     }
-    
+
     [TestMethod]
     public void ShouldApplyVariableWithExpressionAndCalculateResultOnStringTypedLiterals()
     {
@@ -581,7 +581,7 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("aZb")));
     }
-    
+
     [TestMethod]
     public void ShouldApplyVariableWithExpressionAndCalculateResultOnResources()
     {
@@ -603,9 +603,9 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(new RDFResource("http://example.com/test/ex1")));
     }
-    
+
     //VV
-    
+
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndCalculateResultOnNullLeft()
     {
@@ -627,7 +627,7 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
     }
-    
+
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndCalculateResultOnNullRight()
     {
@@ -671,7 +671,7 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(RDFPlainLiteral.Empty));
     }
-    
+
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndCalculateResultOnPlainLiterals()
     {
@@ -693,7 +693,7 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("aZb")));
     }
-    
+
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndCalculateResultOnStringTypedLiterals()
     {
@@ -715,7 +715,7 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("aZb")));
     }
-    
+
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndCalculateResultOnResources()
     {
@@ -737,7 +737,7 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(new RDFResource("http://example.com/test/ex1")));
     }
-    
+
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndNotCalculateResultBecauseNotStringLeftTypedLiteral()
     {
@@ -758,7 +758,7 @@ public class RDFReplaceExpressionTest
 
         Assert.IsNull(expressionResult);
     }
-    
+
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndNotCalculateResultBecauseNotStringRightTypedLiteral()
     {
@@ -779,7 +779,7 @@ public class RDFReplaceExpressionTest
 
         Assert.IsNull(expressionResult);
     }
-    
+
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndNotCalculateResultBecauseUnknownLeftVariable()
     {
@@ -800,7 +800,7 @@ public class RDFReplaceExpressionTest
 
         Assert.IsNull(expressionResult);
     }
-    
+
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndNotCalculateResultBecauseUnknownRightVariable()
     {

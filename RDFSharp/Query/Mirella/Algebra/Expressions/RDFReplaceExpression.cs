@@ -47,10 +47,10 @@ namespace RDFSharp.Query
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create RDFReplaceExpression because given \"rightArgument\" parameter is null");
             #endregion
-            
+
             RegEx = regex ?? throw new RDFQueryException("Cannot create RDFReplaceExpression because given \"regex\" parameter is null.");
         }
-        
+
         /// <summary>
         /// Default-ctor to build a Regex-replacing function with given arguments
         /// </summary>
@@ -60,7 +60,7 @@ namespace RDFSharp.Query
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create RDFReplaceExpression because given \"rightArgument\" parameter is null");
             #endregion
-            
+
             RegEx = regex ?? throw new RDFQueryException("Cannot create RDFReplaceExpression because given \"regex\" parameter is null.");
         }
 
@@ -73,10 +73,10 @@ namespace RDFSharp.Query
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create RDFReplaceExpression because given \"rightArgument\" parameter is null");
             #endregion
-            
+
             RegEx = regex ?? throw new RDFQueryException("Cannot create RDFReplaceExpression because given \"regex\" parameter is null.");
         }
-        
+
         /// <summary>
         /// Default-ctor to build a Regex-replacing function with given arguments
         /// </summary>
@@ -86,7 +86,7 @@ namespace RDFSharp.Query
             if (rightArgument == null)
                 throw new RDFQueryException("Cannot create RDFReplaceExpression because given \"rightArgument\" parameter is null");
             #endregion
-            
+
             RegEx = regex ?? throw new RDFQueryException("Cannot create RDFReplaceExpression because given \"regex\" parameter is null.");
         }
         #endregion
@@ -156,7 +156,7 @@ namespace RDFSharp.Query
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else
                     leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
-                
+
                 //Evaluate right argument (Expression VS Variable)
                 RDFPatternMember rightArgumentPMember;
                 if (RightArgument is RDFExpression rightArgumentExpression)
@@ -203,11 +203,11 @@ namespace RDFSharp.Query
                 if (leftArgumentPMember != null && rightArgumentPMember != null)
                 {
                     string result = Regex.Replace(leftArgumentPMember.ToString(), RegEx.ToString(), rightArgumentPMember.ToString());
-                    
+
                     //We want to expose a strongly typed result, depending on its nature
                     if (RDFModelUtilities.GetUriFromString(result) != null)
                         expressionResult = new RDFResource(result);
-                    else 
+                    else
                         expressionResult = new RDFPlainLiteral(result);
                 }
                 #endregion
