@@ -67,7 +67,7 @@ public class RDFAggregatorTest
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFQueryEnums.RDFComparisonFlavors.LessThan)]
     [DataRow(RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan)]
     [DataRow(RDFQueryEnums.RDFComparisonFlavors.EqualTo)]

@@ -123,7 +123,7 @@ public class RDFShapeTest
         Assert.IsTrue(shapeGraph.Any(t => t.Subject.Equals(new RDFResource("ex:shape")) && t.Predicate.Equals(RDFVocabulary.SHACL.DEACTIVATED) && t.Object.Equals(RDFTypedLiteral.False)));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Info)]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning)]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation)]

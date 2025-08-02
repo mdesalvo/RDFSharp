@@ -95,7 +95,7 @@ public class RDFGraphTest
         Assert.IsNull(graph.IndexedTriples);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/")]
     public void ShouldSetContext(string input)
     {
@@ -1433,7 +1433,7 @@ public class RDFGraphTest
         Assert.AreEqual(0, difference12.TriplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(".nt",RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
     [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
@@ -1454,7 +1454,7 @@ public class RDFGraphTest
     public void ShouldRaiseExceptionOnExportingToNullOrEmptyFilepath()
         => Assert.ThrowsExactly<RDFModelException>(() => new RDFGraph().ToFile(RDFModelEnums.RDFFormats.NTriples, null));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
     [DataRow(RDFModelEnums.RDFFormats.TriX)]
@@ -1512,7 +1512,7 @@ public class RDFGraphTest
         Assert.AreEqual(0, table.Rows.Count);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
     [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
@@ -1544,7 +1544,7 @@ public class RDFGraphTest
         }
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
     [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
@@ -1584,7 +1584,7 @@ public class RDFGraphTest
         });
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
     [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
@@ -1608,7 +1608,7 @@ public class RDFGraphTest
     public void ShouldRaiseExceptionOnImportingFromUnexistingFilepath()
         => Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromFile(RDFModelEnums.RDFFormats.NTriples, "blablabla"));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
     [DataRow(RDFModelEnums.RDFFormats.TriX)]
@@ -1640,7 +1640,7 @@ public class RDFGraphTest
         }
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
     [DataRow(RDFModelEnums.RDFFormats.TriX)]
@@ -1681,7 +1681,7 @@ public class RDFGraphTest
         });
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
     [DataRow(RDFModelEnums.RDFFormats.TriX)]
@@ -2006,7 +2006,7 @@ public class RDFGraphTest
     #endregion
 
     #region Tests (Async)
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/")]
     public async Task ShouldSetContextAsync(string input)
     {
@@ -3043,7 +3043,7 @@ public class RDFGraphTest
         Assert.AreEqual(0, difference12.TriplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
     [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
@@ -3064,7 +3064,7 @@ public class RDFGraphTest
     public async Task ShouldRaiseExceptionOnExportingToNullOrEmptyFilepathAsync()
         => await Assert.ThrowsExactlyAsync<RDFModelException>(() => new RDFGraph().ToFileAsync(RDFModelEnums.RDFFormats.NTriples, null));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
     [DataRow(RDFModelEnums.RDFFormats.TriX)]
@@ -3122,7 +3122,7 @@ public class RDFGraphTest
         Assert.AreEqual(0, table.Rows.Count);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
     [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
@@ -3153,7 +3153,7 @@ public class RDFGraphTest
         }
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
     [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
@@ -3192,7 +3192,7 @@ public class RDFGraphTest
         });
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
     [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
@@ -3216,7 +3216,7 @@ public class RDFGraphTest
     public async Task ShouldRaiseExceptionOnImportingFromUnexistingFilepathAsync()
         => await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.NTriples, "blablabla"));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
     [DataRow(RDFModelEnums.RDFFormats.TriX)]
@@ -3248,7 +3248,7 @@ public class RDFGraphTest
         }
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
     [DataRow(RDFModelEnums.RDFFormats.TriX)]
@@ -3288,7 +3288,7 @@ public class RDFGraphTest
         });
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
     [DataRow(RDFModelEnums.RDFFormats.TriX)]

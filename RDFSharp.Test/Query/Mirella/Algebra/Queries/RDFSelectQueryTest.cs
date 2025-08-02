@@ -1907,7 +1907,7 @@ public class RDFSelectQueryTest
         Assert.AreEqual(0, result.SelectResults.Columns.Count);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("Graph")]
     [DataRow("Store")]
     [DataRow("Federation")]
@@ -2354,7 +2354,7 @@ public class RDFSelectQueryTest
         Assert.AreEqual(0, result.SelectResults.Columns.Count);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("Graph")]
     [DataRow("Store")]
     [DataRow("Federation")]

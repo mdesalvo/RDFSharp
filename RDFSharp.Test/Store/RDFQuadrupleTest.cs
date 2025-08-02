@@ -95,7 +95,7 @@ public class RDFQuadrupleTest
     public void ShouldThrowExceptionOnCreatingQuadrupleFromTripleBecauseOfNullTriple()
         => Assert.ThrowsExactly<RDFStoreException>(() => _ = new RDFQuadruple(new RDFContext("ex:ctx"), null));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]
     public void ShouldCreateSPOQuadruple(string s, string p, string o)
     {
@@ -123,7 +123,7 @@ public class RDFQuadrupleTest
         Assert.IsTrue(quadruple.Equals(quadruple2));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/pred")]
     public void ShouldCreateSPOQuadrupleFromNullInputs(string p)
     {
@@ -140,7 +140,7 @@ public class RDFQuadrupleTest
         Assert.IsTrue(quadruple.ReificationSubject.Equals(new RDFResource($"bnode:{quadruple.QuadrupleID}")));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test")]
     public void ShouldCreateSPLQuadruple(string s, string p, string l)
     {
@@ -168,7 +168,7 @@ public class RDFQuadrupleTest
         Assert.IsTrue(quadruple.Equals(quadruple2));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/pred")]
     public void ShouldCreateSPLQuadrupleFromNullInputs(string p)
     {
@@ -185,27 +185,27 @@ public class RDFQuadrupleTest
         Assert.IsTrue(quadruple.ReificationSubject.Equals(new RDFResource($"bnode:{quadruple.QuadrupleID}")));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "bnode:hdh744", "http://example.org/obj")]
     public void ShouldThrowExceptionOnCreatingSPOQuadrupleBecauseOfBlankPredicate(string s, string p, string o)
         => Assert.ThrowsExactly<RDFStoreException>(() => _ = new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource(s), new RDFResource(p), new RDFResource(o)));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/obj")]
     public void ShouldThrowExceptionOnCreatingSPOQuadrupleBecauseOfNullPredicate(string s, string o)
         => Assert.ThrowsExactly<RDFStoreException>(() => _ = new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource(s), null, new RDFResource(o)));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "bnode:hdh744", "test")]
     public void ShouldThrowExceptionOnCreatingSPLQuadrupleBecauseOfBlankPredicate(string s, string p, string l)
         => Assert.ThrowsExactly<RDFStoreException>(() => _ = new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource(s), new RDFResource(p), new RDFPlainLiteral(l)));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "test")]
     public void ShouldThrowExceptionOnCreatingSPLQuadrupleBecauseOfNullPredicate(string s, string l)
         => Assert.ThrowsExactly<RDFStoreException>(() => _ = new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource(s), null, new RDFPlainLiteral(l)));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]
     public void ShouldReifySPOQuadruple(string s, string p, string o)
     {
@@ -224,7 +224,7 @@ public class RDFQuadrupleTest
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)quadruple.Object)));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]
     public async Task ShouldReifySPOQuadrupleAsync(string s, string p, string o)
     {
@@ -243,7 +243,7 @@ public class RDFQuadrupleTest
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)quadruple.Object)));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj", "http://example.org/pred2", "http://example.org/obj2")]
     public void ShouldReifySPOQuadrupleWithAnnotations(string s, string p, string o, string p2, string o2)
     {
@@ -259,7 +259,7 @@ public class RDFQuadrupleTest
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(ctx, quadruple.ReificationSubject, new RDFResource(p2), new RDFResource(o2))));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj", "http://example.org/pred2", "http://example.org/obj2")]
     public async Task ShouldReifySPOQuadrupleWithAnnotationsAsync(string s, string p, string o, string p2, string o2)
     {
@@ -275,7 +275,7 @@ public class RDFQuadrupleTest
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(ctx, quadruple.ReificationSubject, new RDFResource(p2), new RDFResource(o2))));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test")]
     public void ShouldReifySPLQuadruple(string s, string p, string l)
     {
@@ -294,7 +294,7 @@ public class RDFQuadrupleTest
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)quadruple.Object)));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test")]
     public async Task ShouldReifySPLQuadrupleAsync(string s, string p, string l)
     {
@@ -313,7 +313,7 @@ public class RDFQuadrupleTest
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)quadruple.Object)));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test", "http://example.org/pred2", "test2")]
     public void ShouldReifySPLQuadrupleWithAnnotations(string s, string p, string l, string p2, string l2)
     {
@@ -329,7 +329,7 @@ public class RDFQuadrupleTest
         Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(ctx, quadruple.ReificationSubject, new RDFResource(p2), new RDFPlainLiteral(l2))));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test", "http://example.org/pred2", "test2")]
     public async Task ShouldReifySPLQuadrupleWithAnnotationsAsync(string s, string p, string l, string p2, string l2)
     {
@@ -347,7 +347,7 @@ public class RDFQuadrupleTest
 
     // RDF 1.2
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]
     public void ShouldReifySPOQuadrupleTerm(string s, string p, string o)
     {
@@ -363,7 +363,7 @@ public class RDFQuadrupleTest
         Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)quadruple.Object, null].QuadruplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]
     public async Task ShouldReifySPOQuadrupleTermAsync(string s, string p, string o)
     {
@@ -379,7 +379,7 @@ public class RDFQuadrupleTest
         Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)quadruple.Object, null].QuadruplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj", "http://example.org/pred2", "http://example.org/obj2")]
     public void ShouldReifySPOQuadrupleTermWithAnnotations(string s, string p, string o, string p2, string o2)
     {
@@ -396,7 +396,7 @@ public class RDFQuadrupleTest
         Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, new RDFResource(p2), new RDFResource(o2), null].QuadruplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj", "http://example.org/pred2", "http://example.org/obj2")]
     public async Task ShouldReifySPOQuadrupleTermWithAnnotationsAsync(string s, string p, string o, string p2, string o2)
     {
@@ -413,7 +413,7 @@ public class RDFQuadrupleTest
         Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, new RDFResource(p2), new RDFResource(o2), null].QuadruplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test")]
     public void ShouldReifySPLQuadrupleTerm(string s, string p, string l)
     {
@@ -429,7 +429,7 @@ public class RDFQuadrupleTest
         Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_OBJECT, null, (RDFLiteral)quadruple.Object].QuadruplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test")]
     public async Task ShouldReifySPLQuadrupleTermAsync(string s, string p, string l)
     {
@@ -445,7 +445,7 @@ public class RDFQuadrupleTest
         Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_OBJECT, null, (RDFLiteral)quadruple.Object].QuadruplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test", "http://example.org/pred2", "test2")]
     public void ShouldReifySPLQuadrupleTermWithAnnotations(string s, string p, string l, string p2, string l2)
     {
@@ -462,7 +462,7 @@ public class RDFQuadrupleTest
         Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, new RDFResource(p2), null, new RDFPlainLiteral(l2)].QuadruplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test", "http://example.org/pred2", "test2")]
     public async Task ShouldReifySPLQuadrupleTermWithAnnotationsAsync(string s, string p, string l, string p2, string l2)
     {

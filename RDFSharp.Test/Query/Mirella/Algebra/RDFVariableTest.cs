@@ -23,7 +23,7 @@ namespace RDFSharp.Test.Query;
 public class RDFVariableTest
 {
     #region Tests
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("var")]
     [DataRow("vaR")]
     [DataRow("?var")]
@@ -48,7 +48,7 @@ public class RDFVariableTest
         Assert.IsTrue(variable1.Equals(variable2));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(null)]
     [DataRow("")]
     [DataRow("  ")]

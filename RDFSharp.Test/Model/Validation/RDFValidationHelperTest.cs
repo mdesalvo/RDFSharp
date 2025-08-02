@@ -649,7 +649,7 @@ public class RDFValidationHelperTest
         Assert.IsNull(shapesGraph);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation, RDFValidationEnums.RDFNodeKinds.BlankNode)]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning, RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI)]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Info, RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral)]
@@ -846,7 +846,7 @@ public class RDFValidationHelperTest
         #endregion
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation, RDFValidationEnums.RDFNodeKinds.BlankNode)]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning, RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI)]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Info, RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral)]

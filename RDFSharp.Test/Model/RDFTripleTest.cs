@@ -24,7 +24,7 @@ namespace RDFSharp.Test.Model;
 public class RDFTripleTest
 {
     #region Tests
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]
     public void ShouldCreateSPOTriple(string s, string p, string o)
     {
@@ -50,7 +50,7 @@ public class RDFTripleTest
         Assert.IsTrue(triple.Equals(triple2));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/pred")]
     public void ShouldCreateSPOTripleFromNullInputs(string p)
     {
@@ -65,7 +65,7 @@ public class RDFTripleTest
         Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID}")));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test")]
     public void ShouldCreateSPLTriple(string s, string p, string l)
     {
@@ -91,7 +91,7 @@ public class RDFTripleTest
         Assert.IsTrue(triple.Equals(triple2));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/pred")]
     public void ShouldCreateSPLTripleFromNullInputs(string p)
     {
@@ -106,27 +106,27 @@ public class RDFTripleTest
         Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID}")));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "bnode:hdh744", "http://example.org/obj")]
     public void ShouldNotCreateSPOTripleBecauseOfBlankPredicate(string s, string p, string o)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTriple(new RDFResource(s), new RDFResource(p), new RDFResource(o)));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/obj")]
     public void ShouldNotCreateSPOTripleBecauseOfNullPredicate(string s, string o)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTriple(new RDFResource(s), null, new RDFResource(o)));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "bnode:hdh744", "test")]
     public void ShouldNotCreateSPLTripleBecauseOfBlankPredicate(string s, string p, string l)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTriple(new RDFResource(s), new RDFResource(p), new RDFPlainLiteral(l)));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "test")]
     public void ShouldNotCreateSPLTripleBecauseOfNullPredicate(string s, string l)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTriple(new RDFResource(s), null, new RDFPlainLiteral(l)));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]
     public void ShouldReifySPOTriple(string s, string p, string o)
     {
@@ -144,7 +144,7 @@ public class RDFTripleTest
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)triple.Object)));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]
     public async Task ShouldReifySPOTripleAsync(string s, string p, string o)
     {
@@ -162,7 +162,7 @@ public class RDFTripleTest
         Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)triple.Object)));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj", "http://example.org/pred2", "http://example.org/obj2")]
     public void ShouldReifySPOTripleWithAnnotations(string s, string p, string o, string p2, string o2)
     {
@@ -177,7 +177,7 @@ public class RDFTripleTest
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, new RDFResource(p2), new RDFResource(o2))));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj", "http://example.org/pred2", "http://example.org/obj2")]
     public async Task ShouldReifySPOTripleWithAnnotationsAsync(string s, string p, string o, string p2, string o2)
     {
@@ -192,7 +192,7 @@ public class RDFTripleTest
         Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, new RDFResource(p2), new RDFResource(o2))));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test")]
     public void ShouldReifySPLTriple(string s, string p, string l)
     {
@@ -210,7 +210,7 @@ public class RDFTripleTest
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)triple.Object)));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test")]
     public async Task ShouldReifySPLTripleAsync(string s, string p, string l)
     {
@@ -228,7 +228,7 @@ public class RDFTripleTest
         Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(triple.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)triple.Object)));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test", "http://example.org/pred2", "test2")]
     public void ShouldReifySPLTripleWithAnnotations(string s, string p, string l, string p2, string l2)
     {
@@ -243,7 +243,7 @@ public class RDFTripleTest
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(triple.ReificationSubject, new RDFResource(p2), new RDFPlainLiteral(l2))));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test", "http://example.org/pred2", "test2")]
     public async Task ShouldReifySPLTripleWithAnnotationsAsync(string s, string p, string l, string p2, string l2)
     {
@@ -260,7 +260,7 @@ public class RDFTripleTest
 
     //RDF 1.2
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]
     public void ShouldReifySPOTripleTerm(string s, string p, string o)
     {
@@ -275,7 +275,7 @@ public class RDFTripleTest
         Assert.AreEqual(1, graph[null, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)triple.Object, null].TriplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj")]
     public async Task ShouldReifySPOTripleTermAsync(string s, string p, string o)
     {
@@ -290,7 +290,7 @@ public class RDFTripleTest
         Assert.AreEqual(1, graph[null, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)triple.Object, null].TriplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj", "http://example.org/pred2", "http://example.org/obj2")]
     public void ShouldReifySPOTripleTermWithAnnotations(string s, string p, string o, string p2, string o2)
     {
@@ -306,7 +306,7 @@ public class RDFTripleTest
         Assert.AreEqual(1, graph[triple.ReificationSubject, new RDFResource(p2), new RDFResource(o2), null].TriplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "http://example.org/obj", "http://example.org/pred2", "http://example.org/obj2")]
     public async Task ShouldReifySPOTripleTermWithAnnotationsAsync(string s, string p, string o, string p2, string o2)
     {
@@ -322,7 +322,7 @@ public class RDFTripleTest
         Assert.AreEqual(1, graph[triple.ReificationSubject, new RDFResource(p2), new RDFResource(o2), null].TriplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test")]
     public void ShouldReifySPLTripleTerm(string s, string p, string l)
     {
@@ -341,7 +341,7 @@ public class RDFTripleTest
         Assert.AreEqual(1, graph[null, RDFVocabulary.RDF.TT_OBJECT, null, (RDFLiteral)triple.Object].TriplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test")]
     public async Task ShouldReifySPLTripleTermAsync(string s, string p, string l)
     {
@@ -360,7 +360,7 @@ public class RDFTripleTest
         Assert.AreEqual(1, graph[null, RDFVocabulary.RDF.TT_OBJECT, null, (RDFLiteral)triple.Object].TriplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test", "http://example.org/pred2", "test2")]
     public void ShouldReifySPLTripleTermWithAnnotations(string s, string p, string l, string p2, string l2)
     {
@@ -376,7 +376,7 @@ public class RDFTripleTest
         Assert.AreEqual(1, graph[triple.ReificationSubject, new RDFResource(p2), null, new RDFPlainLiteral(l2)].TriplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test", "http://example.org/pred2", "test2")]
     public async Task ShouldReifySPLTripleTermWithAnnotationsAsync(string s, string p, string l, string p2, string l2)
     {

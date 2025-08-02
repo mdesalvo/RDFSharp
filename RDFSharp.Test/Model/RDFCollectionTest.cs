@@ -26,7 +26,7 @@ namespace RDFSharp.Test.Model;
 public class RDFCollectionTest
 {
     #region Tests
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFItemTypes.Literal)]
     [DataRow(RDFModelEnums.RDFItemTypes.Resource)]
     public void ShouldCreateEmptyCollection(RDFModelEnums.RDFItemTypes itemType)
@@ -49,7 +49,7 @@ public class RDFCollectionTest
         Assert.AreEqual(0, j);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFItemTypes.Literal)]
     [DataRow(RDFModelEnums.RDFItemTypes.Resource)]
     public void ShouldEnumerateCollection(RDFModelEnums.RDFItemTypes itemType)
@@ -69,7 +69,7 @@ public class RDFCollectionTest
         Assert.AreEqual(1, j);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFItemTypes.Literal)]
     [DataRow(RDFModelEnums.RDFItemTypes.Resource)]
     public void ShouldAddItemsToCollection(RDFModelEnums.RDFItemTypes itemType)
@@ -90,7 +90,7 @@ public class RDFCollectionTest
         Assert.IsFalse(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFItemTypes.Literal)]
     [DataRow(RDFModelEnums.RDFItemTypes.Resource)]
     public void ShouldNotAddItemsToCollectionBecauseWrongType(RDFModelEnums.RDFItemTypes itemType)
@@ -105,7 +105,7 @@ public class RDFCollectionTest
         Assert.IsTrue(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFItemTypes.Literal)]
     [DataRow(RDFModelEnums.RDFItemTypes.Resource)]
     public void ShouldNotAddItemsToCollectionBecauseNull(RDFModelEnums.RDFItemTypes itemType)
@@ -120,7 +120,7 @@ public class RDFCollectionTest
         Assert.IsTrue(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFItemTypes.Literal)]
     [DataRow(RDFModelEnums.RDFItemTypes.Resource)]
     public void ShouldRemoveItemsFromCollection(RDFModelEnums.RDFItemTypes itemType)
@@ -143,7 +143,7 @@ public class RDFCollectionTest
         Assert.IsTrue(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFItemTypes.Literal)]
     [DataRow(RDFModelEnums.RDFItemTypes.Resource)]
     public void ShouldNotRemoveItemsFromCollectionBecauseWrongType(RDFModelEnums.RDFItemTypes itemType)
@@ -166,7 +166,7 @@ public class RDFCollectionTest
         Assert.IsFalse(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFItemTypes.Literal)]
     [DataRow(RDFModelEnums.RDFItemTypes.Resource)]
     public void ShouldNotRemoveItemsFromCollectionBecauseNull(RDFModelEnums.RDFItemTypes itemType)
@@ -189,7 +189,7 @@ public class RDFCollectionTest
         Assert.IsFalse(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFItemTypes.Literal)]
     [DataRow(RDFModelEnums.RDFItemTypes.Resource)]
     public void ShouldClearCollection(RDFModelEnums.RDFItemTypes itemType)
@@ -211,7 +211,7 @@ public class RDFCollectionTest
         Assert.IsTrue(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFItemTypes.Literal)]
     [DataRow(RDFModelEnums.RDFItemTypes.Resource)]
     public void ShouldReifyEmptyCollection(RDFModelEnums.RDFItemTypes itemType)
@@ -223,7 +223,7 @@ public class RDFCollectionTest
         Assert.AreEqual(0, graph.TriplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFItemTypes.Literal)]
     [DataRow(RDFModelEnums.RDFItemTypes.Resource)]
     public void ShouldReifyCollectionWithOneItem(RDFModelEnums.RDFItemTypes itemType)
@@ -251,7 +251,7 @@ public class RDFCollectionTest
         Assert.IsTrue(graph.IndexedTriples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.REST, RDFVocabulary.RDF.NIL).TripleID));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFModelEnums.RDFItemTypes.Literal)]
     [DataRow(RDFModelEnums.RDFItemTypes.Resource)]
     public void ShouldReifyCollectionWithTwoItems(RDFModelEnums.RDFItemTypes itemType)

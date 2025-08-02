@@ -992,9 +992,9 @@ namespace RDFSharp.Model
                     }
 
                     //TURTLE
-                    else if (responseContentType.Contains("text/turtle") ||
-                                responseContentType.Contains("application/turtle") ||
-                                   responseContentType.Contains("application/x-turtle"))
+                    else if (responseContentType.Contains("text/turtle")
+                             || responseContentType.Contains("application/turtle")
+                             || responseContentType.Contains("application/x-turtle"))
                     {
                         graph = FromStream(RDFModelEnums.RDFFormats.Turtle, webResponse.GetResponseStream(), remappedUri);
                     }

@@ -1023,7 +1023,7 @@ public class RDFMemoryStoreTest
         Assert.AreEqual(3, differenceNull.QuadruplesCount);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(".nq",RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
@@ -1043,7 +1043,7 @@ public class RDFMemoryStoreTest
     public void ShouldRaiseExceptionOnExportingToNullOrEmptyFilepath()
         => Assert.ThrowsExactly<RDFStoreException>(() => new RDFMemoryStore().ToFile(RDFStoreEnums.RDFFormats.NQuads, null));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(RDFStoreEnums.RDFFormats.TriG)]
@@ -1104,7 +1104,7 @@ public class RDFMemoryStoreTest
         Assert.AreEqual(0, table.Rows.Count);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
@@ -1122,7 +1122,7 @@ public class RDFMemoryStoreTest
         Assert.IsTrue(store2.Equals(store1));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
@@ -1150,7 +1150,7 @@ public class RDFMemoryStoreTest
         });
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
@@ -1173,7 +1173,7 @@ public class RDFMemoryStoreTest
     public void ShouldRaiseExceptionOnImportingFromUnexistingFilepath()
         => Assert.ThrowsExactly<RDFStoreException>(() => RDFMemoryStore.FromFile(RDFStoreEnums.RDFFormats.NQuads, "blablabla"));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
@@ -1191,7 +1191,7 @@ public class RDFMemoryStoreTest
         Assert.IsTrue(store2.Equals(store1));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
@@ -1219,7 +1219,7 @@ public class RDFMemoryStoreTest
         });
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
@@ -1242,7 +1242,7 @@ public class RDFMemoryStoreTest
     public async Task ShouldRaiseExceptionOnImportingFromUnexistingFilepathAsync()
         => await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.NQuads, "blablabla"));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(RDFStoreEnums.RDFFormats.TriG)]
@@ -1261,7 +1261,7 @@ public class RDFMemoryStoreTest
         Assert.IsTrue(store2.Equals(store1));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(RDFStoreEnums.RDFFormats.TriG)]
@@ -1290,7 +1290,7 @@ public class RDFMemoryStoreTest
         });
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(RDFStoreEnums.RDFFormats.TriG)]
@@ -1309,7 +1309,7 @@ public class RDFMemoryStoreTest
     public void ShouldRaiseExceptionOnImportingFromNullStream()
         => Assert.ThrowsExactly<RDFStoreException>(() => RDFMemoryStore.FromStream(RDFStoreEnums.RDFFormats.NQuads, null));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(RDFStoreEnums.RDFFormats.TriG)]
@@ -1328,7 +1328,7 @@ public class RDFMemoryStoreTest
         Assert.IsTrue(store2.Equals(store1));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(RDFStoreEnums.RDFFormats.TriG)]
@@ -1357,7 +1357,7 @@ public class RDFMemoryStoreTest
         });
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(RDFStoreEnums.RDFFormats.TriG)]
@@ -2560,7 +2560,7 @@ public class RDFMemoryStoreTest
         Assert.IsTrue(graphs.Any(g => g.Context.Equals(new Uri("ex:ctx2"))));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
@@ -2581,7 +2581,7 @@ public class RDFMemoryStoreTest
     public async Task ShouldRaiseExceptionOnExportingToNullOrEmptyFilepathAsync()
         => await Assert.ThrowsExactlyAsync<RDFStoreException>(() => new RDFMemoryStore().ToFileAsync(RDFStoreEnums.RDFFormats.NQuads, null));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(RDFStoreEnums.RDFFormats.TriG)]

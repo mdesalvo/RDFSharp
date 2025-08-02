@@ -25,7 +25,7 @@ namespace RDFSharp.Test.Query;
 public class RDFMaxAggregatorTest
 {
     #region Tests
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric)]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.String)]
     public void ShouldCreateMaxAggregator(RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor)
@@ -44,19 +44,19 @@ public class RDFMaxAggregatorTest
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric)]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.String)]
     public void ShouldThrowExceptionOnCreatingStringMaxAggregatorBecauseNullAggregatorVariable(RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor)
         =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFMaxAggregator(null, new RDFVariable("?PROJVAR"), aggregatorFlavor));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric)]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.String)]
     public void ShouldThrowExceptionOnCreatingStringMaxAggregatorBecauseNullPartitionVariable(RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor)
         =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFMaxAggregator(new RDFVariable("?AGGVAR"), null, aggregatorFlavor));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric)]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.String)]
     public void ShouldCreateDistinctMaxAggregator(RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor)

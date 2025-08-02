@@ -25,7 +25,7 @@ namespace RDFSharp.Test.Query;
 public class RDFQueryUtilitiesTest
 {
     #region Tests
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://res.org/")]
     public void ShouldParsePatternMemberAsUri(string uri)
     {
@@ -35,7 +35,7 @@ public class RDFQueryUtilitiesTest
         Assert.IsTrue(pMember is RDFResource pMemberResource && pMemberResource.Equals(new RDFResource(uri)));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("hello")]
     [DataRow("hello^^")]
     [DataRow("hello^^test")]
@@ -49,7 +49,7 @@ public class RDFQueryUtilitiesTest
         Assert.IsTrue(pMember is RDFPlainLiteral pMemberLiteral && pMemberLiteral.Equals(new RDFPlainLiteral(litVal)));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("hello","en")]
     [DataRow("hello","en-US")]
     [DataRow("hello","en-US1-US2")]
@@ -63,6 +63,19 @@ public class RDFQueryUtilitiesTest
     }
 
     [TestMethod]
+    [DataRow("hello","en--ltr")]
+    [DataRow("hello","en-US--rtl")]
+    [DataRow("hello","en-US1-US2--ltr")]
+    [DataRow("hello^^","en-US--ltr")]
+    public void ShouldParsePatternMemberAsPlainLiteralWithLanguageAndDirection(string litVal, string litLang)
+    {
+        RDFPatternMember pMember = RDFQueryUtilities.ParseRDFPatternMember($"{litVal}@{litLang}");
+
+        Assert.IsNotNull(pMember);
+        Assert.IsTrue(pMember is RDFPlainLiteral pMemberLiteral && pMemberLiteral.Equals(new RDFPlainLiteral(litVal, litLang)));
+    }
+    
+    [TestMethod]
     public void ShouldParsePatternMemberAsTypedLiteral()
     {
         RDFPatternMember pMember = RDFQueryUtilities.ParseRDFPatternMember("25^^http://www.w3.org/2001/XMLSchema#integer");
@@ -71,7 +84,7 @@ public class RDFQueryUtilitiesTest
         Assert.IsTrue(pMember is RDFTypedLiteral pMemberLiteral && pMemberLiteral.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(null, null, 0)]
     [DataRow(null, "ex:res1", -1)]
     [DataRow(null, "lit1", -1)]
@@ -91,7 +104,7 @@ public class RDFQueryUtilitiesTest
         Assert.AreEqual(expectedCompare, RDFQueryUtilities.CompareRDFPatternMembers(leftPMember, rightPMember));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("ex:res1", "ex:res2", -1)]
     [DataRow("ex:res1", "ex:res1", 0)]
     [DataRow("ex:res2", "ex:res1", 1)]

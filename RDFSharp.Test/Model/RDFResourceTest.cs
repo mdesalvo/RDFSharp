@@ -35,7 +35,7 @@ public class RDFResourceTest
         Assert.IsTrue(res.ToString().StartsWith("bnode:", StringComparison.Ordinal));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("bnode:jwgdw")]
     [DataRow("bnoDe:jwgdw")]
     [DataRow("bnode:")]
@@ -51,7 +51,7 @@ public class RDFResourceTest
         Assert.IsTrue(res.ToString().StartsWith("bnode:", StringComparison.Ordinal));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://hello/world#hi")]
     [DataRow("http://hello/world#")]
     [DataRow("http://hello/world/")]
@@ -66,7 +66,7 @@ public class RDFResourceTest
         Assert.IsTrue(res.ToString().Equals(input));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(" ")]
     [DataRow("")]
     [DataRow("\t")]
@@ -74,7 +74,7 @@ public class RDFResourceTest
     public void ShouldNotCreateResourceDueToNullOrEmptyUri(string input)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFResource(input));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("hello")]
     [DataRow("http:/hello#")]
     [DataRow("http:// ")]

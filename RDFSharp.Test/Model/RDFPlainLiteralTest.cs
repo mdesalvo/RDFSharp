@@ -23,7 +23,7 @@ namespace RDFSharp.Test.Model;
 public class RDFPlainLiteralTest
 {
     #region Tests
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("donald duck")]
     [DataRow("donald duck@")]
     [DataRow("donald duck@en-US")] //Even if well-formed, this input will be treated as unlanguaged (in fact the ctor is for unlanguaged ones)
@@ -40,7 +40,7 @@ public class RDFPlainLiteralTest
         Assert.IsTrue(pl.ToString().Equals(value ?? ""));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("donald duck", "")]
     [DataRow("donald duck@", null)]
     [DataRow("donald duck", "-")]
@@ -69,7 +69,7 @@ public class RDFPlainLiteralTest
         Assert.IsTrue(pl.ToString().Equals(value ?? ""));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("donal duck", "en")]
     [DataRow("donal duck", "en-US")]
     [DataRow("donal duck", "en-US-25")]
@@ -87,7 +87,7 @@ public class RDFPlainLiteralTest
         Assert.IsTrue(pl.ToString().Equals($"{value}@{language.ToUpperInvariant()}"));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("donal duck", "en--ltr")]
     [DataRow("donal duck", "en-US--ltr")]
     [DataRow("donal duck", "en-uS--Ltr")]

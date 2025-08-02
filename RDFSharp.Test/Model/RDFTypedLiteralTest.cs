@@ -24,7 +24,7 @@ namespace RDFSharp.Test.Model;
 public class RDFTypedLiteralTest
 {
     #region Tests
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("value", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)]
     [DataRow("", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)]
     [DataRow(null, RDFModelEnums.RDFDatatypes.RDFS_LITERAL)]
@@ -91,7 +91,7 @@ public class RDFTypedLiteralTest
         Assert.IsTrue(tl.ToString().Equals($"{value ?? ""}^^{datatype.GetDatatypeFromEnum()}"));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("POINT(12.496365 41.902782)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)]
     [DataRow("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)]
     public void ShouldCreateTypedLiteralOfGeographicCategory(string value, RDFModelEnums.RDFDatatypes datatype)
@@ -108,7 +108,7 @@ public class RDFTypedLiteralTest
         Assert.IsTrue(tl.ToString().Equals($"{value ?? ""}^^{datatype.GetDatatypeFromEnum()}"));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("True", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
     [DataRow("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
     [DataRow("tRue", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
@@ -144,7 +144,7 @@ public class RDFTypedLiteralTest
                       || tl.ToString().Equals($"false^^{datatype.GetDatatypeFromEnum()}"));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("2021-08-31T20:00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
     [DataRow("2021-08-31T20:00:00Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
     [DataRow("2021-08-31T20:00:00+00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
@@ -234,7 +234,7 @@ public class RDFTypedLiteralTest
         Assert.IsFalse(tl.HasTimespanDatatype());
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("4", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)]
     [DataRow("-4", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)]
     [DataRow(" 4 ", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)]
@@ -322,7 +322,7 @@ public class RDFTypedLiteralTest
         Assert.IsFalse(tl.HasTimespanDatatype());
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("P1Y2M3DT4H5M6S", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
     [DataRow("P1Y", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
     [DataRow("PT4H", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
@@ -339,7 +339,7 @@ public class RDFTypedLiteralTest
         Assert.IsTrue(tl.HasTimespanDatatype());
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("<value", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)]
     [DataRow("<value attr=yes", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)]
     [DataRow("value", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)]
@@ -410,20 +410,20 @@ public class RDFTypedLiteralTest
     public void ShouldNotCreateTypedLiteralOfStringCategory(string value, RDFModelEnums.RDFDatatypes datatype)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTypedLiteral(value, datatype));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("POINT(12.496365)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)]
     [DataRow("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)]
     public void ShouldNotCreateTypedLiteralOfGeographicCategory(string value, RDFModelEnums.RDFDatatypes datatype)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTypedLiteral(value, datatype));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
     [DataRow("", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
     [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
     public void ShouldNotCreateTypedLiteralOfBooleanCategory(string value, RDFModelEnums.RDFDatatypes datatype)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTypedLiteral(value, datatype));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
     [DataRow("", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
     [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
@@ -528,7 +528,7 @@ public class RDFTypedLiteralTest
     public void ShouldNotCreateTypedLiteralOfDatetimeCategory(string value, RDFModelEnums.RDFDatatypes datatype)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTypedLiteral(value, datatype));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)]
     [DataRow("", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)]
     [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_DECIMAL)]
@@ -649,7 +649,7 @@ public class RDFTypedLiteralTest
     public void ShouldNotCreateTypedLiteralOfDecimalCategory(string value, RDFModelEnums.RDFDatatypes datatype)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTypedLiteral(value, datatype));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
     [DataRow("", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
     [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_DURATION)]

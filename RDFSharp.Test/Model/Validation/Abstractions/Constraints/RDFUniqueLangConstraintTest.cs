@@ -25,7 +25,7 @@ namespace RDFSharp.Test.Model;
 public class RDFUniqueLangConstraintTest
 {
     #region Tests
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(true)]
     [DataRow(false)]
     public void ShouldCreateUniqueLangConstraint(bool uniqueLang)

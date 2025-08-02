@@ -65,7 +65,7 @@ public class RDFClearOperationTest
         Assert.IsTrue(string.Equals(operation.ToString(), "CLEAR SILENT GRAPH <ex:ctx>"));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFQueryEnums.RDFClearOperationFlavor.ALL)]
     [DataRow(RDFQueryEnums.RDFClearOperationFlavor.DEFAULT)]
     [DataRow(RDFQueryEnums.RDFClearOperationFlavor.NAMED)]
@@ -80,7 +80,7 @@ public class RDFClearOperationTest
         Assert.IsTrue(string.Equals(operation.ToString(), $"CLEAR {opFlavor}"));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFQueryEnums.RDFClearOperationFlavor.ALL)]
     [DataRow(RDFQueryEnums.RDFClearOperationFlavor.DEFAULT)]
     [DataRow(RDFQueryEnums.RDFClearOperationFlavor.NAMED)]

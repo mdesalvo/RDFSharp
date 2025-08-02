@@ -25,7 +25,7 @@ namespace RDFSharp.Test.Model;
 public class RDFNodeKindConstraintTest
 {
     #region Tests
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFValidationEnums.RDFNodeKinds.BlankNode)]
     [DataRow(RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI)]
     [DataRow(RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral)]
@@ -40,7 +40,7 @@ public class RDFNodeKindConstraintTest
         Assert.AreEqual(nodeKind, nodeKindConstraint.NodeKind);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFValidationEnums.RDFNodeKinds.BlankNode)]
     [DataRow(RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI)]
     [DataRow(RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral)]

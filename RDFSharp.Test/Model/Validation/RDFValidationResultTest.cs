@@ -23,7 +23,7 @@ namespace RDFSharp.Test.Model;
 public class RDFValidationResultTest
 {
     #region Tests
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Info)]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning)]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation)]
@@ -57,7 +57,7 @@ public class RDFValidationResultTest
         Assert.AreEqual(severity, result.Severity);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Info)]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning)]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation)]
@@ -98,7 +98,7 @@ public class RDFValidationResultTest
         }
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Info)]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning)]
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation)]

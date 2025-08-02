@@ -24,7 +24,7 @@ namespace RDFSharp.Test.Model;
 public class RDFNamespaceTest
 {
     #region Tests
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("ex", "http://example.org/")]
     [DataRow(" ex ", " http://example.org/")]
     public void ShouldCreateNamespace(string prefix, string uri)
@@ -46,44 +46,44 @@ public class RDFNamespaceTest
         Assert.IsTrue(ns.Equals(ns2));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(" ", "http://example.org/")]
     [DataRow("", "http://example.org/")]
     [DataRow(null, "http://example.org/")]
     public void ShouldNotCreateNamespaceBecauseOfBlankPrefix(string prefix, string uri)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFNamespace(prefix, uri));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("ex%", "http://example.org/")]
     public void ShouldNotCreateNamespaceBecauseOfInvalidPrefix(string prefix, string uri)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFNamespace(prefix, uri));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("bnode", "http://example.org/")]
     [DataRow("xmlns", "http://example.org/")]
     public void ShouldNotCreateNamespaceBecauseOfReservedPrefix(string prefix, string uri)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFNamespace(prefix, uri));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("ex", " ")]
     [DataRow("ex", "")]
     [DataRow("ex", null)]
     public void ShouldNotCreateNamespaceBecauseOfBlankUri(string prefix, string uri)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFNamespace(prefix, uri));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("ex", "http:/example.org/")]
     [DataRow("ex", "hello")]
     public void ShouldNotCreateNamespaceBecauseOfInvalidUri(string prefix, string uri)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFNamespace(prefix, uri));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("ex", "bnode:/example.org/")]
     [DataRow("ex", "xmlns:/example.org/")]
     public void ShouldNotCreateNamespaceBecauseOfReservedUri(string prefix, string uri)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFNamespace(prefix, uri));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("ex", "http://example.org/", "http://example.org/deref#")]
     public void ShouldSetDereferenceUri(string prefix, string uri, string derefUri)
     {
@@ -94,7 +94,7 @@ public class RDFNamespaceTest
         Assert.IsFalse(ns.DereferenceUri.Equals(ns.NamespaceUri));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("ex", "http://example.org/")]
     public void ShouldNotSetDereferenceUriBecauseofNullUri(string prefix, string uri)
     {
@@ -104,7 +104,7 @@ public class RDFNamespaceTest
         Assert.IsTrue(ns.DereferenceUri.Equals(ns.NamespaceUri));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("ex", "http://example.org/")]
     public void ShouldNotSetDereferenceUriBecauseofRelativeUri(string prefix, string uri)
     {
@@ -114,7 +114,7 @@ public class RDFNamespaceTest
         Assert.IsTrue(ns.DereferenceUri.Equals(ns.NamespaceUri));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("ex", "http://example.org/")]
     public void ShouldNotSetDereferenceUriBecauseofReservedUri(string prefix, string uri)
     {
@@ -128,7 +128,7 @@ public class RDFNamespaceTest
         Assert.IsTrue(ns2.DereferenceUri.Equals(ns2.NamespaceUri));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("ex", "http://example.org/")]
     public void ShouldSetTemporaryNamespace(string prefix, string uri)
     {

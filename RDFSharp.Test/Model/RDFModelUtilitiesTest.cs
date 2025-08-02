@@ -37,7 +37,7 @@ public class RDFModelUtilitiesTest
     public void ShouldNotCreateHash()
         => Assert.ThrowsExactly<RDFModelException>(() => RDFModelUtilities.CreateHash(null));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/test#")]
     public void ShouldGetUriFromString(string uriString)
     {
@@ -46,7 +46,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(result.Equals(new Uri(uriString)));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("bnode://example.org/test#")]
     [DataRow("bNoDE://example.org/test#")]
     [DataRow("_://example.org/test#")]
@@ -57,7 +57,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(result.Equals(new Uri("bnode://example.org/test#")));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(null)]
     [DataRow("example")]
     [DataRow("http:/example.org")]
@@ -67,43 +67,43 @@ public class RDFModelUtilitiesTest
         Assert.IsNull(result);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("\\U09AFaf90")]
     public void ShouldMatchRegexU8(string input)
         => Assert.IsTrue(RDFModelUtilities.regexU8.Value.IsMatch(input));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("\\u09AFaf90")]
     [DataRow("\\U09AFaf9")]
     [DataRow("\\U09AFaf9P")]
     public void ShouldNotMatchRegexU8(string input)
         => Assert.IsFalse(RDFModelUtilities.regexU8.Value.IsMatch(input));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("\\u09Af")]
     public void ShouldMatchRegexU4(string input)
         => Assert.IsTrue(RDFModelUtilities.regexU4.Value.IsMatch(input));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("\\U09Af")]
     [DataRow("\\u09A")]
     [DataRow("\\u09AP")]
     public void ShouldNotMatchRegexU4(string input)
         => Assert.IsFalse(RDFModelUtilities.regexU4.Value.IsMatch(input));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("09AFaf09")]
     public void ShouldMatchHexBinary(string input)
         => Assert.IsTrue(RDFModelUtilities.hexBinary.Value.IsMatch(input));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("0")]
     [DataRow("09A")]
     [DataRow("000P")]
     public void ShouldNotMatchHexBinary(string input)
         => Assert.IsFalse(RDFModelUtilities.hexBinary.Value.IsMatch(input));
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://xmlns.com/foaf/0.1/")]
     public void ShouldRemapSameUriForDereference(string uriString)
     {
@@ -112,7 +112,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(result.Equals(new Uri(RDFVocabulary.FOAF.BASE_URI)));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://purl.org/dc/elements/1.1/")]
     public void ShouldRemapDifferentUriForDereference(string uriString)
     {
@@ -128,7 +128,7 @@ public class RDFModelUtilitiesTest
         Assert.IsNull(result);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/test#")]
     public void ShouldNotRemapUnknownUriForDereference(string uriString)
     {
@@ -137,7 +137,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(result.Equals(new Uri("http://example.org/test#")));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(@"This is smiling face: \U0001F603\U0001F603; This is tilde: \U0000007E\U0001F603")]
     [DataRow(@"This is smiling face: \U0001F603; This is tilde: \U0000007E")]
     [DataRow(@"This is smiling face: \U0001F603; This is tilde: \u007E")]
@@ -154,7 +154,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(output.IndexOf('~', StringComparison.Ordinal) > -1);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(@"This is delta: \U00000394; This is tilde: \U0000007E")]
     [DataRow(@"This is delta: \U00000394; This is tilde: \u007E")]
     [DataRow(@"This is delta: \u0394; This is tilde: \u007E")]
@@ -171,7 +171,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(output.IndexOf('Δ', StringComparison.Ordinal) > -1);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(@"This is smiling face: \U0001F603; These are smiling faces: \U0001F603\U0001F603")]
     public void ShouldTransformASCII_To_UnicodeWithSurrogates(string input)
     {
@@ -183,7 +183,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(output.IndexOf("😃", StringComparison.Ordinal) > -1);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("This is nothing!")]
     public void ShouldTransformASCII_To_UnicodeWithNoSurrogatesAndNoUnicode(string input)
     {
@@ -194,7 +194,7 @@ public class RDFModelUtilitiesTest
         Assert.AreEqual(-1, output.IndexOf("\\u", StringComparison.Ordinal));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(null)]
     public void ShouldNotTransformASCII_To_Unicode(string input)
     {
@@ -203,7 +203,7 @@ public class RDFModelUtilitiesTest
         Assert.IsNull(output);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(@"\U9\u8")]
     public void ShouldNotTransformBadFormedASCII_To_Unicode(string input)
     {
@@ -213,7 +213,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(output.Equals(input, StringComparison.Ordinal));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("This is a smiling face: 😃; This is Euro: €")]
     [DataRow("This is a smiling face: 😃😃; This is Euro: €😃")]
     [DataRow("This is a smiling face: 😃€; This is Euro: €😃€")]
@@ -226,7 +226,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(output.IndexOf("\\u20AC", StringComparison.Ordinal) > -1);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("This is a smiling face: 😃;")]
     public void ShouldTransformUnicode_To_ASCIIWithSurrogates(string input)
     {
@@ -237,7 +237,7 @@ public class RDFModelUtilitiesTest
         Assert.AreEqual(-1, output.IndexOf("\\u", StringComparison.Ordinal));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("This is Euro: €;")]
     [DataRow("This is Euro: €€€;")]
     public void ShouldTransformUnicode_To_ASCIIWithUnicode(string input)
@@ -249,7 +249,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(output.IndexOf("\\u20AC", StringComparison.Ordinal) > -1);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("This is nothing!")]
     public void ShouldTransformUnicode_To_ASCIIWithNoSurrogatesAndNoUnicode(string input)
     {
@@ -260,7 +260,7 @@ public class RDFModelUtilitiesTest
         Assert.AreEqual(-1, output.IndexOf("\\u", StringComparison.Ordinal));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(null)]
     public void ShouldNotTransformUnicode_To_ASCII(string input)
     {
@@ -269,7 +269,7 @@ public class RDFModelUtilitiesTest
         Assert.IsNull(output);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("This string contains XML-escapable control chars: \0")]
     public void ShouldEscapeControlCharsForXML(string input)
     {
@@ -279,7 +279,7 @@ public class RDFModelUtilitiesTest
         Assert.IsFalse(result.ToList().Any(char.IsControl));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("This string contains XML-allowed control chars: \n")]
     public void ShouldNotEscapeAllowedControlCharsForXML(string input)
     {
@@ -289,7 +289,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(result.ToList().Any(char.IsControl));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("This string does not contain XML-escapeable control chars")]
     public void ShouldNotEscapeZeroControlCharsForXML(string input)
     {
@@ -300,7 +300,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(result.Equals(input));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(null)]
     public void ShouldNotEscapeNullControlCharsForXML(string input)
     {
@@ -309,7 +309,7 @@ public class RDFModelUtilitiesTest
         Assert.IsNull(result);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("This is a string containing hello")]
     public void ShouldTrimEndString(string input)
     {
@@ -319,7 +319,7 @@ public class RDFModelUtilitiesTest
         Assert.AreEqual(-1, result.IndexOf("hello", StringComparison.Ordinal));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("This is a string containing hellooo")]
     public void ShouldTrimEndStringFromTwiceOccurrences(string input)
     {
@@ -330,7 +330,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(result.IndexOf("helloo", StringComparison.Ordinal) > -1);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("This is a string hello containing hello")]
     public void ShouldTrimEndStringFromIntermediateOccurrences(string input)
     {
@@ -340,7 +340,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(result.IndexOf("hello", StringComparison.Ordinal) > -1);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("This is a string containing hello")]
     public void ShouldTrimEndStringFromEmptyValue(string input)
     {
@@ -350,7 +350,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(result.IndexOf("hello", StringComparison.Ordinal) > -1);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("This is a string containing hello")]
     public void ShouldTrimEndStringFromNullValue(string input)
     {
@@ -360,7 +360,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(result.IndexOf("hello", StringComparison.Ordinal) > -1);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("")]
     public void ShouldTrimEndEmptyStringFromValue(string input)
     {
@@ -370,7 +370,7 @@ public class RDFModelUtilitiesTest
         Assert.AreEqual(-1, result.IndexOf("hello", StringComparison.Ordinal));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(null)]
     public void ShouldTrimEndNullStringFromValue(string input)
     {
@@ -379,7 +379,7 @@ public class RDFModelUtilitiesTest
         Assert.IsNull(result);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/test#test1")]
     public void ShouldGetShortUriAsFragment(string input)
     {
@@ -389,7 +389,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(shortUri.Equals("test1"));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/test#test1/test2#test3")]
     public void ShouldGetShortUriAsEffectiveFragment(string input)
     {
@@ -399,7 +399,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(shortUri.Equals("test1/test2#test3"));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org/test")]
     public void ShouldGetShortUriAsLastSegment(string input)
     {
@@ -409,7 +409,7 @@ public class RDFModelUtilitiesTest
         Assert.IsTrue(shortUri.Equals("test"));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://example.org")]
     public void ShouldGetShortUriAsUniqueSegment(string input)
     {
@@ -1509,7 +1509,7 @@ public class RDFModelUtilitiesTest
         Assert.AreEqual(0, graphNS.Count);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://www.w3.org/2000/01/rdf-schema#Literal", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)]
     [DataRow("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)]
     [DataRow("http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML", RDFModelEnums.RDFDatatypes.RDF_HTML)]
@@ -1564,7 +1564,7 @@ public class RDFModelUtilitiesTest
     public void ShouldGetDatatypeFromEnum(string expected, RDFModelEnums.RDFDatatypes input)
         => Assert.AreEqual(expected, input.GetDatatypeFromEnum());
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("http://www.w3.org/2000/01/rdf-schema#Literal", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)]
     [DataRow("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)]
     [DataRow("http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML", RDFModelEnums.RDFDatatypes.RDF_HTML)]
