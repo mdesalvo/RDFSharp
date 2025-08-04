@@ -64,8 +64,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// SPO-flavor ctor
         /// </summary>
-        public RDFTriple(RDFResource subj, RDFResource pred, RDFResource obj)
-            : this(subj, pred)
+        public RDFTriple(RDFResource subj, RDFResource pred, RDFResource obj) : this(subj, pred)
         {
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
             Object = obj ?? new RDFResource();
@@ -74,8 +73,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// SPL-flavor ctor
         /// </summary>
-        public RDFTriple(RDFResource subj, RDFResource pred, RDFLiteral lit)
-            : this(subj, pred)
+        public RDFTriple(RDFResource subj, RDFResource pred, RDFLiteral lit) : this(subj, pred)
         {
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
             Object = lit ?? RDFPlainLiteral.Empty;
@@ -104,13 +102,18 @@ namespace RDFSharp.Model
         /// </summary>
         internal RDFTriple(RDFIndexedTriple indexedTriple, RDFGraphIndex graphIndex)
         {
-            TripleFlavor = indexedTriple.TripleFlavor;
             Subject = graphIndex.ResourcesRegister[indexedTriple.SubjectID];
             Predicate = graphIndex.ResourcesRegister[indexedTriple.PredicateID];
-            if (indexedTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+            if (indexedTriple.TripleFlavor == 1) //SPO
+            {
+                TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
                 Object = graphIndex.ResourcesRegister[indexedTriple.ObjectID];
+            }
             else
+            {
+                TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
                 Object = graphIndex.LiteralsRegister[indexedTriple.ObjectID];
+            }
             LazyTripleID = new Lazy<long>(() => indexedTriple.TripleID);
             LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{TripleID}"));
         }
@@ -233,24 +236,24 @@ namespace RDFSharp.Model
         internal long TripleID { get; set; }
 
         /// <summary>
-        /// Identifier of the member acting as subject token of the triple
+        /// Identifier of the member acting as subject of the triple
         /// </summary>
         internal long SubjectID { get; set; }
 
         /// <summary>
-        /// Identifier of the member acting as predicate token of the triple
+        /// Identifier of the member acting as predicate of the triple
         /// </summary>
         internal long PredicateID { get; set; }
 
         /// <summary>
-        /// Identifier of the member acting as object token of the triple
+        /// Identifier of the member acting as object of the triple
         /// </summary>
         internal long ObjectID { get; set; }
 
         /// <summary>
-        /// Flavor of the triple
+        /// Flavor of the triple (1=SPO, 2=SPL)
         /// </summary>
-        internal RDFModelEnums.RDFTripleFlavors TripleFlavor { get; set; }
+        internal byte TripleFlavor { get; set; }
         #endregion
 
         #region Ctor
@@ -259,7 +262,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal RDFIndexedTriple(RDFTriple triple)
         {
-            TripleFlavor = triple.TripleFlavor;
+            TripleFlavor = (byte)triple.TripleFlavor;
             TripleID = triple.TripleID;
             SubjectID = triple.Subject.PatternMemberID;
             PredicateID = triple.Predicate.PatternMemberID;
