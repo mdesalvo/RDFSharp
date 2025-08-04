@@ -44,7 +44,7 @@ namespace RDFSharp.Store
         /// </summary>
         public IEnumerator<RDFQuadruple> QuadruplesEnumerator
             => IndexedQuadruples.Values.Select(indexedQuadruple =>
-                indexedQuadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
+                indexedQuadruple.TripleFlavor == 1 //SPO
                     ? new RDFQuadruple(StoreIndex.ContextsRegister[indexedQuadruple.ContextID],
                         StoreIndex.ResourcesRegister[indexedQuadruple.SubjectID],
                         StoreIndex.ResourcesRegister[indexedQuadruple.PredicateID],

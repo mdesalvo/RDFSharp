@@ -130,14 +130,19 @@ namespace RDFSharp.Store
         /// </summary>
         internal RDFQuadruple(RDFIndexedQuadruple indexedQuadruple, RDFStoreIndex storeIndex)
         {
-            TripleFlavor = indexedQuadruple.TripleFlavor;
             Context = storeIndex.ContextsRegister[indexedQuadruple.ContextID];
             Subject = storeIndex.ResourcesRegister[indexedQuadruple.SubjectID];
             Predicate = storeIndex.ResourcesRegister[indexedQuadruple.PredicateID];
-            if (indexedQuadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+            if (indexedQuadruple.TripleFlavor == 1) //SPO
+            {
+                TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
                 Object = storeIndex.ResourcesRegister[indexedQuadruple.ObjectID];
+            }
             else
+            {
+                TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
                 Object = storeIndex.LiteralsRegister[indexedQuadruple.ObjectID];
+            }
             LazyQuadrupleID = new Lazy<long>(() => indexedQuadruple.QuadrupleID);
             LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{QuadrupleID}"));
         }
@@ -280,9 +285,9 @@ namespace RDFSharp.Store
         internal long ObjectID { get; set; }
 
         /// <summary>
-        /// Flavor of the quadruple
+        /// Flavor of the quadruple (1=SPO, 2=SPL)
         /// </summary>
-        internal RDFModelEnums.RDFTripleFlavors TripleFlavor { get; set; }
+        internal byte TripleFlavor { get; set; }
         #endregion
 
         #region Ctor
@@ -291,7 +296,7 @@ namespace RDFSharp.Store
         /// </summary>
         internal RDFIndexedQuadruple(RDFQuadruple quadruple)
         {
-            TripleFlavor = quadruple.TripleFlavor;
+            TripleFlavor = (byte)quadruple.TripleFlavor;
             QuadrupleID = quadruple.QuadrupleID;
             ContextID = quadruple.Context.PatternMemberID;
             SubjectID = quadruple.Subject.PatternMemberID;
