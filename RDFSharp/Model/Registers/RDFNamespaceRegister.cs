@@ -40,7 +40,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Singleton instance of the RDFNamespaceRegister class
         /// </summary>
-        public static RDFNamespaceRegister Instance { get; internal set; }
+        public static RDFNamespaceRegister Instance { get; }
 
         /// <summary>
         /// List of registered namespaces
@@ -150,9 +150,12 @@ namespace RDFSharp.Model
         /// </summary>
         public static void AddNamespace(RDFNamespace nSpace)
         {
-            if (nSpace != null)
-                if (GetByPrefix(nSpace.NamespacePrefix) == null && GetByUri(nSpace.NamespaceUri.ToString()) == null)
-                    Instance.Register.Add(nSpace);
+            if (nSpace != null
+                && GetByPrefix(nSpace.NamespacePrefix) == null
+                && GetByUri(nSpace.NamespaceUri.ToString()) == null)
+            {
+                Instance.Register.Add(nSpace);
+            }
         }
 
         /// <summary>
@@ -176,31 +179,31 @@ namespace RDFSharp.Model
         /// <summary>
         /// Retrieves a namespace by seeking presence of its Uri (cascading a lookup to prefix.cc service, if specified)
         /// </summary>
-        public static RDFNamespace GetByUri(string uri, bool enablePrefixCCService = false)
+        public static RDFNamespace GetByUri(string uri, bool enablePrefixCCService=false)
         {
+            RDFNamespace result = null;
             if (uri != null)
             {
-                RDFNamespace result = Instance.Register.Find(ns => string.Equals(ns.NamespaceUri.ToString(), uri.Trim(), StringComparison.OrdinalIgnoreCase));
+                result = Instance.Register.Find(ns => string.Equals(ns.NamespaceUri.ToString(), uri.Trim(), StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService)
                     result = LookupPrefixCC(uri.Trim().TrimEnd('#'), 2);
-                return result;
             }
-            return null;
+            return result;
         }
 
         /// <summary>
         /// Retrieves a namespace by seeking presence of its prefix (cascading a lookup to prefix.cc service, if specified)
         /// </summary>
-        public static RDFNamespace GetByPrefix(string prefix, bool enablePrefixCCService = false)
+        public static RDFNamespace GetByPrefix(string prefix, bool enablePrefixCCService=false)
         {
+            RDFNamespace result = null;
             if (prefix != null)
             {
-                RDFNamespace result = Instance.Register.Find(ns => string.Equals(ns.NamespacePrefix, prefix.Trim(), StringComparison.OrdinalIgnoreCase));
+                result = Instance.Register.Find(ns => string.Equals(ns.NamespacePrefix, prefix.Trim(), StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService)
                     result = LookupPrefixCC(prefix.Trim(), 1);
-                return result;
             }
-            return null;
+            return result;
         }
 
         /// <summary>

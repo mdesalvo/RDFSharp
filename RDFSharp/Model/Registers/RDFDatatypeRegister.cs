@@ -34,7 +34,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Singleton instance of the RDFDatatypeRegister class
         /// </summary>
-        public static RDFDatatypeRegister Instance { get; internal set; }
+        public static RDFDatatypeRegister Instance { get; }
 
         /// <summary>
         /// List of registered datatypes
