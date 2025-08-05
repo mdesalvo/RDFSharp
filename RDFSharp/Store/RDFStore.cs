@@ -458,8 +458,10 @@ namespace RDFSharp.Store
         {
             Dictionary<long, RDFPatternMember> contexts = new Dictionary<long, RDFPatternMember>();
             foreach (RDFQuadruple q in this as RDFMemoryStore ?? SelectAllQuadruples())
+            {
                 if (!contexts.ContainsKey(q.Context.PatternMemberID))
                     contexts.Add(q.Context.PatternMemberID, q.Context);
+            }
             return contexts.Values.OfType<RDFContext>().ToList();
         }
 
