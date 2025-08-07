@@ -130,7 +130,19 @@ namespace RDFSharp.Model
         /// Performs the equality comparison between two triples
         /// </summary>
         public bool Equals(RDFTriple other)
-            => other != null && TripleID.Equals(other.TripleID);
+            => other != null && TripleID == other.TripleID;
+        
+        /// <summary>
+        /// Performs the equality comparison between two triples
+        /// </summary>
+        public override bool Equals(object other)
+            => other is RDFTriple t && TripleID == t.TripleID;
+
+        /// <summary>
+        /// Calculates the hashcode of this triple
+        /// </summary>
+        public override int GetHashCode()
+            => TripleID.GetHashCode();
         #endregion
 
         #region Methods

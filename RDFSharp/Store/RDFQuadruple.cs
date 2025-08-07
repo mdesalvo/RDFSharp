@@ -159,7 +159,19 @@ namespace RDFSharp.Store
         /// Performs the equality comparison between two quadruples
         /// </summary>
         public bool Equals(RDFQuadruple other)
-            => other != null && QuadrupleID.Equals(other.QuadrupleID);
+            => other != null && QuadrupleID == other.QuadrupleID;
+        
+        /// <summary>
+        /// Performs the equality comparison between two quadruples
+        /// </summary>
+        public override bool Equals(object other)
+            => other is RDFQuadruple q && QuadrupleID == q.QuadrupleID;
+
+        /// <summary>
+        /// Calculates the hashcode of this quadruple
+        /// </summary>
+        public override int GetHashCode()
+            => QuadrupleID.GetHashCode();
         #endregion
 
         #region Methods
