@@ -281,7 +281,7 @@ namespace RDFSharp.Model
         /// Performs the equality comparison between two indexed triples
         /// </summary>
         public override bool Equals(object other)
-            => other is RDFIndexedTriple it && Equals(it);
+            => other is RDFIndexedTriple it && TripleID == it.TripleID;
 
         /// <summary>
         /// Calculates the hashcode of this indexed triple
