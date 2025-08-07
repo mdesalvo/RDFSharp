@@ -276,6 +276,18 @@ namespace RDFSharp.Model
         /// </summary>
         public bool Equals(RDFIndexedTriple other)
             => TripleID == other.TripleID;
+        
+        /// <summary>
+        /// Performs the equality comparison between two indexed triples
+        /// </summary>
+        public override bool Equals(object other)
+            => other is RDFIndexedTriple it && Equals(it);
+
+        /// <summary>
+        /// Calculates the hashcode of this indexed triple
+        /// </summary>
+        public override int GetHashCode()
+            => TripleID.GetHashCode();
         #endregion
     }
 }

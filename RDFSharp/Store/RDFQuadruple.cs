@@ -311,6 +311,18 @@ namespace RDFSharp.Store
         /// </summary>
         public bool Equals(RDFIndexedQuadruple other)
             => QuadrupleID == other.QuadrupleID;
+
+        /// <summary>
+        /// Performs the equality comparison between two indexed quadruples
+        /// </summary>
+        public override bool Equals(object other)
+            => other is RDFIndexedQuadruple iq && Equals(iq);
+
+        /// <summary>
+        /// Calculates the hashcode of this indexed quadruple
+        /// </summary>
+        public override int GetHashCode()
+            => QuadrupleID.GetHashCode();
         #endregion
     }
 }
