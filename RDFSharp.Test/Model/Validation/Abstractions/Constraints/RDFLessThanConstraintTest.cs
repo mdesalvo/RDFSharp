@@ -311,7 +311,7 @@ public class RDFLessThanConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -348,7 +348,7 @@ public class RDFLessThanConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -385,7 +385,7 @@ public class RDFLessThanConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -422,7 +422,7 @@ public class RDFLessThanConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -462,7 +462,7 @@ public class RDFLessThanConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than values of property <{RDFVocabulary.FOAF.AGENT}>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
@@ -500,7 +500,7 @@ public class RDFLessThanConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than values of property <{RDFVocabulary.FOAF.AGENT}>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
@@ -538,7 +538,7 @@ public class RDFLessThanConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than values of property <{RDFVocabulary.FOAF.AGENT}>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
@@ -576,7 +576,7 @@ public class RDFLessThanConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than values of property <{RDFVocabulary.FOAF.AGENT}>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
@@ -645,7 +645,7 @@ public class RDFLessThanConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values less than values of property <ex:endDate>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Event2")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("1992-01-04", RDFModelEnums.RDFDatatypes.XSD_DATE)));

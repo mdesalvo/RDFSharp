@@ -43,7 +43,7 @@ public class RDFAskQueryResultTest
         askResult.ToSparqlXmlResult(stream);
         byte[] streamData = stream.ToArray();
 
-        Assert.IsTrue(streamData.Length > 100);
+        Assert.IsGreaterThan(100, streamData.Length);
 
         RDFAskQueryResult askResult2 = RDFAskQueryResult.FromSparqlXmlResult(new MemoryStream(streamData));
 
@@ -59,7 +59,7 @@ public class RDFAskQueryResultTest
         await askResult.ToSparqlXmlResultAsync(stream);
         byte[] streamData = stream.ToArray();
 
-        Assert.IsTrue(streamData.Length > 100);
+        Assert.IsGreaterThan(100, streamData.Length);
 
         RDFAskQueryResult askResult2 = await RDFAskQueryResult.FromSparqlXmlResultAsync(new MemoryStream(streamData));
 
@@ -78,7 +78,7 @@ public class RDFAskQueryResultTest
         askResult.ToSparqlXmlResult(stream);
         byte[] streamData = stream.ToArray();
 
-        Assert.IsTrue(streamData.Length > 100);
+        Assert.IsGreaterThan(100, streamData.Length);
 
         RDFAskQueryResult askResult2 = RDFAskQueryResult.FromSparqlXmlResult(new MemoryStream(streamData));
 
@@ -97,7 +97,7 @@ public class RDFAskQueryResultTest
         await askResult.ToSparqlXmlResultAsync(stream);
         byte[] streamData = stream.ToArray();
 
-        Assert.IsTrue(streamData.Length > 100);
+        Assert.IsGreaterThan(100, streamData.Length);
 
         RDFAskQueryResult askResult2 = await RDFAskQueryResult.FromSparqlXmlResultAsync(new MemoryStream(streamData));
 

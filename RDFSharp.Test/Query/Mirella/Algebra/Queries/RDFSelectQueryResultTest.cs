@@ -62,7 +62,7 @@ public class RDFSelectQueryResultTest
     selectResult.ToSparqlXmlResult(stream);
     byte[] streamData = stream.ToArray();
 
-    Assert.IsTrue(streamData.Length > 100);
+    Assert.IsGreaterThan(100, streamData.Length);
 
     RDFSelectQueryResult selectResult2 = RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(streamData));
 
@@ -96,7 +96,7 @@ public class RDFSelectQueryResultTest
     await selectResult.ToSparqlXmlResultAsync(stream);
     byte[] streamData = stream.ToArray();
 
-    Assert.IsTrue(streamData.Length > 100);
+    Assert.IsGreaterThan(100, streamData.Length);
 
     RDFSelectQueryResult selectResult2 = await RDFSelectQueryResult.FromSparqlXmlResultAsync(new MemoryStream(streamData));
 

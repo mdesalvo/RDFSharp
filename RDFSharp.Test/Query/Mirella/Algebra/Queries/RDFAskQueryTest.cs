@@ -45,18 +45,18 @@ public class RDFAskQueryTest
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
-        Assert.AreEqual(0, query.QueryMembers.Count);
+        Assert.IsEmpty(query.QueryMembers);
         Assert.IsNotNull(query.Prefixes);
-        Assert.AreEqual(0, query.Prefixes.Count);
+        Assert.IsEmpty(query.Prefixes);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsTrue(query.ToString().Equals("ASK" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}"));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetValues().Count);
+        Assert.IsEmpty(query.GetValues());
         Assert.AreEqual(0, query.GetModifiers().Count());
-        Assert.AreEqual(0, query.GetPrefixes().Count);
+        Assert.IsEmpty(query.GetPrefixes());
     }
 
     [TestMethod]
@@ -82,9 +82,9 @@ public class RDFAskQueryTest
         Assert.AreEqual(2, query.GetEvaluableQueryMembers().Count()); //SPARQL Values is managed by Mirella
         Assert.AreEqual(1, query.GetPatternGroups().Count());
         Assert.AreEqual(1, query.GetSubQueries().Count());
-        Assert.AreEqual(1, query.GetValues().Count);
+        Assert.HasCount(1, query.GetValues());
         Assert.AreEqual(0, query.GetModifiers().Count()); //ASK query doesn't have modifiers
-        Assert.AreEqual(2, query.GetPrefixes().Count);
+        Assert.HasCount(2, query.GetPrefixes());
     }
 
     [TestMethod]

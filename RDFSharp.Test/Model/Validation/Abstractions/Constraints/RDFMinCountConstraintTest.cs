@@ -311,7 +311,7 @@ public class RDFMinCountConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(2, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -319,7 +319,7 @@ public class RDFMinCountConstraintTest
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[1].Severity);
-        Assert.AreEqual(1, validationReport.Results[1].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[1].ResultMessages);
         Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsNull(validationReport.Results[1].ResultValue);
@@ -354,7 +354,7 @@ public class RDFMinCountConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -389,7 +389,7 @@ public class RDFMinCountConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -424,7 +424,7 @@ public class RDFMinCountConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -464,7 +464,7 @@ public class RDFMinCountConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum of 2 occurrences")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -503,7 +503,7 @@ public class RDFMinCountConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum of 2 occurrences")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -542,7 +542,7 @@ public class RDFMinCountConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum of 2 occurrences")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -581,7 +581,7 @@ public class RDFMinCountConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum of 2 occurrences")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -642,7 +642,7 @@ public class RDFMinCountConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum of 2 occurrences")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsNull(validationReport.Results[0].ResultValue);

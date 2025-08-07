@@ -41,9 +41,9 @@ public class RDFPropertyShapeTests
         Assert.AreEqual(0, propertyShape.TargetsCount);
         Assert.AreEqual(0, propertyShape.ConstraintsCount);
         Assert.IsNotNull(propertyShape.Descriptions);
-        Assert.AreEqual(0, propertyShape.Descriptions.Count);
+        Assert.IsEmpty(propertyShape.Descriptions);
         Assert.IsNotNull(propertyShape.Names);
-        Assert.AreEqual(0, propertyShape.Names.Count);
+        Assert.IsEmpty(propertyShape.Names);
         Assert.IsNull(propertyShape.Order);
         Assert.IsNull(propertyShape.Group);
     }
@@ -64,9 +64,9 @@ public class RDFPropertyShapeTests
         Assert.AreEqual(0, propertyShape.TargetsCount);
         Assert.AreEqual(0, propertyShape.ConstraintsCount);
         Assert.IsNotNull(propertyShape.Descriptions);
-        Assert.AreEqual(0, propertyShape.Descriptions.Count);
+        Assert.IsEmpty(propertyShape.Descriptions);
         Assert.IsNotNull(propertyShape.Names);
-        Assert.AreEqual(0, propertyShape.Names.Count);
+        Assert.IsEmpty(propertyShape.Names);
         Assert.IsNull(propertyShape.Order);
         Assert.IsNull(propertyShape.Group);
     }
@@ -114,7 +114,7 @@ public class RDFPropertyShapeTests
         propertyShape.AddName(new RDFPlainLiteral("hello"));
         propertyShape.AddName(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING));
 
-        Assert.AreEqual(2, propertyShape.Names.Count);
+        Assert.HasCount(2, propertyShape.Names);
     }
 
     [TestMethod]
@@ -125,7 +125,7 @@ public class RDFPropertyShapeTests
         propertyShape.AddDescription(new RDFPlainLiteral("hello"));
         propertyShape.AddDescription(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING));
 
-        Assert.AreEqual(2, propertyShape.Descriptions.Count);
+        Assert.HasCount(2, propertyShape.Descriptions);
     }
 
     [TestMethod]

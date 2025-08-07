@@ -38,12 +38,12 @@ public class RDFGraphTest
         Assert.IsNotNull(graph.IndexedTriples);
         Assert.AreEqual(0, graph.TriplesCount);
         Assert.IsNotNull(graph.GraphIndex);
-        Assert.AreEqual(0, graph.GraphIndex.ResourcesRegister.Count);
-        Assert.AreEqual(0, graph.GraphIndex.LiteralsRegister.Count);
-        Assert.AreEqual(0, graph.GraphIndex.SubjectsIndex.Count);
-        Assert.AreEqual(0, graph.GraphIndex.PredicatesIndex.Count);
-        Assert.AreEqual(0, graph.GraphIndex.ObjectsIndex.Count);
-        Assert.AreEqual(0, graph.GraphIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(graph.GraphIndex.ResourcesRegister);
+        Assert.IsEmpty(graph.GraphIndex.LiteralsRegister);
+        Assert.IsEmpty(graph.GraphIndex.SubjectsIndex);
+        Assert.IsEmpty(graph.GraphIndex.PredicatesIndex);
+        Assert.IsEmpty(graph.GraphIndex.ObjectsIndex);
+        Assert.IsEmpty(graph.GraphIndex.LiteralsIndex);
         Assert.IsNotNull(graph.Context);
         Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
 
@@ -69,12 +69,12 @@ public class RDFGraphTest
         Assert.IsNotNull(graph.IndexedTriples);
         Assert.AreEqual(2, graph.TriplesCount);
         Assert.IsNotNull(graph.GraphIndex);
-        Assert.AreEqual(3, graph.GraphIndex.ResourcesRegister.Count);
-        Assert.AreEqual(1, graph.GraphIndex.LiteralsRegister.Count);
-        Assert.AreEqual(1, graph.GraphIndex.SubjectsIndex.Count);
-        Assert.AreEqual(1, graph.GraphIndex.PredicatesIndex.Count);
-        Assert.AreEqual(1, graph.GraphIndex.ObjectsIndex.Count);
-        Assert.AreEqual(1, graph.GraphIndex.LiteralsIndex.Count);
+        Assert.HasCount(3, graph.GraphIndex.ResourcesRegister);
+        Assert.HasCount(1, graph.GraphIndex.LiteralsRegister);
+        Assert.HasCount(1, graph.GraphIndex.SubjectsIndex);
+        Assert.HasCount(1, graph.GraphIndex.PredicatesIndex);
+        Assert.HasCount(1, graph.GraphIndex.ObjectsIndex);
+        Assert.HasCount(1, graph.GraphIndex.LiteralsIndex);
         Assert.IsNotNull(graph.Context);
         Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
     }
@@ -791,10 +791,10 @@ public class RDFGraphTest
         graph.ClearTriples();
 
         Assert.AreEqual(0, graph.TriplesCount);
-        Assert.AreEqual(0, graph.GraphIndex.SubjectsIndex.Count);
-        Assert.AreEqual(0, graph.GraphIndex.PredicatesIndex.Count);
-        Assert.AreEqual(0, graph.GraphIndex.ObjectsIndex.Count);
-        Assert.AreEqual(0, graph.GraphIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(graph.GraphIndex.SubjectsIndex);
+        Assert.IsEmpty(graph.GraphIndex.PredicatesIndex);
+        Assert.IsEmpty(graph.GraphIndex.ObjectsIndex);
+        Assert.IsEmpty(graph.GraphIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -1447,7 +1447,7 @@ public class RDFGraphTest
         graph.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFile{fileExtension}"));
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFile{fileExtension}")));
-        Assert.IsTrue(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFile{fileExtension}")).Length > 100);
+        Assert.IsGreaterThan(100, File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFile{fileExtension}")).Length);
     }
 
     [TestMethod]
@@ -1468,7 +1468,7 @@ public class RDFGraphTest
         graph.AddTriple(triple1).AddTriple(triple2);
         graph.ToStream(format, stream);
 
-        Assert.IsTrue(stream.ToArray().Length > 100);
+        Assert.IsGreaterThan(100, stream.ToArray().Length);
     }
 
     [TestMethod]
@@ -3057,7 +3057,7 @@ public class RDFGraphTest
         await graph.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFileAsync{fileExtension}"));
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFileAsync{fileExtension}")));
-        Assert.IsTrue((await File.ReadAllTextAsync(Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFileAsync{fileExtension}"))).Length > 100);
+        Assert.IsGreaterThan(100, (await File.ReadAllTextAsync(Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFileAsync{fileExtension}"))).Length);
     }
 
     [TestMethod]
@@ -3078,7 +3078,7 @@ public class RDFGraphTest
         await (await graph.AddTripleAsync(triple1)).AddTripleAsync(triple2);
         await graph.ToStreamAsync(format, stream);
 
-        Assert.IsTrue(stream.ToArray().Length > 100);
+        Assert.IsGreaterThan(100, stream.ToArray().Length);
     }
 
     [TestMethod]
@@ -3496,7 +3496,7 @@ public class RDFGraphTest
 
         Assert.IsNotNull(graph);
         Assert.IsTrue(graph.Context.Equals(new Uri(RDFVocabulary.RDFS.BASE_URI)));
-        Assert.IsTrue(graph.TriplesCount > 0);
+        Assert.IsGreaterThan(0, graph.TriplesCount);
     }
 
     [TestMethod]

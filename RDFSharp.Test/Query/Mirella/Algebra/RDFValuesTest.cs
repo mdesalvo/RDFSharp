@@ -33,7 +33,7 @@ public class RDFValuesTest
 
         Assert.IsNotNull(values);
         Assert.IsNotNull(values.Bindings);
-        Assert.AreEqual(0, values.Bindings.Count);
+        Assert.IsEmpty(values.Bindings);
         Assert.AreEqual(0, values.MaxBindingsLength());
         Assert.IsFalse(values.IsEvaluable);
         Assert.IsFalse(values.IsInjected);
@@ -51,7 +51,7 @@ public class RDFValuesTest
 
         Assert.IsNotNull(values);
         Assert.IsNotNull(values.Bindings);
-        Assert.AreEqual(3, values.Bindings.Count);
+        Assert.HasCount(3, values.Bindings);
         Assert.AreEqual(1, values.MaxBindingsLength());
         Assert.IsTrue(values.IsEvaluable);
         Assert.IsFalse(values.IsInjected);
@@ -70,7 +70,7 @@ public class RDFValuesTest
 
         Assert.IsNotNull(values);
         Assert.IsNotNull(values.Bindings);
-        Assert.AreEqual(3, values.Bindings.Count);
+        Assert.HasCount(3, values.Bindings);
         Assert.AreEqual(2, values.MaxBindingsLength());
         Assert.IsTrue(values.IsEvaluable);
         Assert.IsFalse(values.IsInjected);

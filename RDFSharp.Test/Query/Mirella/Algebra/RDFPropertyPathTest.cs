@@ -36,7 +36,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(0, propertyPath.Steps.Count);
+        Assert.IsEmpty(propertyPath.Steps);
         Assert.AreEqual(0, propertyPath.Depth);
         Assert.IsFalse(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START  <{RDFVocabulary.RDF.TYPE}>"));
@@ -82,7 +82,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(1, propertyPath.Steps.Count);
+        Assert.HasCount(1, propertyPath.Steps);
         Assert.AreEqual(1, propertyPath.Depth);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}> <{RDFVocabulary.RDF.TYPE}>"));
@@ -102,7 +102,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(1, propertyPath.Steps.Count);
+        Assert.HasCount(1, propertyPath.Steps);
         Assert.AreEqual(1, propertyPath.Depth);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START ^<{RDFVocabulary.RDF.ALT}> <{RDFVocabulary.RDF.TYPE}>"));
@@ -123,7 +123,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(2, propertyPath.Steps.Count);
+        Assert.HasCount(2, propertyPath.Steps);
         Assert.AreEqual(2, propertyPath.Depth);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}>/<{RDFVocabulary.RDF.BAG}> <{RDFVocabulary.RDF.TYPE}>"));
@@ -144,7 +144,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(2, propertyPath.Steps.Count);
+        Assert.HasCount(2, propertyPath.Steps);
         Assert.AreEqual(2, propertyPath.Depth);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START ^<{RDFVocabulary.RDF.ALT}>/<{RDFVocabulary.RDF.BAG}> <{RDFVocabulary.RDF.TYPE}>"));
@@ -165,7 +165,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(2, propertyPath.Steps.Count);
+        Assert.HasCount(2, propertyPath.Steps);
         Assert.AreEqual(2, propertyPath.Depth);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}>/^<{RDFVocabulary.RDF.BAG}> <{RDFVocabulary.RDF.TYPE}>"));
@@ -186,7 +186,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(2, propertyPath.Steps.Count);
+        Assert.HasCount(2, propertyPath.Steps);
         Assert.AreEqual(2, propertyPath.Depth);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START ^<{RDFVocabulary.RDF.ALT}>/^<{RDFVocabulary.RDF.BAG}> <{RDFVocabulary.RDF.TYPE}>"));
@@ -207,7 +207,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(2, propertyPath.Steps.Count);
+        Assert.HasCount(2, propertyPath.Steps);
         Assert.AreEqual(1, propertyPath.Depth);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START (<{RDFVocabulary.RDF.ALT}>|<{RDFVocabulary.RDF.BAG}>) <{RDFVocabulary.RDF.TYPE}>"));
@@ -228,7 +228,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(2, propertyPath.Steps.Count);
+        Assert.HasCount(2, propertyPath.Steps);
         Assert.AreEqual(1, propertyPath.Depth);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START (^<{RDFVocabulary.RDF.ALT}>|<{RDFVocabulary.RDF.BAG}>) <{RDFVocabulary.RDF.TYPE}>"));
@@ -249,7 +249,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(2, propertyPath.Steps.Count);
+        Assert.HasCount(2, propertyPath.Steps);
         Assert.AreEqual(1, propertyPath.Depth);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START (<{RDFVocabulary.RDF.ALT}>|^<{RDFVocabulary.RDF.BAG}>) <{RDFVocabulary.RDF.TYPE}>"));
@@ -270,7 +270,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(2, propertyPath.Steps.Count);
+        Assert.HasCount(2, propertyPath.Steps);
         Assert.AreEqual(1, propertyPath.Depth);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START (^<{RDFVocabulary.RDF.ALT}>|^<{RDFVocabulary.RDF.BAG}>) <{RDFVocabulary.RDF.TYPE}>"));
@@ -290,7 +290,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(1, propertyPath.Steps.Count);
+        Assert.HasCount(1, propertyPath.Steps);
         Assert.AreEqual(1, propertyPath.Depth);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}> <{RDFVocabulary.RDF.TYPE}>"));
@@ -311,7 +311,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(2, propertyPath.Steps.Count);
+        Assert.HasCount(2, propertyPath.Steps);
         Assert.AreEqual(2, propertyPath.Depth);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}>/<{RDFVocabulary.RDF.BAG}> <{RDFVocabulary.RDF.TYPE}>"));
@@ -334,7 +334,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(4, propertyPath.Steps.Count);
+        Assert.HasCount(4, propertyPath.Steps);
         Assert.AreEqual(1, propertyPath.Depth);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START (<{RDFVocabulary.RDF.ALT}>|<{RDFVocabulary.RDF.BAG}>|<{RDFVocabulary.RDF.BAG}>|<{RDFVocabulary.RDF.SEQ}>) <{RDFVocabulary.RDF.TYPE}>"));
@@ -356,7 +356,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(3, propertyPath.Steps.Count);
+        Assert.HasCount(3, propertyPath.Steps);
         Assert.AreEqual(2, propertyPath.Depth);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}>/(<{RDFVocabulary.RDF.BAG}>|<{RDFVocabulary.RDF.SEQ}>) <{RDFVocabulary.RDF.TYPE}>"));
@@ -378,7 +378,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(3, propertyPath.Steps.Count);
+        Assert.HasCount(3, propertyPath.Steps);
         Assert.AreEqual(2, propertyPath.Depth);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START (<{RDFVocabulary.RDF.BAG}>|<{RDFVocabulary.RDF.SEQ}>)/<{RDFVocabulary.RDF.ALT}> <{RDFVocabulary.RDF.TYPE}>"));
@@ -402,7 +402,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(5, propertyPath.Steps.Count);
+        Assert.HasCount(5, propertyPath.Steps);
         Assert.AreEqual(3, propertyPath.Depth);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START (<{RDFVocabulary.RDF.BAG}>|<{RDFVocabulary.RDF.SEQ}>)/<{RDFVocabulary.RDF.ALT}>/(<{RDFVocabulary.RDF.BAG}>|<{RDFVocabulary.RDF.SEQ}>) <{RDFVocabulary.RDF.TYPE}>"));
@@ -426,7 +426,7 @@ public class RDFPropertyPathTest
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsNotNull(propertyPath.Steps);
-        Assert.AreEqual(5, propertyPath.Steps.Count);
+        Assert.HasCount(5, propertyPath.Steps);
         Assert.AreEqual(3, propertyPath.Depth);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START (<{RDFVocabulary.RDF.BAG}>|<{RDFVocabulary.RDF.SEQ}>)/^<{RDFVocabulary.RDF.ALT}>/(<{RDFVocabulary.RDF.BAG}>|<{RDFVocabulary.RDF.SEQ}>) <{RDFVocabulary.RDF.TYPE}>"));
@@ -456,7 +456,7 @@ public class RDFPropertyPathTest
         List<RDFPattern> patterns = propertyPath.GetPatternList();
 
         Assert.IsNotNull(patterns);
-        Assert.AreEqual(0, patterns.Count);
+        Assert.IsEmpty(patterns);
     }
 
     [TestMethod]
@@ -467,7 +467,7 @@ public class RDFPropertyPathTest
         List<RDFPattern> patterns = propertyPath.GetPatternList();
 
         Assert.IsNotNull(patterns);
-        Assert.AreEqual(1, patterns.Count);
+        Assert.HasCount(1, patterns);
         Assert.IsTrue(patterns[0].Subject.Equals(new RDFVariable("?START")) && patterns[0].Predicate.Equals(RDFVocabulary.RDF.TYPE) && patterns[0].Object.Equals(new RDFVariable("?END")) && !patterns[0].JoinAsUnion);
     }
 
@@ -479,7 +479,7 @@ public class RDFPropertyPathTest
         List<RDFPattern> patterns = propertyPath.GetPatternList();
 
         Assert.IsNotNull(patterns);
-        Assert.AreEqual(1, patterns.Count);
+        Assert.HasCount(1, patterns);
         Assert.IsTrue(patterns[0].Subject.Equals(new RDFVariable("?END")) && patterns[0].Predicate.Equals(RDFVocabulary.RDF.TYPE) && patterns[0].Object.Equals(new RDFVariable("?START"))&& !patterns[0].JoinAsUnion);
     }
 
@@ -491,7 +491,7 @@ public class RDFPropertyPathTest
         List<RDFPattern> patterns = propertyPath.GetPatternList();
 
         Assert.IsNotNull(patterns);
-        Assert.AreEqual(1, patterns.Count);
+        Assert.HasCount(1, patterns);
         Assert.IsTrue(patterns[0].Subject.Equals(new RDFVariable("?START")) && patterns[0].Predicate.Equals(RDFVocabulary.RDF.TYPE) && patterns[0].Object.Equals(new RDFVariable("?END")) && !patterns[0].JoinAsUnion);
     }
 
@@ -503,7 +503,7 @@ public class RDFPropertyPathTest
         List<RDFPattern> patterns = propertyPath.GetPatternList();
 
         Assert.IsNotNull(patterns);
-        Assert.AreEqual(1, patterns.Count);
+        Assert.HasCount(1, patterns);
         Assert.IsTrue(patterns[0].Subject.Equals(new RDFVariable("?END")) && patterns[0].Predicate.Equals(RDFVocabulary.RDF.TYPE) && patterns[0].Object.Equals(new RDFVariable("?START")) && !patterns[0].JoinAsUnion);
     }
 
@@ -517,7 +517,7 @@ public class RDFPropertyPathTest
         List<RDFPattern> patterns = propertyPath.GetPatternList();
 
         Assert.IsNotNull(patterns);
-        Assert.AreEqual(3, patterns.Count);
+        Assert.HasCount(3, patterns);
         Assert.IsTrue(patterns[0].Subject.Equals(new RDFVariable("?START")) && patterns[0].Predicate.Equals(RDFVocabulary.RDF.TYPE) && patterns[0].Object.Equals(new RDFVariable("?__PP0")) && !patterns[0].JoinAsUnion);
         Assert.IsTrue(patterns[1].Subject.Equals(new RDFVariable("?__PP0")) && patterns[1].Predicate.Equals(RDFVocabulary.RDF.LI) && patterns[1].Object.Equals(new RDFVariable("?__PP1")) && !patterns[1].JoinAsUnion);
         Assert.IsTrue(patterns[2].Subject.Equals(new RDFVariable("?__PP1")) && patterns[2].Predicate.Equals(RDFVocabulary.RDF.REST) && patterns[2].Object.Equals(new RDFVariable("?END")) && !patterns[2].JoinAsUnion);
@@ -533,7 +533,7 @@ public class RDFPropertyPathTest
         List<RDFPattern> patterns = propertyPath.GetPatternList();
 
         Assert.IsNotNull(patterns);
-        Assert.AreEqual(3, patterns.Count);
+        Assert.HasCount(3, patterns);
         Assert.IsTrue(patterns[0].Subject.Equals(new RDFVariable("?__PP0")) && patterns[0].Predicate.Equals(RDFVocabulary.RDF.TYPE) && patterns[0].Object.Equals(new RDFVariable("?START")) && !patterns[0].JoinAsUnion);
         Assert.IsTrue(patterns[1].Subject.Equals(new RDFVariable("?__PP0")) && patterns[1].Predicate.Equals(RDFVocabulary.RDF.LI) && patterns[1].Object.Equals(new RDFVariable("?__PP1")) && !patterns[1].JoinAsUnion);
         Assert.IsTrue(patterns[2].Subject.Equals(new RDFVariable("?__PP1")) && patterns[2].Predicate.Equals(RDFVocabulary.RDF.REST) && patterns[2].Object.Equals(new RDFVariable("?END")) && !patterns[2].JoinAsUnion);
@@ -549,7 +549,7 @@ public class RDFPropertyPathTest
         List<RDFPattern> patterns = propertyPath.GetPatternList();
 
         Assert.IsNotNull(patterns);
-        Assert.AreEqual(3, patterns.Count);
+        Assert.HasCount(3, patterns);
         Assert.IsTrue(patterns[0].Subject.Equals(new RDFVariable("?START")) && patterns[0].Predicate.Equals(RDFVocabulary.RDF.TYPE) && patterns[0].Object.Equals(new RDFVariable("?END")) && patterns[0].JoinAsUnion);
         Assert.IsTrue(patterns[1].Subject.Equals(new RDFVariable("?START")) && patterns[1].Predicate.Equals(RDFVocabulary.RDF.LI) && patterns[1].Object.Equals(new RDFVariable("?END")) && patterns[1].JoinAsUnion);
         Assert.IsTrue(patterns[2].Subject.Equals(new RDFVariable("?START")) && patterns[2].Predicate.Equals(RDFVocabulary.RDF.REST) && patterns[2].Object.Equals(new RDFVariable("?END")) && !patterns[2].JoinAsUnion);
@@ -567,7 +567,7 @@ public class RDFPropertyPathTest
         List<RDFPattern> patterns = propertyPath.GetPatternList();
 
         Assert.IsNotNull(patterns);
-        Assert.AreEqual(5, patterns.Count);
+        Assert.HasCount(5, patterns);
         Assert.IsTrue(patterns[0].Subject.Equals(new RDFVariable("?START")) && patterns[0].Predicate.Equals(RDFVocabulary.RDF.TYPE) && patterns[0].Object.Equals(new RDFVariable("?END")) && patterns[0].JoinAsUnion);
         Assert.IsTrue(patterns[1].Subject.Equals(new RDFVariable("?START")) && patterns[1].Predicate.Equals(RDFVocabulary.RDF.LI) && patterns[1].Object.Equals(new RDFVariable("?END")) && patterns[1].JoinAsUnion);
         Assert.IsTrue(patterns[2].Subject.Equals(new RDFVariable("?START")) && patterns[2].Predicate.Equals(RDFVocabulary.RDF.REST) && patterns[2].Object.Equals(new RDFVariable("?END")) && patterns[2].JoinAsUnion);
@@ -588,7 +588,7 @@ public class RDFPropertyPathTest
         List<RDFPattern> patterns = propertyPath.GetPatternList();
 
         Assert.IsNotNull(patterns);
-        Assert.AreEqual(6, patterns.Count);
+        Assert.HasCount(6, patterns);
         Assert.IsTrue(patterns[0].Subject.Equals(new RDFVariable("?START")) && patterns[0].Predicate.Equals(RDFVocabulary.RDF.TYPE) && patterns[0].Object.Equals(new RDFVariable("?__PP0")) && patterns[0].JoinAsUnion);
         Assert.IsTrue(patterns[1].Subject.Equals(new RDFVariable("?START")) && patterns[1].Predicate.Equals(RDFVocabulary.RDF.LI) && patterns[1].Object.Equals(new RDFVariable("?__PP0")) && patterns[1].JoinAsUnion);
         Assert.IsTrue(patterns[2].Subject.Equals(new RDFVariable("?START")) && patterns[2].Predicate.Equals(RDFVocabulary.RDF.REST) && patterns[2].Object.Equals(new RDFVariable("?__PP0")) && !patterns[2].JoinAsUnion);
@@ -610,7 +610,7 @@ public class RDFPropertyPathTest
         List<RDFPattern> patterns = propertyPath.GetPatternList();
 
         Assert.IsNotNull(patterns);
-        Assert.AreEqual(6, patterns.Count);
+        Assert.HasCount(6, patterns);
         Assert.IsTrue(patterns[0].Subject.Equals(new RDFVariable("?START")) && patterns[0].Predicate.Equals(RDFVocabulary.RDF.TYPE) && patterns[0].Object.Equals(new RDFVariable("?__PP0")) && patterns[0].JoinAsUnion);
         Assert.IsTrue(patterns[1].Subject.Equals(new RDFVariable("?__PP0")) && patterns[1].Predicate.Equals(RDFVocabulary.RDF.LI) && patterns[1].Object.Equals(new RDFVariable("?START")) && patterns[1].JoinAsUnion);
         Assert.IsTrue(patterns[2].Subject.Equals(new RDFVariable("?__PP0")) && patterns[2].Predicate.Equals(RDFVocabulary.RDF.REST) && patterns[2].Object.Equals(new RDFVariable("?START")) && !patterns[2].JoinAsUnion);
@@ -630,7 +630,7 @@ public class RDFPropertyPathTest
         List<RDFPattern> patterns = propertyPath.GetPatternList();
 
         Assert.IsNotNull(patterns);
-        Assert.AreEqual(4, patterns.Count);
+        Assert.HasCount(4, patterns);
         Assert.IsTrue(patterns[0].Subject.Equals(new RDFVariable("?START")) && patterns[0].Predicate.Equals(RDFVocabulary.RDF.TYPE) && patterns[0].Object.Equals(new RDFVariable("?__PP0")) && patterns[0].JoinAsUnion);
         Assert.IsTrue(patterns[1].Subject.Equals(new RDFVariable("?START")) && patterns[1].Predicate.Equals(RDFVocabulary.RDF.LI) && patterns[1].Object.Equals(new RDFVariable("?__PP0")) && patterns[1].JoinAsUnion);
         Assert.IsTrue(patterns[2].Subject.Equals(new RDFVariable("?START")) && patterns[2].Predicate.Equals(RDFVocabulary.RDF.REST) && patterns[2].Object.Equals(new RDFVariable("?__PP0")) && !patterns[2].JoinAsUnion);

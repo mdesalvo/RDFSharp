@@ -74,7 +74,7 @@ public class RDFDatatypeTest
         Assert.IsNotNull(exString);
         Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_STRING, exString.TargetDatatype);
         Assert.IsTrue(exString.URI.Equals(new Uri("ex:string")));
-        Assert.AreEqual(0, exString.Facets.Count);
+        Assert.IsEmpty(exString.Facets);
     }
 
     [TestMethod]

@@ -55,7 +55,7 @@ public class RDFNamespaceRegisterTest
     [TestMethod]
     public void ShouldEnlistNamespaces()
     {
-        Assert.IsTrue(RDFNamespaceRegister.NamespacesCount > 0);
+        Assert.IsGreaterThan(0, RDFNamespaceRegister.NamespacesCount);
         Assert.IsNotNull(RDFNamespaceRegister.NamespacesEnumerator);
 
         var nsEnumerator = RDFNamespaceRegister.NamespacesEnumerator;

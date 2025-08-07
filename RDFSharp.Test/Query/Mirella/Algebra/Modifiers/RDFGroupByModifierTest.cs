@@ -36,10 +36,10 @@ public class RDFGroupByModifierTest
 
         Assert.IsNotNull(modifier);
         Assert.IsNotNull(modifier.PartitionVariables);
-        Assert.AreEqual(1, modifier.PartitionVariables.Count);
+        Assert.HasCount(1, modifier.PartitionVariables);
         Assert.IsTrue(modifier.PartitionVariables[0].Equals(variable));
         Assert.IsNotNull(modifier.Aggregators);
-        Assert.AreEqual(1, modifier.Aggregators.Count);
+        Assert.HasCount(1, modifier.Aggregators);
         Assert.IsTrue(modifier.Aggregators[0].ProjectionVariable.Equals(variable));
         Assert.IsTrue(modifier.Aggregators[0].AggregatorVariable.Equals(variable));
         Assert.IsTrue(modifier.IsEvaluable);
@@ -76,10 +76,10 @@ public class RDFGroupByModifierTest
 
         Assert.IsNotNull(modifier);
         Assert.IsNotNull(modifier.PartitionVariables);
-        Assert.AreEqual(1, modifier.PartitionVariables.Count);
+        Assert.HasCount(1, modifier.PartitionVariables);
         Assert.IsTrue(modifier.PartitionVariables[0].Equals(variable1));
         Assert.IsNotNull(modifier.Aggregators);
-        Assert.AreEqual(2, modifier.Aggregators.Count);
+        Assert.HasCount(2, modifier.Aggregators);
         Assert.IsTrue(modifier.Aggregators[0].AggregatorVariable.Equals(variable1));
         Assert.IsTrue(modifier.Aggregators[0].ProjectionVariable.Equals(variable1));
         Assert.IsTrue(modifier.Aggregators[1].AggregatorVariable.Equals(variable2));

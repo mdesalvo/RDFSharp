@@ -33,7 +33,7 @@ public class RDFXoneConstraintTest
 
         Assert.IsNotNull(xoneConstraint);
         Assert.IsNotNull(xoneConstraint.XoneShapes);
-        Assert.AreEqual(0, xoneConstraint.XoneShapes.Count);
+        Assert.IsEmpty(xoneConstraint.XoneShapes);
     }
 
     [TestMethod]
@@ -47,7 +47,7 @@ public class RDFXoneConstraintTest
 
         Assert.IsNotNull(xoneConstraint);
         Assert.IsNotNull(xoneConstraint.XoneShapes);
-        Assert.AreEqual(2, xoneConstraint.XoneShapes.Count);
+        Assert.HasCount(2, xoneConstraint.XoneShapes);
     }
 
     [TestMethod]
@@ -371,7 +371,7 @@ public class RDFXoneConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have exactly one of the shapes in sh:xone enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -416,7 +416,7 @@ public class RDFXoneConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have exactly one of the shapes in sh:xone enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -461,7 +461,7 @@ public class RDFXoneConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have exactly one of the shapes in sh:xone enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -502,7 +502,7 @@ public class RDFXoneConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have exactly one of the shapes in sh:xone enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -546,7 +546,7 @@ public class RDFXoneConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have exactly one of the shapes in sh:xone enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -588,7 +588,7 @@ public class RDFXoneConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have exactly one of the shapes in sh:xone enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -630,7 +630,7 @@ public class RDFXoneConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have exactly one of the shapes in sh:xone enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -672,7 +672,7 @@ public class RDFXoneConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have exactly one of the shapes in sh:xone enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -751,7 +751,7 @@ public class RDFXoneConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have exactly one of the shapes in sh:xone enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:B")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:B")));

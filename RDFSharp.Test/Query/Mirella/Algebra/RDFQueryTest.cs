@@ -32,18 +32,18 @@ public class RDFQueryTest
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
-        Assert.AreEqual(0, query.QueryMembers.Count);
+        Assert.IsEmpty(query.QueryMembers);
         Assert.IsNotNull(query.Prefixes);
-        Assert.AreEqual(0, query.Prefixes.Count);
+        Assert.IsEmpty(query.Prefixes);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsTrue(query.ToString().Equals(string.Empty));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetValues().Count);
+        Assert.IsEmpty(query.GetValues());
         Assert.AreEqual(0, query.GetModifiers().Count());
-        Assert.AreEqual(0, query.GetPrefixes().Count);
+        Assert.IsEmpty(query.GetPrefixes());
     }
 
     [TestMethod]
@@ -57,17 +57,17 @@ public class RDFQueryTest
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
-        Assert.AreEqual(1, query.QueryMembers.Count);
+        Assert.HasCount(1, query.QueryMembers);
         Assert.IsNotNull(query.Prefixes);
-        Assert.AreEqual(0, query.Prefixes.Count);
+        Assert.IsEmpty(query.Prefixes);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsTrue(query.ToString().Equals(string.Empty));
         Assert.AreEqual(1, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(1, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetValues().Count);
+        Assert.IsEmpty(query.GetValues());
         Assert.AreEqual(0, query.GetModifiers().Count());
-        Assert.AreEqual(0, query.GetPrefixes().Count);
+        Assert.IsEmpty(query.GetPrefixes());
     }
 
     [TestMethod]
@@ -86,18 +86,18 @@ public class RDFQueryTest
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
-        Assert.AreEqual(3, query.QueryMembers.Count);
+        Assert.HasCount(3, query.QueryMembers);
         Assert.IsNotNull(query.Prefixes);
-        Assert.AreEqual(0, query.Prefixes.Count);
+        Assert.IsEmpty(query.Prefixes);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsTrue(query.ToString().Equals(string.Empty));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetValues().Count);
+        Assert.IsEmpty(query.GetValues());
         Assert.AreEqual(3, query.GetModifiers().Count());
-        Assert.AreEqual(0, query.GetPrefixes().Count);
+        Assert.IsEmpty(query.GetPrefixes());
     }
 
     [TestMethod]
@@ -110,18 +110,18 @@ public class RDFQueryTest
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
-        Assert.AreEqual(0, query.QueryMembers.Count);
+        Assert.IsEmpty(query.QueryMembers);
         Assert.IsNotNull(query.Prefixes);
-        Assert.AreEqual(1, query.Prefixes.Count);
+        Assert.HasCount(1, query.Prefixes);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsTrue(query.ToString().Equals(string.Empty));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetValues().Count);
+        Assert.IsEmpty(query.GetValues());
         Assert.AreEqual(0, query.GetModifiers().Count());
-        Assert.AreEqual(1, query.GetPrefixes().Count);
+        Assert.HasCount(1, query.GetPrefixes());
     }
 
     [TestMethod]
@@ -135,9 +135,9 @@ public class RDFQueryTest
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
-        Assert.AreEqual(1, query.QueryMembers.Count);
+        Assert.HasCount(1, query.QueryMembers);
         Assert.IsNotNull(query.Prefixes);
-        Assert.AreEqual(0, query.Prefixes.Count);
+        Assert.IsEmpty(query.Prefixes);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsTrue(subQuery.IsSubQuery);
         Assert.IsTrue(query.ToString().Equals(string.Empty));
@@ -145,9 +145,9 @@ public class RDFQueryTest
         Assert.AreEqual(1, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
         Assert.AreEqual(1, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetValues().Count);
+        Assert.IsEmpty(query.GetValues());
         Assert.AreEqual(0, query.GetModifiers().Count());
-        Assert.AreEqual(0, query.GetPrefixes().Count);
+        Assert.IsEmpty(query.GetPrefixes());
     }
     #endregion
 }

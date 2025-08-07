@@ -45,22 +45,22 @@ public class RDFDescribeQueryTest
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
-        Assert.AreEqual(0, query.QueryMembers.Count);
+        Assert.IsEmpty(query.QueryMembers);
         Assert.IsNotNull(query.DescribeTerms);
-        Assert.AreEqual(0, query.DescribeTerms.Count);
+        Assert.IsEmpty(query.DescribeTerms);
         Assert.IsNotNull(query.Variables);
-        Assert.AreEqual(0, query.Variables.Count);
+        Assert.IsEmpty(query.Variables);
         Assert.IsNotNull(query.Prefixes);
-        Assert.AreEqual(0, query.Prefixes.Count);
+        Assert.IsEmpty(query.Prefixes);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsTrue(query.ToString().Equals("DESCRIBE *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}"));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetValues().Count);
+        Assert.IsEmpty(query.GetValues());
         Assert.AreEqual(0, query.GetModifiers().Count());
-        Assert.AreEqual(0, query.GetPrefixes().Count);
+        Assert.IsEmpty(query.GetPrefixes());
     }
 
     [TestMethod]
@@ -93,14 +93,14 @@ public class RDFDescribeQueryTest
 
         Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+Environment.NewLine+"PREFIX owl: <http://www.w3.org/2002/07/owl#>"+Environment.NewLine+Environment.NewLine+"DESCRIBE ?S <ex:flower>"+Environment.NewLine+"WHERE {"+Environment.NewLine+"  {"+Environment.NewLine+"    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ."+Environment.NewLine+"    FILTER ( (ISURI(?S)) ) "+Environment.NewLine+"  }"+Environment.NewLine+"  {"+Environment.NewLine+"    SELECT ?S ?P"+Environment.NewLine+"    WHERE {"+Environment.NewLine+"      {"+Environment.NewLine+"        ?S ?P owl:Class ."+Environment.NewLine+"        VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ."+Environment.NewLine+"      }"+Environment.NewLine+"    }"+Environment.NewLine+"  }"+Environment.NewLine+"}"+Environment.NewLine+"LIMIT 100"+Environment.NewLine+"OFFSET 20"));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
-        Assert.AreEqual(2, query.DescribeTerms.Count);
-        Assert.AreEqual(1, query.Variables.Count);
+        Assert.HasCount(2, query.DescribeTerms);
+        Assert.HasCount(1, query.Variables);
         Assert.AreEqual(2, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(1, query.GetPatternGroups().Count());
         Assert.AreEqual(1, query.GetSubQueries().Count());
-        Assert.AreEqual(1, query.GetValues().Count);
+        Assert.HasCount(1, query.GetValues());
         Assert.AreEqual(3, query.GetModifiers().Count());
-        Assert.AreEqual(2, query.GetPrefixes().Count);
+        Assert.HasCount(2, query.GetPrefixes());
     }
 
     [TestMethod]
@@ -130,15 +130,15 @@ public class RDFDescribeQueryTest
 
         Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+Environment.NewLine+"PREFIX owl: <http://www.w3.org/2002/07/owl#>"+Environment.NewLine+""+Environment.NewLine+"DESCRIBE ?S <ex:flower>"+Environment.NewLine+"WHERE {"+Environment.NewLine+"  {"+Environment.NewLine+"    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ."+Environment.NewLine+"    FILTER ( (ISURI(?S)) ) "+Environment.NewLine+"  }"+Environment.NewLine+"  OPTIONAL {"+Environment.NewLine+"    SELECT ?S ?P"+Environment.NewLine+"    WHERE {"+Environment.NewLine+"      {"+Environment.NewLine+"        ?S ?P owl:Class ."+Environment.NewLine+"        VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ."+Environment.NewLine+"      }"+Environment.NewLine+"    }"+Environment.NewLine+"  }"+Environment.NewLine+"}"+Environment.NewLine+"LIMIT 100"+Environment.NewLine+"OFFSET 20"));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
-        Assert.AreEqual(2, query.DescribeTerms.Count);
-        Assert.AreEqual(1, query.Variables.Count);
+        Assert.HasCount(2, query.DescribeTerms);
+        Assert.HasCount(1, query.Variables);
         Assert.AreEqual(2, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(1, query.GetPatternGroups().Count());
         Assert.AreEqual(1, query.GetSubQueries().Count());
         Assert.IsTrue(query.GetSubQueries().Single() is RDFSelectQuery { IsOptional: true });
-        Assert.AreEqual(1, query.GetValues().Count);
+        Assert.HasCount(1, query.GetValues());
         Assert.AreEqual(3, query.GetModifiers().Count());
-        Assert.AreEqual(2, query.GetPrefixes().Count);
+        Assert.HasCount(2, query.GetPrefixes());
     }
 
     [TestMethod]
@@ -168,15 +168,15 @@ public class RDFDescribeQueryTest
 
         Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+Environment.NewLine+"PREFIX owl: <http://www.w3.org/2002/07/owl#>"+Environment.NewLine+""+Environment.NewLine+"DESCRIBE ?S <ex:flower>"+Environment.NewLine+"WHERE {"+Environment.NewLine+"  {"+Environment.NewLine+"    {"+Environment.NewLine+"      ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ."+Environment.NewLine+"      FILTER ( (ISURI(?S)) ) "+Environment.NewLine+"    }"+Environment.NewLine+"    UNION"+Environment.NewLine+"    {"+Environment.NewLine+"      SELECT ?S ?P"+Environment.NewLine+"      WHERE {"+Environment.NewLine+"        {"+Environment.NewLine+"          ?S ?P owl:Class ."+Environment.NewLine+"          VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ."+Environment.NewLine+"        }"+Environment.NewLine+"      }"+Environment.NewLine+"    }"+Environment.NewLine+"  }"+Environment.NewLine+"}"+Environment.NewLine+"LIMIT 100"+Environment.NewLine+"OFFSET 20"));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
-        Assert.AreEqual(2, query.DescribeTerms.Count);
-        Assert.AreEqual(1, query.Variables.Count);
+        Assert.HasCount(2, query.DescribeTerms);
+        Assert.HasCount(1, query.Variables);
         Assert.AreEqual(2, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(1, query.GetPatternGroups().Count());
         Assert.IsTrue(query.GetPatternGroups().Single().JoinAsUnion);
         Assert.AreEqual(1, query.GetSubQueries().Count());
-        Assert.AreEqual(1, query.GetValues().Count);
+        Assert.HasCount(1, query.GetValues());
         Assert.AreEqual(3, query.GetModifiers().Count());
-        Assert.AreEqual(2, query.GetPrefixes().Count);
+        Assert.HasCount(2, query.GetPrefixes());
     }
 
     [TestMethod]

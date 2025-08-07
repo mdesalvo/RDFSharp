@@ -509,11 +509,11 @@ public class RDFMemoryStoreTest
         store.ClearQuadruples();
 
         Assert.AreEqual(0, store.QuadruplesCount);
-        Assert.AreEqual(0, store.StoreIndex.ContextsIndex.Count);
-        Assert.AreEqual(0, store.StoreIndex.SubjectsIndex.Count);
-        Assert.AreEqual(0, store.StoreIndex.PredicatesIndex.Count);
-        Assert.AreEqual(0, store.StoreIndex.ObjectsIndex.Count);
-        Assert.AreEqual(0, store.StoreIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(store.StoreIndex.ContextsIndex);
+        Assert.IsEmpty(store.StoreIndex.SubjectsIndex);
+        Assert.IsEmpty(store.StoreIndex.PredicatesIndex);
+        Assert.IsEmpty(store.StoreIndex.ObjectsIndex);
+        Assert.IsEmpty(store.StoreIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -901,7 +901,7 @@ public class RDFMemoryStoreTest
         List<RDFContext> contexts = store.ExtractContexts();
 
         Assert.IsNotNull(contexts);
-        Assert.AreEqual(2, contexts.Count);
+        Assert.HasCount(2, contexts);
         Assert.IsTrue(contexts.Any(c => c.Equals(new RDFContext("ex:ctx1"))));
         Assert.IsTrue(contexts.Any(c => c.Equals(new RDFContext("ex:ctx2"))));
     }
@@ -916,7 +916,7 @@ public class RDFMemoryStoreTest
         List<RDFGraph> graphs = store.ExtractGraphs();
 
         Assert.IsNotNull(graphs);
-        Assert.AreEqual(2, graphs.Count);
+        Assert.HasCount(2, graphs);
         Assert.IsTrue(graphs.Any(g => g.Context.Equals(new Uri("ex:ctx1"))));
         Assert.IsTrue(graphs.Any(g => g.Context.Equals(new Uri("ex:ctx2"))));
     }
@@ -1036,7 +1036,7 @@ public class RDFMemoryStoreTest
         store.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFile{fileExtension}"));
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFile{fileExtension}")));
-        Assert.IsTrue(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFile{fileExtension}")).Length > 90);
+        Assert.IsGreaterThan(90, File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFile{fileExtension}")).Length);
     }
 
     [TestMethod]
@@ -1056,7 +1056,7 @@ public class RDFMemoryStoreTest
         store.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
         store.ToStream(format, stream);
 
-        Assert.IsTrue(stream.ToArray().Length > 90);
+        Assert.IsGreaterThan(90, stream.ToArray().Length);
     }
 
     [TestMethod]
@@ -1923,7 +1923,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = await RDFMemoryStore.FromUriAsync(new Uri("https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-n-quads/nq-syntax-uri-01.nq"));
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.QuadruplesCount > 0);
+        Assert.IsGreaterThan(0, store.QuadruplesCount);
     }
 
     [TestMethod]
@@ -2540,7 +2540,7 @@ public class RDFMemoryStoreTest
         List<RDFContext> contexts = await store.ExtractContextsAsync();
 
         Assert.IsNotNull(contexts);
-        Assert.AreEqual(2, contexts.Count);
+        Assert.HasCount(2, contexts);
         Assert.IsTrue(contexts.Any(c => c.Equals(new RDFContext("ex:ctx1"))));
         Assert.IsTrue(contexts.Any(c => c.Equals(new RDFContext("ex:ctx2"))));
     }
@@ -2555,7 +2555,7 @@ public class RDFMemoryStoreTest
         List<RDFGraph> graphs = await store.ExtractGraphsAsync();
 
         Assert.IsNotNull(graphs);
-        Assert.AreEqual(2, graphs.Count);
+        Assert.HasCount(2, graphs);
         Assert.IsTrue(graphs.Any(g => g.Context.Equals(new Uri("ex:ctx1"))));
         Assert.IsTrue(graphs.Any(g => g.Context.Equals(new Uri("ex:ctx2"))));
     }
@@ -2574,7 +2574,7 @@ public class RDFMemoryStoreTest
         await store.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}"));
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}")));
-        Assert.IsTrue((await File.ReadAllTextAsync(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}"))).Length > 90);
+        Assert.IsGreaterThan(90, (await File.ReadAllTextAsync(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}"))).Length);
     }
 
     [TestMethod]
@@ -2595,7 +2595,7 @@ public class RDFMemoryStoreTest
             .AddQuadrupleAsync(quadruple2);
         await store.ToStreamAsync(format, stream);
 
-        Assert.IsTrue(stream.ToArray().Length > 90);
+        Assert.IsGreaterThan(90, stream.ToArray().Length);
     }
 
     [TestMethod]

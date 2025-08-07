@@ -383,7 +383,7 @@ public class RDFQualifiedValueShapeConstraintTest
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -422,7 +422,7 @@ public class RDFQualifiedValueShapeConstraintTest
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -461,7 +461,7 @@ public class RDFQualifiedValueShapeConstraintTest
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -500,7 +500,7 @@ public class RDFQualifiedValueShapeConstraintTest
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -542,7 +542,7 @@ public class RDFQualifiedValueShapeConstraintTest
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a maximum of 2 conforming values for the shape <ex:QVShapeConstraint>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -582,7 +582,7 @@ public class RDFQualifiedValueShapeConstraintTest
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum of 4 conforming values for the shape <ex:QVShapeConstraint>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -621,7 +621,7 @@ public class RDFQualifiedValueShapeConstraintTest
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum of 1 and a maximum of 1 conforming values for the shape <ex:QVShapeConstraint>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -659,9 +659,9 @@ public class RDFQualifiedValueShapeConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.AreEqual(2, validationReport.Results.Count);
+        Assert.HasCount(2, validationReport.Results);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum of 1 conforming values for the shape <ex:QVShapeConstraint>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Steve")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -669,7 +669,7 @@ public class RDFQualifiedValueShapeConstraintTest
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[1].Severity);
-        Assert.AreEqual(1, validationReport.Results[1].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[1].ResultMessages);
         Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum of 1 conforming values for the shape <ex:QVShapeConstraint>")));
         Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Larry")));
         Assert.IsNull(validationReport.Results[1].ResultValue);
@@ -744,9 +744,9 @@ public class RDFQualifiedValueShapeConstraintTest
 
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
-        Assert.AreEqual(1, validationReport.Results.Count);
+        Assert.HasCount(1, validationReport.Results);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum of 2 conforming values for the shape <ex:QualifiedValueShapeConstraint>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Brittany")));
         Assert.IsNull(validationReport.Results[0].ResultValue);

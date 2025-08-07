@@ -180,7 +180,7 @@ public class RDFValidationEngineTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values lower or equal than <20^^http://www.w3.org/2001/XMLSchema#integer>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("21", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -265,7 +265,7 @@ public class RDFValidationEngineTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Cardinality violation. Lower bound shall be 1. exns:Parent.Child-cardinality")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://ex.com/ns#parent1")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -342,7 +342,7 @@ public class RDFValidationEngineTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Either mobileNumber or landLine should be present")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://ex.com/ns#person3")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -425,7 +425,7 @@ public class RDFValidationEngineTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Person should have at least one Uncle defined as: Person.Father/Person.Brother")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://ex.com/ns#person3")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -511,7 +511,7 @@ public class RDFValidationEngineTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Cardinality violation. Lower bound shall be 1. exns:Parent.Child-cardinality")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://test.com/#parent1")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
@@ -595,7 +595,7 @@ public class RDFValidationEngineTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Cardinality violation. Lower bound shall be 1. exns:Parent.Child-cardinality")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://test.com/#parent1")));
         Assert.IsNull(validationReport.Results[0].ResultValue);

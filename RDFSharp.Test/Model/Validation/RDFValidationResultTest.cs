@@ -52,7 +52,7 @@ public class RDFValidationResultTest
         Assert.IsNotNull(result.ResultValue);
         Assert.IsTrue(result.ResultValue.Equals(new RDFPlainLiteral("resultValue")));
         Assert.IsNotNull(result.ResultMessages);
-        Assert.AreEqual(1, result.ResultMessages.Count);
+        Assert.HasCount(1, result.ResultMessages);
         Assert.IsTrue(result.ResultMessages[0].Equals(new RDFPlainLiteral("resultMessage")));
         Assert.AreEqual(severity, result.Severity);
     }

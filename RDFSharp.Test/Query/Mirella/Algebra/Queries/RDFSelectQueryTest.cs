@@ -47,11 +47,11 @@ public class RDFSelectQueryTest
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
-        Assert.AreEqual(0, query.QueryMembers.Count);
+        Assert.IsEmpty(query.QueryMembers);
         Assert.IsNotNull(query.Prefixes);
-        Assert.AreEqual(0, query.Prefixes.Count);
+        Assert.IsEmpty(query.Prefixes);
         Assert.IsNotNull(query.ProjectionVars);
-        Assert.AreEqual(0, query.ProjectionVars.Count);
+        Assert.IsEmpty(query.ProjectionVars);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsFalse(query.IsOptional);
         Assert.IsFalse(query.JoinAsUnion);
@@ -62,9 +62,9 @@ public class RDFSelectQueryTest
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetValues().Count);
+        Assert.IsEmpty(query.GetValues());
         Assert.AreEqual(0, query.GetModifiers().Count());
-        Assert.AreEqual(0, query.GetPrefixes().Count);
+        Assert.IsEmpty(query.GetPrefixes());
     }
 
     [TestMethod]
@@ -74,11 +74,11 @@ public class RDFSelectQueryTest
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
-        Assert.AreEqual(0, query.QueryMembers.Count);
+        Assert.IsEmpty(query.QueryMembers);
         Assert.IsNotNull(query.Prefixes);
-        Assert.AreEqual(0, query.Prefixes.Count);
+        Assert.IsEmpty(query.Prefixes);
         Assert.IsNotNull(query.ProjectionVars);
-        Assert.AreEqual(0, query.ProjectionVars.Count);
+        Assert.IsEmpty(query.ProjectionVars);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsTrue(query.IsOptional);
         Assert.IsFalse(query.JoinAsUnion);
@@ -89,9 +89,9 @@ public class RDFSelectQueryTest
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetValues().Count);
+        Assert.IsEmpty(query.GetValues());
         Assert.AreEqual(0, query.GetModifiers().Count());
-        Assert.AreEqual(0, query.GetPrefixes().Count);
+        Assert.IsEmpty(query.GetPrefixes());
     }
 
     [TestMethod]
@@ -101,11 +101,11 @@ public class RDFSelectQueryTest
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
-        Assert.AreEqual(0, query.QueryMembers.Count);
+        Assert.IsEmpty(query.QueryMembers);
         Assert.IsNotNull(query.Prefixes);
-        Assert.AreEqual(0, query.Prefixes.Count);
+        Assert.IsEmpty(query.Prefixes);
         Assert.IsNotNull(query.ProjectionVars);
-        Assert.AreEqual(0, query.ProjectionVars.Count);
+        Assert.IsEmpty(query.ProjectionVars);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsFalse(query.IsOptional);
         Assert.IsTrue(query.JoinAsUnion);
@@ -116,9 +116,9 @@ public class RDFSelectQueryTest
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetValues().Count);
+        Assert.IsEmpty(query.GetValues());
         Assert.AreEqual(0, query.GetModifiers().Count());
-        Assert.AreEqual(0, query.GetPrefixes().Count);
+        Assert.IsEmpty(query.GetPrefixes());
     }
 
     [TestMethod]
@@ -128,11 +128,11 @@ public class RDFSelectQueryTest
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
-        Assert.AreEqual(0, query.QueryMembers.Count);
+        Assert.IsEmpty(query.QueryMembers);
         Assert.IsNotNull(query.Prefixes);
-        Assert.AreEqual(0, query.Prefixes.Count);
+        Assert.IsEmpty(query.Prefixes);
         Assert.IsNotNull(query.ProjectionVars);
-        Assert.AreEqual(0, query.ProjectionVars.Count);
+        Assert.IsEmpty(query.ProjectionVars);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsFalse(query.IsOptional);
         Assert.IsFalse(query.JoinAsUnion);
@@ -143,9 +143,9 @@ public class RDFSelectQueryTest
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetValues().Count);
+        Assert.IsEmpty(query.GetValues());
         Assert.AreEqual(0, query.GetModifiers().Count());
-        Assert.AreEqual(0, query.GetPrefixes().Count);
+        Assert.IsEmpty(query.GetPrefixes());
     }
 
     [TestMethod]
@@ -155,11 +155,11 @@ public class RDFSelectQueryTest
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
-        Assert.AreEqual(0, query.QueryMembers.Count);
+        Assert.IsEmpty(query.QueryMembers);
         Assert.IsNotNull(query.Prefixes);
-        Assert.AreEqual(0, query.Prefixes.Count);
+        Assert.IsEmpty(query.Prefixes);
         Assert.IsNotNull(query.ProjectionVars);
-        Assert.AreEqual(0, query.ProjectionVars.Count);
+        Assert.IsEmpty(query.ProjectionVars);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsFalse(query.IsOptional);
         Assert.IsFalse(query.JoinAsUnion);
@@ -170,9 +170,9 @@ public class RDFSelectQueryTest
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetValues().Count);
+        Assert.IsEmpty(query.GetValues());
         Assert.AreEqual(0, query.GetModifiers().Count());
-        Assert.AreEqual(0, query.GetPrefixes().Count);
+        Assert.IsEmpty(query.GetPrefixes());
     }
 
     [TestMethod]
@@ -211,9 +211,9 @@ public class RDFSelectQueryTest
         Assert.AreEqual(3, query.GetEvaluableQueryMembers().Count()); //SPARQL Values is managed by Mirella
         Assert.AreEqual(1, query.GetPatternGroups().Count());
         Assert.AreEqual(1, query.GetSubQueries().Count());
-        Assert.AreEqual(1, query.GetValues().Count);
+        Assert.HasCount(1, query.GetValues());
         Assert.AreEqual(5, query.GetModifiers().Count());
-        Assert.AreEqual(2, query.GetPrefixes().Count);
+        Assert.HasCount(2, query.GetPrefixes());
     }
 
     [TestMethod]
@@ -246,9 +246,9 @@ public class RDFSelectQueryTest
         Assert.AreEqual(1, query.GetPatternGroups().Count());
         Assert.AreEqual(1, query.GetSubQueries().Count());
         Assert.IsTrue(query.GetSubQueries().Single() is RDFSelectQuery { IsOptional: true });
-        Assert.AreEqual(1, query.GetValues().Count);
+        Assert.HasCount(1, query.GetValues());
         Assert.AreEqual(5, query.GetModifiers().Count());
-        Assert.AreEqual(2, query.GetPrefixes().Count);
+        Assert.HasCount(2, query.GetPrefixes());
     }
 
     [TestMethod]
@@ -289,9 +289,9 @@ public class RDFSelectQueryTest
         Assert.AreEqual(2, query.GetSubQueries().Count());
         Assert.IsTrue(query.GetSubQueries().ElementAt(0) is RDFSelectQuery { JoinAsUnion: true });
         Assert.IsFalse(query.GetSubQueries().ElementAt(1) is RDFSelectQuery { JoinAsUnion: true });
-        Assert.AreEqual(1, query.GetValues().Count);
+        Assert.HasCount(1, query.GetValues());
         Assert.AreEqual(5, query.GetModifiers().Count());
-        Assert.AreEqual(2, query.GetPrefixes().Count);
+        Assert.HasCount(2, query.GetPrefixes());
     }
 
     [TestMethod]
@@ -302,11 +302,11 @@ public class RDFSelectQueryTest
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
-        Assert.AreEqual(0, query.QueryMembers.Count);
+        Assert.IsEmpty(query.QueryMembers);
         Assert.IsNotNull(query.Prefixes);
-        Assert.AreEqual(0, query.Prefixes.Count);
+        Assert.IsEmpty(query.Prefixes);
         Assert.IsNotNull(query.ProjectionVars);
-        Assert.AreEqual(1, query.ProjectionVars.Count);
+        Assert.HasCount(1, query.ProjectionVars);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsFalse(query.IsOptional);
         Assert.IsFalse(query.JoinAsUnion);
@@ -317,9 +317,9 @@ public class RDFSelectQueryTest
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetValues().Count);
+        Assert.IsEmpty(query.GetValues());
         Assert.AreEqual(0, query.GetModifiers().Count());
-        Assert.AreEqual(0, query.GetPrefixes().Count);
+        Assert.IsEmpty(query.GetPrefixes());
     }
 
     [TestMethod]
@@ -332,11 +332,11 @@ public class RDFSelectQueryTest
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
-        Assert.AreEqual(0, query.QueryMembers.Count);
+        Assert.IsEmpty(query.QueryMembers);
         Assert.IsNotNull(query.Prefixes);
-        Assert.AreEqual(0, query.Prefixes.Count);
+        Assert.IsEmpty(query.Prefixes);
         Assert.IsNotNull(query.ProjectionVars);
-        Assert.AreEqual(3, query.ProjectionVars.Count);
+        Assert.HasCount(3, query.ProjectionVars);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsFalse(query.IsOptional);
         Assert.IsFalse(query.JoinAsUnion);
@@ -347,9 +347,9 @@ public class RDFSelectQueryTest
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetValues().Count);
+        Assert.IsEmpty(query.GetValues());
         Assert.AreEqual(0, query.GetModifiers().Count());
-        Assert.AreEqual(0, query.GetPrefixes().Count);
+        Assert.IsEmpty(query.GetPrefixes());
     }
 
     [TestMethod]
@@ -361,11 +361,11 @@ public class RDFSelectQueryTest
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
-        Assert.AreEqual(0, query.QueryMembers.Count);
+        Assert.IsEmpty(query.QueryMembers);
         Assert.IsNotNull(query.Prefixes);
-        Assert.AreEqual(0, query.Prefixes.Count);
+        Assert.IsEmpty(query.Prefixes);
         Assert.IsNotNull(query.ProjectionVars);
-        Assert.AreEqual(2, query.ProjectionVars.Count);
+        Assert.HasCount(2, query.ProjectionVars);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsFalse(query.IsOptional);
         Assert.IsFalse(query.JoinAsUnion);
@@ -376,9 +376,9 @@ public class RDFSelectQueryTest
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetValues().Count);
+        Assert.IsEmpty(query.GetValues());
         Assert.AreEqual(0, query.GetModifiers().Count());
-        Assert.AreEqual(0, query.GetPrefixes().Count);
+        Assert.IsEmpty(query.GetPrefixes());
     }
 
     [TestMethod]
@@ -391,11 +391,11 @@ public class RDFSelectQueryTest
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
-        Assert.AreEqual(0, query.QueryMembers.Count);
+        Assert.IsEmpty(query.QueryMembers);
         Assert.IsNotNull(query.Prefixes);
-        Assert.AreEqual(0, query.Prefixes.Count);
+        Assert.IsEmpty(query.Prefixes);
         Assert.IsNotNull(query.ProjectionVars);
-        Assert.AreEqual(2, query.ProjectionVars.Count);
+        Assert.HasCount(2, query.ProjectionVars);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsFalse(query.IsOptional);
         Assert.IsFalse(query.JoinAsUnion);
@@ -406,9 +406,9 @@ public class RDFSelectQueryTest
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetValues().Count);
+        Assert.IsEmpty(query.GetValues());
         Assert.AreEqual(0, query.GetModifiers().Count());
-        Assert.AreEqual(0, query.GetPrefixes().Count);
+        Assert.IsEmpty(query.GetPrefixes());
     }
 
     [TestMethod]

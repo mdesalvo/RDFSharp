@@ -194,7 +194,7 @@ public class RDFQueryUtilitiesTest
                 break;
             //LowerThan
             case -1:
-                Assert.IsTrue(RDFQueryUtilities.CompareRDFPatternMembers(leftPMember, rightPMember) < 0);
+                Assert.IsLessThan(0, RDFQueryUtilities.CompareRDFPatternMembers(leftPMember, rightPMember));
                 break;
             //EqualsTo
             case 0:
@@ -202,7 +202,7 @@ public class RDFQueryUtilitiesTest
                 break;
             //GreaterThan
             case 1:
-                Assert.IsTrue(RDFQueryUtilities.CompareRDFPatternMembers(leftPMember, rightPMember) > 0);
+                Assert.IsGreaterThan(0, RDFQueryUtilities.CompareRDFPatternMembers(leftPMember, rightPMember));
                 break;
         }
     }
@@ -272,7 +272,7 @@ public class RDFQueryUtilitiesTest
         List<RDFPatternMember> pMembersWithoutDuplicates = RDFQueryUtilities.RemoveDuplicates(pMembers);
 
         Assert.IsNotNull(pMembersWithoutDuplicates);
-        Assert.AreEqual(4, pMembersWithoutDuplicates.Count);
+        Assert.HasCount(4, pMembersWithoutDuplicates);
     }
 
     [TestMethod]

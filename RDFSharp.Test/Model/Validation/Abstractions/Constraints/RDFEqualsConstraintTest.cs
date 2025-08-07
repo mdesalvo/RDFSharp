@@ -318,7 +318,7 @@ public class RDFEqualsConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(4, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -326,14 +326,14 @@ public class RDFEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[1].Severity);
-        Assert.AreEqual(1, validationReport.Results[1].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[1].ResultMessages);
         Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Steve")));
         Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFResource("ex:Steve")));
         Assert.IsNull(validationReport.Results[1].ResultPath);
         Assert.IsTrue(validationReport.Results[1].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[1].SourceShape.Equals(new RDFResource("ex:NodeShape")));
-        Assert.AreEqual(1, validationReport.Results[2].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[2].ResultMessages);
         Assert.IsTrue(validationReport.Results[2].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[2].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[2].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -341,7 +341,7 @@ public class RDFEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[2].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[2].SourceShape.Equals(new RDFResource("ex:NodeShape")));
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[3].Severity);
-        Assert.AreEqual(1, validationReport.Results[3].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[3].ResultMessages);
         Assert.IsTrue(validationReport.Results[3].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[3].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[3].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -379,7 +379,7 @@ public class RDFEqualsConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(2, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -387,7 +387,7 @@ public class RDFEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[1].Severity);
-        Assert.AreEqual(1, validationReport.Results[1].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[1].ResultMessages);
         Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -425,7 +425,7 @@ public class RDFEqualsConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(3, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -433,7 +433,7 @@ public class RDFEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[1].Severity);
-        Assert.AreEqual(1, validationReport.Results[1].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[1].ResultMessages);
         Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -441,7 +441,7 @@ public class RDFEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[1].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[1].SourceShape.Equals(new RDFResource("ex:NodeShape")));
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[2].Severity);
-        Assert.AreEqual(1, validationReport.Results[2].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[2].ResultMessages);
         Assert.IsTrue(validationReport.Results[2].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[2].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[2].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -480,7 +480,7 @@ public class RDFEqualsConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(2, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -488,7 +488,7 @@ public class RDFEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[1].Severity);
-        Assert.AreEqual(1, validationReport.Results[1].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[1].ResultMessages);
         Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
         Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -528,7 +528,7 @@ public class RDFEqualsConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(2, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.AGENT}>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -536,7 +536,7 @@ public class RDFEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[1].Severity);
-        Assert.AreEqual(1, validationReport.Results[1].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[1].ResultMessages);
         Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.AGENT}>")));
         Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -573,7 +573,7 @@ public class RDFEqualsConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(3, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.DEPICTS}>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -581,7 +581,7 @@ public class RDFEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[1].Severity);
-        Assert.AreEqual(1, validationReport.Results[1].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[1].ResultMessages);
         Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.DEPICTS}>")));
         Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -589,7 +589,7 @@ public class RDFEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[1].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[1].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[2].Severity);
-        Assert.AreEqual(1, validationReport.Results[2].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[2].ResultMessages);
         Assert.IsTrue(validationReport.Results[2].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.DEPICTS}>")));
         Assert.IsTrue(validationReport.Results[2].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[2].ResultValue.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
@@ -626,7 +626,7 @@ public class RDFEqualsConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(2, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.AGENT}>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -634,7 +634,7 @@ public class RDFEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[1].Severity);
-        Assert.AreEqual(1, validationReport.Results[1].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[1].ResultMessages);
         Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.AGENT}>")));
         Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -672,7 +672,7 @@ public class RDFEqualsConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(2, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.AGENT}>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -680,7 +680,7 @@ public class RDFEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[1].Severity);
-        Assert.AreEqual(1, validationReport.Results[1].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[1].ResultMessages);
         Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.AGENT}>")));
         Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -718,7 +718,7 @@ public class RDFEqualsConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(2, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.AGENT}>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
@@ -726,7 +726,7 @@ public class RDFEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[1].Severity);
-        Assert.AreEqual(1, validationReport.Results[1].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[1].ResultMessages);
         Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.AGENT}>")));
         Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFResource("ex:Alice")));
@@ -765,7 +765,7 @@ public class RDFEqualsConstraintTest
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(2, validationReport.ResultsCount);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
-        Assert.AreEqual(1, validationReport.Results[0].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[0].ResultMessages);
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have same values as property <ex:altLabel>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:USA")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFPlainLiteral("United States")));
@@ -773,7 +773,7 @@ public class RDFEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropShape")));
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[1].Severity);
-        Assert.AreEqual(1, validationReport.Results[1].ResultMessages.Count);
+        Assert.HasCount(1, validationReport.Results[1].ResultMessages);
         Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral("Must have same values as property <ex:altLabel>")));
         Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:USA")));
         Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFPlainLiteral("USA")));

@@ -44,13 +44,13 @@ public class RDFDeleteDataOperationTest
 
         Assert.IsNotNull(operation);
         Assert.IsNotNull(operation.InsertTemplates);
-        Assert.AreEqual(0, operation.InsertTemplates.Count);
+        Assert.IsEmpty(operation.InsertTemplates);
         Assert.IsNotNull(operation.DeleteTemplates);
-        Assert.AreEqual(0, operation.DeleteTemplates.Count);
+        Assert.IsEmpty(operation.DeleteTemplates);
         Assert.IsNotNull(operation.Variables);
-        Assert.AreEqual(0, operation.Variables.Count);
-        Assert.AreEqual(0, operation.Prefixes.Count);
-        Assert.AreEqual(0, operation.QueryMembers.Count);
+        Assert.IsEmpty(operation.Variables);
+        Assert.IsEmpty(operation.Prefixes);
+        Assert.IsEmpty(operation.QueryMembers);
 
         string operationString = operation.ToString();
 
@@ -73,13 +73,13 @@ public class RDFDeleteDataOperationTest
 
         Assert.IsNotNull(operation);
         Assert.IsNotNull(operation.InsertTemplates);
-        Assert.AreEqual(0, operation.InsertTemplates.Count);
+        Assert.IsEmpty(operation.InsertTemplates);
         Assert.IsNotNull(operation.DeleteTemplates);
-        Assert.AreEqual(2, operation.DeleteTemplates.Count);
+        Assert.HasCount(2, operation.DeleteTemplates);
         Assert.IsNotNull(operation.Variables);
-        Assert.AreEqual(0, operation.Variables.Count);
-        Assert.AreEqual(3, operation.Prefixes.Count);
-        Assert.AreEqual(0, operation.QueryMembers.Count);
+        Assert.IsEmpty(operation.Variables);
+        Assert.HasCount(3, operation.Prefixes);
+        Assert.IsEmpty(operation.QueryMembers);
 
         string operationString = operation.ToString();
 

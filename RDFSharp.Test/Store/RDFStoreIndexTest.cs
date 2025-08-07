@@ -32,21 +32,21 @@ public class RDFStoreIndexTest
 
         Assert.IsNotNull(storeIndex);
         Assert.IsNotNull(storeIndex.ContextsRegister);
-        Assert.AreEqual(0, storeIndex.ContextsRegister.Count);
+        Assert.IsEmpty(storeIndex.ContextsRegister);
         Assert.IsNotNull(storeIndex.ResourcesRegister);
-        Assert.AreEqual(0, storeIndex.ResourcesRegister.Count);
+        Assert.IsEmpty(storeIndex.ResourcesRegister);
         Assert.IsNotNull(storeIndex.LiteralsRegister);
-        Assert.AreEqual(0, storeIndex.LiteralsRegister.Count);
+        Assert.IsEmpty(storeIndex.LiteralsRegister);
         Assert.IsNotNull(storeIndex.ContextsIndex);
-        Assert.AreEqual(0, storeIndex.ContextsIndex.Count);
+        Assert.IsEmpty(storeIndex.ContextsIndex);
         Assert.IsNotNull(storeIndex.SubjectsIndex);
-        Assert.AreEqual(0, storeIndex.SubjectsIndex.Count);
+        Assert.IsEmpty(storeIndex.SubjectsIndex);
         Assert.IsNotNull(storeIndex.PredicatesIndex);
-        Assert.AreEqual(0, storeIndex.PredicatesIndex.Count);
+        Assert.IsEmpty(storeIndex.PredicatesIndex);
         Assert.IsNotNull(storeIndex.ObjectsIndex);
-        Assert.AreEqual(0, storeIndex.ObjectsIndex.Count);
+        Assert.IsEmpty(storeIndex.ObjectsIndex);
         Assert.IsNotNull(storeIndex.LiteralsIndex);
-        Assert.AreEqual(0, storeIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -59,22 +59,22 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple = new RDFQuadruple(ctx, subj, pred, obj);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple);
 
-        Assert.AreEqual(1, storeIndex.ContextsRegister.Count);
+        Assert.HasCount(1, storeIndex.ContextsRegister);
         Assert.IsTrue(storeIndex.ContextsRegister.ContainsKey(ctx.PatternMemberID));
-        Assert.AreEqual(3, storeIndex.ResourcesRegister.Count);
+        Assert.HasCount(3, storeIndex.ResourcesRegister);
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(subj.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(pred.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(obj.PatternMemberID));
-        Assert.AreEqual(0, storeIndex.LiteralsRegister.Count);
-        Assert.AreEqual(1, storeIndex.ContextsIndex.Count);
-        Assert.IsTrue(storeIndex.ContextsIndex[ctx.PatternMemberID].Contains(quadruple.QuadrupleID));
-        Assert.AreEqual(1, storeIndex.SubjectsIndex.Count);
-        Assert.IsTrue(storeIndex.SubjectsIndex[subj.PatternMemberID].Contains(quadruple.QuadrupleID));
-        Assert.AreEqual(1, storeIndex.PredicatesIndex.Count);
-        Assert.IsTrue(storeIndex.PredicatesIndex[pred.PatternMemberID].Contains(quadruple.QuadrupleID));
-        Assert.AreEqual(1, storeIndex.ObjectsIndex.Count);
-        Assert.IsTrue(storeIndex.ObjectsIndex[obj.PatternMemberID].Contains(quadruple.QuadrupleID));
-        Assert.AreEqual(0, storeIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(storeIndex.LiteralsRegister);
+        Assert.HasCount(1, storeIndex.ContextsIndex);
+        Assert.Contains(quadruple.QuadrupleID, storeIndex.ContextsIndex[ctx.PatternMemberID]);
+        Assert.HasCount(1, storeIndex.SubjectsIndex);
+        Assert.Contains(quadruple.QuadrupleID, storeIndex.SubjectsIndex[subj.PatternMemberID]);
+        Assert.HasCount(1, storeIndex.PredicatesIndex);
+        Assert.Contains(quadruple.QuadrupleID, storeIndex.PredicatesIndex[pred.PatternMemberID]);
+        Assert.HasCount(1, storeIndex.ObjectsIndex);
+        Assert.Contains(quadruple.QuadrupleID, storeIndex.ObjectsIndex[obj.PatternMemberID]);
+        Assert.IsEmpty(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -87,22 +87,22 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple = new RDFQuadruple(ctx, subj, pred, lit);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple);
 
-        Assert.AreEqual(1, storeIndex.ContextsRegister.Count);
+        Assert.HasCount(1, storeIndex.ContextsRegister);
         Assert.IsTrue(storeIndex.ContextsRegister.ContainsKey(ctx.PatternMemberID));
-        Assert.AreEqual(2, storeIndex.ResourcesRegister.Count);
+        Assert.HasCount(2, storeIndex.ResourcesRegister);
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(subj.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(pred.PatternMemberID));
-        Assert.AreEqual(1, storeIndex.LiteralsRegister.Count);
+        Assert.HasCount(1, storeIndex.LiteralsRegister);
         Assert.IsTrue(storeIndex.LiteralsRegister.ContainsKey(lit.PatternMemberID));
-        Assert.AreEqual(1, storeIndex.ContextsIndex.Count);
-        Assert.IsTrue(storeIndex.ContextsIndex[ctx.PatternMemberID].Contains(quadruple.QuadrupleID));
-        Assert.AreEqual(1, storeIndex.SubjectsIndex.Count);
-        Assert.IsTrue(storeIndex.SubjectsIndex[subj.PatternMemberID].Contains(quadruple.QuadrupleID));
-        Assert.AreEqual(1, storeIndex.PredicatesIndex.Count);
-        Assert.IsTrue(storeIndex.PredicatesIndex[pred.PatternMemberID].Contains(quadruple.QuadrupleID));
-        Assert.AreEqual(0, storeIndex.ObjectsIndex.Count);
-        Assert.AreEqual(1, storeIndex.LiteralsIndex.Count);
-        Assert.IsTrue(storeIndex.LiteralsIndex[lit.PatternMemberID].Contains(quadruple.QuadrupleID));
+        Assert.HasCount(1, storeIndex.ContextsIndex);
+        Assert.Contains(quadruple.QuadrupleID, storeIndex.ContextsIndex[ctx.PatternMemberID]);
+        Assert.HasCount(1, storeIndex.SubjectsIndex);
+        Assert.Contains(quadruple.QuadrupleID, storeIndex.SubjectsIndex[subj.PatternMemberID]);
+        Assert.HasCount(1, storeIndex.PredicatesIndex);
+        Assert.Contains(quadruple.QuadrupleID, storeIndex.PredicatesIndex[pred.PatternMemberID]);
+        Assert.IsEmpty(storeIndex.ObjectsIndex);
+        Assert.HasCount(1, storeIndex.LiteralsIndex);
+        Assert.Contains(quadruple.QuadrupleID, storeIndex.LiteralsIndex[lit.PatternMemberID]);
     }
 
     [TestMethod]
@@ -147,29 +147,29 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple2 = new RDFQuadruple(ctx, subj2, pred2, obj2);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple1).AddIndex(quadruple1).AddIndex(quadruple2);
 
-        Assert.AreEqual(1, storeIndex.ContextsRegister.Count);
+        Assert.HasCount(1, storeIndex.ContextsRegister);
         Assert.IsTrue(storeIndex.ContextsRegister.ContainsKey(ctx.PatternMemberID));
-        Assert.AreEqual(6, storeIndex.ResourcesRegister.Count);
+        Assert.HasCount(6, storeIndex.ResourcesRegister);
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(pred1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(obj1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(subj2.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(pred2.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(obj2.PatternMemberID));
-        Assert.AreEqual(0, storeIndex.LiteralsRegister.Count);
-        Assert.AreEqual(1, storeIndex.ContextsIndex.Count);
-        Assert.IsTrue(storeIndex.ContextsIndex[ctx.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.ContextsIndex[ctx.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(2, storeIndex.SubjectsIndex.Count);
-        Assert.IsTrue(storeIndex.SubjectsIndex[subj1.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.SubjectsIndex[subj2.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(2, storeIndex.PredicatesIndex.Count);
-        Assert.IsTrue(storeIndex.PredicatesIndex[pred1.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.PredicatesIndex[pred2.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(2, storeIndex.ObjectsIndex.Count);
-        Assert.IsTrue(storeIndex.ObjectsIndex[obj1.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.ObjectsIndex[obj2.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(0, storeIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(storeIndex.LiteralsRegister);
+        Assert.HasCount(1, storeIndex.ContextsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ContextsIndex[ctx.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.ContextsIndex[ctx.PatternMemberID]);
+        Assert.HasCount(2, storeIndex.SubjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.SubjectsIndex[subj1.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.SubjectsIndex[subj2.PatternMemberID]);
+        Assert.HasCount(2, storeIndex.PredicatesIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.PredicatesIndex[pred1.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.PredicatesIndex[pred2.PatternMemberID]);
+        Assert.HasCount(2, storeIndex.ObjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ObjectsIndex[obj1.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.ObjectsIndex[obj2.PatternMemberID]);
+        Assert.IsEmpty(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -186,29 +186,29 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple2 = new RDFQuadruple(ctx2, subj, pred2, obj2);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple1).AddIndex(quadruple1).AddIndex(quadruple2);
 
-        Assert.AreEqual(2, storeIndex.ContextsRegister.Count);
+        Assert.HasCount(2, storeIndex.ContextsRegister);
         Assert.IsTrue(storeIndex.ContextsRegister.ContainsKey(ctx1.PatternMemberID));
         Assert.IsTrue(storeIndex.ContextsRegister.ContainsKey(ctx2.PatternMemberID));
-        Assert.AreEqual(5, storeIndex.ResourcesRegister.Count);
+        Assert.HasCount(5, storeIndex.ResourcesRegister);
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(subj.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(pred1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(obj1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(pred2.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(obj2.PatternMemberID));
-        Assert.AreEqual(0, storeIndex.LiteralsRegister.Count);
-        Assert.AreEqual(2, storeIndex.ContextsIndex.Count);
-        Assert.IsTrue(storeIndex.ContextsIndex[ctx1.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.ContextsIndex[ctx2.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(1, storeIndex.SubjectsIndex.Count);
-        Assert.IsTrue(storeIndex.SubjectsIndex[subj.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.SubjectsIndex[subj.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(2, storeIndex.PredicatesIndex.Count);
-        Assert.IsTrue(storeIndex.PredicatesIndex[pred1.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.PredicatesIndex[pred2.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(2, storeIndex.ObjectsIndex.Count);
-        Assert.IsTrue(storeIndex.ObjectsIndex[obj1.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.ObjectsIndex[obj2.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(0, storeIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(storeIndex.LiteralsRegister);
+        Assert.HasCount(2, storeIndex.ContextsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ContextsIndex[ctx1.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.ContextsIndex[ctx2.PatternMemberID]);
+        Assert.HasCount(1, storeIndex.SubjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.SubjectsIndex[subj.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.SubjectsIndex[subj.PatternMemberID]);
+        Assert.HasCount(2, storeIndex.PredicatesIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.PredicatesIndex[pred1.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.PredicatesIndex[pred2.PatternMemberID]);
+        Assert.HasCount(2, storeIndex.ObjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ObjectsIndex[obj1.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.ObjectsIndex[obj2.PatternMemberID]);
+        Assert.IsEmpty(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -225,29 +225,29 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple2 = new RDFQuadruple(ctx2, subj2, pred, obj2);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple1).AddIndex(quadruple1).AddIndex(quadruple2);
 
-        Assert.AreEqual(2, storeIndex.ContextsRegister.Count);
+        Assert.HasCount(2, storeIndex.ContextsRegister);
         Assert.IsTrue(storeIndex.ContextsRegister.ContainsKey(ctx1.PatternMemberID));
         Assert.IsTrue(storeIndex.ContextsRegister.ContainsKey(ctx2.PatternMemberID));
-        Assert.AreEqual(5, storeIndex.ResourcesRegister.Count);
+        Assert.HasCount(5, storeIndex.ResourcesRegister);
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(pred.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(obj1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(subj2.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(obj2.PatternMemberID));
-        Assert.AreEqual(0, storeIndex.LiteralsRegister.Count);
-        Assert.AreEqual(2, storeIndex.ContextsIndex.Count);
-        Assert.IsTrue(storeIndex.ContextsIndex[ctx1.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.ContextsIndex[ctx2.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(2, storeIndex.SubjectsIndex.Count);
-        Assert.IsTrue(storeIndex.SubjectsIndex[subj1.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.SubjectsIndex[subj2.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(1, storeIndex.PredicatesIndex.Count);
-        Assert.IsTrue(storeIndex.PredicatesIndex[pred.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.PredicatesIndex[pred.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(2, storeIndex.ObjectsIndex.Count);
-        Assert.IsTrue(storeIndex.ObjectsIndex[obj1.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.ObjectsIndex[obj2.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(0, storeIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(storeIndex.LiteralsRegister);
+        Assert.HasCount(2, storeIndex.ContextsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ContextsIndex[ctx1.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.ContextsIndex[ctx2.PatternMemberID]);
+        Assert.HasCount(2, storeIndex.SubjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.SubjectsIndex[subj1.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.SubjectsIndex[subj2.PatternMemberID]);
+        Assert.HasCount(1, storeIndex.PredicatesIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.PredicatesIndex[pred.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.PredicatesIndex[pred.PatternMemberID]);
+        Assert.HasCount(2, storeIndex.ObjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ObjectsIndex[obj1.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.ObjectsIndex[obj2.PatternMemberID]);
+        Assert.IsEmpty(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -264,29 +264,29 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple2 = new RDFQuadruple(ctx2, subj2, pred2, obj);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple1).AddIndex(quadruple1).AddIndex(quadruple2);
 
-        Assert.AreEqual(2, storeIndex.ContextsRegister.Count);
+        Assert.HasCount(2, storeIndex.ContextsRegister);
         Assert.IsTrue(storeIndex.ContextsRegister.ContainsKey(ctx1.PatternMemberID));
         Assert.IsTrue(storeIndex.ContextsRegister.ContainsKey(ctx2.PatternMemberID));
-        Assert.AreEqual(5, storeIndex.ResourcesRegister.Count);
+        Assert.HasCount(5, storeIndex.ResourcesRegister);
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(pred1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(obj.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(subj2.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(pred2.PatternMemberID));
-        Assert.AreEqual(0, storeIndex.LiteralsRegister.Count);
-        Assert.AreEqual(2, storeIndex.ContextsIndex.Count);
-        Assert.IsTrue(storeIndex.ContextsIndex[ctx1.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.ContextsIndex[ctx2.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(2, storeIndex.SubjectsIndex.Count);
-        Assert.IsTrue(storeIndex.SubjectsIndex[subj1.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.SubjectsIndex[subj2.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(2, storeIndex.PredicatesIndex.Count);
-        Assert.IsTrue(storeIndex.PredicatesIndex[pred1.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.PredicatesIndex[pred2.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(1, storeIndex.ObjectsIndex.Count);
-        Assert.IsTrue(storeIndex.ObjectsIndex[obj.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.ObjectsIndex[obj.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(0, storeIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(storeIndex.LiteralsRegister);
+        Assert.HasCount(2, storeIndex.ContextsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ContextsIndex[ctx1.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.ContextsIndex[ctx2.PatternMemberID]);
+        Assert.HasCount(2, storeIndex.SubjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.SubjectsIndex[subj1.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.SubjectsIndex[subj2.PatternMemberID]);
+        Assert.HasCount(2, storeIndex.PredicatesIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.PredicatesIndex[pred1.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.PredicatesIndex[pred2.PatternMemberID]);
+        Assert.HasCount(1, storeIndex.ObjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ObjectsIndex[obj.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.ObjectsIndex[obj.PatternMemberID]);
+        Assert.IsEmpty(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -303,29 +303,29 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple2 = new RDFQuadruple(ctx2, subj2, pred2, lit);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple1).AddIndex(quadruple1).AddIndex(quadruple2);
 
-        Assert.AreEqual(2, storeIndex.ContextsRegister.Count);
+        Assert.HasCount(2, storeIndex.ContextsRegister);
         Assert.IsTrue(storeIndex.ContextsRegister.ContainsKey(ctx1.PatternMemberID));
         Assert.IsTrue(storeIndex.ContextsRegister.ContainsKey(ctx2.PatternMemberID));
-        Assert.AreEqual(4, storeIndex.ResourcesRegister.Count);
+        Assert.HasCount(4, storeIndex.ResourcesRegister);
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(pred1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(subj2.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(pred2.PatternMemberID));
-        Assert.AreEqual(1, storeIndex.LiteralsRegister.Count);
+        Assert.HasCount(1, storeIndex.LiteralsRegister);
         Assert.IsTrue(storeIndex.LiteralsRegister.ContainsKey(lit.PatternMemberID));
-        Assert.AreEqual(2, storeIndex.ContextsIndex.Count);
-        Assert.IsTrue(storeIndex.ContextsIndex[ctx1.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.ContextsIndex[ctx2.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(2, storeIndex.SubjectsIndex.Count);
-        Assert.IsTrue(storeIndex.SubjectsIndex[subj1.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.SubjectsIndex[subj2.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(2, storeIndex.PredicatesIndex.Count);
-        Assert.IsTrue(storeIndex.PredicatesIndex[pred1.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.PredicatesIndex[pred2.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(0, storeIndex.ObjectsIndex.Count);
-        Assert.AreEqual(1, storeIndex.LiteralsIndex.Count);
-        Assert.IsTrue(storeIndex.LiteralsIndex[lit.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsTrue(storeIndex.LiteralsIndex[lit.PatternMemberID].Contains(quadruple2.QuadrupleID));
+        Assert.HasCount(2, storeIndex.ContextsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ContextsIndex[ctx1.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.ContextsIndex[ctx2.PatternMemberID]);
+        Assert.HasCount(2, storeIndex.SubjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.SubjectsIndex[subj1.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.SubjectsIndex[subj2.PatternMemberID]);
+        Assert.HasCount(2, storeIndex.PredicatesIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.PredicatesIndex[pred1.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.PredicatesIndex[pred2.PatternMemberID]);
+        Assert.IsEmpty(storeIndex.ObjectsIndex);
+        Assert.HasCount(1, storeIndex.LiteralsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.LiteralsIndex[lit.PatternMemberID]);
+        Assert.Contains(quadruple2.QuadrupleID, storeIndex.LiteralsIndex[lit.PatternMemberID]);
     }
 
     [TestMethod]
@@ -338,14 +338,14 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple = new RDFQuadruple(ctx, subj, pred, obj);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple).RemoveIndex(quadruple);
 
-        Assert.AreEqual(0, storeIndex.ContextsRegister.Count);
-        Assert.AreEqual(0, storeIndex.ResourcesRegister.Count);
-        Assert.AreEqual(0, storeIndex.LiteralsRegister.Count);
-        Assert.AreEqual(0, storeIndex.ContextsIndex.Count);
-        Assert.AreEqual(0, storeIndex.SubjectsIndex.Count);
-        Assert.AreEqual(0, storeIndex.PredicatesIndex.Count);
-        Assert.AreEqual(0, storeIndex.ObjectsIndex.Count);
-        Assert.AreEqual(0, storeIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(storeIndex.ContextsRegister);
+        Assert.IsEmpty(storeIndex.ResourcesRegister);
+        Assert.IsEmpty(storeIndex.LiteralsRegister);
+        Assert.IsEmpty(storeIndex.ContextsIndex);
+        Assert.IsEmpty(storeIndex.SubjectsIndex);
+        Assert.IsEmpty(storeIndex.PredicatesIndex);
+        Assert.IsEmpty(storeIndex.ObjectsIndex);
+        Assert.IsEmpty(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -358,14 +358,14 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple = new RDFQuadruple(ctx, subj, pred, lit);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple).RemoveIndex(quadruple);
 
-        Assert.AreEqual(0, storeIndex.ContextsRegister.Count);
-        Assert.AreEqual(0, storeIndex.ResourcesRegister.Count);
-        Assert.AreEqual(0, storeIndex.LiteralsRegister.Count);
-        Assert.AreEqual(0, storeIndex.ContextsIndex.Count);
-        Assert.AreEqual(0, storeIndex.SubjectsIndex.Count);
-        Assert.AreEqual(0, storeIndex.PredicatesIndex.Count);
-        Assert.AreEqual(0, storeIndex.ObjectsIndex.Count);
-        Assert.AreEqual(0, storeIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(storeIndex.ContextsRegister);
+        Assert.IsEmpty(storeIndex.ResourcesRegister);
+        Assert.IsEmpty(storeIndex.LiteralsRegister);
+        Assert.IsEmpty(storeIndex.ContextsIndex);
+        Assert.IsEmpty(storeIndex.SubjectsIndex);
+        Assert.IsEmpty(storeIndex.PredicatesIndex);
+        Assert.IsEmpty(storeIndex.ObjectsIndex);
+        Assert.IsEmpty(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -382,26 +382,26 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple2 = new RDFQuadruple(ctx, subj2, pred2, obj2);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple1).AddIndex(quadruple2).RemoveIndex(quadruple2);
 
-        Assert.AreEqual(1, storeIndex.ContextsRegister.Count);
+        Assert.HasCount(1, storeIndex.ContextsRegister);
         Assert.IsTrue(storeIndex.ContextsRegister.ContainsKey(ctx.PatternMemberID));
-        Assert.AreEqual(3, storeIndex.ResourcesRegister.Count);
+        Assert.HasCount(3, storeIndex.ResourcesRegister);
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(pred1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(obj1.PatternMemberID));
-        Assert.AreEqual(0, storeIndex.LiteralsRegister.Count);
-        Assert.AreEqual(1, storeIndex.ContextsIndex.Count);
-        Assert.IsTrue(storeIndex.ContextsIndex[ctx.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsFalse(storeIndex.ContextsIndex[ctx.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(1, storeIndex.SubjectsIndex.Count);
-        Assert.IsTrue(storeIndex.SubjectsIndex[subj1.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsFalse(storeIndex.SubjectsIndex[subj1.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(1, storeIndex.PredicatesIndex.Count);
-        Assert.IsTrue(storeIndex.PredicatesIndex[pred1.PatternMemberID].Contains(quadruple1.QuadrupleID));
+        Assert.IsEmpty(storeIndex.LiteralsRegister);
+        Assert.HasCount(1, storeIndex.ContextsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ContextsIndex[ctx.PatternMemberID]);
+        Assert.DoesNotContain(quadruple2.QuadrupleID, storeIndex.ContextsIndex[ctx.PatternMemberID]);
+        Assert.HasCount(1, storeIndex.SubjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.SubjectsIndex[subj1.PatternMemberID]);
+        Assert.DoesNotContain(quadruple2.QuadrupleID, storeIndex.SubjectsIndex[subj1.PatternMemberID]);
+        Assert.HasCount(1, storeIndex.PredicatesIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.PredicatesIndex[pred1.PatternMemberID]);
         Assert.IsFalse(storeIndex.PredicatesIndex.ContainsKey(pred2.PatternMemberID));
-        Assert.AreEqual(1, storeIndex.ObjectsIndex.Count);
-        Assert.IsTrue(storeIndex.ObjectsIndex[obj1.PatternMemberID].Contains(quadruple1.QuadrupleID));
+        Assert.HasCount(1, storeIndex.ObjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ObjectsIndex[obj1.PatternMemberID]);
         Assert.IsFalse(storeIndex.ObjectsIndex.ContainsKey(obj2.PatternMemberID));
-        Assert.AreEqual(0, storeIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -418,26 +418,26 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple2 = new RDFQuadruple(ctx2, subj, pred2, obj2);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple1).AddIndex(quadruple2).RemoveIndex(quadruple2);
 
-        Assert.AreEqual(1, storeIndex.ContextsRegister.Count);
+        Assert.HasCount(1, storeIndex.ContextsRegister);
         Assert.IsTrue(storeIndex.ContextsRegister.ContainsKey(ctx1.PatternMemberID));
-        Assert.AreEqual(3, storeIndex.ResourcesRegister.Count);
+        Assert.HasCount(3, storeIndex.ResourcesRegister);
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(subj.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(pred1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(obj1.PatternMemberID));
-        Assert.AreEqual(0, storeIndex.LiteralsRegister.Count);
-        Assert.AreEqual(1, storeIndex.ContextsIndex.Count);
-        Assert.IsTrue(storeIndex.ContextsIndex[ctx1.PatternMemberID].Contains(quadruple1.QuadrupleID));
+        Assert.IsEmpty(storeIndex.LiteralsRegister);
+        Assert.HasCount(1, storeIndex.ContextsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ContextsIndex[ctx1.PatternMemberID]);
         Assert.IsFalse(storeIndex.ContextsIndex.ContainsKey(ctx2.PatternMemberID));
-        Assert.AreEqual(1, storeIndex.SubjectsIndex.Count);
-        Assert.IsTrue(storeIndex.SubjectsIndex[subj.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsFalse(storeIndex.SubjectsIndex[subj.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(1, storeIndex.PredicatesIndex.Count);
-        Assert.IsTrue(storeIndex.PredicatesIndex[pred1.PatternMemberID].Contains(quadruple1.QuadrupleID));
+        Assert.HasCount(1, storeIndex.SubjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.SubjectsIndex[subj.PatternMemberID]);
+        Assert.DoesNotContain(quadruple2.QuadrupleID, storeIndex.SubjectsIndex[subj.PatternMemberID]);
+        Assert.HasCount(1, storeIndex.PredicatesIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.PredicatesIndex[pred1.PatternMemberID]);
         Assert.IsFalse(storeIndex.PredicatesIndex.ContainsKey(pred2.PatternMemberID));
-        Assert.AreEqual(1, storeIndex.ObjectsIndex.Count);
-        Assert.IsTrue(storeIndex.ObjectsIndex[obj1.PatternMemberID].Contains(quadruple1.QuadrupleID));
+        Assert.HasCount(1, storeIndex.ObjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ObjectsIndex[obj1.PatternMemberID]);
         Assert.IsFalse(storeIndex.ObjectsIndex.ContainsKey(obj2.PatternMemberID));
-        Assert.AreEqual(0, storeIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -454,14 +454,14 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple2 = new RDFQuadruple(ctx2, subj, pred2, obj2);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple1).AddIndex(quadruple2).RemoveIndex(quadruple2).RemoveIndex(quadruple2).RemoveIndex(quadruple1);
 
-        Assert.AreEqual(0, storeIndex.ContextsRegister.Count);
-        Assert.AreEqual(0, storeIndex.ResourcesRegister.Count);
-        Assert.AreEqual(0, storeIndex.LiteralsRegister.Count);
-        Assert.AreEqual(0, storeIndex.ContextsIndex.Count);
-        Assert.AreEqual(0, storeIndex.SubjectsIndex.Count);
-        Assert.AreEqual(0, storeIndex.PredicatesIndex.Count);
-        Assert.AreEqual(0, storeIndex.ObjectsIndex.Count);
-        Assert.AreEqual(0, storeIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(storeIndex.ContextsRegister);
+        Assert.IsEmpty(storeIndex.ResourcesRegister);
+        Assert.IsEmpty(storeIndex.LiteralsRegister);
+        Assert.IsEmpty(storeIndex.ContextsIndex);
+        Assert.IsEmpty(storeIndex.SubjectsIndex);
+        Assert.IsEmpty(storeIndex.PredicatesIndex);
+        Assert.IsEmpty(storeIndex.ObjectsIndex);
+        Assert.IsEmpty(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -478,26 +478,26 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple2 = new RDFQuadruple(ctx2, subj2, pred, obj2);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple1).AddIndex(quadruple2).RemoveIndex(quadruple2);
 
-        Assert.AreEqual(1, storeIndex.ContextsRegister.Count);
+        Assert.HasCount(1, storeIndex.ContextsRegister);
         Assert.IsTrue(storeIndex.ContextsRegister.ContainsKey(ctx1.PatternMemberID));
-        Assert.AreEqual(3, storeIndex.ResourcesRegister.Count);
+        Assert.HasCount(3, storeIndex.ResourcesRegister);
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(pred.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(obj1.PatternMemberID));
-        Assert.AreEqual(0, storeIndex.LiteralsRegister.Count);
-        Assert.AreEqual(1, storeIndex.ContextsIndex.Count);
-        Assert.IsTrue(storeIndex.ContextsIndex[ctx1.PatternMemberID].Contains(quadruple1.QuadrupleID));
+        Assert.IsEmpty(storeIndex.LiteralsRegister);
+        Assert.HasCount(1, storeIndex.ContextsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ContextsIndex[ctx1.PatternMemberID]);
         Assert.IsFalse(storeIndex.ContextsIndex.ContainsKey(ctx2.PatternMemberID));
-        Assert.AreEqual(1, storeIndex.SubjectsIndex.Count);
-        Assert.IsTrue(storeIndex.SubjectsIndex[subj1.PatternMemberID].Contains(quadruple1.QuadrupleID));
+        Assert.HasCount(1, storeIndex.SubjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.SubjectsIndex[subj1.PatternMemberID]);
         Assert.IsFalse(storeIndex.SubjectsIndex.ContainsKey(subj2.PatternMemberID));
-        Assert.AreEqual(1, storeIndex.PredicatesIndex.Count);
-        Assert.IsTrue(storeIndex.PredicatesIndex[pred.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsFalse(storeIndex.PredicatesIndex[pred.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(1, storeIndex.ObjectsIndex.Count);
-        Assert.IsTrue(storeIndex.ObjectsIndex[obj1.PatternMemberID].Contains(quadruple1.QuadrupleID));
+        Assert.HasCount(1, storeIndex.PredicatesIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.PredicatesIndex[pred.PatternMemberID]);
+        Assert.DoesNotContain(quadruple2.QuadrupleID, storeIndex.PredicatesIndex[pred.PatternMemberID]);
+        Assert.HasCount(1, storeIndex.ObjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ObjectsIndex[obj1.PatternMemberID]);
         Assert.IsFalse(storeIndex.ObjectsIndex.ContainsKey(obj2.PatternMemberID));
-        Assert.AreEqual(0, storeIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -514,14 +514,14 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple2 = new RDFQuadruple(ctx2, subj2, pred, obj2);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple1).AddIndex(quadruple2).RemoveIndex(quadruple2).RemoveIndex(quadruple2).RemoveIndex(quadruple1);
 
-        Assert.AreEqual(0, storeIndex.ContextsRegister.Count);
-        Assert.AreEqual(0, storeIndex.ResourcesRegister.Count);
-        Assert.AreEqual(0, storeIndex.LiteralsRegister.Count);
-        Assert.AreEqual(0, storeIndex.ContextsIndex.Count);
-        Assert.AreEqual(0, storeIndex.SubjectsIndex.Count);
-        Assert.AreEqual(0, storeIndex.PredicatesIndex.Count);
-        Assert.AreEqual(0, storeIndex.ObjectsIndex.Count);
-        Assert.AreEqual(0, storeIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(storeIndex.ContextsRegister);
+        Assert.IsEmpty(storeIndex.ResourcesRegister);
+        Assert.IsEmpty(storeIndex.LiteralsRegister);
+        Assert.IsEmpty(storeIndex.ContextsIndex);
+        Assert.IsEmpty(storeIndex.SubjectsIndex);
+        Assert.IsEmpty(storeIndex.PredicatesIndex);
+        Assert.IsEmpty(storeIndex.ObjectsIndex);
+        Assert.IsEmpty(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -538,26 +538,26 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple2 = new RDFQuadruple(ctx2, subj2, pred2, obj);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple1).AddIndex(quadruple2).RemoveIndex(quadruple2);
 
-        Assert.AreEqual(1, storeIndex.ContextsRegister.Count);
+        Assert.HasCount(1, storeIndex.ContextsRegister);
         Assert.IsTrue(storeIndex.ContextsRegister.ContainsKey(ctx1.PatternMemberID));
-        Assert.AreEqual(3, storeIndex.ResourcesRegister.Count);
+        Assert.HasCount(3, storeIndex.ResourcesRegister);
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(pred1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(obj.PatternMemberID));
-        Assert.AreEqual(0, storeIndex.LiteralsRegister.Count);
-        Assert.AreEqual(1, storeIndex.ContextsIndex.Count);
-        Assert.IsTrue(storeIndex.ContextsIndex[ctx1.PatternMemberID].Contains(quadruple1.QuadrupleID));
+        Assert.IsEmpty(storeIndex.LiteralsRegister);
+        Assert.HasCount(1, storeIndex.ContextsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ContextsIndex[ctx1.PatternMemberID]);
         Assert.IsFalse(storeIndex.ContextsIndex.ContainsKey(ctx2.PatternMemberID));
-        Assert.AreEqual(1, storeIndex.SubjectsIndex.Count);
-        Assert.IsTrue(storeIndex.SubjectsIndex[subj1.PatternMemberID].Contains(quadruple1.QuadrupleID));
+        Assert.HasCount(1, storeIndex.SubjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.SubjectsIndex[subj1.PatternMemberID]);
         Assert.IsFalse(storeIndex.SubjectsIndex.ContainsKey(subj2.PatternMemberID));
-        Assert.AreEqual(1, storeIndex.PredicatesIndex.Count);
-        Assert.IsTrue(storeIndex.PredicatesIndex[pred1.PatternMemberID].Contains(quadruple1.QuadrupleID));
+        Assert.HasCount(1, storeIndex.PredicatesIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.PredicatesIndex[pred1.PatternMemberID]);
         Assert.IsFalse(storeIndex.PredicatesIndex.ContainsKey(pred2.PatternMemberID));
-        Assert.AreEqual(1, storeIndex.ObjectsIndex.Count);
-        Assert.IsTrue(storeIndex.ObjectsIndex[obj.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsFalse(storeIndex.ObjectsIndex[obj.PatternMemberID].Contains(quadruple2.QuadrupleID));
-        Assert.AreEqual(0, storeIndex.LiteralsIndex.Count);
+        Assert.HasCount(1, storeIndex.ObjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ObjectsIndex[obj.PatternMemberID]);
+        Assert.DoesNotContain(quadruple2.QuadrupleID, storeIndex.ObjectsIndex[obj.PatternMemberID]);
+        Assert.IsEmpty(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -574,14 +574,14 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple2 = new RDFQuadruple(ctx2, subj2, pred2, obj);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple1).AddIndex(quadruple2).RemoveIndex(quadruple2).RemoveIndex(quadruple2).RemoveIndex(quadruple1);
 
-        Assert.AreEqual(0, storeIndex.ContextsRegister.Count);
-        Assert.AreEqual(0, storeIndex.ResourcesRegister.Count);
-        Assert.AreEqual(0, storeIndex.LiteralsRegister.Count);
-        Assert.AreEqual(0, storeIndex.ContextsIndex.Count);
-        Assert.AreEqual(0, storeIndex.SubjectsIndex.Count);
-        Assert.AreEqual(0, storeIndex.PredicatesIndex.Count);
-        Assert.AreEqual(0, storeIndex.ObjectsIndex.Count);
-        Assert.AreEqual(0, storeIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(storeIndex.ContextsRegister);
+        Assert.IsEmpty(storeIndex.ResourcesRegister);
+        Assert.IsEmpty(storeIndex.LiteralsRegister);
+        Assert.IsEmpty(storeIndex.ContextsIndex);
+        Assert.IsEmpty(storeIndex.SubjectsIndex);
+        Assert.IsEmpty(storeIndex.PredicatesIndex);
+        Assert.IsEmpty(storeIndex.ObjectsIndex);
+        Assert.IsEmpty(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -598,26 +598,26 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple2 = new RDFQuadruple(ctx2, subj2, pred2, lit);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple1).AddIndex(quadruple2).RemoveIndex(quadruple2);
 
-        Assert.AreEqual(1, storeIndex.ContextsRegister.Count);
+        Assert.HasCount(1, storeIndex.ContextsRegister);
         Assert.IsTrue(storeIndex.ContextsRegister.ContainsKey(ctx1.PatternMemberID));
-        Assert.AreEqual(2, storeIndex.ResourcesRegister.Count);
+        Assert.HasCount(2, storeIndex.ResourcesRegister);
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
         Assert.IsTrue(storeIndex.ResourcesRegister.ContainsKey(pred1.PatternMemberID));
-        Assert.AreEqual(1, storeIndex.LiteralsRegister.Count);
+        Assert.HasCount(1, storeIndex.LiteralsRegister);
         Assert.IsTrue(storeIndex.LiteralsRegister.ContainsKey(lit.PatternMemberID));
-        Assert.AreEqual(1, storeIndex.ContextsIndex.Count);
-        Assert.IsTrue(storeIndex.ContextsIndex[ctx1.PatternMemberID].Contains(quadruple1.QuadrupleID));
+        Assert.HasCount(1, storeIndex.ContextsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.ContextsIndex[ctx1.PatternMemberID]);
         Assert.IsFalse(storeIndex.ContextsIndex.ContainsKey(ctx2.PatternMemberID));
-        Assert.AreEqual(1, storeIndex.SubjectsIndex.Count);
-        Assert.IsTrue(storeIndex.SubjectsIndex[subj1.PatternMemberID].Contains(quadruple1.QuadrupleID));
+        Assert.HasCount(1, storeIndex.SubjectsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.SubjectsIndex[subj1.PatternMemberID]);
         Assert.IsFalse(storeIndex.SubjectsIndex.ContainsKey(subj2.PatternMemberID));
-        Assert.AreEqual(1, storeIndex.PredicatesIndex.Count);
-        Assert.IsTrue(storeIndex.PredicatesIndex[pred1.PatternMemberID].Contains(quadruple1.QuadrupleID));
+        Assert.HasCount(1, storeIndex.PredicatesIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.PredicatesIndex[pred1.PatternMemberID]);
         Assert.IsFalse(storeIndex.PredicatesIndex.ContainsKey(pred2.PatternMemberID));
-        Assert.AreEqual(0, storeIndex.ObjectsIndex.Count);
-        Assert.AreEqual(1, storeIndex.LiteralsIndex.Count);
-        Assert.IsTrue(storeIndex.LiteralsIndex[lit.PatternMemberID].Contains(quadruple1.QuadrupleID));
-        Assert.IsFalse(storeIndex.LiteralsIndex[lit.PatternMemberID].Contains(quadruple2.QuadrupleID));
+        Assert.IsEmpty(storeIndex.ObjectsIndex);
+        Assert.HasCount(1, storeIndex.LiteralsIndex);
+        Assert.Contains(quadruple1.QuadrupleID, storeIndex.LiteralsIndex[lit.PatternMemberID]);
+        Assert.DoesNotContain(quadruple2.QuadrupleID, storeIndex.LiteralsIndex[lit.PatternMemberID]);
     }
 
     [TestMethod]
@@ -634,14 +634,14 @@ public class RDFStoreIndexTest
         RDFQuadruple quadruple2 = new RDFQuadruple(ctx2, subj2, pred2, lit);
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple1).AddIndex(quadruple2).RemoveIndex(quadruple2).RemoveIndex(quadruple2).RemoveIndex(quadruple1);
 
-        Assert.AreEqual(0, storeIndex.ContextsRegister.Count);
-        Assert.AreEqual(0, storeIndex.ResourcesRegister.Count);
-        Assert.AreEqual(0, storeIndex.LiteralsRegister.Count);
-        Assert.AreEqual(0, storeIndex.ContextsIndex.Count);
-        Assert.AreEqual(0, storeIndex.SubjectsIndex.Count);
-        Assert.AreEqual(0, storeIndex.PredicatesIndex.Count);
-        Assert.AreEqual(0, storeIndex.ObjectsIndex.Count);
-        Assert.AreEqual(0, storeIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(storeIndex.ContextsRegister);
+        Assert.IsEmpty(storeIndex.ResourcesRegister);
+        Assert.IsEmpty(storeIndex.LiteralsRegister);
+        Assert.IsEmpty(storeIndex.ContextsIndex);
+        Assert.IsEmpty(storeIndex.SubjectsIndex);
+        Assert.IsEmpty(storeIndex.PredicatesIndex);
+        Assert.IsEmpty(storeIndex.ObjectsIndex);
+        Assert.IsEmpty(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -657,14 +657,14 @@ public class RDFStoreIndexTest
         RDFStoreIndex storeIndex = new RDFStoreIndex().AddIndex(quadruple1).AddIndex(quadruple2);
         storeIndex.ClearIndex();
 
-        Assert.AreEqual(0, storeIndex.ContextsRegister.Count);
-        Assert.AreEqual(0, storeIndex.ResourcesRegister.Count);
-        Assert.AreEqual(0, storeIndex.LiteralsRegister.Count);
-        Assert.AreEqual(0, storeIndex.ContextsIndex.Count);
-        Assert.AreEqual(0, storeIndex.SubjectsIndex.Count);
-        Assert.AreEqual(0, storeIndex.PredicatesIndex.Count);
-        Assert.AreEqual(0, storeIndex.ObjectsIndex.Count);
-        Assert.AreEqual(0, storeIndex.LiteralsIndex.Count);
+        Assert.IsEmpty(storeIndex.ContextsRegister);
+        Assert.IsEmpty(storeIndex.ResourcesRegister);
+        Assert.IsEmpty(storeIndex.LiteralsRegister);
+        Assert.IsEmpty(storeIndex.ContextsIndex);
+        Assert.IsEmpty(storeIndex.SubjectsIndex);
+        Assert.IsEmpty(storeIndex.PredicatesIndex);
+        Assert.IsEmpty(storeIndex.ObjectsIndex);
+        Assert.IsEmpty(storeIndex.LiteralsIndex);
     }
 
     [TestMethod]
@@ -679,7 +679,7 @@ public class RDFStoreIndexTest
         HashSet<long> quadruplesWithGivenContext = storeIndex.SelectIndexByContext(ctx);
 
         Assert.IsNotNull(quadruplesWithGivenContext);
-        Assert.AreEqual(1, quadruplesWithGivenContext.Count);
+        Assert.HasCount(1, quadruplesWithGivenContext);
     }
 
     [TestMethod]
@@ -694,7 +694,7 @@ public class RDFStoreIndexTest
         HashSet<long> quadruplesWithGivenContext = storeIndex.SelectIndexByContext(new RDFContext("http://ctx2/"));
 
         Assert.IsNotNull(quadruplesWithGivenContext);
-        Assert.AreEqual(0, quadruplesWithGivenContext.Count);
+        Assert.IsEmpty(quadruplesWithGivenContext);
     }
 
     [TestMethod]
@@ -709,7 +709,7 @@ public class RDFStoreIndexTest
         HashSet<long> quadruplesWithGivenSubject = storeIndex.SelectIndexBySubject(subj);
 
         Assert.IsNotNull(quadruplesWithGivenSubject);
-        Assert.AreEqual(1, quadruplesWithGivenSubject.Count);
+        Assert.HasCount(1, quadruplesWithGivenSubject);
     }
 
     [TestMethod]
@@ -724,7 +724,7 @@ public class RDFStoreIndexTest
         HashSet<long> quadruplesWithGivenSubject = storeIndex.SelectIndexBySubject(new RDFResource("http://subj2/"));
 
         Assert.IsNotNull(quadruplesWithGivenSubject);
-        Assert.AreEqual(0, quadruplesWithGivenSubject.Count);
+        Assert.IsEmpty(quadruplesWithGivenSubject);
     }
 
     [TestMethod]
@@ -739,7 +739,7 @@ public class RDFStoreIndexTest
         HashSet<long> quadruplesWithGivenPredicate = storeIndex.SelectIndexByPredicate(pred);
 
         Assert.IsNotNull(quadruplesWithGivenPredicate);
-        Assert.AreEqual(1, quadruplesWithGivenPredicate.Count);
+        Assert.HasCount(1, quadruplesWithGivenPredicate);
     }
 
     [TestMethod]
@@ -754,7 +754,7 @@ public class RDFStoreIndexTest
         HashSet<long> quadruplesWithGivenPredicate = storeIndex.SelectIndexByPredicate(new RDFResource("http://pred2/"));
 
         Assert.IsNotNull(quadruplesWithGivenPredicate);
-        Assert.AreEqual(0, quadruplesWithGivenPredicate.Count);
+        Assert.IsEmpty(quadruplesWithGivenPredicate);
     }
 
     [TestMethod]
@@ -769,7 +769,7 @@ public class RDFStoreIndexTest
         HashSet<long> quadruplesWithGivenObject = storeIndex.SelectIndexByObject(obj);
 
         Assert.IsNotNull(quadruplesWithGivenObject);
-        Assert.AreEqual(1, quadruplesWithGivenObject.Count);
+        Assert.HasCount(1, quadruplesWithGivenObject);
     }
 
     [TestMethod]
@@ -784,7 +784,7 @@ public class RDFStoreIndexTest
         HashSet<long> quadruplesWithGivenObject = storeIndex.SelectIndexByObject(new RDFResource("http://subj2/"));
 
         Assert.IsNotNull(quadruplesWithGivenObject);
-        Assert.AreEqual(0, quadruplesWithGivenObject.Count);
+        Assert.IsEmpty(quadruplesWithGivenObject);
     }
 
     [TestMethod]
@@ -799,7 +799,7 @@ public class RDFStoreIndexTest
         HashSet<long> quadruplesWithGivenLiteral = storeIndex.SelectIndexByLiteral(lit);
 
         Assert.IsNotNull(quadruplesWithGivenLiteral);
-        Assert.AreEqual(1, quadruplesWithGivenLiteral.Count);
+        Assert.HasCount(1, quadruplesWithGivenLiteral);
     }
 
     [TestMethod]
@@ -814,7 +814,7 @@ public class RDFStoreIndexTest
         HashSet<long> quadruplesWithGivenLiteral = storeIndex.SelectIndexByLiteral(new RDFPlainLiteral("lit2", "en-US"));
 
         Assert.IsNotNull(quadruplesWithGivenLiteral);
-        Assert.AreEqual(0, quadruplesWithGivenLiteral.Count);
+        Assert.IsEmpty(quadruplesWithGivenLiteral);
     }
     #endregion
 }

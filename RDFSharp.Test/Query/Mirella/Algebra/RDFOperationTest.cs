@@ -32,12 +32,12 @@ public class RDFOperationTest
 
         Assert.IsNotNull(operation);
         Assert.IsNotNull(operation.DeleteTemplates);
-        Assert.AreEqual(0, operation.DeleteTemplates.Count);
+        Assert.IsEmpty(operation.DeleteTemplates);
         Assert.IsNotNull(operation.InsertTemplates);
-        Assert.AreEqual(0, operation.InsertTemplates.Count);
+        Assert.IsEmpty(operation.InsertTemplates);
         Assert.IsNotNull(operation.Variables);
-        Assert.AreEqual(0, operation.Variables.Count);
-        Assert.AreEqual(0, operation.QueryMembers.Count);
+        Assert.IsEmpty(operation.Variables);
+        Assert.IsEmpty(operation.QueryMembers);
     }
 
     [TestMethod]
@@ -48,11 +48,11 @@ public class RDFOperationTest
         operation.AddDeleteGroundTemplate<RDFOperation>(pattern);
         operation.AddDeleteGroundTemplate<RDFOperation>(pattern); //Will be discarded, since duplicate patterns are not allowed
 
-        Assert.AreEqual(1, operation.DeleteTemplates.Count);
+        Assert.HasCount(1, operation.DeleteTemplates);
         Assert.IsTrue(operation.DeleteTemplates[0].Equals(pattern));
-        Assert.AreEqual(0, operation.InsertTemplates.Count);
-        Assert.AreEqual(0, operation.Variables.Count);
-        Assert.AreEqual(0, operation.QueryMembers.Count);
+        Assert.IsEmpty(operation.InsertTemplates);
+        Assert.IsEmpty(operation.Variables);
+        Assert.IsEmpty(operation.QueryMembers);
     }
 
     [TestMethod]
@@ -81,16 +81,16 @@ public class RDFOperationTest
         operation.AddDeleteNonGroundTemplate<RDFOperation>(pattern5);
         operation.AddDeleteNonGroundTemplate<RDFOperation>(pattern6);
 
-        Assert.AreEqual(6, operation.DeleteTemplates.Count);
+        Assert.HasCount(6, operation.DeleteTemplates);
         Assert.IsTrue(operation.DeleteTemplates[0].Equals(pattern1));
         Assert.IsTrue(operation.DeleteTemplates[1].Equals(pattern2));
         Assert.IsTrue(operation.DeleteTemplates[2].Equals(pattern3));
         Assert.IsTrue(operation.DeleteTemplates[3].Equals(pattern4));
         Assert.IsTrue(operation.DeleteTemplates[4].Equals(pattern5));
         Assert.IsTrue(operation.DeleteTemplates[5].Equals(pattern6));
-        Assert.AreEqual(0, operation.InsertTemplates.Count);
-        Assert.AreEqual(3, operation.Variables.Count);
-        Assert.AreEqual(0, operation.QueryMembers.Count);
+        Assert.IsEmpty(operation.InsertTemplates);
+        Assert.HasCount(3, operation.Variables);
+        Assert.IsEmpty(operation.QueryMembers);
     }
 
     [TestMethod]
@@ -105,11 +105,11 @@ public class RDFOperationTest
         operation.AddInsertGroundTemplate<RDFOperation>(pattern);
         operation.AddInsertGroundTemplate<RDFOperation>(pattern); //Will be discarded, since duplicate patterns are not allowed
 
-        Assert.AreEqual(1, operation.InsertTemplates.Count);
+        Assert.HasCount(1, operation.InsertTemplates);
         Assert.IsTrue(operation.InsertTemplates[0].Equals(pattern));
-        Assert.AreEqual(0, operation.DeleteTemplates.Count);
-        Assert.AreEqual(0, operation.Variables.Count);
-        Assert.AreEqual(0, operation.QueryMembers.Count);
+        Assert.IsEmpty(operation.DeleteTemplates);
+        Assert.IsEmpty(operation.Variables);
+        Assert.IsEmpty(operation.QueryMembers);
     }
 
     [TestMethod]
@@ -138,16 +138,16 @@ public class RDFOperationTest
         operation.AddInsertNonGroundTemplate<RDFOperation>(pattern5);
         operation.AddInsertNonGroundTemplate<RDFOperation>(pattern6);
 
-        Assert.AreEqual(6, operation.InsertTemplates.Count);
+        Assert.HasCount(6, operation.InsertTemplates);
         Assert.IsTrue(operation.InsertTemplates[0].Equals(pattern1));
         Assert.IsTrue(operation.InsertTemplates[1].Equals(pattern2));
         Assert.IsTrue(operation.InsertTemplates[2].Equals(pattern3));
         Assert.IsTrue(operation.InsertTemplates[3].Equals(pattern4));
         Assert.IsTrue(operation.InsertTemplates[4].Equals(pattern5));
         Assert.IsTrue(operation.InsertTemplates[5].Equals(pattern6));
-        Assert.AreEqual(0, operation.DeleteTemplates.Count);
-        Assert.AreEqual(3, operation.Variables.Count);
-        Assert.AreEqual(0, operation.QueryMembers.Count);
+        Assert.IsEmpty(operation.DeleteTemplates);
+        Assert.HasCount(3, operation.Variables);
+        Assert.IsEmpty(operation.QueryMembers);
     }
 
     [TestMethod]
@@ -163,11 +163,11 @@ public class RDFOperationTest
         operation.AddPrefix<RDFOperation>(new RDFNamespace("rdf", $"{RDFVocabulary.RDF.BASE_URI}")); //Will be discarded, since duplicate prefixes are not allowed
         operation.AddPrefix<RDFOperation>(RDFNamespaceRegister.GetByPrefix("rdfs"));
 
-        Assert.AreEqual(0, operation.InsertTemplates.Count);
-        Assert.AreEqual(0, operation.DeleteTemplates.Count);
-        Assert.AreEqual(0, operation.Variables.Count);
-        Assert.AreEqual(2, operation.Prefixes.Count);
-        Assert.AreEqual(0, operation.QueryMembers.Count);
+        Assert.IsEmpty(operation.InsertTemplates);
+        Assert.IsEmpty(operation.DeleteTemplates);
+        Assert.IsEmpty(operation.Variables);
+        Assert.HasCount(2, operation.Prefixes);
+        Assert.IsEmpty(operation.QueryMembers);
     }
 
     [TestMethod]
@@ -182,11 +182,11 @@ public class RDFOperationTest
         operation.AddPatternGroup<RDFOperation>(patternGroup);
         operation.AddPatternGroup<RDFOperation>(patternGroup); //Will be discarded, since duplicate pattern groups are not allowed
 
-        Assert.AreEqual(0, operation.InsertTemplates.Count);
-        Assert.AreEqual(0, operation.DeleteTemplates.Count);
-        Assert.AreEqual(0, operation.Variables.Count);
-        Assert.AreEqual(0, operation.Prefixes.Count);
-        Assert.AreEqual(1, operation.QueryMembers.Count);
+        Assert.IsEmpty(operation.InsertTemplates);
+        Assert.IsEmpty(operation.DeleteTemplates);
+        Assert.IsEmpty(operation.Variables);
+        Assert.IsEmpty(operation.Prefixes);
+        Assert.HasCount(1, operation.QueryMembers);
     }
 
     [TestMethod]
@@ -200,11 +200,11 @@ public class RDFOperationTest
         operation.AddModifier<RDFOperation>(new RDFDistinctModifier());
         operation.AddModifier<RDFOperation>(new RDFDistinctModifier()); //Will be discarded, since duplicate modifiers are not allowed
 
-        Assert.AreEqual(0, operation.InsertTemplates.Count);
-        Assert.AreEqual(0, operation.DeleteTemplates.Count);
-        Assert.AreEqual(0, operation.Variables.Count);
-        Assert.AreEqual(0, operation.Prefixes.Count);
-        Assert.AreEqual(1, operation.QueryMembers.Count);
+        Assert.IsEmpty(operation.InsertTemplates);
+        Assert.IsEmpty(operation.DeleteTemplates);
+        Assert.IsEmpty(operation.Variables);
+        Assert.IsEmpty(operation.Prefixes);
+        Assert.HasCount(1, operation.QueryMembers);
     }
 
     [TestMethod]
@@ -219,11 +219,11 @@ public class RDFOperationTest
         operation.AddSubQuery<RDFOperation>(subQuery);
         operation.AddSubQuery<RDFOperation>(subQuery); //Will be discarded, since duplicate sub queries are not allowed
 
-        Assert.AreEqual(0, operation.InsertTemplates.Count);
-        Assert.AreEqual(0, operation.DeleteTemplates.Count);
-        Assert.AreEqual(0, operation.Variables.Count);
-        Assert.AreEqual(0, operation.Prefixes.Count);
-        Assert.AreEqual(1, operation.QueryMembers.Count);
+        Assert.IsEmpty(operation.InsertTemplates);
+        Assert.IsEmpty(operation.DeleteTemplates);
+        Assert.IsEmpty(operation.Variables);
+        Assert.IsEmpty(operation.Prefixes);
+        Assert.HasCount(1, operation.QueryMembers);
     }
 
     [TestMethod]

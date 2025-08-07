@@ -2895,7 +2895,7 @@ public class RDFQueryEngineTest
         queryEngine.EvaluateQueryMembers(evaluableQueryMembers, graph);
 
         Assert.IsNotNull(queryEngine.QueryMemberResultTables);
-        Assert.AreEqual(2, queryEngine.QueryMemberResultTables.Count);
+        Assert.HasCount(2, queryEngine.QueryMemberResultTables);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties[RDFQueryEngine.IsOptional]);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
@@ -2946,7 +2946,7 @@ public class RDFQueryEngineTest
         queryEngine.EvaluateQueryMembers(evaluableQueryMembers, graph);
 
         Assert.IsNotNull(queryEngine.QueryMemberResultTables);
-        Assert.AreEqual(2, queryEngine.QueryMemberResultTables.Count);
+        Assert.HasCount(2, queryEngine.QueryMemberResultTables);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsTrue((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties[RDFQueryEngine.IsOptional]);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
@@ -2997,7 +2997,7 @@ public class RDFQueryEngineTest
         queryEngine.EvaluateQueryMembers(evaluableQueryMembers, graph);
 
         Assert.IsNotNull(queryEngine.QueryMemberResultTables);
-        Assert.AreEqual(2, queryEngine.QueryMemberResultTables.Count);
+        Assert.HasCount(2, queryEngine.QueryMemberResultTables);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties[RDFQueryEngine.IsOptional]);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
@@ -3046,7 +3046,7 @@ public class RDFQueryEngineTest
         queryEngine.EvaluateQueryMembers(evaluableQueryMembers, graph);
 
         Assert.IsNotNull(queryEngine.QueryMemberResultTables);
-        Assert.AreEqual(2, queryEngine.QueryMemberResultTables.Count);
+        Assert.HasCount(2, queryEngine.QueryMemberResultTables);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties[RDFQueryEngine.IsOptional]);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
@@ -3081,8 +3081,8 @@ public class RDFQueryEngineTest
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
         Assert.IsNotNull(queryEngine.PatternGroupMemberResultTables);
-        Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.Count);
-        Assert.AreEqual(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value.Count);
+        Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables);
+        Assert.HasCount(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties[RDFQueryEngine.IsOptional]);
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
@@ -3126,8 +3126,8 @@ public class RDFQueryEngineTest
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
         Assert.IsNotNull(queryEngine.PatternGroupMemberResultTables);
-        Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.Count);
-        Assert.AreEqual(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value.Count);
+        Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables);
+        Assert.HasCount(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties[RDFQueryEngine.IsOptional]);
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
@@ -3162,8 +3162,8 @@ public class RDFQueryEngineTest
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
         Assert.IsNotNull(queryEngine.PatternGroupMemberResultTables);
-        Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.Count);
-        Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value.Count);
+        Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables);
+        Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
         Assert.IsFalse(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsFalse(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
         Assert.AreEqual(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
@@ -3194,8 +3194,8 @@ public class RDFQueryEngineTest
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
         Assert.IsNotNull(queryEngine.PatternGroupMemberResultTables);
-        Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.Count);
-        Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value.Count);
+        Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables);
+        Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
         Assert.IsFalse(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsFalse(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
         Assert.AreEqual(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
@@ -3220,8 +3220,8 @@ public class RDFQueryEngineTest
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
         Assert.IsNotNull(queryEngine.PatternGroupMemberResultTables);
-        Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.Count);
-        Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value.Count);
+        Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables);
+        Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties[RDFQueryEngine.IsOptional]);
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
@@ -3250,8 +3250,8 @@ public class RDFQueryEngineTest
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
         Assert.IsNotNull(queryEngine.PatternGroupMemberResultTables);
-        Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.Count);
-        Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value.Count);
+        Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables);
+        Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsTrue((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties[RDFQueryEngine.IsOptional]); //UNDEF => optional
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
@@ -3280,8 +3280,8 @@ public class RDFQueryEngineTest
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
         Assert.IsNotNull(queryEngine.PatternGroupMemberResultTables);
-        Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.Count);
-        Assert.AreEqual(0, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value.Count);
+        Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables);
+        Assert.IsEmpty(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
         Assert.IsTrue(patternGroup.GetFilters().Single() is RDFExistsFilter);
 
         RDFExistsFilter existsFilter = (RDFExistsFilter)patternGroup.GetFilters().Single();
@@ -3318,8 +3318,8 @@ public class RDFQueryEngineTest
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
         Assert.IsNotNull(queryEngine.PatternGroupMemberResultTables);
-        Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.Count);
-        Assert.AreEqual(0, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value.Count);
+        Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables);
+        Assert.IsEmpty(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
         Assert.IsTrue(patternGroup.GetFilters().Single() is RDFExistsFilter);
 
         RDFExistsFilter existsFilter = (RDFExistsFilter)patternGroup.GetFilters().Single();
@@ -3352,7 +3352,7 @@ public class RDFQueryEngineTest
         queryEngine.FinalizePatternGroup(patternGroup);
 
         Assert.IsNotNull(queryEngine.QueryMemberResultTables);
-        Assert.AreEqual(1, queryEngine.QueryMemberResultTables.Count);
+        Assert.HasCount(1, queryEngine.QueryMemberResultTables);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ContainsKey(patternGroup.QueryMemberID));
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties[RDFQueryEngine.IsOptional]);
@@ -3392,7 +3392,7 @@ public class RDFQueryEngineTest
         queryEngine.FinalizePatternGroup(patternGroup);
 
         Assert.IsNotNull(queryEngine.QueryMemberResultTables);
-        Assert.AreEqual(1, queryEngine.QueryMemberResultTables.Count);
+        Assert.HasCount(1, queryEngine.QueryMemberResultTables);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ContainsKey(patternGroup.QueryMemberID));
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsTrue((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties[RDFQueryEngine.IsOptional]);
@@ -3432,7 +3432,7 @@ public class RDFQueryEngineTest
         queryEngine.FinalizePatternGroup(patternGroup);
 
         Assert.IsNotNull(queryEngine.QueryMemberResultTables);
-        Assert.AreEqual(1, queryEngine.QueryMemberResultTables.Count);
+        Assert.HasCount(1, queryEngine.QueryMemberResultTables);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ContainsKey(patternGroup.QueryMemberID));
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties[RDFQueryEngine.IsOptional]);
@@ -3476,7 +3476,7 @@ public class RDFQueryEngineTest
         queryEngine.ApplyFilters(patternGroup);
 
         Assert.IsNotNull(queryEngine.QueryMemberResultTables);
-        Assert.AreEqual(1, queryEngine.QueryMemberResultTables.Count);
+        Assert.HasCount(1, queryEngine.QueryMemberResultTables);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ContainsKey(patternGroup.QueryMemberID));
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties[RDFQueryEngine.IsOptional]);

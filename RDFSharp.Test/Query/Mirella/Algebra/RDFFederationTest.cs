@@ -37,7 +37,7 @@ public class RDFFederationTest
         Assert.IsNotNull(federation.DataSources);
         Assert.AreEqual(0, federation.DataSourcesCount);
         Assert.IsNotNull(federation.EndpointDataSourcesQueryOptions);
-        Assert.AreEqual(0, federation.EndpointDataSourcesQueryOptions.Count);
+        Assert.IsEmpty(federation.EndpointDataSourcesQueryOptions);
         Assert.IsTrue(federation.FederationName.StartsWith("FEDERATION|ID=", StringComparison.Ordinal));
         Assert.IsTrue(federation.ToString().Equals(federation.FederationName));
 
@@ -58,7 +58,7 @@ public class RDFFederationTest
         federation.AddGraph(null); //Will be discarded, since null is not allowed
 
         Assert.AreEqual(1, federation.DataSourcesCount);
-        Assert.AreEqual(0, federation.EndpointDataSourcesQueryOptions.Count);
+        Assert.IsEmpty(federation.EndpointDataSourcesQueryOptions);
 
         int i = federation.Count();
         Assert.AreEqual(1, i);
@@ -77,7 +77,7 @@ public class RDFFederationTest
         federation.AddStore(null); //Will be discarded, since null is not allowed
 
         Assert.AreEqual(1, federation.DataSourcesCount);
-        Assert.AreEqual(0, federation.EndpointDataSourcesQueryOptions.Count);
+        Assert.IsEmpty(federation.EndpointDataSourcesQueryOptions);
 
         int i = federation.Count();
         Assert.AreEqual(1, i);
@@ -97,7 +97,7 @@ public class RDFFederationTest
         federation.AddFederation(null); //Will be discarded, since null is not allowed
 
         Assert.AreEqual(1, federation.DataSourcesCount);
-        Assert.AreEqual(0, federation.EndpointDataSourcesQueryOptions.Count);
+        Assert.IsEmpty(federation.EndpointDataSourcesQueryOptions);
 
         int i = federation.Count();
         Assert.AreEqual(1, i);
@@ -121,7 +121,7 @@ public class RDFFederationTest
             TimeoutMilliseconds = 25000});
 
         Assert.AreEqual(2, federation.DataSourcesCount);
-        Assert.AreEqual(2, federation.EndpointDataSourcesQueryOptions.Count);
+        Assert.HasCount(2, federation.EndpointDataSourcesQueryOptions);
         Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.ContainsKey("ex:sparqlEndpoint1"));
         Assert.IsTrue(federation.EndpointDataSourcesQueryOptions.ContainsKey("ex:sparqlEndpoint2"));
 
@@ -146,7 +146,7 @@ public class RDFFederationTest
         Assert.IsNotNull(federation.DataSources);
         Assert.AreEqual(0, federation.DataSourcesCount);
         Assert.IsNotNull(federation.EndpointDataSourcesQueryOptions);
-        Assert.AreEqual(0, federation.EndpointDataSourcesQueryOptions.Count);
+        Assert.IsEmpty(federation.EndpointDataSourcesQueryOptions);
 
         int i = federation.Count();
         Assert.AreEqual(0, i);

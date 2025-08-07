@@ -28,13 +28,13 @@ public class RDFDatatypeRegisterTest
     [TestMethod]
     public void ShouldInitializeRegister()
     {
-        Assert.IsTrue(RDFDatatypeRegister.DatatypesCount >= 50);
+        Assert.IsGreaterThanOrEqualTo(50, RDFDatatypeRegister.DatatypesCount);
 
         int i=0;
         IEnumerator<RDFDatatype> datatypes = RDFDatatypeRegister.DatatypesEnumerator;
         while(datatypes.MoveNext())
             i++;
-        Assert.IsTrue(i >= 50);
+        Assert.IsGreaterThanOrEqualTo(50, i);
     }
 
     [TestMethod]
@@ -62,7 +62,7 @@ public class RDFDatatypeRegisterTest
             new RDFLengthFacet(6) ])); //This will not be added again, since we avoid duplicates
         RDFDatatypeRegister.AddDatatype(null); //This will not be added, since we avoid nulls
 
-        Assert.IsTrue(RDFDatatypeRegister.DatatypesCount >= 51);
+        Assert.IsGreaterThanOrEqualTo(51, RDFDatatypeRegister.DatatypesCount);
         Assert.IsNotNull(RDFDatatypeRegister.GetDatatype("ex:length6"));
         //Test that this isn't built-in datatype
         Assert.IsFalse(RDFDatatypeRegister.GetDatatype("ex:length6").IsBuiltIn);
