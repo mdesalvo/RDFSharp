@@ -256,38 +256,38 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFIndexedQuadruple represents the internal hashed representation of a quadruple
     /// </summary>
-    internal sealed class RDFIndexedQuadruple : IEquatable<RDFIndexedQuadruple>
+    internal struct RDFIndexedQuadruple
     {
         #region Properties
         /// <summary>
         /// Identifier of the quadruple
         /// </summary>
-        internal long QuadrupleID { get; set; }
+        internal readonly long QuadrupleID;
 
         /// <summary>
         /// Identifier of the member acting as context token of the quadruple
         /// </summary>
-        internal long ContextID { get; set; }
+        internal readonly long ContextID;
 
         /// <summary>
         /// Identifier of the member acting as subject token of the quadruple
         /// </summary>
-        internal long SubjectID { get; set; }
+        internal readonly long SubjectID;
 
         /// <summary>
         /// Identifier of the member acting as predicate token of the quadruple
         /// </summary>
-        internal long PredicateID { get; set; }
+        internal readonly long PredicateID;
 
         /// <summary>
         /// Identifier of the member acting as object token of the quadruple
         /// </summary>
-        internal long ObjectID { get; set; }
+        internal readonly long ObjectID;
 
         /// <summary>
         /// Flavor of the quadruple (1=SPO, 2=SPL)
         /// </summary>
-        internal byte TripleFlavor { get; set; }
+        internal readonly byte TripleFlavor;
         #endregion
 
         #region Ctor
@@ -303,14 +303,6 @@ namespace RDFSharp.Store
             PredicateID = quadruple.Predicate.PatternMemberID;
             ObjectID = quadruple.Object.PatternMemberID;
         }
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Performs the equality comparison between two indexed quadruples
-        /// </summary>
-        public bool Equals(RDFIndexedQuadruple other)
-            => other != null && QuadrupleID.Equals(other.QuadrupleID);
         #endregion
     }
 }

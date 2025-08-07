@@ -62,17 +62,17 @@ namespace RDFSharp.Store
         /// <summary>
         /// Index on the quadruples of the store
         /// </summary>
-        internal RDFStoreIndex StoreIndex { get; private set; }
+        internal RDFStoreIndex StoreIndex { get; set; }
 
         /// <summary>
         /// Indexed quadruples embedded into the store
         /// </summary>
-        internal Dictionary<long, RDFIndexedQuadruple> IndexedQuadruples { get; private set; }
+        internal Dictionary<long, RDFIndexedQuadruple> IndexedQuadruples { get; set; }
 
         /// <summary>
         /// Flag indicating that the store has already been disposed
         /// </summary>
-        internal bool Disposed { get; private set; }
+        internal bool Disposed { get; set; }
         #endregion
 
         #region Ctors

@@ -225,35 +225,35 @@ namespace RDFSharp.Model
     }
 
     /// <summary>
-    /// RDFIndexedTriple represents the internal hashed representation of a triple in the library
+    /// RDFIndexedTriple represents the internal hashed representation of a triple
     /// </summary>
-    internal sealed class RDFIndexedTriple : IEquatable<RDFIndexedTriple>
+    internal struct RDFIndexedTriple
     {
         #region Properties
         /// <summary>
         /// Identifier of the triple
         /// </summary>
-        internal long TripleID { get; set; }
+        internal readonly long TripleID;
 
         /// <summary>
         /// Identifier of the member acting as subject of the triple
         /// </summary>
-        internal long SubjectID { get; set; }
+        internal readonly long SubjectID;
 
         /// <summary>
         /// Identifier of the member acting as predicate of the triple
         /// </summary>
-        internal long PredicateID { get; set; }
+        internal readonly long PredicateID;
 
         /// <summary>
         /// Identifier of the member acting as object of the triple
         /// </summary>
-        internal long ObjectID { get; set; }
+        internal readonly long ObjectID;
 
         /// <summary>
         /// Flavor of the triple (1=SPO, 2=SPL)
         /// </summary>
-        internal byte TripleFlavor { get; set; }
+        internal readonly byte TripleFlavor;
         #endregion
 
         #region Ctor
@@ -268,14 +268,6 @@ namespace RDFSharp.Model
             PredicateID = triple.Predicate.PatternMemberID;
             ObjectID = triple.Object.PatternMemberID;
         }
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Performs the equality comparison between two indexed triples
-        /// </summary>
-        public bool Equals(RDFIndexedTriple other)
-            => other != null && TripleID.Equals(other.TripleID);
         #endregion
     }
 }
