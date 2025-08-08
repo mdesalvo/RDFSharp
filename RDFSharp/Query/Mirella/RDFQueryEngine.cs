@@ -128,7 +128,6 @@ namespace RDFSharp.Query
             DataTable FillDescribeTerms(DataTable qResultTable)
             {
                 DataTable resultTable = new DataTable();
-
                 if (datasource.IsFederation())
                 {
                     foreach (RDFDataSource fedDataSource in ((RDFFederation)datasource).Where(fedDataSource => !fedDataSource.IsFederation() || ((RDFFederation)fedDataSource).DataSourcesCount != 0))
@@ -138,7 +137,6 @@ namespace RDFSharp.Query
                 {
                     resultTable = DescribeTerms(describeQuery, datasource, qResultTable);
                 }
-
                 return resultTable;
             }
             #endregion
@@ -308,7 +306,6 @@ namespace RDFSharp.Query
                             break;
 
                         case RDFBind bind:
-
                             //Bind operator is evaluated like an artificial ending of the pattern group:
                             // first we combine the tables collected until this moment
                             // then we evaluate the bind expression and project the bind variable, producing the comprehensive bind table
@@ -1191,8 +1188,10 @@ namespace RDFSharp.Query
                 //Eventually adjust column names (should start with "?")
                 int columnsCount = qrTable.Columns.Count;
                 for (int i = 0; i < columnsCount; i++)
+                {
                     if (!qrTable.Columns[i].ColumnName.StartsWith("?", StringComparison.Ordinal))
                         qrTable.Columns[i].ColumnName = $"?{qrTable.Columns[i].ColumnName}";
+                }
             }
             #endregion
 
@@ -1319,7 +1318,6 @@ namespace RDFSharp.Query
             {
                 if (column1 != null)
                     return column2 != null && string.Equals(column1.ColumnName, column2.ColumnName, StringComparison.Ordinal);
-
                 return column2 == null;
             }
 
@@ -1580,15 +1578,14 @@ namespace RDFSharp.Query
                 joinTable.BeginLoadData();
                 foreach (DataRow leftRow in leftTable.Rows)
                     //Loop right table
-                foreach (DataRow rightRow in rightTable.Rows)
-                {
-                    //Join left array with right array
-                    object[] joinArray = new object[leftRow.ItemArray.Length + rightRow.ItemArray.Length];
-                    Array.Copy(leftRow.ItemArray, 0, joinArray, 0, leftRow.ItemArray.Length);
-                    Array.Copy(rightRow.ItemArray, 0, joinArray, leftRow.ItemArray.Length, rightRow.ItemArray.Length);
-                    joinTable.LoadDataRow(joinArray, true);
-                }
-
+                    foreach (DataRow rightRow in rightTable.Rows)
+                    {
+                        //Join left array with right array
+                        object[] joinArray = new object[leftRow.ItemArray.Length + rightRow.ItemArray.Length];
+                        Array.Copy(leftRow.ItemArray, 0, joinArray, 0, leftRow.ItemArray.Length);
+                        Array.Copy(rightRow.ItemArray, 0, joinArray, leftRow.ItemArray.Length, rightRow.ItemArray.Length);
+                        joinTable.LoadDataRow(joinArray, true);
+                    }
                 joinTable.EndLoadData();
             }
 
@@ -1818,12 +1815,12 @@ namespace RDFSharp.Query
 
                 //Leverage a relation between left row and right table based on common columns
                 //(this helps at slightly reducing O(N^2) complexity to O(N*K) where K << N)
-                EnumerableRowCollection<DataRow> relatedRows = commonColumns.Aggregate(rightTable.AsEnumerable(),
-                                                                    (current, commonColumn) => current.Where(relatedRow => CheckJoin(leftRow, relatedRow, commonColumn.ColumnName)));
-                List<DataRow> relatedRowsList = relatedRows.ToList();
+                EnumerableRowCollection<DataRow> relatedRows = commonColumns.Aggregate(
+                    rightTable.AsEnumerable(),
+                    (current, commonColumn) => current.Where(relatedRow => CheckJoin(leftRow, relatedRow, commonColumn.ColumnName)));
 
                 //Take left row only if it HASN'T any right matches
-                if (relatedRowsList.Count == 0)
+                if (!relatedRows.Any())
                 {
                     DataRow diffRow = diffTable.NewRow();
                     diffRow.ItemArray = leftRow.ItemArray;
@@ -1942,13 +1939,13 @@ namespace RDFSharp.Query
             bool hasDoneUnions = ProcessUnions();
             if (hasDoneUnions)
                 dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted)
-                                            && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
+                                            && dt.ExtendedProperties[LogicallyDeleted] is true);
 
             //Step 2: process Minus operators
             bool hasDoneMinus = ProcessMinus();
             if (hasDoneMinus)
                 dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted)
-                                            && dt.ExtendedProperties[LogicallyDeleted].Equals(true));
+                                            && dt.ExtendedProperties[LogicallyDeleted] is true);
 
             //Step 3: compute joins
             ComputeJoins(hasDoneUnions);

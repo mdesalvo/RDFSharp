@@ -32,6 +32,7 @@ namespace RDFSharp.Model
         {
             List<RDFPatternMember> result = new List<RDFPatternMember>();
             if (shape != null && dataGraph != null)
+            {
                 foreach (RDFTarget target in shape.Targets)
                     switch (target)
                     {
@@ -60,7 +61,7 @@ namespace RDFSharp.Model
                                 .OfType<RDFResource>());
                             break;
                     }
-
+            }
             return RDFQueryUtilities.RemoveDuplicates(result);
         }
 
@@ -71,6 +72,7 @@ namespace RDFSharp.Model
         {
             List<RDFPatternMember> result = new List<RDFPatternMember>();
             if (shape != null && dataGraph != null && focusNode != null)
+            {
                 switch (shape)
                 {
                     //sh:NodeShape
@@ -103,9 +105,9 @@ namespace RDFSharp.Model
                                 DataTable pathResult = new RDFQueryEngine().ApplyPropertyPath(
                                     isAlternativePath ? propertyShape.AlternativePath : propertyShape.SequencePath, dataGraph);
                                 result.AddRange(from DataRow pathResultRow
-                                        in pathResult.Rows
-                                    select pathResultRow["?END"]?.ToString() into prValue where !string.IsNullOrEmpty(prValue)
-                                    select RDFQueryUtilities.ParseRDFPatternMember(prValue));
+                                                in pathResult.Rows
+                                                select pathResultRow["?END"]?.ToString() into prValue where !string.IsNullOrEmpty(prValue)
+                                                select RDFQueryUtilities.ParseRDFPatternMember(prValue));
 
                                 //Recontextualize property path to the initial configuration
                                 if (isAlternativePath)
@@ -123,14 +125,14 @@ namespace RDFSharp.Model
                         }
                         break;
                 }
-
+            }
             return RDFQueryUtilities.RemoveDuplicates(result);
         }
 
         /// <summary>
         /// Gets the direct (rdf:type) and indirect (rdfs:subClassOf) instances of the given class within the given data graph
         /// </summary>
-        internal static List<RDFPatternMember> GetInstancesOfClass(this RDFGraph dataGraph, RDFResource className, HashSet<long> visitContext = null)
+        internal static List<RDFPatternMember> GetInstancesOfClass(this RDFGraph dataGraph, RDFResource className, HashSet<long> visitContext=null)
         {
             List<RDFPatternMember> result = new List<RDFPatternMember>();
             if (className != null && dataGraph != null)
@@ -148,7 +150,8 @@ namespace RDFSharp.Model
                 #endregion
 
                 //rdf:type
-                result.AddRange(dataGraph[null, RDFVocabulary.RDF.TYPE, className, null].Select(triple => triple.Subject));
+                result.AddRange(dataGraph[null, RDFVocabulary.RDF.TYPE, className, null]
+                    .Select(triple => triple.Subject));
 
                 //rdfs:subClassOf
                 foreach (RDFTriple triple in dataGraph[null, RDFVocabulary.RDFS.SUB_CLASS_OF, className, null])
