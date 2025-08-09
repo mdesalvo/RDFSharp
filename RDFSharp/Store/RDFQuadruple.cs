@@ -268,7 +268,7 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFIndexedQuadruple represents the internal hashed representation of a quadruple
     /// </summary>
-    internal readonly struct RDFIndexedQuadruple : IEquatable<RDFIndexedQuadruple>
+    internal sealed class RDFIndexedQuadruple : IEquatable<RDFIndexedQuadruple>
     {
         #region Properties
         /// <summary>
@@ -322,7 +322,7 @@ namespace RDFSharp.Store
         /// Performs the equality comparison between two indexed quadruples
         /// </summary>
         public bool Equals(RDFIndexedQuadruple other)
-            => QuadrupleID == other.QuadrupleID;
+            => other != null && QuadrupleID == other.QuadrupleID;
 
         /// <summary>
         /// Performs the equality comparison between two indexed quadruples

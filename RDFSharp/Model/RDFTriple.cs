@@ -239,7 +239,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFIndexedTriple represents the internal hashed representation of a triple
     /// </summary>
-    internal readonly struct RDFIndexedTriple : IEquatable<RDFIndexedTriple>
+    internal sealed class RDFIndexedTriple : IEquatable<RDFIndexedTriple>
     {
         #region Properties
         /// <summary>
@@ -287,7 +287,7 @@ namespace RDFSharp.Model
         /// Performs the equality comparison between two indexed triples
         /// </summary>
         public bool Equals(RDFIndexedTriple other)
-            => TripleID == other.TripleID;
+            => other != null && TripleID == other.TripleID;
         
         /// <summary>
         /// Performs the equality comparison between two indexed triples
