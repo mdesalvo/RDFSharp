@@ -100,19 +100,19 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a triple from the given hashed triple
         /// </summary>
-        internal RDFTriple(RDFHashedTriple hashedTriple, RDFGraphIndex graphIndex)
+        internal RDFTriple(RDFHashedTriple hashedTriple, RDFGraphIndex index)
         {
-            Subject = graphIndex.Resources[hashedTriple.SubjectID];
-            Predicate = graphIndex.Resources[hashedTriple.PredicateID];
+            Subject = index.Resources[hashedTriple.SubjectID];
+            Predicate = index.Resources[hashedTriple.PredicateID];
             if (hashedTriple.TripleFlavor == 1) //SPO
             {
                 TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
-                Object = graphIndex.Resources[hashedTriple.ObjectID];
+                Object = index.Resources[hashedTriple.ObjectID];
             }
             else
             {
                 TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
-                Object = graphIndex.Literals[hashedTriple.ObjectID];
+                Object = index.Literals[hashedTriple.ObjectID];
             }
             LazyTripleID = new Lazy<long>(() => hashedTriple.TripleID);
             LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{TripleID}"));

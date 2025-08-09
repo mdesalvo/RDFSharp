@@ -126,22 +126,22 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Default-ctor to build a quadruple from the given indexed quadruple
+        /// Default-ctor to build a quadruple from the given hashed quadruple
         /// </summary>
-        internal RDFQuadruple(RDFHashedQuadruple hashedQuadruple, RDFStoreIndex storeIndex)
+        internal RDFQuadruple(RDFHashedQuadruple hashedQuadruple, RDFStoreIndex index)
         {
-            Context = storeIndex.Contexts[hashedQuadruple.ContextID];
-            Subject = storeIndex.Resources[hashedQuadruple.SubjectID];
-            Predicate = storeIndex.Resources[hashedQuadruple.PredicateID];
+            Context = index.Contexts[hashedQuadruple.ContextID];
+            Subject = index.Resources[hashedQuadruple.SubjectID];
+            Predicate = index.Resources[hashedQuadruple.PredicateID];
             if (hashedQuadruple.TripleFlavor == 1) //SPO
             {
                 TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
-                Object = storeIndex.Resources[hashedQuadruple.ObjectID];
+                Object = index.Resources[hashedQuadruple.ObjectID];
             }
             else
             {
                 TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
-                Object = storeIndex.Literals[hashedQuadruple.ObjectID];
+                Object = index.Literals[hashedQuadruple.ObjectID];
             }
             LazyQuadrupleID = new Lazy<long>(() => hashedQuadruple.QuadrupleID);
             LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{QuadrupleID}"));
@@ -304,7 +304,7 @@ namespace RDFSharp.Store
 
         #region Ctor
         /// <summary>
-        /// Default-ctor to build an indexed quadruple from the given quadruple
+        /// Default-ctor to build an hashed quadruple from the given quadruple
         /// </summary>
         internal RDFHashedQuadruple(RDFQuadruple quadruple)
         {
