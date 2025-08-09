@@ -241,28 +241,28 @@ namespace RDFSharp.Model
                 if (subj != null)
                 {
                     queryFilters.Append('S');
-                    S.AddRange(graph.GraphIndex.LookupIndexBySubject(subj).Select(t => graph.GraphIndex.HashedTriples[t]));
+                    S.AddRange(graph.Index.LookupIndexBySubject(subj).Select(t => graph.Index.Hashes[t]));
                 }
 
                 //Filter by Predicate
                 if (pred != null)
                 {
                     queryFilters.Append('P');
-                    P.AddRange(graph.GraphIndex.LookupIndexByPredicate(pred).Select(t => graph.GraphIndex.HashedTriples[t]));
+                    P.AddRange(graph.Index.LookupIndexByPredicate(pred).Select(t => graph.Index.Hashes[t]));
                 }
 
                 //Filter by Object
                 if (obj != null)
                 {
                     queryFilters.Append('O');
-                    O.AddRange(graph.GraphIndex.LookupIndexByObject(obj).Select(t => graph.GraphIndex.HashedTriples[t]));
+                    O.AddRange(graph.Index.LookupIndexByObject(obj).Select(t => graph.Index.Hashes[t]));
                 }
 
                 //Filter by Literal
                 if (lit != null)
                 {
                     queryFilters.Append('L');
-                    L.AddRange(graph.GraphIndex.LookupIndexByLiteral(lit).Select(t => graph.GraphIndex.HashedTriples[t]));
+                    L.AddRange(graph.Index.LookupIndexByLiteral(lit).Select(t => graph.Index.Hashes[t]));
                 }
 
                 //Intersect the filters
@@ -302,12 +302,12 @@ namespace RDFSharp.Model
                         matchResultHashedTriples = S.Intersect(P).Intersect(L).ToList();
                         break;
                     default:
-                        matchResultHashedTriples = graph.GraphIndex.HashedTriples.Values.ToList();
+                        matchResultHashedTriples = graph.Index.Hashes.Values.ToList();
                         break;
                 }
 
                 //Decompress hashed triples
-                matchResultHashedTriples.ForEach(hashedTriple => matchResult.Add(new RDFTriple(hashedTriple, graph.GraphIndex)));
+                matchResultHashedTriples.ForEach(hashedTriple => matchResult.Add(new RDFTriple(hashedTriple, graph.Index)));
             }
             return matchResult;
         }

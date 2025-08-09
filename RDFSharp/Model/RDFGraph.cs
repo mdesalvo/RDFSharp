@@ -41,7 +41,7 @@ namespace RDFSharp.Model
         /// Count of the graph's triples
         /// </summary>
         public long TriplesCount
-            => GraphIndex.HashedTriples.Count;
+            => Index.Hashes.Count;
 
         /// <summary>
         /// Gets the enumerator on the graph's triples for iteration
@@ -50,11 +50,11 @@ namespace RDFSharp.Model
         {
             get
             {
-                foreach (RDFHashedTriple hashedTriple in GraphIndex.HashedTriples.Values)
+                foreach (RDFHashedTriple hashedTriple in Index.Hashes.Values)
                 {
                     yield return hashedTriple.TripleFlavor == 1 //SPO
-                        ? new RDFTriple(GraphIndex.ResourcesRegister[hashedTriple.SubjectID], GraphIndex.ResourcesRegister[hashedTriple.PredicateID], GraphIndex.ResourcesRegister[hashedTriple.ObjectID])
-                        : new RDFTriple(GraphIndex.ResourcesRegister[hashedTriple.SubjectID], GraphIndex.ResourcesRegister[hashedTriple.PredicateID], GraphIndex.LiteralsRegister[hashedTriple.ObjectID]);
+                        ? new RDFTriple(Index.Resources[hashedTriple.SubjectID], Index.Resources[hashedTriple.PredicateID], Index.Resources[hashedTriple.ObjectID])
+                        : new RDFTriple(Index.Resources[hashedTriple.SubjectID], Index.Resources[hashedTriple.PredicateID], Index.Literals[hashedTriple.ObjectID]);
                 }
             }
         }
@@ -62,7 +62,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Index on the triples of the graph
         /// </summary>
-        internal RDFGraphIndex GraphIndex { get; set; }
+        internal RDFGraphIndex Index { get; set; }
 
         /// <summary>
         /// Flag indicating that the graph has already been disposed
@@ -77,7 +77,7 @@ namespace RDFSharp.Model
         public RDFGraph()
         {
             Context = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
-            GraphIndex = new RDFGraphIndex();
+            Index = new RDFGraphIndex();
         }
 
         /// <summary>
@@ -140,8 +140,8 @@ namespace RDFSharp.Model
 
             if (disposing)
             {
-                GraphIndex?.Dispose();
-                GraphIndex = null;
+                Index?.Dispose();
+                Index = null;
             }
 
             Disposed = true;
@@ -177,7 +177,7 @@ namespace RDFSharp.Model
         public RDFGraph AddTriple(RDFTriple triple)
         {
             if (triple != null)
-                GraphIndex.Add(triple);
+                Index.Add(triple);
             return this;
         }
 
@@ -196,7 +196,7 @@ namespace RDFSharp.Model
             {
                 //Reify the container to get its graph representation
                 foreach (RDFTriple t in container.ReifyContainer())
-                    GraphIndex.Add(t);
+                    Index.Add(t);
             }
             return this;
         }
@@ -216,7 +216,7 @@ namespace RDFSharp.Model
             {
                 //Reify the collection to get its graph representation
                 foreach (RDFTriple t in collection.ReifyCollection())
-                    GraphIndex.Add(t);
+                    Index.Add(t);
             }
             return this;
         }
@@ -236,7 +236,7 @@ namespace RDFSharp.Model
             {
                 //Reify the datatype to get its graph representation
                 foreach (RDFTriple t in datatype.ToRDFGraph())
-                    GraphIndex.Add(t);
+                    Index.Add(t);
             }
             return this;
         }
@@ -255,7 +255,7 @@ namespace RDFSharp.Model
         public RDFGraph RemoveTriple(RDFTriple triple)
         {
             if (triple != null)
-                GraphIndex.Remove(triple);
+                Index.Remove(triple);
             return this;
         }
 
@@ -273,7 +273,7 @@ namespace RDFSharp.Model
             if (subjectResource != null)
             {
                 foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource))
-                    GraphIndex.Remove(triple);
+                    Index.Remove(triple);
             }
             return this;
         }
@@ -292,7 +292,7 @@ namespace RDFSharp.Model
             if (predicateResource != null)
             {
                 foreach (RDFTriple triple in SelectTriplesByPredicate(predicateResource))
-                    GraphIndex.Remove(triple);
+                    Index.Remove(triple);
             }
             return this;
         }
@@ -311,7 +311,7 @@ namespace RDFSharp.Model
             if (objectResource != null)
             {
                 foreach (RDFTriple triple in SelectTriplesByObject(objectResource))
-                    GraphIndex.Remove(triple);
+                    Index.Remove(triple);
             }
             return this;
         }
@@ -330,7 +330,7 @@ namespace RDFSharp.Model
             if (literal != null)
             {
                 foreach (RDFTriple triple in SelectTriplesByLiteral(literal))
-                    GraphIndex.Remove(triple);
+                    Index.Remove(triple);
             }
             return this;
         }
@@ -349,7 +349,7 @@ namespace RDFSharp.Model
             if (subjectResource != null && predicateResource != null)
             {
                 foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource).SelectTriplesByPredicate(predicateResource))
-                    GraphIndex.Remove(triple);
+                    Index.Remove(triple);
             }
             return this;
         }
@@ -368,7 +368,7 @@ namespace RDFSharp.Model
             if (subjectResource != null && objectResource != null)
             {
                 foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource).SelectTriplesByObject(objectResource))
-                    GraphIndex.Remove(triple);
+                    Index.Remove(triple);
             }
             return this;
         }
@@ -387,7 +387,7 @@ namespace RDFSharp.Model
             if (subjectResource != null && literal != null)
             {
                 foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource).SelectTriplesByLiteral(literal))
-                    GraphIndex.Remove(triple);
+                    Index.Remove(triple);
             }
             return this;
         }
@@ -406,7 +406,7 @@ namespace RDFSharp.Model
             if (predicateResource != null && objectResource != null)
             {
                 foreach (RDFTriple triple in SelectTriplesByPredicate(predicateResource).SelectTriplesByObject(objectResource))
-                    GraphIndex.Remove(triple);
+                    Index.Remove(triple);
             }
             return this;
         }
@@ -425,7 +425,7 @@ namespace RDFSharp.Model
             if (predicateResource != null && objectLiteral != null)
             {
                 foreach (RDFTriple triple in SelectTriplesByPredicate(predicateResource).SelectTriplesByLiteral(objectLiteral))
-                    GraphIndex.Remove(triple);
+                    Index.Remove(triple);
             }
             return this;
         }
@@ -440,7 +440,7 @@ namespace RDFSharp.Model
         /// Clears the triples and metadata of the graph
         /// </summary>
         public void ClearTriples()
-            => GraphIndex.Clear();
+            => Index.Clear();
 
         /// <summary>
         /// Asynchronously clears the triples and metadata of the graph
@@ -454,7 +454,7 @@ namespace RDFSharp.Model
         /// Checks if the graph contains the given triple
         /// </summary>
         public bool ContainsTriple(RDFTriple triple)
-            => triple != null && GraphIndex.HashedTriples.ContainsKey(triple.TripleID);
+            => triple != null && Index.Hashes.ContainsKey(triple.TripleID);
 
         /// <summary>
         /// Asynchronously checks if the graph contains the given triple
@@ -531,8 +531,8 @@ namespace RDFSharp.Model
                 //Add intersection triples
                 foreach (RDFTriple t in this)
                 {
-                    if (graph.GraphIndex.HashedTriples.ContainsKey(t.TripleID))
-                        result.GraphIndex.Add(t);
+                    if (graph.Index.Hashes.ContainsKey(t.TripleID))
+                        result.Index.Add(t);
                 }
             }
             return result;
@@ -553,14 +553,14 @@ namespace RDFSharp.Model
 
             //Add triples from this graph
             foreach (RDFTriple t in this)
-                result.GraphIndex.Add(t);
+                result.Index.Add(t);
 
             //Manage the given graph
             if (graph != null)
             {
                 //Add triples from the given graph
                 foreach (RDFTriple t in graph)
-                    result.GraphIndex.Add(t);
+                    result.Index.Add(t);
             }
 
             return result;
@@ -583,15 +583,15 @@ namespace RDFSharp.Model
                 //Add difference triples
                 foreach (RDFTriple t in this)
                 {
-                    if (!graph.GraphIndex.HashedTriples.ContainsKey(t.TripleID))
-                        result.GraphIndex.Add(t);
+                    if (!graph.Index.Hashes.ContainsKey(t.TripleID))
+                        result.Index.Add(t);
                 }
             }
             else
             {
                 //Add triples from this graph
                 foreach (RDFTriple t in this)
-                    result.GraphIndex.Add(t);
+                    result.Index.Add(t);
             }
             return result;
         }

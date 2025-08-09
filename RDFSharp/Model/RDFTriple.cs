@@ -102,17 +102,17 @@ namespace RDFSharp.Model
         /// </summary>
         internal RDFTriple(RDFHashedTriple hashedTriple, RDFGraphIndex graphIndex)
         {
-            Subject = graphIndex.ResourcesRegister[hashedTriple.SubjectID];
-            Predicate = graphIndex.ResourcesRegister[hashedTriple.PredicateID];
+            Subject = graphIndex.Resources[hashedTriple.SubjectID];
+            Predicate = graphIndex.Resources[hashedTriple.PredicateID];
             if (hashedTriple.TripleFlavor == 1) //SPO
             {
                 TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
-                Object = graphIndex.ResourcesRegister[hashedTriple.ObjectID];
+                Object = graphIndex.Resources[hashedTriple.ObjectID];
             }
             else
             {
                 TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
-                Object = graphIndex.LiteralsRegister[hashedTriple.ObjectID];
+                Object = graphIndex.Literals[hashedTriple.ObjectID];
             }
             LazyTripleID = new Lazy<long>(() => hashedTriple.TripleID);
             LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{TripleID}"));
