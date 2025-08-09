@@ -59,16 +59,16 @@ public class RDFClosedConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(5, graph.TriplesCount);
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.CLOSED.PatternMemberID)
                                                     && t.Value.ObjectID.Equals(RDFTypedLiteral.True.PatternMemberID)));
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.IGNORED_PROPERTIES.PatternMemberID)));
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
                                                     && t.Value.ObjectID.Equals(RDFVocabulary.RDF.LIST.PatternMemberID)));
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
                                                     && t.Value.ObjectID.Equals(RDFVocabulary.FOAF.KNOWS.PatternMemberID)));
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.REST.PatternMemberID)
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.REST.PatternMemberID)
                                                     && t.Value.ObjectID.Equals(RDFVocabulary.RDF.NIL.PatternMemberID)));
     }
 

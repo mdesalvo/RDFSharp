@@ -98,23 +98,23 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Default-ctor to build a triple from the given indexed triple
+        /// Default-ctor to build a triple from the given hashed triple
         /// </summary>
-        internal RDFTriple(RDFIndexedTriple indexedTriple, RDFGraphIndex graphIndex)
+        internal RDFTriple(RDFHashedTriple hashedTriple, RDFGraphIndex graphIndex)
         {
-            Subject = graphIndex.ResourcesRegister[indexedTriple.SubjectID];
-            Predicate = graphIndex.ResourcesRegister[indexedTriple.PredicateID];
-            if (indexedTriple.TripleFlavor == 1) //SPO
+            Subject = graphIndex.ResourcesRegister[hashedTriple.SubjectID];
+            Predicate = graphIndex.ResourcesRegister[hashedTriple.PredicateID];
+            if (hashedTriple.TripleFlavor == 1) //SPO
             {
                 TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
-                Object = graphIndex.ResourcesRegister[indexedTriple.ObjectID];
+                Object = graphIndex.ResourcesRegister[hashedTriple.ObjectID];
             }
             else
             {
                 TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
-                Object = graphIndex.LiteralsRegister[indexedTriple.ObjectID];
+                Object = graphIndex.LiteralsRegister[hashedTriple.ObjectID];
             }
-            LazyTripleID = new Lazy<long>(() => indexedTriple.TripleID);
+            LazyTripleID = new Lazy<long>(() => hashedTriple.TripleID);
             LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{TripleID}"));
         }
         #endregion
@@ -237,9 +237,9 @@ namespace RDFSharp.Model
     }
 
     /// <summary>
-    /// RDFIndexedTriple represents the internal hashed representation of a triple
+    /// RDFHashedTriple represents the internal hashed representation of a triple
     /// </summary>
-    internal sealed class RDFIndexedTriple : IEquatable<RDFIndexedTriple>
+    internal sealed class RDFHashedTriple : IEquatable<RDFHashedTriple>
     {
         #region Properties
         /// <summary>
@@ -270,9 +270,9 @@ namespace RDFSharp.Model
 
         #region Ctor
         /// <summary>
-        /// Default-ctor to build an indexed triple from the given triple
+        /// Default-ctor to build an hashed triple from the given triple
         /// </summary>
-        internal RDFIndexedTriple(RDFTriple triple)
+        internal RDFHashedTriple(RDFTriple triple)
         {
             TripleFlavor = (byte)triple.TripleFlavor;
             TripleID = triple.TripleID;
@@ -284,19 +284,19 @@ namespace RDFSharp.Model
 
         #region Interfaces
         /// <summary>
-        /// Performs the equality comparison between two indexed triples
+        /// Performs the equality comparison between two hashed triples
         /// </summary>
-        public bool Equals(RDFIndexedTriple other)
+        public bool Equals(RDFHashedTriple other)
             => other != null && TripleID == other.TripleID;
         
         /// <summary>
-        /// Performs the equality comparison between two indexed triples
+        /// Performs the equality comparison between two hashed triples
         /// </summary>
         public override bool Equals(object other)
-            => other is RDFIndexedTriple it && TripleID == it.TripleID;
+            => other is RDFHashedTriple ht && TripleID == ht.TripleID;
 
         /// <summary>
-        /// Calculates the hashcode of this indexed triple
+        /// Calculates the hashcode of this hashed triple
         /// </summary>
         public override int GetHashCode()
             => TripleID.GetHashCode();

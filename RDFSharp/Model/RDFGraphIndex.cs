@@ -26,35 +26,40 @@ namespace RDFSharp.Model
     {
         #region Properties
         /// <summary>
-        /// Register of the graph's resources
+        /// Hashed representation of the triples
+        /// </summary>
+        internal Dictionary<long, RDFHashedTriple> HashedTriples { get; set; }
+
+        /// <summary>
+        /// Register of the resources
         /// </summary>
         internal Dictionary<long, RDFResource> ResourcesRegister { get; set; }
 
         /// <summary>
-        /// Register of the graph's literals
+        /// Register of the literals
         /// </summary>
         internal Dictionary<long, RDFLiteral> LiteralsRegister { get; set; }
 
         /// <summary>
-        /// Index on the subjects of the graph's triples
+        /// Index on the subjects of the triples
         /// </summary>
         internal Dictionary<long, HashSet<long>> SubjectsIndex { get; set; }
 
         /// <summary>
-        /// Index on the predicates of the graph's triples
+        /// Index on the predicates of the triples
         /// </summary>
         internal Dictionary<long, HashSet<long>> PredicatesIndex { get; set; }
 
         /// <summary>
-        /// Index on the objects of the graph's triples
+        /// Index on the objects of the triples
         /// </summary>
         internal Dictionary<long, HashSet<long>> ObjectsIndex { get; set; }
 
         /// <summary>
-        /// Index on the literals of the graph's triples
+        /// Index on the literals of the triples
         /// </summary>
         internal Dictionary<long, HashSet<long>> LiteralsIndex { get; set; }
-
+        
         /// <summary>
         /// Flag indicating that the graph index has already been disposed
         /// </summary>
@@ -67,6 +72,8 @@ namespace RDFSharp.Model
         /// </summary>
         internal RDFGraphIndex()
         {
+            //Hashes
+            HashedTriples = new Dictionary<long, RDFHashedTriple>();
             //Registers
             ResourcesRegister = new Dictionary<long, RDFResource>();
             LiteralsRegister = new Dictionary<long, RDFLiteral>();
@@ -80,7 +87,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Destroys the graph index instance
         /// </summary>
-        ~RDFGraphIndex() => Dispose(false);
+        ~RDFGraphIndex()
+            => Dispose(false);
         #endregion
 
         #region Interfaces
@@ -103,8 +111,10 @@ namespace RDFSharp.Model
 
             if (disposing)
             {
-                ClearIndex();
+                Clear();
 
+                //Hashes
+                HashedTriples = null;
                 //Registers
                 ResourcesRegister = null;
                 LiteralsRegister = null;
@@ -125,8 +135,13 @@ namespace RDFSharp.Model
         /// <summary>
         /// Adds the given triple to the SPOL index
         /// </summary>
-        internal RDFGraphIndex AddIndex(RDFTriple triple)
+        internal RDFGraphIndex Add(RDFTriple triple)
         {
+            //Triple (Hash)
+            if (HashedTriples.ContainsKey(triple.TripleID))
+                return this;
+            HashedTriples.Add(triple.TripleID, new RDFHashedTriple(triple));
+            
             //Subject (Register)
             if (!ResourcesRegister.ContainsKey(triple.Subject.PatternMemberID))
                 ResourcesRegister.Add(triple.Subject.PatternMemberID, (RDFResource)triple.Subject);
@@ -179,8 +194,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Removes the given triple from the SPOL index
         /// </summary>
-        internal RDFGraphIndex RemoveIndex(RDFTriple triple)
+        internal RDFGraphIndex Remove(RDFTriple triple)
         {
+            //Triple (Hash)
+            HashedTriples.Remove(triple.TripleID);
+            
             //Subject (Index)
             if (SubjectsIndex.TryGetValue(triple.Subject.PatternMemberID, out HashSet<long> subjectsIndex)
                  && subjectsIndex.Contains(triple.TripleID))
@@ -259,8 +277,10 @@ namespace RDFSharp.Model
         /// <summary>
         /// Clears the index
         /// </summary>
-        internal void ClearIndex()
+        internal void Clear()
         {
+            //Hash
+            HashedTriples.Clear();
             //Registers
             ResourcesRegister.Clear();
             LiteralsRegister.Clear();
@@ -276,25 +296,25 @@ namespace RDFSharp.Model
         /// <summary>
         /// Selects the triples indexed by the given subject
         /// </summary>
-        internal HashSet<long> SelectIndexBySubject(RDFResource subjectResource)
+        internal HashSet<long> LookupIndexBySubject(RDFResource subjectResource)
             => SubjectsIndex.TryGetValue(subjectResource.PatternMemberID, out HashSet<long> index) ? index : RDFModelUtilities.EmptyHashSet;
 
         /// <summary>
         /// Selects the triples indexed by the given predicate
         /// </summary>
-        internal HashSet<long> SelectIndexByPredicate(RDFResource predicateResource)
+        internal HashSet<long> LookupIndexByPredicate(RDFResource predicateResource)
             => PredicatesIndex.TryGetValue(predicateResource.PatternMemberID, out HashSet<long> index) ? index : RDFModelUtilities.EmptyHashSet;
 
         /// <summary>
         /// Selects the triples indexed by the given object
         /// </summary>
-        internal HashSet<long> SelectIndexByObject(RDFResource objectResource)
+        internal HashSet<long> LookupIndexByObject(RDFResource objectResource)
             => ObjectsIndex.TryGetValue(objectResource.PatternMemberID, out HashSet<long> index) ? index : RDFModelUtilities.EmptyHashSet;
 
         /// <summary>
         /// Selects the triples indexed by the given literal
         /// </summary>
-        internal HashSet<long> SelectIndexByLiteral(RDFLiteral objectLiteral)
+        internal HashSet<long> LookupIndexByLiteral(RDFLiteral objectLiteral)
             => LiteralsIndex.TryGetValue(objectLiteral.PatternMemberID, out HashSet<long> index) ? index : RDFModelUtilities.EmptyHashSet;
         #endregion
 

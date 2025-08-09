@@ -81,16 +81,16 @@ public class RDFInConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(7, graph.TriplesCount);
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.IN.PatternMemberID)));
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
                                                     && t.Value.ObjectID.Equals(RDFVocabulary.RDF.LIST.PatternMemberID))); //2 occurrences of this
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
                                                     && t.Value.ObjectID.Equals(new RDFResource("ex:value1").PatternMemberID)));
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.REST.PatternMemberID)));
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.REST.PatternMemberID)));
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
                                                     && t.Value.ObjectID.Equals(new RDFResource("ex:value2").PatternMemberID)));
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.REST.PatternMemberID)
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.REST.PatternMemberID)
                                                     && t.Value.ObjectID.Equals(RDFVocabulary.RDF.NIL.PatternMemberID)));
     }
 
@@ -104,16 +104,16 @@ public class RDFInConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(7, graph.TriplesCount);
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.IN.PatternMemberID)));
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
                                                     && t.Value.ObjectID.Equals(RDFVocabulary.RDF.LIST.PatternMemberID))); //2 occurrences of this
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
                                                     && t.Value.ObjectID.Equals(new RDFPlainLiteral("value1").PatternMemberID)));
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.REST.PatternMemberID)));
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.REST.PatternMemberID)));
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
                                                     && t.Value.ObjectID.Equals(new RDFPlainLiteral("value2").PatternMemberID)));
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.REST.PatternMemberID)
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.PredicateID.Equals(RDFVocabulary.RDF.REST.PatternMemberID)
                                                     && t.Value.ObjectID.Equals(RDFVocabulary.RDF.NIL.PatternMemberID)));
     }
 

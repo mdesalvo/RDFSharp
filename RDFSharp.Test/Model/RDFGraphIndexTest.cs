@@ -51,7 +51,7 @@ public class RDFGraphIndexTest
         RDFResource pred = new RDFResource("http://pred/");
         RDFResource obj = new RDFResource("http://obj/");
         RDFTriple triple = new RDFTriple(subj, pred, obj);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple);
 
         Assert.HasCount(3, graphIndex.ResourcesRegister);
         Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj.PatternMemberID));
@@ -74,7 +74,7 @@ public class RDFGraphIndexTest
         RDFResource pred = new RDFResource("http://pred/");
         RDFTypedLiteral lit = new RDFTypedLiteral("lit", RDFModelEnums.RDFDatatypes.XSD_STRING);
         RDFTriple triple = new RDFTriple(subj, pred, lit);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple);
 
         Assert.HasCount(2, graphIndex.ResourcesRegister);
         Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj.PatternMemberID));
@@ -101,7 +101,7 @@ public class RDFGraphIndexTest
         RDFTriple triple2 = new RDFTriple(subj, pred, lit);
         RDFGraphIndex graphIndex;
 
-        using (graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2))
+        using (graphIndex = new RDFGraphIndex().Add(triple1).Add(triple2))
         {
             Assert.IsFalse(graphIndex.Disposed);
             Assert.IsNotNull(graphIndex.ResourcesRegister);
@@ -125,7 +125,7 @@ public class RDFGraphIndexTest
         RDFResource pred2 = new RDFResource("http://pred2/");
         RDFResource obj2 = new RDFResource("http://obj2/");
         RDFTriple triple2 = new RDFTriple(subj, pred2, obj2);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple1).AddIndex(triple2);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple1).Add(triple1).Add(triple2);
 
         Assert.HasCount(5, graphIndex.ResourcesRegister);
         Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj.PatternMemberID));
@@ -156,7 +156,7 @@ public class RDFGraphIndexTest
         RDFResource subj2 = new RDFResource("http://subj2/");
         RDFResource obj2 = new RDFResource("http://obj2/");
         RDFTriple triple2 = new RDFTriple(subj2, pred, obj2);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple1).AddIndex(triple2);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple1).Add(triple1).Add(triple2);
 
         Assert.HasCount(5, graphIndex.ResourcesRegister);
         Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
@@ -187,7 +187,7 @@ public class RDFGraphIndexTest
         RDFResource subj2 = new RDFResource("http://subj2/");
         RDFResource pred2 = new RDFResource("http://pred2/");
         RDFTriple triple2 = new RDFTriple(subj2, pred2, obj);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple1).AddIndex(triple2);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple1).Add(triple1).Add(triple2);
 
         Assert.HasCount(5, graphIndex.ResourcesRegister);
         Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
@@ -218,7 +218,7 @@ public class RDFGraphIndexTest
         RDFResource subj2 = new RDFResource("http://subj2/");
         RDFResource pred2 = new RDFResource("http://pred2/");
         RDFTriple triple2 = new RDFTriple(subj2, pred2, lit);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple1).AddIndex(triple2);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple1).Add(triple1).Add(triple2);
 
         Assert.HasCount(4, graphIndex.ResourcesRegister);
         Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
@@ -246,7 +246,7 @@ public class RDFGraphIndexTest
         RDFResource pred = new RDFResource("http://pred/");
         RDFResource obj = new RDFResource("http://obj/");
         RDFTriple triple = new RDFTriple(subj, pred, obj);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple).RemoveIndex(triple);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple).Remove(triple);
 
         Assert.IsEmpty(graphIndex.ResourcesRegister);
         Assert.IsEmpty(graphIndex.LiteralsRegister);
@@ -263,7 +263,7 @@ public class RDFGraphIndexTest
         RDFResource pred = new RDFResource("http://pred/");
         RDFTypedLiteral lit = new RDFTypedLiteral("lit", RDFModelEnums.RDFDatatypes.XSD_STRING);
         RDFTriple triple = new RDFTriple(subj, pred, lit);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple).RemoveIndex(triple);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple).Remove(triple);
 
         Assert.IsEmpty(graphIndex.ResourcesRegister);
         Assert.IsEmpty(graphIndex.LiteralsRegister);
@@ -283,7 +283,7 @@ public class RDFGraphIndexTest
         RDFResource pred2 = new RDFResource("http://pred2/");
         RDFResource obj2 = new RDFResource("http://obj2/");
         RDFTriple triple2 = new RDFTriple(subj1, pred2, obj2);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2).RemoveIndex(triple2);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple1).Add(triple2).Remove(triple2);
 
         Assert.HasCount(3, graphIndex.ResourcesRegister);
         Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
@@ -312,7 +312,7 @@ public class RDFGraphIndexTest
         RDFResource pred2 = new RDFResource("http://pred2/");
         RDFResource obj2 = new RDFResource("http://obj2/");
         RDFTriple triple2 = new RDFTriple(subj1, pred2, obj2);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2).RemoveIndex(triple2).RemoveIndex(triple2).RemoveIndex(triple1);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple1).Add(triple2).Remove(triple2).Remove(triple2).Remove(triple1);
 
         Assert.IsEmpty(graphIndex.ResourcesRegister);
         Assert.IsEmpty(graphIndex.LiteralsRegister);
@@ -332,7 +332,7 @@ public class RDFGraphIndexTest
         RDFResource subj2 = new RDFResource("http://subj2/");
         RDFResource obj2 = new RDFResource("http://obj2/");
         RDFTriple triple2 = new RDFTriple(subj2, pred1, obj2);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2).RemoveIndex(triple2);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple1).Add(triple2).Remove(triple2);
 
         Assert.HasCount(3, graphIndex.ResourcesRegister);
         Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
@@ -361,7 +361,7 @@ public class RDFGraphIndexTest
         RDFResource subj2 = new RDFResource("http://subj2/");
         RDFResource obj2 = new RDFResource("http://obj2/");
         RDFTriple triple2 = new RDFTriple(subj2, pred, obj2);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2).RemoveIndex(triple2).RemoveIndex(triple2).RemoveIndex(triple1);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple1).Add(triple2).Remove(triple2).Remove(triple2).Remove(triple1);
 
         Assert.IsEmpty(graphIndex.ResourcesRegister);
         Assert.IsEmpty(graphIndex.LiteralsRegister);
@@ -381,7 +381,7 @@ public class RDFGraphIndexTest
         RDFResource subj2 = new RDFResource("http://subj2/");
         RDFResource pred2 = new RDFResource("http://pred2/");
         RDFTriple triple2 = new RDFTriple(subj2, pred2, obj1);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2).RemoveIndex(triple2);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple1).Add(triple2).Remove(triple2);
 
         Assert.HasCount(3, graphIndex.ResourcesRegister);
         Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
@@ -410,7 +410,7 @@ public class RDFGraphIndexTest
         RDFResource subj2 = new RDFResource("http://subj2/");
         RDFResource pred2 = new RDFResource("http://pred2/");
         RDFTriple triple2 = new RDFTriple(subj2, pred2, obj1);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2).RemoveIndex(triple2).RemoveIndex(triple2).RemoveIndex(triple1);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple1).Add(triple2).Remove(triple2).Remove(triple2).Remove(triple1);
 
         Assert.IsEmpty(graphIndex.ResourcesRegister);
         Assert.IsEmpty(graphIndex.LiteralsRegister);
@@ -430,7 +430,7 @@ public class RDFGraphIndexTest
         RDFResource subj2 = new RDFResource("http://subj2/");
         RDFResource pred2 = new RDFResource("http://pred2/");
         RDFTriple triple2 = new RDFTriple(subj2, pred2, lit);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2).RemoveIndex(triple2);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple1).Add(triple2).Remove(triple2);
 
         Assert.HasCount(2, graphIndex.ResourcesRegister);
         Assert.IsTrue(graphIndex.ResourcesRegister.ContainsKey(subj1.PatternMemberID));
@@ -459,7 +459,7 @@ public class RDFGraphIndexTest
         RDFResource subj2 = new RDFResource("http://subj2/");
         RDFResource pred2 = new RDFResource("http://pred2/");
         RDFTriple triple2 = new RDFTriple(subj2, pred2, lit);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2).RemoveIndex(triple2).RemoveIndex(triple2).RemoveIndex(triple1);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple1).Add(triple2).Remove(triple2).Remove(triple2).Remove(triple1);
 
         Assert.IsEmpty(graphIndex.ResourcesRegister);
         Assert.IsEmpty(graphIndex.LiteralsRegister);
@@ -478,8 +478,8 @@ public class RDFGraphIndexTest
         RDFPlainLiteral lit = new RDFPlainLiteral("lit");
         RDFTriple triple1 = new RDFTriple(subj, pred, obj);
         RDFTriple triple2 = new RDFTriple(subj, pred, lit);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple1).AddIndex(triple2);
-        graphIndex.ClearIndex();
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple1).Add(triple2);
+        graphIndex.Clear();
 
         Assert.IsEmpty(graphIndex.ResourcesRegister);
         Assert.IsEmpty(graphIndex.LiteralsRegister);
@@ -496,8 +496,8 @@ public class RDFGraphIndexTest
         RDFResource pred = new RDFResource("http://pred/");
         RDFResource obj = new RDFResource("http://obj/");
         RDFTriple triple = new RDFTriple(subj, pred, obj);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
-        HashSet<long> triplesWithGivenSubject = graphIndex.SelectIndexBySubject(subj);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple);
+        HashSet<long> triplesWithGivenSubject = graphIndex.LookupIndexBySubject(subj);
 
         Assert.IsNotNull(triplesWithGivenSubject);
         Assert.HasCount(1, triplesWithGivenSubject);
@@ -510,8 +510,8 @@ public class RDFGraphIndexTest
         RDFResource pred = new RDFResource("http://pred/");
         RDFResource obj = new RDFResource("http://obj/");
         RDFTriple triple = new RDFTriple(subj, pred, obj);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
-        HashSet<long> triplesWithGivenSubject = graphIndex.SelectIndexBySubject(new RDFResource("http://subj2/"));
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple);
+        HashSet<long> triplesWithGivenSubject = graphIndex.LookupIndexBySubject(new RDFResource("http://subj2/"));
 
         Assert.IsNotNull(triplesWithGivenSubject);
         Assert.IsEmpty(triplesWithGivenSubject);
@@ -524,8 +524,8 @@ public class RDFGraphIndexTest
         RDFResource pred = new RDFResource("http://pred/");
         RDFResource obj = new RDFResource("http://obj/");
         RDFTriple triple = new RDFTriple(subj, pred, obj);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
-        HashSet<long> triplesWithGivenPredicate = graphIndex.SelectIndexByPredicate(pred);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple);
+        HashSet<long> triplesWithGivenPredicate = graphIndex.LookupIndexByPredicate(pred);
 
         Assert.IsNotNull(triplesWithGivenPredicate);
         Assert.HasCount(1, triplesWithGivenPredicate);
@@ -538,8 +538,8 @@ public class RDFGraphIndexTest
         RDFResource pred = new RDFResource("http://pred/");
         RDFResource obj = new RDFResource("http://obj/");
         RDFTriple triple = new RDFTriple(subj, pred, obj);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
-        HashSet<long> triplesWithGivenPredicate = graphIndex.SelectIndexByPredicate(new RDFResource("http://pred2/"));
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple);
+        HashSet<long> triplesWithGivenPredicate = graphIndex.LookupIndexByPredicate(new RDFResource("http://pred2/"));
 
         Assert.IsNotNull(triplesWithGivenPredicate);
         Assert.IsEmpty(triplesWithGivenPredicate);
@@ -552,8 +552,8 @@ public class RDFGraphIndexTest
         RDFResource pred = new RDFResource("http://pred/");
         RDFResource obj = new RDFResource("http://obj/");
         RDFTriple triple = new RDFTriple(subj, pred, obj);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
-        HashSet<long> triplesWithGivenObject = graphIndex.SelectIndexByObject(obj);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple);
+        HashSet<long> triplesWithGivenObject = graphIndex.LookupIndexByObject(obj);
 
         Assert.IsNotNull(triplesWithGivenObject);
         Assert.HasCount(1, triplesWithGivenObject);
@@ -566,8 +566,8 @@ public class RDFGraphIndexTest
         RDFResource pred = new RDFResource("http://pred/");
         RDFResource obj = new RDFResource("http://obj/");
         RDFTriple triple = new RDFTriple(subj, pred, obj);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
-        HashSet<long> triplesWithGivenObject = graphIndex.SelectIndexByObject(new RDFResource("http://subj2/"));
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple);
+        HashSet<long> triplesWithGivenObject = graphIndex.LookupIndexByObject(new RDFResource("http://subj2/"));
 
         Assert.IsNotNull(triplesWithGivenObject);
         Assert.IsEmpty(triplesWithGivenObject);
@@ -580,8 +580,8 @@ public class RDFGraphIndexTest
         RDFResource pred = new RDFResource("http://pred/");
         RDFPlainLiteral lit = new RDFPlainLiteral("lit", "en-US");
         RDFTriple triple = new RDFTriple(subj, pred, lit);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
-        HashSet<long> triplesWithGivenLiteral = graphIndex.SelectIndexByLiteral(lit);
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple);
+        HashSet<long> triplesWithGivenLiteral = graphIndex.LookupIndexByLiteral(lit);
 
         Assert.IsNotNull(triplesWithGivenLiteral);
         Assert.HasCount(1, triplesWithGivenLiteral);
@@ -594,8 +594,8 @@ public class RDFGraphIndexTest
         RDFResource pred = new RDFResource("http://pred/");
         RDFPlainLiteral lit = new RDFPlainLiteral("lit", "en-US");
         RDFTriple triple = new RDFTriple(subj, pred, lit);
-        RDFGraphIndex graphIndex = new RDFGraphIndex().AddIndex(triple);
-        HashSet<long> triplesWithGivenLiteral = graphIndex.SelectIndexByLiteral(new RDFPlainLiteral("lit2", "en-US"));
+        RDFGraphIndex graphIndex = new RDFGraphIndex().Add(triple);
+        HashSet<long> triplesWithGivenLiteral = graphIndex.LookupIndexByLiteral(new RDFPlainLiteral("lit2", "en-US"));
 
         Assert.IsNotNull(triplesWithGivenLiteral);
         Assert.IsEmpty(triplesWithGivenLiteral);

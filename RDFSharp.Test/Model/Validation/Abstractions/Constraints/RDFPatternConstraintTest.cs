@@ -47,10 +47,10 @@ public class RDFPatternConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(2, graph.TriplesCount);
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.PATTERN.PatternMemberID)
                                                     && t.Value.ObjectID.Equals(new RDFTypedLiteral("^test$", RDFModelEnums.RDFDatatypes.XSD_STRING).PatternMemberID)));
-        Assert.IsTrue(graph.IndexedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+        Assert.IsTrue(graph.GraphIndex.HashedTriples.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.FLAGS.PatternMemberID)
                                                     && t.Value.ObjectID.Equals(new RDFTypedLiteral("ismx", RDFModelEnums.RDFDatatypes.XSD_STRING).PatternMemberID)));
     }
