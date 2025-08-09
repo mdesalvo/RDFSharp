@@ -413,14 +413,14 @@ namespace RDFSharp.Store
         /// <summary>
         /// Gets a memory store containing quadruples with the specified literal
         /// </summary>
-        public RDFMemoryStore SelectQuadruplesByLiteral(RDFLiteral literal)
-            => SelectQuadruples(null, null, null, null, literal);
+        public RDFMemoryStore SelectQuadruplesByLiteral(RDFLiteral lit)
+            => SelectQuadruples(null, null, null, null, lit);
 
         /// <summary>
         /// Asynchronously gets a memory store containing quadruples of the store with the specified literal
         /// </summary>
-        public Task<RDFMemoryStore> SelectQuadruplesByLiteralAsync(RDFLiteral literal)
-            => SelectQuadruplesAsync(null, null, null, null, literal);
+        public Task<RDFMemoryStore> SelectQuadruplesByLiteralAsync(RDFLiteral lit)
+            => SelectQuadruplesAsync(null, null, null, null, lit);
 
         /// <summary>
         /// Gets a list containing the graphs saved in the store

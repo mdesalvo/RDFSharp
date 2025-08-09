@@ -61,14 +61,14 @@ namespace RDFSharp.Model
         internal Dictionary<long, HashSet<long>> IDXLiterals { get; set; }
         
         /// <summary>
-        /// Flag indicating that the graph index has already been disposed
+        /// Flag indicating that the index has already been disposed
         /// </summary>
         internal bool Disposed { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor for an empty graph index
+        /// Default-ctor for an empty index
         /// </summary>
         internal RDFGraphIndex()
         {
@@ -85,7 +85,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Destroys the graph index instance
+        /// Destroys the index instance
         /// </summary>
         ~RDFGraphIndex()
             => Dispose(false);
@@ -93,7 +93,7 @@ namespace RDFSharp.Model
 
         #region Interfaces
         /// <summary>
-        /// Disposes the graph index (IDisposable)
+        /// Disposes the index (IDisposable)
         /// </summary>
         public void Dispose()
         {
@@ -102,7 +102,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Disposes the graph index
+        /// Disposes the index
         /// </summary>
         private void Dispose(bool disposing)
         {

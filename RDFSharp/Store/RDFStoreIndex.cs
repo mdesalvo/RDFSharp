@@ -27,83 +27,86 @@ namespace RDFSharp.Store
     {
         #region Properties
         /// <summary>
-        /// Register of the store's contexts
+        /// Hashed representation of the quadruples
         /// </summary>
-        internal Dictionary<long, RDFContext> ContextsRegister { get; set; }
+        internal Dictionary<long, RDFHashedQuadruple> Hashes { get; set; }
+        
+        /// <summary>
+        /// Register of the contexts
+        /// </summary>
+        internal Dictionary<long, RDFContext> Contexts { get; set; }
 
         /// <summary>
-        /// Register of the store's resources
+        /// Register of the resources
         /// </summary>
-        internal Dictionary<long, RDFResource> ResourcesRegister { get; set; }
+        internal Dictionary<long, RDFResource> Resources { get; set; }
 
         /// <summary>
-        /// Register of the store's literals
+        /// Register of the literals
         /// </summary>
-        internal Dictionary<long, RDFLiteral> LiteralsRegister { get; set; }
+        internal Dictionary<long, RDFLiteral> Literals { get; set; }
 
         /// <summary>
-        /// Index on the contexts of the store's quadruples
+        /// Index on the contexts of the quadruples
         /// </summary>
-        internal Dictionary<long, HashSet<long>> ContextsIndex { get; set; }
+        internal Dictionary<long, HashSet<long>> IDXContexts { get; set; }
 
         /// <summary>
-        /// Index on the subjects of the store's quadruples
+        /// Index on the subjects of the quadruples
         /// </summary>
-        internal Dictionary<long, HashSet<long>> SubjectsIndex { get; set; }
+        internal Dictionary<long, HashSet<long>> IDXSubjects { get; set; }
 
         /// <summary>
-        /// Index on the predicates of the store's quadruples
+        /// Index on the predicates of the quadruples
         /// </summary>
-        internal Dictionary<long, HashSet<long>> PredicatesIndex { get; set; }
+        internal Dictionary<long, HashSet<long>> IDXPredicates { get; set; }
 
         /// <summary>
-        /// Index on the objects of the store's quadruples
+        /// Index on the objects of the quadruples
         /// </summary>
-        internal Dictionary<long, HashSet<long>> ObjectsIndex { get; set; }
+        internal Dictionary<long, HashSet<long>> IDXObjects { get; set; }
 
         /// <summary>
-        /// Index on the literals of the store's quadruples
+        /// Index on the literals of the quadruples
         /// </summary>
-        internal Dictionary<long, HashSet<long>> LiteralsIndex { get; set; }
+        internal Dictionary<long, HashSet<long>> IDXLiterals { get; set; }
 
         /// <summary>
-        /// Flag indicating that the store index has already been disposed
+        /// Flag indicating that the index has already been disposed
         /// </summary>
         internal bool Disposed { get; set; }
-
-        /// <summary>
-        /// Empty hashset to be returned in case of index miss
-        /// </summary>
-        private static readonly HashSet<long> EmptyHashSet = new HashSet<long>();
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor for an empty store index
+        /// Default-ctor for an empty index
         /// </summary>
         internal RDFStoreIndex()
         {
+            //Hashes
+            Hashes = new Dictionary<long, RDFHashedQuadruple>();
             //Registers
-            ContextsRegister = new Dictionary<long, RDFContext>();
-            ResourcesRegister = new Dictionary<long, RDFResource>();
-            LiteralsRegister = new Dictionary<long, RDFLiteral>();
+            Contexts = new Dictionary<long, RDFContext>();
+            Resources = new Dictionary<long, RDFResource>();
+            Literals = new Dictionary<long, RDFLiteral>();
             //Indexes
-            ContextsIndex = new Dictionary<long, HashSet<long>>();
-            SubjectsIndex = new Dictionary<long, HashSet<long>>();
-            PredicatesIndex = new Dictionary<long, HashSet<long>>();
-            ObjectsIndex = new Dictionary<long, HashSet<long>>();
-            LiteralsIndex = new Dictionary<long, HashSet<long>>();
+            IDXContexts = new Dictionary<long, HashSet<long>>();
+            IDXSubjects = new Dictionary<long, HashSet<long>>();
+            IDXPredicates = new Dictionary<long, HashSet<long>>();
+            IDXObjects = new Dictionary<long, HashSet<long>>();
+            IDXLiterals = new Dictionary<long, HashSet<long>>();
         }
 
         /// <summary>
-        /// Destroys the store index instance
+        /// Destroys the index instance
         /// </summary>
-        ~RDFStoreIndex() => Dispose(false);
+        ~RDFStoreIndex()
+            => Dispose(false);
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Disposes the store index (IDisposable)
+        /// Disposes the index (IDisposable)
         /// </summary>
         public void Dispose()
         {
@@ -112,7 +115,7 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Disposes the store index
+        /// Disposes the index
         /// </summary>
         private void Dispose(bool disposing)
         {
@@ -121,18 +124,20 @@ namespace RDFSharp.Store
 
             if (disposing)
             {
-                ClearIndex();
+                Clear();
 
+                //Hashes
+                Hashes = null;
                 //Registers
-                ContextsRegister = null;
-                ResourcesRegister = null;
-                LiteralsRegister = null;
+                Contexts = null;
+                Resources = null;
+                Literals = null;
                 //Indexes
-                ContextsIndex = null;
-                SubjectsIndex = null;
-                PredicatesIndex = null;
-                ObjectsIndex = null;
-                LiteralsIndex = null;
+                IDXContexts = null;
+                IDXSubjects = null;
+                IDXPredicates = null;
+                IDXObjects = null;
+                IDXLiterals = null;
             }
 
             Disposed = true;
@@ -143,34 +148,39 @@ namespace RDFSharp.Store
 
         #region Add
         /// <summary>
-        /// Adds the given quadruple to the CSPOL index
+        /// Adds the given quadruple to the index
         /// </summary>
-        internal RDFStoreIndex AddIndex(RDFQuadruple quadruple)
+        internal RDFStoreIndex Add(RDFQuadruple quadruple)
         {
+            //Quadruple (Hash)
+            if (Hashes.ContainsKey(quadruple.QuadrupleID))
+                return this;
+            Hashes.Add(quadruple.QuadrupleID, new RDFHashedQuadruple(quadruple));
+            
             //Context (Register)
-            if (!ContextsRegister.ContainsKey(quadruple.Context.PatternMemberID))
-                ContextsRegister.Add(quadruple.Context.PatternMemberID, (RDFContext)quadruple.Context);
+            if (!Contexts.ContainsKey(quadruple.Context.PatternMemberID))
+                Contexts.Add(quadruple.Context.PatternMemberID, (RDFContext)quadruple.Context);
             //Context (Index)
-            if (!ContextsIndex.TryGetValue(quadruple.Context.PatternMemberID, out HashSet<long> contextsIndex))
-                ContextsIndex.Add(quadruple.Context.PatternMemberID, new HashSet<long> { quadruple.QuadrupleID });
+            if (!IDXContexts.TryGetValue(quadruple.Context.PatternMemberID, out HashSet<long> contextsIndex))
+                IDXContexts.Add(quadruple.Context.PatternMemberID, new HashSet<long> { quadruple.QuadrupleID });
             else
                 contextsIndex.Add(quadruple.QuadrupleID);
 
             //Subject (Register)
-            if (!ResourcesRegister.ContainsKey(quadruple.Subject.PatternMemberID))
-                ResourcesRegister.Add(quadruple.Subject.PatternMemberID, (RDFResource)quadruple.Subject);
+            if (!Resources.ContainsKey(quadruple.Subject.PatternMemberID))
+                Resources.Add(quadruple.Subject.PatternMemberID, (RDFResource)quadruple.Subject);
             //Subject (Index)
-            if (!SubjectsIndex.TryGetValue(quadruple.Subject.PatternMemberID, out HashSet<long> subjectsIndex))
-                SubjectsIndex.Add(quadruple.Subject.PatternMemberID, new HashSet<long> { quadruple.QuadrupleID });
+            if (!IDXSubjects.TryGetValue(quadruple.Subject.PatternMemberID, out HashSet<long> subjectsIndex))
+                IDXSubjects.Add(quadruple.Subject.PatternMemberID, new HashSet<long> { quadruple.QuadrupleID });
             else
                 subjectsIndex.Add(quadruple.QuadrupleID);
 
             //Predicate (Register)
-            if (!ResourcesRegister.ContainsKey(quadruple.Predicate.PatternMemberID))
-                ResourcesRegister.Add(quadruple.Predicate.PatternMemberID, (RDFResource)quadruple.Predicate);
+            if (!Resources.ContainsKey(quadruple.Predicate.PatternMemberID))
+                Resources.Add(quadruple.Predicate.PatternMemberID, (RDFResource)quadruple.Predicate);
             //Predicate (Index)
-            if (!PredicatesIndex.TryGetValue(quadruple.Predicate.PatternMemberID, out HashSet<long> predicatesIndex))
-                PredicatesIndex.Add(quadruple.Predicate.PatternMemberID, new HashSet<long> { quadruple.QuadrupleID });
+            if (!IDXPredicates.TryGetValue(quadruple.Predicate.PatternMemberID, out HashSet<long> predicatesIndex))
+                IDXPredicates.Add(quadruple.Predicate.PatternMemberID, new HashSet<long> { quadruple.QuadrupleID });
             else
                 predicatesIndex.Add(quadruple.QuadrupleID);
 
@@ -178,11 +188,11 @@ namespace RDFSharp.Store
             if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
             {
                 //Register
-                if (!ResourcesRegister.ContainsKey(quadruple.Object.PatternMemberID))
-                    ResourcesRegister.Add(quadruple.Object.PatternMemberID, (RDFResource)quadruple.Object);
+                if (!Resources.ContainsKey(quadruple.Object.PatternMemberID))
+                    Resources.Add(quadruple.Object.PatternMemberID, (RDFResource)quadruple.Object);
                 //Index
-                if (!ObjectsIndex.TryGetValue(quadruple.Object.PatternMemberID, out HashSet<long> objectsIndex))
-                    ObjectsIndex.Add(quadruple.Object.PatternMemberID, new HashSet<long> { quadruple.QuadrupleID });
+                if (!IDXObjects.TryGetValue(quadruple.Object.PatternMemberID, out HashSet<long> objectsIndex))
+                    IDXObjects.Add(quadruple.Object.PatternMemberID, new HashSet<long> { quadruple.QuadrupleID });
                 else
                     objectsIndex.Add(quadruple.QuadrupleID);
             }
@@ -191,11 +201,11 @@ namespace RDFSharp.Store
             else
             {
                 //Register
-                if (!LiteralsRegister.ContainsKey(quadruple.Object.PatternMemberID))
-                    LiteralsRegister.Add(quadruple.Object.PatternMemberID, (RDFLiteral)quadruple.Object);
+                if (!Literals.ContainsKey(quadruple.Object.PatternMemberID))
+                    Literals.Add(quadruple.Object.PatternMemberID, (RDFLiteral)quadruple.Object);
                 //Index
-                if (!LiteralsIndex.TryGetValue(quadruple.Object.PatternMemberID, out HashSet<long> literalsIndex))
-                    LiteralsIndex.Add(quadruple.Object.PatternMemberID, new HashSet<long> { quadruple.QuadrupleID });
+                if (!IDXLiterals.TryGetValue(quadruple.Object.PatternMemberID, out HashSet<long> literalsIndex))
+                    IDXLiterals.Add(quadruple.Object.PatternMemberID, new HashSet<long> { quadruple.QuadrupleID });
                 else
                     literalsIndex.Add(quadruple.QuadrupleID);
             }
@@ -206,93 +216,96 @@ namespace RDFSharp.Store
 
         #region Remove
         /// <summary>
-        /// Removes the given quadruple from the CSPOL index
+        /// Removes the given quadruple from the index
         /// </summary>
-        internal RDFStoreIndex RemoveIndex(RDFQuadruple quadruple)
+        internal RDFStoreIndex Remove(RDFQuadruple quadruple)
         {
+            //Quadruple (Hash)
+            Hashes.Remove(quadruple.QuadrupleID);
+            
             //Context
-            if (ContextsIndex.TryGetValue(quadruple.Context.PatternMemberID, out HashSet<long> contextsIndex)
+            if (IDXContexts.TryGetValue(quadruple.Context.PatternMemberID, out HashSet<long> contextsIndex)
                  && contextsIndex.Contains(quadruple.QuadrupleID))
             {
                 contextsIndex.Remove(quadruple.QuadrupleID);
                 if (contextsIndex.Count == 0)
-                    ContextsIndex.Remove(quadruple.Context.PatternMemberID);
+                    IDXContexts.Remove(quadruple.Context.PatternMemberID);
             }
 
             //Subject
-            if (SubjectsIndex.TryGetValue(quadruple.Subject.PatternMemberID, out HashSet<long> subjectsIndex)
+            if (IDXSubjects.TryGetValue(quadruple.Subject.PatternMemberID, out HashSet<long> subjectsIndex)
                  && subjectsIndex.Contains(quadruple.QuadrupleID))
             {
                 subjectsIndex.Remove(quadruple.QuadrupleID);
                 if (subjectsIndex.Count == 0)
-                    SubjectsIndex.Remove(quadruple.Subject.PatternMemberID);
+                    IDXSubjects.Remove(quadruple.Subject.PatternMemberID);
             }
 
             //Predicate
-            if (PredicatesIndex.TryGetValue(quadruple.Predicate.PatternMemberID, out HashSet<long> predicatesIndex)
+            if (IDXPredicates.TryGetValue(quadruple.Predicate.PatternMemberID, out HashSet<long> predicatesIndex)
                  && predicatesIndex.Contains(quadruple.QuadrupleID))
             {
                 predicatesIndex.Remove(quadruple.QuadrupleID);
                 if (predicatesIndex.Count == 0)
-                    PredicatesIndex.Remove(quadruple.Predicate.PatternMemberID);
+                    IDXPredicates.Remove(quadruple.Predicate.PatternMemberID);
             }
 
             //Object
             if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
             {
-                if (ObjectsIndex.TryGetValue(quadruple.Object.PatternMemberID, out HashSet<long> objectsIndex)
+                if (IDXObjects.TryGetValue(quadruple.Object.PatternMemberID, out HashSet<long> objectsIndex)
                      && objectsIndex.Contains(quadruple.QuadrupleID))
                 {
                     objectsIndex.Remove(quadruple.QuadrupleID);
                     if (objectsIndex.Count == 0)
-                        ObjectsIndex.Remove(quadruple.Object.PatternMemberID);
+                        IDXObjects.Remove(quadruple.Object.PatternMemberID);
                 }
             }
 
             //Literal
             else
             {
-                if (LiteralsIndex.TryGetValue(quadruple.Object.PatternMemberID, out HashSet<long> literalsIndex)
+                if (IDXLiterals.TryGetValue(quadruple.Object.PatternMemberID, out HashSet<long> literalsIndex)
                      && literalsIndex.Contains(quadruple.QuadrupleID))
                 {
                     literalsIndex.Remove(quadruple.QuadrupleID);
                     if (literalsIndex.Count == 0)
-                        LiteralsIndex.Remove(quadruple.Object.PatternMemberID);
+                        IDXLiterals.Remove(quadruple.Object.PatternMemberID);
                 }
             }
 
             //Context (Register)
-            if (!ContextsIndex.ContainsKey(quadruple.Context.PatternMemberID))
-                ContextsRegister.Remove(quadruple.Context.PatternMemberID);
+            if (!IDXContexts.ContainsKey(quadruple.Context.PatternMemberID))
+                Contexts.Remove(quadruple.Context.PatternMemberID);
 
             //Subject (Register)
-            if (!SubjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID)
-                 && !PredicatesIndex.ContainsKey(quadruple.Subject.PatternMemberID)
-                 && !ObjectsIndex.ContainsKey(quadruple.Subject.PatternMemberID))
-                ResourcesRegister.Remove(quadruple.Subject.PatternMemberID);
+            if (!IDXSubjects.ContainsKey(quadruple.Subject.PatternMemberID)
+                 && !IDXPredicates.ContainsKey(quadruple.Subject.PatternMemberID)
+                 && !IDXObjects.ContainsKey(quadruple.Subject.PatternMemberID))
+                Resources.Remove(quadruple.Subject.PatternMemberID);
 
             //Predicate (Register)
-            if (!SubjectsIndex.ContainsKey(quadruple.Predicate.PatternMemberID)
-                 && !PredicatesIndex.ContainsKey(quadruple.Predicate.PatternMemberID)
-                 && !ObjectsIndex.ContainsKey(quadruple.Predicate.PatternMemberID))
-                ResourcesRegister.Remove(quadruple.Predicate.PatternMemberID);
+            if (!IDXSubjects.ContainsKey(quadruple.Predicate.PatternMemberID)
+                 && !IDXPredicates.ContainsKey(quadruple.Predicate.PatternMemberID)
+                 && !IDXObjects.ContainsKey(quadruple.Predicate.PatternMemberID))
+                Resources.Remove(quadruple.Predicate.PatternMemberID);
 
             //Object (Register)
             if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
             {
-                if (!SubjectsIndex.ContainsKey(quadruple.Object.PatternMemberID)
-                     && !PredicatesIndex.ContainsKey(quadruple.Object.PatternMemberID)
-                     && !ObjectsIndex.ContainsKey(quadruple.Object.PatternMemberID))
-                    ResourcesRegister.Remove(quadruple.Object.PatternMemberID);
+                if (!IDXSubjects.ContainsKey(quadruple.Object.PatternMemberID)
+                     && !IDXPredicates.ContainsKey(quadruple.Object.PatternMemberID)
+                     && !IDXObjects.ContainsKey(quadruple.Object.PatternMemberID))
+                    Resources.Remove(quadruple.Object.PatternMemberID);
             }
 
             //Literal (Register)
             else
             {
-                if (!SubjectsIndex.ContainsKey(quadruple.Object.PatternMemberID)
-                     && !PredicatesIndex.ContainsKey(quadruple.Object.PatternMemberID)
-                     && !LiteralsIndex.ContainsKey(quadruple.Object.PatternMemberID))
-                    LiteralsRegister.Remove(quadruple.Object.PatternMemberID);
+                if (!IDXSubjects.ContainsKey(quadruple.Object.PatternMemberID)
+                     && !IDXPredicates.ContainsKey(quadruple.Object.PatternMemberID)
+                     && !IDXLiterals.ContainsKey(quadruple.Object.PatternMemberID))
+                    Literals.Remove(quadruple.Object.PatternMemberID);
             }
 
             return this;
@@ -301,18 +314,20 @@ namespace RDFSharp.Store
         /// <summary>
         /// Clears the index
         /// </summary>
-        internal void ClearIndex()
+        internal void Clear()
         {
+            //Hash
+            Hashes.Clear();
             //Registers
-            ContextsRegister.Clear();
-            ResourcesRegister.Clear();
-            LiteralsRegister.Clear();
+            Contexts.Clear();
+            Resources.Clear();
+            Literals.Clear();
             //Indexes
-            ContextsIndex.Clear();
-            SubjectsIndex.Clear();
-            PredicatesIndex.Clear();
-            ObjectsIndex.Clear();
-            LiteralsIndex.Clear();
+            IDXContexts.Clear();
+            IDXSubjects.Clear();
+            IDXPredicates.Clear();
+            IDXObjects.Clear();
+            IDXLiterals.Clear();
         }
         #endregion
 
@@ -320,32 +335,32 @@ namespace RDFSharp.Store
         /// <summary>
         /// Selects the quadruples indexed by the given context
         /// </summary>
-        internal HashSet<long> SelectIndexByContext(RDFContext contextResource)
-            => ContextsIndex.TryGetValue(contextResource.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
+        internal HashSet<long> LookupIndexByContext(RDFContext ctx)
+            => IDXContexts.TryGetValue(ctx.PatternMemberID, out HashSet<long> index) ? index : RDFModelUtilities.EmptyHashSet;
 
         /// <summary>
         /// Selects the quadruples indexed by the given subject
         /// </summary>
-        internal HashSet<long> SelectIndexBySubject(RDFResource subjectResource)
-            => SubjectsIndex.TryGetValue(subjectResource.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
+        internal HashSet<long> LookupIndexBySubject(RDFResource subj)
+            => IDXSubjects.TryGetValue(subj.PatternMemberID, out HashSet<long> index) ? index : RDFModelUtilities.EmptyHashSet;
 
         /// <summary>
         /// Selects the quadruples indexed by the given predicate
         /// </summary>
-        internal HashSet<long> SelectIndexByPredicate(RDFResource predicateResource)
-            => PredicatesIndex.TryGetValue(predicateResource.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
+        internal HashSet<long> LookupIndexByPredicate(RDFResource pred)
+            => IDXPredicates.TryGetValue(pred.PatternMemberID, out HashSet<long> index) ? index : RDFModelUtilities.EmptyHashSet;
 
         /// <summary>
         /// Selects the quadruples indexed by the given object
         /// </summary>
-        internal HashSet<long> SelectIndexByObject(RDFResource objectResource)
-            => ObjectsIndex.TryGetValue(objectResource.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
+        internal HashSet<long> LookupIndexByObject(RDFResource obj)
+            => IDXObjects.TryGetValue(obj.PatternMemberID, out HashSet<long> index) ? index : RDFModelUtilities.EmptyHashSet;
 
         /// <summary>
         /// Selects the quadruples indexed by the given literal
         /// </summary>
-        internal HashSet<long> SelectIndexByLiteral(RDFLiteral objectLiteral)
-            => LiteralsIndex.TryGetValue(objectLiteral.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
+        internal HashSet<long> LookupIndexByLiteral(RDFLiteral lit)
+            => IDXLiterals.TryGetValue(lit.PatternMemberID, out HashSet<long> index) ? index : RDFModelUtilities.EmptyHashSet;
         #endregion
 
         #endregion

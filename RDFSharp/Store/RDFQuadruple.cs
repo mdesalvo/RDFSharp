@@ -128,22 +128,22 @@ namespace RDFSharp.Store
         /// <summary>
         /// Default-ctor to build a quadruple from the given indexed quadruple
         /// </summary>
-        internal RDFQuadruple(RDFIndexedQuadruple indexedQuadruple, RDFStoreIndex storeIndex)
+        internal RDFQuadruple(RDFHashedQuadruple hashedQuadruple, RDFStoreIndex storeIndex)
         {
-            Context = storeIndex.ContextsRegister[indexedQuadruple.ContextID];
-            Subject = storeIndex.ResourcesRegister[indexedQuadruple.SubjectID];
-            Predicate = storeIndex.ResourcesRegister[indexedQuadruple.PredicateID];
-            if (indexedQuadruple.TripleFlavor == 1) //SPO
+            Context = storeIndex.Contexts[hashedQuadruple.ContextID];
+            Subject = storeIndex.Resources[hashedQuadruple.SubjectID];
+            Predicate = storeIndex.Resources[hashedQuadruple.PredicateID];
+            if (hashedQuadruple.TripleFlavor == 1) //SPO
             {
                 TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
-                Object = storeIndex.ResourcesRegister[indexedQuadruple.ObjectID];
+                Object = storeIndex.Resources[hashedQuadruple.ObjectID];
             }
             else
             {
                 TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
-                Object = storeIndex.LiteralsRegister[indexedQuadruple.ObjectID];
+                Object = storeIndex.Literals[hashedQuadruple.ObjectID];
             }
-            LazyQuadrupleID = new Lazy<long>(() => indexedQuadruple.QuadrupleID);
+            LazyQuadrupleID = new Lazy<long>(() => hashedQuadruple.QuadrupleID);
             LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{QuadrupleID}"));
         }
         #endregion
@@ -266,9 +266,9 @@ namespace RDFSharp.Store
     }
 
     /// <summary>
-    /// RDFIndexedQuadruple represents the internal hashed representation of a quadruple
+    /// RDFHashedQuadruple represents the internal hashed representation of a quadruple
     /// </summary>
-    internal sealed class RDFIndexedQuadruple : IEquatable<RDFIndexedQuadruple>
+    internal sealed class RDFHashedQuadruple : IEquatable<RDFHashedQuadruple>
     {
         #region Properties
         /// <summary>
@@ -277,22 +277,22 @@ namespace RDFSharp.Store
         internal readonly long QuadrupleID;
 
         /// <summary>
-        /// Identifier of the member acting as context token of the quadruple
+        /// Identifier of the member acting as context of the quadruple
         /// </summary>
         internal readonly long ContextID;
 
         /// <summary>
-        /// Identifier of the member acting as subject token of the quadruple
+        /// Identifier of the member acting as subject of the quadruple
         /// </summary>
         internal readonly long SubjectID;
 
         /// <summary>
-        /// Identifier of the member acting as predicate token of the quadruple
+        /// Identifier of the member acting as predicate of the quadruple
         /// </summary>
         internal readonly long PredicateID;
 
         /// <summary>
-        /// Identifier of the member acting as object token of the quadruple
+        /// Identifier of the member acting as object of the quadruple
         /// </summary>
         internal readonly long ObjectID;
 
@@ -306,7 +306,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Default-ctor to build an indexed quadruple from the given quadruple
         /// </summary>
-        internal RDFIndexedQuadruple(RDFQuadruple quadruple)
+        internal RDFHashedQuadruple(RDFQuadruple quadruple)
         {
             TripleFlavor = (byte)quadruple.TripleFlavor;
             QuadrupleID = quadruple.QuadrupleID;
@@ -319,19 +319,19 @@ namespace RDFSharp.Store
         
         #region Interfaces
         /// <summary>
-        /// Performs the equality comparison between two indexed quadruples
+        /// Performs the equality comparison between two hashed quadruples
         /// </summary>
-        public bool Equals(RDFIndexedQuadruple other)
+        public bool Equals(RDFHashedQuadruple other)
             => other != null && QuadrupleID == other.QuadrupleID;
 
         /// <summary>
-        /// Performs the equality comparison between two indexed quadruples
+        /// Performs the equality comparison between two hashed quadruples
         /// </summary>
         public override bool Equals(object other)
-            => other is RDFIndexedQuadruple iq && QuadrupleID == iq.QuadrupleID;
+            => other is RDFHashedQuadruple hq && QuadrupleID == hq.QuadrupleID;
 
         /// <summary>
-        /// Calculates the hashcode of this indexed quadruple
+        /// Calculates the hashcode of this hashed quadruple
         /// </summary>
         public override int GetHashCode()
             => QuadrupleID.GetHashCode();

@@ -89,7 +89,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Destroys the graph instance
         /// </summary>
-        ~RDFGraph() => Dispose(false);
+        ~RDFGraph()
+            => Dispose(false);
         #endregion
 
         #region Interfaces
@@ -268,11 +269,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Removes the triples with the given subject
         /// </summary>
-        public RDFGraph RemoveTriplesBySubject(RDFResource subjectResource)
+        public RDFGraph RemoveTriplesBySubject(RDFResource subj)
         {
-            if (subjectResource != null)
+            if (subj != null)
             {
-                foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource))
+                foreach (RDFTriple triple in SelectTriplesBySubject(subj))
                     Index.Remove(triple);
             }
             return this;
@@ -281,17 +282,17 @@ namespace RDFSharp.Model
         /// <summary>
         /// Asynchronously removes the triples with the given subject from the graph
         /// </summary>
-        public Task<RDFGraph> RemoveTriplesBySubjectAsync(RDFResource subjectResource)
-            => Task.Run(() => RemoveTriplesBySubject(subjectResource));
+        public Task<RDFGraph> RemoveTriplesBySubjectAsync(RDFResource subj)
+            => Task.Run(() => RemoveTriplesBySubject(subj));
 
         /// <summary>
         /// Removes the triples with the given predicate
         /// </summary>
-        public RDFGraph RemoveTriplesByPredicate(RDFResource predicateResource)
+        public RDFGraph RemoveTriplesByPredicate(RDFResource pred)
         {
-            if (predicateResource != null)
+            if (pred != null)
             {
-                foreach (RDFTriple triple in SelectTriplesByPredicate(predicateResource))
+                foreach (RDFTriple triple in SelectTriplesByPredicate(pred))
                     Index.Remove(triple);
             }
             return this;
@@ -300,17 +301,17 @@ namespace RDFSharp.Model
         /// <summary>
         /// Asynchronously removes the triples with the given predicate from the graph
         /// </summary>
-        public Task<RDFGraph> RemoveTriplesByPredicateAsync(RDFResource predicateResource)
-            => Task.Run(() => RemoveTriplesByPredicate(predicateResource));
+        public Task<RDFGraph> RemoveTriplesByPredicateAsync(RDFResource pred)
+            => Task.Run(() => RemoveTriplesByPredicate(pred));
 
         /// <summary>
         /// Removes the triples with the given object
         /// </summary>
-        public RDFGraph RemoveTriplesByObject(RDFResource objectResource)
+        public RDFGraph RemoveTriplesByObject(RDFResource obj)
         {
-            if (objectResource != null)
+            if (obj != null)
             {
-                foreach (RDFTriple triple in SelectTriplesByObject(objectResource))
+                foreach (RDFTriple triple in SelectTriplesByObject(obj))
                     Index.Remove(triple);
             }
             return this;
@@ -319,17 +320,17 @@ namespace RDFSharp.Model
         /// <summary>
         /// Asynchronously removes the triples with the given object from the graph
         /// </summary>
-        public Task<RDFGraph> RemoveTriplesByObjectAsync(RDFResource objectResource)
-            => Task.Run(() => RemoveTriplesByObject(objectResource));
+        public Task<RDFGraph> RemoveTriplesByObjectAsync(RDFResource obj)
+            => Task.Run(() => RemoveTriplesByObject(obj));
 
         /// <summary>
         /// Removes the triples with the given literal
         /// </summary>
-        public RDFGraph RemoveTriplesByLiteral(RDFLiteral literal)
+        public RDFGraph RemoveTriplesByLiteral(RDFLiteral lit)
         {
-            if (literal != null)
+            if (lit != null)
             {
-                foreach (RDFTriple triple in SelectTriplesByLiteral(literal))
+                foreach (RDFTriple triple in SelectTriplesByLiteral(lit))
                     Index.Remove(triple);
             }
             return this;
@@ -338,17 +339,17 @@ namespace RDFSharp.Model
         /// <summary>
         /// Asynchronously removes the triples with the given literal from the graph
         /// </summary>
-        public Task<RDFGraph> RemoveTriplesByLiteralAsync(RDFLiteral literal)
-            => Task.Run(() => RemoveTriplesByLiteral(literal));
+        public Task<RDFGraph> RemoveTriplesByLiteralAsync(RDFLiteral lit)
+            => Task.Run(() => RemoveTriplesByLiteral(lit));
 
         /// <summary>
         /// Removes the triples with the given subject and predicate
         /// </summary>
-        public RDFGraph RemoveTriplesBySubjectPredicate(RDFResource subjectResource, RDFResource predicateResource)
+        public RDFGraph RemoveTriplesBySubjectPredicate(RDFResource subj, RDFResource pred)
         {
-            if (subjectResource != null && predicateResource != null)
+            if (subj != null && pred != null)
             {
-                foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource).SelectTriplesByPredicate(predicateResource))
+                foreach (RDFTriple triple in SelectTriplesBySubject(subj).SelectTriplesByPredicate(pred))
                     Index.Remove(triple);
             }
             return this;
@@ -357,17 +358,17 @@ namespace RDFSharp.Model
         /// <summary>
         /// Asynchronously removes the triples with the given subject and predicate from the graph
         /// </summary>
-        public Task<RDFGraph> RemoveTriplesBySubjectPredicateAsync(RDFResource subjectResource, RDFResource predicateResource)
-            => Task.Run(() => RemoveTriplesBySubjectPredicate(subjectResource, predicateResource));
+        public Task<RDFGraph> RemoveTriplesBySubjectPredicateAsync(RDFResource subj, RDFResource pred)
+            => Task.Run(() => RemoveTriplesBySubjectPredicate(subj, pred));
 
         /// <summary>
         /// Removes the triples with the given subject and object
         /// </summary>
-        public RDFGraph RemoveTriplesBySubjectObject(RDFResource subjectResource, RDFResource objectResource)
+        public RDFGraph RemoveTriplesBySubjectObject(RDFResource subj, RDFResource obj)
         {
-            if (subjectResource != null && objectResource != null)
+            if (subj != null && obj != null)
             {
-                foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource).SelectTriplesByObject(objectResource))
+                foreach (RDFTriple triple in SelectTriplesBySubject(subj).SelectTriplesByObject(obj))
                     Index.Remove(triple);
             }
             return this;
@@ -376,17 +377,17 @@ namespace RDFSharp.Model
         /// <summary>
         /// Asynchronously removes the triples with the given subject and object from the graph
         /// </summary>
-        public Task<RDFGraph> RemoveTriplesBySubjectObjectAsync(RDFResource subjectResource, RDFResource objectResource)
-            => Task.Run(() => RemoveTriplesBySubjectObject(subjectResource, objectResource));
+        public Task<RDFGraph> RemoveTriplesBySubjectObjectAsync(RDFResource subj, RDFResource obj)
+            => Task.Run(() => RemoveTriplesBySubjectObject(subj, obj));
 
         /// <summary>
         /// Removes the triples with the given subject and literal
         /// </summary>
-        public RDFGraph RemoveTriplesBySubjectLiteral(RDFResource subjectResource, RDFLiteral literal)
+        public RDFGraph RemoveTriplesBySubjectLiteral(RDFResource subj, RDFLiteral lit)
         {
-            if (subjectResource != null && literal != null)
+            if (subj != null && lit != null)
             {
-                foreach (RDFTriple triple in SelectTriplesBySubject(subjectResource).SelectTriplesByLiteral(literal))
+                foreach (RDFTriple triple in SelectTriplesBySubject(subj).SelectTriplesByLiteral(lit))
                     Index.Remove(triple);
             }
             return this;
@@ -395,17 +396,17 @@ namespace RDFSharp.Model
         /// <summary>
         /// Asynchronously removes the triples with the given subject and literal from the graph
         /// </summary>
-        public Task<RDFGraph> RemoveTriplesBySubjectLiteralAsync(RDFResource subjectResource, RDFLiteral literal)
-            => Task.Run(() => RemoveTriplesBySubjectLiteral(subjectResource, literal));
+        public Task<RDFGraph> RemoveTriplesBySubjectLiteralAsync(RDFResource subj, RDFLiteral lit)
+            => Task.Run(() => RemoveTriplesBySubjectLiteral(subj, lit));
 
         /// <summary>
         /// Removes the triples with the given predicate and object
         /// </summary>
-        public RDFGraph RemoveTriplesByPredicateObject(RDFResource predicateResource, RDFResource objectResource)
+        public RDFGraph RemoveTriplesByPredicateObject(RDFResource pred, RDFResource obj)
         {
-            if (predicateResource != null && objectResource != null)
+            if (pred != null && obj != null)
             {
-                foreach (RDFTriple triple in SelectTriplesByPredicate(predicateResource).SelectTriplesByObject(objectResource))
+                foreach (RDFTriple triple in SelectTriplesByPredicate(pred).SelectTriplesByObject(obj))
                     Index.Remove(triple);
             }
             return this;
@@ -414,17 +415,17 @@ namespace RDFSharp.Model
         /// <summary>
         /// Asynchronously removes the triples with the given predicate and object from the graph
         /// </summary>
-        public Task<RDFGraph> RemoveTriplesByPredicateObjectAsync(RDFResource predicateResource, RDFResource objectResource)
-            => Task.Run(() => RemoveTriplesByPredicateObject(predicateResource, objectResource));
+        public Task<RDFGraph> RemoveTriplesByPredicateObjectAsync(RDFResource pred, RDFResource obj)
+            => Task.Run(() => RemoveTriplesByPredicateObject(pred, obj));
 
         /// <summary>
         /// Removes the triples with the given predicate and literal
         /// </summary>
-        public RDFGraph RemoveTriplesByPredicateLiteral(RDFResource predicateResource, RDFLiteral objectLiteral)
+        public RDFGraph RemoveTriplesByPredicateLiteral(RDFResource pred, RDFLiteral lit)
         {
-            if (predicateResource != null && objectLiteral != null)
+            if (pred != null && lit != null)
             {
-                foreach (RDFTriple triple in SelectTriplesByPredicate(predicateResource).SelectTriplesByLiteral(objectLiteral))
+                foreach (RDFTriple triple in SelectTriplesByPredicate(pred).SelectTriplesByLiteral(lit))
                     Index.Remove(triple);
             }
             return this;
@@ -433,8 +434,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Asynchronously removes the triples with the given predicate and literal from the graph
         /// </summary>
-        public Task<RDFGraph> RemoveTriplesByPredicateLiteralAsync(RDFResource predicateResource, RDFLiteral literal)
-            => Task.Run(() => RemoveTriplesByPredicateLiteral(predicateResource, literal));
+        public Task<RDFGraph> RemoveTriplesByPredicateLiteralAsync(RDFResource pred, RDFLiteral lit)
+            => Task.Run(() => RemoveTriplesByPredicateLiteral(pred, lit));
 
         /// <summary>
         /// Clears the triples and metadata of the graph
@@ -578,6 +579,7 @@ namespace RDFSharp.Model
         public RDFGraph DifferenceWith(RDFGraph graph)
         {
             RDFGraph result = new RDFGraph();
+
             if (graph != null)
             {
                 //Add difference triples
@@ -593,6 +595,7 @@ namespace RDFSharp.Model
                 foreach (RDFTriple t in this)
                     result.Index.Add(t);
             }
+
             return result;
         }
 
@@ -925,7 +928,7 @@ namespace RDFSharp.Model
                 Uri remappedUri = RDFModelUtilities.RemapUriForDereference(uri);
 
                 HttpWebRequest webRequest = WebRequest.CreateHttp(remappedUri);
-                webRequest.MaximumAutomaticRedirections = 4;
+                webRequest.MaximumAutomaticRedirections = 3;
                 webRequest.AllowAutoRedirect = true;
                 webRequest.Timeout = timeoutMilliseconds;
                 webRequest.Accept = "application/rdf+xml,text/turtle,application/turtle,application/x-turtle,application/n-triples,application/trix";

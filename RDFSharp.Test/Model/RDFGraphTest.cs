@@ -35,9 +35,9 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
 
         Assert.IsNotNull(graph);
+        Assert.IsNotNull(graph.Index);
         Assert.IsNotNull(graph.Index.Hashes);
         Assert.AreEqual(0, graph.TriplesCount);
-        Assert.IsNotNull(graph.Index);
         Assert.IsEmpty(graph.Index.Resources);
         Assert.IsEmpty(graph.Index.Literals);
         Assert.IsEmpty(graph.Index.IDXSubjects);
@@ -66,9 +66,9 @@ public class RDFGraphTest
         ]);
 
         Assert.IsNotNull(graph);
+        Assert.IsNotNull(graph.Index);
         Assert.IsNotNull(graph.Index.Hashes);
         Assert.AreEqual(2, graph.TriplesCount);
-        Assert.IsNotNull(graph.Index);
         Assert.HasCount(3, graph.Index.Resources);
         Assert.HasCount(1, graph.Index.Literals);
         Assert.HasCount(1, graph.Index.IDXSubjects);
