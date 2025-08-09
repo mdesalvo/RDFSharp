@@ -59,11 +59,6 @@ namespace RDFSharp.Model
         /// Flag indicating that the graph index has already been disposed
         /// </summary>
         internal bool Disposed { get; set; }
-
-        /// <summary>
-        /// Empty hashset to be returned in case of index miss
-        /// </summary>
-        private static readonly HashSet<long> EmptyHashSet = new HashSet<long>();
         #endregion
 
         #region Ctors
@@ -282,25 +277,25 @@ namespace RDFSharp.Model
         /// Selects the triples indexed by the given subject
         /// </summary>
         internal HashSet<long> SelectIndexBySubject(RDFResource subjectResource)
-            => SubjectsIndex.TryGetValue(subjectResource.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
+            => SubjectsIndex.TryGetValue(subjectResource.PatternMemberID, out HashSet<long> index) ? index : RDFModelUtilities.EmptyHashSet;
 
         /// <summary>
         /// Selects the triples indexed by the given predicate
         /// </summary>
         internal HashSet<long> SelectIndexByPredicate(RDFResource predicateResource)
-            => PredicatesIndex.TryGetValue(predicateResource.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
+            => PredicatesIndex.TryGetValue(predicateResource.PatternMemberID, out HashSet<long> index) ? index : RDFModelUtilities.EmptyHashSet;
 
         /// <summary>
         /// Selects the triples indexed by the given object
         /// </summary>
         internal HashSet<long> SelectIndexByObject(RDFResource objectResource)
-            => ObjectsIndex.TryGetValue(objectResource.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
+            => ObjectsIndex.TryGetValue(objectResource.PatternMemberID, out HashSet<long> index) ? index : RDFModelUtilities.EmptyHashSet;
 
         /// <summary>
         /// Selects the triples indexed by the given literal
         /// </summary>
         internal HashSet<long> SelectIndexByLiteral(RDFLiteral objectLiteral)
-            => LiteralsIndex.TryGetValue(objectLiteral.PatternMemberID, out HashSet<long> index) ? index : EmptyHashSet;
+            => LiteralsIndex.TryGetValue(objectLiteral.PatternMemberID, out HashSet<long> index) ? index : RDFModelUtilities.EmptyHashSet;
         #endregion
 
         #endregion

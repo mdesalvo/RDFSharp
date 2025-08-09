@@ -88,6 +88,11 @@ namespace RDFSharp.Model
         internal static readonly char[] NormalizedStringForbiddenChars = { '\n', '\r', '\t' };
 
         /// <summary>
+        /// Empty hashset to be returned in case of index miss
+        /// </summary>
+        internal static readonly HashSet<long> EmptyHashSet = new HashSet<long>();
+        
+        /// <summary>
         /// Gets the Uri corresponding to the given string
         /// </summary>
         internal static Uri GetUriFromString(string uriString)
