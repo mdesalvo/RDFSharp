@@ -21,6 +21,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using RDFSharp.Query;
 
@@ -513,11 +514,39 @@ namespace RDFSharp.Model
 
         /// <summary>
         /// Gets the subgraph containing triples with the specified combination of SPOL accessors<br/>
-        /// (null values are handled as * selectors. Ensure to keep object and literal mutually exclusive!)
+        /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
         /// </summary>
         public RDFGraph this[RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
-            => obj != null && lit != null ? throw new RDFModelException("Cannot access a graph when both object and literals are given: they must be mutually exclusive!")
-                                          : new RDFGraph(RDFModelUtilities.SelectTriples(this, subj, pred, obj, lit));
+        {
+            get
+            {
+                #region Guards
+                if (obj != null && lit != null)
+                    throw new RDFModelException("Cannot access a graph when both object and literals are given: they must be mutually exclusive!");
+                #endregion
+
+                return new RDFGraph(RDFModelUtilities.SelectTriples(this, subj, pred, obj, lit));
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously gets the subgraph containing triples with the specified combination of SPOL accessors<br/>
+        /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
+        /// </summary>
+        public Task<RDFGraph> this[RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit, CancellationToken cancellationToken]
+        {
+            get
+            {
+                #region Guards
+                if (obj != null && lit != null)
+                    throw new RDFModelException("Cannot access a graph when both object and literals are given: they must be mutually exclusive!");
+                if (cancellationToken.IsCancellationRequested)
+                    return Task.FromCanceled<RDFGraph>(cancellationToken);
+                #endregion
+
+                return Task.Run(() => new RDFGraph(RDFModelUtilities.SelectTriples(this, subj, pred, obj, lit, cancellationToken)));
+            }
+        }
         #endregion
 
         #region Set

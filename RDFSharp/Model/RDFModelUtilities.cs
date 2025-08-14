@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
 using RDFSharp.Query;
@@ -226,46 +227,57 @@ namespace RDFSharp.Model
         /// Selects the triples corresponding to the given pattern from the given graph
         /// </summary>
         internal static List<RDFTriple> SelectTriples(RDFGraph graph, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
+            => SelectTriples(graph, subj, pred, obj, lit, CancellationToken.None);
+        /// <summary>
+        /// Selects the triples corresponding to the given pattern from the given graph, observing the given cancellation token
+        /// </summary>
+        internal static List<RDFTriple> SelectTriples(RDFGraph graph, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             List<RDFTriple> matchResult = new List<RDFTriple>();
             if (graph != null)
             {
-                List<RDFHashedTriple> S = new List<RDFHashedTriple>();
-                List<RDFHashedTriple> P = new List<RDFHashedTriple>();
-                List<RDFHashedTriple> O = new List<RDFHashedTriple>();
-                List<RDFHashedTriple> L = new List<RDFHashedTriple>();
-                List<RDFHashedTriple> matchResultHashedTriples;
                 StringBuilder queryFilters = new StringBuilder();
 
                 //Filter by Subject
+                List<RDFHashedTriple> S = new List<RDFHashedTriple>();
                 if (subj != null)
                 {
                     queryFilters.Append('S');
                     S.AddRange(graph.Index.LookupIndexBySubject(subj).Select(t => graph.Index.Hashes[t]));
                 }
+                cancellationToken.ThrowIfCancellationRequested();
 
                 //Filter by Predicate
+                List<RDFHashedTriple> P = new List<RDFHashedTriple>();
                 if (pred != null)
                 {
                     queryFilters.Append('P');
                     P.AddRange(graph.Index.LookupIndexByPredicate(pred).Select(t => graph.Index.Hashes[t]));
                 }
+                cancellationToken.ThrowIfCancellationRequested();
 
                 //Filter by Object
+                List<RDFHashedTriple> O = new List<RDFHashedTriple>();
                 if (obj != null)
                 {
                     queryFilters.Append('O');
                     O.AddRange(graph.Index.LookupIndexByObject(obj).Select(t => graph.Index.Hashes[t]));
                 }
+                cancellationToken.ThrowIfCancellationRequested();
 
                 //Filter by Literal
+                List<RDFHashedTriple> L = new List<RDFHashedTriple>();
                 if (lit != null)
                 {
                     queryFilters.Append('L');
                     L.AddRange(graph.Index.LookupIndexByLiteral(lit).Select(t => graph.Index.Hashes[t]));
                 }
+                cancellationToken.ThrowIfCancellationRequested();
 
                 //Intersect the filters
+                List<RDFHashedTriple> matchResultHashedTriples;
                 switch (queryFilters.ToString())
                 {
                     case "S":
@@ -305,6 +317,7 @@ namespace RDFSharp.Model
                         matchResultHashedTriples = graph.Index.Hashes.Values.ToList();
                         break;
                 }
+                cancellationToken.ThrowIfCancellationRequested();
 
                 //Decompress hashed triples
                 matchResultHashedTriples.ForEach(hashedTriple => matchResult.Add(new RDFTriple(hashedTriple, graph.Index)));
