@@ -131,7 +131,7 @@ namespace RDFSharp.Model
         /// </summary>
         public bool Equals(RDFTriple other)
             => other != null && TripleID == other.TripleID;
-        
+
         /// <summary>
         /// Performs the equality comparison between two triples
         /// </summary>
@@ -288,7 +288,7 @@ namespace RDFSharp.Model
         /// </summary>
         public bool Equals(RDFHashedTriple other)
             => other != null && TripleID == other.TripleID;
-        
+
         /// <summary>
         /// Performs the equality comparison between two hashed triples
         /// </summary>

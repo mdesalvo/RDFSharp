@@ -91,7 +91,7 @@ namespace RDFSharp.Model
         /// Empty hashset to be returned in case of index miss
         /// </summary>
         internal static readonly HashSet<long> EmptyHashSet = new HashSet<long>();
-        
+
         /// <summary>
         /// Gets the Uri corresponding to the given string
         /// </summary>

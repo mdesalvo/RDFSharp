@@ -160,7 +160,7 @@ namespace RDFSharp.Store
         /// </summary>
         public bool Equals(RDFQuadruple other)
             => other != null && QuadrupleID == other.QuadrupleID;
-        
+
         /// <summary>
         /// Performs the equality comparison between two quadruples
         /// </summary>
@@ -316,7 +316,7 @@ namespace RDFSharp.Store
             ObjectID = quadruple.Object.PatternMemberID;
         }
         #endregion
-        
+
         #region Interfaces
         /// <summary>
         /// Performs the equality comparison between two hashed quadruples

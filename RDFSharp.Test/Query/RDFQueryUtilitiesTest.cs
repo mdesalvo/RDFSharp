@@ -74,7 +74,7 @@ public class RDFQueryUtilitiesTest
         Assert.IsNotNull(pMember);
         Assert.IsTrue(pMember is RDFPlainLiteral pMemberLiteral && pMemberLiteral.Equals(new RDFPlainLiteral(litVal, litLang)));
     }
-    
+
     [TestMethod]
     public void ShouldParsePatternMemberAsTypedLiteral()
     {

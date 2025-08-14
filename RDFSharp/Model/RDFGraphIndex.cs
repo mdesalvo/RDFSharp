@@ -59,7 +59,7 @@ namespace RDFSharp.Model
         /// Index on the literals of the triples
         /// </summary>
         internal Dictionary<long, HashSet<long>> IDXLiterals { get; set; }
-        
+
         /// <summary>
         /// Flag indicating that the index has already been disposed
         /// </summary>
@@ -141,7 +141,7 @@ namespace RDFSharp.Model
             if (Hashes.ContainsKey(triple.TripleID))
                 return this;
             Hashes.Add(triple.TripleID, new RDFHashedTriple(triple));
-            
+
             //Subject (Register)
             if (!Resources.ContainsKey(triple.Subject.PatternMemberID))
                 Resources.Add(triple.Subject.PatternMemberID, (RDFResource)triple.Subject);
@@ -198,7 +198,7 @@ namespace RDFSharp.Model
         {
             //Triple (Hash)
             Hashes.Remove(triple.TripleID);
-            
+
             //Subject (Index)
             if (IDXSubjects.TryGetValue(triple.Subject.PatternMemberID, out HashSet<long> subjectsIndex)
                  && subjectsIndex.Contains(triple.TripleID))

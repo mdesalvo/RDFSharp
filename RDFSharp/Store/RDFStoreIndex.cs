@@ -30,7 +30,7 @@ namespace RDFSharp.Store
         /// Hashed representation of the quadruples
         /// </summary>
         internal Dictionary<long, RDFHashedQuadruple> Hashes { get; set; }
-        
+
         /// <summary>
         /// Register of the contexts
         /// </summary>
@@ -156,7 +156,7 @@ namespace RDFSharp.Store
             if (Hashes.ContainsKey(quadruple.QuadrupleID))
                 return this;
             Hashes.Add(quadruple.QuadrupleID, new RDFHashedQuadruple(quadruple));
-            
+
             //Context (Register)
             if (!Contexts.ContainsKey(quadruple.Context.PatternMemberID))
                 Contexts.Add(quadruple.Context.PatternMemberID, (RDFContext)quadruple.Context);
@@ -222,7 +222,7 @@ namespace RDFSharp.Store
         {
             //Quadruple (Hash)
             Hashes.Remove(quadruple.QuadrupleID);
-            
+
             //Context
             if (IDXContexts.TryGetValue(quadruple.Context.PatternMemberID, out HashSet<long> contextsIndex)
                  && contextsIndex.Contains(quadruple.QuadrupleID))

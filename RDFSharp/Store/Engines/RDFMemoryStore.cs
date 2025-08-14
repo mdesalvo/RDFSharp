@@ -64,7 +64,7 @@ namespace RDFSharp.Store
         /// Identifier of the store
         /// </summary>
         internal string StoreGUID { get; }
-        
+
         /// <summary>
         /// Flag indicating that the store has already been disposed
         /// </summary>
