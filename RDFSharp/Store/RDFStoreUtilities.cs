@@ -84,70 +84,55 @@ namespace RDFSharp.Store
         /// <summary>
         /// Selects the quadruples corresponding to the given pattern from the given store
         /// </summary>
-        internal static List<RDFQuadruple> SelectQuadruples(RDFMemoryStore store, RDFContext ctx, RDFResource subj,
-            RDFResource pred, RDFResource obj, RDFLiteral lit) => SelectQuadruples(store, ctx, subj, pred, obj, lit, CancellationToken.None);
-
-        /// <summary>
-        /// Selects the quadruples corresponding to the given pattern from the given store
-        /// </summary>
-        /// <exception cref="OperationCanceledException"></exception>
-        internal static List<RDFQuadruple> SelectQuadruples(RDFMemoryStore store, RDFContext ctx, RDFResource subj,
-            RDFResource pred, RDFResource obj, RDFLiteral lit, CancellationToken cancellationToken)
+        internal static List<RDFQuadruple> SelectQuadruples(RDFMemoryStore store, RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
             List<RDFQuadruple> matchResult = new List<RDFQuadruple>();
             if (store != null)
             {
                 StringBuilder queryFilters = new StringBuilder();
+                List<RDFHashedQuadruple> C = new List<RDFHashedQuadruple>();
+                List<RDFHashedQuadruple> S = new List<RDFHashedQuadruple>();
+                List<RDFHashedQuadruple> P = new List<RDFHashedQuadruple>();
+                List<RDFHashedQuadruple> O = new List<RDFHashedQuadruple>();
+                List<RDFHashedQuadruple> L = new List<RDFHashedQuadruple>();
+                List<RDFHashedQuadruple> matchResultHashedQuadruples;
 
                 //Filter by Context
-                List<RDFHashedQuadruple> C = new List<RDFHashedQuadruple>();
                 if (ctx != null)
                 {
                     queryFilters.Append('C');
                     C.AddRange(store.Index.LookupIndexByContext(ctx).Select(q => store.Index.Hashes[q]));
                 }
-                cancellationToken.ThrowIfCancellationRequested();
 
                 //Filter by Subject
-                List<RDFHashedQuadruple> S = new List<RDFHashedQuadruple>();
                 if (subj != null)
                 {
                     queryFilters.Append('S');
                     S.AddRange(store.Index.LookupIndexBySubject(subj).Select(q => store.Index.Hashes[q]));
                 }
-                cancellationToken.ThrowIfCancellationRequested();
 
                 //Filter by Predicate
-                List<RDFHashedQuadruple> P = new List<RDFHashedQuadruple>();
                 if (pred != null)
                 {
                     queryFilters.Append('P');
                     P.AddRange(store.Index.LookupIndexByPredicate(pred).Select(q => store.Index.Hashes[q]));
                 }
-                cancellationToken.ThrowIfCancellationRequested();
 
                 //Filter by Object
-                List<RDFHashedQuadruple> O = new List<RDFHashedQuadruple>();
                 if (obj != null)
                 {
                     queryFilters.Append('O');
                     O.AddRange(store.Index.LookupIndexByObject(obj).Select(q => store.Index.Hashes[q]));
                 }
-                cancellationToken.ThrowIfCancellationRequested();
 
                 //Filter by Literal
-                List<RDFHashedQuadruple> L = new List<RDFHashedQuadruple>();
                 if (lit != null)
                 {
                     queryFilters.Append('L');
                     L.AddRange(store.Index.LookupIndexByLiteral(lit).Select(q => store.Index.Hashes[q]));
                 }
-                cancellationToken.ThrowIfCancellationRequested();
 
                 //Intersect the filters
-                List<RDFHashedQuadruple> matchResultHashedQuadruples;
                 switch (queryFilters.ToString())
                 {
                     case "C":
@@ -223,7 +208,6 @@ namespace RDFSharp.Store
                         matchResultHashedQuadruples = store.Index.Hashes.Values.ToList();
                         break;
                 }
-                cancellationToken.ThrowIfCancellationRequested();
 
                 //Decompress hashed quadruples
                 matchResultHashedQuadruples.ForEach(hashedQuadruple => matchResult.Add(new RDFQuadruple(hashedQuadruple, store.Index)));

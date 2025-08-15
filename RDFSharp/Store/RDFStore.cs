@@ -340,27 +340,6 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Asynchronously gets a memory store containing quadruples with the specified combination of CSPOL accessors<br/>
-        /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
-        /// </summary>
-        /// <exception cref="RDFStoreException"></exception>
-        /// <exception cref="OperationCanceledException"></exception>
-        public Task<RDFMemoryStore> this[RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit, CancellationToken cancellationToken]
-        {
-            get
-            {
-                #region Guards
-                if (obj != null && lit != null)
-                    throw new RDFStoreException("Cannot access a store when both object and literals are given: they must be mutually exclusive!");
-                if (cancellationToken.IsCancellationRequested)
-                    return Task.FromCanceled<RDFMemoryStore>(cancellationToken);
-                #endregion
-
-                return Task.Run(() => SelectQuadruples(ctx, subj, pred, obj, lit, cancellationToken));
-            }
-        }
-
-        /// <summary>
         /// Checks if the store contains the given quadruple
         /// </summary>
         public abstract bool ContainsQuadruple(RDFQuadruple quadruple);
@@ -374,14 +353,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Gets a memory store containing quadruples satisfying the given pattern
         /// </summary>
-        public RDFMemoryStore SelectQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
-            => SelectQuadruples(ctx, subj, pred, obj, lit, CancellationToken.None);
-        /// <summary>
-        /// Gets a memory store containing quadruples satisfying the given pattern, observing the given cancellation token
-        /// </summary>
-        /// <exception cref="RDFStoreException"></exception>
-        /// <exception cref="OperationCanceledException"></exception>
-        public abstract RDFMemoryStore SelectQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit, CancellationToken cancellationToken);
+        public abstract RDFMemoryStore SelectQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit);
 
         /// <summary>
         /// Asynchronously gets a memory store containing quadruples of the store satisfying the given pattern

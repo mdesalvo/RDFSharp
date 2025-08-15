@@ -457,8 +457,8 @@ namespace RDFSharp.Store
         /// Gets a store containing quadruples satisfying the given pattern
         /// </summary>
         /// <exception cref="OperationCanceledException"></exception>
-        public override RDFMemoryStore SelectQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred,RDFResource obj, RDFLiteral lit, CancellationToken cancellationToken)
-            => new RDFMemoryStore(RDFStoreUtilities.SelectQuadruples(this, ctx, subj, pred, obj, lit, cancellationToken));
+        public override RDFMemoryStore SelectQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred,RDFResource obj, RDFLiteral lit)
+            => new RDFMemoryStore(RDFStoreUtilities.SelectQuadruples(this, ctx, subj, pred, obj, lit));
         #endregion
 
         #region Set

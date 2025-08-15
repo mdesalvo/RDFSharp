@@ -2794,46 +2794,6 @@ public class RDFGraphTest
     }
 
     [TestMethod]
-    public async Task ShouldSelectTriplesByAsyncAccessor()
-    {
-        RDFGraph graph = new RDFGraph();
-        RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
-        RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-        RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-        graph.AddTriple(triple1).AddTriple(triple2).AddTriple(triple3);
-
-        RDFGraph select = await graph[new RDFResource("http://subj/"), null, null, new RDFPlainLiteral("lit"), CancellationToken.None];
-        Assert.IsNotNull(select);
-        Assert.AreEqual(1, select.TriplesCount);
-    }
-
-    [TestMethod]
-    [DataRow(1)]
-    [DataRow(50)]
-    public async Task ShouldNotSelectTriplesByAsyncAccessorDueToAutomaticallyCanceledToken(double ctsTimeOut)
-    {
-        RDFGraph graph = new RDFGraph();
-        RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
-        RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-        RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-        graph.AddTriple(triple1).AddTriple(triple2).AddTriple(triple3);
-
-        using (CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(ctsTimeOut)))
-        {
-            RDFGraph select = null;
-            try
-            {
-                select = await graph[new RDFResource("http://subj/"), null, null, new RDFPlainLiteral("lit"), cts.Token];
-            }
-            catch (OperationCanceledException ocex)
-            {
-                Assert.IsNull(select);
-                Assert.AreEqual(ocex.CancellationToken, cts.Token);
-            }
-        }
-    }
-
-    [TestMethod]
     public async Task ShouldIntersectGraphsAsync()
     {
         RDFGraph graph1 = new RDFGraph();
