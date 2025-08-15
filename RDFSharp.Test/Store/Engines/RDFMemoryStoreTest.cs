@@ -23,6 +23,7 @@ using System.Data;
 using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace RDFSharp.Test.Store;
 
@@ -2544,6 +2545,42 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(store2);
         Assert.AreEqual(2, store2.QuadruplesCount);
+    }
+
+    [TestMethod]
+    public async Task ShouldSelectQuadruplesByAsyncAccessor()
+    {
+        RDFMemoryStore store = new RDFMemoryStore();
+        store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
+        store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        RDFMemoryStore store2 = await store[new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), null, new RDFPlainLiteral("lit"), CancellationToken.None];
+
+        Assert.IsNotNull(store2);
+        Assert.AreEqual(1, store2.QuadruplesCount);
+    }
+
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(50)]
+    public async Task ShouldNotSelectQuadruplesByAsyncAccessorDueToAutomaticallyCanceledToken(double ctsTimeOut)
+    {
+        RDFMemoryStore store = new RDFMemoryStore();
+        store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
+        store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+
+        using (CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(ctsTimeOut)))
+        {
+            RDFMemoryStore select = null;
+            try
+            {
+                select = await store[new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), null, new RDFPlainLiteral("lit"), cts.Token];
+            }
+            catch (OperationCanceledException ocex)
+            {
+                Assert.IsNull(select);
+                Assert.AreEqual(ocex.CancellationToken, cts.Token);
+            }
+        }
     }
 
     [TestMethod]

@@ -21,6 +21,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using RDFSharp.Model;
 using RDFSharp.Query;
@@ -455,8 +456,9 @@ namespace RDFSharp.Store
         /// <summary>
         /// Gets a store containing quadruples satisfying the given pattern
         /// </summary>
-        public override RDFMemoryStore SelectQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
-            => new RDFMemoryStore(RDFStoreUtilities.SelectQuadruples(this, ctx, subj, pred, obj, lit));
+        /// <exception cref="OperationCanceledException"></exception>
+        public override RDFMemoryStore SelectQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred,RDFResource obj, RDFLiteral lit, CancellationToken cancellationToken)
+            => new RDFMemoryStore(RDFStoreUtilities.SelectQuadruples(this, ctx, subj, pred, obj, lit, cancellationToken));
         #endregion
 
         #region Set

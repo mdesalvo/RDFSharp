@@ -516,6 +516,7 @@ namespace RDFSharp.Model
         /// Gets the subgraph containing triples with the specified combination of SPOL accessors<br/>
         /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFGraph this[RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
         {
             get
@@ -533,6 +534,8 @@ namespace RDFSharp.Model
         /// Asynchronously gets the subgraph containing triples with the specified combination of SPOL accessors<br/>
         /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
+        /// <exception cref="OperationCanceledException"></exception>
         public Task<RDFGraph> this[RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit, CancellationToken cancellationToken]
         {
             get
