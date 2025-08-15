@@ -39,6 +39,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Creates a unique long representation of the given string
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public static long CreateHash(string input)
         {
             #region Guards
@@ -141,6 +142,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Turns Unicodes into ASCII-encoded Unicodes.
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public static string Unicode_To_ASCII(string unicodeString)
         {
             if (string.IsNullOrEmpty(unicodeString))
@@ -189,10 +191,12 @@ namespace RDFSharp.Model
 
             StringBuilder b = new StringBuilder();
             foreach (char c in data)
+            {
                 if (char.IsControl(c) && c != '\u0009' && c != '\u000A' && c != '\u000D')
                     b.Append($"\\u{(int)c:X4}");
                 else
                     b.Append(c);
+            }
             return b.ToString();
         }
 
@@ -204,7 +208,9 @@ namespace RDFSharp.Model
             if (string.IsNullOrEmpty(source)
                  || string.IsNullOrEmpty(value)
                  || !source.EndsWith(value, StringComparison.Ordinal))
+            {
                 return source;
+            }
 
             return source.Remove(source.LastIndexOf(value, StringComparison.Ordinal));
         }
@@ -218,6 +224,7 @@ namespace RDFSharp.Model
                 return null;
             if (!string.IsNullOrEmpty(uri.Fragment))
                 return uri.Fragment.TrimStart('#');
+
             return uri.Segments.Length > 1 ? uri.Segments.Last() : uri.ToString();
         }
         #endregion
@@ -231,6 +238,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Selects the triples corresponding to the given pattern from the given graph, observing the given cancellation token
         /// </summary>
+        /// <exception cref="OperationCanceledException"></exception>
         internal static List<RDFTriple> SelectTriples(RDFGraph graph, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -551,9 +559,10 @@ namespace RDFSharp.Model
             {
                 string subj = triple.Subject.ToString();
                 string pred = triple.Predicate.ToString();
-                string obj = triple.Object is RDFResource ? triple.Object.ToString()
-                                                          : triple.Object is RDFTypedLiteral tlitObj ? tlitObj.Datatype.URI.ToString()
-                                                          : string.Empty;
+                string obj = triple.Object is RDFResource
+                    ? triple.Object.ToString()
+                    : triple.Object is RDFTypedLiteral tlitObj ? tlitObj.Datatype.URI.ToString()
+                                                               : string.Empty;
 
                 //Resolve subject Uri
                 result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => subj.StartsWith(ns.ToString(), StringComparison.Ordinal)));

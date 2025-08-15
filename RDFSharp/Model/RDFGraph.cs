@@ -644,13 +644,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Writes the graph into a file in the given RDF format.
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public void ToFile(RDFModelEnums.RDFFormats rdfFormat, string filepath)
         {
             #region Guards
             if (string.IsNullOrEmpty(filepath))
-            {
                 throw new RDFModelException("Cannot write RDF graph to file because given \"filepath\" parameter is null or empty.");
-            }
             #endregion
 
             switch (rdfFormat)
@@ -673,19 +672,19 @@ namespace RDFSharp.Model
         /// <summary>
         /// Asynchronously writes the graph into a file in the given RDF format
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public Task ToFileAsync(RDFModelEnums.RDFFormats rdfFormat, string filepath)
             => Task.Run(() => ToFile(rdfFormat, filepath));
 
         /// <summary>
         /// Writes the graph into a stream in the given RDF format (at the end the stream is closed)
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public void ToStream(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream)
         {
             #region Guards
             if (outputStream == null)
-            {
                 throw new RDFModelException("Cannot write RDF graph to stream because given \"outputStream\" parameter is null.");
-            }
             #endregion
 
             switch (rdfFormat)
@@ -708,6 +707,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Asynchronously writes the graph into a stream in the given RDF format (at the end the stream is closed)
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public Task ToStreamAsync(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream)
             => Task.Run(() => ToStream(rdfFormat, outputStream));
 
@@ -748,18 +748,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Reads a graph from a file of the given RDF format.
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public static RDFGraph FromFile(RDFModelEnums.RDFFormats rdfFormat, string filepath, bool enableDatatypeDiscovery=false)
         {
             #region Guards
             if (string.IsNullOrEmpty(filepath))
-            {
                 throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter is null or empty.");
-            }
-
             if (!File.Exists(filepath))
-            {
                 throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
-            }
             #endregion
 
             RDFGraph graph = null;
@@ -790,12 +786,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Asynchronously reads a graph from a file of the given RDF format
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public static Task<RDFGraph> FromFileAsync(RDFModelEnums.RDFFormats rdfFormat, string filepath, bool enableDatatypeDiscovery = false)
             => Task.Run(() => FromFile(rdfFormat, filepath, enableDatatypeDiscovery));
 
         /// <summary>
         /// Reads a graph from a stream of the given RDF format.
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, bool enableDatatypeDiscovery=false)
             => FromStream(rdfFormat, inputStream, null, enableDatatypeDiscovery);
         internal static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, Uri graphContext, bool enableDatatypeDiscovery=false)
@@ -835,24 +833,21 @@ namespace RDFSharp.Model
         /// <summary>
         /// Asynchronously reads a graph from a stream of the given RDF format
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public static Task<RDFGraph> FromStreamAsync(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, bool enableDatatypeDiscovery = false)
             => Task.Run(() => FromStream(rdfFormat, inputStream, enableDatatypeDiscovery));
 
         /// <summary>
         /// Reads a graph from a datatable with "Subject-Predicate-Object" columns.
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public static RDFGraph FromDataTable(DataTable table, bool enableDatatypeDiscovery=false)
         {
             #region Guards
             if (table == null)
-            {
                 throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter is null.");
-            }
-
             if (!(table.Columns.Contains("?SUBJECT") && table.Columns.Contains("?PREDICATE") && table.Columns.Contains("?OBJECT")))
-            {
                 throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter does not have the required columns \"?SUBJECT\", \"?PREDICATE\", \"?OBJECT\".");
-            }
             #endregion
 
             RDFGraph graph = new RDFGraph();
@@ -862,9 +857,7 @@ namespace RDFSharp.Model
             #region CONTEXT
             //Parse the name of the datatable for Uri, in order to assign the graph name
             if (Uri.TryCreate(table.TableName, UriKind.Absolute, out Uri graphUri))
-            {
                 graph.SetContext(graphUri);
-            }
             #endregion
 
             #region SUBJECT-PREDICATE-OBJECT
@@ -872,50 +865,34 @@ namespace RDFSharp.Model
             {
                 #region SUBJECT
                 if (tableRow.IsNull("?SUBJECT") || string.IsNullOrEmpty(tableRow["?SUBJECT"].ToString()))
-                {
                     throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"?SUBJECT\" column.");
-                }
 
                 RDFPatternMember rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?SUBJECT"].ToString());
                 if (!(rowSubj is RDFResource subj))
-                {
                     throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row not having a resource in the \"?SUBJECT\" column.");
-                }
                 #endregion
 
                 #region PREDICATE
                 if (tableRow.IsNull("?PREDICATE") || string.IsNullOrEmpty(tableRow["?PREDICATE"].ToString()))
-                {
                     throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"?PREDICATE\" column.");
-                }
 
                 RDFPatternMember rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?PREDICATE"].ToString());
                 if (!(rowPred is RDFResource pred))
-                {
                     throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row not having a resource in the \"?PREDICATE\" column.");
-                }
 
                 if (pred.IsBlank)
-                {
                     throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having a blank resource in the \"?PREDICATE\" column.");
-                }
                 #endregion
 
                 #region OBJECT
                 if (tableRow.IsNull("?OBJECT"))
-                {
                     throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null value in the \"?OBJECT\" column.");
-                }
 
                 RDFPatternMember rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?OBJECT"].ToString());
                 if (rowObj is RDFResource rowObjRes)
-                {
                     graph.AddTriple(new RDFTriple(subj, pred, rowObjRes));
-                }
                 else
-                {
                     graph.AddTriple(new RDFTriple(subj, pred, (RDFLiteral)rowObj));
-                }
                 #endregion
             }
             #endregion
@@ -933,24 +910,21 @@ namespace RDFSharp.Model
         /// <summary>
         /// Asynchronously reads a graph from a datatable with "Subject-Predicate-Object" columns
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public static Task<RDFGraph> FromDataTableAsync(DataTable table, bool enableDatatypeDiscovery=false)
             => Task.Run(() => FromDataTable(table, enableDatatypeDiscovery));
 
         /// <summary>
         /// Reads a graph by trying to dereference the given Uri
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public static RDFGraph FromUri(Uri uri, int timeoutMilliseconds=20000, bool enableDatatypeDiscovery=false)
         {
             #region Guards
             if (uri == null)
-            {
                 throw new RDFModelException("Cannot read RDF graph from Uri because given \"uri\" parameter is null.");
-            }
-
             if (!uri.IsAbsoluteUri)
-            {
                 throw new RDFModelException("Cannot read RDF graph from Uri because given \"uri\" parameter does not represent an absolute Uri.");
-            }
             #endregion
 
             RDFGraph graph = new RDFGraph();
@@ -1022,6 +996,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Asynchronously reads a graph by trying to dereference the given Uri
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public static Task<RDFGraph> FromUriAsync(Uri uri, int timeoutMilliseconds=20000, bool enableDatatypeDiscovery=false)
             => Task.Run(() => FromUri(uri, timeoutMilliseconds, enableDatatypeDiscovery));
         #endregion

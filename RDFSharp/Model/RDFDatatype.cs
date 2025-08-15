@@ -50,6 +50,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Builds a datatype having the given URI, targeting the given datatype with the given list of facets
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFDatatype(Uri datatypeURI, RDFModelEnums.RDFDatatypes targetDatatype, List<RDFFacet> facets)
         {
           URI = datatypeURI ?? throw new RDFModelException("Cannot create RDFDatatype because given \"datatypeURI\" parameter is null.");

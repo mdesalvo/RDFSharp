@@ -46,11 +46,13 @@ namespace RDFSharp.Model
         /// <summary>
         /// Builds a non-blank resource (if starting with "_:" or "bnode:", it builds a blank resource)
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFResource(string uriString) : this(uriString, null) { }
 
         /// <summary>
         /// Builds a non-blank resource (internal high-performance version)
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         internal RDFResource(string uriString, Dictionary<string, long> hashContext)
         {
             URI = RDFModelUtilities.GetUriFromString(uriString)

@@ -62,8 +62,9 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// SPO-flavor ctor
+        /// Builds a triple with SPO flavor
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFTriple(RDFResource subj, RDFResource pred, RDFResource obj) : this(subj, pred)
         {
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
@@ -71,8 +72,9 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// SPL-flavor ctor
+        /// Builds a triple with SPL-flavor
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFTriple(RDFResource subj, RDFResource pred, RDFLiteral lit) : this(subj, pred)
         {
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
@@ -80,8 +82,9 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Initializer-ctor for common triple properties
+        /// Initializer for common triple properties
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         private RDFTriple(RDFResource subj, RDFResource pred)
         {
             #region Guards
@@ -98,7 +101,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Default-ctor to build a triple from the given hashed triple
+        /// Builds a triple from the given hashed triple
         /// </summary>
         internal RDFTriple(RDFHashedTriple hashedTriple, RDFGraphIndex index)
         {

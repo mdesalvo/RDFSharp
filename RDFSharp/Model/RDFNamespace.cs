@@ -60,6 +60,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Builds a namespace with given prefix and Uri
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFNamespace(string prefix, string uri)
         {
             if (string.IsNullOrWhiteSpace(prefix))
