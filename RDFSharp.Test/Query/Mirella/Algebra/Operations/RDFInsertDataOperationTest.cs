@@ -349,7 +349,7 @@ public class RDFInsertDataOperationTest
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(250));
+                    .WithDelay(100));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFInsertDataOperationTest/ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"));
 
@@ -416,7 +416,7 @@ public class RDFInsertDataOperationTest
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(750));
+                    .WithDelay(400));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFInsertDataOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"));
 

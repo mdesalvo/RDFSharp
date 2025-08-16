@@ -358,7 +358,7 @@ public class RDFDeleteDataOperationTest
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(250));
+                    .WithDelay(100));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDeleteDataOperationTest/ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"));
 
@@ -380,7 +380,7 @@ public class RDFDeleteDataOperationTest
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(250));
+                    .WithDelay(100));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDeleteDataOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentType"));
 
@@ -402,7 +402,7 @@ public class RDFDeleteDataOperationTest
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(250));
+                    .WithDelay(100));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDeleteDataOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams"));
         endpoint.AddDefaultGraphUri("ex:ctx1");
@@ -425,7 +425,7 @@ public class RDFDeleteDataOperationTest
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(750));
+                    .WithDelay(400));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDeleteDataOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"));
 

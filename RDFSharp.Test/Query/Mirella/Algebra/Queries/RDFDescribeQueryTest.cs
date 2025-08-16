@@ -1516,7 +1516,7 @@ public class RDFDescribeQueryTest
                 Response.Create()
                     .WithBody($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.@base <{RDFNamespaceRegister.DefaultNamespace}>.<ex:flower> a <ex:plant>.", encoding: Encoding.UTF8)
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(750));
+                    .WithDelay(400));
 
         RDFDescribeQuery query = new RDFDescribeQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -1540,7 +1540,7 @@ public class RDFDescribeQueryTest
                 Response.Create()
                     .WithBody($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.@base <{RDFNamespaceRegister.DefaultNamespace}>.<ex:flower> a <ex:plant>.", encoding: Encoding.UTF8)
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(750));
+                    .WithDelay(400));
 
         RDFDescribeQuery query = new RDFDescribeQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -1566,7 +1566,7 @@ public class RDFDescribeQueryTest
                 Response.Create()
                     .WithBody("", encoding: Encoding.UTF8)
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(750));
+                    .WithDelay(400));
 
         RDFDescribeQuery query = new RDFDescribeQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -1594,7 +1594,7 @@ public class RDFDescribeQueryTest
                 Response.Create()
                     .WithBody("", encoding: Encoding.UTF8)
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(750));
+                    .WithDelay(400));
 
         RDFDescribeQuery query = new RDFDescribeQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))

@@ -483,7 +483,7 @@ public class RDFLoadOperationTest
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(250));
+                    .WithDelay(100));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentType"));
 
@@ -512,7 +512,7 @@ public class RDFLoadOperationTest
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(250));
+                    .WithDelay(100));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams"));
         endpoint.AddDefaultGraphUri("ex:ctx1");
@@ -542,7 +542,7 @@ public class RDFLoadOperationTest
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(250));
+                    .WithDelay(100));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"));
 
@@ -570,7 +570,7 @@ public class RDFLoadOperationTest
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(750));
+                    .WithDelay(400));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFLoadOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"));
 

@@ -476,7 +476,7 @@ public class RDFAskQueryTest
                         </sparql>
                         """, encoding: Encoding.UTF8)
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(750));
+                    .WithDelay(400));
 
         RDFAskQuery query = new RDFAskQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -506,7 +506,7 @@ public class RDFAskQueryTest
                         </sparql>
                         """, encoding: Encoding.UTF8)
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(750));
+                    .WithDelay(400));
 
         RDFAskQuery query = new RDFAskQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -538,7 +538,7 @@ public class RDFAskQueryTest
                         </sparql>
                         """, encoding: Encoding.UTF8)
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(750));
+                    .WithDelay(400));
 
         RDFAskQuery query = new RDFAskQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -571,7 +571,7 @@ public class RDFAskQueryTest
                         </sparql>
                         """, encoding: Encoding.UTF8)
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(750));
+                    .WithDelay(400));
 
         RDFAskQuery query = new RDFAskQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
