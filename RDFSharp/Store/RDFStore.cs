@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using RDFSharp.Model;
 using RDFSharp.Query;
@@ -489,10 +488,13 @@ namespace RDFSharp.Store
         /// <summary>
         /// Writes the store into a file in the given RDF format
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         public void ToFile(RDFStoreEnums.RDFFormats rdfFormat, string filepath)
         {
+            #region Guards
             if (string.IsNullOrWhiteSpace(filepath))
                 throw new RDFStoreException("Cannot write RDF store to file because given \"filepath\" parameter is null or empty.");
+            #endregion
 
             switch (rdfFormat)
             {
@@ -511,16 +513,20 @@ namespace RDFSharp.Store
         /// <summary>
         /// Asynchronously writes the store into a file in the given RDF format
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         public Task ToFileAsync(RDFStoreEnums.RDFFormats rdfFormat, string filepath)
             => Task.Run(() => ToFile(rdfFormat, filepath));
 
         /// <summary>
         /// Writes the store into a stream in the given RDF format
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         public void ToStream(RDFStoreEnums.RDFFormats rdfFormat, Stream outputStream)
         {
+            #region Guards
             if (outputStream == null)
                 throw new RDFStoreException("Cannot write RDF store to stream because given \"outputStream\" parameter is null.");
+            #endregion
 
             switch (rdfFormat)
             {
@@ -539,6 +545,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Asynchronously writes the store into a stream in the given RDF format
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         public Task ToStreamAsync(RDFStoreEnums.RDFFormats rdfFormat, Stream outputStream)
             => Task.Run(() => ToStream(rdfFormat, outputStream));
 

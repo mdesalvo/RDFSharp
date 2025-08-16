@@ -42,6 +42,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// String-based ctor to build a context from the given string
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         public RDFContext(string ctxUri)
         {
             Uri tempUri = RDFModelUtilities.GetUriFromString(ctxUri)
@@ -51,7 +52,9 @@ namespace RDFSharp.Store
             string tempUriString = tempUri.ToString();
             if (tempUriString.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
                  || tempUriString.StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
+            {
                 throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter represents a blank node Uri.");
+            }
 
             Context = tempUri;
         }

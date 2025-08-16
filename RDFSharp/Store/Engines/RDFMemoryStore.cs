@@ -21,7 +21,6 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using RDFSharp.Model;
 using RDFSharp.Query;
@@ -74,7 +73,7 @@ namespace RDFSharp.Store
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty memory store
+        ///Builds an empty memory store
         /// </summary>
         public RDFMemoryStore()
         {
@@ -85,7 +84,7 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// List-based ctor to build a memory store with the given list of quadruples
+        /// Builds a memory store with the given list of quadruples
         /// </summary>
         public RDFMemoryStore(List<RDFQuadruple> quadruples) : this()
             => quadruples?.ForEach(q => AddQuadruple(q));
@@ -456,7 +455,6 @@ namespace RDFSharp.Store
         /// <summary>
         /// Gets a store containing quadruples satisfying the given pattern
         /// </summary>
-        /// <exception cref="OperationCanceledException"></exception>
         public override RDFMemoryStore SelectQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred,RDFResource obj, RDFLiteral lit)
             => new RDFMemoryStore(RDFStoreUtilities.SelectQuadruples(this, ctx, subj, pred, obj, lit));
         #endregion
@@ -553,6 +551,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Reads a memory store from a file of the given RDF format.
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         public static RDFMemoryStore FromFile(RDFStoreEnums.RDFFormats rdfFormat, string filepath, bool enableDatatypeDiscovery=false)
         {
             #region Guards
@@ -590,12 +589,14 @@ namespace RDFSharp.Store
         /// <summary>
         /// Asynchronously reads a memory store from a file of the given RDF format.
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         public static Task<RDFMemoryStore> FromFileAsync(RDFStoreEnums.RDFFormats rdfFormat, string filepath, bool enableDatatypeDiscovery=false)
             => Task.Run(() => FromFile(rdfFormat, filepath, enableDatatypeDiscovery));
 
         /// <summary>
         /// Reads a memory store from a stream of the given RDF format.
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         public static RDFMemoryStore FromStream(RDFStoreEnums.RDFFormats rdfFormat, Stream inputStream, bool enableDatatypeDiscovery=false)
         {
             #region Guards
@@ -631,12 +632,14 @@ namespace RDFSharp.Store
         /// <summary>
         /// Asynchronously reads a memory store from a stream of the given RDF format.
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         public static Task<RDFMemoryStore> FromStreamAsync(RDFStoreEnums.RDFFormats rdfFormat, Stream inputStream, bool enableDatatypeDiscovery=false)
             => Task.Run(() => FromStream(rdfFormat, inputStream, enableDatatypeDiscovery));
 
         /// <summary>
         /// Reads a memory store from a datatable with "Context-Subject-Predicate-Object" columns.
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         public static RDFMemoryStore FromDataTable(DataTable table, bool enableDatatypeDiscovery=false)
         {
             #region Guards
@@ -723,12 +726,14 @@ namespace RDFSharp.Store
         /// <summary>
         /// Asynchronously reads a memory store from a datatable with "Context-Subject-Predicate-Object" columns.
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         public static Task<RDFMemoryStore> FromDataTableAsync(DataTable table, bool enableDatatypeDiscovery=false)
             => Task.Run(() => FromDataTable(table, enableDatatypeDiscovery));
 
         /// <summary>
         /// Reads a memory store by trying to dereference the given Uri
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         public static RDFMemoryStore FromUri(Uri uri, int timeoutMilliseconds=20000, bool enableDatatypeDiscovery=false)
         {
             #region Guards
@@ -795,6 +800,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Asynchronously reads a memory store by trying to dereference the given Uri
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         public static Task<RDFMemoryStore> FromUriAsync(Uri uri, int timeoutMilliseconds=20000, bool enableDatatypeDiscovery=false)
             => Task.Run(() => FromUri(uri, timeoutMilliseconds, enableDatatypeDiscovery));
         #endregion

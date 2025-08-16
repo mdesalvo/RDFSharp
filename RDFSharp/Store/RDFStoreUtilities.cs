@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using RDFSharp.Model;
 
 namespace RDFSharp.Store
@@ -33,10 +32,13 @@ namespace RDFSharp.Store
         /// <summary>
         /// Parses the current quadruple of the data reader
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         public static RDFQuadruple ParseQuadruple(IDataReader fetchedQuadruples)
         {
+            #region Guards
             if (fetchedQuadruples == null)
                 throw new RDFStoreException("Cannot parse quadruple because given \"fetchedQuadruples\" parameter is null.");
+            #endregion
 
             RDFContext qContext = new RDFContext(fetchedQuadruples["Context"].ToString());
             RDFResource qSubject = new RDFResource(fetchedQuadruples["Subject"].ToString());

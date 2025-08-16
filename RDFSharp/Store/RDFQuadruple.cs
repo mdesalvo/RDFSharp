@@ -68,8 +68,9 @@ namespace RDFSharp.Store
 
         #region Ctors
         /// <summary>
-        /// Triple-based ctor
+        /// Builds a quadruple from the given triple and the given context
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         public RDFQuadruple(RDFContext context, RDFTriple triple)
         {
             #region Guards
@@ -87,8 +88,9 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// SPO-flavor ctor
+        /// Builds a quadruple with SPO flavor
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         public RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred, RDFResource obj)
             : this(context, subj, pred)
         {
@@ -97,8 +99,9 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// SPL-flavor ctor
+        /// Builds a quadruple with SPL flavor
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         public RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred, RDFLiteral lit)
             : this(context, subj, pred)
         {
@@ -109,6 +112,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Initializer-ctor for common quadruple properties
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         private RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred)
         {
             #region Guards
@@ -126,7 +130,7 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Default-ctor to build a quadruple from the given hashed quadruple
+        /// Builds a quadruple from the given hashed quadruple
         /// </summary>
         internal RDFQuadruple(RDFHashedQuadruple hashedQuadruple, RDFStoreIndex index)
         {
@@ -304,7 +308,7 @@ namespace RDFSharp.Store
 
         #region Ctor
         /// <summary>
-        /// Default-ctor to build an hashed quadruple from the given quadruple
+        /// Builds an hashed quadruple from the given quadruple
         /// </summary>
         internal RDFHashedQuadruple(RDFQuadruple quadruple)
         {

@@ -35,12 +35,14 @@ namespace RDFSharp.Store
         /// <summary>
         /// Serializes the given store to the given filepath using TriG data format.
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         internal static void Serialize(RDFStore store, string filepath)
             => Serialize(store, new FileStream(filepath, FileMode.Create));
 
         /// <summary>
         /// Serializes the given store to the given stream using TriG data format.
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         internal static void Serialize(RDFStore store, Stream outputStream)
         {
             try
@@ -96,12 +98,14 @@ namespace RDFSharp.Store
         /// <summary>
         /// Deserializes the given TriG filepath to a memory store.
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         internal static RDFMemoryStore Deserialize(string filepath)
             => Deserialize(new FileStream(filepath, FileMode.Open));
 
         /// <summary>
         /// Deserializes the given TriG stream to a memory store.
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         internal static RDFMemoryStore Deserialize(Stream inputStream)
         {
             try
@@ -140,7 +144,6 @@ namespace RDFSharp.Store
 
         #region Utilities
 
-        #region Declarations
         /// <summary>
         /// Represents the context of the TriG parser
         /// </summary>
@@ -161,11 +164,11 @@ namespace RDFSharp.Store
             /// </summary>
             internal RDFMemoryStore Store { get; set; } = new RDFMemoryStore();
         }
-        #endregion
 
         /// <summary>
         /// Parses the TriG data in order to detect a valid directive or statement
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         internal static void ParseStatement(string trigData, RDFTriGContext trigContext)
         {
             StringBuilder sb = new StringBuilder(8);
@@ -189,17 +192,14 @@ namespace RDFSharp.Store
             {
                 ParseDirective(trigData, trigContext, trigContext.Graph, directive);
                 SkipWhitespace(trigData, trigContext);
+
                 // Turtle @base and @prefix directives MUST end with "."
                 if (directive.StartsWith("@", StringComparison.Ordinal))
-                {
                     VerifyCharacterOrFail(trigContext, ReadCodePoint(trigData, trigContext), ".");
-                }
+
                 // SPARQL BASE and PREFIX directives MUST NOT end with "."
-                else
-                {
-                    if (PeekCodePoint(trigData, trigContext) == '.')
-                        throw new RDFModelException("SPARQL directive '" + directive + "' must not end with '.'" + GetTurtleContextCoordinates(trigContext));
-                }
+                else if (PeekCodePoint(trigData, trigContext) == '.')
+                    throw new RDFStoreException("SPARQL directive '" + directive + "' must not end with '.'" + GetTurtleContextCoordinates(trigContext));
             }
             else if (directive.StartsWith("graph:", StringComparison.OrdinalIgnoreCase))
             {
@@ -231,6 +231,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Parses the TriG data in order to detect a valid graph
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         internal static void ParseGraph(string trigData, RDFTriGContext trigContext)
         {
             RDFResource contextOrSubject = null;

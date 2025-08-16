@@ -72,7 +72,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Builds a triple with SPL-flavor
+        /// Builds a triple with SPL flavor
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFTriple(RDFResource subj, RDFResource pred, RDFLiteral lit) : this(subj, pred)

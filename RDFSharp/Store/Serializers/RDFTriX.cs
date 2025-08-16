@@ -33,12 +33,14 @@ namespace RDFSharp.Store
         /// <summary>
         /// Serializes the given store to the given filepath using TriX data format.
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         internal static void Serialize(RDFStore store, string filepath)
             => Serialize(store, new FileStream(filepath, FileMode.Create));
 
         /// <summary>
         /// Serializes the given store to the given stream using TriX data format.
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         internal static void Serialize(RDFStore store, Stream outputStream)
         {
             try
@@ -83,12 +85,14 @@ namespace RDFSharp.Store
         /// <summary>
         /// Deserializes the given TriX filepath to a memory store.
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         internal static RDFMemoryStore Deserialize(string filepath)
             => Deserialize(new FileStream(filepath, FileMode.Open));
 
         /// <summary>
         /// Deserializes the given TriX stream to a memory store.
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         internal static RDFMemoryStore Deserialize(Stream inputStream)
         {
             try
