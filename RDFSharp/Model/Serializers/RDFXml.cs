@@ -35,12 +35,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Serializes the given graph to the given filepath using XML data format.
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         internal static void Serialize(RDFGraph graph, string filepath)
             => Serialize(graph, new FileStream(filepath, FileMode.Create));
 
         /// <summary>
         /// Serializes the given graph to the given stream using XML data format.
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         internal static void Serialize(RDFGraph graph, Stream outputStream)
         {
             try
@@ -365,12 +367,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Deserializes the given Xml filepath to a graph.
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         internal static RDFGraph Deserialize(string filepath)
             => Deserialize(new FileStream(filepath, FileMode.Open), null);
 
         /// <summary>
         /// Deserializes the given Xml stream to a graph.
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         internal static RDFGraph Deserialize(Stream inputStream, Uri graphContext)
         {
             try

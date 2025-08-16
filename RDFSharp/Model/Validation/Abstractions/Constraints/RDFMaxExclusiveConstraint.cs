@@ -35,12 +35,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a maxExclusive constraint with the given resource value
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFMaxExclusiveConstraint(RDFResource value)
             => Value = value ?? throw new RDFModelException("Cannot create RDFMaxExclusiveConstraint because given \"value\" parameter is null.");
 
         /// <summary>
         /// Default-ctor to build a maxExclusive constraint with the given literal value
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFMaxExclusiveConstraint(RDFLiteral value)
             => Value = value ?? throw new RDFModelException("Cannot create RDFMaxExclusiveConstraint because given \"value\" parameter is null.");
         #endregion

@@ -45,6 +45,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a qualified value shape constraint with the given property shape identifier and min/max counters
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFQualifiedValueShapeConstraint(RDFResource qualifiedValueShapeUri, int? qualifiedValueMinCount, int? qualifiedValueMaxCount)
         {
             QualifiedValueShapeUri = qualifiedValueShapeUri ?? throw new RDFModelException("Cannot create RDFQualifiedValueShapeConstraint because given \"qualifiedValueShapeUri\" parameter is null.");

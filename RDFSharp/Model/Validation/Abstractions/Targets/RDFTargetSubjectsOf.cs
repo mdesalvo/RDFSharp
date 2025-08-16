@@ -25,6 +25,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a subjectsOf target on the given property
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFTargetSubjectsOf(RDFResource targetProperty)
             => TargetValue = targetProperty ?? throw new RDFModelException("Cannot create RDFTargetSubjectsOf because given \"targetProperty\" parameter is null.");
         #endregion

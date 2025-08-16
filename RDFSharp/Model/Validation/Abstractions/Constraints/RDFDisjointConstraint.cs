@@ -36,6 +36,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a disjoint constraint with the given predicate
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFDisjointConstraint(RDFResource disjointPredicate)
             => DisjointPredicate = disjointPredicate ?? throw new RDFModelException("Cannot create RDFDisjointConstraint because given \"disjointPredicate\" parameter is null.");
         #endregion

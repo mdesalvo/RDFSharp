@@ -36,6 +36,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build an equals constraint with the given predicate
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFEqualsConstraint(RDFResource equalsPredicate)
             => EqualsPredicate = equalsPredicate ?? throw new RDFModelException("Cannot create RDFEqualsConstraint because given \"equalsPredicate\" parameter is null.");
         #endregion

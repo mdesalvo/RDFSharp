@@ -39,7 +39,7 @@ namespace RDFSharp.Model
                         //sh:targetClass
                         case RDFTargetClass _:
                             result.AddRange(dataGraph.GetInstancesOfClass(target.TargetValue)
-                                .OfType<RDFResource>());
+                                  .OfType<RDFResource>());
                             break;
 
                         //sh:targetNode
@@ -50,15 +50,15 @@ namespace RDFSharp.Model
                         //sh:targetSubjectsOf
                         case RDFTargetSubjectsOf _:
                             result.AddRange(dataGraph[null, target.TargetValue, null, null]
-                                .Select(x => x.Subject)
-                                .OfType<RDFResource>());
+                                  .Select(x => x.Subject)
+                                  .OfType<RDFResource>());
                             break;
 
                         //sh:targetObjectsOf
                         case RDFTargetObjectsOf _:
                             result.AddRange(dataGraph[null, target.TargetValue, null, null]
-                                .Select(x => x.Object)
-                                .OfType<RDFResource>());
+                                  .Select(x => x.Object)
+                                  .OfType<RDFResource>());
                             break;
                     }
             }

@@ -25,6 +25,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a class target on the given resource
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFTargetClass(RDFResource targetClass)
             => TargetValue = targetClass ?? throw new RDFModelException("Cannot create RDFTargetClass because given \"targetClass\" parameter is null.");
         #endregion

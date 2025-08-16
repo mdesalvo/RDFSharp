@@ -70,6 +70,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a named property shape on the given property
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFPropertyShape(RDFResource propertyShapeName, RDFResource path, bool isInversePath=false) : base(propertyShapeName)
         {
             Path = path ?? throw new RDFModelException("Cannot create RDFPropertyShape because given \"path\" parameter is null.");
@@ -81,6 +82,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a named property shape on the given properties
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFPropertyShape(RDFResource propertyShapeName, List<RDFResource> pathSteps, RDFQueryEnums.RDFPropertyPathStepFlavors pathStepsFlavor) : base(propertyShapeName)
         {
             #region Guards

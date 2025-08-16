@@ -36,6 +36,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a class constraint with the given class
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFClassConstraint(RDFResource classType)
             => ClassType = classType ?? throw new RDFModelException("Cannot create RDFClassConstraint because given \"classType\" parameter is null.");
         #endregion

@@ -37,6 +37,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a pattern constraint with the given regex
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFPatternConstraint(Regex regex)
             => RegEx = regex ?? throw new RDFModelException("Cannot create RDFPatternConstraint because given \"regex\" parameter is null.");
         #endregion

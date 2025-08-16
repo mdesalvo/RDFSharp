@@ -35,6 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a property constraint with the given property shape identifier
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFPropertyConstraint(RDFResource propertyShapeUri)
             => PropertyShapeUri = propertyShapeUri ?? throw new RDFModelException("Cannot create RDFPropertyConstraint because given \"propertyShapeUri\" parameter is null.");
         #endregion
@@ -67,8 +68,10 @@ namespace RDFSharp.Model
         {
             RDFGraph result = new RDFGraph();
             if (shape != null)
+            {
                 //sh:property
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.PROPERTY, PropertyShapeUri));
+            }
             return result;
         }
         #endregion

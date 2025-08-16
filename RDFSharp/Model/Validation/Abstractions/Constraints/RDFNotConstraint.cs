@@ -35,6 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a not constraint with the given shape
         /// </summary>
+        /// <exception cref="RDFModelException"></exception>
         public RDFNotConstraint(RDFResource notShape)
             => NotShape = notShape ?? throw new RDFModelException("Cannot create RDFNotConstraint because given \"notShape\" parameter is null.");
         #endregion

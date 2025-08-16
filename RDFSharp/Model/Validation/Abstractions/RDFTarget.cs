@@ -28,7 +28,7 @@ namespace RDFSharp.Model
         public RDFResource TargetValue { get; internal set; }
         #endregion
 
-        #region Properties
+        #region Methods
         /// <summary>
         /// Gets a graph representation of this target
         /// </summary>
