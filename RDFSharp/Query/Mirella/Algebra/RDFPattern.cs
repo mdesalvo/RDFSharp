@@ -70,8 +70,9 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default ctor for SPO pattern
+        /// Builds a pattern with SPO flavor
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFPattern(RDFPatternMember subject, RDFPatternMember predicate, RDFPatternMember objLit)
         {
             #region Guards
@@ -114,8 +115,9 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default ctor for CSPO pattern
+        /// Builds a pattern with SPO flavor and support for context
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFPattern(RDFPatternMember context, RDFPatternMember subject, RDFPatternMember predicate, RDFPatternMember objLit) : this(subject, predicate, objLit)
         {
             #region Guards

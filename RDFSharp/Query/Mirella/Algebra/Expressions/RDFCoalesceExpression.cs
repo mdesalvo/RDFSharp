@@ -28,22 +28,22 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a string coalesce function with given arguments
+        /// Builds a string coalesce function with given arguments
         /// </summary>
         public RDFCoalesceExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string coalesce function with given arguments
+        /// Builds a string coalesce function with given arguments
         /// </summary>
         public RDFCoalesceExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string coalesce function with given arguments
+        /// Builds a string coalesce function with given arguments
         /// </summary>
         public RDFCoalesceExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string coalesce function with given arguments
+        /// Builds a string coalesce function with given arguments
         /// </summary>
         public RDFCoalesceExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
         #endregion

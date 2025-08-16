@@ -28,22 +28,22 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a string contains function with given arguments
+        /// Builds a string contains function with given arguments
         /// </summary>
         public RDFContainsExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string contains function with given arguments
+        /// Builds a string contains function with given arguments
         /// </summary>
         public RDFContainsExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string contains function with given arguments
+        /// Builds a string contains function with given arguments
         /// </summary>
         public RDFContainsExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string contains function with given arguments
+        /// Builds a string contains function with given arguments
         /// </summary>
         public RDFContainsExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
         #endregion

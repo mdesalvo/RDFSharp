@@ -28,22 +28,22 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a string concat function with given arguments
+        /// Builds a string concat function with given arguments
         /// </summary>
         public RDFConcatExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string concat function with given arguments
+        /// Builds a string concat function with given arguments
         /// </summary>
         public RDFConcatExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string concat function with given arguments
+        /// Builds a string concat function with given arguments
         /// </summary>
         public RDFConcatExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string concat function with given arguments
+        /// Builds a string concat function with given arguments
         /// </summary>
         public RDFConcatExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
         #endregion

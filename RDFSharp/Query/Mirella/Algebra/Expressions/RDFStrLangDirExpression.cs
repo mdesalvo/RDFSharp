@@ -35,25 +35,25 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a language+direction plainliteral creator function with given arguments
+        /// Builds a language+direction plainliteral creator function with given arguments
         /// </summary>
         public RDFStrLangDirExpression(RDFExpression leftArgument, RDFExpression rightArgument, RDFQueryEnums.RDFLanguageDirections direction)
             : base(leftArgument, rightArgument) => Direction = direction;
 
         /// <summary>
-        /// Default-ctor to build a language+direction plainliteral creator function with given arguments
+        /// Builds a language+direction plainliteral creator function with given arguments
         /// </summary>
         public RDFStrLangDirExpression(RDFExpression leftArgument, RDFVariable rightArgument, RDFQueryEnums.RDFLanguageDirections direction)
             : base(leftArgument, rightArgument) => Direction = direction;
 
         /// <summary>
-        /// Default-ctor to build a language+direction plainliteral creator function with given arguments
+        /// Builds a language+direction plainliteral creator function with given arguments
         /// </summary>
         public RDFStrLangDirExpression(RDFVariable leftArgument, RDFExpression rightArgument, RDFQueryEnums.RDFLanguageDirections direction)
             : base(leftArgument, rightArgument) => Direction = direction;
 
         /// <summary>
-        /// Default-ctor to build a language+direction plainliteral creator function with given arguments
+        /// Builds a language+direction plainliteral creator function with given arguments
         /// </summary>
         public RDFStrLangDirExpression(RDFVariable leftArgument, RDFVariable rightArgument, RDFQueryEnums.RDFLanguageDirections direction)
             : base(leftArgument, rightArgument) => Direction = direction;

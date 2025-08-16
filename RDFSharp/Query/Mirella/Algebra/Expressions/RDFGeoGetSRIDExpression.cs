@@ -28,12 +28,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a geof:getSRID function with given arguments
+        /// Builds a geof:getSRID function with given arguments
         /// </summary>
         public RDFGeoGetSRIDExpression(RDFExpression leftArgument) : base(leftArgument, null) { }
 
         /// <summary>
-        /// Default-ctor to build a geof:getSRID function with given arguments
+        /// Builds a geof:getSRID function with given arguments
         /// </summary>
         public RDFGeoGetSRIDExpression(RDFVariable leftArgument) : base(leftArgument, null) { }
         #endregion

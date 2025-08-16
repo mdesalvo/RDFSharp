@@ -56,7 +56,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a plain literal without language
+        /// Builds a plain literal without language
         /// </summary>
         public RDFPlainLiteral(string value)
         {
@@ -65,7 +65,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Default-ctor to build a plain literal with language (if not well-formed, the language will be discarded)
+        /// Builds a plain literal with language (if not well-formed, the language will be discarded)
         /// </summary>
         public RDFPlainLiteral(string value, string language) : this(value)
         {

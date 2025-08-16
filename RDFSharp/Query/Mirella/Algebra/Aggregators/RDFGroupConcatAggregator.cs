@@ -36,7 +36,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a GROUP_CONCAT aggregator on the given variable, with the given projection name and given separator
+        /// Builds a GROUP_CONCAT aggregator on the given variable, with the given projection name and given separator
         /// </summary>
         public RDFGroupConcatAggregator(RDFVariable aggrVariable, RDFVariable projVariable, string separator) : base(aggrVariable, projVariable)
             => Separator = string.IsNullOrEmpty(separator) ? " " : separator;
@@ -87,8 +87,10 @@ namespace RDFSharp.Query
 
             //Finalization
             foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
+            {
                 //Update result's table
                 UpdateProjectionTable(partitionKey, projFuncTable);
+            }
 
             return projFuncTable;
         }

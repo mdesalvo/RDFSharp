@@ -29,12 +29,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a SHA512 hash function with given arguments
+        /// Builds a SHA512 hash function with given arguments
         /// </summary>
         public RDFSHA512Expression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a SHA512 hash function with given arguments
+        /// Builds a SHA512 hash function with given arguments
         /// </summary>
         public RDFSHA512Expression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

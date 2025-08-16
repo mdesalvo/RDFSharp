@@ -40,7 +40,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty SPARQL values
+        /// Builds an empty SPARQL values
         /// </summary>
         public RDFValues()
         {

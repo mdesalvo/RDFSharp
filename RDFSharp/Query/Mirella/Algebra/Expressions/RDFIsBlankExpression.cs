@@ -29,12 +29,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a bnode-checking function with given arguments
+        /// Builds a bnode-checking function with given arguments
         /// </summary>
         public RDFIsBlankExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a bnode-checking function with given arguments
+        /// Builds a bnode-checking function with given arguments
         /// </summary>
         public RDFIsBlankExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

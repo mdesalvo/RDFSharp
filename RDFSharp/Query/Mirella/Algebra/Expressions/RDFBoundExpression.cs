@@ -28,12 +28,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a null-checking function with given arguments
+        /// Builds a null-checking function with given arguments
         /// </summary>
         public RDFBoundExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a null-checking function with given arguments
+        /// Builds a null-checking function with given arguments
         /// </summary>
         public RDFBoundExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

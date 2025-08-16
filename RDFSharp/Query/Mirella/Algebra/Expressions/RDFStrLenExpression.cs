@@ -28,12 +28,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a string length function with given arguments
+        /// Builds a string length function with given arguments
         /// </summary>
         public RDFStrLenExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a string length function with given arguments
+        /// Builds a string length function with given arguments
         /// </summary>
         public RDFStrLenExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

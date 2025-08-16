@@ -36,7 +36,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a geof:sfRelate function with given arguments
+        /// Builds a geof:sfRelate function with given arguments
         /// </summary>
         public RDFGeoRelateExpression(RDFExpression leftArgument, RDFExpression rightArgument, string de9imRelation) : base(leftArgument, rightArgument)
         {
@@ -51,7 +51,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:sfRelate function with given arguments
+        /// Builds a geof:sfRelate function with given arguments
         /// </summary>
         public RDFGeoRelateExpression(RDFExpression leftArgument, RDFVariable rightArgument, string de9imRelation) : base(leftArgument, rightArgument)
         {
@@ -66,7 +66,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:sfRelate function with given arguments
+        /// Builds a geof:sfRelate function with given arguments
         /// </summary>
         public RDFGeoRelateExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument, string de9imRelation) : base(leftArgument, rightArgument)
         {
@@ -84,7 +84,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:sfRelate function with given arguments
+        /// Builds a geof:sfRelate function with given arguments
         /// </summary>
         public RDFGeoRelateExpression(RDFVariable leftArgument, RDFExpression rightArgument, string de9imRelation) : base(leftArgument, rightArgument)
         {
@@ -99,7 +99,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:sfRelate function with given arguments
+        /// Builds a geof:sfRelate function with given arguments
         /// </summary>
         public RDFGeoRelateExpression(RDFVariable leftArgument, RDFVariable rightArgument, string de9imRelation) : base(leftArgument, rightArgument)
         {
@@ -114,7 +114,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:sfRelate function with given arguments
+        /// Builds a geof:sfRelate function with given arguments
         /// </summary>
         public RDFGeoRelateExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument, string de9imRelation) : base(leftArgument, rightArgument)
         {

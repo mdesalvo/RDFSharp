@@ -35,7 +35,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a geof:eh* function with given arguments
+        /// Builds a geof:eh* function with given arguments
         /// </summary>
         public RDFGeoEgenhoferExpression(RDFExpression leftArgument, RDFExpression rightArgument, RDFQueryEnums.RDFGeoEgenhoferRelations egenhoferRelation)
             : base(leftArgument, rightArgument)
@@ -47,7 +47,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:eh* function with given arguments
+        /// Builds a geof:eh* function with given arguments
         /// </summary>
         public RDFGeoEgenhoferExpression(RDFExpression leftArgument, RDFVariable rightArgument, RDFQueryEnums.RDFGeoEgenhoferRelations egenhoferRelation)
             : base(leftArgument, rightArgument)
@@ -59,7 +59,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:eh* function with given arguments
+        /// Builds a geof:eh* function with given arguments
         /// </summary>
         public RDFGeoEgenhoferExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument, RDFQueryEnums.RDFGeoEgenhoferRelations egenhoferRelation)
             : base(leftArgument, rightArgument)
@@ -74,7 +74,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:eh* function with given arguments
+        /// Builds a geof:eh* function with given arguments
         /// </summary>
         public RDFGeoEgenhoferExpression(RDFVariable leftArgument, RDFExpression rightArgument, RDFQueryEnums.RDFGeoEgenhoferRelations egenhoferRelation)
             : base(leftArgument, rightArgument)
@@ -86,7 +86,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:eh* function with given arguments
+        /// Builds a geof:eh* function with given arguments
         /// </summary>
         public RDFGeoEgenhoferExpression(RDFVariable leftArgument, RDFVariable rightArgument, RDFQueryEnums.RDFGeoEgenhoferRelations egenhoferRelation)
             : base(leftArgument, rightArgument)
@@ -98,7 +98,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:eh* function with given arguments
+        /// Builds a geof:eh* function with given arguments
         /// </summary>
         public RDFGeoEgenhoferExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument, RDFQueryEnums.RDFGeoEgenhoferRelations egenhoferRelation)
             : base(leftArgument, rightArgument)

@@ -30,7 +30,7 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a COUNT aggregator on the given variable and with the given projection name
+        /// Builds a COUNT aggregator on the given variable and with the given projection name
         /// </summary>
         public RDFCountAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
         #endregion
@@ -81,8 +81,10 @@ namespace RDFSharp.Query
 
             //Finalization
             foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
+            {
                 //Update result's table
                 UpdateProjectionTable(partitionKey, projFuncTable);
+            }
 
             return projFuncTable;
         }

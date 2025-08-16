@@ -29,12 +29,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a string encoding function with given arguments
+        /// Builds a string encoding function with given arguments
         /// </summary>
         public RDFEncodeForURIExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a string encoding function with given arguments
+        /// Builds a string encoding function with given arguments
         /// </summary>
         public RDFEncodeForURIExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

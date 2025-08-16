@@ -30,12 +30,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an arithmetical abs function with given arguments
+        /// Builds an arithmetical abs function with given arguments
         /// </summary>
         public RDFAbsExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical abs function with given arguments
+        /// Builds an arithmetical abs function with given arguments
         /// </summary>
         public RDFAbsExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

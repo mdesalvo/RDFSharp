@@ -49,14 +49,14 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a typed literal with given value and given standard datatype
+        /// Builds a typed literal with given value and given standard datatype
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFTypedLiteral(string value, RDFModelEnums.RDFDatatypes datatype)
             : this(value, RDFDatatypeRegister.GetDatatype(datatype)) { }
 
         /// <summary>
-        /// Default-ctor to build a typed literal with given value and given custom datatype (rdfs:Literal in case null)
+        /// Builds a typed literal with given value and given custom datatype (rdfs:Literal in case null)
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFTypedLiteral(string value, RDFDatatype datatype)

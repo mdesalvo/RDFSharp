@@ -23,12 +23,12 @@ namespace RDFSharp.Model
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named node shape
+        /// Builds a named node shape
         /// </summary>
         public RDFNodeShape(RDFResource nodeShapeName) : base(nodeShapeName) { }
 
         /// <summary>
-        /// Default-ctor to build a blank node shape
+        /// Builds a blank node shape
         /// </summary>
         public RDFNodeShape() : this(new RDFResource()) { }
         #endregion

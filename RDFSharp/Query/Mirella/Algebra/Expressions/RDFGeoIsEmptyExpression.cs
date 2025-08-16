@@ -28,12 +28,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a geosparql:isEmpty function with given arguments
+        /// Builds a geosparql:isEmpty function with given arguments
         /// </summary>
         public RDFGeoIsEmptyExpression(RDFExpression leftArgument) : base(leftArgument, null) { }
 
         /// <summary>
-        /// Default-ctor to build a geosparql:isEmpty function with given arguments
+        /// Builds a geosparql:isEmpty function with given arguments
         /// </summary>
         public RDFGeoIsEmptyExpression(RDFVariable leftArgument) : base(leftArgument, null) { }
         #endregion

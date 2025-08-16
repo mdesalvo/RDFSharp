@@ -29,12 +29,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a MD5 hash function with given arguments
+        /// Builds a MD5 hash function with given arguments
         /// </summary>
         public RDFMD5Expression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a MD5 hash function with given arguments
+        /// Builds a MD5 hash function with given arguments
         /// </summary>
         public RDFMD5Expression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

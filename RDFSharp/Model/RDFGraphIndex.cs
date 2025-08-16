@@ -68,7 +68,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor for an empty index
+        /// Builds an empty index
         /// </summary>
         internal RDFGraphIndex()
         {

@@ -53,7 +53,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a pattern member
+        /// Builds a pattern member
         /// </summary>
         internal RDFPatternMember()
             => LazyPatternMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));

@@ -35,7 +35,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a conditional expression with given arguments
+        /// Builds a conditional expression with given arguments
         /// </summary>
         public RDFIfExpression(RDFExpression conditionArgument, RDFExpression leftArgument, RDFExpression rightArgument)
             : base(leftArgument, rightArgument)

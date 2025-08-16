@@ -27,7 +27,7 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a Distinct modifier on a query
+        /// Builds a Distinct modifier on a query
         /// </summary>
         public RDFDistinctModifier() { }
         #endregion

@@ -33,14 +33,14 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a minInclusive constraint with the given resource value
+        /// Builds a minInclusive constraint with the given resource value
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFMinInclusiveConstraint(RDFResource value)
             => Value = value ?? throw new RDFModelException("Cannot create RDFMinInclusiveConstraint because given \"value\" parameter is null.");
 
         /// <summary>
-        /// Default-ctor to build a minInclusive constraint with the given literal value
+        /// Builds a minInclusive constraint with the given literal value
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFMinInclusiveConstraint(RDFLiteral value)

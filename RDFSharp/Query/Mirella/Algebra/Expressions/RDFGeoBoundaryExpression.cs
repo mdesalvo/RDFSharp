@@ -28,12 +28,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a geof:boundary function with given arguments
+        /// Builds a geof:boundary function with given arguments
         /// </summary>
         public RDFGeoBoundaryExpression(RDFExpression leftArgument) : base(leftArgument, null) { }
 
         /// <summary>
-        /// Default-ctor to build a geof:boundary function with given arguments
+        /// Builds a geof:boundary function with given arguments
         /// </summary>
         public RDFGeoBoundaryExpression(RDFVariable leftArgument) : base(leftArgument, null) { }
         #endregion

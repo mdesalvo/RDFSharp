@@ -34,7 +34,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a lessThan constraint with the given predicate
+        /// Builds a lessThan constraint with the given predicate
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFLessThanConstraint(RDFResource lessThanPredicate)

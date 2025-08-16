@@ -33,7 +33,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a node constraint with the given node shape identifier
+        /// Builds a node constraint with the given node shape identifier
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFNodeConstraint(RDFResource nodeShapeUri)

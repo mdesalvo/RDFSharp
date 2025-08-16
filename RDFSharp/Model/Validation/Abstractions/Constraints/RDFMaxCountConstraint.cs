@@ -33,7 +33,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a maxCount constraint with the given maxCount
+        /// Builds a maxCount constraint with the given maxCount
         /// </summary>
         public RDFMaxCountConstraint(int maxCount)
             => MaxCount = maxCount < 0 ? 0 : maxCount;

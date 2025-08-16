@@ -61,7 +61,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default ctor to build an empty container of the given flavor and given type
+        /// Builds an empty container of the given flavor and given type
         /// </summary>
         public RDFContainer(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType)
         {

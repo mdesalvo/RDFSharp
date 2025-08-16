@@ -25,32 +25,32 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an arithmetical subtraction expression with given arguments
+        /// Builds an arithmetical subtraction expression with given arguments
         /// </summary>
         public RDFSubtractExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical subtraction expression with given arguments
+        /// Builds an arithmetical subtraction expression with given arguments
         /// </summary>
         public RDFSubtractExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical subtraction expression with given arguments
+        /// Builds an arithmetical subtraction expression with given arguments
         /// </summary>
         public RDFSubtractExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical subtraction expression with given arguments
+        /// Builds an arithmetical subtraction expression with given arguments
         /// </summary>
         public RDFSubtractExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical subtraction expression with given arguments
+        /// Builds an arithmetical subtraction expression with given arguments
         /// </summary>
         public RDFSubtractExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical subtraction expression with given arguments
+        /// Builds an arithmetical subtraction expression with given arguments
         /// </summary>
         public RDFSubtractExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
         #endregion

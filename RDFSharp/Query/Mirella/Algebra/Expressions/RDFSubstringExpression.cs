@@ -40,7 +40,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a substring function with given arguments
+        /// Builds a substring function with given arguments
         /// </summary>
         public RDFSubstringExpression(RDFExpression leftArgument, int start, int? length=null)
             : base(leftArgument, null as RDFExpression)
@@ -50,7 +50,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a substring function with given arguments
+        /// Builds a substring function with given arguments
         /// </summary>
         public RDFSubstringExpression(RDFVariable leftArgument, int start, int? length=null)
             : base(leftArgument, null as RDFExpression)

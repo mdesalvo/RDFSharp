@@ -56,7 +56,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty SELECT query
+        /// Builds an empty SELECT query
         /// </summary>
         public RDFSelectQuery()
             => ProjectionVars = new Dictionary<RDFVariable, (int, RDFExpression)>();
@@ -82,9 +82,8 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFSelectQuery AddProjectionVariable(RDFVariable projectionVariable, RDFExpression projectionExpression=null)
         {
-            if (projectionVariable != null)
-                if (!ProjectionVars.Any(pv => pv.Key.Equals(projectionVariable)))
-                    ProjectionVars.Add(projectionVariable, (ProjectionVars.Count, projectionExpression));
+            if (projectionVariable != null && !ProjectionVars.Any(pv => pv.Key.Equals(projectionVariable)))
+                ProjectionVars.Add(projectionVariable, (ProjectionVars.Count, projectionExpression));
             return this;
         }
 
@@ -224,6 +223,7 @@ namespace RDFSharp.Query
         internal RDFSelectQueryResult ApplyToDataSource(RDFDataSource dataSource)
         {
             if (dataSource != null)
+            {
                 switch (dataSource)
                 {
                     case RDFGraph graph:
@@ -235,7 +235,7 @@ namespace RDFSharp.Query
                     case RDFSPARQLEndpoint sparqlEndpoint:
                         return ApplyToSPARQLEndpoint(sparqlEndpoint);
                 }
-
+            }
             return new RDFSelectQueryResult();
         }
 

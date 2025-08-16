@@ -33,7 +33,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a property constraint with the given property shape identifier
+        /// Builds a property constraint with the given property shape identifier
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFPropertyConstraint(RDFResource propertyShapeUri)

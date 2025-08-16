@@ -14,9 +14,9 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
 using System.Collections.Generic;
 using System.Data;
-using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
@@ -39,32 +39,37 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an expression with given expression arguments
+        /// Builds an expression with given expression arguments
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         protected RDFExpression(RDFExpression leftArgument, RDFExpression rightArgument)
             : this(leftArgument, rightArgument as RDFExpressionArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an expression with given mixed arguments
+        /// Builds an expression with given mixed arguments
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         protected RDFExpression(RDFExpression leftArgument, RDFPatternMember rightArgument)
             : this(leftArgument, rightArgument as RDFExpressionArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an expression with given mixed arguments
+        /// Builds an expression with given mixed arguments
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         protected RDFExpression(RDFPatternMember leftArgument, RDFExpression rightArgument)
             : this(leftArgument, rightArgument as RDFExpressionArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an expression with given pattern member arguments
+        /// Builds an expression with given pattern member arguments
         /// </summary>
+        /// <exception cref = "RDFQueryException" ></exception>
         protected RDFExpression(RDFPatternMember leftArgument, RDFPatternMember rightArgument)
             : this(leftArgument, rightArgument as RDFExpressionArgument) { }
 
         /// <summary>
         /// Internal-ctor to build an expression with given expression arguments
         /// </summary>
+        /// <exception cref = "RDFQueryException" ></exception>
         internal RDFExpression(RDFExpressionArgument leftArgument, RDFExpressionArgument rightArgument)
         {
             #region Guards

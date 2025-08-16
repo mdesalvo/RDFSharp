@@ -28,12 +28,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a langDir function with given arguments
+        /// Builds a langDir function with given arguments
         /// </summary>
         public RDFLangDirExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a langDir function with given arguments
+        /// Builds a langDir function with given arguments
         /// </summary>
         public RDFLangDirExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

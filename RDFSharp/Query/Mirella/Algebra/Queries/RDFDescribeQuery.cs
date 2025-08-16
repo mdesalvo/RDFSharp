@@ -41,7 +41,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty DESCRIBE query
+        /// Builds an empty DESCRIBE query
         /// </summary>
         public RDFDescribeQuery()
         {
@@ -64,9 +64,8 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFDescribeQuery AddDescribeTerm(RDFResource describeTerm)
         {
-            if (describeTerm != null)
-                if (!DescribeTerms.Any(dt => dt.Equals(describeTerm)))
-                    DescribeTerms.Add(describeTerm);
+            if (describeTerm != null && !DescribeTerms.Any(dt => dt.Equals(describeTerm)))
+                DescribeTerms.Add(describeTerm);
             return this;
         }
 
@@ -75,16 +74,14 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFDescribeQuery AddDescribeTerm(RDFVariable describeVar)
         {
-            if (describeVar != null)
-                if (!DescribeTerms.Any(dt => dt.Equals(describeVar)))
-                {
-                    DescribeTerms.Add(describeVar);
+            if (describeVar != null && !DescribeTerms.Any(dt => dt.Equals(describeVar)))
+            {
+                DescribeTerms.Add(describeVar);
 
-                    //Collect the variable
-                    if (!Variables.Any(v => v.Equals(describeVar)))
-                        Variables.Add(describeVar);
-                }
-
+                //Collect the variable
+                if (!Variables.Any(v => v.Equals(describeVar)))
+                    Variables.Add(describeVar);
+            }
             return this;
         }
 

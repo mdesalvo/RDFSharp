@@ -23,12 +23,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a datetime year function with given arguments
+        /// Builds a datetime year function with given arguments
         /// </summary>
         public RDFYearExpression(RDFExpression leftArgument) : base(leftArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a datetime year function with given arguments
+        /// Builds a datetime year function with given arguments
         /// </summary>
         public RDFYearExpression(RDFVariable leftArgument) : base(leftArgument) { }
         #endregion

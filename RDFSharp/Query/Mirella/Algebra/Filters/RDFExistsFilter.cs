@@ -40,8 +40,9 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a filter on the given pattern
+        /// Builds an Exists filter on the given pattern
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFExistsFilter(RDFPattern pattern)
         {
             #region Guards

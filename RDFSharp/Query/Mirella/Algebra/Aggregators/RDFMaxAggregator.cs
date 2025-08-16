@@ -37,7 +37,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a MAX aggregator on the given variable, with the given projection name and given flavor
+        /// Builds a MAX aggregator on the given variable, with the given projection name and given flavor
         /// </summary>
         public RDFMaxAggregator(RDFVariable aggrVariable, RDFVariable projVariable, RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor) : base(aggrVariable, projVariable)
             => AggregatorFlavor = aggregatorFlavor;
@@ -130,8 +130,10 @@ namespace RDFSharp.Query
 
             //Finalization
             foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
+            {
                 //Update result's table
                 UpdateProjectionTable(partitionKey, projFuncTable);
+            }
 
             return projFuncTable;
         }

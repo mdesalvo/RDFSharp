@@ -68,8 +68,9 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an aggregator on the given variable and with the given projection name
+        /// Builds an aggregator on the given variable and with the given projection name
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         internal RDFAggregator(RDFVariable aggregatorVariable, RDFVariable projectionVariable)
         {
             AggregatorVariable = aggregatorVariable ?? throw new RDFQueryException("Cannot create RDFAggregator because given \"aggregatorVariable\" parameter is null.");
@@ -219,7 +220,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty aggregator context
+        /// Builds an empty aggregator context
         /// </summary>
         internal RDFAggregatorContext()
         {

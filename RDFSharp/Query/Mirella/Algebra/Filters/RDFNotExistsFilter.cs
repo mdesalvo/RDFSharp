@@ -27,7 +27,7 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a filter on the given pattern
+        /// Builds a NotExists filter on the given pattern
         /// </summary>
         public RDFNotExistsFilter(RDFPattern pattern) : base(pattern) { }
         #endregion

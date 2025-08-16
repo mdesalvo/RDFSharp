@@ -29,22 +29,22 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a string ends function with given arguments
+        /// Builds a string ends function with given arguments
         /// </summary>
         public RDFStrEndsExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string ends function with given arguments
+        /// Builds a string ends function with given arguments
         /// </summary>
         public RDFStrEndsExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string ends function with given arguments
+        /// Builds a string ends function with given arguments
         /// </summary>
         public RDFStrEndsExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a string ends function with given arguments
+        /// Builds a string ends function with given arguments
         /// </summary>
         public RDFStrEndsExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
         #endregion

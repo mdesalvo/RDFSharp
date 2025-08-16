@@ -43,7 +43,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a qualified value shape constraint with the given property shape identifier and min/max counters
+        /// Builds a qualified value shape constraint with the given property shape identifier and min/max counters
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFQualifiedValueShapeConstraint(RDFResource qualifiedValueShapeUri, int? qualifiedValueMinCount, int? qualifiedValueMaxCount)

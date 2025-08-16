@@ -33,7 +33,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a nodeKind constraint of the given kind
+        /// Builds a nodeKind constraint of the given kind
         /// </summary>
         public RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds nodeKind)
             => NodeKind = nodeKind;

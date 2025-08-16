@@ -35,7 +35,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a pattern constraint with the given regex
+        /// Builds a pattern constraint with the given regex
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFPatternConstraint(Regex regex)

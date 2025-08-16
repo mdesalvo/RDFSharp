@@ -49,8 +49,9 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a path between the given terms
+        /// Builds a path between the given terms
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFPropertyPath(RDFPatternMember start, RDFPatternMember end)
         {
             #region Guards
@@ -85,6 +86,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given alternative steps to the path. If only one is given, it is considered sequence.
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFPropertyPath AddAlternativeSteps(List<RDFPropertyPathStep> alternativeSteps)
         {
             #region Guards
@@ -98,13 +100,15 @@ namespace RDFSharp.Query
             if (Steps.Count == 0
                  || alternativeSteps.Count == 1
                  || Steps.LastOrDefault()?.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence)
+            {
                 Depth++;
+            }
 
             //Collect the given steps into the property path
             if (alternativeSteps.Count == 1)
             {
                 Steps.Add(alternativeSteps[0].SetOrdinal(Steps.Count)
-                                                         .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
+                                             .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
             }
             else
             {
@@ -123,6 +127,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given sequence step to the path
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFPropertyPath AddSequenceStep(RDFPropertyPathStep sequenceStep)
         {
             #region Guards
@@ -262,8 +267,9 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a step of a property path
+        /// Builds a step of a property path
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFPropertyPathStep(RDFResource stepProperty)
             => StepProperty = stepProperty ?? throw new RDFQueryException("Cannot create RDFPropertyPathStep because given \"stepProperty\" parameter is null.");
         #endregion

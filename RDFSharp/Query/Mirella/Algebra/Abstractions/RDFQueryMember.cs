@@ -48,7 +48,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a query member
+        /// Builds a query member
         /// </summary>
         internal RDFQueryMember()
         {

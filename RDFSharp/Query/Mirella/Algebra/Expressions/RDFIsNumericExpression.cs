@@ -28,12 +28,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a number-checking function with given arguments
+        /// Builds a number-checking function with given arguments
         /// </summary>
         public RDFIsNumericExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a number-checking function with given arguments
+        /// Builds a number-checking function with given arguments
         /// </summary>
         public RDFIsNumericExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

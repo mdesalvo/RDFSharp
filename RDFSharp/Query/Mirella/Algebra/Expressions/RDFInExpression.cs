@@ -37,7 +37,7 @@ namespace RDFSharp.Query
         #region Ctors
 
         /// <summary>
-        /// Default-ctor to build a lookup function with given arguments
+        /// Builds a lookup function with given arguments
         /// </summary>
         public RDFInExpression(RDFExpression leftArgument, List<RDFPatternMember> inTerms) : base(leftArgument, null as RDFExpression)
         {
@@ -47,7 +47,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a lookup function with given arguments
+        /// Builds a lookup function with given arguments
         /// </summary>
         public RDFInExpression(RDFVariable leftArgument, List<RDFPatternMember> inTerms) : base(leftArgument, null as RDFExpression)
         {

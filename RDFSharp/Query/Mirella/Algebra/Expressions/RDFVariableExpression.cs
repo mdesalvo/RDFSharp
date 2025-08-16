@@ -28,13 +28,13 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a variable expression with given argument
+        /// Builds a variable expression with given argument
         /// </summary>
         public RDFVariableExpression(RDFExpression leftArgument)
             : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a variable expression with given argument
+        /// Builds a variable expression with given argument
         /// </summary>
         public RDFVariableExpression(RDFVariable leftArgument)
             : base(leftArgument, null as RDFExpression) { }

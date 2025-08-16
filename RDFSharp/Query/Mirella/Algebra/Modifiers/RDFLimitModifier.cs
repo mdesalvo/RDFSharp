@@ -33,8 +33,9 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a Limit modifier on a query
+        /// Builds a Limit modifier on a query
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFLimitModifier(int limit)
         {
             #region Guards

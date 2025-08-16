@@ -273,7 +273,7 @@ namespace RDFSharp.Model
 
         #region Ctor
         /// <summary>
-        /// Default-ctor to build an hashed triple from the given triple
+        /// Builds an hashed triple from the given triple
         /// </summary>
         internal RDFHashedTriple(RDFTriple triple)
         {

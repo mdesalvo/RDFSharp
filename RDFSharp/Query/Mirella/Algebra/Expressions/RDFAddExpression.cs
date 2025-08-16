@@ -25,32 +25,32 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an arithmetical addition expression with given arguments
+        /// Builds an arithmetical addition expression with given arguments
         /// </summary>
         public RDFAddExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical addition expression with given arguments
+        /// Builds an arithmetical addition expression with given arguments
         /// </summary>
         public RDFAddExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical addition expression with given arguments
+        /// Builds an arithmetical addition expression with given arguments
         /// </summary>
         public RDFAddExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical addition expression with given arguments
+        /// Builds an arithmetical addition expression with given arguments
         /// </summary>
         public RDFAddExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical addition expression with given arguments
+        /// Builds an arithmetical addition expression with given arguments
         /// </summary>
         public RDFAddExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical addition expression with given arguments
+        /// Builds an arithmetical addition expression with given arguments
         /// </summary>
         public RDFAddExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
         #endregion

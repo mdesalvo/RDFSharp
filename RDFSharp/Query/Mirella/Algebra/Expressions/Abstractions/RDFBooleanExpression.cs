@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a boolean expression with given arguments
+        /// Builds a boolean expression with given arguments
         /// </summary>
         protected RDFBooleanExpression(RDFExpression leftArgument, RDFExpression rightArgument)
             : base(leftArgument, rightArgument)

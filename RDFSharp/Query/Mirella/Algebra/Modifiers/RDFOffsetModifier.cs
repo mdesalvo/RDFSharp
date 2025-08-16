@@ -33,8 +33,9 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an Offset modifier on a query
+        /// Builds an Offset modifier on a query
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFOffsetModifier(int offset)
         {
             #region Guards

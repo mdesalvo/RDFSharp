@@ -39,7 +39,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a in constraint of the given type (Resource/Literal)
+        /// Builds a in constraint of the given type (Resource/Literal)
         /// </summary>
         public RDFInConstraint(RDFModelEnums.RDFItemTypes itemType)
         {

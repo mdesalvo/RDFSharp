@@ -28,12 +28,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a geosparql:dimension function with given arguments
+        /// Builds a geosparql:dimension function with given arguments
         /// </summary>
         public RDFGeoDimensionExpression(RDFExpression leftArgument) : base(leftArgument, null) { }
 
         /// <summary>
-        /// Default-ctor to build a geosparql:dimension function with given arguments
+        /// Builds a geosparql:dimension function with given arguments
         /// </summary>
         public RDFGeoDimensionExpression(RDFVariable leftArgument) : base(leftArgument, null) { }
         #endregion

@@ -33,7 +33,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a minLength constraint with the given minLength
+        /// Builds a minLength constraint with the given minLength
         /// </summary>
         public RDFMinLengthConstraint(int minLength)
             => MinLength = minLength < 0 ? 0 : minLength;

@@ -35,7 +35,7 @@ namespace RDFSharp.Store
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a predefined context
+        /// Builds a predefined context
         /// </summary>
         public RDFContext() : this(RDFNamespaceRegister.DefaultNamespace.NamespaceUri) { }
 

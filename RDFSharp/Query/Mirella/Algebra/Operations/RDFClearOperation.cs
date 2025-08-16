@@ -43,13 +43,14 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an explicit CLEAR operation for the given remote graph Uri
+        /// Builds an explicit CLEAR operation for the given remote graph Uri
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFClearOperation(Uri fromContext)
             => FromContext = fromContext ?? throw new RDFQueryException("Cannot create RDFClearOperation because given \"fromContext\" parameter is null.");
 
         /// <summary>
-        /// Default-ctor to build an implicit CLEAR operation with the given flavor
+        /// Builds an implicit CLEAR operation with the given flavor
         /// </summary>
         public RDFClearOperation(RDFClearOperationFlavor operationFlavor)
             => OperationFlavor = operationFlavor;

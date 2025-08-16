@@ -83,7 +83,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a generic shape
+        /// Builds a generic shape
         /// </summary>
         internal RDFShape(RDFResource shapeName) : base(shapeName.ToString())
         {

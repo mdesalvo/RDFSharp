@@ -37,7 +37,7 @@ namespace RDFSharp.Query
         #region Ctors
 
         /// <summary>
-        /// Default-ctor to build a Regex-replacing function with given arguments
+        /// Builds a Regex-replacing function with given arguments
         /// </summary>
         public RDFReplaceExpression(RDFExpression leftArgument, RDFExpression rightArgument, Regex regex) : base(
             leftArgument, rightArgument)
@@ -51,7 +51,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a Regex-replacing function with given arguments
+        /// Builds a Regex-replacing function with given arguments
         /// </summary>
         public RDFReplaceExpression(RDFExpression leftArgument, RDFVariable rightArgument, Regex regex) : base(leftArgument, rightArgument)
         {
@@ -64,7 +64,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a Regex-replacing function with given arguments
+        /// Builds a Regex-replacing function with given arguments
         /// </summary>
         public RDFReplaceExpression(RDFVariable leftArgument, RDFExpression rightArgument, Regex regex) : base(leftArgument, rightArgument)
         {
@@ -77,7 +77,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a Regex-replacing function with given arguments
+        /// Builds a Regex-replacing function with given arguments
         /// </summary>
         public RDFReplaceExpression(RDFVariable leftArgument, RDFVariable rightArgument, Regex regex) : base(leftArgument, rightArgument)
         {

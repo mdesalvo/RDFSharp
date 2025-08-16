@@ -27,7 +27,7 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a blank node generator function
+        /// Builds a blank node generator function
         /// </summary>
         public RDFBNodeExpression() { }
         #endregion

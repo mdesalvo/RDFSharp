@@ -33,7 +33,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a xone constraint
+        /// Builds a xone constraint
         /// </summary>
         public RDFXoneConstraint()
             => XoneShapes = new Dictionary<long, RDFResource>();

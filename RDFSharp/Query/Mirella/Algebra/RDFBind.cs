@@ -38,8 +38,9 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default ctor for building a bind operator with given expression and variable
+        /// Builds a bind operator with given expression and variable
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFBind(RDFExpression expression, RDFVariable variable)
         {
             Expression = expression ?? throw new RDFQueryException("Cannot create RDFBind because given \"expression\" parameter is null");

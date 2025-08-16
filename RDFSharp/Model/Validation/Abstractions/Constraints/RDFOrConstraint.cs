@@ -33,7 +33,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an or constraint
+        /// Builds an or constraint
         /// </summary>
         public RDFOrConstraint()
             => OrShapes = new Dictionary<long, RDFResource>();

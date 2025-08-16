@@ -37,13 +37,13 @@ namespace RDFSharp.Query
         #region Ctors
 
         /// <summary>
-        /// Default-ctor to build a Regex-checking function with given arguments
+        /// Builds a Regex-checking function with given arguments
         /// </summary>
         public RDFRegexExpression(RDFExpression leftArgument, Regex regex) : base(leftArgument, null as RDFExpression)
             => RegEx = regex ?? throw new RDFQueryException("Cannot create RDFRegexExpression because given \"regex\" parameter is null.");
 
         /// <summary>
-        /// Default-ctor to build a Regex-checking function with given arguments
+        /// Builds a Regex-checking function with given arguments
         /// </summary>
         public RDFRegexExpression(RDFVariable leftArgument, Regex regex) : base(leftArgument, null as RDFExpression)
             => RegEx = regex ?? throw new RDFQueryException("Cannot create RDFRegexExpression because given \"regex\" parameter is null.");

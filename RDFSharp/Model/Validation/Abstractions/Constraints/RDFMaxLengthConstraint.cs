@@ -33,7 +33,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named maxLength constraint with the given maxLength
+        /// Builds a named maxLength constraint with the given maxLength
         /// </summary>
         public RDFMaxLengthConstraint(int maxLength)
             => MaxLength = maxLength < 0 ? 0 : maxLength;

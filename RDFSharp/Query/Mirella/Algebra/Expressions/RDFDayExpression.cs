@@ -23,12 +23,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a datetime day function with given arguments
+        /// Builds a datetime day function with given arguments
         /// </summary>
         public RDFDayExpression(RDFExpression leftArgument) : base(leftArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a datetime day function with given arguments
+        /// Builds a datetime day function with given arguments
         /// </summary>
         public RDFDayExpression(RDFVariable leftArgument) : base(leftArgument) { }
         #endregion

@@ -23,12 +23,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a datetime month function with given arguments
+        /// Builds a datetime month function with given arguments
         /// </summary>
         public RDFMonthExpression(RDFExpression leftArgument) : base(leftArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a datetime month function with given arguments
+        /// Builds a datetime month function with given arguments
         /// </summary>
         public RDFMonthExpression(RDFVariable leftArgument) : base(leftArgument) { }
         #endregion

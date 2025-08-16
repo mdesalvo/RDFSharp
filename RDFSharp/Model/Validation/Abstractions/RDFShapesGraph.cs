@@ -45,13 +45,13 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named shapes graph
+        /// Builds a named shapes graph
         /// </summary>
         public RDFShapesGraph(RDFResource shapesGraphName) : base(shapesGraphName.ToString())
             => Shapes = new Dictionary<long, RDFShape>();
 
         /// <summary>
-        /// Default-ctor to build a blank shapes graph
+        /// Builds a blank shapes graph
         /// </summary>
         public RDFShapesGraph() : this(new RDFResource()) { }
         #endregion

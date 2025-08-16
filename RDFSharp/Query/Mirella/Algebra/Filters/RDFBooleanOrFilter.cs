@@ -39,8 +39,9 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an "OR" filter on the given filters
+        /// Builds an "OR" filter on the given filters
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFBooleanOrFilter(RDFFilter leftFilter, RDFFilter rightFilter)
         {
             switch (leftFilter)
@@ -48,14 +49,14 @@ namespace RDFSharp.Query
                 case null:
                     throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"leftFilter\" parameter is null.");
                 case RDFExistsFilter _:
-                    throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"leftFilter\" parameter is of type RDFExistsFilter: this is not allowed.");
+                    throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"leftFilter\" parameter is of type RDFExistsFilter: this is not supported.");
             }
             switch (rightFilter)
             {
                 case null:
                     throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"rightFilter\" parameter is null.");
                 case RDFExistsFilter _:
-                    throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"rightFilter\" parameter is of type RDFExistsFilter: this is not allowed.");
+                    throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"rightFilter\" parameter is of type RDFExistsFilter: this is not supported.");
                 default:
                     LeftFilter = leftFilter;
                     RightFilter = rightFilter;

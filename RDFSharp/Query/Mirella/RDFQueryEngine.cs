@@ -67,7 +67,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to initialize a query engine instance
+        /// Initializes a query engine instance
         /// </summary>
         internal RDFQueryEngine()
         {
@@ -1180,6 +1180,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the given raw string query to the given SPARQL endpoint
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         internal RDFQueryResult ApplyRawToSPARQLEndpoint(string queryType, string query, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
         {
             #region Utilities
@@ -1577,6 +1578,7 @@ namespace RDFSharp.Query
                 //Loop left table
                 joinTable.BeginLoadData();
                 foreach (DataRow leftRow in leftTable.Rows)
+                {
                     //Loop right table
                     foreach (DataRow rightRow in rightTable.Rows)
                     {
@@ -1586,6 +1588,7 @@ namespace RDFSharp.Query
                         Array.Copy(rightRow.ItemArray, 0, joinArray, leftRow.ItemArray.Length, rightRow.ItemArray.Length);
                         joinTable.LoadDataRow(joinArray, true);
                     }
+                }
                 joinTable.EndLoadData();
             }
 
@@ -1614,6 +1617,7 @@ namespace RDFSharp.Query
                     for (int i = 0; i < dataSet.Tables[0].Columns.Count; i++)
                         joinTable.Columns.Add(dataSet.Tables[0].Columns[i].ColumnName, dataSet.Tables[0].Columns[i].DataType);
                     for (int i = 0; i < dataSet.Tables[1].Columns.Count; i++)
+                    {
                         if (!joinTable.Columns.Contains(dataSet.Tables[1].Columns[i].ColumnName))
                         {
                             joinTable.Columns.Add(dataSet.Tables[1].Columns[i].ColumnName, dataSet.Tables[1].Columns[i].DataType);
@@ -1625,6 +1629,7 @@ namespace RDFSharp.Query
                             joinTable.Columns.Add(duplicateColKey, dataSet.Tables[1].Columns[i].DataType);
                             duplicateColumns.Add(duplicateColKey);
                         }
+                    }
 
                     //Loop left table
                     joinTable.BeginLoadData();
@@ -1632,6 +1637,7 @@ namespace RDFSharp.Query
                     {
                         DataRow[] relatedRows = leftRow.GetChildRows(dataRelation);
                         if (relatedRows.Length > 0)
+                        {
                             //Loop right table (only rows from relation)
                             foreach (DataRow relatedRow in relatedRows)
                             {
@@ -1641,6 +1647,7 @@ namespace RDFSharp.Query
                                 Array.Copy(relatedRow.ItemArray, 0, joinArray, leftRow.ItemArray.Length, relatedRow.ItemArray.Length);
                                 joinTable.LoadDataRow(joinArray, true);
                             }
+                        }
                     }
                     joinTable.EndLoadData();
 

@@ -40,8 +40,9 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a GroupBy modifier on the given variables
+        /// Builds a GroupBy modifier on the given variables
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFGroupByModifier(List<RDFVariable> partitionVariables)
         {
             #region Guards
@@ -79,6 +80,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given aggregator to the modifier
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFGroupByModifier AddAggregator(RDFAggregator aggregator)
         {
             if (aggregator != null)
@@ -95,6 +97,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the modifier on the given datatable
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         internal override DataTable ApplyModifier(DataTable table)
         {
             //Perform consistency checks
@@ -114,6 +117,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Performs consistency checks
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         private void ConsistencyChecks(DataTable table)
         {
             //Every partition variable must be found in the working table as a column
@@ -146,8 +150,7 @@ namespace RDFSharp.Query
             foreach (DataRow tableRow in table.Rows)
             {
                 string partitionKey = GetPartitionKey(tableRow);
-                Aggregators.ForEach(ag =>
-                    ag.ExecutePartition(partitionKey, tableRow));
+                Aggregators.ForEach(ag => ag.ExecutePartition(partitionKey, tableRow));
             }
         }
 
@@ -157,8 +160,7 @@ namespace RDFSharp.Query
         private DataTable ExecuteProjectionAlgorythm()
         {
             List<DataTable> projFuncTables = new List<DataTable>();
-            Aggregators.ForEach(ag =>
-                projFuncTables.Add(ag.ExecuteProjection(PartitionVariables)));
+            Aggregators.ForEach(ag => projFuncTables.Add(ag.ExecuteProjection(PartitionVariables)));
             projFuncTables.RemoveAll(pft => pft == null);
 
             return RDFQueryEngine.CombineTables(projFuncTables);

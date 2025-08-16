@@ -30,8 +30,9 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named SPARQL variable
+        /// Builds a named SPARQL variable
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFVariable(string variableName)
         {
             string trimmedVariableName = variableName?.Trim(' ', '?', '$');

@@ -46,7 +46,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty operation
+        /// Builds an empty operation
         /// </summary>
         internal RDFOperation()
         {
@@ -112,6 +112,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given ground pattern to the DELETE templates of the operation
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         internal T AddDeleteGroundTemplate<T>(RDFPattern template) where T : RDFOperation
         {
             #region Guards
@@ -130,6 +131,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given pattern to the DELETE templates of the operation
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         internal T AddDeleteNonGroundTemplate<T>(RDFPattern template) where T : RDFOperation
         {
             #region Guards
@@ -149,6 +151,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given ground pattern to the INSERT templates of the operation
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         internal T AddInsertGroundTemplate<T>(RDFPattern template) where T : RDFOperation
         {
             #region Guards
@@ -167,6 +170,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given pattern to the INSERT templates of the operation
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         internal T AddInsertNonGroundTemplate<T>(RDFPattern template) where T : RDFOperation
         {
             #region Guards
@@ -186,6 +190,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given prefix declaration to the operation
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         internal new T AddPrefix<T>(RDFNamespace prefix) where T : RDFOperation
         {
             #region Guards
@@ -202,6 +207,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given pattern group to the body of the operation
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         internal new T AddPatternGroup<T>(RDFPatternGroup patternGroup) where T : RDFOperation
         {
             #region Guards
@@ -218,6 +224,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given modifier to the operation
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         internal new T AddModifier<T>(RDFDistinctModifier modifier) where T : RDFOperation
         {
             #region Guards
@@ -234,6 +241,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given subquery to the operation
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         internal new T AddSubQuery<T>(RDFSelectQuery subQuery) where T : RDFOperation
         {
             #region Guards

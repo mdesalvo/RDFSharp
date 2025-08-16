@@ -66,8 +66,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default ctor to build an empty collection of the given type
-        /// (initial configuration of the collection is "rdf:Nil")
+        /// Builds an empty collection of the given type
         /// </summary>
         public RDFCollection(RDFModelEnums.RDFItemTypes itemType) : this(itemType, false) { }
         internal RDFCollection(RDFModelEnums.RDFItemTypes itemType, bool acceptDuplicates)

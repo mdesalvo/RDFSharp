@@ -63,7 +63,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a validation result with the given properties
+        /// Builds a validation result with the given properties
         /// </summary>
         internal RDFValidationResult(RDFResource sourceShape,
                                      RDFResource sourceConstraintComponent,

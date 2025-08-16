@@ -30,12 +30,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an arithmetical ceil function with given arguments
+        /// Builds an arithmetical ceil function with given arguments
         /// </summary>
         public RDFCeilExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical ceil function with given arguments
+        /// Builds an arithmetical ceil function with given arguments
         /// </summary>
         public RDFCeilExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

@@ -28,7 +28,7 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a stringified UUID generator function
+        /// Builds a stringified UUID generator function
         /// </summary>
         public RDFStrUUIDExpression() { }
         #endregion

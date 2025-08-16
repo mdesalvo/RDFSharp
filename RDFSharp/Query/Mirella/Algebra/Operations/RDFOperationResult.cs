@@ -49,7 +49,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty operation result
+        /// Builds an empty operation result
         /// </summary>
         internal RDFOperationResult()
         {

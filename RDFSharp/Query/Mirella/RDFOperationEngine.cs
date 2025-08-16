@@ -63,13 +63,10 @@ namespace RDFSharp.Query
         /// Evaluates the given SPARQL INSERT DATA operation on the given RDF datasource
         /// </summary>
         internal RDFOperationResult EvaluateInsertDataOperation(RDFInsertDataOperation insertDataOperation, RDFDataSource datasource)
-        {
-            RDFOperationResult operationResult = new RDFOperationResult
-            {
-                InsertResults = PopulateInsertOperationResults(insertDataOperation.InsertTemplates, datasource)
-            };
-            return operationResult;
-        }
+            =>  new RDFOperationResult
+                {
+                    InsertResults = PopulateInsertOperationResults(insertDataOperation.InsertTemplates, datasource)
+                };
 
         /// <summary>
         /// Evaluates the given SPARQL INSERT WHERE operation on the given RDF datasource
@@ -104,13 +101,10 @@ namespace RDFSharp.Query
         /// Evaluates the given SPARQL DELETE DATA operation on the given RDF datasource
         /// </summary>
         internal RDFOperationResult EvaluateDeleteDataOperation(RDFDeleteDataOperation deleteDataOperation, RDFDataSource datasource)
-        {
-            RDFOperationResult operationResult = new RDFOperationResult
-            {
-                DeleteResults = PopulateDeleteOperationResults(deleteDataOperation.DeleteTemplates, datasource)
-            };
-            return operationResult;
-        }
+            =>  new RDFOperationResult
+                {
+                    DeleteResults = PopulateDeleteOperationResults(deleteDataOperation.DeleteTemplates, datasource)
+                };
 
         /// <summary>
         /// Evaluates the given SPARQL DELETE WHERE operation on the given RDF datasource
@@ -242,9 +236,9 @@ namespace RDFSharp.Query
                     if (clearOperation.FromContext != null)
                     {
                         deleteWhereOperation
-                                                .AddPatternGroup(new RDFPatternGroup()
-                                                    .AddPattern(new RDFPattern(new RDFContext(clearOperation.FromContext), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O"))))
-                                                .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFContext(clearOperation.FromContext), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
+                             .AddPatternGroup(new RDFPatternGroup()
+                                 .AddPattern(new RDFPattern(new RDFContext(clearOperation.FromContext), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O"))))
+                             .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFContext(clearOperation.FromContext), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
                     }
 
                     //Implicit => delete quadruples according to the given operation flavor
@@ -293,6 +287,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Evaluates the given operation on the given SPARQL UPDATE endpoint
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         internal bool EvaluateOperationOnSPARQLUpdateEndpoint(RDFOperation operation, RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions)
         {
             //Initialize operation options if not provided

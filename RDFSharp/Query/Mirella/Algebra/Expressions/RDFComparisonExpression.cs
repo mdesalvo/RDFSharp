@@ -35,7 +35,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a comparison expression of the given type on the given arguments
+        /// Builds a comparison expression of the given type on the given arguments
         /// </summary>
         public RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFExpression leftArgument, RDFExpression rightArgument)
             : base(leftArgument, rightArgument)
@@ -49,7 +49,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a comparison expression of the given type on the given arguments
+        /// Builds a comparison expression of the given type on the given arguments
         /// </summary>
         public RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFExpression leftArgument, RDFVariable rightArgument)
             : base(leftArgument, rightArgument)
@@ -63,7 +63,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a comparison expression of the given type on the given arguments
+        /// Builds a comparison expression of the given type on the given arguments
         /// </summary>
         public RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFVariable leftArgument, RDFExpression rightArgument)
             : base(leftArgument, rightArgument)
@@ -77,7 +77,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a comparison expression of the given type on the given arguments
+        /// Builds a comparison expression of the given type on the given arguments
         /// </summary>
         public RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFVariable leftArgument, RDFVariable rightArgument)
             : base(leftArgument, rightArgument)

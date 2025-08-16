@@ -30,12 +30,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an arithmetical floor function with given arguments
+        /// Builds an arithmetical floor function with given arguments
         /// </summary>
         public RDFFloorExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical floor function with given arguments
+        /// Builds an arithmetical floor function with given arguments
         /// </summary>
         public RDFFloorExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

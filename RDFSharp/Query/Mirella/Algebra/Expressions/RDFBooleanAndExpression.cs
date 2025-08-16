@@ -27,7 +27,7 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a boolean "AND" expression with given arguments
+        /// Builds a boolean "AND" expression with given arguments
         /// </summary>
         public RDFBooleanAndExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)  { }
         #endregion

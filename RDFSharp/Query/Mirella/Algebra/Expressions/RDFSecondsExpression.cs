@@ -23,12 +23,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a datetime seconds function with given arguments
+        /// Builds a datetime seconds function with given arguments
         /// </summary>
         public RDFSecondsExpression(RDFExpression leftArgument) : base(leftArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a datetime seconds function with given arguments
+        /// Builds a datetime seconds function with given arguments
         /// </summary>
         public RDFSecondsExpression(RDFVariable leftArgument) : base(leftArgument) { }
         #endregion

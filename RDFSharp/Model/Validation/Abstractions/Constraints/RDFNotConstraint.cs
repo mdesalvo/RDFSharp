@@ -33,7 +33,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a not constraint with the given shape
+        /// Builds a not constraint with the given shape
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFNotConstraint(RDFResource notShape)

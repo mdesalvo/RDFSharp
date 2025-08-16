@@ -35,6 +35,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Parses the given string to return an instance of pattern member
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public static RDFPatternMember ParseRDFPatternMember(string pMember)
         {
             if (pMember == null)

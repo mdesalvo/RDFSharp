@@ -33,14 +33,14 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a maxInclusive constraint with the given resource value
+        /// Builds a maxInclusive constraint with the given resource value
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFMaxInclusiveConstraint(RDFResource value)
             => Value = value ?? throw new RDFModelException("Cannot create RDFMaxInclusiveConstraint because given \"value\" parameter is null.");
 
         /// <summary>
-        /// Default-ctor to build a maxInclusive constraint with the given literal value
+        /// Builds a maxInclusive constraint with the given literal value
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFMaxInclusiveConstraint(RDFLiteral value)

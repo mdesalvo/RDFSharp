@@ -28,7 +28,7 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a datetime now function
+        /// Builds a datetime now function
         /// </summary>
         public RDFNowExpression() { }
         #endregion

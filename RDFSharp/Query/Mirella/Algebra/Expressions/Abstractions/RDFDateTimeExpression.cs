@@ -30,12 +30,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a datetime day expression with given arguments
+        /// Builds a datetime day expression with given arguments
         /// </summary>
         protected RDFDateTimeExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a datetime day expression with given arguments
+        /// Builds a datetime day expression with given arguments
         /// </summary>
         protected RDFDateTimeExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

@@ -48,7 +48,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a pattern group member
+        /// Builds a pattern group member
         /// </summary>
         internal RDFPatternGroupMember()
         {

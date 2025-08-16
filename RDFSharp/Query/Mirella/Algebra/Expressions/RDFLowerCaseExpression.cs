@@ -28,12 +28,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a string lowercase function with given arguments
+        /// Builds a string lowercase function with given arguments
         /// </summary>
         public RDFLowerCaseExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a string lowercase function with given arguments
+        /// Builds a string lowercase function with given arguments
         /// </summary>
         public RDFLowerCaseExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

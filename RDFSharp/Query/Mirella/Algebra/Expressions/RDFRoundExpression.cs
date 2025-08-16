@@ -30,12 +30,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an arithmetical round function with given arguments
+        /// Builds an arithmetical round function with given arguments
         /// </summary>
         public RDFRoundExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical round function with given arguments
+        /// Builds an arithmetical round function with given arguments
         /// </summary>
         public RDFRoundExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

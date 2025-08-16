@@ -33,7 +33,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an and constraint
+        /// Builds an and constraint
         /// </summary>
         public RDFAndConstraint()
             => AndShapes = new Dictionary<long, RDFResource>();

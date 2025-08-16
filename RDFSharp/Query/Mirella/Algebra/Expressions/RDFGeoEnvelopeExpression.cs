@@ -28,12 +28,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a geof:envelope function with given arguments
+        /// Builds a geof:envelope function with given arguments
         /// </summary>
         public RDFGeoEnvelopeExpression(RDFExpression leftArgument) : base(leftArgument, null) { }
 
         /// <summary>
-        /// Default-ctor to build a geof:envelope function with given arguments
+        /// Builds a geof:envelope function with given arguments
         /// </summary>
         public RDFGeoEnvelopeExpression(RDFVariable leftArgument) : base(leftArgument, null) { }
         #endregion

@@ -59,7 +59,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty pattern group
+        /// Builds an empty pattern group
         /// </summary>
         public RDFPatternGroup()
         {
@@ -72,13 +72,13 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// List-ctor to build a named pattern group with the given list of patterns
+        /// Builds a pattern group with the given list of patterns
         /// </summary>
         public RDFPatternGroup(List<RDFPattern> patterns) : this()
             => patterns?.ForEach(p => AddPattern(p));
 
         /// <summary>
-        /// List-ctor to build a named pattern group with the given list of patterns and filters
+        /// Builds a pattern group with the given list of patterns and filters
         /// </summary>
         public RDFPatternGroup(List<RDFPattern> patterns, List<RDFFilter> filters) : this(patterns)
             => filters?.ForEach(f => AddFilter(f));
@@ -86,7 +86,7 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the patternGroup
+        /// Gives the string representation of the pattern group
         /// </summary>
         public override string ToString()
             => ToString(new List<RDFNamespace>());
@@ -164,6 +164,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given bind operator to the pattern group
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFPatternGroup AddBind(RDFBind bind)
         {
             if (bind != null && !GetBinds().Any(b => b.Equals(bind)))

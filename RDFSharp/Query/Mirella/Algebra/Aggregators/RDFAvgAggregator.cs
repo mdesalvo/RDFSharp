@@ -30,7 +30,7 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an AVG aggregator on the given variable and with the given projection name
+        /// Builds an AVG aggregator on the given variable and with the given projection name
         /// </summary>
         public RDFAvgAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
         #endregion

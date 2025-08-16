@@ -68,7 +68,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named property shape on the given property
+        /// Builds a named property shape on the given property
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFPropertyShape(RDFResource propertyShapeName, RDFResource path, bool isInversePath=false) : base(propertyShapeName)
@@ -80,7 +80,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Default-ctor to build a named property shape on the given properties
+        /// Builds a named property shape on the given properties
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFPropertyShape(RDFResource propertyShapeName, List<RDFResource> pathSteps, RDFQueryEnums.RDFPropertyPathStepFlavors pathStepsFlavor) : base(propertyShapeName)
@@ -112,13 +112,13 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Default-ctor to build a blank property shape on the given property
+        /// Builds a blank property shape on the given property
         /// </summary>
         public RDFPropertyShape(RDFResource path, bool isInversePath=false)
             : this(new RDFResource(), path, isInversePath) { }
 
         /// <summary>
-        /// Default-ctor to build a blank property shape on the given properties
+        /// Builds a blank property shape on the given properties
         /// </summary>
         public RDFPropertyShape(List<RDFResource> pathSteps, RDFQueryEnums.RDFPropertyPathStepFlavors pathStepsFlavor)
             : this(new RDFResource(), pathSteps, pathStepsFlavor) { }

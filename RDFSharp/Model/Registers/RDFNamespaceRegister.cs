@@ -67,7 +67,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to initialize the singleton instance of the register
+        /// Initializes the singleton instance of the register
         /// </summary>
         static RDFNamespaceRegister()
         {

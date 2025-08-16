@@ -29,12 +29,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a Uri-checking function with given arguments
+        /// Builds a Uri-checking function with given arguments
         /// </summary>
         public RDFIsUriExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a Uri-checking function with given arguments
+        /// Builds a Uri-checking function with given arguments
         /// </summary>
         public RDFIsUriExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

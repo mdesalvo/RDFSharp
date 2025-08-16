@@ -34,7 +34,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a class constraint with the given class
+        /// Builds a class constraint with the given class
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFClassConstraint(RDFResource classType)

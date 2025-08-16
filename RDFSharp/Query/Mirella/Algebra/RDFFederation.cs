@@ -58,7 +58,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default ctor to build an empty federation
+        /// Builds an empty federation
         /// </summary>
         public RDFFederation()
         {

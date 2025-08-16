@@ -28,7 +28,7 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a SAMPLE aggregator on the given variable and with the given projection name
+        /// Builds a SAMPLE aggregator on the given variable and with the given projection name
         /// </summary>
         public RDFSampleAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
         #endregion
@@ -79,8 +79,10 @@ namespace RDFSharp.Query
 
             //Finalization
             foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
+            {
                 //Update result's table
                 UpdateProjectionTable(partitionKey, projFuncTable);
+            }
 
             return projFuncTable;
         }

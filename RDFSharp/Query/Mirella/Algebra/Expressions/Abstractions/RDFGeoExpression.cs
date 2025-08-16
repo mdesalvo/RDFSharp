@@ -60,7 +60,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a geographic expression with given arguments
+        /// Builds a geographic expression with given arguments
         /// </summary>
         protected RDFGeoExpression(RDFExpressionArgument leftArgument, RDFExpressionArgument rightArgument)
             : base(leftArgument, rightArgument) { }

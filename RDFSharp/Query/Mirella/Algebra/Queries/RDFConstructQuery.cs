@@ -41,7 +41,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty CONSTRUCT query
+        /// Builds an empty CONSTRUCT query
         /// </summary>
         public RDFConstructQuery()
         {
@@ -69,24 +69,20 @@ namespace RDFSharp.Query
                 Templates.Add(template);
 
                 //Context
-                if (template.Context is RDFVariable ctxVar)
-                    if (!Variables.Any(v => v.Equals(template.Context)))
-                        Variables.Add(ctxVar);
+                if (template.Context is RDFVariable ctxVar && !Variables.Any(v => v.Equals(template.Context)))
+                    Variables.Add(ctxVar);
 
                 //Subject
-                if (template.Subject is RDFVariable subjVar)
-                    if (!Variables.Any(v => v.Equals(template.Subject)))
-                        Variables.Add(subjVar);
+                if (template.Subject is RDFVariable subjVar && !Variables.Any(v => v.Equals(template.Subject)))
+                    Variables.Add(subjVar);
 
                 //Predicate
-                if (template.Predicate is RDFVariable predVar)
-                    if (!Variables.Any(v => v.Equals(template.Predicate)))
-                        Variables.Add(predVar);
+                if (template.Predicate is RDFVariable predVar && !Variables.Any(v => v.Equals(template.Predicate)))
+                    Variables.Add(predVar);
 
                 //Object
-                if (template.Object is RDFVariable objVar)
-                    if (!Variables.Any(v => v.Equals(template.Object)))
-                        Variables.Add(objVar);
+                if (template.Object is RDFVariable objVar && !Variables.Any(v => v.Equals(template.Object)))
+                    Variables.Add(objVar);
             }
             return this;
         }

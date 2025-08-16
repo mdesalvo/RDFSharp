@@ -49,13 +49,13 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named validation report
+        /// Builds a named validation report
         /// </summary>
         internal RDFValidationReport(RDFResource reportName) : base(reportName.ToString())
             => Results = new List<RDFValidationResult>();
 
         /// <summary>
-        /// Default-ctor to build a blank validation report
+        /// Builds a blank validation report
         /// </summary>
         internal RDFValidationReport() : this(new RDFResource()) { }
         #endregion

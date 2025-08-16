@@ -28,22 +28,22 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a RDF term equality function with given arguments
+        /// Builds a RDF term equality function with given arguments
         /// </summary>
         public RDFSameTermExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a RDF term equality function with given arguments
+        /// Builds a RDF term equality function with given arguments
         /// </summary>
         public RDFSameTermExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a RDF term equality function with given arguments
+        /// Builds a RDF term equality function with given arguments
         /// </summary>
         public RDFSameTermExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a RDF term equality function with given arguments
+        /// Builds a RDF term equality function with given arguments
         /// </summary>
         public RDFSameTermExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
         #endregion

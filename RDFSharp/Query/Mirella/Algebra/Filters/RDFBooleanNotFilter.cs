@@ -34,8 +34,9 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a negation filter on the given filter
+        /// Builds a negation filter on the given filter
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFBooleanNotFilter(RDFFilter filter)
         {
             switch (filter)
@@ -43,7 +44,7 @@ namespace RDFSharp.Query
                 case null:
                     throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is null.");
                 case RDFExistsFilter _:
-                    throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is of type RDFExistsFilter: this is not allowed.");
+                    throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is of type RDFExistsFilter: this is not supported.");
                 default:
                     Filter = filter;
                     break;

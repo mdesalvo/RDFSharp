@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a class target on the given resource
+        /// Builds a class target on the given resource
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFTargetClass(RDFResource targetClass)

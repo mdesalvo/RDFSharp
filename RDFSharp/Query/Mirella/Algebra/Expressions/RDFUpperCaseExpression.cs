@@ -28,12 +28,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a string uppercase function with given arguments
+        /// Builds a string uppercase function with given arguments
         /// </summary>
         public RDFUpperCaseExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a string uppercase function with given arguments
+        /// Builds a string uppercase function with given arguments
         /// </summary>
         public RDFUpperCaseExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

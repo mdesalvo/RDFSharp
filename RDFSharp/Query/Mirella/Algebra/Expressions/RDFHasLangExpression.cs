@@ -28,12 +28,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a hasLang function with given arguments
+        /// Builds a hasLang function with given arguments
         /// </summary>
         public RDFHasLangExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a hasLang function with given arguments
+        /// Builds a hasLang function with given arguments
         /// </summary>
         public RDFHasLangExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion

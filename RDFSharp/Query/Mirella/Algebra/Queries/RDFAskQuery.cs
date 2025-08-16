@@ -27,7 +27,7 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty ASK query
+        /// Builds an empty ASK query
         /// </summary>
         public RDFAskQuery() { }
         #endregion

@@ -51,8 +51,9 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a SPARQL enpoint with given base address
+        /// Builds a SPARQL enpoint with given base address
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFSPARQLEndpoint(Uri baseAddress)
         {
             BaseAddress = baseAddress ?? throw new RDFQueryException("Cannot create RDFSPARQLEndpoint because given \"baseAddress\" parameter is null.");
@@ -160,7 +161,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to configure options for a SPARQL endpoint query
+        /// Builds the default options for a SPARQL endpoint query
         /// </summary>
         public RDFSPARQLEndpointQueryOptions()
         {
@@ -170,13 +171,13 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Custom-ctor to configure options for a SPARQL endpoint query
+        /// Builds custom options for a SPARQL endpoint query
         /// </summary>
         public RDFSPARQLEndpointQueryOptions(int timeoutMilliseconds) : this()
             => TimeoutMilliseconds = timeoutMilliseconds < -1 ? -1 : timeoutMilliseconds;
 
         /// <summary>
-        /// Custom-ctor to configure options for a SPARQL endpoint query
+        ///Builds custom options for a SPARQL endpoint query
         /// </summary>
         public RDFSPARQLEndpointQueryOptions(int timeoutMilliseconds,
             RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors? errorBehavior=null,

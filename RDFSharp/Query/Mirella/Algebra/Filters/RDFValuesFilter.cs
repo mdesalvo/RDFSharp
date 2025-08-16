@@ -42,7 +42,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a SPARQL values filter
+        /// Builds a SPARQL values filter
         /// </summary>
         internal RDFValuesFilter(RDFValues values)
         {

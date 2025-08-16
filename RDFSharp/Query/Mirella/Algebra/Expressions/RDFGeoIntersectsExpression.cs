@@ -28,7 +28,7 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a geof:sfIntersects function with given arguments
+        /// Builds a geof:sfIntersects function with given arguments
         /// </summary>
         public RDFGeoIntersectsExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
         {
@@ -37,7 +37,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:sfIntersects function with given arguments
+        /// Builds a geof:sfIntersects function with given arguments
         /// </summary>
         public RDFGeoIntersectsExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
         {
@@ -46,7 +46,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:sfIntersects function with given arguments
+        /// Builds a geof:sfIntersects function with given arguments
         /// </summary>
         public RDFGeoIntersectsExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
         {
@@ -58,7 +58,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:sfIntersects function with given arguments
+        /// Builds a geof:sfIntersects function with given arguments
         /// </summary>
         public RDFGeoIntersectsExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
         {
@@ -67,7 +67,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:sfIntersects function with given arguments
+        /// Builds a geof:sfIntersects function with given arguments
         /// </summary>
         public RDFGeoIntersectsExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
         {
@@ -76,7 +76,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Default-ctor to build a geof:sfIntersects function with given arguments
+        /// Builds a geof:sfIntersects function with given arguments
         /// </summary>
         public RDFGeoIntersectsExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
         {

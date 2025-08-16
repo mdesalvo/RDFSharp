@@ -37,13 +37,13 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a geof:buffer function with given arguments
+        /// Builds a geof:buffer function with given arguments
         /// </summary>
         public RDFGeoBufferExpression(RDFExpression leftArgument, double bufferMeters) : base(leftArgument, null)
             => BufferMeters = bufferMeters;
 
         /// <summary>
-        /// Default-ctor to build a geof:buffer function with given arguments
+        /// Builds a geof:buffer function with given arguments
         /// </summary>
         public RDFGeoBufferExpression(RDFVariable leftArgument, double bufferMeters) : base(leftArgument, null)
             => BufferMeters = bufferMeters;

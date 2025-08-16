@@ -27,7 +27,7 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a boolean "OR" expression with given arguments
+        /// Builds a boolean "OR" expression with given arguments
         /// </summary>
         public RDFBooleanOrExpression(RDFExpression leftArgument, RDFExpression rightArgument)
             : base(leftArgument, rightArgument)

@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a subjectsOf target on the given property
+        /// Builds a subjectsOf target on the given property
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFTargetSubjectsOf(RDFResource targetProperty)

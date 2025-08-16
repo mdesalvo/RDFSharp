@@ -29,13 +29,13 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a constant expression with given argument
+        /// Builds a constant expression with given argument
         /// </summary>
         public RDFConstantExpression(RDFResource leftArgument)
             : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Default-ctor to build a constant expression with given argument
+        /// Builds a constant expression with given argument
         /// </summary>
         public RDFConstantExpression(RDFLiteral leftArgument)
             : base(leftArgument, null as RDFExpression) { }

@@ -37,8 +37,9 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an OrderBy modifier of the given flavor on the given variable
+        /// Builds an OrderBy modifier of the given flavor on the given variable
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFOrderByModifier(RDFVariable variable, RDFQueryEnums.RDFOrderByFlavors orderbyFlavor)
         {
             OrderByFlavor = orderbyFlavor;
@@ -61,9 +62,11 @@ namespace RDFSharp.Query
         internal override DataTable ApplyModifier(DataTable table)
         {
             if (table.Columns.Contains(Variable.ToString()))
+            {
                 table.DefaultView.Sort = !string.IsNullOrEmpty(table.DefaultView.Sort)
                                             ? $"{table.DefaultView.Sort}, {Variable} {OrderByFlavor}"
                                             : $"{Variable} {OrderByFlavor}";
+            }
             return table;
         }
         #endregion

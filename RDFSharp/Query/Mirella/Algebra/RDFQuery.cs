@@ -39,7 +39,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty query
+        /// Builds an empty query
         /// </summary>
         internal RDFQuery()
         {
@@ -55,9 +55,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal T AddPatternGroup<T>(RDFPatternGroup patternGroup) where T: RDFQuery
         {
-            if (patternGroup != null)
-                if (!GetPatternGroups().Any(q => q.Equals(patternGroup)))
-                    QueryMembers.Add(patternGroup);
+            if (patternGroup != null && !GetPatternGroups().Any(q => q.Equals(patternGroup)))
+                QueryMembers.Add(patternGroup);
             return (T)this;
         }
 
@@ -66,9 +65,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal T AddModifier<T>(RDFDistinctModifier modifier) where T : RDFQuery
         {
-            if (modifier != null)
-                if (!GetModifiers().Any(m => m is RDFDistinctModifier))
-                    QueryMembers.Add(modifier);
+            if (modifier != null && !GetModifiers().Any(m => m is RDFDistinctModifier))
+                QueryMembers.Add(modifier);
             return (T)this;
         }
 
@@ -77,9 +75,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal T AddModifier<T>(RDFLimitModifier modifier) where T : RDFQuery
         {
-            if (modifier != null)
-                if (!GetModifiers().Any(m => m is RDFLimitModifier))
-                    QueryMembers.Add(modifier);
+            if (modifier != null && !GetModifiers().Any(m => m is RDFLimitModifier))
+                QueryMembers.Add(modifier);
             return (T)this;
         }
 
@@ -88,9 +85,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal T AddModifier<T>(RDFOffsetModifier modifier) where T : RDFQuery
         {
-            if (modifier != null)
-                if (!GetModifiers().Any(m => m is RDFOffsetModifier))
-                    QueryMembers.Add(modifier);
+            if (modifier != null && !GetModifiers().Any(m => m is RDFOffsetModifier))
+                QueryMembers.Add(modifier);
             return (T)this;
         }
 
@@ -99,9 +95,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal T AddPrefix<T>(RDFNamespace prefix) where T : RDFQuery
         {
-            if (prefix != null)
-                if (!Prefixes.Any(p => p.Equals(prefix)))
-                    Prefixes.Add(prefix);
+            if (prefix != null && !Prefixes.Any(p => p.Equals(prefix)))
+                Prefixes.Add(prefix);
             return (T)this;
         }
 
@@ -110,9 +105,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal T AddSubQuery<T>(RDFSelectQuery subQuery) where T : RDFQuery
         {
-            if (subQuery != null)
-                if (!GetSubQueries().Any(q => q.Equals(subQuery)))
-                    QueryMembers.Add(subQuery.SubQuery());
+            if (subQuery != null && !GetSubQueries().Any(q => q.Equals(subQuery)))
+                QueryMembers.Add(subQuery.SubQuery());
             return (T)this;
         }
 

@@ -25,32 +25,32 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an arithmetical multiplication expression with given arguments
+        /// Builds an arithmetical multiplication expression with given arguments
         /// </summary>
         public RDFMultiplyExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical multiplication expression with given arguments
+        /// Builds an arithmetical multiplication expression with given arguments
         /// </summary>
         public RDFMultiplyExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical multiplication expression with given arguments
+        /// Builds an arithmetical multiplication expression with given arguments
         /// </summary>
         public RDFMultiplyExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical multiplication expression with given arguments
+        /// Builds an arithmetical multiplication expression with given arguments
         /// </summary>
         public RDFMultiplyExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical multiplication expression with given arguments
+        /// Builds an arithmetical multiplication expression with given arguments
         /// </summary>
         public RDFMultiplyExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an arithmetical multiplication expression with given arguments
+        /// Builds an arithmetical multiplication expression with given arguments
         /// </summary>
         public RDFMultiplyExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
         #endregion

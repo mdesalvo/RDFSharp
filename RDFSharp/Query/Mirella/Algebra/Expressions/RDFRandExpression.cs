@@ -36,7 +36,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an arithmetical rand function
+        /// Builds an arithmetical rand function
         /// </summary>
         public RDFRandExpression()
             => Source = new Random();

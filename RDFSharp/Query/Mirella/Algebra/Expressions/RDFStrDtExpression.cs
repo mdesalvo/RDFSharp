@@ -28,22 +28,22 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a datatype creator function with given arguments
+        /// Builds a datatype creator function with given arguments
         /// </summary>
         public RDFStrDtExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a datatype creator function with given arguments
+        /// Builds a datatype creator function with given arguments
         /// </summary>
         public RDFStrDtExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a datatype creator function with given arguments
+        /// Builds a datatype creator function with given arguments
         /// </summary>
         public RDFStrDtExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build a datatype creator function with given arguments
+        /// Builds a datatype creator function with given arguments
         /// </summary>
         public RDFStrDtExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
         #endregion

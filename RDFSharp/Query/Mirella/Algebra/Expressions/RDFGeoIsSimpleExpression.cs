@@ -28,12 +28,12 @@ namespace RDFSharp.Query
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a geosparql:isSimple function with given arguments
+        /// Builds a geosparql:isSimple function with given arguments
         /// </summary>
         public RDFGeoIsSimpleExpression(RDFExpression leftArgument) : base(leftArgument, null) { }
 
         /// <summary>
-        /// Default-ctor to build a geosparql:isSimple function with given arguments
+        /// Builds a geosparql:isSimple function with given arguments
         /// </summary>
         public RDFGeoIsSimpleExpression(RDFVariable leftArgument) : base(leftArgument, null) { }
         #endregion

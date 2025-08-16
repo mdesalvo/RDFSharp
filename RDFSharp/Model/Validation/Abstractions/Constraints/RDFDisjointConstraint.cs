@@ -34,7 +34,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a disjoint constraint with the given predicate
+        /// Builds a disjoint constraint with the given predicate
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFDisjointConstraint(RDFResource disjointPredicate)
