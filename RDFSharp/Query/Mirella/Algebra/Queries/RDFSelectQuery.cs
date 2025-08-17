@@ -178,48 +178,56 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public RDFSelectQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
             => ApplyRawToSPARQLEndpoint(ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
 
         /// <summary>
         /// Applies the given raw string SELECT query to the given SPARQL endpoint
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public static RDFSelectQueryResult ApplyRawToSPARQLEndpoint(string selectQuery, RDFSPARQLEndpoint sparqlEndpoint)
             => ApplyRawToSPARQLEndpoint(selectQuery, sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
 
         /// <summary>
         /// Applies the given raw string SELECT query to the given SPARQL endpoint
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public static RDFSelectQueryResult ApplyRawToSPARQLEndpoint(string selectQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
             => sparqlEndpoint != null ? (RDFSelectQueryResult)new RDFQueryEngine().ApplyRawToSPARQLEndpoint("SELECT", selectQuery, sparqlEndpoint, sparqlEndpointQueryOptions) : new RDFSelectQueryResult();
 
         /// <summary>
         /// Asynchronously applies the query to the given SPARQL endpoint
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public Task<RDFSelectQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
             => ApplyRawToSPARQLEndpointAsync(ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
 
         /// <summary>
         /// Asynchronously applies the query to the given SPARQL endpoint
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public Task<RDFSelectQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
             => ApplyRawToSPARQLEndpointAsync(ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
 
         /// <summary>
         /// Asynchronously applies the given raw string SELECT query to the given SPARQL endpoint
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public static Task<RDFSelectQueryResult> ApplyRawToSPARQLEndpointAsync(string selectQuery, RDFSPARQLEndpoint sparqlEndpoint)
             => ApplyRawToSPARQLEndpointAsync(selectQuery, sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
 
         /// <summary>
         /// Asynchronously applies the given raw string SELECT query to the given SPARQL endpoint
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         public static Task<RDFSelectQueryResult> ApplyRawToSPARQLEndpointAsync(string selectQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
             => Task.Run(() => ApplyRawToSPARQLEndpoint(selectQuery, sparqlEndpoint, sparqlEndpointQueryOptions));
 
         /// <summary>
         /// Applies the query to the given data source
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         internal RDFSelectQueryResult ApplyToDataSource(RDFDataSource dataSource)
         {
             if (dataSource != null)
@@ -242,6 +250,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Asynchronously applies the query to the given data source
         /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
         internal Task<RDFSelectQueryResult> ApplyToDataSourceAsync(RDFDataSource dataSource)
             => Task.Run(() => ApplyToDataSource(dataSource));
 

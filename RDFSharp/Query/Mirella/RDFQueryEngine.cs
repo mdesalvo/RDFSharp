@@ -777,7 +777,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Fetches the describe variables from the given collection of query members and give them to the given describe query
+        /// Fetches the describe variables from the given collection of query members and propagates them to the given describe query
         /// </summary>
         internal void FetchDescribeVariablesFromQueryMembers(RDFDescribeQuery describeQuery, IEnumerable<RDFQueryMember> evaluableQueryMembers)
         {
