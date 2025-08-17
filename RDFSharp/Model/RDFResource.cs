@@ -41,7 +41,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Builds a blank resource
         /// </summary>
-        public RDFResource() : this($"bnode:{Guid.NewGuid():N}") { }
+        public RDFResource() : this($"bnode:{Guid.NewGuid():N}", null) { }
 
         /// <summary>
         /// Builds a non-blank resource (if starting with "_:" or "bnode:", it builds a blank resource)
@@ -50,13 +50,13 @@ namespace RDFSharp.Model
         public RDFResource(string uriString) : this(uriString, null) { }
 
         /// <summary>
-        /// Builds a non-blank resource (internal high-performance version)
+        /// Builds a resource (for internal performance purposes)
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         internal RDFResource(string uriString, Dictionary<string, long> hashContext)
         {
             URI = RDFModelUtilities.GetUriFromString(uriString)
-                    ?? throw new RDFModelException("Cannot create RDFResource because given \"uriString\" parameter is null or cannot be converted to a valid Uri");
+                   ?? throw new RDFModelException("Cannot create RDFResource because given \"uriString\" parameter is null or cannot be converted to a valid Uri");
 
             if (hashContext != null)
             {
