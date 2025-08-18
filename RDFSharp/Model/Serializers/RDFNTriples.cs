@@ -235,15 +235,13 @@ namespace RDFSharp.Model
                         string subj = tokens[0].TrimStart(openingBrackets)
                                                .TrimEnd(closingBrackets)
                                                .Replace("_:", "bnode:");
-                        string finalSubj = RDFModelUtilities.ASCII_To_Unicode(subj);
-                        S = new RDFResource(finalSubj, hashContext);
+                        S = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(subj), hashContext);
                         #endregion
 
                         #region pred
                         string pred = tokens[1].TrimStart(openingBrackets)
                                                .TrimEnd(closingBrackets);
-                        string finalPred = RDFModelUtilities.ASCII_To_Unicode(pred);
-                        P = new RDFResource(finalPred, hashContext);
+                        P = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(pred), hashContext);
                         #endregion
 
                         #region object
@@ -255,8 +253,7 @@ namespace RDFSharp.Model
                                                   .TrimEnd(closingBrackets)
                                                   .Replace("_:", "bnode:")
                                                   .Trim(trimmableChars);
-                            string finalObj = RDFModelUtilities.ASCII_To_Unicode(obj);
-                            O = new RDFResource(finalObj, hashContext);
+                            O = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(obj), hashContext);
                         }
                         #endregion
 
@@ -306,7 +303,6 @@ namespace RDFSharp.Model
                                 L = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), RDFDatatypeRegister.GetDatatype(tLitDatatype));
                             }
                             #endregion
-
                         }
                         #endregion
 

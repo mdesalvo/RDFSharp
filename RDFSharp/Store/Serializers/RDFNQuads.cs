@@ -87,12 +87,14 @@ namespace RDFSharp.Store
         /// <summary>
         /// Serializes the given store to the given filepath using N-Quads data format.
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         internal static void Serialize(RDFStore store, string filepath)
             => Serialize(store, new FileStream(filepath, FileMode.Create));
 
         /// <summary>
         /// Serializes the given store to the given filepath using N-Quads data format.
         /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
         internal static void Serialize(RDFStore store, Stream outputStream)
         {
             try
