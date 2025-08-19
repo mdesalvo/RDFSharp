@@ -42,14 +42,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex for validation of language tags (with support for direction)
         /// </summary>
-        internal static readonly Regex LangTagRegex = new Regex($"^{LangTagMask}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        internal static readonly Lazy<Regex> LangTagRegex = new Lazy<Regex>(() => new Regex($"^{LangTagMask}$", RegexOptions.Compiled | RegexOptions.IgnoreCase));
         /// <summary>
         /// Regex for validation of language tags (without support for direction)
         /// </summary>
-        internal static readonly Regex LangTagNoDirRegex = new Regex($"^{LangTagMask.Replace(LangTagDirection, string.Empty)}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        internal static readonly Lazy<Regex> LangTagNoDirRegex = new Lazy<Regex>(() => new Regex($"^{LangTagMask.Replace(LangTagDirection, string.Empty)}$", RegexOptions.Compiled | RegexOptions.IgnoreCase));
 
         /// <summary>
-        /// Optional language of the literal's value
+        /// Optional language of the literal
         /// </summary>
         public string Language { get; internal set; }
         #endregion
@@ -69,7 +69,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFPlainLiteral(string value, string language) : this(value)
         {
-            if (language != null && LangTagRegex.Match(language).Success)
+            if (language != null && LangTagRegex.Value.Match(language).Success)
                 Language = language.ToUpperInvariant();
         }
         #endregion
