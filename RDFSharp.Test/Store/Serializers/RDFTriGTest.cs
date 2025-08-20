@@ -639,6 +639,15 @@ public class RDFTriGTest
         Assert.ThrowsExactly<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
+    [TestMethod]
+    public void ShouldThrowExceptionOnDeserializingVersionDirective()
+    {
+        MemoryStream stream = new MemoryStream();
+        using (StreamWriter writer = new StreamWriter(stream))
+            writer.WriteLine("@base <http://example.org/>. version 1.2");
+        Assert.ThrowsExactly<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
+    }
+
     [TestCleanup]
     public void Cleanup()
     {

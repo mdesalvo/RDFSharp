@@ -259,7 +259,6 @@ namespace RDFSharp.Model
         {
             StringBuilder sb = new StringBuilder(8);
 
-            // longest valid directive @prefix
             do
             {
                 int codePoint = ReadCodePoint(turtleData, turtleContext);
@@ -274,7 +273,8 @@ namespace RDFSharp.Model
             string directive = sb.ToString();
             if (directive.StartsWith("@", StringComparison.Ordinal)
                  || directive.Equals("prefix", StringComparison.OrdinalIgnoreCase)
-                 || directive.Equals("base", StringComparison.OrdinalIgnoreCase))
+                 || directive.Equals("base", StringComparison.OrdinalIgnoreCase)
+                 || directive.Equals("version", StringComparison.OrdinalIgnoreCase))
             {
                 ParseDirective(turtleData, turtleContext, result, directive);
                 SkipWhitespace(turtleData, turtleContext);
@@ -306,17 +306,19 @@ namespace RDFSharp.Model
         {
             switch (directive.ToLowerInvariant())
             {
-                //Prefix directive exists in Turtle format or in SPARQL format
                 case "@prefix":
                 case "prefix":
                     ParsePrefixID(turtleData, turtleContext, result);
                     break;
 
-                //Base directive exists in Turtle format or in SPARQL format
                 case "@base":
                 case "base":
                     ParseBase(turtleData, turtleContext, result);
                     break;
+
+                case "@version":
+                case "version":
+                    throw new RDFModelException("Found version directive: this announces presence of unsupported RDF-Star content!");
 
                 //Any other directives are not allowed
                 default:

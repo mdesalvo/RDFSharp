@@ -175,7 +175,6 @@ namespace RDFSharp.Store
         {
             StringBuilder sb = new StringBuilder(8);
 
-            // longest valid directive @prefix
             do
             {
                 int codePoint = ReadCodePoint(trigData, trigContext);
@@ -190,7 +189,8 @@ namespace RDFSharp.Store
             string directive = sb.ToString();
             if (directive.StartsWith("@", StringComparison.Ordinal)
                  || directive.Equals("prefix", StringComparison.OrdinalIgnoreCase)
-                 || directive.Equals("base", StringComparison.OrdinalIgnoreCase))
+                 || directive.Equals("base", StringComparison.OrdinalIgnoreCase)
+                 || directive.Equals("version", StringComparison.OrdinalIgnoreCase))
             {
                 ParseDirective(trigData, trigContext, trigContext.Graph, directive);
                 SkipWhitespace(trigData, trigContext);

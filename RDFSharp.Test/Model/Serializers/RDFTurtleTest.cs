@@ -8757,6 +8757,16 @@ public class RDFTurtleTest
     }
 
     [TestMethod]
+    public void ShouldThrowExceptionOnDeserializingVersionDirective()
+    {
+        MemoryStream stream = new MemoryStream();
+        using (StreamWriter writer = new StreamWriter(stream))
+            writer.WriteLine("@base <http://example.org/>. version 1.2");
+
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+    }
+
+    [TestMethod]
     public void ShouldDeserializeGraphWithManyTriples()
     {
         MemoryStream stream = new MemoryStream();
