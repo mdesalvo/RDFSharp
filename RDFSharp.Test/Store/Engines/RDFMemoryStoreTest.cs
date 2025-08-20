@@ -2590,7 +2590,7 @@ public class RDFMemoryStoreTest
         await store.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}"));
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}")));
-        Assert.IsGreaterThan(90, (await File.ReadAllTextAsync(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}"))).Length);
+        Assert.IsGreaterThan(90, (await File.ReadAllTextAsync(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}"), TestContext.CancellationTokenSource.Token)).Length);
     }
 
     [TestMethod]
@@ -2768,5 +2768,7 @@ public class RDFMemoryStoreTest
         foreach (string file in Directory.EnumerateFiles(Environment.CurrentDirectory, "RDFMemoryStoreTest_Should*"))
             File.Delete(file);
     }
+
+    public TestContext TestContext { get; set; }
     #endregion
 }

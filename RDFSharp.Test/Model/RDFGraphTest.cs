@@ -3056,7 +3056,7 @@ public class RDFGraphTest
         await graph.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFileAsync{fileExtension}"));
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFileAsync{fileExtension}")));
-        Assert.IsGreaterThan(100, (await File.ReadAllTextAsync(Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFileAsync{fileExtension}"))).Length);
+        Assert.IsGreaterThan(100, (await File.ReadAllTextAsync(Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFileAsync{fileExtension}"), TestContext.CancellationTokenSource.Token)).Length);
     }
 
     [TestMethod]
@@ -3509,5 +3509,7 @@ public class RDFGraphTest
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromUnreacheableUriAsync()
         => await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromUriAsync(new Uri("http://rdfsharp.test/")));
+
+    public TestContext TestContext { get; set; }
     #endregion
 }
