@@ -80,22 +80,31 @@ namespace RDFSharp.Query
 
         #region MIRELLA SPARQL
         /// <summary>
+        /// Evaluates the given SPARQL query on the given RDF datasource
+        /// </summary>
+        private DataTable EvaluateQuery(RDFQuery query, RDFDataSource datasource)
+        {
+            DataTable queryResultTable = new DataTable();
+
+            List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
+            if (evaluableQueryMembers.Count > 0)
+            {
+                //Evaluate the active members of the query
+                EvaluateQueryMembers(evaluableQueryMembers, datasource);
+
+                //Combine intermediate results into final table
+                queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList());
+            }
+
+            return queryResultTable;
+        }
+
+        /// <summary>
         /// Evaluates the given SPARQL SELECT query on the given RDF datasource
         /// </summary>
         internal RDFSelectQueryResult EvaluateSelectQuery(RDFSelectQuery selectQuery, RDFDataSource datasource)
         {
-            DataTable queryResultTable = new DataTable();
-            List<RDFQueryMember> evaluableQueryMembers = selectQuery.GetEvaluableQueryMembers().ToList();
-            if (evaluableQueryMembers.Count > 0)
-            {
-                //Iterate the evaluable members of the query
-                EvaluateQueryMembers(evaluableQueryMembers, datasource);
-
-                //Get the result table of the query
-                queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList());
-            }
-
-            //Apply the modifiers of the query to the result table
+            DataTable queryResultTable = EvaluateQuery(selectQuery, datasource);
             return new RDFSelectQueryResult
             {
                 SelectResults = ApplyModifiers(selectQuery, queryResultTable)
@@ -107,23 +116,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFDescribeQueryResult EvaluateDescribeQuery(RDFDescribeQuery describeQuery, RDFDataSource datasource)
         {
-            DataTable queryResultTable = new DataTable();
-            List<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers().ToList();
-            if (evaluableQueryMembers.Count > 0)
-            {
-                //Iterate the evaluable members of the query
-                EvaluateQueryMembers(evaluableQueryMembers, datasource);
-
-                //Get the result table of the query
-                queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList());
-            }
-
-            //Apply the modifiers of the query to the result table
-            return new RDFDescribeQueryResult
-            {
-                DescribeResults = ApplyModifiers(describeQuery, FillDescribeTerms(queryResultTable))
-            };
-
             #region Utilities
             DataTable FillDescribeTerms(DataTable qResultTable)
             {
@@ -140,6 +132,12 @@ namespace RDFSharp.Query
                 return resultTable;
             }
             #endregion
+
+            DataTable queryResultTable = EvaluateQuery(describeQuery, datasource);
+            return new RDFDescribeQueryResult
+            {
+                DescribeResults = ApplyModifiers(describeQuery, FillDescribeTerms(queryResultTable))
+            };
         }
 
         /// <summary>
@@ -147,18 +145,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFConstructQueryResult EvaluateConstructQuery(RDFConstructQuery constructQuery, RDFDataSource datasource)
         {
-            DataTable queryResultTable = new DataTable();
-            List<RDFQueryMember> evaluableQueryMembers = constructQuery.GetEvaluableQueryMembers().ToList();
-            if (evaluableQueryMembers.Count > 0)
-            {
-                //Iterate the evaluable members of the query
-                EvaluateQueryMembers(evaluableQueryMembers, datasource);
-
-                //Get the result table of the query
-                queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList());
-            }
-
-            //Apply the modifiers of the query to the result table
+            DataTable queryResultTable = EvaluateQuery(constructQuery, datasource);
             return new RDFConstructQueryResult
             {
                 ConstructResults = ApplyModifiers(constructQuery, FillTemplates(constructQuery.Templates, queryResultTable, false))
@@ -170,21 +157,11 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFAskQueryResult EvaluateAskQuery(RDFAskQuery askQuery, RDFDataSource datasource)
         {
-            RDFAskQueryResult askResult = new RDFAskQueryResult();
-            List<RDFQueryMember> evaluableQueryMembers = askQuery.GetEvaluableQueryMembers().ToList();
-            if (evaluableQueryMembers.Count > 0)
+            DataTable queryResultTable = EvaluateQuery(askQuery, datasource);
+            return new RDFAskQueryResult
             {
-                //Iterate the evaluable members of the query
-                EvaluateQueryMembers(evaluableQueryMembers, datasource);
-
-                //Get the result table of the query
-                DataTable queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList());
-
-                //Transform the result into a boolean response
-                askResult.AskResult = queryResultTable.Rows.Count > 0;
-            }
-
-            return askResult;
+                 AskResult = queryResultTable.Rows.Count > 0
+            };
         }
 
         /// <summary>
