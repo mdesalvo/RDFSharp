@@ -3508,7 +3508,7 @@ public class RDFGraphTest
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromUnreacheableUriAsync()
-        => await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromUriAsync(new Uri("http://rdfsharp.test/")));
+        => await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromUriAsync(new Uri("http://rdfsharp.test/"), 500));
 
     public TestContext TestContext { get; set; }
     #endregion

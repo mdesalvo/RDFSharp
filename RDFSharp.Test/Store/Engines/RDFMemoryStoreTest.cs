@@ -1952,7 +1952,7 @@ public class RDFMemoryStoreTest
 
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromUnreacheableUriAsync()
-        => await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromUriAsync(new Uri("http://rdfsharp.test/")));
+        => await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromUriAsync(new Uri("http://rdfsharp.test/"), 500));
     #endregion
 
     #region Tests (Async)
