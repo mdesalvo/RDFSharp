@@ -164,7 +164,10 @@ namespace RDFSharp.Model
         public static void RemoveByUri(string uri)
         {
             if (uri != null)
-                Instance.Register.RemoveAll(ns => string.Equals(ns.NamespaceUri.ToString(), uri.Trim(), StringComparison.OrdinalIgnoreCase));
+            {
+                string uriToDelete = uri.Trim();
+                Instance.Register.RemoveAll(ns => string.Equals(ns.NamespaceUri.ToString(), uriToDelete, StringComparison.OrdinalIgnoreCase));
+            }
         }
 
         /// <summary>
@@ -173,7 +176,10 @@ namespace RDFSharp.Model
         public static void RemoveByPrefix(string prefix)
         {
             if (prefix != null)
-                Instance.Register.RemoveAll(ns => string.Equals(ns.NamespacePrefix, prefix.Trim(), StringComparison.OrdinalIgnoreCase));
+            {
+                string prefixToDelete = prefix.Trim();
+                Instance.Register.RemoveAll(ns => string.Equals(ns.NamespacePrefix, prefixToDelete, StringComparison.OrdinalIgnoreCase));
+            }
         }
 
         /// <summary>
@@ -184,9 +190,10 @@ namespace RDFSharp.Model
             RDFNamespace result = null;
             if (uri != null)
             {
-                result = Instance.Register.Find(ns => string.Equals(ns.NamespaceUri.ToString(), uri.Trim(), StringComparison.OrdinalIgnoreCase));
+                string uriToSearch = uri.Trim();
+                result = Instance.Register.Find(ns => string.Equals(ns.NamespaceUri.ToString(), uriToSearch, StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService)
-                    result = LookupPrefixCC(uri.Trim().TrimEnd('#'), 2);
+                    result = LookupPrefixCC(uriToSearch.TrimEnd('#'), 2);
             }
             return result;
         }
@@ -199,9 +206,10 @@ namespace RDFSharp.Model
             RDFNamespace result = null;
             if (prefix != null)
             {
-                result = Instance.Register.Find(ns => string.Equals(ns.NamespacePrefix, prefix.Trim(), StringComparison.OrdinalIgnoreCase));
+                string prefixToSearch = prefix.Trim();
+                result = Instance.Register.Find(ns => string.Equals(ns.NamespacePrefix, prefixToSearch, StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService)
-                    result = LookupPrefixCC(prefix.Trim(), 1);
+                    result = LookupPrefixCC(prefixToSearch, 1);
             }
             return result;
         }
@@ -218,10 +226,7 @@ namespace RDFSharp.Model
                                     : $"http://prefix.cc/reverse?uri={data}&format=txt");
                 string[] namespaceParts = serviceResponse.Split('\t');
                 RDFNamespace ns = new RDFNamespace(namespaceParts[0], namespaceParts[1].TrimEnd(Environment.NewLine));
-
-                //Also add the namespace to the register (to avoid future lookups)
                 AddNamespace(ns);
-
                 return ns;
             }
             catch { return null; }
