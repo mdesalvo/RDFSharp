@@ -1583,27 +1583,31 @@ namespace RDFSharp.Query
                     DataColumn[] rightRelationColumns = new DataColumn[commonColumns.Length];
                     for (int i = 0; i < commonColumns.Length; i++)
                     {
-                        leftRelationColumns[i] = dataSet.Tables[0].Columns[commonColumns[i].ColumnName];
-                        rightRelationColumns[i] = dataSet.Tables[1].Columns[commonColumns[i].ColumnName];
+                        string commonColumnName = commonColumns[i].ColumnName;
+                        leftRelationColumns[i] = dataSet.Tables[0].Columns[commonColumnName];
+                        rightRelationColumns[i] = dataSet.Tables[1].Columns[commonColumnName];
                     }
                     DataRelation dataRelation = new DataRelation("JoinRelation", leftRelationColumns, rightRelationColumns, false);
                     dataSet.Relations.Add(dataRelation);
 
                     //Create the structure of the join table
-                    List<string> duplicateColumns = new List<string>();
+                    int columnsCount = dataSet.Tables[0].Columns.Count + dataSet.Tables[1].Columns.Count;
+                    List<string> duplicateColumns = new List<string>(columnsCount);
                     for (int i = 0; i < dataSet.Tables[0].Columns.Count; i++)
-                        joinTable.Columns.Add(dataSet.Tables[0].Columns[i].ColumnName, dataSet.Tables[0].Columns[i].DataType);
+                    {
+                        DataColumn column = dataSet.Tables[0].Columns[i];
+                        joinTable.Columns.Add(column.ColumnName, column.DataType);
+                    }
                     for (int i = 0; i < dataSet.Tables[1].Columns.Count; i++)
                     {
-                        if (!joinTable.Columns.Contains(dataSet.Tables[1].Columns[i].ColumnName))
-                        {
-                            joinTable.Columns.Add(dataSet.Tables[1].Columns[i].ColumnName, dataSet.Tables[1].Columns[i].DataType);
-                        }
+                        DataColumn column = dataSet.Tables[1].Columns[i];
+                        if (!joinTable.Columns.Contains(column.ColumnName))
+                            joinTable.Columns.Add(column.ColumnName, column.DataType);
                         else
                         {
                             //Keep track of duplicate columns by appending a known identifier to their name
-                            string duplicateColKey = $"{dataSet.Tables[1].Columns[i].ColumnName}_DUPLICATE_";
-                            joinTable.Columns.Add(duplicateColKey, dataSet.Tables[1].Columns[i].DataType);
+                            string duplicateColKey = $"{column.ColumnName}_DUPLICATE_";
+                            joinTable.Columns.Add(duplicateColKey, column.DataType);
                             duplicateColumns.Add(duplicateColKey);
                         }
                     }
@@ -1668,13 +1672,9 @@ namespace RDFSharp.Query
             Dictionary<string, (bool,string)> joinColumnsAttribution = new Dictionary<string, (bool,string)>(joinTable.Columns.Count);
             foreach (DataColumn joinColumn in joinTable.Columns)
             {
-                //COMMON attribution
-                bool commonAttribution = commonColumns.Contains(joinColumn, dtComparer);
-
-                //DT1/DT2 attribution
-                string dtAttribution = leftColumns.Contains(joinColumn, dtComparer) ? "DT1" : "DT2";
-
-                joinColumnsAttribution.Add(joinColumn.ColumnName, (commonAttribution, dtAttribution));
+                joinColumnsAttribution.Add(joinColumn.ColumnName,
+                  (/* COMMON  ATTRIBUTION */commonColumns.Contains(joinColumn, dtComparer),
+                   /* DT1/DT2 ATTRIBUTION */leftColumns.Contains(joinColumn, dtComparer) ? "DT1" : "DT2"));
             }
 
             //Loop left table

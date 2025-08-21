@@ -198,7 +198,8 @@ namespace RDFSharp.Store
                     RDFResource S = null, P = null, O = null;
                     RDFLiteral L = null;
                     string[] tokens = new string[4];
-                    Dictionary<string, long> hashContext = new Dictionary<string, long>();
+                    Dictionary<string, long> hashContext = new Dictionary<string, long>(256); //Initial capacity=256 seems a good tradeoff for expected cardinality of different Uris which might be encountered
+
                     while ((nquad = sr.ReadLine()) != null)
                     {
                         nquadIndex++;
