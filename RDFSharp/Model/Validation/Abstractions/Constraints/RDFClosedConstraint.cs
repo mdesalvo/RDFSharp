@@ -71,8 +71,7 @@ namespace RDFSharp.Model
             {
                 //Extend ignored properties with paths of property constraints
                 List<RDFResource> allowedProperties = new List<RDFResource>(IgnoredProperties.Values);
-                IEnumerable<RDFPropertyConstraint> propertyConstraints = shape.Constraints.OfType<RDFPropertyConstraint>();
-                foreach (RDFPropertyConstraint propertyConstraint in propertyConstraints)
+                foreach (RDFPropertyConstraint propertyConstraint in shape.Constraints.OfType<RDFPropertyConstraint>())
                     if (shapesGraph.SelectShape(propertyConstraint.PropertyShapeUri.ToString()) is RDFPropertyShape propertyShape)
                         allowedProperties.Add(propertyShape.Path);
 
@@ -86,8 +85,7 @@ namespace RDFSharp.Model
                     if (valueNode is RDFResource valueNodeResource)
                     {
                         RDFGraph valuenodeResourceGraph = dataGraph.SelectTriplesBySubject(valueNodeResource);
-                        IEnumerable<RDFTriple> unallowedTriples = valuenodeResourceGraph.Where(t => !allowedProperties.Any(p => p.Equals(t.Predicate)));
-                        foreach (RDFTriple unallowedTriple in unallowedTriples)
+                        foreach (RDFTriple unallowedTriple in valuenodeResourceGraph.Where(t => !allowedProperties.Any(p => p.Equals(t.Predicate))))
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT,
                                                                      valueNodeResource,

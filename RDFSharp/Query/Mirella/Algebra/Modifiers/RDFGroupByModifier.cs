@@ -110,8 +110,7 @@ namespace RDFSharp.Query
             DataTable resultTable = ExecuteProjectionAlgorythm();
 
             //Execute filter algorythm
-            DataTable filteredTable = ExecuteFilterAlgorythm(resultTable);
-            return filteredTable;
+            return ExecuteFilterAlgorythm(resultTable);
         }
 
         /// <summary>

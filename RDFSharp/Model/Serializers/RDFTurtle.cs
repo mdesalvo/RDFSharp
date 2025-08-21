@@ -384,8 +384,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static void ParseSubject(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
         {
-            int bufChar = PeekCodePoint(turtleData, turtleContext);
-            switch (bufChar)
+            switch (PeekCodePoint(turtleData, turtleContext))
             {
                 case '(':
                     turtleContext.Subject = ParseCollection(turtleData, turtleContext, result);
@@ -501,8 +500,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static void ParseObject(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
         {
-            int bufChar = PeekCodePoint(turtleData, turtleContext);
-            switch (bufChar)
+            switch (PeekCodePoint(turtleData, turtleContext))
             {
                 case '(':
                     turtleContext.Object = ParseCollection(turtleData, turtleContext, result);
@@ -1225,8 +1223,7 @@ namespace RDFSharp.Model
                 if (backSlashIdx + 1 >= sLength)
                     throw new RDFModelException("Unescaped backslash in: " + s + GetTurtleContextCoordinates(turtleContext));
 
-                char bufChar = s[backSlashIdx + 1];
-                switch (bufChar)
+                switch (s[backSlashIdx + 1])
                 {
                     case 't':
                         sb.Append('\t');

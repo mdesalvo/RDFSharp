@@ -202,8 +202,7 @@ namespace RDFSharp.Model
         /// </summary>
         private static void DetectTypedPropertyShapes(RDFGraph graph, RDFShapesGraph shapesGraph)
         {
-            RDFGraph declaredPropertyShapes = graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE, null];
-            foreach (RDFTriple declaredPropertyShape in declaredPropertyShapes)
+            foreach (RDFTriple declaredPropertyShape in graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE, null])
             {
                 RDFTriple declaredPropertyShapePath = graph[(RDFResource)declaredPropertyShape.Subject, RDFVocabulary.SHACL.PATH, null, null].FirstOrDefault();
                 if (declaredPropertyShapePath?.Object is RDFResource declaredPropertyShapePathObject)
@@ -283,13 +282,12 @@ namespace RDFSharp.Model
         /// </summary>
         private static void DetectInlinePropertyShapes(RDFGraph graph, RDFShapesGraph shapesGraph)
         {
-            RDFGraph inlinePropertyShapes = graph[null, RDFVocabulary.SHACL.PROPERTY, null, null];
-            foreach (RDFTriple inlinePropertyShape in inlinePropertyShapes)
+            foreach (RDFTriple inlinePropertyShape in graph[null, RDFVocabulary.SHACL.PROPERTY, null, null])
                 //Inline property shapes are blank objects of "sh:property" constraints:
                 //we wont find their explicit shape definition within the shapes graph.
                 if (inlinePropertyShape.Object is RDFResource inlinePropertyShapeResource
-                    && inlinePropertyShapeResource.IsBlank
-                    && shapesGraph.SelectShape(inlinePropertyShapeResource.ToString()) == null)
+                     && inlinePropertyShapeResource.IsBlank
+                     && shapesGraph.SelectShape(inlinePropertyShapeResource.ToString()) == null)
                 {
                     RDFTriple inlinePropertyShapePath = graph[inlinePropertyShapeResource, RDFVocabulary.SHACL.PATH, null, null].FirstOrDefault();
                     if (inlinePropertyShapePath?.Object is RDFResource inlinePropertyShapePathObject)
@@ -449,8 +447,7 @@ namespace RDFSharp.Model
                 shape.AddConstraint(new RDFEqualsConstraint((RDFResource)shapeEqualsConstraint.Object));
 
             //sh:hasValue (accepted occurrences: N)
-            RDFGraph shapeHasValueConstraints = shapeDefinition[null, RDFVocabulary.SHACL.HAS_VALUE, null, null];
-            foreach (RDFTriple shapeHasValueConstraint in shapeHasValueConstraints)
+            foreach (RDFTriple shapeHasValueConstraint in shapeDefinition[null, RDFVocabulary.SHACL.HAS_VALUE, null, null])
                 switch (shapeHasValueConstraint.Object)
                 {
                     case RDFResource shapeHasValueConstraintObject:

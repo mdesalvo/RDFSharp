@@ -676,8 +676,7 @@ namespace RDFSharp.Model
                         //At last, check if predicate has children (nested resource descriptions)
                         if (predNode.HasChildNodes)
                         {
-                            List<RDFResource> nestedResources = ParseNodeList(predNode.ChildNodes, result, xmlBase, xmlLangPred, hashContext);
-                            foreach (RDFResource nestedResource in nestedResources)
+                            foreach (RDFResource nestedResource in ParseNodeList(predNode.ChildNodes, result, xmlBase, xmlLangPred, hashContext))
                                 result.AddTriple(new RDFTriple(subj, pred, nestedResource));
                         }
                         #endregion
@@ -695,10 +694,9 @@ namespace RDFSharp.Model
         /// </summary>
         private static XmlNode GetRdfRootNode(XmlDocument xmlDoc, XmlNamespaceManager nsMgr)
         {
-            XmlNode rdf = xmlDoc.SelectSingleNode("rdf:RDF", nsMgr)
+            return xmlDoc.SelectSingleNode("rdf:RDF", nsMgr)
                            ?? xmlDoc.SelectSingleNode("RDF", nsMgr)
                            ?? throw new Exception("Given file has not a valid \"rdf:RDF\" or \"RDF\" root node");
-            return rdf;
         }
 
         /// <summary>
@@ -708,10 +706,11 @@ namespace RDFSharp.Model
         {
             XmlAttributeCollection xmlns = rdfRDF.Attributes;
             if (xmlns?.Count > 0)
+            {
                 foreach (XmlAttribute xmlnsNamespace in xmlns)
                     if (!string.Equals(xmlnsNamespace.LocalName, "xmlns", StringComparison.OrdinalIgnoreCase)
-                        && !string.Equals(xmlnsNamespace.Name, "xml:lang", StringComparison.OrdinalIgnoreCase)
-                        && !string.Equals(xmlnsNamespace.Name, "xml:base", StringComparison.OrdinalIgnoreCase))
+                         && !string.Equals(xmlnsNamespace.Name, "xml:lang", StringComparison.OrdinalIgnoreCase)
+                         && !string.Equals(xmlnsNamespace.Name, "xml:base", StringComparison.OrdinalIgnoreCase))
                     {
                         //Try to resolve the current namespace against the namespace register;
                         //if not resolved, create new namespace with scope limited to actual node
@@ -721,7 +720,7 @@ namespace RDFSharp.Model
 
                         nsMgr.AddNamespace(ns.NamespacePrefix, ns.NamespaceUri.ToString());
                     }
-
+            }
             return xmlns;
         }
 
