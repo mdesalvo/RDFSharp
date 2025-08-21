@@ -89,15 +89,6 @@ namespace RDFSharp.Model
         internal static readonly char[] NormalizedStringForbiddenChars = { '\n', '\r', '\t' };
 
         /// <summary>
-        /// Empty hashset to be returned in case of index miss
-        /// </summary>
-        internal static readonly HashSet<long> EmptyHashSet = new HashSet<long>();
-        /// <summary>
-        /// Empty list of triples to be returned in case of no query results
-        /// </summary>
-        internal static readonly List<RDFTriple> EmptyTripleList = new List<RDFTriple>();
-
-        /// <summary>
         /// Gets the Uri corresponding to the given string
         /// </summary>
         internal static Uri GetUriFromString(string uriString)
@@ -234,6 +225,15 @@ namespace RDFSharp.Model
 
         #region Graph
         /// <summary>
+        /// Empty hashset to be returned in case of index miss
+        /// </summary>
+        internal static readonly HashSet<long> EmptyHashSet = new HashSet<long>();
+        /// <summary>
+        /// Empty list of triples to be returned in case of no query results
+        /// </summary>
+        internal static readonly List<RDFTriple> EmptyTripleList = new List<RDFTriple>();
+
+        /// <summary>
         /// Selects the triples corresponding to the given pattern from the given graph
         /// </summary>
         internal static List<RDFTriple> SelectTriples(RDFGraph graph, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
@@ -249,7 +249,7 @@ namespace RDFSharp.Model
             if (graph != null)
             {
                 StringBuilder queryFilters = new StringBuilder(4);
-                List<RDFHashedTriple> S = null, P = null, O = null, L = null, hashedTriples;
+                List<RDFHashedTriple> S=null, P=null, O=null, L=null, hashedTriples;
 
                 //Filter by Subject
                 if (subj != null)
