@@ -554,10 +554,10 @@ namespace RDFSharp.Model
             {
                 string subj = triple.Subject.ToString();
                 string pred = triple.Predicate.ToString();
-                string obj = triple.Object is RDFResource
+                string obj = triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
                     ? triple.Object.ToString()
-                    : triple.Object is RDFTypedLiteral tlitObj ? tlitObj.Datatype.URI.ToString()
-                                                               : string.Empty;
+                    : triple.Object is RDFTypedLiteral tlitObj
+                        ? tlitObj.Datatype.ToString() : string.Empty;
 
                 //Resolve subject Uri
                 result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => subj.StartsWith(ns.ToString(), StringComparison.Ordinal)));
@@ -565,8 +565,9 @@ namespace RDFSharp.Model
                 //Resolve predicate Uri
                 result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => pred.StartsWith(ns.ToString(), StringComparison.Ordinal)));
 
-                //Resolve object Uri
-                result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => obj.StartsWith(ns.ToString(), StringComparison.Ordinal)));
+                //Resolve object Uri (if needed)
+                if (!string.IsNullOrEmpty(obj))
+                    result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => obj.StartsWith(ns.ToString(), StringComparison.Ordinal)));
             }
             return result.Distinct().ToList();
         }
