@@ -98,22 +98,21 @@ namespace RDFSharp.Query
             result.ExtendedProperties.Add(RDFQueryEngine.JoinAsMinus, false);
 
             //Create the columns of the SPARQL values
-            Bindings.ToList()
-                    .ForEach(b => RDFQueryEngine.AddColumn(result, b.Key));
+            foreach (string bindingKey in Bindings.Keys)
+                RDFQueryEngine.AddColumn(result, bindingKey);
 
             //Create the rows of the SPARQL values
             result.BeginLoadData();
             for (int i = 0; i < MaxBindingsLength(); i++)
             {
                 Dictionary<string, string> bindings = new Dictionary<string, string>();
-                Bindings.ToList()
-                        .ForEach(b =>
-                        {
-                            RDFPatternMember bindingValue = b.Value.ElementAtOrDefault(i);
-                            bindings.Add(b.Key, bindingValue?.ToString());
-                            if (bindingValue == null)
-                                result.ExtendedProperties[RDFQueryEngine.IsOptional] = true;
-                        });
+                foreach (KeyValuePair<string, List<RDFPatternMember>> binding in Bindings)
+                {
+                    RDFPatternMember bindingValue = binding.Value.ElementAtOrDefault(i);
+                    bindings.Add(binding.Key, bindingValue?.ToString());
+                    if (bindingValue == null)
+                        result.ExtendedProperties[RDFQueryEngine.IsOptional] = true;
+                }
                 RDFQueryEngine.AddRow(result, bindings);
             }
             result.EndLoadData();

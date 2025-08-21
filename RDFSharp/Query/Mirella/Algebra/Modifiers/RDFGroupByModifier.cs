@@ -158,7 +158,7 @@ namespace RDFSharp.Query
         /// </summary>
         private DataTable ExecuteProjectionAlgorythm()
         {
-            List<DataTable> projFuncTables = new List<DataTable>();
+            List<DataTable> projFuncTables = new List<DataTable>(Aggregators.Count);
             Aggregators.ForEach(ag => projFuncTables.Add(ag.ExecuteProjection(PartitionVariables)));
             projFuncTables.RemoveAll(pft => pft == null);
 
@@ -216,7 +216,7 @@ namespace RDFSharp.Query
         /// </summary>
         private string GetPartitionKey(DataRow tableRow)
         {
-            List<string> partitionKey = new List<string>();
+            List<string> partitionKey = new List<string>(PartitionVariables.Count);
             PartitionVariables.ForEach(pv =>
             {
                 partitionKey.Add(tableRow.IsNull(pv.VariableName)
