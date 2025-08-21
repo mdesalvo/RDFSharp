@@ -66,6 +66,7 @@ namespace RDFSharp.Model
                     foreach (RDFPlainLiteral outerlanglitValueNode in langlitValueNodes)
                         if (!innerlanglitValueNode.Equals(outerlanglitValueNode)
                               && innerlanglitValueNode.Language.Equals(outerlanglitValueNode.Language))
+                        {
                             //Ensure to not report twice the same language tag
                             if (reportedLangs.Add(innerlanglitValueNode.Language))
                                 report.AddResult(new RDFValidationResult(shape,
@@ -75,6 +76,7 @@ namespace RDFSharp.Model
                                     null,
                                     shapeMessages,
                                     shape.Severity));
+                        }
             }
             #endregion
 

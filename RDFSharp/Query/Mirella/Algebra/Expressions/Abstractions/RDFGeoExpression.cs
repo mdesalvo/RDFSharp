@@ -109,7 +109,6 @@ namespace RDFSharp.Query
 
                 #region Calculate Result
 
-                Geometry rightGeometryLAZ = null;
                 if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
                      && leftArgumentTypedLiteral.HasGeographicDatatype())
                 {
@@ -126,6 +125,7 @@ namespace RDFSharp.Query
                     Geometry leftGeometryLAZ = RDFGeoConverter.GetLambertAzimuthalGeometryFromWGS84(leftGeometry);
 
                     //Determine if requested GEO function needs right geometry
+                    Geometry rightGeometryLAZ = null;
                     if (HasRightArgument)
                     {
                         //If so, it must be a well-formed GEO literal (WKT/GML)

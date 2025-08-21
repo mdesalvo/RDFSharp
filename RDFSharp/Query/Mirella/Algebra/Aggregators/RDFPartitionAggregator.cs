@@ -86,9 +86,8 @@ namespace RDFSharp.Query
                                                               .Select(pkValue => pkValue.Split(ProjectionValuePlaceholder, StringSplitOptions.None)).ToDictionary(pValues => pValues[0], pValues => pValues[1]);
 
             //Add aggregator value to bindings
-            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty);
             if (!bindings.ContainsKey(ProjectionVariable.VariableName))
-                bindings.Add(ProjectionVariable.VariableName, aggregatorValue);
+                bindings.Add(ProjectionVariable.VariableName, AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty));
 
             //Add bindings to result's table
             RDFQueryEngine.AddRow(projFuncTable, bindings);

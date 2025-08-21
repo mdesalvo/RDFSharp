@@ -88,12 +88,10 @@ namespace RDFSharp.Query
             {
                 //Get aggregator value
                 double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d);
-                //Get aggregator counter
-                double aggregatorCounter = AggregatorContext.GetPartitionKeyExecutionCounter(partitionKey);
                 //In case of non-numeric values, consider partition failed
                 double finalAggregatorValue = double.NaN;
                 if (!aggregatorValue.Equals(double.NaN))
-                    finalAggregatorValue = aggregatorValue / aggregatorCounter;
+                    finalAggregatorValue = aggregatorValue / AggregatorContext.GetPartitionKeyExecutionCounter(partitionKey);
                 //Update aggregator context (sum, count)
                 AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, finalAggregatorValue);
                 //Update result's table

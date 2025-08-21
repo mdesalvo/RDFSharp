@@ -237,7 +237,7 @@ namespace RDFSharp.Model
             List<RDFTriple> matchResult = new List<RDFTriple>();
             if (graph != null)
             {
-                StringBuilder queryFilters = new StringBuilder();
+                StringBuilder queryFilters = new StringBuilder(4);
                 List<RDFHashedTriple> S = new List<RDFHashedTriple>();
                 List<RDFHashedTriple> P = new List<RDFHashedTriple>();
                 List<RDFHashedTriple> O = new List<RDFHashedTriple>();

@@ -426,9 +426,8 @@ namespace RDFSharp.Model
 
                         #region elements
                         //Parse children of root node
-                        Dictionary<string, long> hashContext = new Dictionary<string, long>();
                         if (rdfRDF.HasChildNodes)
-                            ParseNodeList(rdfRDF.ChildNodes, result, xmlBase, GetXmlLangAttribute(rdfRDF), hashContext);
+                            ParseNodeList(rdfRDF.ChildNodes, result, xmlBase, GetXmlLangAttribute(rdfRDF), new Dictionary<string, long>());
                         #endregion
                     }
                 }
@@ -579,7 +578,6 @@ namespace RDFSharp.Model
                         XmlAttribute rdfObject = GetRdfAboutAttribute(predNode)
                                                  ?? GetRdfResourceAttribute(predNode)
                                                  ?? GetParseTypeResourceAttribute(predNode);
-                        XmlAttribute rdfId = GetRdfIdAttribute(predNode);
                         if (rdfObject != null)
                         {
                             #region rdf:parseType=Resource
@@ -601,6 +599,7 @@ namespace RDFSharp.Model
                             else
                             {
                                 #region rdf:ID
+                                XmlAttribute rdfId = GetRdfIdAttribute(predNode);
                                 if (rdfId != null)
                                 {
                                     //"rdf:ID" at predicate level appends the parsed triple and also its reification statements;

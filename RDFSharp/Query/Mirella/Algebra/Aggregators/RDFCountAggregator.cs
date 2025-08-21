@@ -60,11 +60,9 @@ namespace RDFSharp.Query
                 //Cache-Miss: distinctness passed
                 AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
             }
-            //Get aggregator value
-            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d);
             //Update aggregator context (count)
             if (!string.IsNullOrEmpty(rowValue))
-                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, aggregatorValue + 1d);
+                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d) + 1d);
         }
 
         /// <summary>
