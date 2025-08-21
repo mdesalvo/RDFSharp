@@ -123,11 +123,11 @@ namespace RDFSharp.Model
                 return asciiString;
 
             //UNICODE (UTF-16)
-            StringBuilder sbRegexU8 = new StringBuilder();
+            StringBuilder sbRegexU8 = new StringBuilder(asciiString.Length);
             sbRegexU8.Append(regexU8.Value.Replace(asciiString, match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber))));
 
             //UNICODE (UTF-8)
-            StringBuilder sbRegexU4 = new StringBuilder();
+            StringBuilder sbRegexU4 = new StringBuilder(sbRegexU8.Length);
             sbRegexU4.Append(regexU4.Value.Replace(sbRegexU8.ToString(), match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber))));
 
             return sbRegexU4.ToString();
@@ -143,20 +143,16 @@ namespace RDFSharp.Model
                 return unicodeString;
 
             //https://docs.microsoft.com/en-us/dotnet/api/system.text.rune?view=net-5.0&viewFallbackFrom=netstandard-2.0
-            StringBuilder b = new StringBuilder();
+            StringBuilder b = new StringBuilder(unicodeString.Length);
             for (int i = 0; i < unicodeString.Length; i++)
             {
                 //ASCII
                 if (unicodeString[i] <= 127)
-                {
                     b.Append(unicodeString[i]);
-                }
 
                 //UNICODE (UTF-8)
                 else if (!char.IsSurrogate(unicodeString[i]))
-                {
                     b.Append($"\\u{(int)unicodeString[i]:X4}");
-                }
 
                 //UNICODE (UTF-16)
                 else if (i + 1 < unicodeString.Length && char.IsSurrogatePair(unicodeString[i], unicodeString[i + 1]))
@@ -168,9 +164,7 @@ namespace RDFSharp.Model
 
                 //ERROR
                 else
-                {
                     throw new RDFModelException("Cannot convert string '" + unicodeString + "' to ASCII because it is not well-formed UTF-16");
-                }
             }
             return b.ToString();
         }
@@ -183,7 +177,7 @@ namespace RDFSharp.Model
             if (string.IsNullOrEmpty(data))
                 return data;
 
-            StringBuilder b = new StringBuilder();
+            StringBuilder b = new StringBuilder(data.Length);
             foreach (char c in data)
             {
                 if (char.IsControl(c) && c != '\u0009' && c != '\u000A' && c != '\u000D')
@@ -333,10 +327,8 @@ namespace RDFSharp.Model
         /// </summary>
         public static List<RDFDatatype> ExtractDatatypeDefinitions(this RDFGraph graph)
         {
-            #region Guards
             if (graph == null)
                 return new List<RDFDatatype>();
-            #endregion
 
             List<RDFDatatype> datatypes = new List<RDFDatatype>();
             foreach (RDFTriple datatypeTriple in graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE, null])
@@ -845,15 +837,15 @@ namespace RDFSharp.Model
                     return isValidGDay;
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALDAY:
-                    bool isValidGeneralDay = Regex.IsMatch(literalValue, "---(0[1-9]|[1-9][0-9])(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
+                    bool isValidGeneralDay = Regex.IsMatch(literalValue, "---(0[1-9]|[1-9][0-9])(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?", RegexOptions.Compiled);
                     return (isValidGeneralDay, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH:
-                    bool isValidGeneralMonth = Regex.IsMatch(literalValue, "--(0[1-9]|1[0-9]|20)(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
+                    bool isValidGeneralMonth = Regex.IsMatch(literalValue, "--(0[1-9]|1[0-9]|20)(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?", RegexOptions.Compiled);
                     return (isValidGeneralMonth, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR:
-                    bool isValidGeneralYear = Regex.IsMatch(literalValue, "-?([1-9][0-9]{3,}|0[0-9]{3})(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?");
+                    bool isValidGeneralYear = Regex.IsMatch(literalValue, "-?([1-9][0-9]{3,}|0[0-9]{3})(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?", RegexOptions.Compiled);
                     return (isValidGeneralYear, literalValue);
                 #endregion
 

@@ -185,15 +185,13 @@ namespace RDFSharp.Model
 
             int highSurrogate = turtleData[turtleContext.Position];
             UpdateTurtleContextPosition(turtleContext, 1);
-            if (char.IsHighSurrogate((char)highSurrogate))
-                if (turtleContext.Position < turtleData.Length)
-                {
-                    int lowSurrogate = turtleData[turtleContext.Position];
-                    UpdateTurtleContextPosition(turtleContext, 1);
-                    if (char.IsLowSurrogate((char)lowSurrogate))
-                        highSurrogate = char.ConvertToUtf32((char)highSurrogate, (char)lowSurrogate);
-                }
-
+            if (char.IsHighSurrogate((char)highSurrogate) && turtleContext.Position < turtleData.Length)
+            {
+                int lowSurrogate = turtleData[turtleContext.Position];
+                UpdateTurtleContextPosition(turtleContext, 1);
+                if (char.IsLowSurrogate((char)lowSurrogate))
+                    highSurrogate = char.ConvertToUtf32((char)highSurrogate, (char)lowSurrogate);
+            }
             return highSurrogate;
         }
 
@@ -223,8 +221,10 @@ namespace RDFSharp.Model
         internal static void UnreadCodePoint(RDFTurtleContext turtleContext, string codePoints)
         {
             if (!string.IsNullOrEmpty(codePoints))
+            {
                 foreach (char cp in codePoints)
                     UnreadCodePoint(turtleContext, cp);
+            }
         }
         #endregion
 
@@ -318,7 +318,7 @@ namespace RDFSharp.Model
 
                 case "@version":
                 case "version":
-                    throw new RDFModelException("Found version directive: this announces presence of unsupported RDF-Star content!");
+                    throw new RDFModelException("Found version directive: this announces presence of unsupported RDF-Star/SPARQL-Star data!");
 
                 //Any other directives are not allowed
                 default:
@@ -407,11 +407,9 @@ namespace RDFSharp.Model
                         {
                             if (value != null)
                                 throw new RDFModelException("Illegal subject value: " + value + GetTurtleContextCoordinates(turtleContext));
-
                             break;
                         }
                     }
-
                     break;
                 }
             }
@@ -634,7 +632,7 @@ namespace RDFSharp.Model
             SkipWhitespace(turtleData, turtleContext);
 
             // Read prefix ID (e.g. "rdf:" or ":")
-            StringBuilder prefixID = new StringBuilder();
+            StringBuilder prefixID = new StringBuilder(8); //Initial capacity=8 seems a good tradeoff for medium length of prefixes
             while (true)
             {
                 int bufChar = ReadCodePoint(turtleData, turtleContext);
@@ -701,7 +699,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static Uri ParseURI(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
         {
-            StringBuilder uriBuf = new StringBuilder();
+            StringBuilder uriBuf = new StringBuilder(32); //Initial capacity=32 seems a good tradeoff for medium length of Uris
 
             // First character should be '<'
             int bufChar = ReadCodePoint(turtleData, turtleContext);
@@ -829,7 +827,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static RDFTypedLiteral ParseNumber(string turtleData, RDFTurtleContext turtleContext)
         {
-            StringBuilder value = new StringBuilder();
+            StringBuilder value = new StringBuilder(16); //Initial capacity=16 seems a good tradeoff for medium length of decimals
             RDFModelEnums.RDFDatatypes dt = RDFModelEnums.RDFDatatypes.XSD_INTEGER;
 
             int bufChar = ReadCodePoint(turtleData, turtleContext);
@@ -939,7 +937,7 @@ namespace RDFSharp.Model
             else
             {
                 // bufChar is the first letter of the prefix
-                StringBuilder prefix = new StringBuilder();
+                StringBuilder prefix = new StringBuilder(16); //Initial capacity=16 seems a good tradeoff for medium length of qnames
                 prefix.Append(char.ConvertFromUtf32(bufChar));
 
                 previousChar = bufChar;
@@ -984,7 +982,7 @@ namespace RDFSharp.Model
             }
 
             // bufChar == ':', read optional local name
-            StringBuilder localName = new StringBuilder();
+            StringBuilder localName = new StringBuilder(16); //Initial capacity=16 seems a good tradeoff for medium length of local names
             bufChar = ReadCodePoint(turtleData, turtleContext);
             if (IsNameStartChar(bufChar))
             {
@@ -1047,15 +1045,14 @@ namespace RDFSharp.Model
                 {
                     ReadCodePoint(turtleData, turtleContext);
 
-                    // Read language
-                    StringBuilder lang = new StringBuilder();
-
                     bufChar = ReadCodePoint(turtleData, turtleContext);
                     if (bufChar == -1)
                         throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
                     if (!IsLanguageStartChar(bufChar))
                         throw new RDFModelException("Expected a letter, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(turtleContext));
 
+                    // Read language
+                    StringBuilder lang = new StringBuilder(8); //Initial capacity=8 seems a good tradeoff for medium length of languages
                     lang.Append(char.ConvertFromUtf32(bufChar));
 
                     bufChar = ReadCodePoint(turtleData, turtleContext);
@@ -1135,7 +1132,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static string ParseString(string turtleData, RDFTurtleContext turtleContext, int closingCharacter)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder(32); //Initial capacity=32 seems a good tradeoff for medium length of normal strings
 
             while (true)
             {
@@ -1173,7 +1170,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static string ParseLongString(string turtleData, RDFTurtleContext turtleContext, int closingCharacter)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder(64); //Initial capacity=64 seems a good tradeoff for medium length of long strings
 
             int doubleQuoteCount = 0;
             while (doubleQuoteCount < 3)
@@ -1266,7 +1263,7 @@ namespace RDFSharp.Model
                         throw new RDFModelException("Incomplete Unicode escape sequence in: " + s + GetTurtleContextCoordinates(turtleContext));
                     case 'u':
                     {
-                        string uValue = s.Substring(backSlashIdx + 2, 4/*backSlashIdx + 6*/);
+                        string uValue = s.Substring(backSlashIdx + 2, 4);
                         try
                         {
                             int cp = int.Parse(uValue, NumberStyles.AllowHexSpecifier);
@@ -1285,7 +1282,7 @@ namespace RDFSharp.Model
                         throw new RDFModelException("Incomplete Unicode escape sequence in: " + s + GetTurtleContextCoordinates(turtleContext));
                     case 'U':
                     {
-                        string UValue = s.Substring(backSlashIdx + 2, 8/*backSlashIdx + 10*/);
+                        string UValue = s.Substring(backSlashIdx + 2, 8);
                         try
                         {
                             int cp = int.Parse(UValue, NumberStyles.AllowHexSpecifier);
@@ -1359,8 +1356,7 @@ namespace RDFSharp.Model
             string supplied = char.ConvertFromUtf32(codePoint);
             if (expected.IndexOf(supplied, StringComparison.Ordinal) == -1)
             {
-                StringBuilder msg = new StringBuilder();
-                msg.Append("Unexpected character found" + GetTurtleContextCoordinates(turtleContext) + ": expected ");
+                StringBuilder msg = new StringBuilder("Unexpected character found" + GetTurtleContextCoordinates(turtleContext) + ": expected ");
 
                 for (int i = 0; i < expected.Length; i++)
                 {
@@ -1535,7 +1531,7 @@ namespace RDFSharp.Model
             string actualPredicate = string.Empty;
             string abbreviatedPredicate = string.Empty;
             const string spaceConst = " ";
-            StringBuilder result = new StringBuilder();
+            StringBuilder result = new StringBuilder(256); //Initial capacity=256 seems a good tradeoff for medium length of Turtle tokens
 
             //Iterate over the calculated groups
             foreach (var triplesGroup in triplesGroupedBySubjectAndPredicate)

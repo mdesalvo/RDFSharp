@@ -97,6 +97,11 @@ namespace RDFSharp.Model
         /// Regex to detect presence of ending " in the value of a given N-Triple literal
         /// </summary>
         internal static readonly Lazy<Regex> regexEqt = new Lazy<Regex>(() => new Regex(@"""$", RegexOptions.Compiled));
+
+        // Facilities for deserialization
+        internal static readonly char[] openingBrackets = { '<' };
+        internal static readonly char[] closingBrackets = { '>' };
+        internal static readonly char[] trimmableChars = { ' ', '\t', '\r', '\n' };
         #endregion
 
         #region Methods
@@ -192,7 +197,6 @@ namespace RDFSharp.Model
         internal static RDFGraph Deserialize(Stream inputStream, Uri graphContext)
         {
             long ntripleIndex = 0;
-
             try
             {
                 #region deserialize
@@ -200,24 +204,23 @@ namespace RDFSharp.Model
                 {
                     RDFGraph result = new RDFGraph().SetContext(graphContext);
                     string nTriple;
+                    RDFResource S = null, P = null, O = null;
+                    RDFLiteral L = null;
                     string[] tokens = new string[3];
                     Dictionary<string, long> hashContext = new Dictionary<string, long>();
-                    char[] openingBrackets = { '<' };
-                    char[] closingBrackets = { '>' };
-                    char[] trimmableChars  = { ' ', '\t', '\r', '\n' };
 
                     while ((nTriple = sr.ReadLine()) != null)
                     {
                         ntripleIndex++;
 
                         #region sanitize  & tokenize
-                        //Cleanup previous data
-                        RDFResource S = null;
+                        //Cleanup data
+                        S = null;
+                        P = null;
+                        O = null;
+                        L = null;
                         tokens[0] = string.Empty;
-                        RDFResource P = null;
                         tokens[1] = string.Empty;
-                        RDFResource O = null;
-                        RDFLiteral L = null;
                         tokens[2] = string.Empty;
 
                         //Preliminary sanitizations: clean trailing space-like chars
@@ -279,7 +282,7 @@ namespace RDFSharp.Model
                                 if (regexLPL.Value.Match(tokens[2]).Success)
                                 {
                                     tokens[2] = tokens[2].Replace("\"@", "@");
-                                    int lastIndexOfLanguage = tokens[2].LastIndexOf("@", StringComparison.Ordinal);
+                                    int lastIndexOfLanguage = tokens[2].LastIndexOf('@');
                                     string pLitValue = tokens[2].Substring(0, lastIndexOfLanguage);
                                     string pLitLang = tokens[2].Substring(lastIndexOfLanguage + 1);
                                     L = new RDFPlainLiteral(HttpUtility.HtmlDecode(pLitValue), pLitLang);

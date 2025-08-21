@@ -54,7 +54,7 @@ namespace RDFSharp.Query
             {
                 if (RDFNTriples.regexLPL.Value.Match(pMember).Success)
                 {
-                    int lastIndexOfLanguage = pMember.LastIndexOf("@", StringComparison.OrdinalIgnoreCase);
+                    int lastIndexOfLanguage = pMember.LastIndexOf('@');
                     string pLitVal = pMember.Substring(0, lastIndexOfLanguage);
                     string pLitLng = pMember.Substring(lastIndexOfLanguage + 1);
                     return new RDFPlainLiteral(pLitVal, pLitLng);

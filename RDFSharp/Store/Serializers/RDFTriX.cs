@@ -118,7 +118,7 @@ namespace RDFSharp.Store
                             #region Guards
 
                             if (!trixDoc.DocumentElement.Name.Equals("TriX")
-                                    || !trixDoc.DocumentElement.NamespaceURI.Equals("http://www.w3.org/2004/03/trix/trix-1/"))
+                                 || !trixDoc.DocumentElement.NamespaceURI.Equals("http://www.w3.org/2004/03/trix/trix-1/"))
                                 throw new Exception(" given file does not encode a TriX dataset.");
 
                             #endregion Guards

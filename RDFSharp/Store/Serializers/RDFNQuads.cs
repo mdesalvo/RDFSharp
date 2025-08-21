@@ -193,27 +193,30 @@ namespace RDFSharp.Store
                 {
                     RDFMemoryStore result = new RDFMemoryStore();
                     string nquad;
-                    string[] tokens = new string[4];
                     RDFContext defaultContext = new RDFContext();
+                    RDFContext C = null;
+                    RDFResource S = null, P = null, O = null;
+                    RDFLiteral L = null;
+                    string[] tokens = new string[4];
                     Dictionary<string, long> hashContext = new Dictionary<string, long>();
                     while ((nquad = sr.ReadLine()) != null)
                     {
                         nquadIndex++;
 
                         #region sanitize  & tokenize
-                        //Cleanup previous data
-                        RDFResource S = null;
+                        //Cleanup data
+                        C = defaultContext;
+                        S = null;
+                        P = null;
+                        O = null;
+                        L = null;
                         tokens[0] = string.Empty;
-                        RDFResource P = null;
                         tokens[1] = string.Empty;
-                        RDFResource O = null;
-                        RDFLiteral L = null;
                         tokens[2] = string.Empty;
-                        RDFContext C = defaultContext;
                         tokens[3] = string.Empty;
 
                         //Preliminary sanitizations: clean trailing space-like chars
-                        nquad = nquad.Trim(' ', '\t', '\r', '\n');
+                        nquad = nquad.Trim(RDFNTriples.trimmableChars);
 
                         //Skip empty or comment lines
                         if (nquad.Length == 0 || nquad.StartsWith("#", StringComparison.Ordinal))
@@ -271,7 +274,7 @@ namespace RDFSharp.Store
                                 if (RDFNTriples.regexLPL.Value.Match(tokens[2]).Success)
                                 {
                                     tokens[2] = tokens[2].Replace("\"@", "@");
-                                    int lastIndexOfLanguage = tokens[2].LastIndexOf("@", StringComparison.OrdinalIgnoreCase);
+                                    int lastIndexOfLanguage = tokens[2].LastIndexOf('@');
                                     string pLitValue = tokens[2].Substring(0, lastIndexOfLanguage);
                                     string pLitLang = tokens[2].Substring(lastIndexOfLanguage + 1);
                                     L = new RDFPlainLiteral(HttpUtility.HtmlDecode(pLitValue), pLitLang);
