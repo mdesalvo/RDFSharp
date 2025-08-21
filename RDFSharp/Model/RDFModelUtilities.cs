@@ -92,6 +92,10 @@ namespace RDFSharp.Model
         /// Empty hashset to be returned in case of index miss
         /// </summary>
         internal static readonly HashSet<long> EmptyHashSet = new HashSet<long>();
+        /// <summary>
+        /// Empty list of triples to be returned in case of no query results
+        /// </summary>
+        internal static readonly List<RDFTriple> EmptyTripleList = new List<RDFTriple>();
 
         /// <summary>
         /// Gets the Uri corresponding to the given string
@@ -234,89 +238,94 @@ namespace RDFSharp.Model
         /// </summary>
         internal static List<RDFTriple> SelectTriples(RDFGraph graph, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
         {
-            List<RDFTriple> matchResult = new List<RDFTriple>();
+            #region Utilities
+            void LookupIndex(HashSet<long> lookup, out List<RDFHashedTriple> result)
+            {
+                result = new List<RDFHashedTriple>(lookup.Count);
+                result.AddRange(lookup.Select(t => graph.Index.Hashes[t]));
+            }
+            #endregion
+
             if (graph != null)
             {
                 StringBuilder queryFilters = new StringBuilder(4);
-                List<RDFHashedTriple> S = new List<RDFHashedTriple>();
-                List<RDFHashedTriple> P = new List<RDFHashedTriple>();
-                List<RDFHashedTriple> O = new List<RDFHashedTriple>();
-                List<RDFHashedTriple> L = new List<RDFHashedTriple>();
-                List<RDFHashedTriple> matchResultHashedTriples;
+                List<RDFHashedTriple> S = null, P = null, O = null, L = null, hashedTriples;
 
                 //Filter by Subject
                 if (subj != null)
                 {
                     queryFilters.Append('S');
-                    S.AddRange(graph.Index.LookupIndexBySubject(subj).Select(t => graph.Index.Hashes[t]));
+                    LookupIndex(graph.Index.LookupIndexBySubject(subj), out S);
                 }
 
                 //Filter by Predicate
                 if (pred != null)
                 {
                     queryFilters.Append('P');
-                    P.AddRange(graph.Index.LookupIndexByPredicate(pred).Select(t => graph.Index.Hashes[t]));
+                    LookupIndex(graph.Index.LookupIndexByPredicate(pred), out P);
                 }
 
                 //Filter by Object
                 if (obj != null)
                 {
                     queryFilters.Append('O');
-                    O.AddRange(graph.Index.LookupIndexByObject(obj).Select(t => graph.Index.Hashes[t]));
+                    LookupIndex(graph.Index.LookupIndexByObject(obj), out O);
                 }
 
                 //Filter by Literal
                 if (lit != null)
                 {
                     queryFilters.Append('L');
-                    L.AddRange(graph.Index.LookupIndexByLiteral(lit).Select(t => graph.Index.Hashes[t]));
+                    LookupIndex(graph.Index.LookupIndexByLiteral(lit), out L);
                 }
 
                 //Intersect the filters
                 switch (queryFilters.ToString())
                 {
                     case "S":
-                        matchResultHashedTriples = S;
+                        hashedTriples = S;
                         break;
                     case "P":
-                        matchResultHashedTriples = P;
+                        hashedTriples = P;
                         break;
                     case "O":
-                        matchResultHashedTriples = O;
+                        hashedTriples = O;
                         break;
                     case "L":
-                        matchResultHashedTriples = L;
+                        hashedTriples = L;
                         break;
                     case "SP":
-                        matchResultHashedTriples = S.Intersect(P).ToList();
+                        hashedTriples = S.Intersect(P).ToList();
                         break;
                     case "SO":
-                        matchResultHashedTriples = S.Intersect(O).ToList();
+                        hashedTriples = S.Intersect(O).ToList();
                         break;
                     case "SL":
-                        matchResultHashedTriples = S.Intersect(L).ToList();
+                        hashedTriples = S.Intersect(L).ToList();
                         break;
                     case "PO":
-                        matchResultHashedTriples = P.Intersect(O).ToList();
+                        hashedTriples = P.Intersect(O).ToList();
                         break;
                     case "PL":
-                        matchResultHashedTriples = P.Intersect(L).ToList();
+                        hashedTriples = P.Intersect(L).ToList();
                         break;
                     case "SPO":
-                        matchResultHashedTriples = S.Intersect(P).Intersect(O).ToList();
+                        hashedTriples = S.Intersect(P).Intersect(O).ToList();
                         break;
                     case "SPL":
-                        matchResultHashedTriples = S.Intersect(P).Intersect(L).ToList();
+                        hashedTriples = S.Intersect(P).Intersect(L).ToList();
                         break;
                     default:
-                        matchResultHashedTriples = graph.Index.Hashes.Values.ToList();
+                        hashedTriples = graph.Index.Hashes.Values.ToList();
                         break;
                 }
 
                 //Decompress hashed triples
-                matchResultHashedTriples.ForEach(hashedTriple => matchResult.Add(new RDFTriple(hashedTriple, graph.Index)));
+                List<RDFTriple> triples = new List<RDFTriple>(hashedTriples.Count);
+                hashedTriples.ForEach(ht => triples.Add(new RDFTriple(ht, graph.Index)));
+                return triples;
             }
-            return matchResult;
+            return EmptyTripleList;
         }
 
         /// <summary>
