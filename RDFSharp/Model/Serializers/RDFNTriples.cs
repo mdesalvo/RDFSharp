@@ -204,8 +204,6 @@ namespace RDFSharp.Model
                 {
                     RDFGraph result = new RDFGraph().SetContext(graphContext);
                     string nTriple;
-                    RDFResource S = null, P = null, O = null;
-                    RDFLiteral L = null;
                     string[] tokens = new string[3];
                     Dictionary<string, long> hashContext = new Dictionary<string, long>(256); //Initial capacity=256 seems a good tradeoff for expected cardinality of different Uris which might be encountered
 
@@ -215,10 +213,10 @@ namespace RDFSharp.Model
 
                         #region sanitize  & tokenize
                         //Cleanup data
-                        S = null;
-                        P = null;
-                        O = null;
-                        L = null;
+                        RDFResource S = null;
+                        RDFResource P = null;
+                        RDFResource O = null;
+                        RDFLiteral L = null;
                         tokens[0] = string.Empty;
                         tokens[1] = string.Empty;
                         tokens[2] = string.Empty;

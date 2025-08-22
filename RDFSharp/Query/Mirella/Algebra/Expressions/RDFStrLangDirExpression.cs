@@ -126,18 +126,16 @@ namespace RDFSharp.Query
                 if (rightArgumentPMember is RDFPlainLiteral rightArgumentPMemberLiteral
                      && RDFPlainLiteral.LangTagNoDirRegex.Value.IsMatch(rightArgumentPMemberLiteral.Value))
                 {
-                    //And a plain literal without language
-                    if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLit
-                         && !leftArgumentPMemberPLit.HasLanguage())
+                    switch (leftArgumentPMember)
                     {
-                        expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLit.Value, string.Concat(rightArgumentPMemberLiteral.Value, Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "--ltr" : "--rtl"));
-                    }
-
-                    //Or a string-based typed literal
-                    else if (leftArgumentPMember is RDFTypedLiteral leftArgumentPMemberTLit
-                              && leftArgumentPMemberTLit.HasStringDatatype())
-                    {
-                        expressionResult = new RDFPlainLiteral(leftArgumentPMemberTLit.Value, string.Concat(rightArgumentPMemberLiteral.Value, Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "--ltr" : "--rtl"));
+                        //And a plain literal without language
+                        case RDFPlainLiteral leftArgumentPMemberPLit when !leftArgumentPMemberPLit.HasLanguage():
+                            expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLit.Value, string.Concat(rightArgumentPMemberLiteral.Value, Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "--ltr" : "--rtl"));
+                            break;
+                        //Or a string-based typed literal
+                        case RDFTypedLiteral leftArgumentPMemberTLit when leftArgumentPMemberTLit.HasStringDatatype():
+                            expressionResult = new RDFPlainLiteral(leftArgumentPMemberTLit.Value, string.Concat(rightArgumentPMemberLiteral.Value, Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "--ltr" : "--rtl"));
+                            break;
                     }
                 }
                 #endregion

@@ -192,11 +192,8 @@ namespace RDFSharp.Store
                 using (StreamReader sr = new StreamReader(inputStream, Encoding.ASCII))
                 {
                     RDFMemoryStore result = new RDFMemoryStore();
-                    string nquad;
                     RDFContext defaultContext = new RDFContext();
-                    RDFContext C = null;
-                    RDFResource S = null, P = null, O = null;
-                    RDFLiteral L = null;
+                    string nquad;
                     string[] tokens = new string[4];
                     Dictionary<string, long> hashContext = new Dictionary<string, long>(256); //Initial capacity=256 seems a good tradeoff for expected cardinality of different Uris which might be encountered
 
@@ -206,11 +203,11 @@ namespace RDFSharp.Store
 
                         #region sanitize  & tokenize
                         //Cleanup data
-                        C = defaultContext;
-                        S = null;
-                        P = null;
-                        O = null;
-                        L = null;
+                        RDFContext C = defaultContext;
+                        RDFResource S = null;
+                        RDFResource P = null;
+                        RDFResource O = null;
+                        RDFLiteral L = null;
                         tokens[0] = string.Empty;
                         tokens[1] = string.Empty;
                         tokens[2] = string.Empty;
