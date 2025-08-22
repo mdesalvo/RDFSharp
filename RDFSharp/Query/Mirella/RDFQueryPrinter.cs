@@ -34,7 +34,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintSelectQuery(RDFSelectQuery selectQuery, double indentLevel, bool fromUnionOrMinus)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder(512); //Initial capacity=512 seems a good tradeoff for medium length of queries
             if (selectQuery == null)
                 return sb.ToString();
 
@@ -66,29 +66,23 @@ namespace RDFSharp.Query
             #endregion
 
             #region DISTINCT
-            selectQuery.GetModifiers()
-                       .OfType<RDFDistinctModifier>()
-                       .ToList()
-                       .ForEach(dm => sb.Append($" {dm}"));
+            List<RDFModifier> modifiers = selectQuery.GetModifiers().ToList();
+            foreach (RDFDistinctModifier dm in modifiers.OfType<RDFDistinctModifier>())
+                sb.Append($" {dm}");
             #endregion
 
             #region VARIABLES/AGGREGATORS
-            List<RDFModifier> modifiers = selectQuery.GetModifiers().ToList();
-
-            //Query has GroupBy modifier => reset given projections, modifier takes control
-            if (modifiers.Any(m => m is RDFGroupByModifier))
+            //Query has GroupBy modifier => reset given projections, this modifier takes control!
+            if (modifiers.Any(mod => mod is RDFGroupByModifier))
             {
-                modifiers.OfType<RDFGroupByModifier>()
-                         .ToList()
-                         .ForEach(gm =>
-                         {
-                             sb.Append(' ');
-                             sb.Append(string.Join(" ", gm.PartitionVariables));
-                             sb.Append(' ');
-                             sb.Append(string.Join(" ", gm.Aggregators.Where(ag => !(ag is RDFPartitionAggregator))));
-                         });
+                foreach (RDFGroupByModifier gm in modifiers.OfType<RDFGroupByModifier>())
+                {
+                    sb.Append(' ');
+                    sb.Append(string.Join(" ", gm.PartitionVariables));
+                    sb.Append(' ');
+                    sb.Append(string.Join(" ", gm.Aggregators.Where(ag => !(ag is RDFPartitionAggregator))));
+                }
             }
-
             //Query hasn't GroupBy modifier => respect given projections
             else
             {
@@ -99,14 +93,15 @@ namespace RDFSharp.Query
                 else
                 {
                     foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionElement in selectQuery.ProjectionVars.OrderBy(pv => pv.Value.Item1))
+                    {
                         sb.Append(projectionElement.Value.Item2 == null
                             //Projection Variable
                             ? $" {projectionElement.Key}"
                             //Projection Expression
                             : $" ({projectionElement.Value.Item2.ToString(prefixes)} AS {projectionElement.Key})");
+                    }
                 }
             }
-
             sb.AppendLine();
             #endregion
 
@@ -116,41 +111,39 @@ namespace RDFSharp.Query
 
             #region MODIFIERS
             //GROUP BY
-            if (modifiers.Any(mod => mod is RDFGroupByModifier))
-                modifiers.OfType<RDFGroupByModifier>()
-                    .ToList()
-                    .ForEach(gm =>
-                    {
-                        //GROUP BY
-                        sb.AppendLine();
-                        sb.Append(subqueryBodySpaces + gm);
-                        //HAVING
-                        if (gm.Aggregators.Any(ag => ag.HavingClause.Item1))
-                        {
-                            sb.AppendLine();
-                            sb.AppendFormat(string.Concat(subqueryBodySpaces, "HAVING ({0})"), string.Join(" && ", gm.Aggregators.Where(ag => ag.HavingClause.Item1).Select(x => x.PrintHavingClause(selectQuery.Prefixes))));
-                        }
-                    });
+            foreach (RDFGroupByModifier gm in modifiers.OfType<RDFGroupByModifier>())
+            {
+                //GROUP BY
+                sb.AppendLine();
+                sb.Append(subqueryBodySpaces);
+                sb.Append(gm);
+                //HAVING
+                if (gm.Aggregators.Any(ag => ag.HavingClause.Item1))
+                {
+                    sb.AppendLine();
+                    sb.AppendFormat(string.Concat(subqueryBodySpaces, "HAVING ({0})"), string.Join(" && ", gm.Aggregators.Where(ag => ag.HavingClause.Item1).Select(x => x.PrintHavingClause(selectQuery.Prefixes))));
+                }
+            }
 
             // ORDER BY
             if (modifiers.Any(mod => mod is RDFOrderByModifier))
             {
                 sb.AppendLine();
                 sb.Append($"{subqueryBodySpaces}ORDER BY");
-                modifiers.OfType<RDFOrderByModifier>()
-                         .ToList()
-                         .ForEach(om => sb.Append($" {om}"));
+                foreach (RDFOrderByModifier om in modifiers.OfType<RDFOrderByModifier>())
+                    sb.Append($" {om}");
             }
 
             // LIMIT/OFFSET
-            if (modifiers.Any(mod => mod is RDFLimitModifier || mod is RDFOffsetModifier))
+            foreach (RDFLimitModifier lim in modifiers.OfType<RDFLimitModifier>())
             {
-                modifiers.OfType<RDFLimitModifier>()
-                         .ToList()
-                         .ForEach(lim => { sb.AppendLine(); sb.Append(string.Concat(subqueryBodySpaces, lim.ToString())); });
-                modifiers.OfType<RDFOffsetModifier>()
-                         .ToList()
-                         .ForEach(off => { sb.AppendLine(); sb.Append(string.Concat(subqueryBodySpaces, off.ToString())); });
+                sb.AppendLine();
+                sb.Append(string.Concat(subqueryBodySpaces, lim.ToString()));
+            }
+            foreach (RDFOffsetModifier off in modifiers.OfType<RDFOffsetModifier>())
+            {
+                sb.AppendLine();
+                sb.Append(string.Concat(subqueryBodySpaces, off.ToString()));
             }
             #endregion
 
@@ -167,7 +160,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintDescribeQuery(RDFDescribeQuery describeQuery)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder(512); //Initial capacity=512 seems a good tradeoff for medium length of queries
             if (describeQuery == null)
                 return sb.ToString();
 
@@ -191,14 +184,15 @@ namespace RDFSharp.Query
             #region MODIFIERS
             List<RDFModifier> modifiers = describeQuery.GetModifiers().ToList();
             // LIMIT/OFFSET
-            if (modifiers.Any(mod => mod is RDFLimitModifier || mod is RDFOffsetModifier))
+            foreach (RDFLimitModifier lim in modifiers.OfType<RDFLimitModifier>())
             {
-                modifiers.OfType<RDFLimitModifier>()
-                         .ToList()
-                         .ForEach(lim => { sb.AppendLine(); sb.Append(lim); });
-                modifiers.OfType<RDFOffsetModifier>()
-                         .ToList()
-                         .ForEach(off => { sb.AppendLine(); sb.Append(off); });
+                sb.AppendLine();
+                sb.Append(lim);
+            }
+            foreach (RDFOffsetModifier off in modifiers.OfType<RDFOffsetModifier>())
+            {
+                sb.AppendLine();
+                sb.Append(off);
             }
             #endregion
 
@@ -210,7 +204,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintConstructQuery(RDFConstructQuery constructQuery)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder(512); //Initial capacity=512 seems a good tradeoff for medium length of queries
             if (constructQuery == null)
                 return sb.ToString();
 
@@ -237,7 +231,7 @@ namespace RDFSharp.Query
 
                 sb.AppendLine($"  {tpString} .");
             });
-            sb.AppendLine("}");
+            sb.Append('}').AppendLine();
             #endregion
 
             #region WHERE
@@ -247,14 +241,15 @@ namespace RDFSharp.Query
             #region MODIFIERS
             List<RDFModifier> modifiers = constructQuery.GetModifiers().ToList();
             // LIMIT/OFFSET
-            if (modifiers.Any(mod => mod is RDFLimitModifier || mod is RDFOffsetModifier))
+            foreach (RDFLimitModifier lim in modifiers.OfType<RDFLimitModifier>())
             {
-                modifiers.OfType<RDFLimitModifier>()
-                         .ToList()
-                         .ForEach(lim => { sb.AppendLine(); sb.Append(lim); });
-                modifiers.OfType<RDFOffsetModifier>()
-                         .ToList()
-                         .ForEach(off => { sb.AppendLine(); sb.Append(off); });
+                sb.AppendLine();
+                sb.Append(lim);
+            }
+            foreach (RDFOffsetModifier off in modifiers.OfType<RDFOffsetModifier>())
+            {
+                sb.AppendLine();
+                sb.Append(off);
             }
             #endregion
 
@@ -269,7 +264,7 @@ namespace RDFSharp.Query
             if (askQuery == null)
                 return string.Empty;
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder(512); //Initial capacity=512 seems a good tradeoff for medium length of queries
             List<RDFNamespace> prefixes = PrintPrefixes(askQuery, sb, true);
             sb.AppendLine("ASK");
             PrintWhereClause(askQuery, sb, prefixes, string.Empty, 0, false);
@@ -496,8 +491,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintPatternGroup(RDFPatternGroup patternGroup, int spaceIndent, bool skipOptional, List<RDFNamespace> prefixes)
         {
-            StringBuilder result = new StringBuilder();
-            string spaces = new StringBuilder().Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
+            StringBuilder result = new StringBuilder(256); //Initial capacity=256 seems a good tradeoff for medium length of pattern groups
+            string spaces = new StringBuilder(8).Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
 
             //OPTIONAL
             if (patternGroup.IsOptional && !skipOptional)
@@ -522,9 +517,8 @@ namespace RDFSharp.Query
             PrintPatternGroupMembers(patternGroup, result, spaces, prefixes);
 
             //FILTERS
-            patternGroup.GetFilters().Where(f => !(f is RDFValuesFilter))
-                                     .ToList()
-                                     .ForEach(f => result.AppendLine($"{spaces}    {f.ToString(prefixes)} "));
+            foreach (RDFFilter filter in patternGroup.GetFilters().Where(f => !(f is RDFValuesFilter)))
+                result.AppendLine($"{spaces}    {filter.ToString(prefixes)} ");
 
             //CLOSE-BRACKET
             result.AppendLine(string.Concat(spaces, "  }"));
@@ -538,7 +532,8 @@ namespace RDFSharp.Query
             }
 
             //OPTIONAL
-            if (patternGroup.IsOptional && !skipOptional) result.AppendLine(string.Concat(spaces, "}"));
+            if (patternGroup.IsOptional && !skipOptional)
+                result.AppendLine(string.Concat(spaces, "}"));
 
             return result.ToString();
         }
@@ -730,7 +725,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintPropertyPath(RDFPropertyPath propertyPath, List<RDFNamespace> prefixes)
         {
-            StringBuilder result = new StringBuilder();
+            StringBuilder result = new StringBuilder(64); //Initial capacity=64 seems a good tradeoff for medium length of property paths
             result.Append(PrintPatternMember(propertyPath.Start, prefixes));
             result.Append(' ');
 
@@ -818,7 +813,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintValues(RDFValues values, List<RDFNamespace> prefixes, string spaces)
         {
-            StringBuilder result = new StringBuilder();
+            StringBuilder result = new StringBuilder(64); //Initial capacity=64 seems a good tradeoff for medium length of values
 
             //Compact representation
             if (values.Bindings.Keys.Count == 1)
@@ -841,13 +836,13 @@ namespace RDFSharp.Query
                 for (int i = 0; i < values.MaxBindingsLength(); i++)
                 {
                     result.Append($"{spaces}      ( ");
-                    values.Bindings.ToList().ForEach(binding =>
+                    foreach (KeyValuePair<string, List<RDFPatternMember>> binding in values.Bindings)
                     {
                         RDFPatternMember bindingValue = binding.Value.ElementAtOrDefault(i);
                         result.Append(bindingValue == null ? "UNDEF" : PrintPatternMember(bindingValue, prefixes));
                         result.Append(' ');
-                    });
-                    result.AppendLine(")");
+                    }
+                    result.Append(')').AppendLine();
                 }
                 result.Append(string.Concat(spaces, "    }"));
             }
