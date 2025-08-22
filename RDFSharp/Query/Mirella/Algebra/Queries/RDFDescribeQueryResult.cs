@@ -91,7 +91,7 @@ namespace RDFSharp.Query
             foreach (DataRow resultRow in DescribeResults.Rows)
             {
                 //In case the context column is unbound, we can safely apply default context
-                RDFPatternMember ctx;
+                RDFContext ctx;
                 if (!hasCtx || string.IsNullOrEmpty(resultRow["?CONTEXT"].ToString()))
                     ctx = defCtx;
                 else
@@ -100,9 +100,9 @@ namespace RDFSharp.Query
                 RDFPatternMember pred = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?PREDICATE"].ToString());
                 RDFPatternMember obj = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?OBJECT"].ToString());
                 if (obj is RDFResource objRes)
-                    result.AddQuadruple(new RDFQuadruple((RDFContext)ctx, (RDFResource)subj, (RDFResource)pred, objRes));
+                    result.AddQuadruple(new RDFQuadruple(ctx, (RDFResource)subj, (RDFResource)pred, objRes));
                 else
-                    result.AddQuadruple(new RDFQuadruple((RDFContext)ctx, (RDFResource)subj, (RDFResource)pred, (RDFLiteral)obj));
+                    result.AddQuadruple(new RDFQuadruple(ctx, (RDFResource)subj, (RDFResource)pred, (RDFLiteral)obj));
             }
 
             return result;
