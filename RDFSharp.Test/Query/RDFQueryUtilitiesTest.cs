@@ -214,7 +214,7 @@ public class RDFQueryUtilitiesTest
             [new RDFNamespace("test","http://test/")]);
 
         Assert.IsTrue(result.Item1);
-        Assert.IsTrue(result.Item2.Equals("test:HTML"));
+        Assert.IsTrue(result.Item2.Equals("test:HTML", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -224,7 +224,7 @@ public class RDFQueryUtilitiesTest
             [new RDFNamespace("test","http://test/")]);
 
         Assert.IsTrue(result.Item1);
-        Assert.IsTrue(result.Item2.Equals("test:HTML"));
+        Assert.IsTrue(result.Item2.Equals("test:HTML", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -234,7 +234,7 @@ public class RDFQueryUtilitiesTest
             [new RDFNamespace("test1","http://test"), new RDFNamespace("test2","http://test")]);
 
         Assert.IsTrue(result.Item1);
-        Assert.IsTrue(result.Item2.Equals("test1:HTML"));
+        Assert.IsTrue(result.Item2.Equals("test1:HTML", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -244,7 +244,7 @@ public class RDFQueryUtilitiesTest
             [new RDFNamespace("test1","http://test/HTML"), new RDFNamespace("test2","http://test/")]);
 
         Assert.IsTrue(result.Item1);
-        Assert.IsTrue(result.Item2.Equals("test2:HTML1"));
+        Assert.IsTrue(result.Item2.Equals("test2:HTML1", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -253,7 +253,7 @@ public class RDFQueryUtilitiesTest
         (bool, string) result = RDFQueryUtilities.AbbreviateRDFPatternMember(new RDFResource("http://test/HTML"), null);
 
         Assert.IsFalse(result.Item1);
-        Assert.IsTrue(result.Item2.Equals("http://test/HTML"));
+        Assert.IsTrue(result.Item2.Equals("http://test/HTML", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

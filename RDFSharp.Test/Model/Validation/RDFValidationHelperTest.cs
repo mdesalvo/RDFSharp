@@ -824,7 +824,7 @@ public class RDFValidationHelperTest
         Assert.IsTrue(shape2OrConstraint.OrShapes.ContainsKey(shape2.PatternMemberID));
         RDFPatternConstraint shape2PatternConstraint = shape2.Constraints.Single(x => x is RDFPatternConstraint) as RDFPatternConstraint;
         Assert.IsNotNull(shape2PatternConstraint);
-        Assert.IsTrue(shape2PatternConstraint.RegEx.ToString().Equals("^hello$"));
+        Assert.IsTrue(shape2PatternConstraint.RegEx.ToString().Equals("^hello$", System.StringComparison.Ordinal));
         Assert.IsTrue(shape2PatternConstraint.RegEx.Options.HasFlag(RegexOptions.IgnoreCase));
         Assert.IsTrue(shape2PatternConstraint.RegEx.Options.HasFlag(RegexOptions.Singleline));
         Assert.IsTrue(shape2PatternConstraint.RegEx.Options.HasFlag(RegexOptions.Multiline));
@@ -1037,7 +1037,7 @@ public class RDFValidationHelperTest
         Assert.IsTrue(shape2OrConstraint.OrShapes.ContainsKey(shape2.PatternMemberID));
         RDFPatternConstraint shape2PatternConstraint = shape2.Constraints.Single(x => x is RDFPatternConstraint) as RDFPatternConstraint;
         Assert.IsNotNull(shape2PatternConstraint);
-        Assert.IsTrue(shape2PatternConstraint.RegEx.ToString().Equals("^hello$"));
+        Assert.IsTrue(shape2PatternConstraint.RegEx.ToString().Equals("^hello$", System.StringComparison.Ordinal));
         Assert.IsTrue(shape2PatternConstraint.RegEx.Options.HasFlag(RegexOptions.IgnoreCase));
         Assert.IsTrue(shape2PatternConstraint.RegEx.Options.HasFlag(RegexOptions.Singleline));
         Assert.IsTrue(shape2PatternConstraint.RegEx.Options.HasFlag(RegexOptions.Multiline));

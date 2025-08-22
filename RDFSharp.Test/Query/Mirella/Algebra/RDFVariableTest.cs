@@ -36,14 +36,14 @@ public class RDFVariableTest
         RDFVariable variable1 = new RDFVariable(variableName);
 
         Assert.IsNotNull(variable1);
-        Assert.IsTrue(variable1.VariableName.Equals(effectiveVariableName));
-        Assert.IsTrue(variable1.ToString().Equals(effectiveVariableName));
+        Assert.IsTrue(variable1.VariableName.Equals(effectiveVariableName, System.StringComparison.Ordinal));
+        Assert.IsTrue(variable1.ToString().Equals(effectiveVariableName, System.StringComparison.Ordinal));
 
         RDFVariable variable2 = new RDFVariable(variableName.ToUpperInvariant());
 
         Assert.IsNotNull(variable2);
-        Assert.IsTrue(variable2.VariableName.Equals(effectiveVariableName));
-        Assert.IsTrue(variable2.ToString().Equals(effectiveVariableName));
+        Assert.IsTrue(variable2.VariableName.Equals(effectiveVariableName, System.StringComparison.Ordinal));
+        Assert.IsTrue(variable2.ToString().Equals(effectiveVariableName, System.StringComparison.Ordinal));
 
         Assert.IsTrue(variable1.Equals(variable2));
     }

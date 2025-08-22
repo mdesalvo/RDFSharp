@@ -62,7 +62,7 @@ public class RDFStoreExceptionTest
         {
             Assert.IsTrue(mex.Message.Equals("This is an exception coming from RDF Store!", StringComparison.OrdinalIgnoreCase));
             Assert.IsNotNull(mex.InnerException);
-            Assert.IsTrue(mex.InnerException.Message.Equals("This is the inner exception!"));
+            Assert.IsTrue(mex.InnerException.Message.Equals("This is the inner exception!", StringComparison.Ordinal));
         }
     }
     #endregion

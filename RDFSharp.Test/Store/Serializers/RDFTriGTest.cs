@@ -35,7 +35,7 @@ public class RDFTriGTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeEmptyStore.trig")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeEmptyStore.trig"));
-        Assert.IsTrue(fileContent.Equals(string.Empty));
+        Assert.IsTrue(fileContent.Equals(string.Empty, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -48,7 +48,7 @@ public class RDFTriGTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithDefaultGraphSPOQuadruples.trig")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithDefaultGraphSPOQuadruples.trig"));
-        Assert.IsTrue(fileContent.Equals("{" + Environment.NewLine + "  <http://subj1/> <http://pred1/> <http://obj1/>. " + Environment.NewLine + "  <http://subj2/> <http://pred2/> <http://obj2/>. " + Environment.NewLine + "}"));
+        Assert.IsTrue(fileContent.Equals("{" + Environment.NewLine + "  <http://subj1/> <http://pred1/> <http://obj1/>. " + Environment.NewLine + "  <http://subj2/> <http://pred2/> <http://obj2/>. " + Environment.NewLine + "}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -61,7 +61,7 @@ public class RDFTriGTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithDefaultGraphSPBQuadruples.trig")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithDefaultGraphSPBQuadruples.trig"));
-        Assert.IsTrue(fileContent.Equals("{" + Environment.NewLine + "  <http://subj1/> <http://pred1/> _:12345. " + Environment.NewLine + "  <http://subj2/> <http://pred2/> _:54321. " + Environment.NewLine + "}"));
+        Assert.IsTrue(fileContent.Equals("{" + Environment.NewLine + "  <http://subj1/> <http://pred1/> _:12345. " + Environment.NewLine + "  <http://subj2/> <http://pred2/> _:54321. " + Environment.NewLine + "}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -74,7 +74,7 @@ public class RDFTriGTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithDefaultGraphBPOQuadruples.trig")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithDefaultGraphBPOQuadruples.trig"));
-        Assert.IsTrue(fileContent.Equals("{" + Environment.NewLine + "  _:12345 <http://pred1/> <http://obj1/>. " + Environment.NewLine + "  _:54321 <http://pred2/> <http://obj2/>. " + Environment.NewLine + "}"));
+        Assert.IsTrue(fileContent.Equals("{" + Environment.NewLine + "  _:12345 <http://pred1/> <http://obj1/>. " + Environment.NewLine + "  _:54321 <http://pred2/> <http://obj2/>. " + Environment.NewLine + "}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -87,7 +87,7 @@ public class RDFTriGTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithDefaultGraphBPBQuadruples.trig")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithDefaultGraphBPBQuadruples.trig"));
-        Assert.IsTrue(fileContent.Equals("{" + Environment.NewLine + "  _:12345 <http://pred1/> _:54321. " + Environment.NewLine + "  _:54321 <http://pred2/> _:12345. " + Environment.NewLine + "}"));
+        Assert.IsTrue(fileContent.Equals("{" + Environment.NewLine + "  _:12345 <http://pred1/> _:54321. " + Environment.NewLine + "  _:54321 <http://pred2/> _:12345. " + Environment.NewLine + "}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -100,7 +100,7 @@ public class RDFTriGTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithDefaultGraphSPLQuadruples.trig")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithDefaultGraphSPLQuadruples.trig"));
-        Assert.IsTrue(fileContent.Equals("{" + Environment.NewLine + "  <http://subj1/> <http://pred1/> \"hello\". " + Environment.NewLine + "  <http://subj2/> <http://pred2/> \"hello\"@EN-US--LTR. " + Environment.NewLine + "}"));
+        Assert.IsTrue(fileContent.Equals("{" + Environment.NewLine + "  <http://subj1/> <http://pred1/> \"hello\". " + Environment.NewLine + "  <http://subj2/> <http://pred2/> \"hello\"@EN-US--LTR. " + Environment.NewLine + "}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -113,7 +113,7 @@ public class RDFTriGTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithDefaultGraphSPOQuadruplesHavingPrefixes.trig")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithDefaultGraphSPOQuadruplesHavingPrefixes.trig"));
-        Assert.IsTrue(fileContent.Equals("@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>." + Environment.NewLine + "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>." + Environment.NewLine + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj1/> a <http://obj1/>. " + Environment.NewLine + "  <http://subj2/> rdfs:seeAlso <http://obj2/>. " + Environment.NewLine + "}"));
+        Assert.IsTrue(fileContent.Equals("@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>." + Environment.NewLine + "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>." + Environment.NewLine + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj1/> a <http://obj1/>. " + Environment.NewLine + "  <http://subj2/> rdfs:seeAlso <http://obj2/>. " + Environment.NewLine + "}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -127,7 +127,7 @@ public class RDFTriGTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithDefaultGraphSPLQuadruplesHavingPrefixes.trig")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithDefaultGraphSPLQuadruplesHavingPrefixes.trig"));
-        Assert.IsTrue(fileContent.Equals("@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>." + Environment.NewLine + "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>." + Environment.NewLine + "@prefix xsd: <http://www.w3.org/2001/XMLSchema#>." + Environment.NewLine + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj1/> a \"hello\". " + Environment.NewLine + "  <http://subj2/> <http://pred2/> \"25\"^^xsd:integer; " + Environment.NewLine + "                  rdfs:seeAlso \"hello\"@EN-US. " + Environment.NewLine + "}"));
+        Assert.IsTrue(fileContent.Equals("@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>." + Environment.NewLine + "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>." + Environment.NewLine + "@prefix xsd: <http://www.w3.org/2001/XMLSchema#>." + Environment.NewLine + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj1/> a \"hello\". " + Environment.NewLine + "  <http://subj2/> <http://pred2/> \"25\"^^xsd:integer; " + Environment.NewLine + "                  rdfs:seeAlso \"hello\"@EN-US. " + Environment.NewLine + "}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -140,7 +140,7 @@ public class RDFTriGTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithBothDefaultAndNotDefaultGraphsSPOQuadruples.trig")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithBothDefaultAndNotDefaultGraphsSPOQuadruples.trig"));
-        Assert.IsTrue(fileContent.Equals("{" + Environment.NewLine + "  <http://subj1/> <http://pred1/> <http://obj1/>. " + Environment.NewLine + "}" + Environment.NewLine + Environment.NewLine + "GRAPH <http://ctx1/>" + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj2/> <http://pred2/> <http://obj2/>. " + Environment.NewLine + "}"));
+        Assert.IsTrue(fileContent.Equals("{" + Environment.NewLine + "  <http://subj1/> <http://pred1/> <http://obj1/>. " + Environment.NewLine + "}" + Environment.NewLine + Environment.NewLine + "GRAPH <http://ctx1/>" + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj2/> <http://pred2/> <http://obj2/>. " + Environment.NewLine + "}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -153,7 +153,7 @@ public class RDFTriGTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithBothNotDefaultAndDefaultGraphsSPOQuadruples.trig")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithBothNotDefaultAndDefaultGraphsSPOQuadruples.trig"));
-        Assert.IsTrue(fileContent.Equals("GRAPH <http://ctx1/>" + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj1/> <http://pred1/> <http://obj1/>. " + Environment.NewLine + "}" + Environment.NewLine + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj2/> <http://pred2/> <http://obj2/>. " + Environment.NewLine + "}"));
+        Assert.IsTrue(fileContent.Equals("GRAPH <http://ctx1/>" + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj1/> <http://pred1/> <http://obj1/>. " + Environment.NewLine + "}" + Environment.NewLine + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj2/> <http://pred2/> <http://obj2/>. " + Environment.NewLine + "}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -166,7 +166,7 @@ public class RDFTriGTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithBothDefaultAndNotDefaultGraphsSPOQuadruplesHavingPrefixes.trig")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithBothDefaultAndNotDefaultGraphsSPOQuadruplesHavingPrefixes.trig"));
-        Assert.IsTrue(fileContent.Equals("@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>." + Environment.NewLine + "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>." + Environment.NewLine + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj1/> a <http://obj1/>. " + Environment.NewLine + "}" + Environment.NewLine + Environment.NewLine + "GRAPH <http://ctx1/>" + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj2/> rdfs:seeAlso <http://obj2/>. " + Environment.NewLine + "}"));
+        Assert.IsTrue(fileContent.Equals("@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>." + Environment.NewLine + "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>." + Environment.NewLine + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj1/> a <http://obj1/>. " + Environment.NewLine + "}" + Environment.NewLine + Environment.NewLine + "GRAPH <http://ctx1/>" + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj2/> rdfs:seeAlso <http://obj2/>. " + Environment.NewLine + "}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -179,7 +179,7 @@ public class RDFTriGTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithNotDefaultGraphsSPOQuadruples.trig")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithNotDefaultGraphsSPOQuadruples.trig"));
-        Assert.IsTrue(fileContent.Equals("GRAPH <http://ctx1/>" + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj1/> <http://pred1/> <http://obj1/>. " + Environment.NewLine + "}" + Environment.NewLine + Environment.NewLine + "GRAPH <http://ctx2/>" + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj2/> <http://pred2/> <http://obj2/>. " + Environment.NewLine + "}"));
+        Assert.IsTrue(fileContent.Equals("GRAPH <http://ctx1/>" + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj1/> <http://pred1/> <http://obj1/>. " + Environment.NewLine + "}" + Environment.NewLine + Environment.NewLine + "GRAPH <http://ctx2/>" + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj2/> <http://pred2/> <http://obj2/>. " + Environment.NewLine + "}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -192,7 +192,7 @@ public class RDFTriGTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithNotDefaultGraphsSPOQuadruplesHavingPrefixes.trig")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTriGTest_ShouldSerializeStoreWithNotDefaultGraphsSPOQuadruplesHavingPrefixes.trig"));
-        Assert.IsTrue(fileContent.Equals("@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>." + Environment.NewLine + "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>." + Environment.NewLine + Environment.NewLine + "GRAPH <http://ctx1/>" + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj1/> a <http://obj1/>. " + Environment.NewLine + "}" + Environment.NewLine + Environment.NewLine + "GRAPH <http://ctx2/>" + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj2/> rdfs:seeAlso <http://obj2/>. " + Environment.NewLine + "}"));
+        Assert.IsTrue(fileContent.Equals("@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>." + Environment.NewLine + "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>." + Environment.NewLine + Environment.NewLine + "GRAPH <http://ctx1/>" + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj1/> a <http://obj1/>. " + Environment.NewLine + "}" + Environment.NewLine + Environment.NewLine + "GRAPH <http://ctx2/>" + Environment.NewLine + "{" + Environment.NewLine + "  <http://subj2/> rdfs:seeAlso <http://obj2/>. " + Environment.NewLine + "}", StringComparison.Ordinal));
     }
 
     //DESERIALIZE

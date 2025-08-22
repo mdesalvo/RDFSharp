@@ -798,7 +798,7 @@ namespace RDFSharp.Query
         internal DataTable ApplyPatternToGraph(RDFPattern pattern, RDFGraph graph)
         {
             DataTable patternResultTable = new DataTable();
-            StringBuilder templateHoleDetector = new StringBuilder();
+            StringBuilder templateHoleDetector = new StringBuilder(3);
 
             //Analyze subject of the pattern
             if (pattern.Subject is RDFVariable)
@@ -890,7 +890,7 @@ namespace RDFSharp.Query
         internal DataTable ApplyPatternToStore(RDFPattern pattern, RDFStore store)
         {
             DataTable patternResultTable = new DataTable();
-            StringBuilder templateHoleDetector = new StringBuilder();
+            StringBuilder templateHoleDetector = new StringBuilder(4);
 
             //Analyze context of the pattern
             bool hasContext = pattern.Context != null;

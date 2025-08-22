@@ -36,8 +36,8 @@ public class RDFValuesFilterTest
         Assert.IsNotNull(filter.Values);
         Assert.HasCount(1, filter.Values.Bindings);
         Assert.IsNotNull(filter.ValuesTable);
-        Assert.IsTrue(filter.ToString().Equals("VALUES ?A { <" + RDFVocabulary.RDF.ALT + "> }"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("VALUES ?A { rdf:Alt }"));
+        Assert.IsTrue(filter.ToString().Equals("VALUES ?A { <" + RDFVocabulary.RDF.ALT + "> }", StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("VALUES ?A { rdf:Alt }", StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
@@ -51,8 +51,8 @@ public class RDFValuesFilterTest
         Assert.IsNotNull(filter.Values);
         Assert.HasCount(1, filter.Values.Bindings);
         Assert.IsNotNull(filter.ValuesTable);
-        Assert.IsTrue(filter.ToString().Equals("VALUES ?A { UNDEF }"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("VALUES ?A { UNDEF }"));
+        Assert.IsTrue(filter.ToString().Equals("VALUES ?A { UNDEF }", StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("VALUES ?A { UNDEF }", StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
@@ -200,8 +200,8 @@ public class RDFValuesFilterTest
         Assert.IsNotNull(filter.Values);
         Assert.HasCount(2, filter.Values.Bindings);
         Assert.IsNotNull(filter.ValuesTable);
-        Assert.IsTrue(filter.ToString().Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( <" + RDFVocabulary.RDF.ALT + "> <" + RDFVocabulary.RDF.BAG + "> )" + Environment.NewLine + "    }"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( rdf:Alt rdf:Bag )" + Environment.NewLine + "    }"));
+        Assert.IsTrue(filter.ToString().Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( <" + RDFVocabulary.RDF.ALT + "> <" + RDFVocabulary.RDF.BAG + "> )" + Environment.NewLine + "    }", StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( rdf:Alt rdf:Bag )" + Environment.NewLine + "    }", StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
@@ -216,8 +216,8 @@ public class RDFValuesFilterTest
         Assert.IsNotNull(filter.Values);
         Assert.HasCount(2, filter.Values.Bindings);
         Assert.IsNotNull(filter.ValuesTable);
-        Assert.IsTrue(filter.ToString().Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( UNDEF <" + RDFVocabulary.RDF.BAG + "> )" + Environment.NewLine + "    }"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( UNDEF rdf:Bag )" + Environment.NewLine + "    }"));
+        Assert.IsTrue(filter.ToString().Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( UNDEF <" + RDFVocabulary.RDF.BAG + "> )" + Environment.NewLine + "    }", StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("VALUES (?A ?B) {" + Environment.NewLine + "      ( UNDEF rdf:Bag )" + Environment.NewLine + "    }", StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 

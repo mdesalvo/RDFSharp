@@ -35,8 +35,8 @@ public class RDFStrStartsExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRSTARTS((?V1 + ?V2), ?V3))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRSTARTS((?V1 + ?V2), ?V3))"));
+        Assert.IsTrue(expression.ToString().Equals("(STRSTARTS((?V1 + ?V2), ?V3))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRSTARTS((?V1 + ?V2), ?V3))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -49,9 +49,9 @@ public class RDFStrStartsExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(STRSTARTS((?V1 + ?V2), \"hello\"^^<{RDFVocabulary.XSD.STRING}>))"));
-        Assert.IsTrue(expression.ToString([]).Equals($"(STRSTARTS((?V1 + ?V2), \"hello\"^^<{RDFVocabulary.XSD.STRING}>))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(STRSTARTS((?V1 + ?V2), \"hello\"^^xsd:string))"));
+        Assert.IsTrue(expression.ToString().Equals($"(STRSTARTS((?V1 + ?V2), \"hello\"^^<{RDFVocabulary.XSD.STRING}>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals($"(STRSTARTS((?V1 + ?V2), \"hello\"^^<{RDFVocabulary.XSD.STRING}>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(STRSTARTS((?V1 + ?V2), \"hello\"^^xsd:string))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -64,8 +64,8 @@ public class RDFStrStartsExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRSTARTS((?V1 + ?V2), (STRSTARTS(?V3, \"hello\"@EN-US))))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRSTARTS((?V1 + ?V2), (STRSTARTS(?V3, \"hello\"@EN-US))))"));
+        Assert.IsTrue(expression.ToString().Equals("(STRSTARTS((?V1 + ?V2), (STRSTARTS(?V3, \"hello\"@EN-US))))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRSTARTS((?V1 + ?V2), (STRSTARTS(?V3, \"hello\"@EN-US))))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -78,8 +78,8 @@ public class RDFStrStartsExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRSTARTS((?V1 + ?V2), ?V3))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRSTARTS((?V1 + ?V2), ?V3))"));
+        Assert.IsTrue(expression.ToString().Equals("(STRSTARTS((?V1 + ?V2), ?V3))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRSTARTS((?V1 + ?V2), ?V3))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -92,8 +92,8 @@ public class RDFStrStartsExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRSTARTS(?V3, (?V1 + ?V2)))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRSTARTS(?V3, (?V1 + ?V2)))"));
+        Assert.IsTrue(expression.ToString().Equals("(STRSTARTS(?V3, (?V1 + ?V2)))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRSTARTS(?V3, (?V1 + ?V2)))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -106,8 +106,8 @@ public class RDFStrStartsExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRSTARTS(?V3, ?V1))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRSTARTS(?V3, ?V1))"));
+        Assert.IsTrue(expression.ToString().Equals("(STRSTARTS(?V3, ?V1))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRSTARTS(?V3, ?V1))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

@@ -34,8 +34,8 @@ public class RDFGeoIsEmptyExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.IS_EMPTY}>(?V))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geosparql:isEmpty(?V))"));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.IS_EMPTY}>(?V))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geosparql:isEmpty(?V))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -47,8 +47,8 @@ public class RDFGeoIsEmptyExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.IS_EMPTY}>(?V))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geosparql:isEmpty(?V))"));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.IS_EMPTY}>(?V))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geosparql:isEmpty(?V))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

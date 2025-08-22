@@ -37,8 +37,8 @@ public class RDFGeoWithinExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SF_WITHIN}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:sfWithin(?V, \"POINT (1 1)\"^^geosparql:wktLiteral))"));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SF_WITHIN}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:sfWithin(?V, \"POINT (1 1)\"^^geosparql:wktLiteral))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -51,8 +51,8 @@ public class RDFGeoWithinExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SF_WITHIN}>(\"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, ?V))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:sfWithin(\"POINT (1 1)\"^^geosparql:wktLiteral, ?V))"));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SF_WITHIN}>(\"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, ?V))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:sfWithin(\"POINT (1 1)\"^^geosparql:wktLiteral, ?V))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -65,8 +65,8 @@ public class RDFGeoWithinExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SF_WITHIN}>(\"POINT (2 2)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:sfWithin(\"POINT (2 2)\"^^geosparql:wktLiteral, \"POINT (1 1)\"^^geosparql:wktLiteral))"));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SF_WITHIN}>(\"POINT (2 2)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:sfWithin(\"POINT (2 2)\"^^geosparql:wktLiteral, \"POINT (1 1)\"^^geosparql:wktLiteral))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -79,8 +79,8 @@ public class RDFGeoWithinExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SF_WITHIN}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:sfWithin(?V, \"POINT (1 1)\"^^geosparql:wktLiteral))"));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SF_WITHIN}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:sfWithin(?V, \"POINT (1 1)\"^^geosparql:wktLiteral))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -93,8 +93,8 @@ public class RDFGeoWithinExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SF_WITHIN}>(?V1, ?V2))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:sfWithin(?V1, ?V2))"));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SF_WITHIN}>(?V1, ?V2))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:sfWithin(?V1, ?V2))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -107,8 +107,8 @@ public class RDFGeoWithinExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SF_WITHIN}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:sfWithin(?V, \"POINT (1 1)\"^^geosparql:wktLiteral))"));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.SF_WITHIN}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:sfWithin(?V, \"POINT (1 1)\"^^geosparql:wktLiteral))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -424,7 +424,7 @@ public class RDFGeoConverterTest
         Geometry milanLAZ = RDFGeoConverter.GetLambertAzimuthalGeometryFromWGS84(milanWGS84);
 
         Assert.IsNotNull(milanLAZ);
-        Assert.IsTrue(string.Equals(milanLAZ.ToText(), "POINT (-899167.1609069 4413535.43188373)"));
+        Assert.IsTrue(string.Equals(milanLAZ.ToText(), "POINT (-899167.1609069 4413535.43188373)", System.StringComparison.Ordinal));
         Assert.AreEqual(42106, milanLAZ.SRID);
     }
 
@@ -435,7 +435,7 @@ public class RDFGeoConverterTest
         Geometry milanWGS84 = RDFGeoConverter.GetWGS84GeometryFromLambertAzimuthal(milanLAZ);
 
         Assert.IsNotNull(milanWGS84);
-        Assert.IsTrue(string.Equals(milanWGS84.ToText(), "POINT (9.18854 45.464664)"));
+        Assert.IsTrue(string.Equals(milanWGS84.ToText(), "POINT (9.18854 45.464664)", System.StringComparison.Ordinal));
         Assert.AreEqual(4326, milanWGS84.SRID);
     }
     #endregion

@@ -36,19 +36,19 @@ public class RDFNamespaceRegisterTest
     public void ShouldAccessAndModifyDefaultNamespace()
     {
         Assert.IsNotNull(RDFNamespaceRegister.DefaultNamespace);
-        Assert.IsTrue(RDFNamespaceRegister.DefaultNamespace.NamespacePrefix.Equals(RDFVocabulary.RDFSHARP.PREFIX));
+        Assert.IsTrue(RDFNamespaceRegister.DefaultNamespace.NamespacePrefix.Equals(RDFVocabulary.RDFSHARP.PREFIX, StringComparison.Ordinal));
         Assert.IsTrue(RDFNamespaceRegister.DefaultNamespace.NamespaceUri.Equals(new Uri(RDFVocabulary.RDFSHARP.BASE_URI)));
 
         RDFNamespace exNS = new RDFNamespace("ex", "http://example.org/");
         RDFNamespaceRegister.SetDefaultNamespace(exNS);
         Assert.IsNotNull(RDFNamespaceRegister.DefaultNamespace);
-        Assert.IsTrue(RDFNamespaceRegister.DefaultNamespace.NamespacePrefix.Equals(exNS.NamespacePrefix));
+        Assert.IsTrue(RDFNamespaceRegister.DefaultNamespace.NamespacePrefix.Equals(exNS.NamespacePrefix, StringComparison.Ordinal));
         Assert.IsTrue(RDFNamespaceRegister.DefaultNamespace.NamespaceUri.Equals(exNS.NamespaceUri));
         Assert.IsNotNull(RDFNamespaceRegister.Instance.Register.Find(x => x.Equals(exNS)));
 
         RDFNamespaceRegister.ResetDefaultNamespace();
         Assert.IsNotNull(RDFNamespaceRegister.DefaultNamespace);
-        Assert.IsTrue(RDFNamespaceRegister.DefaultNamespace.NamespacePrefix.Equals(RDFVocabulary.RDFSHARP.PREFIX));
+        Assert.IsTrue(RDFNamespaceRegister.DefaultNamespace.NamespacePrefix.Equals(RDFVocabulary.RDFSHARP.PREFIX, StringComparison.Ordinal));
         Assert.IsTrue(RDFNamespaceRegister.DefaultNamespace.NamespaceUri.Equals(new Uri(RDFVocabulary.RDFSHARP.BASE_URI)));
     }
 
@@ -90,17 +90,17 @@ public class RDFNamespaceRegisterTest
         RDFNamespace ex5NS = new RDFNamespace("ex5", "http://example.org5/");
         RDFNamespaceRegister.AddNamespace(ex5NS);
         Assert.AreEqual(1, RDFNamespaceRegister.Instance.Register.Count(x =>
-            x.NamespacePrefix.Equals(ex5NS.NamespacePrefix) || x.NamespaceUri.Equals(ex5NS.NamespaceUri)));
+            x.NamespacePrefix.Equals(ex5NS.NamespacePrefix, StringComparison.Ordinal) || x.NamespaceUri.Equals(ex5NS.NamespaceUri)));
 
         RDFNamespace ex5PNS = new RDFNamespace("ex5P", "http://example.org5/");
         RDFNamespaceRegister.AddNamespace(ex5PNS);
         Assert.AreEqual(1, RDFNamespaceRegister.Instance.Register.Count(x =>
-            x.NamespacePrefix.Equals(ex5PNS.NamespacePrefix) || x.NamespaceUri.Equals(ex5PNS.NamespaceUri)));
+            x.NamespacePrefix.Equals(ex5PNS.NamespacePrefix, StringComparison.Ordinal) || x.NamespaceUri.Equals(ex5PNS.NamespaceUri)));
 
         RDFNamespace ex5UNS = new RDFNamespace("ex5", "http://example.org5U/");
         RDFNamespaceRegister.AddNamespace(ex5UNS);
         Assert.AreEqual(1, RDFNamespaceRegister.Instance.Register.Count(x =>
-            x.NamespacePrefix.Equals(ex5UNS.NamespacePrefix) || x.NamespaceUri.Equals(ex5UNS.NamespaceUri)));
+            x.NamespacePrefix.Equals(ex5UNS.NamespacePrefix, StringComparison.Ordinal) || x.NamespaceUri.Equals(ex5UNS.NamespaceUri)));
 
         int nsCountBefore = RDFNamespaceRegister.NamespacesCount;
         RDFNamespaceRegister.AddNamespace(null);
@@ -139,7 +139,7 @@ public class RDFNamespaceRegisterTest
         RDFNamespace ns = RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX);
 
         Assert.IsNotNull(ns);
-        Assert.IsTrue(ns.NamespacePrefix.Equals(RDFVocabulary.RDF.PREFIX));
+        Assert.IsTrue(ns.NamespacePrefix.Equals(RDFVocabulary.RDF.PREFIX, StringComparison.Ordinal));
         Assert.IsTrue(ns.NamespaceUri.Equals(new Uri(RDFVocabulary.RDF.BASE_URI)));
     }
 
@@ -150,7 +150,7 @@ public class RDFNamespaceRegisterTest
         RDFNamespace ns = RDFNamespaceRegister.GetByPrefix("dbo", true);
 
         Assert.IsNotNull(ns);
-        Assert.IsTrue(ns.NamespacePrefix.Equals("dbo"));
+        Assert.IsTrue(ns.NamespacePrefix.Equals("dbo", StringComparison.Ordinal));
         Assert.IsTrue(ns.NamespaceUri.Equals(new Uri("http://dbpedia.org/ontology/")));
         Assert.IsTrue(RDFNamespaceRegister.Instance.Register.Any(x => x.Equals(ns)));
         RDFNamespaceRegister.RemoveByPrefix("dbo");
@@ -178,7 +178,7 @@ public class RDFNamespaceRegisterTest
         RDFNamespace ns = RDFNamespaceRegister.GetByUri(RDFVocabulary.RDF.BASE_URI);
 
         Assert.IsNotNull(ns);
-        Assert.IsTrue(ns.NamespacePrefix.Equals(RDFVocabulary.RDF.PREFIX));
+        Assert.IsTrue(ns.NamespacePrefix.Equals(RDFVocabulary.RDF.PREFIX, StringComparison.Ordinal));
         Assert.IsTrue(ns.NamespaceUri.Equals(new Uri(RDFVocabulary.RDF.BASE_URI)));
     }
 
@@ -188,7 +188,7 @@ public class RDFNamespaceRegisterTest
         RDFNamespace ns = RDFNamespaceRegister.GetByUri("http://dbpedia.org/ontology/", true); //Intentionally not mocked, since we want to monitor if the service is still alive or has been retired...
 
         Assert.IsNotNull(ns);
-        Assert.IsTrue(ns.NamespacePrefix.Equals("dbo"));
+        Assert.IsTrue(ns.NamespacePrefix.Equals("dbo", StringComparison.Ordinal));
         Assert.IsTrue(ns.NamespaceUri.Equals(new Uri("http://dbpedia.org/ontology/")));
         Assert.IsTrue(RDFNamespaceRegister.Instance.Register.Any(x => x.Equals(ns)));
         RDFNamespaceRegister.RemoveByPrefix("dbo");

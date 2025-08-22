@@ -34,8 +34,8 @@ public class RDFGeoDimensionExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.DIMENSION}>(?V))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geosparql:dimension(?V))"));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.DIMENSION}>(?V))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geosparql:dimension(?V))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -47,8 +47,8 @@ public class RDFGeoDimensionExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.DIMENSION}>(?V))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geosparql:dimension(?V))"));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.DIMENSION}>(?V))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geosparql:dimension(?V))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

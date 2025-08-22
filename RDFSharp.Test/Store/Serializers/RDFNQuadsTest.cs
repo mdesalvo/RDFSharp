@@ -34,7 +34,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeEmptyStore.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeEmptyStore.nq"));
-        Assert.IsTrue(fileContent.Equals(string.Empty));
+        Assert.IsTrue(fileContent.Equals(string.Empty, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -46,7 +46,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadruple.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadruple.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -58,7 +58,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPBQuadruple.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPBQuadruple.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> _:12345 <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> _:12345 <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -70,7 +70,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCBPOQuadruple.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCBPOQuadruple.nq"));
-        Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> <http://obj/> <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> <http://obj/> <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -82,7 +82,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCBPBQuadruple.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCBPBQuadruple.nq"));
-        Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> _:12345 <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> _:12345 <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -94,7 +94,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadruple.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadruple.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"hello\" <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"hello\" <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -106,7 +106,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLLQuadruple.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLLQuadruple.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"hello\"@EN-US <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"hello\"@EN-US <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -118,7 +118,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLLDirectionedQuadruple.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLLDirectionedQuadruple.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"hello\"@EN-US--LTR <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"hello\"@EN-US--LTR <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -130,7 +130,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLTQuadruple.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLTQuadruple.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"25\"^^<{RDFVocabulary.XSD.INTEGER}> <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"25\"^^<{RDFVocabulary.XSD.INTEGER}> <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -142,7 +142,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCBPLQuadruple.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCBPLQuadruple.nq"));
-        Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> \"hello\" <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> \"hello\" <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -154,7 +154,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCBPLLQuadruple.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCBPLLQuadruple.nq"));
-        Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> \"hello\"@EN-US <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> \"hello\"@EN-US <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -166,7 +166,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCBPLLDirectionedQuadruple.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCBPLLDirectionedQuadruple.nq"));
-        Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> \"hello\"@EN--RTL <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> \"hello\"@EN--RTL <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -178,7 +178,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCBPLTQuadruple.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCBPLTQuadruple.nq"));
-        Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> \"25\"^^<{RDFVocabulary.XSD.INTEGER}> <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> \"25\"^^<{RDFVocabulary.XSD.INTEGER}> <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -190,7 +190,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadrupleHavingLongUnicodeCharInContext.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadrupleHavingLongUnicodeCharInContext.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> <http://ctx\\U0001F603/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> <http://ctx\\U0001F603/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -202,7 +202,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadrupleHavingLongUnicodeCharInSubject.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadrupleHavingLongUnicodeCharInSubject.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj\\U0001F603/> <http://pred/> <http://obj/> <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj\\U0001F603/> <http://pred/> <http://obj/> <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -214,7 +214,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadrupleHavingLongUnicodeCharInPredicate.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadrupleHavingLongUnicodeCharInPredicate.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred\\U0001F603/> <http://obj/> <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred\\U0001F603/> <http://obj/> <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -226,7 +226,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadrupleHavingLongUnicodeCharInObject.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadrupleHavingLongUnicodeCharInObject.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj\\U0001F603/> <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj\\U0001F603/> <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -238,7 +238,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingLongUnicodeCharInLiteral.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingLongUnicodeCharInLiteral.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Smile!\\U0001F603\"@EN-US <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Smile!\\U0001F603\"@EN-US <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -250,7 +250,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadrupleHavingShortUnicodeCharInContext.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadrupleHavingShortUnicodeCharInContext.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> <http://ctx/frag#page\\u03B22> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> <http://ctx/frag#page\\u03B22> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -262,7 +262,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadrupleHavingShortUnicodeCharInSubject.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadrupleHavingShortUnicodeCharInSubject.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/frag#page\\u03B22> <http://pred/> <http://obj/> <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/frag#page\\u03B22> <http://pred/> <http://obj/> <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -274,7 +274,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadrupleHavingShortUnicodeCharInPredicate.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadrupleHavingShortUnicodeCharInPredicate.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/frag#page\\u03B22> <http://obj/> <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/frag#page\\u03B22> <http://obj/> <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -286,7 +286,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadrupleHavingShortUnicodeCharInObject.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPOQuadrupleHavingShortUnicodeCharInObject.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/frag#page\\u03B22> <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/frag#page\\u03B22> <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -298,7 +298,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingShortUnicodeCharInLiteral.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingShortUnicodeCharInLiteral.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Beta!\\u03B2\"@EN-US <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Beta!\\u03B2\"@EN-US <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -310,7 +310,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingCarriageReturnCharInLiteral.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingCarriageReturnCharInLiteral.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Return!\\r\"@EN-US <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Return!\\r\"@EN-US <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -322,7 +322,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingNewLineCharInLiteral.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingNewLineCharInLiteral.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"NewLine!\\n\"@EN-US <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"NewLine!\\n\"@EN-US <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -334,7 +334,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingTabCharInLiteral.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingTabCharInLiteral.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Tab!\\t\"@EN-US <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Tab!\\t\"@EN-US <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -346,7 +346,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingSlashCharInLiteral.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingSlashCharInLiteral.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Slash!\\\\\"@EN-US <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Slash!\\\\\"@EN-US <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -358,7 +358,7 @@ public class RDFNQuadsTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingDoubleQuotesCharInLiteral.nq")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingDoubleQuotesCharInLiteral.nq"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"DoubleQuotes!\\\"\"@EN-US <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"DoubleQuotes!\\\"\"@EN-US <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -371,7 +371,7 @@ public class RDFNQuadsTest
         string fileContent;
         using (StreamReader reader = new StreamReader(new MemoryStream(stream.ToArray())))
             fileContent = reader.ReadToEnd();
-        Assert.IsTrue(fileContent.Equals(string.Empty));
+        Assert.IsTrue(fileContent.Equals(string.Empty, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -385,7 +385,7 @@ public class RDFNQuadsTest
         string fileContent;
         using (StreamReader reader = new StreamReader(new MemoryStream(stream.ToArray())))
             fileContent = reader.ReadToEnd();
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> <http://ctx/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> <http://ctx/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]

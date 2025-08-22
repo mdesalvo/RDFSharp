@@ -88,7 +88,7 @@ public class RDFTypedLiteralTest
         Assert.IsFalse(tl.HasDatetimeDatatype());
         Assert.IsFalse(tl.HasDecimalDatatype());
         Assert.IsFalse(tl.HasTimespanDatatype());
-        Assert.IsTrue(tl.ToString().Equals($"{value ?? ""}^^{datatype.GetDatatypeFromEnum()}"));
+        Assert.IsTrue(tl.ToString().Equals($"{value ?? ""}^^{datatype.GetDatatypeFromEnum()}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -105,7 +105,7 @@ public class RDFTypedLiteralTest
         Assert.IsFalse(tl.HasDatetimeDatatype());
         Assert.IsFalse(tl.HasDecimalDatatype());
         Assert.IsFalse(tl.HasTimespanDatatype());
-        Assert.IsTrue(tl.ToString().Equals($"{value ?? ""}^^{datatype.GetDatatypeFromEnum()}"));
+        Assert.IsTrue(tl.ToString().Equals($"{value ?? ""}^^{datatype.GetDatatypeFromEnum()}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -140,8 +140,8 @@ public class RDFTypedLiteralTest
         Assert.IsFalse(tl.HasDatetimeDatatype());
         Assert.IsFalse(tl.HasDecimalDatatype());
         Assert.IsFalse(tl.HasTimespanDatatype());
-        Assert.IsTrue(tl.ToString().Equals($"true^^{datatype.GetDatatypeFromEnum()}")
-                      || tl.ToString().Equals($"false^^{datatype.GetDatatypeFromEnum()}"));
+        Assert.IsTrue(tl.ToString().Equals($"true^^{datatype.GetDatatypeFromEnum()}", StringComparison.Ordinal)
+                      || tl.ToString().Equals($"false^^{datatype.GetDatatypeFromEnum()}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -664,23 +664,23 @@ public class RDFTypedLiteralTest
         RDFTypedLiteral tlit = new RDFTypedLiteral("abcdef", new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
             new RDFMinLengthFacet(6), new RDFMaxLengthFacet(14) ]));
         Assert.IsNotNull(tlit);
-        Assert.IsTrue(tlit.Value.Equals("abcdef"));
-        Assert.IsTrue(tlit.Datatype.ToString().Equals("ex:length6"));
+        Assert.IsTrue(tlit.Value.Equals("abcdef", StringComparison.Ordinal));
+        Assert.IsTrue(tlit.Datatype.ToString().Equals("ex:length6", StringComparison.Ordinal));
         Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTypedLiteral("ab", new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
             new RDFMinLengthFacet(6), new RDFMaxLengthFacet(14) ])));
 
         RDFTypedLiteral tlit2 = new RDFTypedLiteral("37", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, [
             new RDFMinInclusiveFacet(36), new RDFMaxInclusiveFacet(39) ]));
         Assert.IsNotNull(tlit2);
-        Assert.IsTrue(tlit2.Value.Equals("37"));
-        Assert.IsTrue(tlit2.Datatype.ToString().Equals("ex:humanTemperature"));
+        Assert.IsTrue(tlit2.Value.Equals("37", StringComparison.Ordinal));
+        Assert.IsTrue(tlit2.Datatype.ToString().Equals("ex:humanTemperature", StringComparison.Ordinal));
         Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTypedLiteral("39.5", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_DOUBLE, [
             new RDFMinInclusiveFacet(36), new RDFMaxInclusiveFacet(39) ])));
 
         RDFTypedLiteral tlit3 = new RDFTypedLiteral("37", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, []));
         Assert.IsNotNull(tlit3);
-        Assert.IsTrue(tlit3.Value.Equals("37"));
-        Assert.IsTrue(tlit3.Datatype.ToString().Equals("ex:humanTemperature"));
+        Assert.IsTrue(tlit3.Value.Equals("37", StringComparison.Ordinal));
+        Assert.IsTrue(tlit3.Datatype.ToString().Equals("ex:humanTemperature", StringComparison.Ordinal));
         Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTypedLiteral("39.5", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, null)));
     }
     #endregion

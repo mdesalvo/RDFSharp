@@ -35,7 +35,7 @@ public class RDFSumAggregatorTest
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
         Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsFalse(aggregator.IsDistinct);
-        Assert.IsTrue(aggregator.ToString().Equals("(SUM(?AGGVAR) AS ?PROJVAR)"));
+        Assert.IsTrue(aggregator.ToString().Equals("(SUM(?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
@@ -60,7 +60,7 @@ public class RDFSumAggregatorTest
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
         Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsTrue(aggregator.IsDistinct);
-        Assert.IsTrue(aggregator.ToString().Equals("(SUM(DISTINCT ?AGGVAR) AS ?PROJVAR)"));
+        Assert.IsTrue(aggregator.ToString().Equals("(SUM(DISTINCT ?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
@@ -99,10 +99,10 @@ public class RDFSumAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?SUMPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(2, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?SUMPROJ"].ToString().Equals($"53^^{RDFVocabulary.XSD.DOUBLE}"));
-        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
-        Assert.IsTrue(result.Rows[1]["?SUMPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?SUMPROJ"].ToString().Equals($"53^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?SUMPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -138,10 +138,10 @@ public class RDFSumAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?SUMPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(2, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?SUMPROJ"].ToString().Equals($"27^^{RDFVocabulary.XSD.DOUBLE}"));
-        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
-        Assert.IsTrue(result.Rows[1]["?SUMPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?SUMPROJ"].ToString().Equals($"27^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?SUMPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -179,10 +179,10 @@ public class RDFSumAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?SUMPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value0"));
-        Assert.IsTrue(result.Rows[0]["?SUMPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}"));
-        Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(SUM(?A) <= \"30\"^^<{RDFVocabulary.XSD.BYTE}>)"));
-        Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(SUM(?A) <= \"30\"^^xsd:byte)"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?SUMPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(SUM(?A) <= \"30\"^^<{RDFVocabulary.XSD.BYTE}>)", System.StringComparison.Ordinal));
+        Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(SUM(?A) <= \"30\"^^xsd:byte)", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -223,12 +223,12 @@ public class RDFSumAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?SUMPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(3, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?SUMPROJ"].ToString().Equals($"53.7^^{RDFVocabulary.XSD.DOUBLE}"));
-        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
-        Assert.IsTrue(result.Rows[1]["?SUMPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}"));
-        Assert.IsTrue(result.Rows[2]["?C"].ToString().Equals("ex:value2"));
-        Assert.IsTrue(result.Rows[2]["?SUMPROJ"].ToString().Equals(string.Empty)); //Projection for NaN
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?SUMPROJ"].ToString().Equals($"53.7^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?SUMPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[2]["?C"].ToString().Equals("ex:value2", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[2]["?SUMPROJ"].ToString().Equals(string.Empty, System.StringComparison.Ordinal)); //Projection for NaN
     }
     #endregion
 }

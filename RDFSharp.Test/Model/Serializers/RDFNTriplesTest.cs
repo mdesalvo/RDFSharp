@@ -33,7 +33,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeEmptyGraph.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeEmptyGraph.nt"));
-        Assert.IsTrue(fileContent.Equals(string.Empty));
+        Assert.IsTrue(fileContent.Equals(string.Empty, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -45,7 +45,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPOTriple.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPOTriple.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -57,7 +57,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPBTriple.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPBTriple.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> _:12345 .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> _:12345 .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -69,7 +69,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithBPOTriple.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithBPOTriple.nt"));
-        Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> <http://obj/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> <http://obj/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -81,7 +81,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithBPBTriple.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithBPBTriple.nt"));
-        Assert.IsTrue(fileContent.Equals($"_:54321 <http://pred/> _:12345 .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"_:54321 <http://pred/> _:12345 .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -93,7 +93,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTriple.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTriple.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"hello\" .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"hello\" .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -105,7 +105,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLLTriple.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLLTriple.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"hello\"@EN-US .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"hello\"@EN-US .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -117,7 +117,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLLTripleHavingDirection.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLLTripleHavingDirection.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"hello\"@EN-US--LTR .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"hello\"@EN-US--LTR .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -129,7 +129,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTTriple.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTTriple.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"25\"^^<{RDFVocabulary.XSD.INTEGER}> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"25\"^^<{RDFVocabulary.XSD.INTEGER}> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -141,7 +141,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithBPLTriple.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithBPLTriple.nt"));
-        Assert.IsTrue(fileContent.Equals($"_:54321 <http://pred/> \"hello\" .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"_:54321 <http://pred/> \"hello\" .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -153,7 +153,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithBPLLTriple.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithBPLLTriple.nt"));
-        Assert.IsTrue(fileContent.Equals($"_:54321 <http://pred/> \"hello\"@EN-US .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"_:54321 <http://pred/> \"hello\"@EN-US .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -165,7 +165,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithBPLLTripleHavingDirection.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithBPLLTripleHavingDirection.nt"));
-        Assert.IsTrue(fileContent.Equals($"_:54321 <http://pred/> \"hello\"@EN--RTL .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"_:54321 <http://pred/> \"hello\"@EN--RTL .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -177,7 +177,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithBPLTTriple.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithBPLTTriple.nt"));
-        Assert.IsTrue(fileContent.Equals($"_:54321 <http://pred/> \"25\"^^<{RDFVocabulary.XSD.INTEGER}> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"_:54321 <http://pred/> \"25\"^^<{RDFVocabulary.XSD.INTEGER}> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -189,7 +189,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInSubject.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInSubject.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj\\U0001F603/> <http://pred/> <http://obj/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj\\U0001F603/> <http://pred/> <http://obj/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -201,7 +201,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInPredicate.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInPredicate.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred\\U0001F603/> <http://obj/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred\\U0001F603/> <http://obj/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -213,7 +213,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInObject.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInObject.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj\\U0001F603/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj\\U0001F603/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -225,7 +225,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteral.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteral.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Smile!\\U0001F603\"@EN-US .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Smile!\\U0001F603\"@EN-US .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -237,7 +237,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteralWithDirection.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteralWithDirection.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Smile!\\U0001F603\"@EN-US--LTR .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Smile!\\U0001F603\"@EN-US--LTR .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -249,7 +249,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInSubject.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInSubject.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/frag#page\\u03B22> <http://pred/> <http://obj/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/frag#page\\u03B22> <http://pred/> <http://obj/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -261,7 +261,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInPredicate.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInPredicate.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/frag#page\\u03B22> <http://obj/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/frag#page\\u03B22> <http://obj/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -273,7 +273,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInObject.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInObject.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/frag#page\\u03B22> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/frag#page\\u03B22> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -285,7 +285,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteral.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteral.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Beta!\\u03B2\"@EN-US .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Beta!\\u03B2\"@EN-US .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -297,7 +297,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteralWithDirection.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteralWithDirection.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Beta!\\u03B2\"@EN-US--RTL .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Beta!\\u03B2\"@EN-US--RTL .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -309,7 +309,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingCarriageReturnCharInLiteral.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingCarriageReturnCharInLiteral.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Return!\\r\"@EN-US .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Return!\\r\"@EN-US .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -321,7 +321,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingNewLineCharInLiteral.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingNewLineCharInLiteral.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"NewLine!\\n\"@EN-US .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"NewLine!\\n\"@EN-US .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -333,7 +333,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingTabCharInLiteral.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingTabCharInLiteral.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Tab!\\t\"@EN-US .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Tab!\\t\"@EN-US .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -345,7 +345,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingSlashCharInLiteral.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingSlashCharInLiteral.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Slash!\\\\\"@EN-US .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Slash!\\\\\"@EN-US .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -357,7 +357,7 @@ public class RDFNTriplesTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingDoubleQuotesCharInLiteral.nt")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingDoubleQuotesCharInLiteral.nt"));
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"DoubleQuotes!\\\"\"@EN-US .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"DoubleQuotes!\\\"\"@EN-US .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -370,7 +370,7 @@ public class RDFNTriplesTest
         string fileContent;
         using (StreamReader reader = new StreamReader(new MemoryStream(stream.ToArray())))
             fileContent = reader.ReadToEnd();
-        Assert.IsTrue(fileContent.Equals(string.Empty));
+        Assert.IsTrue(fileContent.Equals(string.Empty, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -384,7 +384,7 @@ public class RDFNTriplesTest
         string fileContent;
         using (StreamReader reader = new StreamReader(new MemoryStream(stream.ToArray())))
             fileContent = reader.ReadToEnd();
-        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> .{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> .{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]

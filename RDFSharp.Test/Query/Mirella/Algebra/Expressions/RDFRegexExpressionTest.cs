@@ -35,8 +35,8 @@ public class RDFRegexExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(REGEX(STR((?V1 + ?V2)), \"^hello$\"))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(REGEX(STR((?V1 + ?V2)), \"^hello$\"))"));
+        Assert.IsTrue(expression.ToString().Equals("(REGEX(STR((?V1 + ?V2)), \"^hello$\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REGEX(STR((?V1 + ?V2)), \"^hello$\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -48,8 +48,8 @@ public class RDFRegexExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(REGEX(STR(?V1), \"^hello$\", \"ismx\"))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(REGEX(STR(?V1), \"^hello$\", \"ismx\"))"));
+        Assert.IsTrue(expression.ToString().Equals("(REGEX(STR(?V1), \"^hello$\", \"ismx\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REGEX(STR(?V1), \"^hello$\", \"ismx\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

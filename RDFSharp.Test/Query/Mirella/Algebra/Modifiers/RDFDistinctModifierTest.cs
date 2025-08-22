@@ -34,7 +34,7 @@ public class RDFDistinctModifierTest
 
         Assert.IsNotNull(modifier);
         Assert.IsFalse(modifier.IsEvaluable);
-        Assert.IsTrue(modifier.ToString().Equals("DISTINCT"));
+        Assert.IsTrue(modifier.ToString().Equals("DISTINCT", StringComparison.Ordinal));
         Assert.IsNotNull(modifier.QueryMemberStringID);
         Assert.IsTrue(modifier.QueryMemberID.Equals(RDFModelUtilities.CreateHash(modifier.QueryMemberStringID)));
         Assert.IsTrue(modifier.Equals(modifier));
@@ -73,12 +73,12 @@ public class RDFDistinctModifierTest
         Assert.IsTrue(table2.Columns.Contains("?B"));
         Assert.IsTrue(table2.Columns.Contains("?C"));
         Assert.AreEqual(2, table2.Rows.Count);
-        Assert.IsTrue(table2.Rows[0]["?A"].ToString().Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString()));
-        Assert.IsTrue(table2.Rows[0]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en-US").ToString()));
-        Assert.IsTrue(table2.Rows[0]["?C"].ToString().Equals(new RDFResource("ex:value0").ToString()));
-        Assert.IsTrue(table2.Rows[1]["?A"].ToString().Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString()));
-        Assert.IsTrue(table2.Rows[1]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en").ToString()));
-        Assert.IsTrue(table2.Rows[1]["?C"].ToString().Equals(DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+        Assert.IsTrue(table2.Rows[0]["?A"].ToString().Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(table2.Rows[0]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en-US").ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(table2.Rows[0]["?C"].ToString().Equals(new RDFResource("ex:value0").ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(table2.Rows[1]["?A"].ToString().Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(table2.Rows[1]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en").ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(table2.Rows[1]["?C"].ToString().Equals(DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
     }
     #endregion
 }

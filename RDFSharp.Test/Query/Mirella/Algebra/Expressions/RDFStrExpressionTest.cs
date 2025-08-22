@@ -34,8 +34,8 @@ public class RDFStrExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STR((?V1 + ?V2)))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STR((?V1 + ?V2)))"));
+        Assert.IsTrue(expression.ToString().Equals("(STR((?V1 + ?V2)))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STR((?V1 + ?V2)))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -47,8 +47,8 @@ public class RDFStrExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STR(?V1))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STR(?V1))"));
+        Assert.IsTrue(expression.ToString().Equals("(STR(?V1))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STR(?V1))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

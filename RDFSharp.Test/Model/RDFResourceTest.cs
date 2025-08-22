@@ -63,7 +63,7 @@ public class RDFResourceTest
 
         Assert.IsNotNull(res);
         Assert.IsFalse(res.IsBlank);
-        Assert.IsTrue(res.ToString().Equals(input));
+        Assert.IsTrue(res.ToString().Equals(input, StringComparison.Ordinal));
     }
 
     [TestMethod]

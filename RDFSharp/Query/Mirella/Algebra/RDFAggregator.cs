@@ -147,7 +147,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal string PrintHavingClause(List<RDFNamespace> prefixes)
         {
-            StringBuilder result = new StringBuilder();
+            StringBuilder result = new StringBuilder(64); //Initial capacity=64 seems a good tradeoff for medium length of having clause
+
             if (HavingClause.Item1)
             {
                 result.Append('(');

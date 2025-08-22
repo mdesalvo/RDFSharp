@@ -41,7 +41,7 @@ public class RDFTripleTest
         Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID}")));
 
         string tripleString = triple.ToString();
-        Assert.IsTrue(tripleString.Equals($"{triple.Subject} {triple.Predicate} {triple.Object}"));
+        Assert.IsTrue(tripleString.Equals($"{triple.Subject} {triple.Predicate} {triple.Object}", System.StringComparison.Ordinal));
 
         long tripleID = RDFModelUtilities.CreateHash(tripleString);
         Assert.IsTrue(triple.TripleID.Equals(tripleID));
@@ -82,7 +82,7 @@ public class RDFTripleTest
         Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource($"bnode:{triple.TripleID}")));
 
         string tripleString = triple.ToString();
-        Assert.IsTrue(tripleString.Equals($"{triple.Subject} {triple.Predicate} {triple.Object}"));
+        Assert.IsTrue(tripleString.Equals($"{triple.Subject} {triple.Predicate} {triple.Object}", System.StringComparison.Ordinal));
 
         long tripleID = RDFModelUtilities.CreateHash(tripleString);
         Assert.IsTrue(triple.TripleID.Equals(tripleID));

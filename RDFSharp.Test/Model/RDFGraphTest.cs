@@ -127,14 +127,14 @@ public class RDFGraphTest
     public void ShouldGetDefaultStringRepresentation()
     {
         RDFGraph graph = new RDFGraph();
-        Assert.IsTrue(graph.ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
+        Assert.IsTrue(graph.ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString(), StringComparison.Ordinal));
     }
 
     [TestMethod]
     public void ShouldGetCustomStringRepresentation()
     {
         RDFGraph graph = new RDFGraph().SetContext(new Uri("http://example.org/"));
-        Assert.IsTrue(graph.ToString().Equals("http://example.org/"));
+        Assert.IsTrue(graph.ToString().Equals("http://example.org/", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1485,16 +1485,16 @@ public class RDFGraphTest
 
         Assert.IsNotNull(table);
         Assert.AreEqual(3, table.Columns.Count);
-        Assert.IsTrue(table.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(table.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(table.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(table.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.AreEqual(2, table.Rows.Count);
-        Assert.IsTrue(table.Rows[0]["?SUBJECT"].ToString().Equals("http://subj/"));
-        Assert.IsTrue(table.Rows[0]["?PREDICATE"].ToString().Equals("http://pred/"));
-        Assert.IsTrue(table.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
-        Assert.IsTrue(table.Rows[1]["?SUBJECT"].ToString().Equals("http://subj/"));
-        Assert.IsTrue(table.Rows[1]["?PREDICATE"].ToString().Equals("http://pred/"));
-        Assert.IsTrue(table.Rows[1]["?OBJECT"].ToString().Equals("http://obj/"));
+        Assert.IsTrue(table.Rows[0]["?SUBJECT"].ToString().Equals("http://subj/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[0]["?PREDICATE"].ToString().Equals("http://pred/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?SUBJECT"].ToString().Equals("http://subj/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?PREDICATE"].ToString().Equals("http://pred/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?OBJECT"].ToString().Equals("http://obj/", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1505,9 +1505,9 @@ public class RDFGraphTest
 
         Assert.IsNotNull(table);
         Assert.AreEqual(3, table.Columns.Count);
-        Assert.IsTrue(table.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(table.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(table.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(table.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.AreEqual(0, table.Rows.Count);
     }
 
@@ -1951,47 +1951,47 @@ public class RDFGraphTest
             .AddDatatype(exInteger);
         List<RDFDatatype> datatypes = graph.ExtractDatatypeDefinitions();
 
-        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:length6")
+        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:length6", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
                                           && dt.Facets.Single() is RDFLengthFacet { Length: 6 }));
-        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:minlength6")
+        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:minlength6", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
                                           && dt.Facets.Single() is RDFMinLengthFacet { Length: 6 }));
-        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:maxlength6")
+        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:maxlength6", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
                                           && dt.Facets.Single() is RDFMaxLengthFacet { Length: 6 }));
-        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:maxinclusive6")
+        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:maxinclusive6", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE
                                           && dt.Facets.Single() is RDFMaxInclusiveFacet { InclusiveUpperBound: 6 }));
-        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:mininclusive6")
+        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:mininclusive6", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE
                                           && dt.Facets.Single() is RDFMinInclusiveFacet { InclusiveLowerBound: 6 }));
-        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:maxexclusive6")
+        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:maxexclusive6", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE
                                           && dt.Facets.Single() is RDFMaxExclusiveFacet { ExclusiveUpperBound: 6 }));
-        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:minexclusive6")
+        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:minexclusive6", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE
                                           && dt.Facets.Single() is RDFMinExclusiveFacet { ExclusiveLowerBound: 6 }));
-        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:maxinclusive6R")
+        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:maxinclusive6R", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
                                           && dt.Facets.Single() is RDFMaxInclusiveFacet { InclusiveUpperBound: 6 }));
-        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:mininclusive6R")
+        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:mininclusive6R", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
                                           && dt.Facets.Single() is RDFMinInclusiveFacet { InclusiveLowerBound: 6 }));
-        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:maxexclusive6R")
+        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:maxexclusive6R", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
                                           && dt.Facets.Single() is RDFMaxExclusiveFacet { ExclusiveUpperBound: 6 }));
-        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:minexclusive6R")
+        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:minexclusive6R", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
                                           && dt.Facets.Single() is RDFMinExclusiveFacet { ExclusiveLowerBound: 6 }));
-        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:aliasRational")
+        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:aliasRational", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
                                           && dt.Facets.Count == 0));
-        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:patternex")
+        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:patternex", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
                                           && dt.Facets.Single() is RDFPatternFacet patternFacet
-                                          && string.Equals(patternFacet.Pattern, "^ex")));
-        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:integer")
+                                          && string.Equals(patternFacet.Pattern, "^ex", StringComparison.Ordinal)));
+        Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:integer", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER
                                           && dt.Facets.Count == 0));
     }
@@ -2038,7 +2038,7 @@ public class RDFGraphTest
     public async Task ShouldGetCustomStringRepresentationAsync()
     {
         RDFGraph graph = await new RDFGraph().SetContextAsync(new Uri("http://example.org/"));
-        Assert.IsTrue(graph.ToString().Equals("http://example.org/"));
+        Assert.IsTrue(graph.ToString().Equals("http://example.org/", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -3095,16 +3095,16 @@ public class RDFGraphTest
 
         Assert.IsNotNull(table);
         Assert.AreEqual(3, table.Columns.Count);
-        Assert.IsTrue(table.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(table.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(table.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(table.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.AreEqual(2, table.Rows.Count);
-        Assert.IsTrue(table.Rows[0]["?SUBJECT"].ToString().Equals("http://subj/"));
-        Assert.IsTrue(table.Rows[0]["?PREDICATE"].ToString().Equals("http://pred/"));
-        Assert.IsTrue(table.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
-        Assert.IsTrue(table.Rows[1]["?SUBJECT"].ToString().Equals("http://subj/"));
-        Assert.IsTrue(table.Rows[1]["?PREDICATE"].ToString().Equals("http://pred/"));
-        Assert.IsTrue(table.Rows[1]["?OBJECT"].ToString().Equals("http://obj/"));
+        Assert.IsTrue(table.Rows[0]["?SUBJECT"].ToString().Equals("http://subj/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[0]["?PREDICATE"].ToString().Equals("http://pred/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?SUBJECT"].ToString().Equals("http://subj/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?PREDICATE"].ToString().Equals("http://pred/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?OBJECT"].ToString().Equals("http://obj/", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -3115,9 +3115,9 @@ public class RDFGraphTest
 
         Assert.IsNotNull(table);
         Assert.AreEqual(3, table.Columns.Count);
-        Assert.IsTrue(table.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(table.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(table.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(table.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.AreEqual(0, table.Rows.Count);
     }
 

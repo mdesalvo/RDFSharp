@@ -39,9 +39,9 @@ public class RDFBooleanAndExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(((?V1 + ?V2) = 24.08) && (?V1 = \"hello\"^^<http://www.w3.org/2001/XMLSchema#string>))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(((?V1 + ?V2) = 24.08) && (?V1 = \"hello\"^^<http://www.w3.org/2001/XMLSchema#string>))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(((?V1 + ?V2) = 24.08) && (?V1 = \"hello\"^^xsd:string))"));
+        Assert.IsTrue(expression.ToString().Equals("(((?V1 + ?V2) = 24.08) && (?V1 = \"hello\"^^<http://www.w3.org/2001/XMLSchema#string>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(((?V1 + ?V2) = 24.08) && (?V1 = \"hello\"^^<http://www.w3.org/2001/XMLSchema#string>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(((?V1 + ?V2) = 24.08) && (?V1 = \"hello\"^^xsd:string))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

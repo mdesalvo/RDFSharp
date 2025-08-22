@@ -49,7 +49,7 @@ public class RDFAskQueryTest
         Assert.IsNotNull(query.Prefixes);
         Assert.IsEmpty(query.Prefixes);
         Assert.IsTrue(query.IsEvaluable);
-        Assert.IsTrue(query.ToString().Equals("ASK" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}"));
+        Assert.IsTrue(query.ToString().Equals("ASK" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}", StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
@@ -77,7 +77,7 @@ public class RDFAskQueryTest
                         .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
                 .AddProjectionVariable(new RDFVariable("?S")));
 
-        Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+Environment.NewLine+"PREFIX owl: <http://www.w3.org/2002/07/owl#>"+Environment.NewLine+Environment.NewLine+"ASK"+Environment.NewLine+"WHERE {"+Environment.NewLine+"  {"+Environment.NewLine+"    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ."+Environment.NewLine+"    FILTER ( (ISURI(?S)) ) "+Environment.NewLine+"  }"+Environment.NewLine+"  {"+Environment.NewLine+"    SELECT ?S"+Environment.NewLine+"    WHERE {"+Environment.NewLine+"      {"+Environment.NewLine+"        ?S ?P owl:Class ."+Environment.NewLine+"        VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ."+Environment.NewLine+"      }"+Environment.NewLine+"    }"+Environment.NewLine+"  }"+Environment.NewLine+"}"));
+        Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" + Environment.NewLine + "PREFIX owl: <http://www.w3.org/2002/07/owl#>" + Environment.NewLine + Environment.NewLine + "ASK" + Environment.NewLine + "WHERE {" + Environment.NewLine + "  {" + Environment.NewLine + "    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ." + Environment.NewLine + "    FILTER ( (ISURI(?S)) ) " + Environment.NewLine + "  }" + Environment.NewLine + "  {" + Environment.NewLine + "    SELECT ?S" + Environment.NewLine + "    WHERE {" + Environment.NewLine + "      {" + Environment.NewLine + "        ?S ?P owl:Class ." + Environment.NewLine + "        VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ." + Environment.NewLine + "      }" + Environment.NewLine + "    }" + Environment.NewLine + "  }" + Environment.NewLine + "}", StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(2, query.GetEvaluableQueryMembers().Count()); //SPARQL Values is managed by Mirella
         Assert.AreEqual(1, query.GetPatternGroups().Count());

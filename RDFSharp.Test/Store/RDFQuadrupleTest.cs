@@ -38,7 +38,7 @@ public class RDFQuadrupleTest
         Assert.IsTrue(quadruple.ReificationSubject.Equals(new RDFResource($"bnode:{quadruple.QuadrupleID}")));
 
         string quadrupleString = quadruple.ToString();
-        Assert.IsTrue(quadrupleString.Equals($"{quadruple.Context} {quadruple.Subject} {quadruple.Predicate} {quadruple.Object}"));
+        Assert.IsTrue(quadrupleString.Equals($"{quadruple.Context} {quadruple.Subject} {quadruple.Predicate} {quadruple.Object}", System.StringComparison.Ordinal));
 
         long quadrupleID = RDFModelUtilities.CreateHash(quadrupleString);
         Assert.IsTrue(quadruple.QuadrupleID.Equals(quadrupleID));
@@ -60,7 +60,7 @@ public class RDFQuadrupleTest
         Assert.IsTrue(quadruple.ReificationSubject.Equals(new RDFResource($"bnode:{quadruple.QuadrupleID}")));
 
         string quadrupleString = quadruple.ToString();
-        Assert.IsTrue(quadrupleString.Equals($"{quadruple.Context} {quadruple.Subject} {quadruple.Predicate} {quadruple.Object}"));
+        Assert.IsTrue(quadrupleString.Equals($"{quadruple.Context} {quadruple.Subject} {quadruple.Predicate} {quadruple.Object}", System.StringComparison.Ordinal));
 
         long quadrupleID = RDFModelUtilities.CreateHash(quadrupleString);
         Assert.IsTrue(quadruple.QuadrupleID.Equals(quadrupleID));
@@ -82,7 +82,7 @@ public class RDFQuadrupleTest
         Assert.IsTrue(quadruple.ReificationSubject.Equals(new RDFResource($"bnode:{quadruple.QuadrupleID}")));
 
         string quadrupleString = quadruple.ToString();
-        Assert.IsTrue(quadrupleString.Equals($"{quadruple.Context} {quadruple.Subject} {quadruple.Predicate} {quadruple.Object}"));
+        Assert.IsTrue(quadrupleString.Equals($"{quadruple.Context} {quadruple.Subject} {quadruple.Predicate} {quadruple.Object}", System.StringComparison.Ordinal));
 
         long quadrupleID = RDFModelUtilities.CreateHash(quadrupleString);
         Assert.IsTrue(quadruple.QuadrupleID.Equals(quadrupleID));
@@ -114,7 +114,7 @@ public class RDFQuadrupleTest
         Assert.IsTrue(quadruple.ReificationSubject.Equals(new RDFResource($"bnode:{quadruple.QuadrupleID}")));
 
         string quadrupleString = quadruple.ToString();
-        Assert.IsTrue(quadrupleString.Equals($"{quadruple.Context} {quadruple.Subject} {quadruple.Predicate} {quadruple.Object}"));
+        Assert.IsTrue(quadrupleString.Equals($"{quadruple.Context} {quadruple.Subject} {quadruple.Predicate} {quadruple.Object}", System.StringComparison.Ordinal));
 
         long quadrupleID = RDFModelUtilities.CreateHash(quadrupleString);
         Assert.IsTrue(quadruple.QuadrupleID.Equals(quadrupleID));
@@ -159,7 +159,7 @@ public class RDFQuadrupleTest
         Assert.IsTrue(quadruple.ReificationSubject.Equals(new RDFResource($"bnode:{quadruple.QuadrupleID}")));
 
         string quadrupleString = quadruple.ToString();
-        Assert.IsTrue(quadrupleString.Equals($"{quadruple.Context} {quadruple.Subject} {quadruple.Predicate} {quadruple.Object}"));
+        Assert.IsTrue(quadrupleString.Equals($"{quadruple.Context} {quadruple.Subject} {quadruple.Predicate} {quadruple.Object}", System.StringComparison.Ordinal));
 
         long quadrupleID = RDFModelUtilities.CreateHash(quadrupleString);
         Assert.IsTrue(quadruple.QuadrupleID.Equals(quadrupleID));

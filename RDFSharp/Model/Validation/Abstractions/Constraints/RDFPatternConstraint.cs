@@ -101,7 +101,7 @@ namespace RDFSharp.Model
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.PATTERN, new RDFTypedLiteral(RegEx.ToString(), RDFModelEnums.RDFDatatypes.XSD_STRING)));
 
                 //sh:flags
-                StringBuilder regexFlags = new StringBuilder();
+                StringBuilder regexFlags = new StringBuilder(4);
                 if (RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
                     regexFlags.Append('i');
                 if (RegEx.Options.HasFlag(RegexOptions.Singleline))
@@ -110,7 +110,7 @@ namespace RDFSharp.Model
                     regexFlags.Append('m');
                 if (RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
                     regexFlags.Append('x');
-                if (regexFlags.ToString() != string.Empty)
+                if (regexFlags.Length > 0)
                     result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.FLAGS, new RDFTypedLiteral(regexFlags.ToString(), RDFModelEnums.RDFDatatypes.XSD_STRING)));
             }
             return result;

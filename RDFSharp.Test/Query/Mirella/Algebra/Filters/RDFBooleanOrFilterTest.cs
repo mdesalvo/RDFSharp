@@ -40,8 +40,8 @@ public class RDFBooleanOrFilterTest
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.LeftFilter);
         Assert.IsNotNull(filter.RightFilter);
-        Assert.IsTrue(filter.ToString().Equals("FILTER ( ( (ISURI(?VARU)) ) || ( ((DATATYPE(?VARL)) = <http://www.w3.org/2001/XMLSchema#boolean>) ) )"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( ( (ISURI(?VARU)) ) || ( ((DATATYPE(?VARL)) = xsd:boolean) ) )"));
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( ( (ISURI(?VARU)) ) || ( ((DATATYPE(?VARL)) = <http://www.w3.org/2001/XMLSchema#boolean>) ) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( ( (ISURI(?VARU)) ) || ( ((DATATYPE(?VARL)) = xsd:boolean) ) )", System.StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
@@ -63,8 +63,8 @@ public class RDFBooleanOrFilterTest
         Assert.IsNotNull(filterB);
         Assert.IsNotNull(filterB.LeftFilter);
         Assert.IsNotNull(filterB.RightFilter);
-        Assert.IsTrue(filterB.ToString().Equals("FILTER ( ( ( (ISURI(?VARU)) ) || ( ((DATATYPE(?VARL)) = <http://www.w3.org/2001/XMLSchema#boolean>) ) ) || ( (SAMETERM(?VARL, <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>)) ) )"));
-        Assert.IsTrue(filterB.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( ( ( (ISURI(?VARU)) ) || ( ((DATATYPE(?VARL)) = xsd:boolean) ) ) || ( (SAMETERM(?VARL, <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>)) ) )"));
+        Assert.IsTrue(filterB.ToString().Equals("FILTER ( ( ( (ISURI(?VARU)) ) || ( ((DATATYPE(?VARL)) = <http://www.w3.org/2001/XMLSchema#boolean>) ) ) || ( (SAMETERM(?VARL, <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>)) ) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filterB.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( ( ( (ISURI(?VARU)) ) || ( ((DATATYPE(?VARL)) = xsd:boolean) ) ) || ( (SAMETERM(?VARL, <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>)) ) )", System.StringComparison.Ordinal));
         Assert.IsTrue(filterB.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filterB.PatternGroupMemberStringID)));
     }
 

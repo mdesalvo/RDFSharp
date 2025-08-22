@@ -53,7 +53,7 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(query.Prefixes);
         Assert.IsEmpty(query.Prefixes);
         Assert.IsTrue(query.IsEvaluable);
-        Assert.IsTrue(query.ToString().Equals("DESCRIBE *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}"));
+        Assert.IsTrue(query.ToString().Equals("DESCRIBE *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}", StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
@@ -91,7 +91,7 @@ public class RDFDescribeQueryTest
         query.AddModifier(new RDFLimitModifier(100));
         query.AddModifier(new RDFOffsetModifier(20));
 
-        Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+Environment.NewLine+"PREFIX owl: <http://www.w3.org/2002/07/owl#>"+Environment.NewLine+Environment.NewLine+"DESCRIBE ?S <ex:flower>"+Environment.NewLine+"WHERE {"+Environment.NewLine+"  {"+Environment.NewLine+"    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ."+Environment.NewLine+"    FILTER ( (ISURI(?S)) ) "+Environment.NewLine+"  }"+Environment.NewLine+"  {"+Environment.NewLine+"    SELECT ?S ?P"+Environment.NewLine+"    WHERE {"+Environment.NewLine+"      {"+Environment.NewLine+"        ?S ?P owl:Class ."+Environment.NewLine+"        VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ."+Environment.NewLine+"      }"+Environment.NewLine+"    }"+Environment.NewLine+"  }"+Environment.NewLine+"}"+Environment.NewLine+"LIMIT 100"+Environment.NewLine+"OFFSET 20"));
+        Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" + Environment.NewLine + "PREFIX owl: <http://www.w3.org/2002/07/owl#>" + Environment.NewLine + Environment.NewLine + "DESCRIBE ?S <ex:flower>" + Environment.NewLine + "WHERE {" + Environment.NewLine + "  {" + Environment.NewLine + "    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ." + Environment.NewLine + "    FILTER ( (ISURI(?S)) ) " + Environment.NewLine + "  }" + Environment.NewLine + "  {" + Environment.NewLine + "    SELECT ?S ?P" + Environment.NewLine + "    WHERE {" + Environment.NewLine + "      {" + Environment.NewLine + "        ?S ?P owl:Class ." + Environment.NewLine + "        VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ." + Environment.NewLine + "      }" + Environment.NewLine + "    }" + Environment.NewLine + "  }" + Environment.NewLine + "}" + Environment.NewLine + "LIMIT 100" + Environment.NewLine + "OFFSET 20", StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.HasCount(2, query.DescribeTerms);
         Assert.HasCount(1, query.Variables);
@@ -128,7 +128,7 @@ public class RDFDescribeQueryTest
         query.AddModifier(new RDFLimitModifier(100));
         query.AddModifier(new RDFOffsetModifier(20));
 
-        Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+Environment.NewLine+"PREFIX owl: <http://www.w3.org/2002/07/owl#>"+Environment.NewLine+""+Environment.NewLine+"DESCRIBE ?S <ex:flower>"+Environment.NewLine+"WHERE {"+Environment.NewLine+"  {"+Environment.NewLine+"    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ."+Environment.NewLine+"    FILTER ( (ISURI(?S)) ) "+Environment.NewLine+"  }"+Environment.NewLine+"  OPTIONAL {"+Environment.NewLine+"    SELECT ?S ?P"+Environment.NewLine+"    WHERE {"+Environment.NewLine+"      {"+Environment.NewLine+"        ?S ?P owl:Class ."+Environment.NewLine+"        VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ."+Environment.NewLine+"      }"+Environment.NewLine+"    }"+Environment.NewLine+"  }"+Environment.NewLine+"}"+Environment.NewLine+"LIMIT 100"+Environment.NewLine+"OFFSET 20"));
+        Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" + Environment.NewLine + "PREFIX owl: <http://www.w3.org/2002/07/owl#>" + Environment.NewLine + "" + Environment.NewLine + "DESCRIBE ?S <ex:flower>" + Environment.NewLine + "WHERE {" + Environment.NewLine + "  {" + Environment.NewLine + "    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ." + Environment.NewLine + "    FILTER ( (ISURI(?S)) ) " + Environment.NewLine + "  }" + Environment.NewLine + "  OPTIONAL {" + Environment.NewLine + "    SELECT ?S ?P" + Environment.NewLine + "    WHERE {" + Environment.NewLine + "      {" + Environment.NewLine + "        ?S ?P owl:Class ." + Environment.NewLine + "        VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ." + Environment.NewLine + "      }" + Environment.NewLine + "    }" + Environment.NewLine + "  }" + Environment.NewLine + "}" + Environment.NewLine + "LIMIT 100" + Environment.NewLine + "OFFSET 20", StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.HasCount(2, query.DescribeTerms);
         Assert.HasCount(1, query.Variables);
@@ -166,7 +166,7 @@ public class RDFDescribeQueryTest
         query.AddModifier(new RDFLimitModifier(100));
         query.AddModifier(new RDFOffsetModifier(20));
 
-        Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+Environment.NewLine+"PREFIX owl: <http://www.w3.org/2002/07/owl#>"+Environment.NewLine+""+Environment.NewLine+"DESCRIBE ?S <ex:flower>"+Environment.NewLine+"WHERE {"+Environment.NewLine+"  {"+Environment.NewLine+"    {"+Environment.NewLine+"      ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ."+Environment.NewLine+"      FILTER ( (ISURI(?S)) ) "+Environment.NewLine+"    }"+Environment.NewLine+"    UNION"+Environment.NewLine+"    {"+Environment.NewLine+"      SELECT ?S ?P"+Environment.NewLine+"      WHERE {"+Environment.NewLine+"        {"+Environment.NewLine+"          ?S ?P owl:Class ."+Environment.NewLine+"          VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ."+Environment.NewLine+"        }"+Environment.NewLine+"      }"+Environment.NewLine+"    }"+Environment.NewLine+"  }"+Environment.NewLine+"}"+Environment.NewLine+"LIMIT 100"+Environment.NewLine+"OFFSET 20"));
+        Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" + Environment.NewLine + "PREFIX owl: <http://www.w3.org/2002/07/owl#>" + Environment.NewLine + "" + Environment.NewLine + "DESCRIBE ?S <ex:flower>" + Environment.NewLine + "WHERE {" + Environment.NewLine + "  {" + Environment.NewLine + "    {" + Environment.NewLine + "      ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ." + Environment.NewLine + "      FILTER ( (ISURI(?S)) ) " + Environment.NewLine + "    }" + Environment.NewLine + "    UNION" + Environment.NewLine + "    {" + Environment.NewLine + "      SELECT ?S ?P" + Environment.NewLine + "      WHERE {" + Environment.NewLine + "        {" + Environment.NewLine + "          ?S ?P owl:Class ." + Environment.NewLine + "          VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ." + Environment.NewLine + "        }" + Environment.NewLine + "      }" + Environment.NewLine + "    }" + Environment.NewLine + "  }" + Environment.NewLine + "}" + Environment.NewLine + "LIMIT 100" + Environment.NewLine + "OFFSET 20", StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.HasCount(2, query.DescribeTerms);
         Assert.HasCount(1, query.Variables);
@@ -197,9 +197,9 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(3, result.DescribeResultsCount);
         Assert.AreEqual(3, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
@@ -229,9 +229,9 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(2, result.DescribeResultsCount);
         Assert.AreEqual(3, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
@@ -259,9 +259,9 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(2, result.DescribeResultsCount);
         Assert.AreEqual(3, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
@@ -288,9 +288,9 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(2, result.DescribeResultsCount);
         Assert.AreEqual(3, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
@@ -316,9 +316,9 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(2, result.DescribeResultsCount);
         Assert.AreEqual(3, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
@@ -344,9 +344,9 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(2, result.DescribeResultsCount);
         Assert.AreEqual(3, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
@@ -373,9 +373,9 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(2, result.DescribeResultsCount);
         Assert.AreEqual(3, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
@@ -402,9 +402,9 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(0, result.DescribeResultsCount);
         Assert.AreEqual(3, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -429,9 +429,9 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(3, result.DescribeResultsCount);
         Assert.AreEqual(3, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
@@ -459,9 +459,9 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(2, result.DescribeResultsCount);
         Assert.AreEqual(3, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
@@ -490,9 +490,9 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(0, result.DescribeResultsCount);
         Assert.AreEqual(3, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -515,9 +515,9 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(0, result.DescribeResultsCount);
         Assert.AreEqual(3, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -555,10 +555,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(3, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -590,10 +590,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(2, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -622,10 +622,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(1, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx2"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:tree"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -650,10 +650,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(1, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx2"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("bnode:12345"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -677,10 +677,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(2, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -709,10 +709,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(3, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx1"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -749,10 +749,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(3, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx1"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -785,10 +785,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(3, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -823,10 +823,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(0, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -849,10 +849,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(0, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -901,10 +901,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(6, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -956,10 +956,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(4, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -1001,10 +1001,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(2, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx2"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:tree"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -1038,10 +1038,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(2, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx2"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("bnode:12345"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -1077,10 +1077,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(4, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -1119,10 +1119,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(3, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx1"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -1161,10 +1161,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(3, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx1"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -1197,10 +1197,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(2, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -1233,10 +1233,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(0, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1261,10 +1261,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(0, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1739,9 +1739,9 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(3, result.DescribeResultsCount);
         Assert.AreEqual(3, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.RDFS.CLASS}"));
@@ -1773,9 +1773,9 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(0, result.DescribeResultsCount);
         Assert.AreEqual(3, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1813,10 +1813,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(3, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -1851,10 +1851,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(0, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1897,10 +1897,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(4, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?CONTEXT"].Equals("ex:ctx"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
         Assert.IsTrue(result.DescribeResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
@@ -1941,10 +1941,10 @@ public class RDFDescribeQueryTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(0, result.DescribeResultsCount);
         Assert.AreEqual(4, result.DescribeResults.Columns.Count);
-        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(result.DescribeResults.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(result.DescribeResults.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
     }
 
     [TestMethod]

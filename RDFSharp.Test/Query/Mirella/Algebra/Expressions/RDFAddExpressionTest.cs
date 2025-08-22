@@ -35,8 +35,8 @@ public class RDFAddExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) + 2)"));
-        Assert.IsTrue(expression.ToString([]).Equals("((?V1 + ?V2) + 2)"));
+        Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) + 2)", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("((?V1 + ?V2) + 2)", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -49,8 +49,8 @@ public class RDFAddExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) + ?V3)"));
-        Assert.IsTrue(expression.ToString([]).Equals("((?V1 + ?V2) + ?V3)"));
+        Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) + ?V3)", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("((?V1 + ?V2) + ?V3)", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -63,8 +63,8 @@ public class RDFAddExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) + 25.1)"));
-        Assert.IsTrue(expression.ToString([]).Equals("((?V1 + ?V2) + 25.1)"));
+        Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) + 25.1)", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("((?V1 + ?V2) + 25.1)", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -77,8 +77,8 @@ public class RDFAddExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(?V1 + (?V2 + ?V3))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(?V1 + (?V2 + ?V3))"));
+        Assert.IsTrue(expression.ToString().Equals("(?V1 + (?V2 + ?V3))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(?V1 + (?V2 + ?V3))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -91,8 +91,8 @@ public class RDFAddExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(?V1 + ?V2)"));
-        Assert.IsTrue(expression.ToString([]).Equals("(?V1 + ?V2)"));
+        Assert.IsTrue(expression.ToString().Equals("(?V1 + ?V2)", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(?V1 + ?V2)", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -105,8 +105,8 @@ public class RDFAddExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(?V + 25.1)"));
-        Assert.IsTrue(expression.ToString([]).Equals("(?V + 25.1)"));
+        Assert.IsTrue(expression.ToString().Equals("(?V + 25.1)", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(?V + 25.1)", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

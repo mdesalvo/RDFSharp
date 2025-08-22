@@ -35,8 +35,8 @@ public class RDFInExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) IN (\"hello\"@EN-US))"));
-        Assert.IsTrue(expression.ToString([]).Equals("((?V1 + ?V2) IN (\"hello\"@EN-US))"));
+        Assert.IsTrue(expression.ToString().Equals("((?V1 + ?V2) IN (\"hello\"@EN-US))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("((?V1 + ?V2) IN (\"hello\"@EN-US))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -49,8 +49,8 @@ public class RDFInExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(?V1 IN (\"hello\"@EN-US))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(?V1 IN (\"hello\"@EN-US))"));
+        Assert.IsTrue(expression.ToString().Equals("(?V1 IN (\"hello\"@EN-US))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(?V1 IN (\"hello\"@EN-US))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

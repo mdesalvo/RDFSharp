@@ -33,8 +33,8 @@ public class RDFUUIDExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(UUID())"));
-        Assert.IsTrue(expression.ToString([]).Equals("(UUID())"));
+        Assert.IsTrue(expression.ToString().Equals("(UUID())", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(UUID())", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

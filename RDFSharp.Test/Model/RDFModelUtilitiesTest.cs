@@ -297,7 +297,7 @@ public class RDFModelUtilitiesTest
 
         Assert.IsNotNull(result);
         Assert.IsFalse(result.Any(char.IsControl));
-        Assert.IsTrue(result.Equals(input));
+        Assert.IsTrue(result.Equals(input, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -386,7 +386,7 @@ public class RDFModelUtilitiesTest
         string shortUri = new Uri(input).GetShortUri();
 
         Assert.IsNotNull(shortUri);
-        Assert.IsTrue(shortUri.Equals("test1"));
+        Assert.IsTrue(shortUri.Equals("test1", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -396,7 +396,7 @@ public class RDFModelUtilitiesTest
         string shortUri = new Uri(input).GetShortUri();
 
         Assert.IsNotNull(shortUri);
-        Assert.IsTrue(shortUri.Equals("test1/test2#test3"));
+        Assert.IsTrue(shortUri.Equals("test1/test2#test3", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -406,7 +406,7 @@ public class RDFModelUtilitiesTest
         string shortUri = new Uri(input).GetShortUri();
 
         Assert.IsNotNull(shortUri);
-        Assert.IsTrue(shortUri.Equals("test"));
+        Assert.IsTrue(shortUri.Equals("test", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -416,7 +416,7 @@ public class RDFModelUtilitiesTest
         string shortUri = new Uri(input).GetShortUri();
 
         Assert.IsNotNull(shortUri);
-        Assert.IsTrue(shortUri.Equals("http://example.org/"));
+        Assert.IsTrue(shortUri.Equals("http://example.org/", StringComparison.Ordinal));
     }
 
     [TestMethod]

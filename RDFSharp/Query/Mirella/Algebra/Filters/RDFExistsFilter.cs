@@ -91,7 +91,7 @@ namespace RDFSharp.Query
             else
             {
                 EnumerableRowCollection<DataRow> patternResultsEnumerable = PatternResults?.AsEnumerable();
-                if (patternResultsEnumerable?.Count() > 0)
+                if (patternResultsEnumerable?.Any() ?? false)
                 {
                     #region Subject
                     bool subjectCompared = false;

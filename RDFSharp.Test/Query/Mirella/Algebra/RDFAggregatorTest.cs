@@ -36,7 +36,7 @@ public class RDFAggregatorTest
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
         Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsFalse(aggregator.IsDistinct);
-        Assert.IsTrue(aggregator.ToString().Equals(string.Empty));
+        Assert.IsTrue(aggregator.ToString().Equals(string.Empty, StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
@@ -61,7 +61,7 @@ public class RDFAggregatorTest
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
         Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsTrue(aggregator.IsDistinct);
-        Assert.IsTrue(aggregator.ToString().Equals(string.Empty));
+        Assert.IsTrue(aggregator.ToString().Equals(string.Empty, StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
@@ -85,7 +85,7 @@ public class RDFAggregatorTest
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
         Assert.IsTrue(aggregator.HavingClause.Equals((true, comparisonFlavor, new RDFVariable("?X"))));
         Assert.IsFalse(aggregator.IsDistinct);
-        Assert.IsTrue(aggregator.ToString().Equals(string.Empty));
+        Assert.IsTrue(aggregator.ToString().Equals(string.Empty, StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
@@ -155,35 +155,35 @@ public class RDFAggregatorTest
         table.Rows.Add(row0);
         table.AcceptChanges();
         string value0 = aggregator.GetRowValueAsString(table.Rows[0]);
-        Assert.IsTrue(value0.Equals($"25^^{RDFVocabulary.XSD.FLOAT}"));
+        Assert.IsTrue(value0.Equals($"25^^{RDFVocabulary.XSD.FLOAT}", StringComparison.Ordinal));
 
         DataRow row1 = table.NewRow();
         row1["?AGGVAR"] = DBNull.Value;
         table.Rows.Add(row1);
         table.AcceptChanges();
         string value1 = aggregator.GetRowValueAsString(table.Rows[1]);
-        Assert.IsTrue(value1.Equals(string.Empty));
+        Assert.IsTrue(value1.Equals(string.Empty, StringComparison.Ordinal));
 
         DataRow row2 = table.NewRow();
         row2["?AGGVAR"] = null;
         table.Rows.Add(row2);
         table.AcceptChanges();
         string value2 = aggregator.GetRowValueAsString(table.Rows[2]);
-        Assert.IsTrue(value2.Equals(string.Empty));
+        Assert.IsTrue(value2.Equals(string.Empty, StringComparison.Ordinal));
 
         DataRow row3 = table.NewRow();
         row3["?AGGVAR"] = new RDFResource("ex:res").ToString();
         table.Rows.Add(row3);
         table.AcceptChanges();
         string value3 = aggregator.GetRowValueAsString(table.Rows[3]);
-        Assert.IsTrue(value3.Equals("ex:res"));
+        Assert.IsTrue(value3.Equals("ex:res", StringComparison.Ordinal));
 
         DataRow row4 = table.NewRow();
         row4["?AGGVAR"] = new RDFPlainLiteral("hello", "en-US").ToString();
         table.Rows.Add(row4);
         table.AcceptChanges();
         string value4 = aggregator.GetRowValueAsString(table.Rows[4]);
-        Assert.IsTrue(value4.Equals("hello@EN-US"));
+        Assert.IsTrue(value4.Equals("hello@EN-US", StringComparison.Ordinal));
     }
 
     //Virtuals (for test completeness, since they're just no-op at this level)
@@ -232,7 +232,7 @@ public class RDFAggregatorTest
         RDFAggregatorContext aggCtx = new RDFAggregatorContext();
         string value = aggCtx.GetPartitionKeyExecutionResult("testPKey", "value");
 
-        Assert.IsTrue(value.Equals("value"));
+        Assert.IsTrue(value.Equals("value", StringComparison.Ordinal));
         Assert.IsTrue(aggCtx.ExecutionRegistry.ContainsKey("testPKey"));
         Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionResult"));
         Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"]["ExecutionResult"].Equals(value));

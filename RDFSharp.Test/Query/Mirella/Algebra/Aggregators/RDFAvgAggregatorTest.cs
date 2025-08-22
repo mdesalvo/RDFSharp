@@ -35,7 +35,7 @@ public class RDFAvgAggregatorTest
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
         Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsFalse(aggregator.IsDistinct);
-        Assert.IsTrue(aggregator.ToString().Equals("(AVG(?AGGVAR) AS ?PROJVAR)"));
+        Assert.IsTrue(aggregator.ToString().Equals("(AVG(?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
@@ -60,7 +60,7 @@ public class RDFAvgAggregatorTest
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
         Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsTrue(aggregator.IsDistinct);
-        Assert.IsTrue(aggregator.ToString().Equals("(AVG(DISTINCT ?AGGVAR) AS ?PROJVAR)"));
+        Assert.IsTrue(aggregator.ToString().Equals("(AVG(DISTINCT ?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
@@ -99,10 +99,10 @@ public class RDFAvgAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?AVGPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(2, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?AVGPROJ"].ToString().Equals($"26.5^^{RDFVocabulary.XSD.DOUBLE}"));
-        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
-        Assert.IsTrue(result.Rows[1]["?AVGPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?AVGPROJ"].ToString().Equals($"26.5^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?AVGPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -138,10 +138,10 @@ public class RDFAvgAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?AVGPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(2, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?AVGPROJ"].ToString().Equals($"27^^{RDFVocabulary.XSD.DOUBLE}"));
-        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
-        Assert.IsTrue(result.Rows[1]["?AVGPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?AVGPROJ"].ToString().Equals($"27^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?AVGPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -179,10 +179,10 @@ public class RDFAvgAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?AVGPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?AVGPROJ"].ToString().Equals($"26.5^^{RDFVocabulary.XSD.DOUBLE}"));
-        Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(AVG(?A) >= \"25.99\"^^<{RDFVocabulary.XSD.FLOAT}>)"));
-        Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(AVG(?A) >= \"25.99\"^^xsd:float)"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?AVGPROJ"].ToString().Equals($"26.5^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(AVG(?A) >= \"25.99\"^^<{RDFVocabulary.XSD.FLOAT}>)", System.StringComparison.Ordinal));
+        Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(AVG(?A) >= \"25.99\"^^xsd:float)", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -223,12 +223,12 @@ public class RDFAvgAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?AVGPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(3, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?AVGPROJ"].ToString().Equals($"26.85^^{RDFVocabulary.XSD.DOUBLE}"));
-        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
-        Assert.IsTrue(result.Rows[1]["?AVGPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}"));
-        Assert.IsTrue(result.Rows[2]["?C"].ToString().Equals("ex:value2"));
-        Assert.IsTrue(result.Rows[2]["?AVGPROJ"].ToString().Equals(string.Empty)); //Projection for NaN
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?AVGPROJ"].ToString().Equals($"26.85^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?AVGPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[2]["?C"].ToString().Equals("ex:value2", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[2]["?AVGPROJ"].ToString().Equals(string.Empty, System.StringComparison.Ordinal)); //Projection for NaN
     }
     #endregion
 }

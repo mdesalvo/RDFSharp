@@ -33,8 +33,8 @@ public class RDFExistsFilterTest
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Pattern);
         Assert.IsNull(filter.PatternResults);
-        Assert.IsTrue(filter.ToString().Equals("FILTER ( EXISTS { ?S ?P <" + RDFVocabulary.RDF.ALT + "> } )"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("FILTER ( EXISTS { ?S ?P rdf:Alt } )"));
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( EXISTS { ?S ?P <" + RDFVocabulary.RDF.ALT + "> } )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("FILTER ( EXISTS { ?S ?P rdf:Alt } )", System.StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 

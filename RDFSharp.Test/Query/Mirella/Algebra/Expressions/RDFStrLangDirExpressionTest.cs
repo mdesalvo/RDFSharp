@@ -36,8 +36,8 @@ public class RDFStrLangDirExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR((?V1 + ?V2), ?V3, ltr))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR((?V1 + ?V2), ?V3, ltr))"));
+        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR((?V1 + ?V2), ?V3, ltr))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR((?V1 + ?V2), ?V3, ltr))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -51,9 +51,9 @@ public class RDFStrLangDirExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR((?V1 + ?V2), 25, rtl))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR((?V1 + ?V2), 25, rtl))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(STRLANGDIR((?V1 + ?V2), 25, rtl))"));
+        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR((?V1 + ?V2), 25, rtl))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR((?V1 + ?V2), 25, rtl))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(STRLANGDIR((?V1 + ?V2), 25, rtl))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -70,8 +70,8 @@ public class RDFStrLangDirExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR((?V1 + ?V2), (STRLANGDIR(?V3, \"hello\"@EN-US, ltr)), rtl))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR((?V1 + ?V2), (STRLANGDIR(?V3, \"hello\"@EN-US, ltr)), rtl))"));
+        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR((?V1 + ?V2), (STRLANGDIR(?V3, \"hello\"@EN-US, ltr)), rtl))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR((?V1 + ?V2), (STRLANGDIR(?V3, \"hello\"@EN-US, ltr)), rtl))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -85,8 +85,8 @@ public class RDFStrLangDirExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR((?V1 + ?V2), ?V3, ltr))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR((?V1 + ?V2), ?V3, ltr))"));
+        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR((?V1 + ?V2), ?V3, ltr))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR((?V1 + ?V2), ?V3, ltr))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -100,8 +100,8 @@ public class RDFStrLangDirExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR(?V3, (?V1 + ?V2), rtl))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR(?V3, (?V1 + ?V2), rtl))"));
+        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR(?V3, (?V1 + ?V2), rtl))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR(?V3, (?V1 + ?V2), rtl))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -115,8 +115,8 @@ public class RDFStrLangDirExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR(?V3, ?V1, ltr))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR(?V3, ?V1, ltr))"));
+        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR(?V3, ?V1, ltr))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR(?V3, ?V1, ltr))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

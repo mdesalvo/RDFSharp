@@ -33,9 +33,9 @@ public class RDFConstantExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"<{RDFVocabulary.FOAF.AGE}>"));
-        Assert.IsTrue(expression.ToString([]).Equals($"<{RDFVocabulary.FOAF.AGE}>"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("foaf")]).Equals("foaf:age"));
+        Assert.IsTrue(expression.ToString().Equals($"<{RDFVocabulary.FOAF.AGE}>", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals($"<{RDFVocabulary.FOAF.AGE}>", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("foaf")]).Equals("foaf:age", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -46,8 +46,8 @@ public class RDFConstantExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("\"lit\"@EN-US"));
-        Assert.IsTrue(expression.ToString([]).Equals("\"lit\"@EN-US"));
+        Assert.IsTrue(expression.ToString().Equals("\"lit\"@EN-US", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("\"lit\"@EN-US", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -58,9 +58,9 @@ public class RDFConstantExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("25.04"));
-        Assert.IsTrue(expression.ToString([]).Equals("25.04"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("25.04"));
+        Assert.IsTrue(expression.ToString().Equals("25.04", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("25.04", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("25.04", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -71,9 +71,9 @@ public class RDFConstantExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"\"---25Z\"^^<{RDFVocabulary.XSD.G_DAY}>"));
-        Assert.IsTrue(expression.ToString([]).Equals($"\"---25Z\"^^<{RDFVocabulary.XSD.G_DAY}>"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("\"---25Z\"^^xsd:gDay"));
+        Assert.IsTrue(expression.ToString().Equals($"\"---25Z\"^^<{RDFVocabulary.XSD.G_DAY}>", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals($"\"---25Z\"^^<{RDFVocabulary.XSD.G_DAY}>", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("\"---25Z\"^^xsd:gDay", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

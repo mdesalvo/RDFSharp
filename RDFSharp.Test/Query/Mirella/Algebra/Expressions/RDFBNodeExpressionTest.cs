@@ -33,8 +33,8 @@ public class RDFBNodeExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(BNODE())"));
-        Assert.IsTrue(expression.ToString([]).Equals("(BNODE())"));
+        Assert.IsTrue(expression.ToString().Equals("(BNODE())", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(BNODE())", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

@@ -38,7 +38,7 @@ public class RDFMaxAggregatorTest
         Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsFalse(aggregator.IsDistinct);
         Assert.AreEqual(aggregatorFlavor, aggregator.AggregatorFlavor);
-        Assert.IsTrue(aggregator.ToString().Equals("(MAX(?AGGVAR) AS ?PROJVAR)"));
+        Assert.IsTrue(aggregator.ToString().Equals("(MAX(?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
@@ -70,7 +70,7 @@ public class RDFMaxAggregatorTest
         Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsTrue(aggregator.IsDistinct);
         Assert.AreEqual(aggregatorFlavor, aggregator.AggregatorFlavor);
-        Assert.IsTrue(aggregator.ToString().Equals("(MAX(DISTINCT ?AGGVAR) AS ?PROJVAR)"));
+        Assert.IsTrue(aggregator.ToString().Equals("(MAX(DISTINCT ?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
@@ -114,10 +114,10 @@ public class RDFMaxAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?MAXPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(2, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals("hello@EN-US"));
-        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
-        Assert.IsTrue(result.Rows[1]["?MAXPROJ"].ToString().Equals("hello@EN-US"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals("hello@EN-US", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?MAXPROJ"].ToString().Equals("hello@EN-US", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -158,10 +158,10 @@ public class RDFMaxAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?MAXPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(2, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals("http://example.org/test/test1"));
-        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
-        Assert.IsTrue(result.Rows[1]["?MAXPROJ"].ToString().Equals("hello@EN-US"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals("http://example.org/test/test1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?MAXPROJ"].ToString().Equals("hello@EN-US", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -199,10 +199,10 @@ public class RDFMaxAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?MAXPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals("hello@EN-US"));
-        Assert.IsTrue(aggregator.PrintHavingClause(null).Equals("(MAX(?B) = \"hello\"@EN-US)"));
-        Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(MAX(?B) = \"hello\"@EN-US)"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals("hello@EN-US", System.StringComparison.Ordinal));
+        Assert.IsTrue(aggregator.PrintHavingClause(null).Equals("(MAX(?B) = \"hello\"@EN-US)", System.StringComparison.Ordinal));
+        Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(MAX(?B) = \"hello\"@EN-US)", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -243,10 +243,10 @@ public class RDFMaxAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?MAXPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(2, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals($"27.5^^{RDFVocabulary.XSD.DOUBLE}"));
-        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
-        Assert.IsTrue(result.Rows[1]["?MAXPROJ"].ToString().Equals($"25.114^^{RDFVocabulary.XSD.DOUBLE}"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals($"27.5^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?MAXPROJ"].ToString().Equals($"25.114^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -287,10 +287,10 @@ public class RDFMaxAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?MAXPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(2, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals($"27^^{RDFVocabulary.XSD.DOUBLE}"));
-        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
-        Assert.IsTrue(result.Rows[1]["?MAXPROJ"].ToString().Equals($"29^^{RDFVocabulary.XSD.DOUBLE}"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals($"27^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?MAXPROJ"].ToString().Equals($"29^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -328,10 +328,10 @@ public class RDFMaxAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?MAXPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals($"28.24^^{RDFVocabulary.XSD.DOUBLE}"));
-        Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(MAX(?A) > \"28\"^^<{RDFVocabulary.XSD.POSITIVE_INTEGER}>)"));
-        Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(MAX(?A) > \"28\"^^xsd:positiveInteger)"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals($"28.24^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(MAX(?A) > \"28\"^^<{RDFVocabulary.XSD.POSITIVE_INTEGER}>)", System.StringComparison.Ordinal));
+        Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(MAX(?A) > \"28\"^^xsd:positiveInteger)", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -372,10 +372,10 @@ public class RDFMaxAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?MAXPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(2, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals($"27.5^^{RDFVocabulary.XSD.DOUBLE}"));
-        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
-        Assert.IsTrue(result.Rows[1]["?MAXPROJ"].ToString().Equals(string.Empty));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?MAXPROJ"].ToString().Equals($"27.5^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?MAXPROJ"].ToString().Equals(string.Empty, System.StringComparison.Ordinal));
     }
     #endregion
 }

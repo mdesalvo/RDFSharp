@@ -34,8 +34,8 @@ public class RDFStrUUIDExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRUUID())"));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRUUID())"));
+        Assert.IsTrue(expression.ToString().Equals("(STRUUID())", StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRUUID())", StringComparison.Ordinal));
     }
 
     [TestMethod]

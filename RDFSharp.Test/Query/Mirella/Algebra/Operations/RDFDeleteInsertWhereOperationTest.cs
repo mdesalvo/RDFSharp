@@ -62,7 +62,7 @@ public class RDFDeleteInsertWhereOperationTest
             }
             WHERE {
             }
-            """));
+            """, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -94,7 +94,7 @@ public class RDFDeleteInsertWhereOperationTest
             }
             WHERE {
             }
-            """));
+            """, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -133,7 +133,7 @@ public class RDFDeleteInsertWhereOperationTest
             }
             WHERE {
             }
-            """));
+            """, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -163,7 +163,7 @@ public class RDFDeleteInsertWhereOperationTest
             }
             WHERE {
             }
-            """));
+            """, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -198,7 +198,7 @@ public class RDFDeleteInsertWhereOperationTest
                 ?Y <ex:dogOf> ?X .
               }
             }
-            """));
+            """, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -232,7 +232,7 @@ public class RDFDeleteInsertWhereOperationTest
                 }
               }
             }
-            """));
+            """, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -268,7 +268,7 @@ public class RDFDeleteInsertWhereOperationTest
                 }
               }
             }
-            """));
+            """, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -321,30 +321,30 @@ public class RDFDeleteInsertWhereOperationTest
         Assert.IsTrue(result.InsertResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.InsertResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(3, result.InsertResultsCount);
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:dog"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), "ex:dog"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?OBJECT"].ToString(), "ex:dog"));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
         Assert.IsNotNull(result.DeleteResults);
         Assert.AreEqual(3, result.DeleteResults.Columns.Count);
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(3, result.DeleteResultsCount);
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?OBJECT"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?OBJECT"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?OBJECT"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?OBJECT"].ToString(), "ex:whoever", StringComparison.Ordinal));
         Assert.AreEqual(5, graph.TriplesCount);
     }
 
@@ -374,18 +374,18 @@ public class RDFDeleteInsertWhereOperationTest
         Assert.IsTrue(result.InsertResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.InsertResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(1, result.InsertResultsCount);
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:minnie"));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:minnie", StringComparison.Ordinal));
         Assert.IsNotNull(result.DeleteResults);
         Assert.AreEqual(3, result.DeleteResults.Columns.Count);
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(1, result.DeleteResultsCount);
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino", StringComparison.Ordinal));
         Assert.AreEqual(5, graph.TriplesCount);
     }
 
@@ -435,30 +435,30 @@ public class RDFDeleteInsertWhereOperationTest
         Assert.IsTrue(result.InsertResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.InsertResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(3, result.InsertResultsCount);
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:dog"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), "ex:dog"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?OBJECT"].ToString(), "ex:dog"));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
         Assert.IsNotNull(result.DeleteResults);
         Assert.AreEqual(3, result.DeleteResults.Columns.Count);
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?SUBJECT"));
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(3, result.DeleteResultsCount);
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?OBJECT"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?OBJECT"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?OBJECT"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?OBJECT"].ToString(), "ex:whoever", StringComparison.Ordinal));
         Assert.AreEqual(5, graph.TriplesCount);
     }
 
@@ -509,18 +509,18 @@ public class RDFDeleteInsertWhereOperationTest
         Assert.IsTrue(result.InsertResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.InsertResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(3, result.InsertResultsCount);
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:dog"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?CONTEXT"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), "ex:dog"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?CONTEXT"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?OBJECT"].ToString(), "ex:dog"));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
         Assert.IsNotNull(result.DeleteResults);
         Assert.AreEqual(4, result.DeleteResults.Columns.Count);
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?CONTEXT"));
@@ -528,18 +528,18 @@ public class RDFDeleteInsertWhereOperationTest
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(3, result.DeleteResultsCount);
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?CONTEXT"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?OBJECT"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?CONTEXT"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?OBJECT"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?OBJECT"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?OBJECT"].ToString(), "ex:whoever", StringComparison.Ordinal));
         Assert.AreEqual(5, store.QuadruplesCount);
     }
 
@@ -570,10 +570,10 @@ public class RDFDeleteInsertWhereOperationTest
         Assert.IsTrue(result.InsertResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.InsertResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(1, result.InsertResultsCount);
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:minnie"));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:minnie", StringComparison.Ordinal));
         Assert.IsNotNull(result.DeleteResults);
         Assert.AreEqual(4, result.DeleteResults.Columns.Count);
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?CONTEXT"));
@@ -581,10 +581,10 @@ public class RDFDeleteInsertWhereOperationTest
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(1, result.DeleteResultsCount);
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino", StringComparison.Ordinal));
         Assert.AreEqual(5, store.QuadruplesCount);
     }
 
@@ -635,18 +635,18 @@ public class RDFDeleteInsertWhereOperationTest
         Assert.IsTrue(result.InsertResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.InsertResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(3, result.InsertResultsCount);
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:dog"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?CONTEXT"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), "ex:dog"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?CONTEXT"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?OBJECT"].ToString(), "ex:dog"));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
         Assert.IsNotNull(result.DeleteResults);
         Assert.AreEqual(4, result.DeleteResults.Columns.Count);
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?CONTEXT"));
@@ -654,18 +654,18 @@ public class RDFDeleteInsertWhereOperationTest
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.DeleteResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(3, result.DeleteResultsCount);
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?CONTEXT"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?OBJECT"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?CONTEXT"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?OBJECT"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[1]["?OBJECT"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?SUBJECT"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DeleteResults.Rows[2]["?OBJECT"].ToString(), "ex:whoever", StringComparison.Ordinal));
         Assert.AreEqual(5, store.QuadruplesCount);
     }
 

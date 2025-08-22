@@ -151,18 +151,18 @@ public class RDFDescribeQueryResultTest
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(4, describeResult.DescribeResultsCount);
-        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?SUBJECT"].ToString().Equals("ex:subj"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?PREDICATE"].ToString().Equals("ex:pred"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?SUBJECT"].ToString().Equals("bnode:12345"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?PREDICATE"].ToString().Equals($"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?OBJECT"].ToString().Equals("ex:obj"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?SUBJECT"].ToString().Equals("ex:subj"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?PREDICATE"].ToString().Equals("ex:pred"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?OBJECT"].ToString().Equals("lit"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?SUBJECT"].ToString().Equals("ex:subj"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?PREDICATE"].ToString().Equals("ex:pred"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?OBJECT"].ToString().Equals($"lit^^{RDFVocabulary.XSD.STRING}"));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?SUBJECT"].ToString().Equals("ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?PREDICATE"].ToString().Equals("ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?SUBJECT"].ToString().Equals("bnode:12345", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?PREDICATE"].ToString().Equals($"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?OBJECT"].ToString().Equals("ex:obj", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?SUBJECT"].ToString().Equals("ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?PREDICATE"].ToString().Equals("ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?OBJECT"].ToString().Equals("lit", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?SUBJECT"].ToString().Equals("ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?PREDICATE"].ToString().Equals("ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?OBJECT"].ToString().Equals($"lit^^{RDFVocabulary.XSD.STRING}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -182,18 +182,18 @@ public class RDFDescribeQueryResultTest
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(4, describeResult.DescribeResultsCount);
-        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?SUBJECT"].ToString().Equals("ex:subj"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?PREDICATE"].ToString().Equals("ex:pred"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?SUBJECT"].ToString().Equals("bnode:12345"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?PREDICATE"].ToString().Equals($"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?OBJECT"].ToString().Equals("ex:obj"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?SUBJECT"].ToString().Equals("ex:subj"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?PREDICATE"].ToString().Equals("ex:pred"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?OBJECT"].ToString().Equals("lit"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?SUBJECT"].ToString().Equals("ex:subj"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?PREDICATE"].ToString().Equals("ex:pred"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?OBJECT"].ToString().Equals($"lit^^{RDFVocabulary.XSD.STRING}"));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?SUBJECT"].ToString().Equals("ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?PREDICATE"].ToString().Equals("ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?SUBJECT"].ToString().Equals("bnode:12345", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?PREDICATE"].ToString().Equals($"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?OBJECT"].ToString().Equals("ex:obj", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?SUBJECT"].ToString().Equals("ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?PREDICATE"].ToString().Equals("ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?OBJECT"].ToString().Equals("lit", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?SUBJECT"].ToString().Equals("ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?PREDICATE"].ToString().Equals("ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?OBJECT"].ToString().Equals($"lit^^{RDFVocabulary.XSD.STRING}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -331,22 +331,22 @@ public class RDFDescribeQueryResultTest
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(4, describeResult.DescribeResultsCount);
-        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?CONTEXT"].ToString().Equals("ex:ctx"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?SUBJECT"].ToString().Equals("ex:subj"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?PREDICATE"].ToString().Equals("ex:pred"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?CONTEXT"].ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?SUBJECT"].ToString().Equals("bnode:12345"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?PREDICATE"].ToString().Equals($"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?OBJECT"].ToString().Equals("ex:obj"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?CONTEXT"].ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?SUBJECT"].ToString().Equals("ex:subj"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?PREDICATE"].ToString().Equals("ex:pred"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?OBJECT"].ToString().Equals("lit"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?CONTEXT"].ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?SUBJECT"].ToString().Equals("ex:subj"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?PREDICATE"].ToString().Equals("ex:pred"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?OBJECT"].ToString().Equals($"lit^^{RDFVocabulary.XSD.STRING}"));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?CONTEXT"].ToString().Equals("ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?SUBJECT"].ToString().Equals("ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?PREDICATE"].ToString().Equals("ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?CONTEXT"].ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?SUBJECT"].ToString().Equals("bnode:12345", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?PREDICATE"].ToString().Equals($"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?OBJECT"].ToString().Equals("ex:obj", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?CONTEXT"].ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?SUBJECT"].ToString().Equals("ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?PREDICATE"].ToString().Equals("ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?OBJECT"].ToString().Equals("lit", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?CONTEXT"].ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?SUBJECT"].ToString().Equals("ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?PREDICATE"].ToString().Equals("ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?OBJECT"].ToString().Equals($"lit^^{RDFVocabulary.XSD.STRING}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -367,22 +367,22 @@ public class RDFDescribeQueryResultTest
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(describeResult.DescribeResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(4, describeResult.DescribeResultsCount);
-        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?CONTEXT"].ToString().Equals("ex:ctx"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?SUBJECT"].ToString().Equals("ex:subj"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?PREDICATE"].ToString().Equals("ex:pred"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?CONTEXT"].ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?SUBJECT"].ToString().Equals("bnode:12345"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?PREDICATE"].ToString().Equals($"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?OBJECT"].ToString().Equals("ex:obj"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?CONTEXT"].ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?SUBJECT"].ToString().Equals("ex:subj"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?PREDICATE"].ToString().Equals("ex:pred"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?OBJECT"].ToString().Equals("lit"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?CONTEXT"].ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?SUBJECT"].ToString().Equals("ex:subj"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?PREDICATE"].ToString().Equals("ex:pred"));
-        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?OBJECT"].ToString().Equals($"lit^^{RDFVocabulary.XSD.STRING}"));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?CONTEXT"].ToString().Equals("ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?SUBJECT"].ToString().Equals("ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?PREDICATE"].ToString().Equals("ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?CONTEXT"].ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?SUBJECT"].ToString().Equals("bnode:12345", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?PREDICATE"].ToString().Equals($"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[1]["?OBJECT"].ToString().Equals("ex:obj", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?CONTEXT"].ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?SUBJECT"].ToString().Equals("ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?PREDICATE"].ToString().Equals("ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[2]["?OBJECT"].ToString().Equals("lit", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?CONTEXT"].ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?SUBJECT"].ToString().Equals("ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?PREDICATE"].ToString().Equals("ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(describeResult.DescribeResults.Rows[3]["?OBJECT"].ToString().Equals($"lit^^{RDFVocabulary.XSD.STRING}", StringComparison.Ordinal));
     }
 
     [TestMethod]

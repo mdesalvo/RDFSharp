@@ -98,10 +98,10 @@ namespace RDFSharp.Query
             => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder(32); //Initial capacity=32 seems a good tradeoff for medium length of this expression
 
             //Serialize supported flags
-            StringBuilder flags = new StringBuilder();
+            StringBuilder flags = new StringBuilder(4);
             if (RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
                 flags.Append('i');
             if (RegEx.Options.HasFlag(RegexOptions.Singleline))
@@ -123,7 +123,7 @@ namespace RDFSharp.Query
             else
                 sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
             sb.Append(')');
-            if (!string.IsNullOrEmpty(flags.ToString()))
+            if (flags.Length > 0)
                 sb.Append($", \"{flags}\"");
             sb.Append("))");
 

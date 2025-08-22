@@ -35,8 +35,8 @@ public class RDFGeoDistanceExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DISTANCE}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, <http://www.opengis.net/def/uom/OGC/1.0/metre>))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:distance(?V, \"POINT (1 1)\"^^geosparql:wktLiteral, <http://www.opengis.net/def/uom/OGC/1.0/metre>))"));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DISTANCE}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:distance(?V, \"POINT (1 1)\"^^geosparql:wktLiteral, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -49,8 +49,8 @@ public class RDFGeoDistanceExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DISTANCE}>(\"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, ?V, <http://www.opengis.net/def/uom/OGC/1.0/metre>))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:distance(\"POINT (1 1)\"^^geosparql:wktLiteral, ?V, <http://www.opengis.net/def/uom/OGC/1.0/metre>))"));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DISTANCE}>(\"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, ?V, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:distance(\"POINT (1 1)\"^^geosparql:wktLiteral, ?V, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -63,8 +63,8 @@ public class RDFGeoDistanceExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DISTANCE}>(\"POINT (2 2)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, <http://www.opengis.net/def/uom/OGC/1.0/metre>))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:distance(\"POINT (2 2)\"^^geosparql:wktLiteral, \"POINT (1 1)\"^^geosparql:wktLiteral, <http://www.opengis.net/def/uom/OGC/1.0/metre>))"));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DISTANCE}>(\"POINT (2 2)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:distance(\"POINT (2 2)\"^^geosparql:wktLiteral, \"POINT (1 1)\"^^geosparql:wktLiteral, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -77,8 +77,8 @@ public class RDFGeoDistanceExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DISTANCE}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, <http://www.opengis.net/def/uom/OGC/1.0/metre>))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:distance(?V, \"POINT (1 1)\"^^geosparql:wktLiteral, <http://www.opengis.net/def/uom/OGC/1.0/metre>))"));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DISTANCE}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:distance(?V, \"POINT (1 1)\"^^geosparql:wktLiteral, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -91,8 +91,8 @@ public class RDFGeoDistanceExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DISTANCE}>(?V1, ?V2, <http://www.opengis.net/def/uom/OGC/1.0/metre>))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:distance(?V1, ?V2, <http://www.opengis.net/def/uom/OGC/1.0/metre>))"));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DISTANCE}>(?V1, ?V2, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:distance(?V1, ?V2, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -105,8 +105,8 @@ public class RDFGeoDistanceExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DISTANCE}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, <http://www.opengis.net/def/uom/OGC/1.0/metre>))"));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:distance(?V, \"POINT (1 1)\"^^geosparql:wktLiteral, <http://www.opengis.net/def/uom/OGC/1.0/metre>))"));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.DISTANCE}>(?V, \"POINT (1 1)\"^^<{RDFVocabulary.GEOSPARQL.WKT_LITERAL}>, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof"), RDFNamespaceRegister.GetByPrefix("geosparql")]).Equals("(geof:distance(?V, \"POINT (1 1)\"^^geosparql:wktLiteral, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

@@ -38,8 +38,8 @@ public class RDFIfExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(IF((?V1 <= 45), ?V1, ?V2))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(IF((?V1 <= 45), ?V1, ?V2))"));
+        Assert.IsTrue(expression.ToString().Equals("(IF((?V1 <= 45), ?V1, ?V2))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(IF((?V1 <= 45), ?V1, ?V2))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

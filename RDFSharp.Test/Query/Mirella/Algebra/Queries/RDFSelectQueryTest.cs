@@ -57,7 +57,7 @@ public class RDFSelectQueryTest
         Assert.IsFalse(query.JoinAsUnion);
         Assert.IsFalse(query.JoinAsMinus);
         Assert.IsFalse(query.IsSubQuery);
-        Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
+        Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
@@ -84,7 +84,7 @@ public class RDFSelectQueryTest
         Assert.IsFalse(query.JoinAsUnion);
         Assert.IsFalse(query.JoinAsMinus);
         Assert.IsFalse(query.IsSubQuery);
-        Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
+        Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
@@ -111,7 +111,7 @@ public class RDFSelectQueryTest
         Assert.IsTrue(query.JoinAsUnion);
         Assert.IsFalse(query.JoinAsMinus);
         Assert.IsFalse(query.IsSubQuery);
-        Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
+        Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
@@ -138,7 +138,7 @@ public class RDFSelectQueryTest
         Assert.IsFalse(query.JoinAsUnion);
         Assert.IsTrue(query.JoinAsMinus);
         Assert.IsFalse(query.IsSubQuery);
-        Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
+        Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
@@ -165,7 +165,7 @@ public class RDFSelectQueryTest
         Assert.IsFalse(query.JoinAsUnion);
         Assert.IsFalse(query.JoinAsMinus);
         Assert.IsTrue(query.IsSubQuery);
-        Assert.IsTrue(query.ToString().Equals("{" + Environment.NewLine + "SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine + "}" + Environment.NewLine));
+        Assert.IsTrue(query.ToString().Equals("{" + Environment.NewLine + "SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
@@ -206,7 +206,7 @@ public class RDFSelectQueryTest
         query.AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.DESC));
         query.AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC)); //Will be discarded, since duplicate modifiers are not allowed
 
-        Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+Environment.NewLine+"PREFIX owl: <http://www.w3.org/2002/07/owl#>"+Environment.NewLine+Environment.NewLine+"SELECT DISTINCT ?S "+Environment.NewLine+"WHERE {"+Environment.NewLine+"  {"+Environment.NewLine+"    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ."+Environment.NewLine+"    FILTER ( (ISURI(?S)) ) "+Environment.NewLine+"  }"+Environment.NewLine+"  {"+Environment.NewLine+"    SELECT ?S"+Environment.NewLine+"    WHERE {"+Environment.NewLine+"      {"+Environment.NewLine+"        ?S ?P owl:Class ."+Environment.NewLine+"        VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ."+Environment.NewLine+"      }"+Environment.NewLine+"    }"+Environment.NewLine+"  }"+Environment.NewLine+"}"+Environment.NewLine+"GROUP BY ?S"+Environment.NewLine+"ORDER BY DESC(?S)"+Environment.NewLine+"LIMIT 100"+Environment.NewLine+"OFFSET 20"+Environment.NewLine));
+        Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" + Environment.NewLine + "PREFIX owl: <http://www.w3.org/2002/07/owl#>" + Environment.NewLine + Environment.NewLine + "SELECT DISTINCT ?S " + Environment.NewLine + "WHERE {" + Environment.NewLine + "  {" + Environment.NewLine + "    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ." + Environment.NewLine + "    FILTER ( (ISURI(?S)) ) " + Environment.NewLine + "  }" + Environment.NewLine + "  {" + Environment.NewLine + "    SELECT ?S" + Environment.NewLine + "    WHERE {" + Environment.NewLine + "      {" + Environment.NewLine + "        ?S ?P owl:Class ." + Environment.NewLine + "        VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ." + Environment.NewLine + "      }" + Environment.NewLine + "    }" + Environment.NewLine + "  }" + Environment.NewLine + "}" + Environment.NewLine + "GROUP BY ?S" + Environment.NewLine + "ORDER BY DESC(?S)" + Environment.NewLine + "LIMIT 100" + Environment.NewLine + "OFFSET 20" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(3, query.GetEvaluableQueryMembers().Count()); //SPARQL Values is managed by Mirella
         Assert.AreEqual(1, query.GetPatternGroups().Count());
@@ -240,7 +240,7 @@ public class RDFSelectQueryTest
         query.AddModifier(new RDFOffsetModifier(20));
         query.AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.DESC));
 
-        Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+Environment.NewLine+"PREFIX owl: <http://www.w3.org/2002/07/owl#>"+Environment.NewLine+Environment.NewLine+"SELECT DISTINCT ?S "+Environment.NewLine+"WHERE {"+Environment.NewLine+"  {"+Environment.NewLine+"    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ."+Environment.NewLine+"    FILTER ( (ISURI(?S)) ) "+Environment.NewLine+"  }"+Environment.NewLine+"  OPTIONAL {"+Environment.NewLine+"    SELECT ?S"+Environment.NewLine+"    WHERE {"+Environment.NewLine+"      {"+Environment.NewLine+"        ?S ?P owl:Class ."+Environment.NewLine+"        VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ."+Environment.NewLine+"      }"+Environment.NewLine+"    }"+Environment.NewLine+"  }"+Environment.NewLine+"}"+Environment.NewLine+"GROUP BY ?S"+Environment.NewLine+"ORDER BY DESC(?S)"+Environment.NewLine+"LIMIT 100"+Environment.NewLine+"OFFSET 20"+Environment.NewLine));
+        Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" + Environment.NewLine + "PREFIX owl: <http://www.w3.org/2002/07/owl#>" + Environment.NewLine + Environment.NewLine + "SELECT DISTINCT ?S " + Environment.NewLine + "WHERE {" + Environment.NewLine + "  {" + Environment.NewLine + "    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ." + Environment.NewLine + "    FILTER ( (ISURI(?S)) ) " + Environment.NewLine + "  }" + Environment.NewLine + "  OPTIONAL {" + Environment.NewLine + "    SELECT ?S" + Environment.NewLine + "    WHERE {" + Environment.NewLine + "      {" + Environment.NewLine + "        ?S ?P owl:Class ." + Environment.NewLine + "        VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ." + Environment.NewLine + "      }" + Environment.NewLine + "    }" + Environment.NewLine + "  }" + Environment.NewLine + "}" + Environment.NewLine + "GROUP BY ?S" + Environment.NewLine + "ORDER BY DESC(?S)" + Environment.NewLine + "LIMIT 100" + Environment.NewLine + "OFFSET 20" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(3, query.GetEvaluableQueryMembers().Count()); //SPARQL Values is managed by Mirella
         Assert.AreEqual(1, query.GetPatternGroups().Count());
@@ -282,7 +282,7 @@ public class RDFSelectQueryTest
         query.AddModifier(new RDFOffsetModifier(20));
         query.AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.DESC));
 
-        Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+Environment.NewLine+"PREFIX owl: <http://www.w3.org/2002/07/owl#>"+Environment.NewLine+Environment.NewLine+"SELECT DISTINCT ?S "+Environment.NewLine+"WHERE {"+Environment.NewLine+"  {"+Environment.NewLine+"    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ."+Environment.NewLine+"    FILTER ( (ISURI(?S)) ) "+Environment.NewLine+"  }"+Environment.NewLine+"  {"+Environment.NewLine+"    {"+Environment.NewLine+"      SELECT ?S"+Environment.NewLine+"      WHERE {"+Environment.NewLine+"        {"+Environment.NewLine+"          ?S ?P owl:Class ."+Environment.NewLine+"          VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ."+Environment.NewLine+"        }"+Environment.NewLine+"      }"+Environment.NewLine+"    }"+Environment.NewLine+"    UNION"+Environment.NewLine+"    {"+Environment.NewLine+"      SELECT ?S"+Environment.NewLine+"      WHERE {"+Environment.NewLine+"        {"+Environment.NewLine+"          ?S ?P owl:Class ."+Environment.NewLine+"        }"+Environment.NewLine+"      }"+Environment.NewLine+"    }"+Environment.NewLine+"  }"+Environment.NewLine+"}"+Environment.NewLine+"GROUP BY ?S"+Environment.NewLine+"ORDER BY DESC(?S)"+Environment.NewLine+"LIMIT 100"+Environment.NewLine+"OFFSET 20"+Environment.NewLine));
+        Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" + Environment.NewLine + "PREFIX owl: <http://www.w3.org/2002/07/owl#>" + Environment.NewLine + Environment.NewLine + "SELECT DISTINCT ?S " + Environment.NewLine + "WHERE {" + Environment.NewLine + "  {" + Environment.NewLine + "    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ." + Environment.NewLine + "    FILTER ( (ISURI(?S)) ) " + Environment.NewLine + "  }" + Environment.NewLine + "  {" + Environment.NewLine + "    {" + Environment.NewLine + "      SELECT ?S" + Environment.NewLine + "      WHERE {" + Environment.NewLine + "        {" + Environment.NewLine + "          ?S ?P owl:Class ." + Environment.NewLine + "          VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ." + Environment.NewLine + "        }" + Environment.NewLine + "      }" + Environment.NewLine + "    }" + Environment.NewLine + "    UNION" + Environment.NewLine + "    {" + Environment.NewLine + "      SELECT ?S" + Environment.NewLine + "      WHERE {" + Environment.NewLine + "        {" + Environment.NewLine + "          ?S ?P owl:Class ." + Environment.NewLine + "        }" + Environment.NewLine + "      }" + Environment.NewLine + "    }" + Environment.NewLine + "  }" + Environment.NewLine + "}" + Environment.NewLine + "GROUP BY ?S" + Environment.NewLine + "ORDER BY DESC(?S)" + Environment.NewLine + "LIMIT 100" + Environment.NewLine + "OFFSET 20" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(4, query.GetEvaluableQueryMembers().Count()); //SPARQL Values is managed by Mirella
         Assert.AreEqual(1, query.GetPatternGroups().Count());
@@ -312,7 +312,7 @@ public class RDFSelectQueryTest
         Assert.IsFalse(query.JoinAsUnion);
         Assert.IsFalse(query.JoinAsMinus);
         Assert.IsFalse(query.IsSubQuery);
-        Assert.IsTrue(query.ToString().Equals("SELECT ((?V + 2) AS ?SUM)" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
+        Assert.IsTrue(query.ToString().Equals("SELECT ((?V + 2) AS ?SUM)" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
@@ -342,7 +342,7 @@ public class RDFSelectQueryTest
         Assert.IsFalse(query.JoinAsUnion);
         Assert.IsFalse(query.JoinAsMinus);
         Assert.IsFalse(query.IsSubQuery);
-        Assert.IsTrue(query.ToString().Equals("SELECT ?V1 ((?V + 2) AS ?SUM) ?V2" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
+        Assert.IsTrue(query.ToString().Equals("SELECT ?V1 ((?V + 2) AS ?SUM) ?V2" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
@@ -371,7 +371,7 @@ public class RDFSelectQueryTest
         Assert.IsFalse(query.JoinAsUnion);
         Assert.IsFalse(query.JoinAsMinus);
         Assert.IsFalse(query.IsSubQuery);
-        Assert.IsTrue(query.ToString().Equals("SELECT ((?V + 2) AS ?SUM) (((?V1 + ?V2) * ?V3) AS ?MULTIPLY)" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
+        Assert.IsTrue(query.ToString().Equals("SELECT ((?V + 2) AS ?SUM) (((?V1 + ?V2) * ?V3) AS ?MULTIPLY)" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
@@ -401,7 +401,7 @@ public class RDFSelectQueryTest
         Assert.IsFalse(query.JoinAsUnion);
         Assert.IsFalse(query.JoinAsMinus);
         Assert.IsFalse(query.IsSubQuery);
-        Assert.IsTrue(query.ToString().Equals("SELECT ?V1 ?V2" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine));
+        Assert.IsTrue(query.ToString().Equals("SELECT ?V1 ?V2" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
@@ -427,7 +427,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -451,11 +451,11 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(3, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?V"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?V", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?V"].Equals("ex:flower"));
-        Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?VLENGTH"));
+        Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?VLENGTH", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?VLENGTH"].Equals($"9^^{RDFVocabulary.XSD.INTEGER}"));
-        Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?VLENGTHISMORETHAN7"));
+        Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?VLENGTHISMORETHAN7", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?VLENGTHISMORETHAN7"].Equals(RDFTypedLiteral.True.ToString()));
     }
 
@@ -479,9 +479,9 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(0, result.SelectResultsCount);
         Assert.AreEqual(3, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?V"));
-        Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?VLENGTH"));
-        Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?VLENGTHISMORETHAN7"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?V", StringComparison.Ordinal));
+        Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?VLENGTH", StringComparison.Ordinal));
+        Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?VLENGTHISMORETHAN7", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -503,7 +503,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -528,7 +528,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -559,8 +559,8 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(2, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-        Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?P"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
+        Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?P", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         Assert.IsTrue(result.SelectResults.Rows[0]["?P"].Equals($"{RDFVocabulary.RDF.TYPE}"));
     }
@@ -588,7 +588,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(3, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         Assert.IsTrue(result.SelectResults.Rows[1]["?S"].Equals("ex:tree"));
         Assert.IsTrue(result.SelectResults.Rows[2]["?S"].Equals("ex:grass"));
@@ -616,7 +616,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(2, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:tree"));
         Assert.IsTrue(result.SelectResults.Rows[1]["?S"].Equals("ex:grass"));
     }
@@ -640,7 +640,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -660,7 +660,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(0, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -734,7 +734,7 @@ public class RDFSelectQueryTest
         }
         catch (RDFQueryException qex)
         {
-            Assert.IsTrue(string.Equals(qex.Message, "SELECT query on SPARQL endpoint failed because: The operation has timed out."));
+            Assert.IsTrue(string.Equals(qex.Message, "SELECT query on SPARQL endpoint failed because: The operation has timed out.", StringComparison.Ordinal));
         }
     }
 
@@ -793,7 +793,7 @@ public class RDFSelectQueryTest
         }
         catch (RDFQueryException qex)
         {
-            Assert.IsTrue(string.Equals(qex.Message, "SELECT query on SPARQL endpoint failed because: The operation has timed out."));
+            Assert.IsTrue(string.Equals(qex.Message, "SELECT query on SPARQL endpoint failed because: The operation has timed out.", StringComparison.Ordinal));
         }
     }
 
@@ -851,7 +851,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?X"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?X", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?X"].Equals("ex:topolino"));
     }
 
@@ -909,7 +909,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?X"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?X", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?X"].Equals("ex:topolino"));
     }
 
@@ -930,8 +930,8 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(2, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?C"));
-        Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?C", StringComparison.Ordinal));
+        Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?C"].Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
@@ -952,7 +952,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(0, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -988,7 +988,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -1009,7 +1009,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(0, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1069,7 +1069,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -1114,7 +1114,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -1159,7 +1159,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -1204,7 +1204,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -1254,7 +1254,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -1304,7 +1304,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -1326,9 +1326,9 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(2, result.SelectResultsCount);
         Assert.AreEqual(3, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-        Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?P"));
-        Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?O"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
+        Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?P", StringComparison.Ordinal));
+        Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?O", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1349,9 +1349,9 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(2, result.SelectResultsCount);
         Assert.AreEqual(3, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
-        Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?P"));
-        Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?O"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
+        Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?P", StringComparison.Ordinal));
+        Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?O", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1400,7 +1400,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -1450,7 +1450,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -1495,7 +1495,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -1540,7 +1540,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -1579,7 +1579,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(0, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1617,7 +1617,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(0, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1931,7 +1931,7 @@ public class RDFSelectQueryTest
                 Assert.IsNotNull(result.SelectResults);
                 Assert.AreEqual(1, result.SelectResultsCount);
                 Assert.AreEqual(1, result.SelectResults.Columns.Count);
-                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
                 Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
                 break;
             }
@@ -1951,8 +1951,8 @@ public class RDFSelectQueryTest
                 Assert.IsNotNull(result.SelectResults);
                 Assert.AreEqual(1, result.SelectResultsCount);
                 Assert.AreEqual(2, result.SelectResults.Columns.Count);
-                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?C"));
-                Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?S"));
+                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?C", StringComparison.Ordinal));
+                Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?S", StringComparison.Ordinal));
                 Assert.IsTrue(result.SelectResults.Rows[0]["?C"].Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
                 Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
                 break;
@@ -1973,7 +1973,7 @@ public class RDFSelectQueryTest
                 Assert.IsNotNull(result.SelectResults);
                 Assert.AreEqual(1, result.SelectResultsCount);
                 Assert.AreEqual(1, result.SelectResults.Columns.Count);
-                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
                 Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
                 break;
             }
@@ -2017,7 +2017,7 @@ public class RDFSelectQueryTest
                 Assert.IsNotNull(result.SelectResults);
                 Assert.AreEqual(1, result.SelectResultsCount);
                 Assert.AreEqual(1, result.SelectResults.Columns.Count);
-                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
                 Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
                 break;
             }
@@ -2057,7 +2057,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -2077,7 +2077,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(0, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -2113,8 +2113,8 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(2, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?C"));
-        Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?C", StringComparison.Ordinal));
+        Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?C"].Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
@@ -2135,7 +2135,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(0, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -2171,7 +2171,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -2192,7 +2192,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(0, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -2252,7 +2252,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -2291,7 +2291,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(0, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -2335,7 +2335,7 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
-        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+        Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
     }
 
@@ -2378,7 +2378,7 @@ public class RDFSelectQueryTest
                 Assert.IsNotNull(result.SelectResults);
                 Assert.AreEqual(1, result.SelectResultsCount);
                 Assert.AreEqual(1, result.SelectResults.Columns.Count);
-                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
                 Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
                 break;
             }
@@ -2398,8 +2398,8 @@ public class RDFSelectQueryTest
                 Assert.IsNotNull(result.SelectResults);
                 Assert.AreEqual(1, result.SelectResultsCount);
                 Assert.AreEqual(2, result.SelectResults.Columns.Count);
-                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?C"));
-                Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?S"));
+                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?C", StringComparison.Ordinal));
+                Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?S", StringComparison.Ordinal));
                 Assert.IsTrue(result.SelectResults.Rows[0]["?C"].Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
                 Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
                 break;
@@ -2420,7 +2420,7 @@ public class RDFSelectQueryTest
                 Assert.IsNotNull(result.SelectResults);
                 Assert.AreEqual(1, result.SelectResultsCount);
                 Assert.AreEqual(1, result.SelectResults.Columns.Count);
-                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
                 Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
                 break;
             }
@@ -2464,7 +2464,7 @@ public class RDFSelectQueryTest
                 Assert.IsNotNull(result.SelectResults);
                 Assert.AreEqual(1, result.SelectResultsCount);
                 Assert.AreEqual(1, result.SelectResults.Columns.Count);
-                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
                 Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
                 break;
             }

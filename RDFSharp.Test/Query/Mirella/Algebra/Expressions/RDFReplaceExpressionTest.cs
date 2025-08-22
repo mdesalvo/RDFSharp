@@ -38,8 +38,8 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
         Assert.IsNotNull(expression.RegEx);
-        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR((?V1 + ?V2)), \"ismx\"))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR((?V1 + ?V2)), \"ismx\"))"));
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR((?V1 + ?V2)), \"ismx\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR((?V1 + ?V2)), \"ismx\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -54,8 +54,8 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
         Assert.IsNotNull(expression.RegEx);
-        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR((?V1 + ?V2))))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR((?V1 + ?V2))))"));
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR((?V1 + ?V2))))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR((?V1 + ?V2))))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -70,8 +70,8 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
         Assert.IsNotNull(expression.RegEx);
-        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR(?V1), \"ismx\"))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR(?V1), \"ismx\"))"));
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR(?V1), \"ismx\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR(?V1), \"ismx\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -86,8 +86,8 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
         Assert.IsNotNull(expression.RegEx);
-        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR(?V1)))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR(?V1)))"));
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR(?V1)))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR(?V1)))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -102,8 +102,8 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
         Assert.IsNotNull(expression.RegEx);
-        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR(?V1), \"^hello$\", STR((?V1 + ?V2)), \"ismx\"))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR(?V1), \"^hello$\", STR((?V1 + ?V2)), \"ismx\"))"));
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR(?V1), \"^hello$\", STR((?V1 + ?V2)), \"ismx\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR(?V1), \"^hello$\", STR((?V1 + ?V2)), \"ismx\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -118,8 +118,8 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
         Assert.IsNotNull(expression.RegEx);
-        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR(?V1), \"^hello$\", STR((?V1 + ?V2))))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR(?V1), \"^hello$\", STR((?V1 + ?V2))))"));
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR(?V1), \"^hello$\", STR((?V1 + ?V2))))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR(?V1), \"^hello$\", STR((?V1 + ?V2))))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -134,8 +134,8 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
         Assert.IsNotNull(expression.RegEx);
-        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR(?V1), \"^hello$\", STR(?V2), \"ismx\"))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR(?V1), \"^hello$\", STR(?V2), \"ismx\"))"));
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR(?V1), \"^hello$\", STR(?V2), \"ismx\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR(?V1), \"^hello$\", STR(?V2), \"ismx\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -150,8 +150,8 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
         Assert.IsNotNull(expression.RegEx);
-        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR(?V1), \"^hello$\", STR(?V2)))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR(?V1), \"^hello$\", STR(?V2)))"));
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR(?V1), \"^hello$\", STR(?V2)))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR(?V1), \"^hello$\", STR(?V2)))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

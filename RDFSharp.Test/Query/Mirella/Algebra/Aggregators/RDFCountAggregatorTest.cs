@@ -35,7 +35,7 @@ public class RDFCountAggregatorTest
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
         Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsFalse(aggregator.IsDistinct);
-        Assert.IsTrue(aggregator.ToString().Equals("(COUNT(?AGGVAR) AS ?PROJVAR)"));
+        Assert.IsTrue(aggregator.ToString().Equals("(COUNT(?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
@@ -60,7 +60,7 @@ public class RDFCountAggregatorTest
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
         Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsTrue(aggregator.IsDistinct);
-        Assert.IsTrue(aggregator.ToString().Equals("(COUNT(DISTINCT ?AGGVAR) AS ?PROJVAR)"));
+        Assert.IsTrue(aggregator.ToString().Equals("(COUNT(DISTINCT ?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
@@ -99,10 +99,10 @@ public class RDFCountAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?COUNTPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(2, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"2^^{RDFVocabulary.XSD.DECIMAL}"));
-        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
-        Assert.IsTrue(result.Rows[1]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.DECIMAL}"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"2^^{RDFVocabulary.XSD.DECIMAL}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.DECIMAL}", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -138,10 +138,10 @@ public class RDFCountAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?COUNTPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(2, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.DECIMAL}"));
-        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
-        Assert.IsTrue(result.Rows[1]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.DECIMAL}"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.DECIMAL}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.DECIMAL}", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -179,10 +179,10 @@ public class RDFCountAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?COUNTPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value0"));
-        Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.DECIMAL}"));
-        Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(COUNT(?B) < \"2\"^^<{RDFVocabulary.XSD.FLOAT}>)"));
-        Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(COUNT(?B) < \"2\"^^xsd:float)"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.DECIMAL}", System.StringComparison.Ordinal));
+        Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(COUNT(?B) < \"2\"^^<{RDFVocabulary.XSD.FLOAT}>)", System.StringComparison.Ordinal));
+        Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(COUNT(?B) < \"2\"^^xsd:float)", System.StringComparison.Ordinal));
     }
     #endregion
 }

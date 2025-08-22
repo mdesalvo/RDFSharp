@@ -40,8 +40,8 @@ public class RDFExpressionFilterTest
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Expression);
-        Assert.IsTrue(filter.ToString().Equals("FILTER ( (((?V1 + ?V2) = 24.08) && (?V1 = \"hello\"^^<http://www.w3.org/2001/XMLSchema#string>)) )"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (((?V1 + ?V2) = 24.08) && (?V1 = \"hello\"^^xsd:string)) )"));
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (((?V1 + ?V2) = 24.08) && (?V1 = \"hello\"^^<http://www.w3.org/2001/XMLSchema#string>)) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (((?V1 + ?V2) = 24.08) && (?V1 = \"hello\"^^xsd:string)) )", System.StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
@@ -57,8 +57,8 @@ public class RDFExpressionFilterTest
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Expression);
-        Assert.IsTrue(filter.ToString().Equals("FILTER ( (BOUND(?V1)) )"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (BOUND(?V1)) )"));
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (BOUND(?V1)) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (BOUND(?V1)) )", System.StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
@@ -74,8 +74,8 @@ public class RDFExpressionFilterTest
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Expression);
-        Assert.IsTrue(filter.ToString().Equals("FILTER ( (?V1 = ?V2) )"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (?V1 = ?V2) )"));
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (?V1 = ?V2) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (?V1 = ?V2) )", System.StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
@@ -91,8 +91,8 @@ public class RDFExpressionFilterTest
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Expression);
-        Assert.IsTrue(filter.ToString().Equals("FILTER ( (?V1 IN (\"hello\"@EN-US)) )"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (?V1 IN (\"hello\"@EN-US)) )"));
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (?V1 IN (\"hello\"@EN-US)) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (?V1 IN (\"hello\"@EN-US)) )", System.StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
@@ -108,8 +108,8 @@ public class RDFExpressionFilterTest
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Expression);
-        Assert.IsTrue(filter.ToString().Equals("FILTER ( (ISBLANK(?V1)) )"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (ISBLANK(?V1)) )"));
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (ISBLANK(?V1)) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (ISBLANK(?V1)) )", System.StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
@@ -125,8 +125,8 @@ public class RDFExpressionFilterTest
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Expression);
-        Assert.IsTrue(filter.ToString().Equals("FILTER ( (ISLITERAL(?V1)) )"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (ISLITERAL(?V1)) )"));
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (ISLITERAL(?V1)) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (ISLITERAL(?V1)) )", System.StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
@@ -142,8 +142,8 @@ public class RDFExpressionFilterTest
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Expression);
-        Assert.IsTrue(filter.ToString().Equals("FILTER ( (ISNUMERIC(?V1)) )"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (ISNUMERIC(?V1)) )"));
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (ISNUMERIC(?V1)) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (ISNUMERIC(?V1)) )", System.StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
@@ -159,8 +159,8 @@ public class RDFExpressionFilterTest
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Expression);
-        Assert.IsTrue(filter.ToString().Equals("FILTER ( (ISURI(?V1)) )"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (ISURI(?V1)) )"));
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (ISURI(?V1)) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (ISURI(?V1)) )", System.StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
@@ -176,8 +176,8 @@ public class RDFExpressionFilterTest
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Expression);
-        Assert.IsTrue(filter.ToString().Equals("FILTER ( (LANGMATCHES(LANG(?V1),\"en-US\")) )"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (LANGMATCHES(LANG(?V1),\"en-US\")) )"));
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (LANGMATCHES(LANG(?V1),\"en-US\")) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (LANGMATCHES(LANG(?V1),\"en-US\")) )", System.StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
@@ -193,8 +193,8 @@ public class RDFExpressionFilterTest
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Expression);
-        Assert.IsTrue(filter.ToString().Equals("FILTER ( (REGEX(STR(?V1), \"^hello$\")) )"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (REGEX(STR(?V1), \"^hello$\")) )"));
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (REGEX(STR(?V1), \"^hello$\")) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (REGEX(STR(?V1), \"^hello$\")) )", System.StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
@@ -210,8 +210,8 @@ public class RDFExpressionFilterTest
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Expression);
-        Assert.IsTrue(filter.ToString().Equals("FILTER ( (SAMETERM(?V1, ?V2)) )"));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (SAMETERM(?V1, ?V2)) )"));
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (SAMETERM(?V1, ?V2)) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (SAMETERM(?V1, ?V2)) )", System.StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 
@@ -243,7 +243,7 @@ public class RDFExpressionFilterTest
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsTrue(keepRow);
-        Assert.IsTrue(string.Equals(filter.ToString(), "FILTER ( (((STRLEN(?A)) > 8) || (STRSTARTS(?B, \"he\"^^<http://www.w3.org/2001/XMLSchema#string>))) )"));
+        Assert.IsTrue(string.Equals(filter.ToString(), "FILTER ( (((STRLEN(?A)) > 8) || (STRSTARTS(?B, \"he\"^^<http://www.w3.org/2001/XMLSchema#string>))) )", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -270,7 +270,7 @@ public class RDFExpressionFilterTest
         bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
         Assert.IsTrue(keepRow);
-        Assert.IsTrue(string.Equals(filter.ToString(), "FILTER ( (((STRLEN(?A)) > 35) || (STRSTARTS(?B, \"pol\"^^<http://www.w3.org/2001/XMLSchema#string>))) )"));
+        Assert.IsTrue(string.Equals(filter.ToString(), "FILTER ( (((STRLEN(?A)) > 35) || (STRSTARTS(?B, \"pol\"^^<http://www.w3.org/2001/XMLSchema#string>))) )", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -294,7 +294,7 @@ public class RDFExpressionFilterTest
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsTrue(keepRow);
-        Assert.IsTrue(string.Equals(filter.ToString(), "FILTER ( ((ISURI(?A)) && (STRSTARTS(?B, \"he\"^^<http://www.w3.org/2001/XMLSchema#string>))) )"));
+        Assert.IsTrue(string.Equals(filter.ToString(), "FILTER ( ((ISURI(?A)) && (STRSTARTS(?B, \"he\"^^<http://www.w3.org/2001/XMLSchema#string>))) )", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -321,7 +321,7 @@ public class RDFExpressionFilterTest
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsFalse(keepRow);
-        Assert.IsTrue(string.Equals(filter.ToString(), "FILTER ( (((STRLEN(?A)) > 35) || (STRSTARTS(?B, \"pol\"^^<http://www.w3.org/2001/XMLSchema#string>))) )"));
+        Assert.IsTrue(string.Equals(filter.ToString(), "FILTER ( (((STRLEN(?A)) > 35) || (STRSTARTS(?B, \"pol\"^^<http://www.w3.org/2001/XMLSchema#string>))) )", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -348,7 +348,7 @@ public class RDFExpressionFilterTest
         bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
         Assert.IsFalse(keepRow);
-        Assert.IsTrue(string.Equals(filter.ToString(), "FILTER ( (((STRLEN(?A)) > 8) || (STRSTARTS(?B, \"he\"^^<http://www.w3.org/2001/XMLSchema#string>))) )"));
+        Assert.IsTrue(string.Equals(filter.ToString(), "FILTER ( (((STRLEN(?A)) > 8) || (STRSTARTS(?B, \"he\"^^<http://www.w3.org/2001/XMLSchema#string>))) )", System.StringComparison.Ordinal));
     }
     #endregion
 }

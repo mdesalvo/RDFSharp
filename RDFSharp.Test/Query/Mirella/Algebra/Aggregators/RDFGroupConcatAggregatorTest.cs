@@ -33,10 +33,10 @@ public class RDFGroupConcatAggregatorTest
         Assert.IsNotNull(aggregator);
         Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.Separator.Equals(";"));
+        Assert.IsTrue(aggregator.Separator.Equals(";", System.StringComparison.Ordinal));
         Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsFalse(aggregator.IsDistinct);
-        Assert.IsTrue(aggregator.ToString().Equals("(GROUP_CONCAT(?AGGVAR; SEPARATOR=\";\") AS ?PROJVAR)"));
+        Assert.IsTrue(aggregator.ToString().Equals("(GROUP_CONCAT(?AGGVAR; SEPARATOR=\";\") AS ?PROJVAR)", System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
@@ -51,10 +51,10 @@ public class RDFGroupConcatAggregatorTest
         Assert.IsNotNull(aggregator);
         Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.Separator.Equals("sep"));
+        Assert.IsTrue(aggregator.Separator.Equals("sep", System.StringComparison.Ordinal));
         Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsTrue(aggregator.IsDistinct);
-        Assert.IsTrue(aggregator.ToString().Equals("(GROUP_CONCAT(DISTINCT ?AGGVAR; SEPARATOR=\"sep\") AS ?PROJVAR)"));
+        Assert.IsTrue(aggregator.ToString().Equals("(GROUP_CONCAT(DISTINCT ?AGGVAR; SEPARATOR=\"sep\") AS ?PROJVAR)", System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
@@ -68,10 +68,10 @@ public class RDFGroupConcatAggregatorTest
         Assert.IsNotNull(aggregator);
         Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.Separator.Equals(" "));
+        Assert.IsTrue(aggregator.Separator.Equals(" ", System.StringComparison.Ordinal));
         Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsFalse(aggregator.IsDistinct);
-        Assert.IsTrue(aggregator.ToString().Equals("(GROUP_CONCAT(?AGGVAR; SEPARATOR=\" \") AS ?PROJVAR)"));
+        Assert.IsTrue(aggregator.ToString().Equals("(GROUP_CONCAT(?AGGVAR; SEPARATOR=\" \") AS ?PROJVAR)", System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
@@ -118,10 +118,10 @@ public class RDFGroupConcatAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?CONCATPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(2, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?CONCATPROJ"].ToString().Equals($"27^^{RDFVocabulary.XSD.FLOAT};26^^{RDFVocabulary.XSD.FLOAT}"));
-        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
-        Assert.IsTrue(result.Rows[1]["?CONCATPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.FLOAT}"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?CONCATPROJ"].ToString().Equals($"27^^{RDFVocabulary.XSD.FLOAT};26^^{RDFVocabulary.XSD.FLOAT}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?CONCATPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.FLOAT}", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -157,10 +157,10 @@ public class RDFGroupConcatAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?CONCATPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(2, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?CONCATPROJ"].ToString().Equals("hello@EN-US"));
-        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
-        Assert.IsTrue(result.Rows[1]["?CONCATPROJ"].ToString().Equals("hello@EN-US"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?CONCATPROJ"].ToString().Equals("hello@EN-US", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?CONCATPROJ"].ToString().Equals("hello@EN-US", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -198,9 +198,9 @@ public class RDFGroupConcatAggregatorTest
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual("?CONCATPROJ", result.Columns[1].ColumnName);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[0]["?CONCATPROJ"].ToString().Equals("hello@EN-US;hello@EN"));
-        Assert.IsTrue(aggregator.PrintHavingClause(null).Equals("(GROUP_CONCAT(?B; SEPARATOR=\";\") != \"hello\"@EN-US)"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?CONCATPROJ"].ToString().Equals("hello@EN-US;hello@EN", System.StringComparison.Ordinal));
+        Assert.IsTrue(aggregator.PrintHavingClause(null).Equals("(GROUP_CONCAT(?B; SEPARATOR=\";\") != \"hello\"@EN-US)", System.StringComparison.Ordinal));
     }
     #endregion
 }

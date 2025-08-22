@@ -31,13 +31,13 @@ public class RDFNamespaceTest
     {
         RDFNamespace ns = new RDFNamespace(prefix, uri);
         Assert.IsNotNull(ns);
-        Assert.IsTrue(ns.NamespacePrefix.Equals(prefix.Trim()));
+        Assert.IsTrue(ns.NamespacePrefix.Equals(prefix.Trim(), StringComparison.Ordinal));
         Assert.IsTrue(ns.NamespaceUri.Equals(new Uri(uri.Trim())));
         Assert.IsTrue(ns.DereferenceUri.Equals(ns.NamespaceUri));
         Assert.IsFalse(ns.IsTemporary);
 
         string nsString = ns.ToString();
-        Assert.IsTrue(nsString.Equals(uri.Trim()));
+        Assert.IsTrue(nsString.Equals(uri.Trim(), StringComparison.Ordinal));
 
         long nsID = RDFModelUtilities.CreateHash(nsString);
         Assert.IsTrue(ns.NamespaceID.Equals(nsID));

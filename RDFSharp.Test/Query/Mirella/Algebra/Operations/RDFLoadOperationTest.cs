@@ -47,7 +47,7 @@ public class RDFLoadOperationTest
         Assert.IsTrue(operation.FromContext.Equals(new Uri("ex:fromCtx")));
         Assert.IsNull(operation.ToContext);
         Assert.IsFalse(operation.IsSilent);
-        Assert.IsTrue(string.Equals(operation.ToString(), "LOAD <ex:fromCtx>"));
+        Assert.IsTrue(string.Equals(operation.ToString(), "LOAD <ex:fromCtx>", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -64,7 +64,7 @@ public class RDFLoadOperationTest
         Assert.IsTrue(operation.FromContext.Equals(new Uri("ex:fromCtx")));
         Assert.IsNull(operation.ToContext);
         Assert.IsTrue(operation.IsSilent);
-        Assert.IsTrue(string.Equals(operation.ToString(), "LOAD SILENT <ex:fromCtx>"));
+        Assert.IsTrue(string.Equals(operation.ToString(), "LOAD SILENT <ex:fromCtx>", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -78,7 +78,7 @@ public class RDFLoadOperationTest
         Assert.IsNotNull(operation.ToContext);
         Assert.IsTrue(operation.ToContext.Equals(new Uri("ex:toCtx")));
         Assert.IsFalse(operation.IsSilent);
-        Assert.IsTrue(string.Equals(operation.ToString(), "LOAD <ex:fromCtx> INTO GRAPH <ex:toCtx>"));
+        Assert.IsTrue(string.Equals(operation.ToString(), "LOAD <ex:fromCtx> INTO GRAPH <ex:toCtx>", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -92,7 +92,7 @@ public class RDFLoadOperationTest
         Assert.IsNotNull(operation.ToContext);
         Assert.IsTrue(operation.ToContext.Equals(new Uri("ex:toCtx")));
         Assert.IsTrue(operation.IsSilent);
-        Assert.IsTrue(string.Equals(operation.ToString(), "LOAD SILENT <ex:fromCtx> INTO GRAPH <ex:toCtx>"));
+        Assert.IsTrue(string.Equals(operation.ToString(), "LOAD SILENT <ex:fromCtx> INTO GRAPH <ex:toCtx>", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -133,9 +133,9 @@ public class RDFLoadOperationTest
         Assert.IsTrue(result.InsertResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.InsertResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(1, result.InsertResultsCount);
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:obj", StringComparison.Ordinal));
         Assert.IsNotNull(result.DeleteResults);
         Assert.AreEqual(0, result.DeleteResults.Columns.Count);
         Assert.AreEqual(0, result.DeleteResultsCount);
@@ -180,9 +180,9 @@ public class RDFLoadOperationTest
         Assert.IsTrue(result.InsertResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.InsertResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(1, result.InsertResultsCount);
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:obj", StringComparison.Ordinal));
         Assert.IsNotNull(result.DeleteResults);
         Assert.AreEqual(0, result.DeleteResults.Columns.Count);
         Assert.AreEqual(0, result.DeleteResultsCount);
@@ -228,10 +228,10 @@ public class RDFLoadOperationTest
         Assert.IsTrue(result.InsertResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.InsertResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(1, result.InsertResultsCount);
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:obj", StringComparison.Ordinal));
         Assert.IsNotNull(result.DeleteResults);
         Assert.AreEqual(0, result.DeleteResults.Columns.Count);
         Assert.AreEqual(0, result.DeleteResultsCount);
@@ -262,10 +262,10 @@ public class RDFLoadOperationTest
         Assert.IsTrue(result.InsertResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.InsertResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(1, result.InsertResultsCount);
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), $"{RDFNamespaceRegister.DefaultNamespace}"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), $"{RDFNamespaceRegister.DefaultNamespace}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:obj", StringComparison.Ordinal));
         Assert.IsNotNull(result.DeleteResults);
         Assert.AreEqual(0, result.DeleteResults.Columns.Count);
         Assert.AreEqual(0, result.DeleteResultsCount);
@@ -311,10 +311,10 @@ public class RDFLoadOperationTest
         Assert.IsTrue(result.InsertResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.InsertResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(1, result.InsertResultsCount);
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:obj", StringComparison.Ordinal));
         Assert.IsNotNull(result.DeleteResults);
         Assert.AreEqual(0, result.DeleteResults.Columns.Count);
         Assert.AreEqual(0, result.DeleteResultsCount);
@@ -345,10 +345,10 @@ public class RDFLoadOperationTest
         Assert.IsTrue(result.InsertResults.Columns.Contains("?PREDICATE"));
         Assert.IsTrue(result.InsertResults.Columns.Contains("?OBJECT"));
         Assert.AreEqual(1, result.InsertResultsCount);
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), $"{RDFNamespaceRegister.DefaultNamespace}"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred"));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:obj"));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), $"{RDFNamespaceRegister.DefaultNamespace}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:subj", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), "ex:pred", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:obj", StringComparison.Ordinal));
         Assert.IsNotNull(result.DeleteResults);
         Assert.AreEqual(0, result.DeleteResults.Columns.Count);
         Assert.AreEqual(0, result.DeleteResultsCount);

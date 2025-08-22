@@ -49,11 +49,11 @@ namespace RDFSharp.Query
             => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder(32); //Initial capacity=32 seems a good tradeoff for medium length of this expression
 
             //L
             sb.Append(LeftArgument is RDFTypedLiteral tlLeftArgument && tlLeftArgument.HasDecimalDatatype()
-                        ? tlLeftArgument.Value.ToString(CultureInfo.InvariantCulture)
+                        ? tlLeftArgument.Value
                         : RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
 
             return sb.ToString();

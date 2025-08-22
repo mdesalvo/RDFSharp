@@ -36,8 +36,8 @@ public class RDFLangMatchesExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(LANGMATCHES(LANG((?V1 + ?V2)),\"en-US--ltr\"))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(LANGMATCHES(LANG((?V1 + ?V2)),\"en-US--ltr\"))"));
+        Assert.IsTrue(expression.ToString().Equals("(LANGMATCHES(LANG((?V1 + ?V2)),\"en-US--ltr\"))", StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(LANGMATCHES(LANG((?V1 + ?V2)),\"en-US--ltr\"))", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -50,8 +50,8 @@ public class RDFLangMatchesExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(LANGMATCHES(LANG((?V1 + ?V2)),?L))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(LANGMATCHES(LANG((?V1 + ?V2)),?L))"));
+        Assert.IsTrue(expression.ToString().Equals("(LANGMATCHES(LANG((?V1 + ?V2)),?L))", StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(LANGMATCHES(LANG((?V1 + ?V2)),?L))", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -64,8 +64,8 @@ public class RDFLangMatchesExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(LANGMATCHES(LANG(?L),(?V1 + ?V2)))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(LANGMATCHES(LANG(?L),(?V1 + ?V2)))"));
+        Assert.IsTrue(expression.ToString().Equals("(LANGMATCHES(LANG(?L),(?V1 + ?V2)))", StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(LANGMATCHES(LANG(?L),(?V1 + ?V2)))", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -78,8 +78,8 @@ public class RDFLangMatchesExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(LANGMATCHES(LANG(?L),?V1))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(LANGMATCHES(LANG(?L),?V1))"));
+        Assert.IsTrue(expression.ToString().Equals("(LANGMATCHES(LANG(?L),?V1))", StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(LANGMATCHES(LANG(?L),?V1))", StringComparison.Ordinal));
     }
 
     [TestMethod]

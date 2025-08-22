@@ -48,7 +48,7 @@ namespace RDFSharp.Query
             => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder(16); //Initial capacity=16 seems a good tradeoff for medium length of this expression
 
             //(ABS(L))
             sb.Append("(ABS(");

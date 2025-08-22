@@ -34,8 +34,8 @@ public class RDFAbsExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(ABS((?V1 + ?V2)))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(ABS((?V1 + ?V2)))"));
+        Assert.IsTrue(expression.ToString().Equals("(ABS((?V1 + ?V2)))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(ABS((?V1 + ?V2)))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -47,8 +47,8 @@ public class RDFAbsExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(ABS(?V1))"));
-        Assert.IsTrue(expression.ToString([]).Equals("(ABS(?V1))"));
+        Assert.IsTrue(expression.ToString().Equals("(ABS(?V1))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(ABS(?V1))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

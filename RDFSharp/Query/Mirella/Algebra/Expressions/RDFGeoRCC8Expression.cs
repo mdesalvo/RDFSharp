@@ -121,7 +121,7 @@ namespace RDFSharp.Query
             => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder(32); //Initial capacity=32 seems a good tradeoff for medium length of this expression
 
             //(geof:rcc8*(L,R))
             sb.Append($"({RDFQueryPrinter.PrintPatternMember(GetRCC8Function(), prefixes)}(");

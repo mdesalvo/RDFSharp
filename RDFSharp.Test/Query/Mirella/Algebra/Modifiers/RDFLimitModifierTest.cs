@@ -34,7 +34,7 @@ public class RDFLimitModifierTest
         Assert.IsNotNull(modifier);
         Assert.AreEqual(25, modifier.Limit);
         Assert.IsFalse(modifier.IsEvaluable);
-        Assert.IsTrue(modifier.ToString().Equals("LIMIT 25"));
+        Assert.IsTrue(modifier.ToString().Equals("LIMIT 25", StringComparison.Ordinal));
         Assert.IsNotNull(modifier.QueryMemberStringID);
         Assert.IsTrue(modifier.QueryMemberID.Equals(RDFModelUtilities.CreateHash(modifier.QueryMemberStringID)));
         Assert.IsTrue(modifier.Equals(modifier));
@@ -78,10 +78,10 @@ public class RDFLimitModifierTest
         Assert.IsTrue(limitedTable.Columns.Contains("?B"));
         Assert.IsTrue(limitedTable.Columns.Contains("?C"));
         Assert.AreEqual(1, limitedTable.Rows.Count);
-        Assert.IsTrue(limitedTable.Rows[0]["?A"].ToString().Equals(new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString()));
-        Assert.IsTrue(limitedTable.Rows[0]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en-US").ToString()));
-        Assert.IsTrue(limitedTable.Rows[0]["?C"].ToString().Equals(new RDFResource("ex:value0").ToString()));
-        Assert.IsTrue(limitedTable.DefaultView.Sort.Equals("?A DESC"));
+        Assert.IsTrue(limitedTable.Rows[0]["?A"].ToString().Equals(new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(limitedTable.Rows[0]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en-US").ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(limitedTable.Rows[0]["?C"].ToString().Equals(new RDFResource("ex:value0").ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(limitedTable.DefaultView.Sort.Equals("?A DESC", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -117,7 +117,7 @@ public class RDFLimitModifierTest
         Assert.IsTrue(limitedTable.Columns.Contains("?B"));
         Assert.IsTrue(limitedTable.Columns.Contains("?C"));
         Assert.AreEqual(0, limitedTable.Rows.Count);
-        Assert.IsTrue(limitedTable.DefaultView.Sort.Equals("?A DESC"));
+        Assert.IsTrue(limitedTable.DefaultView.Sort.Equals("?A DESC", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -138,7 +138,7 @@ public class RDFLimitModifierTest
         Assert.IsTrue(limitedTable.Columns.Contains("?B"));
         Assert.IsTrue(limitedTable.Columns.Contains("?C"));
         Assert.AreEqual(0, limitedTable.Rows.Count);
-        Assert.IsTrue(limitedTable.DefaultView.Sort.Equals("?A DESC"));
+        Assert.IsTrue(limitedTable.DefaultView.Sort.Equals("?A DESC", StringComparison.Ordinal));
     }
     #endregion
 }

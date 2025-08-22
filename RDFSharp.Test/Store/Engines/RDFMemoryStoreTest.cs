@@ -36,7 +36,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore();
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.StoreType.Equals("MEMORY"));
+        Assert.IsTrue(store.StoreType.Equals("MEMORY", StringComparison.Ordinal));
         Assert.IsNotNull(store.Index);
         Assert.IsNotNull(store.Index.Hashes);
         Assert.AreEqual(0, store.QuadruplesCount);
@@ -49,7 +49,7 @@ public class RDFMemoryStoreTest
         Assert.IsEmpty(store.Index.IDXObjects);
         Assert.IsEmpty(store.Index.IDXLiterals);
         Assert.IsTrue(store.StoreID.Equals(RDFModelUtilities.CreateHash(store.ToString())));
-        Assert.IsTrue(store.ToString().Equals($"MEMORY|ID={store.StoreGUID}"));
+        Assert.IsTrue(store.ToString().Equals($"MEMORY|ID={store.StoreGUID}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -62,7 +62,7 @@ public class RDFMemoryStoreTest
         ]);
 
         Assert.IsNotNull(store);
-        Assert.IsTrue(store.StoreType.Equals("MEMORY"));
+        Assert.IsTrue(store.StoreType.Equals("MEMORY", StringComparison.Ordinal));
         Assert.IsNotNull(store.Index);
         Assert.IsNotNull(store.Index.Hashes);
         Assert.AreEqual(2, store.QuadruplesCount);
@@ -75,7 +75,7 @@ public class RDFMemoryStoreTest
         Assert.HasCount(1, store.Index.IDXObjects);
         Assert.HasCount(1, store.Index.IDXLiterals);
         Assert.IsTrue(store.StoreID.Equals(RDFModelUtilities.CreateHash(store.ToString())));
-        Assert.IsTrue(store.ToString().Equals($"MEMORY|ID={store.StoreGUID}"));
+        Assert.IsTrue(store.ToString().Equals($"MEMORY|ID={store.StoreGUID}", StringComparison.Ordinal));
 
         int i = store.Count();
         Assert.AreEqual(2, i);
@@ -1090,19 +1090,19 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(table);
         Assert.AreEqual(4, table.Columns.Count);
-        Assert.IsTrue(table.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(table.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(table.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(table.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(table.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.AreEqual(2, table.Rows.Count);
-        Assert.IsTrue(table.Rows[0]["?CONTEXT"].ToString().Equals("http://ctx/"));
-        Assert.IsTrue(table.Rows[0]["?SUBJECT"].ToString().Equals("http://subj/"));
-        Assert.IsTrue(table.Rows[0]["?PREDICATE"].ToString().Equals("http://pred/"));
-        Assert.IsTrue(table.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
-        Assert.IsTrue(table.Rows[1]["?CONTEXT"].ToString().Equals("http://ctx/"));
-        Assert.IsTrue(table.Rows[1]["?SUBJECT"].ToString().Equals("http://subj/"));
-        Assert.IsTrue(table.Rows[1]["?PREDICATE"].ToString().Equals("http://pred/"));
-        Assert.IsTrue(table.Rows[1]["?OBJECT"].ToString().Equals("http://obj/"));
+        Assert.IsTrue(table.Rows[0]["?CONTEXT"].ToString().Equals("http://ctx/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[0]["?SUBJECT"].ToString().Equals("http://subj/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[0]["?PREDICATE"].ToString().Equals("http://pred/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?CONTEXT"].ToString().Equals("http://ctx/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?SUBJECT"].ToString().Equals("http://subj/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?PREDICATE"].ToString().Equals("http://pred/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?OBJECT"].ToString().Equals("http://obj/", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1113,10 +1113,10 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(table);
         Assert.AreEqual(4, table.Columns.Count);
-        Assert.IsTrue(table.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(table.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(table.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(table.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(table.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.AreEqual(0, table.Rows.Count);
     }
 
@@ -2630,19 +2630,19 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(table);
         Assert.AreEqual(4, table.Columns.Count);
-        Assert.IsTrue(table.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(table.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(table.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(table.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(table.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.AreEqual(2, table.Rows.Count);
-        Assert.IsTrue(table.Rows[0]["?CONTEXT"].ToString().Equals("http://ctx/"));
-        Assert.IsTrue(table.Rows[0]["?SUBJECT"].ToString().Equals("http://subj/"));
-        Assert.IsTrue(table.Rows[0]["?PREDICATE"].ToString().Equals("http://pred/"));
-        Assert.IsTrue(table.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
-        Assert.IsTrue(table.Rows[1]["?CONTEXT"].ToString().Equals("http://ctx/"));
-        Assert.IsTrue(table.Rows[1]["?SUBJECT"].ToString().Equals("http://subj/"));
-        Assert.IsTrue(table.Rows[1]["?PREDICATE"].ToString().Equals("http://pred/"));
-        Assert.IsTrue(table.Rows[1]["?OBJECT"].ToString().Equals("http://obj/"));
+        Assert.IsTrue(table.Rows[0]["?CONTEXT"].ToString().Equals("http://ctx/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[0]["?SUBJECT"].ToString().Equals("http://subj/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[0]["?PREDICATE"].ToString().Equals("http://pred/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?CONTEXT"].ToString().Equals("http://ctx/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?SUBJECT"].ToString().Equals("http://subj/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?PREDICATE"].ToString().Equals("http://pred/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?OBJECT"].ToString().Equals("http://obj/", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -2653,10 +2653,10 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(table);
         Assert.AreEqual(4, table.Columns.Count);
-        Assert.IsTrue(table.Columns[0].ColumnName.Equals("?CONTEXT"));
-        Assert.IsTrue(table.Columns[1].ColumnName.Equals("?SUBJECT"));
-        Assert.IsTrue(table.Columns[2].ColumnName.Equals("?PREDICATE"));
-        Assert.IsTrue(table.Columns[3].ColumnName.Equals("?OBJECT"));
+        Assert.IsTrue(table.Columns[0].ColumnName.Equals("?CONTEXT", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[1].ColumnName.Equals("?SUBJECT", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
+        Assert.IsTrue(table.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.AreEqual(0, table.Rows.Count);
     }
 

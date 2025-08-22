@@ -43,7 +43,7 @@ public class RDFGroupByModifierTest
         Assert.IsTrue(modifier.Aggregators[0].ProjectionVariable.Equals(variable));
         Assert.IsTrue(modifier.Aggregators[0].AggregatorVariable.Equals(variable));
         Assert.IsTrue(modifier.IsEvaluable);
-        Assert.IsTrue(modifier.ToString().Equals("GROUP BY ?VAR"));
+        Assert.IsTrue(modifier.ToString().Equals("GROUP BY ?VAR", StringComparison.Ordinal));
         Assert.IsNotNull(modifier.QueryMemberStringID);
         Assert.IsTrue(modifier.QueryMemberID.Equals(RDFModelUtilities.CreateHash(modifier.QueryMemberStringID)));
         Assert.IsTrue(modifier.Equals(modifier));
@@ -85,7 +85,7 @@ public class RDFGroupByModifierTest
         Assert.IsTrue(modifier.Aggregators[1].AggregatorVariable.Equals(variable2));
         Assert.IsTrue(modifier.Aggregators[1].ProjectionVariable.Equals(variable3));
         Assert.IsTrue(modifier.IsEvaluable);
-        Assert.IsTrue(modifier.ToString().Equals("GROUP BY ?VAR1"));
+        Assert.IsTrue(modifier.ToString().Equals("GROUP BY ?VAR1", StringComparison.Ordinal));
         Assert.IsNotNull(modifier.QueryMemberStringID);
         Assert.IsTrue(modifier.QueryMemberID.Equals(RDFModelUtilities.CreateHash(modifier.QueryMemberStringID)));
         Assert.IsTrue(modifier.Equals(modifier));
@@ -230,8 +230,8 @@ public class RDFGroupByModifierTest
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual(2, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
-        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -272,7 +272,7 @@ public class RDFGroupByModifierTest
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual("?C", result.Columns[0].ColumnName);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value0"));
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value0", StringComparison.Ordinal));
     }
     #endregion
 }

@@ -311,7 +311,7 @@ public class RDFQueryEngineTest
             }
             ORDER BY ASC(?X)
 
-            """));
+            """, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -351,7 +351,7 @@ public class RDFQueryEngineTest
               }
             }
 
-            """));
+            """, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -693,7 +693,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
         Assert.AreEqual(1, result.SelectResultsCount);
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -709,7 +709,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
         Assert.AreEqual(1, result.SelectResultsCount);
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -743,7 +743,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
         Assert.AreEqual(1, result.SelectResultsCount);
-        Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals(new RDFTypedLiteral("7", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString()));
+        Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals(new RDFTypedLiteral("7", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString(), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -762,7 +762,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
         Assert.AreEqual(1, result.SelectResultsCount);
-        Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals(new RDFTypedLiteral("21.5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString()));
+        Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals(new RDFTypedLiteral("21.5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString(), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -781,7 +781,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
         Assert.AreEqual(1, result.SelectResultsCount);
-        Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals(">0.50") || result.SelectResults.Rows[0]["?Y"].ToString().Equals("<=0.50"));
+        Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals(">0.50", StringComparison.Ordinal) || result.SelectResults.Rows[0]["?Y"].ToString().Equals("<=0.50", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -813,7 +813,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
         Assert.AreEqual(1, result.SelectResultsCount);
-        Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals($"3^^{RDFVocabulary.XSD.DOUBLE}"));
+        Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals($"3^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -831,7 +831,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
         Assert.AreEqual(1, result.SelectResultsCount);
-        Assert.IsTrue(result.SelectResults.Rows[0]["?Z"].ToString().Equals($"4^^{RDFVocabulary.XSD.DOUBLE}"));
+        Assert.IsTrue(result.SelectResults.Rows[0]["?Z"].ToString().Equals($"4^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -849,8 +849,8 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(2, result.SelectResults.Columns.Count);
         Assert.AreEqual(1, result.SelectResultsCount);
-        Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals($"3^^{RDFVocabulary.XSD.DOUBLE}"));
-        Assert.IsTrue(result.SelectResults.Rows[0]["?Z"].ToString().Equals($"4^^{RDFVocabulary.XSD.DOUBLE}"));
+        Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals($"3^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
+        Assert.IsTrue(result.SelectResults.Rows[0]["?Z"].ToString().Equals($"4^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -887,14 +887,14 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(4, result.SelectResults.Columns.Count);
         Assert.AreEqual(2, result.SelectResultsCount);
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), "Donald Duck@EN-US"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:paperoga"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?C"].ToString(), "white"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:paperoga"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?C"].ToString(), "white"));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:paperoga", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?C"].ToString(), "white", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:paperoga", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?C"].ToString(), "white", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -931,22 +931,22 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(4, result.SelectResults.Columns.Count);
         Assert.AreEqual(4, result.SelectResultsCount);
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), "Donald Duck@EN-US"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:linus"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?C"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:paperoga"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?C"].ToString(), "white"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), "Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:linus"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?C"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?N"].ToString(), "Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?Y"].ToString(), "ex:paperoga"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?C"].ToString(), "white"));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:linus", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?C"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:paperoga", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?C"].ToString(), "white", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:linus", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?C"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?Y"].ToString(), "ex:paperoga", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[3]["?C"].ToString(), "white", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1087,7 +1087,7 @@ public class RDFQueryEngineTest
             }
             ORDER BY ASC(?X)
 
-            """));
+            """, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1156,15 +1156,15 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(3, result.SelectResults.Columns.Count);
         Assert.AreEqual(3, result.SelectResultsCount);
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), "Donald Duck@EN-US"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), string.Empty));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), string.Empty, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1718,18 +1718,18 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(3, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
 
         string qString = query.ToString();
         Assert.IsNotNull(receivedQuery1);
-        Assert.IsTrue(string.Equals(receivedQuery1, $"?query={HttpUtility.UrlEncode(qString)}"));
+        Assert.IsTrue(string.Equals(receivedQuery1, $"?query={HttpUtility.UrlEncode(qString)}", StringComparison.Ordinal));
         Assert.IsNotNull(receivedQuery2);
-        Assert.IsTrue(string.Equals(receivedQuery2, $"query={HttpUtility.UrlEncode(qString)}"));
+        Assert.IsTrue(string.Equals(receivedQuery2, $"query={HttpUtility.UrlEncode(qString)}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1850,16 +1850,16 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(2, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
 
         string qString = query.ToString();
         Assert.IsNotNull(receivedQuery1);
-        Assert.IsTrue(string.Equals(receivedQuery1, $"?query={HttpUtility.UrlEncode(qString)}"));
+        Assert.IsTrue(string.Equals(receivedQuery1, $"?query={HttpUtility.UrlEncode(qString)}", StringComparison.Ordinal));
         Assert.IsNotNull(receivedQuery2);
-        Assert.IsTrue(string.Equals(receivedQuery2, string.Empty));
+        Assert.IsTrue(string.Equals(receivedQuery2, string.Empty, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -2052,7 +2052,7 @@ public class RDFQueryEngineTest
 
         //Proves that the pattern group has been sent as an equivalent SELECT * to the given endpoint
         Assert.IsNotNull(receivedQuery);
-        Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery), expectedQuery));
+        Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery), expectedQuery, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -2154,7 +2154,7 @@ public class RDFQueryEngineTest
 
         //Proves that the pattern group has been sent as an equivalent SELECT * to the given endpoint
         Assert.IsNotNull(receivedQuery);
-        Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery), expectedQuery));
+        Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery), expectedQuery, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -2239,7 +2239,7 @@ public class RDFQueryEngineTest
 
         //Proves that the pattern group has been sent as an equivalent SELECT * to the given endpoint
         Assert.IsNotNull(receivedQuery);
-        Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery), expectedQuery));
+        Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery), expectedQuery, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -2372,9 +2372,9 @@ public class RDFQueryEngineTest
 
         //Proves that the pattern groups have been sent as equivalent SELECT * to the given endpoints
         Assert.IsNotNull(receivedQuery1);
-        Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery1), expectedQuery1));
+        Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery1), expectedQuery1, StringComparison.Ordinal));
         Assert.IsNotNull(receivedQuery2);
-        Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery2), expectedQuery2));
+        Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery2), expectedQuery2, StringComparison.Ordinal));
     }
 
     //DESCRIBE QUERY
@@ -2403,12 +2403,12 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result.DescribeResults);
         Assert.AreEqual(3, result.DescribeResults.Columns.Count);
         Assert.AreEqual(2, result.DescribeResultsCount);
-        Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.DescribeResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.DescribeResults.Rows[1]["?PREDICATE"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.DescribeResults.Rows[1]["?OBJECT"].ToString(), "ex:paperino"));
+        Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DescribeResults.Rows[0]["?OBJECT"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DescribeResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DescribeResults.Rows[1]["?PREDICATE"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.DescribeResults.Rows[1]["?OBJECT"].ToString(), "ex:paperino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -2723,12 +2723,12 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result.ConstructResults);
         Assert.AreEqual(3, result.ConstructResults.Columns.Count);
         Assert.AreEqual(2, result.ConstructResultsCount);
-        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[0]["?OBJECT"].ToString(), "ex:dog"));
-        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[1]["?OBJECT"].ToString(), "ex:dog"));
+        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[0]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[1]["?SUBJECT"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[1]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -2755,9 +2755,9 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result.ConstructResults);
         Assert.AreEqual(3, result.ConstructResults.Columns.Count);
         Assert.AreEqual(1, result.ConstructResultsCount);
-        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[0]["?OBJECT"].ToString(), "ex:dog"));
+        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[0]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -2902,19 +2902,19 @@ public class RDFQueryEngineTest
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Columns.Count);
         Assert.AreEqual(2, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows.Count);
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(),"ex:pluto"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?X"].ToString(),"ex:topolino"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?N"].ToString(),"Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?Y"].ToString(),"ex:fido"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?X"].ToString(),"ex:paperino"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(),"Donald Duck@EN-US"));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(1).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(1).Value.ExtendedProperties[RDFQueryEngine.IsOptional]);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(1).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(1).Value.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(1).Value.Columns.Count);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows.Count);
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows[0]["?Y"].ToString(),"ex:pluto"));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -2953,19 +2953,19 @@ public class RDFQueryEngineTest
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Columns.Count);
         Assert.AreEqual(2, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows.Count);
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(),"ex:pluto"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?X"].ToString(),"ex:topolino"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?N"].ToString(),"Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?Y"].ToString(),"ex:fido"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?X"].ToString(),"ex:paperino"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(),"Donald Duck@EN-US"));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(1).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(1).Value.ExtendedProperties[RDFQueryEngine.IsOptional]);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(1).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
         Assert.IsTrue((bool)queryEngine.QueryMemberResultTables.ElementAt(1).Value.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(1).Value.Columns.Count);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows.Count);
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows[0]["?Y"].ToString(),"ex:pluto"));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -3004,19 +3004,19 @@ public class RDFQueryEngineTest
         Assert.IsTrue((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Columns.Count);
         Assert.AreEqual(2, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows.Count);
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(),"ex:pluto"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?X"].ToString(),"ex:topolino"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?N"].ToString(),"Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?Y"].ToString(),"ex:fido"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?X"].ToString(),"ex:paperino"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(),"Donald Duck@EN-US"));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(1).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsTrue((bool)queryEngine.QueryMemberResultTables.ElementAt(1).Value.ExtendedProperties[RDFQueryEngine.IsOptional]);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(1).Value.ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(1).Value.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(1).Value.Columns.Count);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows.Count);
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows[0]["?Y"].ToString(),"ex:pluto"));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -3059,7 +3059,7 @@ public class RDFQueryEngineTest
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(1).Value.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(1).Value.Columns.Count);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows.Count);
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows[0]["?Y"].ToString(),"ex:pluto"));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -3089,22 +3089,22 @@ public class RDFQueryEngineTest
         Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
         Assert.AreEqual(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
         Assert.AreEqual(3, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows.Count);
-        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?Y"].ToString(),"ex:pluto"));
-        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?X"].ToString(),"ex:topolino"));
-        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[1]["?Y"].ToString(),"ex:fido"));
-        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[1]["?X"].ToString(),"ex:paperino"));
-        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[2]["?Y"].ToString(),"ex:balto"));
-        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[2]["?X"].ToString(),"ex:whoever"));
+        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].ExtendedProperties[RDFQueryEngine.IsOptional]);
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
         Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
         Assert.AreEqual(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].Columns.Count);
         Assert.AreEqual(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].Rows.Count);
-        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].Rows[0]["?X"].ToString(),"ex:topolino"));
-        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].Rows[0]["?N"].ToString(),"Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].Rows[1]["?X"].ToString(),"ex:paperino"));
-        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].Rows[1]["?N"].ToString(),"Donald Duck@EN-US"));
+        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].Rows[1]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -3168,10 +3168,10 @@ public class RDFQueryEngineTest
         Assert.IsFalse(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
         Assert.AreEqual(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
         Assert.AreEqual(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows.Count);
-        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?Y"].ToString(),"ex:pluto"));
-        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?N"].ToString(),"Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[1]["?Y"].ToString(),"ex:fido"));
-        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[1]["?N"].ToString(),"Donald Duck@EN-US"));
+        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[1]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -3228,7 +3228,7 @@ public class RDFQueryEngineTest
         Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows.Count);
-        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?Y"].ToString(),"ex:pluto"));
+        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
         Assert.IsTrue(patternGroup.GetFilters().Single() is RDFValuesFilter);
     }
 
@@ -3258,7 +3258,7 @@ public class RDFQueryEngineTest
         Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows.Count);
-        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?Y"].ToString(), string.Empty));
+        Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?Y"].ToString(), string.Empty, StringComparison.Ordinal));
         Assert.IsTrue(patternGroup.GetFilters().Single() is RDFValuesFilter);
     }
 
@@ -3292,12 +3292,12 @@ public class RDFQueryEngineTest
         Assert.IsFalse((bool)existsFilter.PatternResults.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
         Assert.AreEqual(2, existsFilter.PatternResults.Columns.Count);
         Assert.AreEqual(3, existsFilter.PatternResults.Rows.Count);
-        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -3360,15 +3360,15 @@ public class RDFQueryEngineTest
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Columns.Count);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows.Count);
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?X"].ToString(), "ex:whoever"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?N"].ToString(), string.Empty));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?N"].ToString(), string.Empty, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -3400,15 +3400,15 @@ public class RDFQueryEngineTest
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Columns.Count);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows.Count);
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?X"].ToString(), "ex:whoever"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?N"].ToString(), string.Empty));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?N"].ToString(), string.Empty, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -3440,15 +3440,15 @@ public class RDFQueryEngineTest
         Assert.IsTrue((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Columns.Count);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows.Count);
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?X"].ToString(), "ex:whoever"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?N"].ToString(), string.Empty));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?N"].ToString(), string.Empty, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -3484,9 +3484,9 @@ public class RDFQueryEngineTest
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Columns.Count);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows.Count);
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -3520,10 +3520,10 @@ public class RDFQueryEngineTest
 
         Assert.AreEqual(2, resultTable.Columns.Count);
         Assert.AreEqual(2, resultTable.Rows.Count);
-        Assert.IsTrue(string.Equals(resultTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(resultTable.Rows[0]["?SAMPLE_X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(resultTable.Rows[1]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(resultTable.Rows[1]["?SAMPLE_X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(resultTable.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(resultTable.Rows[0]["?SAMPLE_X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(resultTable.Rows[1]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(resultTable.Rows[1]["?SAMPLE_X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -3560,15 +3560,15 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(filledTable);
         Assert.AreEqual(3, filledTable.Columns.Count);
         Assert.AreEqual(3, filledTable.Rows.Count);
-        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?SUBJECT"].ToString(), "ex:bracco"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?OBJECT"].ToString(), "ex:dog"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?SUBJECT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?OBJECT"].ToString(), "ex:dog"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?SUBJECT"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?OBJECT"].ToString(), "ex:dog"));
+        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?SUBJECT"].ToString(), "ex:bracco", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?SUBJECT"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -3605,18 +3605,18 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(filledTable);
         Assert.AreEqual(4, filledTable.Columns.Count);
         Assert.AreEqual(3, filledTable.Rows.Count);
-        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?CONTEXT"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?SUBJECT"].ToString(), "ex:bracco"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?OBJECT"].ToString(), "ex:dog"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?CONTEXT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?SUBJECT"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?OBJECT"].ToString(), "ex:dog"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?CONTEXT"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?SUBJECT"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}"));
-        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?OBJECT"].ToString(), "ex:dog"));
+        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?SUBJECT"].ToString(), "ex:bracco", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?CONTEXT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?CONTEXT"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?SUBJECT"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4230,12 +4230,12 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(3, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4256,12 +4256,12 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(3, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4282,12 +4282,12 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(3, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4306,12 +4306,12 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(3, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4338,12 +4338,12 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(3, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4364,7 +4364,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4385,7 +4385,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4406,7 +4406,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4427,7 +4427,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "Mickey Mouse@EN-US"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4448,8 +4448,8 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4470,7 +4470,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4491,12 +4491,12 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(3, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4517,7 +4517,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4538,8 +4538,8 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4560,7 +4560,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4601,7 +4601,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4622,7 +4622,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4643,7 +4643,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4664,7 +4664,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4685,7 +4685,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4706,7 +4706,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "Mickey Mouse@EN-US"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4727,8 +4727,8 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4749,7 +4749,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4770,8 +4770,8 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4792,7 +4792,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4813,8 +4813,8 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4835,7 +4835,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4856,8 +4856,8 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4878,9 +4878,9 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(3, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4901,7 +4901,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4922,15 +4922,15 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(3, result.Columns.Count);
         Assert.AreEqual(3, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?C"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?C"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4951,7 +4951,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4972,9 +4972,9 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(3, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?P"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -4995,7 +4995,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5036,7 +5036,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5057,8 +5057,8 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5079,7 +5079,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5100,12 +5100,12 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(3, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5126,7 +5126,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5147,8 +5147,8 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5169,7 +5169,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?V"].ToString(), "ex:dogOf", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5210,7 +5210,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1, result.Columns.Count);
         Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5238,12 +5238,12 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(3, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5271,12 +5271,12 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(3, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5304,12 +5304,12 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(3, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5369,12 +5369,12 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(3, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:whoever"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[2]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5396,10 +5396,10 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
         Assert.AreEqual(2, result.Rows.Count);
-        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[1]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
     }
 
     //MIRELLA TABLES
@@ -5424,7 +5424,7 @@ public class RDFQueryEngineTest
         RDFQueryEngine.AddColumn(table, "?COL");
 
         Assert.AreEqual(1, table.Columns.Count);
-        Assert.IsTrue(string.Equals(table.Columns[0].ColumnName, "?COL"));
+        Assert.IsTrue(string.Equals(table.Columns[0].ColumnName, "?COL", StringComparison.Ordinal));
         Assert.IsTrue(table.Columns[0].DataType == typeof(string));
     }
 
@@ -5442,8 +5442,8 @@ public class RDFQueryEngineTest
         RDFQueryEngine.AddRow(table, bindings);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?X"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5474,7 +5474,7 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.S, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5490,7 +5490,7 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.P, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5506,7 +5506,7 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.O, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5523,8 +5523,8 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SP, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5541,8 +5541,8 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SO, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5559,8 +5559,8 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.PO, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5578,9 +5578,9 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SPO, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5597,7 +5597,7 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.C, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5614,7 +5614,7 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.S, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5631,7 +5631,7 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.P, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5648,7 +5648,7 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.O, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5666,8 +5666,8 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CS, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5685,8 +5685,8 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CP, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5704,8 +5704,8 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CO, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5723,8 +5723,8 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.SP, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5742,8 +5742,8 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.SO, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5761,8 +5761,8 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.PO, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5781,9 +5781,9 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CSP, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5802,9 +5802,9 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CSO, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5823,9 +5823,9 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CPO, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5844,9 +5844,9 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.SPO, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5866,10 +5866,10 @@ public class RDFQueryEngineTest
         RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CSPO, table);
 
         Assert.AreEqual(1, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf"));
-        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino"));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -5904,10 +5904,10 @@ public class RDFQueryEngineTest
         Assert.IsTrue(joinTable.Columns.Contains("?Z"));
         Assert.IsTrue(joinTable.Columns.Contains("?N"));
         Assert.AreEqual(1, joinTable.Rows.Count);
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Z"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Z"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6018,9 +6018,9 @@ public class RDFQueryEngineTest
         Assert.IsTrue(joinTable.Columns.Contains("?X"));
         Assert.IsTrue(joinTable.Columns.Contains("?N"));
         Assert.AreEqual(1, joinTable.Rows.Count);
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6195,9 +6195,9 @@ public class RDFQueryEngineTest
         Assert.IsTrue(joinTable.Columns.Contains("?X"));
         Assert.IsTrue(joinTable.Columns.Contains("?N"));
         Assert.AreEqual(1, joinTable.Rows.Count);
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6231,9 +6231,9 @@ public class RDFQueryEngineTest
         Assert.IsTrue(joinTable.Columns.Contains("?X"));
         Assert.IsTrue(joinTable.Columns.Contains("?N"));
         Assert.AreEqual(1, joinTable.Rows.Count);
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6267,9 +6267,9 @@ public class RDFQueryEngineTest
         Assert.IsTrue(joinTable.Columns.Contains("?X"));
         Assert.IsTrue(joinTable.Columns.Contains("?N"));
         Assert.AreEqual(1, joinTable.Rows.Count);
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6303,9 +6303,9 @@ public class RDFQueryEngineTest
         Assert.IsTrue(joinTable.Columns.Contains("?X"));
         Assert.IsTrue(joinTable.Columns.Contains("?N"));
         Assert.AreEqual(1, joinTable.Rows.Count);
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6340,9 +6340,9 @@ public class RDFQueryEngineTest
         Assert.IsTrue(joinTable.Columns.Contains("?X"));
         Assert.IsTrue(joinTable.Columns.Contains("?N"));
         Assert.AreEqual(1, joinTable.Rows.Count);
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), "ex:minnie"));
-        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?X"].ToString(), "ex:minnie", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(joinTable.Rows[0]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6486,8 +6486,8 @@ public class RDFQueryEngineTest
         Assert.IsTrue(diffTable.Columns.Contains("?Y"));
         Assert.IsTrue(diffTable.Columns.Contains("?X"));
         Assert.AreEqual(1, diffTable.Rows.Count);
-        Assert.IsTrue(string.Equals(diffTable.Rows[0]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(diffTable.Rows[0]["?X"].ToString(), "ex:gastone"));
+        Assert.IsTrue(string.Equals(diffTable.Rows[0]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(diffTable.Rows[0]["?X"].ToString(), "ex:gastone", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6521,10 +6521,10 @@ public class RDFQueryEngineTest
         Assert.IsTrue(diffTable.Columns.Contains("?Y"));
         Assert.IsTrue(diffTable.Columns.Contains("?X"));
         Assert.AreEqual(2, diffTable.Rows.Count);
-        Assert.IsTrue(string.Equals(diffTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(diffTable.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(diffTable.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(diffTable.Rows[1]["?X"].ToString(), "ex:gastone"));
+        Assert.IsTrue(string.Equals(diffTable.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(diffTable.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(diffTable.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(diffTable.Rows[1]["?X"].ToString(), "ex:gastone", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6578,10 +6578,10 @@ public class RDFQueryEngineTest
         Assert.IsTrue(diffTable.Columns.Contains("?Y"));
         Assert.IsTrue(diffTable.Columns.Contains("?X"));
         Assert.AreEqual(2, diffTable.Rows.Count);
-        Assert.IsTrue(string.Equals(diffTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(diffTable.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(diffTable.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(diffTable.Rows[1]["?X"].ToString(), "ex:gastone"));
+        Assert.IsTrue(string.Equals(diffTable.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(diffTable.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(diffTable.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(diffTable.Rows[1]["?X"].ToString(), "ex:gastone", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6627,18 +6627,18 @@ public class RDFQueryEngineTest
         Assert.IsTrue(combineTable.Columns.Contains("?N"));
         Assert.IsTrue(combineTable.Columns.Contains("?Q"));
         Assert.AreEqual(3, combineTable.Rows.Count);
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Y"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(combineTable.Rows[1]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(combineTable.Rows[1]["?N"].ToString(), "Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(combineTable.Rows[2]["?X"].ToString(), "ex:minnie"));
-        Assert.IsTrue(string.Equals(combineTable.Rows[2]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Y"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[1]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[1]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[2]["?X"].ToString(), "ex:minnie", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[2]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[2]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6679,14 +6679,14 @@ public class RDFQueryEngineTest
         Assert.IsTrue(combineTable.Columns.Contains("?N"));
         Assert.IsTrue(combineTable.Columns.Contains("?Q"));
         Assert.AreEqual(2, combineTable.Rows.Count);
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(combineTable.Rows[1]["?X"].ToString(), "ex:minnie"));
-        Assert.IsTrue(string.Equals(combineTable.Rows[1]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[1]["?X"].ToString(), "ex:minnie", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[1]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[1]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6731,10 +6731,10 @@ public class RDFQueryEngineTest
         Assert.IsTrue(combineTable.Columns.Contains("?N"));
         Assert.IsTrue(combineTable.Columns.Contains("?Q"));
         Assert.AreEqual(1, combineTable.Rows.Count);
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), "ex:minnie"));
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), "ex:minnie", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6769,9 +6769,9 @@ public class RDFQueryEngineTest
         Assert.IsTrue(combineTable.Columns.Contains("?X"));
         Assert.IsTrue(combineTable.Columns.Contains("?N"));
         Assert.AreEqual(1, combineTable.Rows.Count);
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), "ex:minnie"));
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), "ex:minnie", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6872,10 +6872,10 @@ public class RDFQueryEngineTest
         Assert.IsTrue(combineTable.Columns.Contains("?N"));
         Assert.IsTrue(combineTable.Columns.Contains("?Q"));
         Assert.AreEqual(1, combineTable.Rows.Count);
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), "Pluto@IT"));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(combineTable.Rows[0]["?Q"].ToString(), "Pluto@IT", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6905,15 +6905,15 @@ public class RDFQueryEngineTest
         Assert.IsTrue(result.SelectResults.Columns.Contains("?N"));
         Assert.AreEqual(2, result.SelectResults.Columns["?N"].Ordinal);
         Assert.AreEqual(3, result.SelectResults.Rows.Count);
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6940,9 +6940,9 @@ public class RDFQueryEngineTest
         Assert.IsTrue(result.SelectResults.Columns.Contains("?X"));
         Assert.AreEqual(0, result.SelectResults.Columns["?X"].Ordinal);
         Assert.AreEqual(3, result.SelectResults.Rows.Count);
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6969,9 +6969,9 @@ public class RDFQueryEngineTest
         Assert.IsTrue(result.SelectResults.Columns.Contains("?Q"));
         Assert.AreEqual(0, result.SelectResults.Columns["?Q"].Ordinal);
         Assert.AreEqual(3, result.SelectResults.Rows.Count);
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -7001,12 +7001,12 @@ public class RDFQueryEngineTest
         Assert.IsTrue(result.SelectResults.Columns.Contains("?Q"));
         Assert.AreEqual(1, result.SelectResults.Columns["?Q"].Ordinal);
         Assert.AreEqual(3, result.SelectResults.Rows.Count);
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Q"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -7040,12 +7040,12 @@ public class RDFQueryEngineTest
         Assert.IsTrue(result.SelectResults.Columns.Contains("?X"));
         Assert.AreEqual(1, result.SelectResults.Columns["?X"].Ordinal);
         Assert.AreEqual(3, result.SelectResults.Rows.Count);
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -7080,12 +7080,12 @@ public class RDFQueryEngineTest
         Assert.IsTrue(result.SelectResults.Columns.Contains("?X"));
         Assert.AreEqual(1, result.SelectResults.Columns["?X"].Ordinal);
         Assert.AreEqual(3, result.SelectResults.Rows.Count);
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -7115,9 +7115,9 @@ public class RDFQueryEngineTest
         Assert.IsTrue(result.SelectResults.Columns.Contains("?N"));
         Assert.AreEqual(0, result.SelectResults.Columns["?N"].Ordinal);
         Assert.AreEqual(3, result.SelectResults.Rows.Count);
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Donald Duck@EN-US"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -7163,9 +7163,9 @@ public class RDFQueryEngineTest
         Assert.AreEqual(5, table.Columns.Count);
         Assert.IsTrue(table.Columns.Contains("?AGEX2"));
         Assert.AreEqual(3, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?AGEX2"].ToString(), $"170^^{RDFVocabulary.XSD.DOUBLE}"));
-        Assert.IsTrue(string.Equals(table.Rows[1]["?AGEX2"].ToString(), $"166^^{RDFVocabulary.XSD.DOUBLE}"));
-        Assert.IsTrue(string.Equals(table.Rows[2]["?AGEX2"].ToString(), string.Empty));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?AGEX2"].ToString(), $"170^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[1]["?AGEX2"].ToString(), $"166^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[2]["?AGEX2"].ToString(), string.Empty, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -7210,9 +7210,9 @@ public class RDFQueryEngineTest
         Assert.AreEqual(5, table.Columns.Count);
         Assert.IsTrue(table.Columns.Contains("?AGEX2"));
         Assert.AreEqual(3, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?AGEX2"].ToString(), string.Empty));
-        Assert.IsTrue(string.Equals(table.Rows[1]["?AGEX2"].ToString(), string.Empty));
-        Assert.IsTrue(string.Equals(table.Rows[2]["?AGEX2"].ToString(), string.Empty));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?AGEX2"].ToString(), string.Empty, StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[1]["?AGEX2"].ToString(), string.Empty, StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[2]["?AGEX2"].ToString(), string.Empty, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -7285,12 +7285,12 @@ public class RDFQueryEngineTest
         Assert.IsTrue(result.SelectResults.Columns.Contains("?AGEX2"));
         Assert.AreEqual(1, result.SelectResults.Columns["?AGEX2"].Ordinal);
         Assert.AreEqual(3, result.SelectResults.Rows.Count);
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -7326,18 +7326,18 @@ public class RDFQueryEngineTest
         Assert.IsTrue(result.SelectResults.Columns.Contains("?AGEX4PLUS1"));
         Assert.AreEqual(3, result.SelectResults.Columns["?AGEX4PLUS1"].Ordinal);
         Assert.AreEqual(3, result.SelectResults.Rows.Count);
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4"].ToString(), "340^^http://www.w3.org/2001/XMLSchema#double"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4PLUS1"].ToString(), "341^^http://www.w3.org/2001/XMLSchema#double"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX4"].ToString(), "332^^http://www.w3.org/2001/XMLSchema#double"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX4PLUS1"].ToString(), "333^^http://www.w3.org/2001/XMLSchema#double"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX4"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX4PLUS1"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4"].ToString(), "340^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4PLUS1"].ToString(), "341^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX4"].ToString(), "332^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX4PLUS1"].ToString(), "333^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX4"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX4PLUS1"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -7360,9 +7360,9 @@ public class RDFQueryEngineTest
         Assert.IsTrue(result.SelectResults.Columns.Contains("?AGEX4"));
         Assert.AreEqual(2, result.SelectResults.Columns["?AGEX4"].Ordinal);
         Assert.AreEqual(1, result.SelectResults.Rows.Count);
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "2^^http://www.w3.org/2001/XMLSchema#integer"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "4^^http://www.w3.org/2001/XMLSchema#double"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4"].ToString(), "8^^http://www.w3.org/2001/XMLSchema#double"));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "2^^http://www.w3.org/2001/XMLSchema#integer", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "4^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4"].ToString(), "8^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -7400,15 +7400,15 @@ public class RDFQueryEngineTest
         Assert.IsTrue(result.SelectResults.Columns.Contains("?X"));
         Assert.AreEqual(2, result.SelectResults.Columns["?X"].Ordinal);
         Assert.AreEqual(3, result.SelectResults.Rows.Count);
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -7449,18 +7449,18 @@ public class RDFQueryEngineTest
         Assert.IsTrue(result.SelectResults.Columns.Contains("?X"));
         Assert.AreEqual(3, result.SelectResults.Columns["?X"].Ordinal);
         Assert.AreEqual(3, result.SelectResults.Rows.Count);
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4"].ToString(), "340^^http://www.w3.org/2001/XMLSchema#double"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX4"].ToString(), "332^^http://www.w3.org/2001/XMLSchema#double"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto"));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX4"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture)));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever"));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4"].ToString(), "340^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX4"].ToString(), "332^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX2"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?AGEX4"].ToString(), DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
     #endregion
 }

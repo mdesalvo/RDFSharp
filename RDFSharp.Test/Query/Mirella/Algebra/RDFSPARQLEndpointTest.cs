@@ -34,7 +34,7 @@ public class RDFSPARQLEndpointTest
         Assert.IsTrue(sparqlEndpoint.BaseAddress.Equals(new Uri("http://sparql/query")));
         Assert.IsNotNull(sparqlEndpoint.QueryParams);
         Assert.AreEqual(0, sparqlEndpoint.QueryParams.Count);
-        Assert.IsTrue(sparqlEndpoint.ToString().Equals("http://sparql/query"));
+        Assert.IsTrue(sparqlEndpoint.ToString().Equals("http://sparql/query", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -52,9 +52,9 @@ public class RDFSPARQLEndpointTest
         Assert.IsTrue(sparqlEndpoint.BaseAddress.Equals(new Uri("http://sparql/query")));
         Assert.IsNotNull(sparqlEndpoint.QueryParams);
         Assert.AreEqual(2, sparqlEndpoint.QueryParams.Count);
-        Assert.IsTrue(sparqlEndpoint.QueryParams["default-graph-uri"].Equals("http://ex1.org/"));
-        Assert.IsTrue(sparqlEndpoint.QueryParams["named-graph-uri"].Equals("http://ex2.org/"));
-        Assert.IsTrue(sparqlEndpoint.ToString().Equals("http://sparql/query"));
+        Assert.IsTrue(sparqlEndpoint.QueryParams["default-graph-uri"].Equals("http://ex1.org/", StringComparison.Ordinal));
+        Assert.IsTrue(sparqlEndpoint.QueryParams["named-graph-uri"].Equals("http://ex2.org/", StringComparison.Ordinal));
+        Assert.IsTrue(sparqlEndpoint.ToString().Equals("http://sparql/query", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -68,9 +68,9 @@ public class RDFSPARQLEndpointTest
         Assert.IsTrue(sparqlEndpoint.BaseAddress.Equals(new Uri("http://sparql/query")));
         Assert.IsNotNull(sparqlEndpoint.QueryParams);
         Assert.AreEqual(0, sparqlEndpoint.QueryParams.Count);
-        Assert.IsTrue(string.Equals(sparqlEndpoint.ToString(), "http://sparql/query"));
+        Assert.IsTrue(string.Equals(sparqlEndpoint.ToString(), "http://sparql/query", StringComparison.Ordinal));
         Assert.AreEqual(RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Basic, sparqlEndpoint.AuthorizationType);
-        Assert.IsTrue(string.Equals(sparqlEndpoint.AuthorizationValue, authHeaderValue));
+        Assert.IsTrue(string.Equals(sparqlEndpoint.AuthorizationValue, authHeaderValue, StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -83,9 +83,9 @@ public class RDFSPARQLEndpointTest
         Assert.IsTrue(sparqlEndpoint.BaseAddress.Equals(new Uri("http://sparql/query")));
         Assert.IsNotNull(sparqlEndpoint.QueryParams);
         Assert.AreEqual(0, sparqlEndpoint.QueryParams.Count);
-        Assert.IsTrue(string.Equals(sparqlEndpoint.ToString(), "http://sparql/query"));
+        Assert.IsTrue(string.Equals(sparqlEndpoint.ToString(), "http://sparql/query", StringComparison.Ordinal));
         Assert.AreEqual(RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Bearer, sparqlEndpoint.AuthorizationType);
-        Assert.IsTrue(string.Equals(sparqlEndpoint.AuthorizationValue, "vF9dft4qmT"));
+        Assert.IsTrue(string.Equals(sparqlEndpoint.AuthorizationValue, "vF9dft4qmT", StringComparison.Ordinal));
     }
 
     [TestMethod]

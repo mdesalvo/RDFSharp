@@ -31,7 +31,7 @@ public class RDFContextTest
         RDFContext ctx = new RDFContext();
 
         Assert.IsNotNull(ctx);
-        Assert.IsTrue(ctx.ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
+        Assert.IsTrue(ctx.ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString(), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -40,7 +40,7 @@ public class RDFContextTest
         RDFContext ctx = new RDFContext("ex:context");
 
         Assert.IsNotNull(ctx);
-        Assert.IsTrue(ctx.ToString().Equals("ex:context"));
+        Assert.IsTrue(ctx.ToString().Equals("ex:context", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -61,7 +61,7 @@ public class RDFContextTest
         RDFContext ctx = new RDFContext(new Uri("ex:context"));
 
         Assert.IsNotNull(ctx);
-        Assert.IsTrue(ctx.ToString().Equals("ex:context"));
+        Assert.IsTrue(ctx.ToString().Equals("ex:context", StringComparison.Ordinal));
     }
 
     [TestMethod]

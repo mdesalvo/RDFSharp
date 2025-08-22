@@ -37,7 +37,7 @@ public class RDFPlainLiteralTest
         Assert.IsNotNull(pl);
         Assert.IsFalse(pl.HasLanguage());
         Assert.IsFalse(pl.HasDirection());
-        Assert.IsTrue(pl.ToString().Equals(value ?? ""));
+        Assert.IsTrue(pl.ToString().Equals(value ?? "", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -66,7 +66,7 @@ public class RDFPlainLiteralTest
         Assert.IsNotNull(pl);
         Assert.IsFalse(pl.HasLanguage());
         Assert.IsFalse(pl.HasDirection());
-        Assert.IsTrue(pl.ToString().Equals(value ?? ""));
+        Assert.IsTrue(pl.ToString().Equals(value ?? "", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -84,7 +84,7 @@ public class RDFPlainLiteralTest
         Assert.IsNotNull(pl);
         Assert.IsTrue(pl.HasLanguage());
         Assert.IsFalse(pl.HasDirection());
-        Assert.IsTrue(pl.ToString().Equals($"{value}@{language.ToUpperInvariant()}"));
+        Assert.IsTrue(pl.ToString().Equals($"{value}@{language.ToUpperInvariant()}", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -104,7 +104,7 @@ public class RDFPlainLiteralTest
         Assert.IsNotNull(pl);
         Assert.IsTrue(pl.HasLanguage());
         Assert.IsTrue(pl.HasDirection());
-        Assert.IsTrue(pl.ToString().Equals($"{value}@{language.ToUpperInvariant()}"));
+        Assert.IsTrue(pl.ToString().Equals($"{value}@{language.ToUpperInvariant()}", System.StringComparison.Ordinal));
     }
     #endregion
 }

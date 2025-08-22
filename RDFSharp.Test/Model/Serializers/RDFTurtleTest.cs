@@ -34,7 +34,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeEmptyGraph.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeEmptyGraph.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -46,7 +46,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> <http://obj/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> <http://obj/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -58,7 +58,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingRegisteredNamespaceInSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingRegisteredNamespaceInSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> <http://obj/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> <http://obj/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -70,7 +70,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt <http://obj/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt <http://obj/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -82,7 +82,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a <http://obj/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a <http://obj/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -94,7 +94,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingRegisteredNamespaceInObject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingRegisteredNamespaceInObject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> rdf:Alt. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> rdf:Alt. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -106,7 +106,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingMultipleRegisteredNamespacesSO.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingMultipleRegisteredNamespacesSO.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> xsd:string. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> xsd:string. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -118,7 +118,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingMultipleRegisteredNamespacesSP.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingMultipleRegisteredNamespacesSP.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt xsd:string <http://obj/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt xsd:string <http://obj/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -130,7 +130,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingMultipleRegisteredNamespacesPO.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingMultipleRegisteredNamespacesPO.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt xsd:string. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt xsd:string. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -142,7 +142,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingMultipleRegisteredNamespacesSPO.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingMultipleRegisteredNamespacesSPO.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix foaf: <{RDFVocabulary.FOAF.BASE_URI}>.{Environment.NewLine}@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}foaf:age rdf:Alt xsd:string. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix foaf: <{RDFVocabulary.FOAF.BASE_URI}>.{Environment.NewLine}@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}foaf:age rdf:Alt xsd:string. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -154,7 +154,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingMultipleRegisteredNamespacesSPOAndTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTripleUsingMultipleRegisteredNamespacesSPOAndTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix foaf: <{RDFVocabulary.FOAF.BASE_URI}>.{Environment.NewLine}@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}foaf:age a xsd:string. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix foaf: <{RDFVocabulary.FOAF.BASE_URI}>.{Environment.NewLine}@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}foaf:age a xsd:string. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -166,7 +166,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> _:12345. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> _:12345. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -178,7 +178,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTripleUsingRegisteredNamespaceInSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTripleUsingRegisteredNamespaceInSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> _:12345. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> _:12345. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -190,7 +190,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTripleUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTripleUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt _:12345. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt _:12345. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -202,7 +202,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTripleUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTripleUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a _:12345. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a _:12345. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -214,7 +214,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTripleUsingMultipleRegisteredNamespacesSP.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTripleUsingMultipleRegisteredNamespacesSP.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt xsd:string _:12345. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt xsd:string _:12345. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -226,7 +226,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTripleUsingMultipleRegisteredNamespacesSPAndTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTripleUsingMultipleRegisteredNamespacesSPAndTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix foaf: <{RDFVocabulary.FOAF.BASE_URI}>.{Environment.NewLine}@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}foaf:age a _:12345. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix foaf: <{RDFVocabulary.FOAF.BASE_URI}>.{Environment.NewLine}@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}foaf:age a _:12345. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -238,7 +238,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> <http://obj/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> <http://obj/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -250,7 +250,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTripleUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTripleUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt <http://obj/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt <http://obj/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -262,7 +262,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTripleUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTripleUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a <http://obj/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a <http://obj/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -274,7 +274,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTripleUsingRegisteredNamespaceInObject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTripleUsingRegisteredNamespaceInObject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> rdf:Alt. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> rdf:Alt. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -286,7 +286,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTripleUsingMultipleRegisteredNamespacesPO.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTripleUsingMultipleRegisteredNamespacesPO.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt xsd:string. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt xsd:string. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -298,7 +298,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTripleUsingMultipleRegisteredNamespacesPOAndTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTripleUsingMultipleRegisteredNamespacesPOAndTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a xsd:string. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a xsd:string. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -310,7 +310,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> _:12345. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> _:12345. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -322,7 +322,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTripleUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTripleUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt _:12345. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt _:12345. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -334,7 +334,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTripleUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTripleUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a _:12345. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a _:12345. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -346,7 +346,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"lit\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"lit\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -358,7 +358,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLQuotedTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLQuotedTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"\"\"li\"t\"\"\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"\"\"li\"t\"\"\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -370,7 +370,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLEscapedTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLEscapedTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"li\\\\t\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"li\\\\t\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -382,7 +382,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTripleUsingRegisteredNamespaceInSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTripleUsingRegisteredNamespaceInSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> \"lit\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> \"lit\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -394,7 +394,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTripleUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTripleUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"lit\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"lit\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -406,7 +406,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTripleUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTripleUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a \"lit\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a \"lit\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -418,7 +418,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTripleUsingMultipleRegisteredNamespacesSP.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTripleUsingMultipleRegisteredNamespacesSP.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt xsd:string \"lit\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt xsd:string \"lit\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -430,7 +430,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTripleUsingLongLiteral.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTripleUsingLongLiteral.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"\"\"What a \"long literal\"\"\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"\"\"What a \"long literal\"\"\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -442,7 +442,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"lit\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"lit\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -454,7 +454,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLDirectionedTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLDirectionedTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"lit\"@EN-US--LTR. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"lit\"@EN-US--LTR. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -466,7 +466,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLQuotedTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLQuotedTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"\"\"li\"t\"\"\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"\"\"li\"t\"\"\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -478,7 +478,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLEscapedTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLEscapedTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"li\\\\t\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"li\\\\t\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -490,7 +490,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTripleUsingRegisteredNamespaceInSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTripleUsingRegisteredNamespaceInSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> \"lit\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> \"lit\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -502,7 +502,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTripleUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTripleUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"lit\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"lit\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -514,7 +514,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTripleUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTripleUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a \"lit\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a \"lit\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -526,7 +526,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTripleUsingMultipleRegisteredNamespacesSP.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTripleUsingMultipleRegisteredNamespacesSP.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt xsd:string \"lit\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt xsd:string \"lit\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -538,7 +538,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTripleUsingLongLiteral.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTripleUsingLongLiteral.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"\"\"What a \"long literal\"\"\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"\"\"What a \"long literal\"\"\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -550,7 +550,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"25\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"25\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -562,7 +562,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTQuotedTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTQuotedTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"\"\"li\"t\"\"\"^^xsd:string. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"\"\"li\"t\"\"\"^^xsd:string. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -574,7 +574,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTEscapedTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTEscapedTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"li\\\\t\"^^xsd:string. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"li\\\\t\"^^xsd:string. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -586,7 +586,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTripleUsingRegisteredNamespaceInSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTripleUsingRegisteredNamespaceInSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> \"25\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> \"25\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -598,7 +598,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTripleUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTripleUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"25\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"25\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -610,7 +610,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTripleUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTripleUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a \"25\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a \"25\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -622,7 +622,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTripleUsingMultipleRegisteredNamespacesSP.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTripleUsingMultipleRegisteredNamespacesSP.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt xsd:string \"25\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt xsd:string \"25\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -634,7 +634,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTripleUsingLongLiteral.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTripleUsingLongLiteral.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"\"\"What a \"long literal\"\"\"^^xsd:string. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"\"\"What a \"long literal\"\"\"^^xsd:string. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -646,7 +646,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"lit\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"lit\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -658,7 +658,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLQuotedTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLQuotedTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"\"\"li\"t\"\"\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"\"\"li\"t\"\"\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -670,7 +670,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLEscapedTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLEscapedTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"li\\\\t\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"li\\\\t\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -682,7 +682,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTripleUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTripleUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -694,7 +694,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTripleUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTripleUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a \"lit\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a \"lit\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -706,7 +706,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"lit\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"lit\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -718,7 +718,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLDirectionedTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLDirectionedTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"lit\"@EN-US--RTL. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"lit\"@EN-US--RTL. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -730,7 +730,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLQuotedTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLQuotedTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"\"\"li\"t\"\"\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"\"\"li\"t\"\"\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -742,7 +742,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLEscapedTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLEscapedTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"li\\\\t\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"li\\\\t\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -754,7 +754,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTripleUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTripleUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -766,7 +766,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTripleUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTripleUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a \"lit\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a \"lit\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -778,7 +778,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"25\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"25\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -790,7 +790,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTQuotedTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTQuotedTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"\"\"li\"t\"\"\"^^xsd:string. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"\"\"li\"t\"\"\"^^xsd:string. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -802,7 +802,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTEscapedTriple.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTEscapedTriple.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"li\\\\t\"^^xsd:string. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"li\\\\t\"^^xsd:string. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -814,7 +814,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTripleUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTripleUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"25\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"25\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -826,7 +826,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTripleUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTripleUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a \"25\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a \"25\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -839,7 +839,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred1/> <http://obj1/>; {Environment.NewLine}{" ",15}<http://pred2/> <http://obj2/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred1/> <http://obj1/>; {Environment.NewLine}{" ",15}<http://pred2/> <http://obj2/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -852,7 +852,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndUsingRegisteredNamespaceInSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndUsingRegisteredNamespaceInSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred1/> <http://obj1/>; {Environment.NewLine}{" ",8}<http://pred2/> <http://obj2/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred1/> <http://obj1/>; {Environment.NewLine}{" ",8}<http://pred2/> <http://obj2/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -865,7 +865,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt <http://obj1/>; {Environment.NewLine}{" ",15}rdf:Bag <http://obj2/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt <http://obj1/>; {Environment.NewLine}{" ",15}rdf:Bag <http://obj2/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -878,7 +878,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Bag <http://obj2/>; {Environment.NewLine}{" ",15}a <http://obj1/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Bag <http://obj2/>; {Environment.NewLine}{" ",15}a <http://obj1/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -891,7 +891,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt <http://obj1/>; {Environment.NewLine}{" ",15}a <http://obj2/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt <http://obj1/>; {Environment.NewLine}{" ",15}a <http://obj2/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -904,7 +904,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndUsingRegisteredNamespaceInObject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndUsingRegisteredNamespaceInObject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred1/> rdf:Alt; {Environment.NewLine}{" ",15}<http://pred2/> rdf:Alt. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred1/> rdf:Alt; {Environment.NewLine}{" ",15}<http://pred2/> rdf:Alt. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -917,7 +917,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred1/> _:12345; {Environment.NewLine}{" ",15}<http://pred2/> _:54321. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred1/> _:12345; {Environment.NewLine}{" ",15}<http://pred2/> _:54321. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -930,7 +930,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubjectAndUsingRegisteredNamespaceInSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubjectAndUsingRegisteredNamespaceInSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred1/> _:12345; {Environment.NewLine}{" ",8}<http://pred2/> _:54321. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred1/> _:12345; {Environment.NewLine}{" ",8}<http://pred2/> _:54321. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -943,7 +943,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt _:12345; {Environment.NewLine}{" ",15}rdf:Bag _:54321. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt _:12345; {Environment.NewLine}{" ",15}rdf:Bag _:54321. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -956,7 +956,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Bag _:54321; {Environment.NewLine}{" ",15}a _:12345. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Bag _:54321; {Environment.NewLine}{" ",15}a _:12345. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -969,7 +969,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt _:12345; {Environment.NewLine}{" ",15}a _:54321. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt _:12345; {Environment.NewLine}{" ",15}a _:54321. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -982,7 +982,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> <http://obj1/>; {Environment.NewLine}{" ",8}<http://pred2/> <http://obj2/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> <http://obj1/>; {Environment.NewLine}{" ",8}<http://pred2/> <http://obj2/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -995,7 +995,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt <http://obj1/>; {Environment.NewLine}{" ",8}rdf:Bag <http://obj2/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt <http://obj1/>; {Environment.NewLine}{" ",8}rdf:Bag <http://obj2/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1008,7 +1008,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Bag <http://obj2/>; {Environment.NewLine}{" ",8}a <http://obj1/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Bag <http://obj2/>; {Environment.NewLine}{" ",8}a <http://obj1/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1021,7 +1021,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt <http://obj1/>; {Environment.NewLine}{" ",8}a <http://obj2/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt <http://obj1/>; {Environment.NewLine}{" ",8}a <http://obj2/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1034,7 +1034,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndUsingRegisteredNamespaceInObject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndUsingRegisteredNamespaceInObject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> rdf:Alt; {Environment.NewLine}{" ",8}<http://pred2/> rdf:Alt. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> rdf:Alt; {Environment.NewLine}{" ",8}<http://pred2/> rdf:Alt. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1047,7 +1047,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriplesHavingSameSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriplesHavingSameSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> _:12345; {Environment.NewLine}{" ",8}<http://pred2/> _:54321. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> _:12345; {Environment.NewLine}{" ",8}<http://pred2/> _:54321. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1060,7 +1060,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt _:12345; {Environment.NewLine}{" ",8}rdf:Bag _:54321. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt _:12345; {Environment.NewLine}{" ",8}rdf:Bag _:54321. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1073,7 +1073,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Bag _:54321; {Environment.NewLine}{" ",8}a _:12345. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Bag _:54321; {Environment.NewLine}{" ",8}a _:12345. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1086,7 +1086,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt _:12345; {Environment.NewLine}{" ",8}a _:54321. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt _:12345; {Environment.NewLine}{" ",8}a _:54321. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1099,7 +1099,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred1/> \"lit\"; {Environment.NewLine}{" ",15}<http://pred2/> \"lit2\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred1/> \"lit\"; {Environment.NewLine}{" ",15}<http://pred2/> \"lit2\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1112,7 +1112,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred1/> \"lit\"; {Environment.NewLine}{" ",8}<http://pred2/> \"lit2\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred1/> \"lit\"; {Environment.NewLine}{" ",8}<http://pred2/> \"lit2\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1125,7 +1125,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"lit\"; {Environment.NewLine}{" ",15}rdf:Bag \"lit2\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"lit\"; {Environment.NewLine}{" ",15}rdf:Bag \"lit2\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1138,7 +1138,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Bag \"lit2\"; {Environment.NewLine}{" ",15}a \"lit\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Bag \"lit2\"; {Environment.NewLine}{" ",15}a \"lit\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1151,7 +1151,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"lit\"; {Environment.NewLine}{" ",15}a \"lit2\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"lit\"; {Environment.NewLine}{" ",15}a \"lit2\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1164,7 +1164,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred1/> \"lit\"@EN-US; {Environment.NewLine}{" ",15}<http://pred2/> \"lit2\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred1/> \"lit\"@EN-US; {Environment.NewLine}{" ",15}<http://pred2/> \"lit2\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1177,7 +1177,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred1/> \"lit\"@EN-US; {Environment.NewLine}{" ",8}<http://pred2/> \"lit2\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred1/> \"lit\"@EN-US; {Environment.NewLine}{" ",8}<http://pred2/> \"lit2\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1190,7 +1190,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"lit\"@EN-US; {Environment.NewLine}{" ",15}rdf:Bag \"lit2\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"lit\"@EN-US; {Environment.NewLine}{" ",15}rdf:Bag \"lit2\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1203,7 +1203,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Bag \"lit2\"@EN-US; {Environment.NewLine}{" ",15}a \"lit\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Bag \"lit2\"@EN-US; {Environment.NewLine}{" ",15}a \"lit\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1216,7 +1216,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"lit\"@EN-US; {Environment.NewLine}{" ",15}a \"lit2\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"lit\"@EN-US; {Environment.NewLine}{" ",15}a \"lit2\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1229,7 +1229,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred1/> \"25\"^^xsd:integer; {Environment.NewLine}{" ",15}<http://pred2/> \"25\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred1/> \"25\"^^xsd:integer; {Environment.NewLine}{" ",15}<http://pred2/> \"25\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1242,7 +1242,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubjectAndUsingRegisteredNamespaceInSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubjectAndUsingRegisteredNamespaceInSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred1/> \"25\"^^xsd:integer; {Environment.NewLine}{" ",8}<http://pred2/> \"25\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred1/> \"25\"^^xsd:integer; {Environment.NewLine}{" ",8}<http://pred2/> \"25\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1255,7 +1255,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}{" ",15}rdf:Bag \"25\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}{" ",15}rdf:Bag \"25\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1268,7 +1268,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Bag \"25\"^^xsd:integer; {Environment.NewLine}{" ",15}a \"25\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Bag \"25\"^^xsd:integer; {Environment.NewLine}{" ",15}a \"25\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1281,7 +1281,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}{" ",15}a \"25\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}{" ",15}a \"25\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1294,7 +1294,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> \"lit\"; {Environment.NewLine}{" ",8}<http://pred2/> \"lit2\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> \"lit\"; {Environment.NewLine}{" ",8}<http://pred2/> \"lit2\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1307,7 +1307,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\"; {Environment.NewLine}{" ",8}rdf:Bag \"lit2\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\"; {Environment.NewLine}{" ",8}rdf:Bag \"lit2\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1320,7 +1320,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Bag \"lit2\"; {Environment.NewLine}{" ",8}a \"lit\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Bag \"lit2\"; {Environment.NewLine}{" ",8}a \"lit\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1333,7 +1333,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\"; {Environment.NewLine}{" ",8}a \"lit2\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\"; {Environment.NewLine}{" ",8}a \"lit2\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1346,7 +1346,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> \"lit\"@EN-US; {Environment.NewLine}{" ",8}<http://pred2/> \"lit2\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> \"lit\"@EN-US; {Environment.NewLine}{" ",8}<http://pred2/> \"lit2\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1359,7 +1359,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\"@EN-US; {Environment.NewLine}{" ",8}rdf:Bag \"lit2\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\"@EN-US; {Environment.NewLine}{" ",8}rdf:Bag \"lit2\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1372,7 +1372,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Bag \"lit2\"@EN-US; {Environment.NewLine}{" ",8}a \"lit\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Bag \"lit2\"@EN-US; {Environment.NewLine}{" ",8}a \"lit\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1385,7 +1385,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\"@EN-US; {Environment.NewLine}{" ",8}a \"lit2\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\"@EN-US; {Environment.NewLine}{" ",8}a \"lit2\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1398,7 +1398,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> \"25\"^^xsd:integer; {Environment.NewLine}{" ",8}<http://pred2/> \"25\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> \"25\"^^xsd:integer; {Environment.NewLine}{" ",8}<http://pred2/> \"25\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1411,7 +1411,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}{" ",8}rdf:Bag \"25\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}{" ",8}rdf:Bag \"25\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1424,7 +1424,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Bag \"25\"^^xsd:integer; {Environment.NewLine}{" ",8}a \"25\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Bag \"25\"^^xsd:integer; {Environment.NewLine}{" ",8}a \"25\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1437,7 +1437,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}{" ",8}a \"25\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}{" ",8}a \"25\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1450,7 +1450,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> <http://obj1/>, <http://obj2/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> <http://obj1/>, <http://obj2/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1463,7 +1463,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> <http://obj1/>, <http://obj2/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> <http://obj1/>, <http://obj2/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1476,7 +1476,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt <http://obj1/>, <http://obj2/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt <http://obj1/>, <http://obj2/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1489,7 +1489,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a <http://obj1/>, <http://obj2/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a <http://obj1/>, <http://obj2/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1502,7 +1502,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInObject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInObject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> rdf:Alt, rdf:Bag. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> rdf:Alt, rdf:Bag. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1515,7 +1515,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubjectAndPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubjectAndPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> _:12345, _:54321. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> _:12345, _:54321. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1528,7 +1528,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> _:12345, _:54321. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> _:12345, _:54321. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1541,7 +1541,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt _:12345, _:54321. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt _:12345, _:54321. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1554,7 +1554,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a _:12345, _:54321. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a _:12345, _:54321. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1567,7 +1567,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> <http://obj1/>, <http://obj2/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> <http://obj1/>, <http://obj2/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1580,7 +1580,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt <http://obj1/>, <http://obj2/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt <http://obj1/>, <http://obj2/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1593,7 +1593,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a <http://obj1/>, <http://obj2/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a <http://obj1/>, <http://obj2/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1606,7 +1606,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriplesHavingSameSubjectAndPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriplesHavingSameSubjectAndPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> _:12345, _:54321. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> _:12345, _:54321. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1619,7 +1619,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt _:12345, _:54321. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt _:12345, _:54321. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1632,7 +1632,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a _:12345, _:54321. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a _:12345, _:54321. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1645,7 +1645,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubjectAndPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubjectAndPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"lit\", \"lit2\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"lit\", \"lit2\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1658,7 +1658,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> \"lit\", \"lit2\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> \"lit\", \"lit2\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1671,7 +1671,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"lit\", \"lit2\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"lit\", \"lit2\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1684,7 +1684,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a \"lit\", \"lit2\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a \"lit\", \"lit2\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1697,7 +1697,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubjectAndPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubjectAndPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"lit\"@EN-US, \"lit2\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"lit\"@EN-US, \"lit2\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1710,7 +1710,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> \"lit\"@EN-US, \"lit2\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> \"lit\"@EN-US, \"lit2\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1723,7 +1723,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"lit\"@EN-US, \"lit2\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"lit\"@EN-US, \"lit2\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1736,7 +1736,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLLTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a \"lit\"@EN-US, \"lit2\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a \"lit\"@EN-US, \"lit2\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1749,7 +1749,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubjectAndPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubjectAndPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"25\"^^xsd:integer, \"26\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"25\"^^xsd:integer, \"26\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1762,7 +1762,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInSubject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInSubject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> \"25\"^^xsd:integer, \"26\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt <http://pred/> \"25\"^^xsd:integer, \"26\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1775,7 +1775,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"25\"^^xsd:integer, \"26\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"25\"^^xsd:integer, \"26\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1788,7 +1788,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPLTTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a \"25\"^^xsd:integer, \"26\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a \"25\"^^xsd:integer, \"26\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1801,7 +1801,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"lit\", \"lit2\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"lit\", \"lit2\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1814,7 +1814,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\", \"lit2\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\", \"lit2\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1827,7 +1827,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a \"lit\", \"lit2\". {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a \"lit\", \"lit2\". {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1840,7 +1840,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"lit\"@EN-US, \"lit2\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"lit\"@EN-US, \"lit2\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1853,7 +1853,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\"@EN-US, \"lit2\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\"@EN-US, \"lit2\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1866,7 +1866,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a \"lit\"@EN-US, \"lit2\"@EN-US. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a \"lit\"@EN-US, \"lit2\"@EN-US. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1879,7 +1879,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"25\"^^xsd:integer, \"26\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> \"25\"^^xsd:integer, \"26\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1892,7 +1892,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"25\"^^xsd:integer, \"26\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"25\"^^xsd:integer, \"26\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1905,7 +1905,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a \"25\"^^xsd:integer, \"26\"^^xsd:integer. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a \"25\"^^xsd:integer, \"26\"^^xsd:integer. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1920,7 +1920,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingMultipleSameSubjectAndPredicates.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingMultipleSameSubjectAndPredicates.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}{Environment.NewLine}<http://subj1/> <http://pred1/> <http://obj1/>, <http://obj2/>; {Environment.NewLine}{" ",16}<http://pred2/> <http://obj2/>. {Environment.NewLine}<http://subj2/> <http://pred1/> <http://obj1/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}{Environment.NewLine}<http://subj1/> <http://pred1/> <http://obj1/>, <http://obj2/>; {Environment.NewLine}{" ",16}<http://pred2/> <http://obj2/>. {Environment.NewLine}<http://subj2/> <http://pred1/> <http://obj1/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1935,7 +1935,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingMultipleSameSubjectAndPredicates.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPBTriplesHavingMultipleSameSubjectAndPredicates.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}{Environment.NewLine}<http://subj1/> <http://pred1/> _:12345, _:54321; {Environment.NewLine}{" ",16}<http://pred2/> _:12345. {Environment.NewLine}<http://subj2/> <http://pred1/> _:12345. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}{Environment.NewLine}<http://subj1/> <http://pred1/> _:12345, _:54321; {Environment.NewLine}{" ",16}<http://pred2/> _:12345. {Environment.NewLine}<http://subj2/> <http://pred1/> _:12345. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1950,7 +1950,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingMultipleSameSubjectAndPredicates.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingMultipleSameSubjectAndPredicates.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> <http://obj1/>, <http://obj2/>; {Environment.NewLine}{" ",8}<http://pred2/> <http://obj2/>. {Environment.NewLine}_:54321 <http://pred1/> <http://obj1/>. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> <http://obj1/>, <http://obj2/>; {Environment.NewLine}{" ",8}<http://pred2/> <http://obj2/>. {Environment.NewLine}_:54321 <http://pred1/> <http://obj1/>. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1965,7 +1965,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriplesHavingMultipleSameSubjectAndPredicates.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithBPBTriplesHavingMultipleSameSubjectAndPredicates.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> _:12345, _:54321; {Environment.NewLine}{" ",8}<http://pred2/> _:12345. {Environment.NewLine}_:54321 <http://pred1/> _:12345. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> _:12345, _:54321; {Environment.NewLine}{" ",8}<http://pred2/> _:12345. {Environment.NewLine}_:54321 <http://pred1/> _:12345. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1983,7 +1983,7 @@ public class RDFTurtleTest
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingMixedCollectionInObject.ttl")));
         string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingMixedCollectionInObject.ttl"));
-        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:first \"item1\"; {Environment.NewLine}{" ",8}rdf:rest _:54321; {Environment.NewLine}{" ",8}a rdf:List. {Environment.NewLine}_:54321 rdf:first <http://item2/>; {Environment.NewLine}{" ",8}rdf:rest rdf:nil; {Environment.NewLine}{" ",8}a rdf:List. {Environment.NewLine}<http://subj/> <http://haslist/> _:12345. {Environment.NewLine}"));
+        Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:first \"item1\"; {Environment.NewLine}{" ",8}rdf:rest _:54321; {Environment.NewLine}{" ",8}a rdf:List. {Environment.NewLine}_:54321 rdf:first <http://item2/>; {Environment.NewLine}{" ",8}rdf:rest rdf:nil; {Environment.NewLine}{" ",8}a rdf:List. {Environment.NewLine}<http://subj/> <http://haslist/> _:12345. {Environment.NewLine}", StringComparison.Ordinal));
     }
 
     //DESERIALIZE
