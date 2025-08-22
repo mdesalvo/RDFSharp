@@ -247,7 +247,9 @@ namespace RDFSharp.Query
             //**Standard** evaluation => iterate its active members
             else
             {
-                foreach (RDFPatternGroupMember evaluablePGMember in patternGroup.GetEvaluablePatternGroupMembers().Distinct().ToList())
+                foreach (RDFPatternGroupMember evaluablePGMember in patternGroup.GetEvaluablePatternGroupMembers()
+                                                                                .Distinct()
+                                                                                .ToArray())
                     switch (evaluablePGMember)
                     {
                         case RDFPattern pattern:
@@ -1126,7 +1128,7 @@ namespace RDFSharp.Query
             List<RDFPattern> patternList = propertyPath.GetPatternList();
 
             //Evaluate produced list of patterns
-            List<DataTable> patternTables = new List<DataTable>();
+            List<DataTable> patternTables = new List<DataTable>(patternList.Count);
             foreach (RDFPattern pattern in patternList)
             {
                 //Apply pattern to graph
@@ -1145,11 +1147,11 @@ namespace RDFSharp.Query
             DataTable resultTable = CombineTables(patternTables);
 
             //Remove property path variables
-            List<string> propPathCols = (from DataColumn dtCol
+            foreach (string ppColumn in (from DataColumn dtCol
                                          in resultTable.Columns
                                          where dtCol.ColumnName.StartsWith("?__PP", StringComparison.Ordinal)
-                                         select dtCol.ColumnName).ToList();
-            propPathCols.ForEach(ppc => resultTable.Columns.Remove(ppc));
+                                         select dtCol.ColumnName).ToArray())
+                resultTable.Columns.Remove(ppColumn);
 
             return resultTable;
         }
@@ -1158,7 +1160,7 @@ namespace RDFSharp.Query
         /// Applies the given raw string query to the given SPARQL endpoint
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        internal RDFQueryResult ApplyRawToSPARQLEndpoint(string queryType, string query, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
+        internal static RDFQueryResult ApplyRawToSPARQLEndpoint(string queryType, string query, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
         {
             #region Utilities
             void AdjustVariableColumnNames(DataTable qrTable)
@@ -1957,8 +1959,9 @@ namespace RDFSharp.Query
             if (query.ProjectionVars.Count > 0)
             {
                 //Remove non-projection variables
-                DataColumn[] tableColumns = table.Columns.OfType<DataColumn>().ToArray();
-                foreach (DataColumn tableColumn in tableColumns.Where(tableColumn => !query.ProjectionVars.Any(projVar => string.Equals(projVar.Key.ToString(), tableColumn.ColumnName, StringComparison.OrdinalIgnoreCase))))
+                foreach (DataColumn tableColumn in table.Columns.OfType<DataColumn>()
+                                                                .Where(tc => !query.ProjectionVars.Any(pv => string.Equals(pv.Key.ToString(), tc.ColumnName, StringComparison.OrdinalIgnoreCase)))
+                                                                .ToArray())
                     table.Columns.Remove(tableColumn);
 
                 //Adjust projection ordinals

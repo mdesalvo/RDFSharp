@@ -181,7 +181,7 @@ namespace RDFSharp.Query
         /// Applies the given raw string CONSTRUCT query to the given SPARQL endpoint
         /// </summary>
         public static RDFConstructQueryResult ApplyRawToSPARQLEndpoint(string constructQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-            => sparqlEndpoint != null ? (RDFConstructQueryResult)new RDFQueryEngine().ApplyRawToSPARQLEndpoint("CONSTRUCT", constructQuery, sparqlEndpoint, sparqlEndpointQueryOptions) : new RDFConstructQueryResult();
+            => sparqlEndpoint != null ? (RDFConstructQueryResult)RDFQueryEngine.ApplyRawToSPARQLEndpoint("CONSTRUCT", constructQuery, sparqlEndpoint, sparqlEndpointQueryOptions) : new RDFConstructQueryResult();
 
         /// <summary>
         /// Asynchronously applies the query to the given SPARQL endpoint

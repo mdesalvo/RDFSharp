@@ -48,7 +48,7 @@ namespace RDFSharp.Query
             #region Guards
             if (partitionVariables == null || partitionVariables.Count == 0)
                 throw new RDFQueryException("Cannot create RDFGroupByModifier because given \"partitionVariables\" parameter is null or empty.");
-            if (partitionVariables.Any(pv => pv == null))
+            if (partitionVariables.Contains(null))
                 throw new RDFQueryException("Cannot create RDFGroupByModifier because given \"partitionVariables\" parameter contains null elements.");
             #endregion
 
@@ -188,7 +188,7 @@ namespace RDFSharp.Query
                 foreach (DataRow resultRow in resultTable.Rows)
                 {
                     bool keepRow = true;
-                    IEnumerator<RDFComparisonExpression> comparisonsEnum = havingExpressions.GetEnumerator();
+                    List<RDFComparisonExpression>.Enumerator comparisonsEnum = havingExpressions.GetEnumerator();
                     while (keepRow && comparisonsEnum.MoveNext())
                     {
                         RDFPatternMember comparisonResult = comparisonsEnum.Current?.ApplyExpression(resultRow);

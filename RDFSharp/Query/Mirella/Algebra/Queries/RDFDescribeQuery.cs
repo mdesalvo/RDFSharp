@@ -179,7 +179,7 @@ namespace RDFSharp.Query
         /// Applies the given raw string DESCRIBE query to the given SPARQL endpoint
         /// </summary>
         public static RDFDescribeQueryResult ApplyRawToSPARQLEndpoint(string describeQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-            => sparqlEndpoint != null ? (RDFDescribeQueryResult)new RDFQueryEngine().ApplyRawToSPARQLEndpoint("DESCRIBE", describeQuery, sparqlEndpoint, sparqlEndpointQueryOptions) : new RDFDescribeQueryResult();
+            => sparqlEndpoint != null ? (RDFDescribeQueryResult)RDFQueryEngine.ApplyRawToSPARQLEndpoint("DESCRIBE", describeQuery, sparqlEndpoint, sparqlEndpointQueryOptions) : new RDFDescribeQueryResult();
 
         /// <summary>
         /// Asynchronously applies the query to the given SPARQL endpoint

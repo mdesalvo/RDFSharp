@@ -61,7 +61,7 @@ namespace RDFSharp.Query
 
                 sb.AppendLine("INSERT {");
                 insertWhereOperation.InsertTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
-                sb.AppendLine("}");
+                sb.Append('}').AppendLine();
 
                 RDFQueryPrinter.PrintWhereClause(insertWhereOperation, sb, prefixes, string.Empty, 0, false);
             }
@@ -103,7 +103,7 @@ namespace RDFSharp.Query
 
                 sb.AppendLine("DELETE {");
                 deleteWhereOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
-                sb.AppendLine("}");
+                sb.Append('}').AppendLine();
 
                 RDFQueryPrinter.PrintWhereClause(deleteWhereOperation, sb, prefixes, string.Empty, 0, false);
             }
@@ -125,10 +125,10 @@ namespace RDFSharp.Query
 
                 sb.AppendLine("DELETE {");
                 deleteInsertWhereOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
-                sb.AppendLine("}");
+                sb.Append('}').AppendLine();
                 sb.AppendLine("INSERT {");
                 deleteInsertWhereOperation.InsertTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
-                sb.AppendLine("}");
+                sb.Append('}').AppendLine();
 
                 RDFQueryPrinter.PrintWhereClause(deleteInsertWhereOperation, sb, prefixes, string.Empty, 0, false);
             }

@@ -54,7 +54,7 @@ namespace RDFSharp.Store
                     List<RDFGraph> graphs = store.ExtractGraphs();
 
                     //Collect namespaces
-                    List<RDFNamespace> prefixes = new List<RDFNamespace>();
+                    List<RDFNamespace> prefixes = new List<RDFNamespace>(8);
                     foreach (RDFGraph graph in graphs)
                         prefixes.AddRange(RDFModelUtilities.GetGraphNamespaces(graph));
 

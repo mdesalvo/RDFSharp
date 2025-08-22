@@ -117,7 +117,7 @@ namespace RDFSharp.Query
         /// Applies the given raw string ASK query to the given SPARQL endpoint
         /// </summary>
         public static RDFAskQueryResult ApplyRawToSPARQLEndpoint(string askQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-            => sparqlEndpoint != null ? (RDFAskQueryResult)new RDFQueryEngine().ApplyRawToSPARQLEndpoint("ASK", askQuery, sparqlEndpoint, sparqlEndpointQueryOptions) : new RDFAskQueryResult();
+            => sparqlEndpoint != null ? (RDFAskQueryResult)RDFQueryEngine.ApplyRawToSPARQLEndpoint("ASK", askQuery, sparqlEndpoint, sparqlEndpointQueryOptions) : new RDFAskQueryResult();
 
         /// <summary>
         /// Asynchronously applies the query to the given SPARQL endpoint

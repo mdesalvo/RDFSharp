@@ -194,7 +194,7 @@ namespace RDFSharp.Query
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
         public static RDFSelectQueryResult ApplyRawToSPARQLEndpoint(string selectQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-            => sparqlEndpoint != null ? (RDFSelectQueryResult)new RDFQueryEngine().ApplyRawToSPARQLEndpoint("SELECT", selectQuery, sparqlEndpoint, sparqlEndpointQueryOptions) : new RDFSelectQueryResult();
+            => sparqlEndpoint != null ? (RDFSelectQueryResult)RDFQueryEngine.ApplyRawToSPARQLEndpoint("SELECT", selectQuery, sparqlEndpoint, sparqlEndpointQueryOptions) : new RDFSelectQueryResult();
 
         /// <summary>
         /// Asynchronously applies the query to the given SPARQL endpoint

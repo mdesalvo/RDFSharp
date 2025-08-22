@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Xml;
 using NetTopologySuite.Geometries;
@@ -264,17 +265,18 @@ namespace RDFSharp.Query
         /// </summary>
         public static List<T> RemoveDuplicates<T>(List<T> elements) where T : RDFPatternMember
         {
-            List<T> results = new List<T>();
             if (elements?.Count > 0)
             {
+                List<T> results = new List<T>(elements.Count);
                 HashSet<long> lookup = new HashSet<long>();
                 elements.ForEach(element =>
                 {
                     if (lookup.Add(element.PatternMemberID))
                         results.Add(element);
                 });
+                return results;
             }
-            return results;
+            return Enumerable.Empty<T>().ToList();
         }
 
         /// <summary>

@@ -271,7 +271,7 @@ namespace RDFSharp.Query
                             #endregion
 
                             #region RESULTS
-                            else if (node.Name.ToUpperInvariant().Equals("RESULTS", StringComparison.Ordinal))
+                            else if (string.Equals(node.Name, "RESULTS", StringComparison.OrdinalIgnoreCase))
                             {
                                 if (!foundHead)
                                     throw new Exception("\"head\" node was not found, or was after \"results\" node.");

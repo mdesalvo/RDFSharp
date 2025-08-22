@@ -68,7 +68,7 @@ namespace RDFSharp.Query
             StringBuilder sb = new StringBuilder(64); //Initial capacity=64 seems a good tradeoff for medium length of this expression
 
             //(VAL IN (T1,T2,...,TN))
-            sb.Append("(");
+            sb.Append('(');
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
@@ -97,7 +97,7 @@ namespace RDFSharp.Query
             {
                 #region Calculate Result
                 //This expression is equivalent to an OR-chain of equality comparison expressions
-                IEnumerator<RDFPatternMember> inTermsEnumerator = InTerms.GetEnumerator();
+                List<RDFPatternMember>.Enumerator inTermsEnumerator = InTerms.GetEnumerator();
                 while (!keepRow && inTermsEnumerator.MoveNext())
                 {
                     RDFComparisonExpression compExpression = null;

@@ -330,7 +330,7 @@ namespace RDFSharp.Model
             if (graph == null)
                 return new List<RDFDatatype>();
 
-            List<RDFDatatype> datatypes = new List<RDFDatatype>();
+            List<RDFDatatype> datatypes = new List<RDFDatatype>(4);
             foreach (RDFTriple datatypeTriple in graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE, null])
             {
                 RDFResource datatypeIRI = (RDFResource)datatypeTriple.Subject;
@@ -345,9 +345,10 @@ namespace RDFSharp.Model
                     RDFModelEnums.RDFDatatypes targetDatatypeEnum = targetDatatype.ToString().GetEnumFromDatatype();
 
                     //Detect the constraining facets
-                    List<RDFFacet> targetFacets = new List<RDFFacet>();
                     RDFCollection facetsCollection = DeserializeCollectionFromGraph(graph, facetsRepresentative, RDFModelEnums.RDFTripleFlavors.SPO);
-                    foreach (RDFResource facet in facetsCollection.Items.Cast<RDFResource>())
+                    RDFResource[] facets = facetsCollection.Items.Cast<RDFResource>().ToArray();
+                    List<RDFFacet> targetFacets = new List<RDFFacet>(facets.Length);
+                    foreach (RDFResource facet in facets)
                     {
                         //xsd:length
                         if (graph[facet, RDFVocabulary.XSD.LENGTH, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetLength
@@ -437,7 +438,9 @@ namespace RDFSharp.Model
                         //xsd:pattern
                         if (graph[facet, RDFVocabulary.XSD.PATTERN, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetPattern
                              && facetPattern.HasStringDatatype())
+                        {
                             targetFacets.Add(new RDFPatternFacet(facetPattern.Value));
+                        }
                     }
 
                     //Finally collect the datatype
@@ -541,7 +544,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static List<RDFNamespace> GetGraphNamespaces(RDFGraph graph)
         {
-            List<RDFNamespace> result = new List<RDFNamespace>();
+            List<RDFNamespace> result = new List<RDFNamespace>(8);
             foreach (RDFTriple triple in graph)
             {
                 string subj = triple.Subject.ToString();
