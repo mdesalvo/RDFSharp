@@ -1610,7 +1610,7 @@ public class RDFQueryEngineTest
         string receivedQuery1 = "";
         string receivedQuery2 = "";
 
-        string mockedResponseXml1 =
+        const string mockedResponseXml1 =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <sparql xmlns="http://www.w3.org/2005/sparql-results#">
@@ -1638,7 +1638,7 @@ public class RDFQueryEngineTest
               </results>
             </sparql>
             """;
-        string mockedResponseXml2 =
+        const string mockedResponseXml2 =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <sparql xmlns="http://www.w3.org/2005/sparql-results#">
@@ -1738,7 +1738,7 @@ public class RDFQueryEngineTest
         string receivedQuery1 = "";
         string receivedQuery2 = "";
 
-        string mockedResponseXml1 =
+        const string mockedResponseXml1 =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <sparql xmlns="http://www.w3.org/2005/sparql-results#">
@@ -1766,7 +1766,7 @@ public class RDFQueryEngineTest
               </results>
             </sparql>
             """;
-        string mockedResponseXml2 =
+        const string mockedResponseXml2 =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <sparql xmlns="http://www.w3.org/2005/sparql-results#">
@@ -1865,7 +1865,7 @@ public class RDFQueryEngineTest
     [TestMethod]
     public void ShouldEvaluateSelectQueyOnFederationWithResultsSPARQLEndpointsOneThrowingException()
     {
-        string mockedResponseXml1 =
+        const string mockedResponseXml1 =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <sparql xmlns="http://www.w3.org/2005/sparql-results#">
@@ -1893,7 +1893,7 @@ public class RDFQueryEngineTest
               </results>
             </sparql>
             """;
-        string mockedResponseXml2 =
+        const string mockedResponseXml2 =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <sparql xmlns="http://www.w3.org/2005/sparql-results#">
@@ -1973,7 +1973,7 @@ public class RDFQueryEngineTest
     {
         string receivedQuery = "";
         string expectedQuery = string.Concat("?query=SELECT *", Environment.NewLine, "WHERE {", Environment.NewLine, "  {", Environment.NewLine, "    ?Y <ex:dogOf> ?X .", Environment.NewLine, "  }", Environment.NewLine, "}", Environment.NewLine);
-        string mockedResponseXml =
+        const string mockedResponseXml =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <sparql xmlns="http://www.w3.org/2005/sparql-results#">
@@ -2059,7 +2059,7 @@ public class RDFQueryEngineTest
     public void ShouldEvaluateSelectQueryOnGraphWithValuesInjectedIntoServicePatternGroup()
     {
         string receivedQuery = "";
-        string expectedQuery =
+        const string expectedQuery =
             """
             ?query=SELECT *
             WHERE {
@@ -2072,7 +2072,7 @@ public class RDFQueryEngineTest
             }
 
             """;
-        string mockedResponseXml =
+        const string mockedResponseXml =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <sparql xmlns="http://www.w3.org/2005/sparql-results#">
@@ -2162,7 +2162,7 @@ public class RDFQueryEngineTest
     {
         string receivedQuery = "";
         string expectedQuery = string.Concat("?query=SELECT *", Environment.NewLine, "WHERE {", Environment.NewLine, "  {", Environment.NewLine, "    ?Y <ex:dogOf> ?X .", Environment.NewLine, "  }", Environment.NewLine, "}", Environment.NewLine);
-        string mockedResponseXml =
+        const string mockedResponseXml =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <sparql xmlns="http://www.w3.org/2005/sparql-results#">
@@ -2247,7 +2247,7 @@ public class RDFQueryEngineTest
     {
         string receivedQuery1 = "";
         string expectedQuery1 = string.Concat("?query=SELECT *", Environment.NewLine, "WHERE {", Environment.NewLine, "  {", Environment.NewLine, "    ?Y <ex:dogOf> ?X .", Environment.NewLine, "  }", Environment.NewLine, "}", Environment.NewLine);
-        string mockedResponse1Xml =
+        const string mockedResponse1Xml =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <sparql xmlns="http://www.w3.org/2005/sparql-results#">
@@ -2269,7 +2269,7 @@ public class RDFQueryEngineTest
             """;
         string receivedQuery2 = "";
         string expectedQuery2 = string.Concat("?query=SELECT *", Environment.NewLine, "WHERE {", Environment.NewLine, "  {", Environment.NewLine, "    ?Y <ex:dogOf> ?X .", Environment.NewLine, "  }", Environment.NewLine, "}", Environment.NewLine);
-        string mockedResponse2Xml =
+        const string mockedResponse2Xml =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <sparql xmlns="http://www.w3.org/2005/sparql-results#">

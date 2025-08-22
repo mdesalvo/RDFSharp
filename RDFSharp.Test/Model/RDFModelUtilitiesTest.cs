@@ -276,7 +276,7 @@ public class RDFModelUtilitiesTest
         string result = RDFModelUtilities.EscapeControlCharsForXML(input);
 
         Assert.IsNotNull(result);
-        Assert.IsFalse(result.ToList().Any(char.IsControl));
+        Assert.IsFalse(result.Any(char.IsControl));
     }
 
     [TestMethod]
@@ -286,7 +286,7 @@ public class RDFModelUtilitiesTest
         string result = RDFModelUtilities.EscapeControlCharsForXML(input);
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.ToList().Any(char.IsControl));
+        Assert.IsTrue(result.Any(char.IsControl));
     }
 
     [TestMethod]
@@ -296,7 +296,7 @@ public class RDFModelUtilitiesTest
         string result = RDFModelUtilities.EscapeControlCharsForXML(input);
 
         Assert.IsNotNull(result);
-        Assert.IsFalse(result.ToList().Any(char.IsControl));
+        Assert.IsFalse(result.Any(char.IsControl));
         Assert.IsTrue(result.Equals(input));
     }
 

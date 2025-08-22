@@ -194,9 +194,8 @@ public class RDFValidationEngineTest
     public void ShouldWorkWithInversePath()
     {
         //ShapesGraph
-        string shapesData =
+        const string shapesData =
             """
-
             @prefix exns:    <http://ex.com/ns#> .
             @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
             @prefix sh:      <http://www.w3.org/ns/shacl#> .
@@ -239,7 +238,7 @@ public class RDFValidationEngineTest
         RDFShapesGraph shapesGraph = RDFShapesGraph.FromRDFGraph(shapesGraphObject);
 
         //DataGraph
-        string graphData =
+        const string graphData =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <rdf:RDF
@@ -279,7 +278,7 @@ public class RDFValidationEngineTest
     public void ShouldWorkWithAlternativePath()
     {
         //ShapesGraph
-        string shapesData =
+        const string shapesData =
             """
 
             @prefix exns:   <http://ex.com/ns#> .
@@ -308,7 +307,7 @@ public class RDFValidationEngineTest
         RDFShapesGraph shapesGraph = RDFShapesGraph.FromRDFGraph(shapesGraphObject);
 
         //DataGraph
-        string graphData =
+        const string graphData =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <rdf:RDF
@@ -356,7 +355,7 @@ public class RDFValidationEngineTest
     public void ShouldWorkWithSequencePath()
     {
         //ShapesGraph
-        string shapesData =
+        const string shapesData =
             """
 
             @prefix exns:   <http://ex.com/ns#> .
@@ -385,7 +384,7 @@ public class RDFValidationEngineTest
         RDFShapesGraph shapesGraph = RDFShapesGraph.FromRDFGraph(shapesGraphObject);
 
         //DataGraph
-        string graphData =
+        const string graphData =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <rdf:RDF
@@ -439,7 +438,7 @@ public class RDFValidationEngineTest
     public void ShouldWorkWithRDFXMLDeserializationOfID()
     {
         //ShapesGraph
-        string shapesData =
+        const string shapesData =
             """
 
             @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -483,7 +482,7 @@ public class RDFValidationEngineTest
         RDFShapesGraph shapesGraph = RDFShapesGraph.FromRDFGraph(shapesGraphObject);
 
         //DataGraph
-        string graphData =
+        const string graphData =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <rdf:RDF
@@ -523,7 +522,7 @@ public class RDFValidationEngineTest
     public void ShouldWorkWithRDFXMLDeserializationOfID2()
     {
         //ShapesGraph
-        string shapesData =
+        const string shapesData =
             """
 
             @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -567,7 +566,7 @@ public class RDFValidationEngineTest
         RDFShapesGraph shapesGraph = RDFShapesGraph.FromRDFGraph(shapesGraphObject);
 
         //DataGraph
-        string graphData =
+        const string graphData =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <rdf:RDF

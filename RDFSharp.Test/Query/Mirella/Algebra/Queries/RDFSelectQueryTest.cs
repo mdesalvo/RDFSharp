@@ -682,7 +682,7 @@ public class RDFSelectQueryTest
     [TestMethod]
     public void ShouldApplySelectQueryOnGraphWithServicePatternGroupAndThrowExceptionAccordingToTimingAndBehavior()
     {
-        string mockedResponseXml =
+        const string mockedResponseXml =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <sparql xmlns="http://www.w3.org/2005/sparql-results#">
@@ -741,7 +741,7 @@ public class RDFSelectQueryTest
     [TestMethod]
     public void ShouldApplySelectQueryOnGraphWithServicePatternGroupAndThrowExceptionAccordingToTimingAndBehaviorViaPost()
     {
-        string mockedResponseXml =
+        const string mockedResponseXml =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <sparql xmlns="http://www.w3.org/2005/sparql-results#">
@@ -800,7 +800,7 @@ public class RDFSelectQueryTest
     [TestMethod]
     public void ShouldApplySelectQueryOnGraphWithServicePatternGroupAndGiveEmptyResultAccordingToTimingAndBehavior()
     {
-        string mockedResponseXml =
+        const string mockedResponseXml =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <sparql xmlns="http://www.w3.org/2005/sparql-results#">
@@ -858,7 +858,7 @@ public class RDFSelectQueryTest
     [TestMethod]
     public void ShouldApplySelectQueryOnGraphWithServicePatternGroupAndGiveEmptyResultAccordingToTimingAndBehaviorViaPost()
     {
-        string mockedResponseXml =
+        const string mockedResponseXml =
             """
             <?xml version="1.0" encoding="utf-8"?>
             <sparql xmlns="http://www.w3.org/2005/sparql-results#">
@@ -1357,7 +1357,7 @@ public class RDFSelectQueryTest
     [TestMethod]
     public void ShouldApplySelectQueryToSPARQLEndpointAndHaveResultsWithBearerAuthorizationHeader()
     {
-        string authHeaderValue = "vF9dft4qmT";
+        const string authHeaderValue = "vF9dft4qmT";
 
         server
             .Given(
@@ -1407,7 +1407,7 @@ public class RDFSelectQueryTest
     [TestMethod]
     public void ShouldApplySelectQueryToSPARQLEndpointAndHaveResultsWithBearerAuthorizationHeaderViaPost()
     {
-        string authHeaderValue = "vF9dft4qmT";
+        const string authHeaderValue = "vF9dft4qmT";
 
         server
             .Given(
