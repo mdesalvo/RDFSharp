@@ -270,14 +270,17 @@ namespace RDFSharp.Model
                                                  .Replace("\\\"", "\"")
                                                  .Replace("\\n", "\n")
                                                  .Replace("\\t", "\t")
-                                                 .Replace("\\r", "\r");
+                                                 .Replace("\\r", "\r")
+                                                 .Replace("\"^^", "^^");
                             tokens[2] = RDFModelUtilities.ASCII_To_Unicode(tokens[2]);
                             #endregion
 
                             #region plain literal
-                            if (!tokens[2].Contains("^^")
-                                  || tokens[2].EndsWith("^^", StringComparison.Ordinal)
-                                  || tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2, 1) != "<")
+                            //Detect presence of semantically valid datatype indicator ("^^")
+                            int lastIndexOfDatatype = tokens[2].LastIndexOf("^^", StringComparison.Ordinal);
+                            if (lastIndexOfDatatype == -1
+                                 || lastIndexOfDatatype == tokens[2].Length - 2 //EndsWith "^^"
+                                 || tokens[2][lastIndexOfDatatype + 2] != '<')
                             {
                                 if (regexLPL.Value.Match(tokens[2]).Success)
                                 {
@@ -298,7 +301,6 @@ namespace RDFSharp.Model
                             else
                             {
                                 tokens[2] = tokens[2].Replace("\"^^", "^^");
-                                int lastIndexOfDatatype = tokens[2].LastIndexOf("^^", StringComparison.Ordinal);
                                 string tLitValue = tokens[2].Substring(0, lastIndexOfDatatype);
                                 string tLitDatatype = tokens[2].Substring(lastIndexOfDatatype + 2)
                                                                .TrimStart('<')

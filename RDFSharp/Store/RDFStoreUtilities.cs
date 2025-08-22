@@ -60,10 +60,11 @@ namespace RDFSharp.Store
             string literal = fetchedQuadruples["Object"].ToString();
 
             //PlainLiteral
+            //Detect presence of semantically valid datatype indicator ("^^")
             int lastIndexOfDatatype = literal.LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
-            if (!literal.Contains("^^")
-                  || literal.EndsWith("^^", StringComparison.Ordinal)
-                  || RDFModelUtilities.GetUriFromString(literal.Substring(lastIndexOfDatatype + 2)) == null)
+            if (lastIndexOfDatatype == -1
+                 || lastIndexOfDatatype == literal.Length - 2 //EndsWith "^^"
+                 || RDFModelUtilities.GetUriFromString(literal.Substring(lastIndexOfDatatype + 2)) == null)
             {
                 RDFPlainLiteral pLit;
                 if (RDFNTriples.regexLPL.Value.Match(literal).Success)
@@ -77,7 +78,6 @@ namespace RDFSharp.Store
                 {
                     pLit = new RDFPlainLiteral(literal);
                 }
-
                 return new RDFQuadruple(qContext, qSubject, qPredicate, pLit);
             }
 
