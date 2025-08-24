@@ -271,7 +271,7 @@ namespace RDFSharp.Model
             } while (sb.Length < 8);
 
             string directive = sb.ToString();
-            if (directive.StartsWith("@", StringComparison.Ordinal)
+            if (directive[0] == '@'
                  || directive.Equals("prefix", StringComparison.OrdinalIgnoreCase)
                  || directive.Equals("base", StringComparison.OrdinalIgnoreCase)
                  || directive.Equals("version", StringComparison.OrdinalIgnoreCase))
@@ -279,7 +279,7 @@ namespace RDFSharp.Model
                 ParseDirective(turtleData, turtleContext, result, directive);
                 SkipWhitespace(turtleData, turtleContext);
                 // Turtle @base and @prefix directives MUST end with "."
-                if (directive.StartsWith("@", StringComparison.Ordinal))
+                if (directive[0] == '@')
                 {
                     VerifyCharacterOrFail(turtleContext, ReadCodePoint(turtleData, turtleContext), ".");
                 }

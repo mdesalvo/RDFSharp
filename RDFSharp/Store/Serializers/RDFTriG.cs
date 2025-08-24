@@ -187,7 +187,7 @@ namespace RDFSharp.Store
             } while (sb.Length < 8);
 
             string directive = sb.ToString();
-            if (directive.StartsWith("@", StringComparison.Ordinal)
+            if (directive[0] == '@'
                  || directive.Equals("prefix", StringComparison.OrdinalIgnoreCase)
                  || directive.Equals("base", StringComparison.OrdinalIgnoreCase)
                  || directive.Equals("version", StringComparison.OrdinalIgnoreCase))
@@ -196,7 +196,7 @@ namespace RDFSharp.Store
                 SkipWhitespace(trigData, trigContext);
 
                 // Turtle @base and @prefix directives MUST end with "."
-                if (directive.StartsWith("@", StringComparison.Ordinal))
+                if (directive[0] == '@')
                     VerifyCharacterOrFail(trigContext, ReadCodePoint(trigData, trigContext), ".");
 
                 // SPARQL BASE and PREFIX directives MUST NOT end with "."
