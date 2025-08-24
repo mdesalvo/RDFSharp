@@ -217,11 +217,11 @@ namespace RDFSharp.Store
                         nquad = nquad.Trim(RDFNTriples.trimmableChars);
 
                         //Skip empty or comment lines
-                        if (nquad.Length == 0 || nquad.StartsWith("#", StringComparison.Ordinal))
+                        if (nquad.Length == 0 || nquad[0] == '#')
                             continue;
 
                         //Tokenizes the sanitized quad
-                        tokens = TokenizeNQuad(nquad);
+                        TokenizeNQuad(nquad, ref tokens);
                         #endregion
 
                         #region subj
@@ -328,13 +328,11 @@ namespace RDFSharp.Store
         /// Tries to tokenize the given N-Quad
         /// </summary>
         /// <exception cref="Exception"></exception>
-        private static string[] TokenizeNQuad(string nquad)
+        private static void TokenizeNQuad(string nquad, ref string[] tokens)
         {
             //S->->-> quadruple
             if (nquad.StartsWith("<", StringComparison.Ordinal))
             {
-                string[] tokens = new string[4];
-
                 //S->P->O->C
                 if (SPOC.Value.Match(nquad).Success)
                 {
@@ -357,8 +355,7 @@ namespace RDFSharp.Store
 
                     //context
                     tokens[3] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //S->P->O->
@@ -378,8 +375,7 @@ namespace RDFSharp.Store
 
                     //object
                     tokens[2] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //S->P->L(PLAIN)->C
@@ -404,8 +400,7 @@ namespace RDFSharp.Store
 
                     //context
                     tokens[3] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //S->P->L(PLAIN)->
@@ -425,8 +420,7 @@ namespace RDFSharp.Store
 
                     //plain literal
                     tokens[2] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //S->P->L(PLANG)->C
@@ -451,8 +445,7 @@ namespace RDFSharp.Store
 
                     //context
                     tokens[3] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //S->P->L(PLANG)->
@@ -472,8 +465,7 @@ namespace RDFSharp.Store
 
                     //plain literal with language
                     tokens[2] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //S->P->L(TLIT)->C
@@ -498,8 +490,7 @@ namespace RDFSharp.Store
 
                     //context
                     tokens[3] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //S->P->L(TLIT)->
@@ -519,8 +510,7 @@ namespace RDFSharp.Store
 
                     //typed literal
                     tokens[2] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //S->P->B->C
@@ -545,8 +535,7 @@ namespace RDFSharp.Store
 
                     //context
                     tokens[3] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //S->P->B->
@@ -566,8 +555,7 @@ namespace RDFSharp.Store
 
                     //object
                     tokens[2] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 throw new Exception("found illegal N-Quad, unrecognized 'S->->->' structure");
@@ -576,8 +564,6 @@ namespace RDFSharp.Store
             //B->->-> quadruple
             if (nquad.StartsWith("_:", StringComparison.Ordinal))
             {
-                string[] tokens = new string[4];
-
                 //B->P->O->C
                 if (BPOC.Value.Match(nquad).Success)
                 {
@@ -600,8 +586,7 @@ namespace RDFSharp.Store
 
                     //context
                     tokens[3] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //B->P->O->
@@ -621,8 +606,7 @@ namespace RDFSharp.Store
 
                     //object
                     tokens[2] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //B->P->L(PLAIN)->C
@@ -647,8 +631,7 @@ namespace RDFSharp.Store
 
                     //context
                     tokens[3] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //B->P->L(PLAIN)->
@@ -668,8 +651,7 @@ namespace RDFSharp.Store
 
                     //plain literal
                     tokens[2] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //B->P->L(PLANG)->C
@@ -694,8 +676,7 @@ namespace RDFSharp.Store
 
                     //context
                     tokens[3] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //B->P->L(PLANG)->
@@ -715,8 +696,7 @@ namespace RDFSharp.Store
 
                     //plain literal with language
                     tokens[2] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //B->P->L(TLIT)->C
@@ -741,8 +721,7 @@ namespace RDFSharp.Store
 
                     //context
                     tokens[3] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //B->P->L(TLIT)->
@@ -762,8 +741,7 @@ namespace RDFSharp.Store
 
                     //typed literal
                     tokens[2] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //B->P->B->C
@@ -788,8 +766,7 @@ namespace RDFSharp.Store
 
                     //context
                     tokens[3] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //B->P->B->
@@ -809,8 +786,7 @@ namespace RDFSharp.Store
 
                     //object
                     tokens[2] = nquad.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 throw new Exception("found illegal N-Quad, unrecognized 'B->->->' structure");

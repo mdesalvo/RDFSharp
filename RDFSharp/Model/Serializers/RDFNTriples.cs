@@ -225,11 +225,11 @@ namespace RDFSharp.Model
                         nTriple = nTriple.Trim(trimmableChars);
 
                         //Skip empty or comment lines
-                        if (nTriple.Length == 0 || nTriple.StartsWith("#", StringComparison.Ordinal))
+                        if (nTriple.Length == 0 || nTriple[0] == '#')
                             continue;
 
                         //Tokenizes the sanitized triple
-                        tokens = TokenizeNTriple(nTriple);
+                        TokenizeNTriple(nTriple, ref tokens);
                         #endregion
 
                         #region subj
@@ -327,13 +327,11 @@ namespace RDFSharp.Model
         /// Tries to tokenize the given N-Triple
         /// </summary>
         /// <exception cref="Exception"></exception>
-        private static string[] TokenizeNTriple(string ntriple)
+        private static void TokenizeNTriple(string ntriple, ref string[] tokens)
         {
             //S->-> triple
             if (ntriple.StartsWith("<", StringComparison.Ordinal))
             {
-                string[] tokens = new string[3];
-
                 //S->P->O
                 if (SPO.Value.Match(ntriple).Success)
                 {
@@ -351,8 +349,7 @@ namespace RDFSharp.Model
 
                     //object
                     tokens[2] = ntriple.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //S->P->L(PLAIN)
@@ -372,8 +369,7 @@ namespace RDFSharp.Model
 
                     //plain literal
                     tokens[2] = ntriple.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //S->P->L(PLANG)
@@ -393,8 +389,7 @@ namespace RDFSharp.Model
 
                     //plain literal with language
                     tokens[2] = ntriple.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //S->P->L(TLIT)
@@ -414,8 +409,7 @@ namespace RDFSharp.Model
 
                     //typed literal
                     tokens[2] = ntriple.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //S->P->B
@@ -435,8 +429,7 @@ namespace RDFSharp.Model
 
                     //object
                     tokens[2] = ntriple.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 throw new Exception("found illegal N-Triple, unrecognized 'S->->' structure");
@@ -445,8 +438,6 @@ namespace RDFSharp.Model
             //B->-> triple
             if (ntriple.StartsWith("_:", StringComparison.Ordinal))
             {
-                string[] tokens = new string[3];
-
                 //B->P->O
                 if (BPO.Value.Match(ntriple).Success)
                 {
@@ -464,8 +455,7 @@ namespace RDFSharp.Model
 
                     //object
                     tokens[2] = ntriple.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //B->P->L(PLAIN)
@@ -485,8 +475,7 @@ namespace RDFSharp.Model
 
                     //plain literal
                     tokens[2] = ntriple.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //B->P->L(PLANG)
@@ -506,8 +495,7 @@ namespace RDFSharp.Model
 
                     //plain literal with language
                     tokens[2] = ntriple.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //B->P->L(TLIT)
@@ -527,8 +515,7 @@ namespace RDFSharp.Model
 
                     //typed literal
                     tokens[2] = ntriple.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
                 }
 
                 //B->P->B
@@ -548,8 +535,8 @@ namespace RDFSharp.Model
 
                     //object
                     tokens[2] = ntriple.Trim(' ', '\t');
-
-                    return tokens;
+                    return;
+                    
                 }
 
                 throw new Exception("found illegal N-Triple, unrecognized 'B->->' structure");
