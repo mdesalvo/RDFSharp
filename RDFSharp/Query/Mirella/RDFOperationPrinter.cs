@@ -141,7 +141,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintLoadOperation(RDFLoadOperation loadOperation)
         {
-            StringBuilder sb = new StringBuilder(512);
+            StringBuilder sb = new StringBuilder(256);
 
             if (loadOperation != null)
             {
@@ -164,7 +164,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintClearOperation(RDFClearOperation clearOperation)
         {
-            StringBuilder sb = new StringBuilder(32);
+            StringBuilder sb = new StringBuilder(64);
 
             if (clearOperation != null)
             {

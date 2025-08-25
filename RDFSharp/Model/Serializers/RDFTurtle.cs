@@ -821,7 +821,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static RDFTypedLiteral ParseNumber(string turtleData, RDFTurtleContext turtleContext)
         {
-            StringBuilder value = new StringBuilder(16);
+            StringBuilder value = new StringBuilder(32);
             RDFModelEnums.RDFDatatypes dt = RDFModelEnums.RDFDatatypes.XSD_INTEGER;
 
             int bufChar = ReadCodePoint(turtleData, turtleContext);
@@ -1043,7 +1043,7 @@ namespace RDFSharp.Model
                         throw new RDFModelException("Expected a letter, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(turtleContext));
 
                     // Read language
-                    StringBuilder lang = new StringBuilder(8);
+                    StringBuilder lang = new StringBuilder(16);
                     lang.Append(char.ConvertFromUtf32(bufChar));
 
                     bufChar = ReadCodePoint(turtleData, turtleContext);

@@ -57,7 +57,7 @@ namespace RDFSharp.Query
             => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
         {
-            StringBuilder sb = new StringBuilder(32);
+            StringBuilder sb = new StringBuilder(64);
 
             //Serialize supported flags
             StringBuilder flags = new StringBuilder(4);

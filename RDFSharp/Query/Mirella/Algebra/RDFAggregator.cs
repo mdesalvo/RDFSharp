@@ -147,10 +147,9 @@ namespace RDFSharp.Query
         /// </summary>
         internal string PrintHavingClause(List<RDFNamespace> prefixes)
         {
-            StringBuilder result = new StringBuilder(64);
-
             if (HavingClause.Item1)
             {
+                StringBuilder result = new StringBuilder(64);
                 result.Append('(');
                 result.Append(ToString(), 1, ToString().LastIndexOf(" AS ?", StringComparison.Ordinal));
                 switch (HavingClause.Item2)
@@ -176,8 +175,9 @@ namespace RDFSharp.Query
                 }
                 result.Append(RDFQueryPrinter.PrintPatternMember(HavingClause.Item3, prefixes));
                 result.Append(')');
+                return result.ToString();
             }
-            return result.ToString();
+            return string.Empty;
         }
 
         /// <summary>

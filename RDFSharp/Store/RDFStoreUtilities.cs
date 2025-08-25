@@ -103,7 +103,7 @@ namespace RDFSharp.Store
 
             if (store != null)
             {
-                StringBuilder queryFilters = new StringBuilder(5);
+                StringBuilder queryFilters = new StringBuilder(4);
                 List<RDFHashedQuadruple> C=null, S=null, P=null, O=null, L=null, hashedQuadruples;
 
                 //Filter by Context

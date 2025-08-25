@@ -492,7 +492,7 @@ namespace RDFSharp.Query
         internal static string PrintPatternGroup(RDFPatternGroup patternGroup, int spaceIndent, bool skipOptional, List<RDFNamespace> prefixes)
         {
             StringBuilder result = new StringBuilder(256);
-            string spaces = new StringBuilder(8).Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
+            string spaces = new StringBuilder(spaceIndent).Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
 
             //OPTIONAL
             if (patternGroup.IsOptional && !skipOptional)

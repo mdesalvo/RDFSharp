@@ -47,7 +47,7 @@ namespace RDFSharp.Query
             => ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
         {
-            StringBuilder sb = new StringBuilder(16);
+            StringBuilder sb = new StringBuilder(32);
 
             //(SHA512(L))
             sb.Append("(SHA512(");
