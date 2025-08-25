@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
@@ -45,12 +44,9 @@ namespace RDFSharp.Query
         /// Applies the modifier on the given datatable
         /// </summary>
         internal override DataTable ApplyModifier(DataTable table)
-        {
-            List<string> colNames = new List<string>(table.Columns.Count);
-            for (int i = 0; i < table.Columns.Count; i++)
-                colNames.Add(table.Columns[i].ColumnName);
-            return table.DefaultView.ToTable(true, colNames.ToArray<string>());
-        }
+            => table.DefaultView.ToTable(true, table.Columns.OfType<DataColumn>()
+                                                            .Select(c => c.ColumnName)
+                                                            .ToArray());
         #endregion
     }
 }
