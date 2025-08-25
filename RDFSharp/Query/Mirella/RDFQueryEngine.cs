@@ -1411,7 +1411,7 @@ namespace RDFSharp.Query
             string patternSubject = pattern.Subject.ToString();
             string patternPredicate = pattern.Predicate.ToString();
             string patternObject = pattern.Object.ToString();
-            Dictionary<string, string> bindings = new Dictionary<string, string>(4);
+            Dictionary<string, string> bindings = new Dictionary<string, string>(5);
 
             //Iterate result store's quadruples
             foreach (RDFQuadruple quadruple in store)
