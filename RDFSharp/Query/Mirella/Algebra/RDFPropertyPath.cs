@@ -154,7 +154,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal List<RDFPattern> GetPatternList()
         {
-            List<RDFPattern> patterns = new List<RDFPattern>();
+            List<RDFPattern> patterns = new List<RDFPattern>(Steps.Count);
 
             #region Single Property
             if (Steps.Count == 1)
