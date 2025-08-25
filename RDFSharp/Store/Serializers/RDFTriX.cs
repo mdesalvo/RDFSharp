@@ -123,7 +123,7 @@ namespace RDFSharp.Store
 
                             #endregion Guards
 
-                            Dictionary<string, long> hashContext = new Dictionary<string, long>();
+                            Dictionary<string, long> hashContext = new Dictionary<string, long>(128);
                             foreach (XmlNode graph in trixDoc.DocumentElement.ChildNodes)
                             {
                                 if (!graph.Name.Equals("graph", StringComparison.Ordinal))
