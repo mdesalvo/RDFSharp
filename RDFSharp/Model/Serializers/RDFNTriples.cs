@@ -246,7 +246,7 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region object
-                        if (tokens[2].StartsWith("<", StringComparison.Ordinal)
+                        if (tokens[2][0] == '<'
                              || tokens[2].StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
                              || tokens[2].StartsWith("_:", StringComparison.Ordinal))
                         {
@@ -311,6 +311,7 @@ namespace RDFSharp.Model
 
                         result.AddTriple(O != null ? new RDFTriple(S, P, O) : new RDFTriple(S, P, L));
                     }
+
                     return result;
                 }
                 #endregion
