@@ -59,7 +59,7 @@ namespace RDFSharp.Model
             RDFPropertyShape pShape = shape as RDFPropertyShape;
 
             //Search for given and shapes
-            List<RDFShape> andShapes = new List<RDFShape>();
+            List<RDFShape> andShapes = new List<RDFShape>(AndShapes.Values.Count);
             foreach (RDFResource andShapeUri in AndShapes.Values)
             {
                 RDFShape andShape = shapesGraph.SelectShape(andShapeUri.ToString());

@@ -399,7 +399,7 @@ namespace RDFSharp.Query
             resultTable.Columns.Add("?PREDICATE", typeof(string));
             resultTable.Columns.Add("?OBJECT", typeof(string));
 
-            Dictionary<string, string> bindings = new Dictionary<string, string>();
+            Dictionary<string, string> bindings = new Dictionary<string, string>(4);
             insertDataTemplates.ForEach(insertTemplate =>
             {
                 //GRAPH
@@ -462,7 +462,7 @@ namespace RDFSharp.Query
             resultTable.Columns.Add("?PREDICATE", typeof(string));
             resultTable.Columns.Add("?OBJECT", typeof(string));
 
-            Dictionary<string, string> bindings = new Dictionary<string, string>();
+            Dictionary<string, string> bindings = new Dictionary<string, string>(4);
             deleteDataTemplates.ForEach(deleteTemplate =>
             {
                 //GRAPH
