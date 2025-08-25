@@ -537,7 +537,6 @@ namespace RDFSharp.Model
                     //object
                     tokens[2] = ntriple.Trim(' ', '\t');
                     return;
-                    
                 }
 
                 throw new Exception("found illegal N-Triple, unrecognized 'B->->' structure");
