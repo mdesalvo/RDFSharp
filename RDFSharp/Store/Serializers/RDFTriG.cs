@@ -145,7 +145,6 @@ namespace RDFSharp.Store
         #endregion
 
         #region Utilities
-
         /// <summary>
         /// Represents the context of the TriG parser
         /// </summary>

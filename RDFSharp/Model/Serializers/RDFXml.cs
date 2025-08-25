@@ -373,10 +373,11 @@ namespace RDFSharp.Model
         /// <exception cref="RDFModelException"></exception>
         internal static RDFGraph Deserialize(Stream inputStream, Uri graphContext)
         {
+            RDFGraph result = new RDFGraph().SetContext(graphContext);
+
             try
             {
                 #region deserialize
-                RDFGraph result = new RDFGraph().SetContext(graphContext);
                 using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
                     using (XmlTextReader xmlReader = new XmlTextReader(streamReader))
@@ -427,14 +428,14 @@ namespace RDFSharp.Model
                         #endregion
                     }
                 }
-
-                return result;
                 #endregion
             }
             catch (Exception ex)
             {
                 throw new RDFModelException("Cannot deserialize RDF/Xml because: " + ex.Message, ex);
             }
+
+            return result;
         }
         #endregion
 

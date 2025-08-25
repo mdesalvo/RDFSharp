@@ -185,18 +185,18 @@ namespace RDFSharp.Store
         /// <exception cref="RDFStoreException"></exception>
         internal static RDFMemoryStore Deserialize(Stream inputStream)
         {
+            RDFMemoryStore result = new RDFMemoryStore();
             long nquadIndex = 0;
+            string nquad;
+            string[] tokens = new string[4];
+            Dictionary<string, long> hashContext = new Dictionary<string, long>(128);
+            RDFContext defaultContext = new RDFContext();
+
             try
             {
                 #region deserialize
                 using (StreamReader sr = new StreamReader(inputStream, Encoding.ASCII))
                 {
-                    RDFMemoryStore result = new RDFMemoryStore();
-                    RDFContext defaultContext = new RDFContext();
-                    string nquad;
-                    string[] tokens = new string[4];
-                    Dictionary<string, long> hashContext = new Dictionary<string, long>(128);
-
                     while ((nquad = sr.ReadLine()) != null)
                     {
                         nquadIndex++;
@@ -312,8 +312,6 @@ namespace RDFSharp.Store
 
                         result.AddQuadruple(O != null ? new RDFQuadruple(C, S, P, O) : new RDFQuadruple(C, S, P, L));
                     }
-
-                    return result;
                 }
                 #endregion
             }
@@ -321,6 +319,8 @@ namespace RDFSharp.Store
             {
                 throw new RDFStoreException("Cannot deserialize N-Quads (line " + nquadIndex + ") because: " + ex.Message, ex);
             }
+
+            return result;
         }
         #endregion
 

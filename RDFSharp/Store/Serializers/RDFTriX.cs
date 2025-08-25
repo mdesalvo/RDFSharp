@@ -95,12 +95,12 @@ namespace RDFSharp.Store
         /// <exception cref="RDFStoreException"></exception>
         internal static RDFMemoryStore Deserialize(Stream inputStream)
         {
+            RDFMemoryStore result = new RDFMemoryStore();
+            Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>(4);
+
             try
             {
                 #region deserialize
-
-                RDFMemoryStore result = new RDFMemoryStore();
-                Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>();
                 using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
                     using (XmlTextReader trixReader = new XmlTextReader(streamReader))
@@ -112,7 +112,6 @@ namespace RDFSharp.Store
                         trixDoc.Load(trixReader);
 
                         #region <TriX>
-
                         if (trixDoc.DocumentElement != null)
                         {
                             #region Guards
@@ -178,18 +177,17 @@ namespace RDFSharp.Store
                             foreach (RDFGraph graph in graphs.Values)
                                 result.MergeGraph(graph);
                         }
-
                         #endregion <TriX>
                     }
                 }
-                return result;
-
                 #endregion deserialize
             }
             catch (Exception ex)
             {
                 throw new RDFStoreException("Cannot deserialize TriX because: " + ex.Message, ex);
             }
+
+            return result;
         }
         #endregion
 

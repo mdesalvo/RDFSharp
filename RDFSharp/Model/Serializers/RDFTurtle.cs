@@ -92,18 +92,18 @@ namespace RDFSharp.Model
         /// <exception cref="RDFModelException"></exception>
         internal static RDFGraph Deserialize(Stream inputStream, Uri graphContext)
         {
+            RDFGraph result = new RDFGraph().SetContext(graphContext);
+
             try
             {
                 #region deserialize
-                RDFGraph result = new RDFGraph().SetContext(graphContext);
-
-                //Initialize Turtle context
-                RDFTurtleContext turtleContext = new RDFTurtleContext();
-
                 //Fetch Turtle data
                 string turtleData;
                 using (StreamReader sReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                     turtleData = sReader.ReadToEnd();
+
+                //Initialize Turtle context
+                RDFTurtleContext turtleContext = new RDFTurtleContext();
 
                 //Parse Turtle data
                 int bufferChar = SkipWhitespace(turtleData, turtleContext);
@@ -115,14 +115,14 @@ namespace RDFSharp.Model
                     bufferChar = SkipWhitespace(turtleData, turtleContext);
                 }
                 RDFNamespaceRegister.RemoveTemporaryNamespaces();
-
-                return result;
                 #endregion
             }
             catch (Exception ex)
             {
                 throw new RDFModelException("Cannot deserialize Turtle because: " + ex.Message, ex);
             }
+
+            return result;
         }
         #endregion
 

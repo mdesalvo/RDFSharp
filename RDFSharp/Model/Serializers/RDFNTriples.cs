@@ -196,17 +196,17 @@ namespace RDFSharp.Model
         /// <exception cref="RDFModelException"></exception>
         internal static RDFGraph Deserialize(Stream inputStream, Uri graphContext)
         {
+            RDFGraph result = new RDFGraph().SetContext(graphContext);
             long ntripleIndex = 0;
+            string nTriple;
+            string[] tokens = new string[3];
+            Dictionary<string, long> hashContext = new Dictionary<string, long>(128);
+
             try
             {
                 #region deserialize
                 using (StreamReader sr = new StreamReader(inputStream, Encoding.ASCII))
                 {
-                    RDFGraph result = new RDFGraph().SetContext(graphContext);
-                    string nTriple;
-                    string[] tokens = new string[3];
-                    Dictionary<string, long> hashContext = new Dictionary<string, long>(128);
-
                     while ((nTriple = sr.ReadLine()) != null)
                     {
                         ntripleIndex++;
@@ -311,8 +311,6 @@ namespace RDFSharp.Model
 
                         result.AddTriple(O != null ? new RDFTriple(S, P, O) : new RDFTriple(S, P, L));
                     }
-
-                    return result;
                 }
                 #endregion
             }
@@ -320,6 +318,8 @@ namespace RDFSharp.Model
             {
                 throw new RDFModelException("Cannot deserialize N-Triples (line " + ntripleIndex + ") because: " + ex.Message, ex);
             }
+
+            return result;
         }
         #endregion
 

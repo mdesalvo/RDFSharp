@@ -199,11 +199,11 @@ namespace RDFSharp.Model
         /// <exception cref="RDFModelException"></exception>
         internal static RDFGraph Deserialize(Stream inputStream, Uri graphContext)
         {
+            RDFGraph result = new RDFGraph().SetContext(graphContext);
+
             try
             {
                 #region deserialize
-
-                RDFGraph result = new RDFGraph().SetContext(graphContext);
                 using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
                     using (XmlTextReader trixReader = new XmlTextReader(streamReader))
@@ -270,14 +270,14 @@ namespace RDFSharp.Model
                         #endregion <TriX>
                     }
                 }
-                return result;
-
                 #endregion deserialize
             }
             catch (Exception ex)
             {
                 throw new RDFModelException("Cannot deserialize TriX because: " + ex.Message, ex);
             }
+
+            return result;
         }
 
         /// <summary>
