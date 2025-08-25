@@ -755,7 +755,7 @@ namespace RDFSharp.Model
         /// </summary>
         private static List<RDFNamespace> GetAutomaticNamespaces(RDFGraph graph)
         {
-            List<RDFNamespace> result = new List<RDFNamespace>(4); //Initial capacity=4 seems a good tradeoff for expected occurrences of unknown namespaces
+            List<RDFNamespace> result = new List<RDFNamespace>(4);
             foreach (string pred in graph.Index.Hashes.Select(x => graph.Index.Resources[x.Value.PredicateID].ToString()).Distinct())
             {
                 RDFNamespace nspace = GenerateNamespace(pred, false);

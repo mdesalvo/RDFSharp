@@ -174,7 +174,6 @@ namespace RDFSharp.Store
         internal static void ParseStatement(string trigData, RDFTriGContext trigContext)
         {
             StringBuilder sb = new StringBuilder(8);
-
             do
             {
                 int codePoint = ReadCodePoint(trigData, trigContext);

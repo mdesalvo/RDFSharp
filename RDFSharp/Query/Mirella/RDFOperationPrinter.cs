@@ -32,7 +32,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintInsertDataOperation(RDFInsertDataOperation insertDataOperation)
         {
-            StringBuilder sb = new StringBuilder(512); //Initial capacity=512 seems a good tradeoff for medium length of operations
+            StringBuilder sb = new StringBuilder(512);
 
             if (insertDataOperation != null)
             {
@@ -52,7 +52,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintInsertWhereOperation(RDFInsertWhereOperation insertWhereOperation)
         {
-            StringBuilder sb = new StringBuilder(512); //Initial capacity=512 seems a good tradeoff for medium length of operations
+            StringBuilder sb = new StringBuilder(512);
 
             if (insertWhereOperation != null)
             {
@@ -74,7 +74,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintDeleteDataOperation(RDFDeleteDataOperation deleteDataOperation)
         {
-            StringBuilder sb = new StringBuilder(512); //Initial capacity=512 seems a good tradeoff for medium length of operations
+            StringBuilder sb = new StringBuilder(512);
 
             if (deleteDataOperation != null)
             {
@@ -94,7 +94,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintDeleteWhereOperation(RDFDeleteWhereOperation deleteWhereOperation)
         {
-            StringBuilder sb = new StringBuilder(512); //Initial capacity=512 seems a good tradeoff for medium length of operations
+            StringBuilder sb = new StringBuilder(512);
 
             if (deleteWhereOperation != null)
             {
@@ -116,7 +116,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintDeleteInsertWhereOperation(RDFDeleteInsertWhereOperation deleteInsertWhereOperation)
         {
-            StringBuilder sb = new StringBuilder(512); //Initial capacity=512 seems a good tradeoff for medium length of operations
+            StringBuilder sb = new StringBuilder(512);
 
             if (deleteInsertWhereOperation != null)
             {
@@ -141,7 +141,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintLoadOperation(RDFLoadOperation loadOperation)
         {
-            StringBuilder sb = new StringBuilder(512); //Initial capacity=512 seems a good tradeoff for medium length of operations
+            StringBuilder sb = new StringBuilder(512);
 
             if (loadOperation != null)
             {
@@ -164,7 +164,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintClearOperation(RDFClearOperation clearOperation)
         {
-            StringBuilder sb = new StringBuilder(32); //Initial capacity=32 seems a good tradeoff for medium length of clear
+            StringBuilder sb = new StringBuilder(32);
 
             if (clearOperation != null)
             {
@@ -208,7 +208,7 @@ namespace RDFSharp.Query
         {
             if (operationPrefixes.Count > 0)
             {
-                StringBuilder sb = new StringBuilder(128); //Initial capacity=128 seems a good tradeoff for medium length of prefixes
+                StringBuilder sb = new StringBuilder(128);
                 operationPrefixes.ForEach(pf => sb.AppendLine($"PREFIX {pf.NamespacePrefix}: <{pf.NamespaceUri}>"));
                 sb.AppendLine();
                 return sb.ToString();

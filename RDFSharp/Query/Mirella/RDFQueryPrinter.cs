@@ -34,7 +34,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintSelectQuery(RDFSelectQuery selectQuery, double indentLevel, bool fromUnionOrMinus)
         {
-            StringBuilder sb = new StringBuilder(512); //Initial capacity=512 seems a good tradeoff for medium length of queries
+            StringBuilder sb = new StringBuilder(512);
             if (selectQuery == null)
                 return sb.ToString();
 
@@ -160,7 +160,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintDescribeQuery(RDFDescribeQuery describeQuery)
         {
-            StringBuilder sb = new StringBuilder(512); //Initial capacity=512 seems a good tradeoff for medium length of queries
+            StringBuilder sb = new StringBuilder(512);
             if (describeQuery == null)
                 return sb.ToString();
 
@@ -204,7 +204,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintConstructQuery(RDFConstructQuery constructQuery)
         {
-            StringBuilder sb = new StringBuilder(512); //Initial capacity=512 seems a good tradeoff for medium length of queries
+            StringBuilder sb = new StringBuilder(512);
             if (constructQuery == null)
                 return sb.ToString();
 
@@ -264,7 +264,7 @@ namespace RDFSharp.Query
             if (askQuery == null)
                 return string.Empty;
 
-            StringBuilder sb = new StringBuilder(512); //Initial capacity=512 seems a good tradeoff for medium length of queries
+            StringBuilder sb = new StringBuilder(512);
             List<RDFNamespace> prefixes = PrintPrefixes(askQuery, sb, true);
             sb.AppendLine("ASK");
             PrintWhereClause(askQuery, sb, prefixes, string.Empty, 0, false);
@@ -491,7 +491,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintPatternGroup(RDFPatternGroup patternGroup, int spaceIndent, bool skipOptional, List<RDFNamespace> prefixes)
         {
-            StringBuilder result = new StringBuilder(256); //Initial capacity=256 seems a good tradeoff for medium length of pattern groups
+            StringBuilder result = new StringBuilder(256);
             string spaces = new StringBuilder(8).Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
 
             //OPTIONAL
@@ -725,7 +725,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintPropertyPath(RDFPropertyPath propertyPath, List<RDFNamespace> prefixes)
         {
-            StringBuilder result = new StringBuilder(64); //Initial capacity=64 seems a good tradeoff for medium length of property paths
+            StringBuilder result = new StringBuilder(64);
             result.Append(PrintPatternMember(propertyPath.Start, prefixes));
             result.Append(' ');
 
@@ -813,7 +813,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintValues(RDFValues values, List<RDFNamespace> prefixes, string spaces)
         {
-            StringBuilder result = new StringBuilder(64); //Initial capacity=64 seems a good tradeoff for medium length of values
+            StringBuilder result = new StringBuilder(64);
 
             //Compact representation
             if (values.Bindings.Keys.Count == 1)

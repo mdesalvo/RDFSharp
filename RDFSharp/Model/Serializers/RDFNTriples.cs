@@ -205,7 +205,7 @@ namespace RDFSharp.Model
                     RDFGraph result = new RDFGraph().SetContext(graphContext);
                     string nTriple;
                     string[] tokens = new string[3];
-                    Dictionary<string, long> hashContext = new Dictionary<string, long>(256); //Initial capacity=256 seems a good tradeoff for expected cardinality of different Uris which might be encountered
+                    Dictionary<string, long> hashContext = new Dictionary<string, long>(128);
 
                     while ((nTriple = sr.ReadLine()) != null)
                     {
