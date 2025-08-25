@@ -331,7 +331,7 @@ namespace RDFSharp.Store
         private static void TokenizeNQuad(string nquad, ref string[] tokens)
         {
             //S->->-> quadruple
-            if (nquad.StartsWith("<", StringComparison.Ordinal))
+            if (nquad[0] == '<')
             {
                 //S->P->O->C
                 if (SPOC.Value.Match(nquad).Success)
@@ -562,7 +562,7 @@ namespace RDFSharp.Store
             }
 
             //B->->-> quadruple
-            if (nquad.StartsWith("_:", StringComparison.Ordinal))
+            if (nquad.Length > 1 && nquad[0] == '_' && nquad[1] == ':')
             {
                 //B->P->O->C
                 if (BPOC.Value.Match(nquad).Success)

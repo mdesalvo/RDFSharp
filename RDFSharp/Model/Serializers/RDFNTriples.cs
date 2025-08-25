@@ -330,7 +330,7 @@ namespace RDFSharp.Model
         private static void TokenizeNTriple(string ntriple, ref string[] tokens)
         {
             //S->-> triple
-            if (ntriple.StartsWith("<", StringComparison.Ordinal))
+            if (ntriple[0] == '<')
             {
                 //S->P->O
                 if (SPO.Value.Match(ntriple).Success)
@@ -436,7 +436,7 @@ namespace RDFSharp.Model
             }
 
             //B->-> triple
-            if (ntriple.StartsWith("_:", StringComparison.Ordinal))
+            if (ntriple.Length > 1 && ntriple[0] == '_' && ntriple[1] == ':')
             {
                 //B->P->O
                 if (BPO.Value.Match(ntriple).Success)
@@ -542,8 +542,8 @@ namespace RDFSharp.Model
                 throw new Exception("found illegal N-Triple, unrecognized 'B->->' structure");
             }
 
-            //A legal N-Triple starts with "_:" (blank) or "<" (uri)
-            throw new Exception("found illegal N-Triple, must start with \"_:\" or with \"<\"");
+            //A legal N-Triple starts with "<" (uri) or "_:" (blank)
+            throw new Exception("found illegal N-Triple, must start with \"<\" (for Uris) or \"_:\" (for blanks)");
         }
         #endregion
 
