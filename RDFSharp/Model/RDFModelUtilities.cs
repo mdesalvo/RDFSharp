@@ -315,9 +315,7 @@ namespace RDFSharp.Model
                 }
 
                 //Decompress hashed triples
-                List<RDFTriple> triples = new List<RDFTriple>(hashedTriples.Count);
-                hashedTriples.ForEach(ht => triples.Add(new RDFTriple(ht, graph.Index)));
-                return triples;
+                return hashedTriples.ConvertAll(ht => new RDFTriple(ht, graph.Index));
             }
             return EmptyTripleList;
         }

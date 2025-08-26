@@ -219,9 +219,7 @@ namespace RDFSharp.Store
                 }
 
                 //Decompress hashed quadruples
-                List<RDFQuadruple> quadruples = new List<RDFQuadruple>(hashedQuadruples.Count);
-                hashedQuadruples.ForEach(ht => quadruples.Add(new RDFQuadruple(ht, store.Index)));
-                return quadruples;
+                return hashedQuadruples.ConvertAll(hq => new RDFQuadruple(hq, store.Index));
             }
             return EmptyQuadrupleList;
         }
