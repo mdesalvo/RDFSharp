@@ -266,7 +266,7 @@ namespace RDFSharp.Query
 
             //Subject
             if (template.Subject is RDFVariable subjVar && !Variables.Any(v => v.Equals(subjVar)))
-                    Variables.Add(subjVar);
+                Variables.Add(subjVar);
 
             //Predicate
             if (template.Predicate is RDFVariable predVar && !Variables.Any(v => v.Equals(predVar)))
