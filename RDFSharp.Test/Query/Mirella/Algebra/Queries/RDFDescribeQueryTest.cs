@@ -58,7 +58,6 @@ public class RDFDescribeQueryTest
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.IsEmpty(query.GetValues());
         Assert.AreEqual(0, query.GetModifiers().Count());
         Assert.IsEmpty(query.GetPrefixes());
     }
@@ -98,7 +97,6 @@ public class RDFDescribeQueryTest
         Assert.AreEqual(2, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(1, query.GetPatternGroups().Count());
         Assert.AreEqual(1, query.GetSubQueries().Count());
-        Assert.HasCount(1, query.GetValues());
         Assert.AreEqual(3, query.GetModifiers().Count());
         Assert.HasCount(2, query.GetPrefixes());
     }
@@ -136,7 +134,6 @@ public class RDFDescribeQueryTest
         Assert.AreEqual(1, query.GetPatternGroups().Count());
         Assert.AreEqual(1, query.GetSubQueries().Count());
         Assert.IsTrue(query.GetSubQueries().Single() is RDFSelectQuery { IsOptional: true });
-        Assert.HasCount(1, query.GetValues());
         Assert.AreEqual(3, query.GetModifiers().Count());
         Assert.HasCount(2, query.GetPrefixes());
     }
@@ -174,7 +171,6 @@ public class RDFDescribeQueryTest
         Assert.AreEqual(1, query.GetPatternGroups().Count());
         Assert.IsTrue(query.GetPatternGroups().Single().JoinAsUnion);
         Assert.AreEqual(1, query.GetSubQueries().Count());
-        Assert.HasCount(1, query.GetValues());
         Assert.AreEqual(3, query.GetModifiers().Count());
         Assert.HasCount(2, query.GetPrefixes());
     }

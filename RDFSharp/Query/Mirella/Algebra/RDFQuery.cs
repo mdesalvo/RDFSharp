@@ -129,24 +129,6 @@ namespace RDFSharp.Query
             => QueryMembers.OfType<RDFQuery>();
 
         /// <summary>
-        /// Gets the SPARQL values of the query, including those from patterngroups and subqueries
-        /// </summary>
-        internal List<RDFValues> GetValues()
-        {
-            List<RDFValues> result = new List<RDFValues>();
-
-            //Add SPARQL values from pattern groups
-            foreach (RDFPatternGroup patternGroup in GetPatternGroups())
-                result.AddRange(patternGroup.GetValues());
-
-            //Add SPARQL values from subqueries
-            foreach (RDFQuery subQuery in GetSubQueries())
-                result.AddRange(subQuery.GetValues());
-
-            return result.Distinct().ToList();
-        }
-
-        /// <summary>
         /// Gets the prefixes of the query, including those from subqueries
         /// </summary>
         internal List<RDFNamespace> GetPrefixes()

@@ -189,7 +189,7 @@ namespace RDFSharp.Query
 
                         //Populate its metadata (IsOptional)
                         subQueryResult.SelectResults.ExtendedProperties[IsOptional] = subQuery.IsOptional
-                                                                                      || subQueryResult.SelectResults.ExtendedProperties[IsOptional] is true;
+                                                                                       || subQueryResult.SelectResults.ExtendedProperties[IsOptional] is true;
 
                         //Populate its metadata (JoinAsUnion)
                         subQueryResult.SelectResults.ExtendedProperties[JoinAsUnion] = subQuery.JoinAsUnion;
@@ -255,12 +255,10 @@ namespace RDFSharp.Query
                         case RDFPattern pattern:
                             //Evaluate pattern on the given data source
                             DataTable patternResultsTable = ApplyPattern(pattern, dataSource);
-
                             //Set name and metadata of result datatable
                             patternResultsTable.ExtendedProperties.Add(IsOptional, pattern.IsOptional);
                             patternResultsTable.ExtendedProperties.Add(JoinAsUnion, pattern.JoinAsUnion);
                             patternResultsTable.ExtendedProperties.Add(JoinAsMinus, pattern.JoinAsMinus);
-
                             //Save result datatable
                             PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
                             break;
@@ -268,7 +266,6 @@ namespace RDFSharp.Query
                         case RDFPropertyPath propertyPath:
                             //Evaluate property path on the given data source
                             DataTable pPathResultsTable = ApplyPropertyPath(propertyPath, dataSource);
-
                             //Save result datatable
                             PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
                             break;
@@ -276,10 +273,8 @@ namespace RDFSharp.Query
                         case RDFValues values:
                             //Transform SPARQL values into an equivalent filter
                             RDFValuesFilter valuesFilter = values.GetValuesFilter();
-
                             //Save result datatable
                             PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(valuesFilter.ValuesTable);
-
                             //Inject SPARQL values filter
                             patternGroup.AddFilter(valuesFilter);
                             break;
@@ -291,10 +286,8 @@ namespace RDFSharp.Query
                             // finally we drop all tables collected until this moment, except the comprehensive bind table
                             //Populate current patternGroup result table
                             DataTable currentPatternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID]);
-
                             //Evaluate bind operator on the current patternGroup result table
                             ProjectBind(bind, currentPatternGroupResultTable);
-
                             //Delete previous patternGroup result tables and replace them with bind operator's one
                             PatternGroupMemberResultTables[patternGroup.QueryMemberID].Clear();
                             PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(currentPatternGroupResultTable);
@@ -303,12 +296,10 @@ namespace RDFSharp.Query
                         case RDFExistsFilter existsFilter:
                             //Evaluate exists filter's pattern on the given data source
                             DataTable existsFilterResultsTable = ApplyPattern(existsFilter.Pattern, dataSource);
-
                             //Set name and metadata of result datatable
                             existsFilterResultsTable.ExtendedProperties.Add(IsOptional, false);
                             existsFilterResultsTable.ExtendedProperties.Add(JoinAsUnion, false);
                             existsFilterResultsTable.ExtendedProperties.Add(JoinAsMinus, false);
-
                             //Save result datatable (directly into the filter)
                             existsFilter.PatternResults = existsFilterResultsTable;
                             break;
