@@ -55,7 +55,7 @@ namespace RDFSharp.Model
         {
           URI = datatypeURI ?? throw new RDFModelException("Cannot create RDFDatatype because given \"datatypeURI\" parameter is null.");
           TargetDatatype = targetDatatype;
-          Facets = facets ?? new List<RDFFacet>();
+          Facets = facets ?? new List<RDFFacet>(4);
         }
         #endregion
 

@@ -208,7 +208,10 @@ namespace RDFSharp.Query
         /// </summary>
         internal void EvaluatePatternGroup(RDFPatternGroup patternGroup, RDFDataSource dataSource)
         {
-            PatternGroupMemberResultTables[patternGroup.QueryMemberID] = new List<DataTable>();
+            List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers()
+                                                                         .Distinct()
+                                                                         .ToList();
+            PatternGroupMemberResultTables[patternGroup.QueryMemberID] = new List<DataTable>(evaluablePGMembers.Count);
 
             //**Service** evaluation => send it querified to SPARQL endpoint
             if (patternGroup.EvaluateAsService.HasValue)
@@ -247,9 +250,7 @@ namespace RDFSharp.Query
             //**Standard** evaluation => iterate its active members
             else
             {
-                foreach (RDFPatternGroupMember evaluablePGMember in patternGroup.GetEvaluablePatternGroupMembers()
-                                                                                .Distinct()
-                                                                                .ToArray())
+                foreach (RDFPatternGroupMember evaluablePGMember in evaluablePGMembers)
                     switch (evaluablePGMember)
                     {
                         case RDFPattern pattern:

@@ -54,7 +54,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the bind operator
         /// </summary>
         public override string ToString()
-            => ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>(0));
         internal string ToString(List<RDFNamespace> prefixes)
             => RDFQueryPrinter.PrintBind(this, prefixes);
         #endregion

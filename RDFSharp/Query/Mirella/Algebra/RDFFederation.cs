@@ -63,7 +63,7 @@ namespace RDFSharp.Query
         public RDFFederation()
         {
             FederationName = $"FEDERATION|ID={Guid.NewGuid():N}";
-            DataSources = new List<RDFDataSource>();
+            DataSources = new List<RDFDataSource>(8);
             EndpointDataSourcesQueryOptions = new Dictionary<string, RDFSPARQLEndpointQueryOptions>(0);
         }
         #endregion

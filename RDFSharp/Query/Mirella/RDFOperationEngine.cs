@@ -79,7 +79,7 @@ namespace RDFSharp.Query
             RDFConstructQueryResult constructResult = ExecuteConstructQueryFromOperation(insertWhereOperation, datasource);
 
             //Use materialized templates for execution of the operation
-            List<RDFPattern> insertTemplates = new List<RDFPattern>();
+            List<RDFPattern> insertTemplates = new List<RDFPattern>(32);
             if (datasource.IsGraph())
             {
                 RDFGraph insertGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
@@ -115,7 +115,7 @@ namespace RDFSharp.Query
             RDFConstructQueryResult constructResult = ExecuteConstructQueryFromOperation(deleteWhereOperation, datasource);
 
             //Use materialized templates for execution of the operation
-            List<RDFPattern> deleteTemplates = new List<RDFPattern>();
+            List<RDFPattern> deleteTemplates = new List<RDFPattern>(32);
             if (datasource.IsGraph())
             {
                 RDFGraph deleteGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
@@ -143,8 +143,8 @@ namespace RDFSharp.Query
             RDFConstructQueryResult constructInsertResult = new RDFOperationEngine().ExecuteConstructQueryFromOperation(deleteInsertWhereOperation, datasource, "INSERT");
 
             //Use materialized templates for execution of the operation
-            List<RDFPattern> deleteTemplates = new List<RDFPattern>();
-            List<RDFPattern> insertTemplates = new List<RDFPattern>();
+            List<RDFPattern> deleteTemplates = new List<RDFPattern>(32);
+            List<RDFPattern> insertTemplates = new List<RDFPattern>(32);
             if (datasource.IsGraph())
             {
                 RDFGraph deleteGraph = RDFGraph.FromDataTable(constructDeleteResult.ConstructResults);
@@ -178,7 +178,7 @@ namespace RDFSharp.Query
 
             try
             {
-                List<RDFPattern> insertTemplates = new List<RDFPattern>();
+                List<RDFPattern> insertTemplates = new List<RDFPattern>(32);
 
                 //GRAPH => Dereference triples
                 if (isGraph)

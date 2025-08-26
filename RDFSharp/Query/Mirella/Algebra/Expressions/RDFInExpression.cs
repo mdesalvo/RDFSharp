@@ -41,7 +41,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFInExpression(RDFExpression leftArgument, List<RDFPatternMember> inTerms) : base(leftArgument, null as RDFExpression)
         {
-            InTerms = inTerms ?? new List<RDFPatternMember>();
+            InTerms = inTerms ?? Enumerable.Empty<RDFPatternMember>().ToList();
             //Do not accept null values in input list
             InTerms.RemoveAll(t => t == null);
         }
@@ -51,7 +51,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFInExpression(RDFVariable leftArgument, List<RDFPatternMember> inTerms) : base(leftArgument, null as RDFExpression)
         {
-            InTerms = inTerms ?? new List<RDFPatternMember>();
+            InTerms = inTerms ?? Enumerable.Empty<RDFPatternMember>().ToList();
             //Do not accept null values in input list
             InTerms.RemoveAll(t => t == null);
         }
@@ -62,7 +62,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the lookup function
         /// </summary>
         public override string ToString()
-            => ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>(0));
         internal override string ToString(List<RDFNamespace> prefixes)
         {
             StringBuilder sb = new StringBuilder(64);

@@ -89,9 +89,9 @@ namespace RDFSharp.Model
         {
             Deactivated = false;
             Severity = RDFValidationEnums.RDFShapeSeverity.Violation;
-            Messages = new List<RDFLiteral>();
-            Targets = new List<RDFTarget>();
-            Constraints = new List<RDFConstraint>();
+            Messages = new List<RDFLiteral>(4);
+            Targets = new List<RDFTarget>(4);
+            Constraints = new List<RDFConstraint>(8);
         }
         #endregion
 
@@ -147,9 +147,8 @@ namespace RDFSharp.Model
                     Messages.Add(message);
 
                 //Typed Literal
-                else
-                    if (((RDFTypedLiteral)message).Datatype.ToString().Equals(RDFVocabulary.XSD.STRING.ToString()))
-                        Messages.Add(message);
+                else if (((RDFTypedLiteral)message).Datatype.ToString().Equals(RDFVocabulary.XSD.STRING.ToString()))
+                    Messages.Add(message);
             }
             return this;
         }

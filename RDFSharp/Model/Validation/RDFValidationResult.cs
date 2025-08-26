@@ -78,7 +78,7 @@ namespace RDFSharp.Model
             FocusNode = focusNode;
             ResultPath = resultPath;
             ResultValue = resultValue;
-            ResultMessages = resultMessages ?? new List<RDFLiteral>();
+            ResultMessages = resultMessages ?? new List<RDFLiteral>(32);
             Severity = severity;
         }
         #endregion

@@ -68,7 +68,7 @@ namespace RDFSharp.Model
             ContainerType = containerType;
             ItemType = itemType;
             ReificationSubject = new RDFResource();
-            Items = new List<RDFPatternMember>();
+            Items = new List<RDFPatternMember>(4);
         }
         #endregion
 

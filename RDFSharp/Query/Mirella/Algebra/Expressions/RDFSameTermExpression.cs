@@ -53,7 +53,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the RDF term equality function
         /// </summary>
         public override string ToString()
-            => ToString(new List<RDFNamespace>());
+            => ToString(new List<RDFNamespace>(0));
         internal override string ToString(List<RDFNamespace> prefixes)
         {
             StringBuilder sb = new StringBuilder(32);

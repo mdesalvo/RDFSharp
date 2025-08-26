@@ -55,7 +55,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the SPARQL values
         /// </summary>
         public override string ToString()
-            => ToString(new List<RDFNamespace>(), string.Empty);
+            => ToString(new List<RDFNamespace>(0), string.Empty);
         internal string ToString(List<RDFNamespace> prefixes, string spaces)
             => RDFQueryPrinter.PrintValues(this, prefixes, spaces);
         #endregion
@@ -72,7 +72,7 @@ namespace RDFSharp.Query
 
                 //Initialize bindings of the given variable
                 if (!Bindings.ContainsKey(variableString))
-                    Bindings.Add(variableString, new List<RDFPatternMember>());
+                    Bindings.Add(variableString, new List<RDFPatternMember>(8));
 
                 //Populate bindings of the given variable
                 //(null indicates the special UNDEF binding)
