@@ -54,9 +54,11 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFInConstraint AddValue(RDFResource resource)
         {
-            if (ItemType == RDFModelEnums.RDFItemTypes.Resource)
-                if (resource != null && !InValues.ContainsKey(resource.PatternMemberID))
-                    InValues.Add(resource.PatternMemberID, resource);
+            if (ItemType == RDFModelEnums.RDFItemTypes.Resource
+                 && resource != null && !InValues.ContainsKey(resource.PatternMemberID))
+            {
+                InValues.Add(resource.PatternMemberID, resource);
+            }
             return this;
         }
 
@@ -65,9 +67,11 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFInConstraint AddValue(RDFLiteral literal)
         {
-            if (ItemType == RDFModelEnums.RDFItemTypes.Literal)
-                if (literal != null && !InValues.ContainsKey(literal.PatternMemberID))
-                    InValues.Add(literal.PatternMemberID, literal);
+            if (ItemType == RDFModelEnums.RDFItemTypes.Literal
+                 && literal != null && !InValues.ContainsKey(literal.PatternMemberID))
+            {
+                InValues.Add(literal.PatternMemberID, literal);
+            }
             return this;
         }
 

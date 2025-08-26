@@ -73,7 +73,7 @@ namespace RDFSharp.Model
         {
             Instance = new RDFNamespaceRegister
             {
-                Register = new List<RDFNamespace>
+                Register = new List<RDFNamespace>(32)
                 {
                     RDFSharpNS,
 

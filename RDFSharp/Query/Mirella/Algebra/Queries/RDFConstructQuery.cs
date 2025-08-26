@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -64,7 +65,8 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFConstructQuery AddTemplate(RDFPattern template)
         {
-            if (template != null && !Templates.Any(tp => tp.ToString().Equals(template.ToString())))
+            string templateString = template?.ToString();
+            if (template != null && !Templates.Any(tp => string.Equals(tp.ToString(), templateString, StringComparison.Ordinal)))
             {
                 Templates.Add(template);
 

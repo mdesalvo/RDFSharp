@@ -102,19 +102,21 @@ namespace RDFSharp.Query
                 RDFQueryEngine.AddColumn(result, bindingKey);
 
             //Create the rows of the SPARQL values
+            bool containsNullBindings = false;
             result.BeginLoadData();
             for (int i = 0; i < MaxBindingsLength(); i++)
             {
-                Dictionary<string, string> bindings = new Dictionary<string, string>();
+                Dictionary<string, string> bindings = new Dictionary<string, string>(Bindings.Count);
                 foreach (KeyValuePair<string, List<RDFPatternMember>> binding in Bindings)
                 {
                     RDFPatternMember bindingValue = binding.Value.ElementAtOrDefault(i);
                     bindings.Add(binding.Key, bindingValue?.ToString());
                     if (bindingValue == null)
-                        result.ExtendedProperties[RDFQueryEngine.IsOptional] = true;
+                        containsNullBindings = true;
                 }
                 RDFQueryEngine.AddRow(result, bindings);
             }
+            result.ExtendedProperties[RDFQueryEngine.IsOptional] = containsNullBindings;
             result.EndLoadData();
 
             return result;

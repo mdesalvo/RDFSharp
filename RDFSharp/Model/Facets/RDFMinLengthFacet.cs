@@ -45,7 +45,7 @@ namespace RDFSharp.Model
         /// Gives a graph representation of the minlength facet
         /// </summary>
         public override RDFGraph ToRDFGraph()
-          => new RDFGraph(new List<RDFTriple> {
+          => new RDFGraph(new List<RDFTriple>(1) {
               new RDFTriple(URI, RDFVocabulary.XSD.MIN_LENGTH, new RDFTypedLiteral(Convert.ToString(Length, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)) });
 
         /// <summary>

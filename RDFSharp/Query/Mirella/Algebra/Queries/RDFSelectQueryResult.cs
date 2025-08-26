@@ -280,60 +280,58 @@ namespace RDFSharp.Query
                                 foreach (XmlNode resNode in node.ChildNodes)
                                 {
                                     #region RESULT
-                                    if (string.Equals(resNode.Name, "RESULT", StringComparison.OrdinalIgnoreCase))
-                                        if (resNode.HasChildNodes)
+                                    if (string.Equals(resNode.Name, "RESULT", StringComparison.OrdinalIgnoreCase) && resNode.HasChildNodes)
+                                    {
+                                        Dictionary<string, string> results = new Dictionary<string, string>(resNode.ChildNodes.Count);
+                                        foreach (XmlNode bindingNode in resNode.ChildNodes)
                                         {
-                                            Dictionary<string, string> results = new Dictionary<string, string>();
-                                            foreach (XmlNode bindingNode in resNode.ChildNodes)
+                                            bool foundUri = false;
+                                            bool foundLit = false;
+
+                                            #region BINDING
+                                            if (string.Equals(bindingNode.Name, "BINDING", StringComparison.OrdinalIgnoreCase))
                                             {
-                                                bool foundUri = false;
-                                                bool foundLit = false;
+                                                if (bindingNode.Attributes == null || bindingNode.Attributes.Count == 0)
+                                                    throw new Exception("one \"binding\" node was found without attributes.");
+                                                if (string.IsNullOrEmpty(bindingNode.Attributes["name"]?.Value))
+                                                    throw new Exception("one \"binding\" node was found without, or with empty, \"name\" attribute.");
+                                                if (!bindingNode.HasChildNodes)
+                                                    throw new Exception("one \"binding\" node was found without children.");
 
-                                                #region BINDING
-                                                if (string.Equals(bindingNode.Name, "BINDING", StringComparison.OrdinalIgnoreCase))
+                                                #region URI / BNODE
+                                                if (string.Equals(bindingNode.FirstChild.Name, "URI", StringComparison.OrdinalIgnoreCase)
+                                                    || string.Equals(bindingNode.FirstChild.Name, "BNODE", StringComparison.OrdinalIgnoreCase))
                                                 {
-                                                    if (bindingNode.Attributes == null || bindingNode.Attributes.Count == 0)
-                                                        throw new Exception("one \"binding\" node was found without attributes.");
-                                                    if (string.IsNullOrEmpty(bindingNode.Attributes["name"]?.Value))
-                                                        throw new Exception("one \"binding\" node was found without, or with empty, \"name\" attribute.");
-                                                    if (!bindingNode.HasChildNodes)
-                                                        throw new Exception("one \"binding\" node was found without children.");
+                                                    if (RDFModelUtilities.GetUriFromString(bindingNode.InnerText) == null)
+                                                        throw new Exception("one \"uri\" node contained data not corresponding to a valid Uri.");
 
-                                                    #region URI / BNODE
-                                                    if (string.Equals(bindingNode.FirstChild.Name, "URI", StringComparison.OrdinalIgnoreCase)
-                                                        || string.Equals(bindingNode.FirstChild.Name, "BNODE", StringComparison.OrdinalIgnoreCase))
-                                                    {
-                                                        if (RDFModelUtilities.GetUriFromString(bindingNode.InnerText) == null)
-                                                            throw new Exception("one \"uri\" node contained data not corresponding to a valid Uri.");
-
-                                                        foundUri = true;
-                                                        results.Add(bindingNode.Attributes["name"].Value, bindingNode.InnerText);
-                                                    }
-                                                    #endregion
-
-                                                    #region LITERAL
-                                                    else if (string.Equals(bindingNode.FirstChild.Name, "LITERAL", StringComparison.OrdinalIgnoreCase))
-                                                    {
-                                                        foundLit = true;
-                                                        if (bindingNode.FirstChild.Attributes == null || bindingNode.FirstChild.Attributes.Count == 0)
-                                                            results.Add(bindingNode.Attributes["name"].Value, bindingNode.InnerText);
-                                                        else if (!string.IsNullOrEmpty(bindingNode.FirstChild.Attributes["datatype"]?.Value))
-                                                            results.Add(bindingNode.Attributes["name"].Value, $"{bindingNode.FirstChild.InnerText}^^{bindingNode.FirstChild.Attributes["datatype"].Value}");
-                                                        else if (!string.IsNullOrEmpty(bindingNode.FirstChild.Attributes["xml:lang"]?.Value))
-                                                            results.Add(bindingNode.Attributes["name"].Value, $"{bindingNode.FirstChild.InnerText}@{bindingNode.FirstChild.Attributes["xml:lang"].Value}");
-                                                        else
-                                                            throw new Exception("one \"literal\" node was found with attribute different from \"datatype\" or \"xml:lang\".");
-                                                    }
-                                                    #endregion
+                                                    foundUri = true;
+                                                    results.Add(bindingNode.Attributes["name"].Value, bindingNode.InnerText);
                                                 }
                                                 #endregion
 
-                                                if (!foundUri && !foundLit)
-                                                    throw new Exception("one \"binding\" node was found without mandatory child \"uri\" or \"literal\".");
+                                                #region LITERAL
+                                                else if (string.Equals(bindingNode.FirstChild.Name, "LITERAL", StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    foundLit = true;
+                                                    if (bindingNode.FirstChild.Attributes == null || bindingNode.FirstChild.Attributes.Count == 0)
+                                                        results.Add(bindingNode.Attributes["name"].Value, bindingNode.InnerText);
+                                                    else if (!string.IsNullOrEmpty(bindingNode.FirstChild.Attributes["datatype"]?.Value))
+                                                        results.Add(bindingNode.Attributes["name"].Value, $"{bindingNode.FirstChild.InnerText}^^{bindingNode.FirstChild.Attributes["datatype"].Value}");
+                                                    else if (!string.IsNullOrEmpty(bindingNode.FirstChild.Attributes["xml:lang"]?.Value))
+                                                        results.Add(bindingNode.Attributes["name"].Value, $"{bindingNode.FirstChild.InnerText}@{bindingNode.FirstChild.Attributes["xml:lang"].Value}");
+                                                    else
+                                                        throw new Exception("one \"literal\" node was found with attribute different from \"datatype\" or \"xml:lang\".");
+                                                }
+                                                #endregion
                                             }
-                                            RDFQueryEngine.AddRow(result.SelectResults, results);
-                                        }
+                                            #endregion
 
+                                            if (!foundUri && !foundLit)
+                                                throw new Exception("one \"binding\" node was found without mandatory child \"uri\" or \"literal\".");
+                                        }
+                                        RDFQueryEngine.AddRow(result.SelectResults, results);
+                                    }
                                     #endregion
                                 }
                             }

@@ -61,7 +61,7 @@ namespace RDFSharp.Model
         static RDFDatatypeRegister()
         {
             Instance = new RDFDatatypeRegister {
-                Register = new List<RDFDatatype>() };
+                Register = new List<RDFDatatype>(64) };
 
             foreach (RDFModelEnums.RDFDatatypes datatype in Enum.GetValues(typeof(RDFModelEnums.RDFDatatypes)).Cast<RDFModelEnums.RDFDatatypes>())
                 Instance.Register.Add(new RDFDatatype(new Uri(datatype.GetDatatypeFromEnum()), datatype, null) { IsBuiltIn = true });

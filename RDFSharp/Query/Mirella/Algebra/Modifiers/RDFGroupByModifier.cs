@@ -52,8 +52,8 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create RDFGroupByModifier because given \"partitionVariables\" parameter contains null elements.");
             #endregion
 
-            PartitionVariables = new List<RDFVariable>();
-            Aggregators = new List<RDFAggregator>();
+            PartitionVariables = new List<RDFVariable>(partitionVariables.Count);
+            Aggregators = new List<RDFAggregator>(partitionVariables.Count);
             partitionVariables.ForEach(pv1 =>
             {
                 if (!PartitionVariables.Any(pv2 => pv2.Equals(pv1)))

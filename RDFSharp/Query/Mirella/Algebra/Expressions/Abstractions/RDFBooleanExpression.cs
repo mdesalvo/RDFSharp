@@ -60,21 +60,19 @@ namespace RDFSharp.Query
                 if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
                      && leftArgumentTypedLiteral.HasBooleanDatatype()
                      && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
-                     && rightArgumentTypedLiteral.HasBooleanDatatype())
+                     && rightArgumentTypedLiteral.HasBooleanDatatype()
+                     && bool.TryParse(leftArgumentTypedLiteral.Value, out bool leftArgumentBooleanValue)
+                     && bool.TryParse(rightArgumentTypedLiteral.Value, out bool rightArgumentBooleanValue))
                 {
-                    if (bool.TryParse(leftArgumentTypedLiteral.Value, out bool leftArgumentBooleanValue)
-                         && bool.TryParse(rightArgumentTypedLiteral.Value, out bool rightArgumentBooleanValue))
+                    switch (this)
                     {
-                        switch (this)
-                        {
-                            //Execute the boolean expression's comparison logics
-                            case RDFBooleanAndExpression _:
-                                expressionResult = leftArgumentBooleanValue && rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False;
-                                break;
-                            case RDFBooleanOrExpression _:
-                                expressionResult = leftArgumentBooleanValue || rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False;
-                                break;
-                        }
+                        //Execute the boolean expression's comparison logics
+                        case RDFBooleanAndExpression _:
+                            expressionResult = leftArgumentBooleanValue && rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                            break;
+                        case RDFBooleanOrExpression _:
+                            expressionResult = leftArgumentBooleanValue || rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                            break;
                     }
                 }
                 #endregion

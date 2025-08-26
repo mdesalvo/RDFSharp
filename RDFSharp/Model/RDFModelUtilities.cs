@@ -225,7 +225,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Empty list of triples to be returned in case of no query results
         /// </summary>
-        internal static readonly List<RDFTriple> EmptyTripleList = new List<RDFTriple>();
+        internal static readonly List<RDFTriple> EmptyTripleList = new List<RDFTriple>(0);
 
         /// <summary>
         /// Selects the triples corresponding to the given pattern from the given graph
@@ -328,7 +328,7 @@ namespace RDFSharp.Model
         public static List<RDFDatatype> ExtractDatatypeDefinitions(this RDFGraph graph)
         {
             if (graph == null)
-                return new List<RDFDatatype>();
+                return new List<RDFDatatype>(0);
 
             List<RDFDatatype> datatypes = new List<RDFDatatype>(4);
             foreach (RDFTriple datatypeTriple in graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE, null])

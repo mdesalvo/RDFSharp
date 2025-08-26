@@ -91,7 +91,7 @@ namespace RDFSharp.Model
                     RDFGraph rdfRest = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST);
 
                     //Fetch data describing containers of the graph
-                    var containersXML = new Dictionary<long, XmlNode>();
+                    var containersXML = new Dictionary<long, XmlNode>(0);
                     var containers = rdfType.SelectTriplesByObject(RDFVocabulary.RDF.ALT)
                                             .UnionWith(rdfType.SelectTriplesByObject(RDFVocabulary.RDF.BAG))
                                             .UnionWith(rdfType.SelectTriplesByObject(RDFVocabulary.RDF.SEQ))
@@ -239,7 +239,7 @@ namespace RDFSharp.Model
                                         //Append "rdf:parseType=Collection" elements
                                         bool nilFound = false;
                                         RDFResource currentCollItem = (RDFResource)triple.Object;
-                                        List<XmlNode> collElements = new List<XmlNode>();
+                                        List<XmlNode> collElements = new List<XmlNode>(4);
                                         while (!nilFound)
                                         {
                                             var collElement = collections.Find(x => x.CollectionUri.Equals(currentCollItem));
@@ -424,7 +424,7 @@ namespace RDFSharp.Model
                         #region elements
                         //Parse children of root node
                         if (rdfRDF.HasChildNodes)
-                            ParseNodeList(rdfRDF.ChildNodes, result, xmlBase, GetXmlLangAttribute(rdfRDF), new Dictionary<string, long>());
+                            ParseNodeList(rdfRDF.ChildNodes, result, xmlBase, GetXmlLangAttribute(rdfRDF), new Dictionary<string, long>(128));
                         #endregion
                     }
                 }
@@ -446,7 +446,7 @@ namespace RDFSharp.Model
         private static List<RDFResource> ParseNodeList(XmlNodeList nodeList, RDFGraph result, Uri xmlBase, XmlAttribute xmlLangParent,
             Dictionary<string, long> hashContext, RDFResource subjectParent = null)
         {
-            List<RDFResource> subjects = new List<RDFResource>();
+            List<RDFResource> subjects = new List<RDFResource>(nodeList.Count);
             foreach (XmlNode subjNode in nodeList)
             {
                 #region subject
@@ -562,7 +562,6 @@ namespace RDFSharp.Model
                             {
                                 ParseContainerElements(RDFModelEnums.RDFContainerTypes.Alt, containerNode, subj, pred, result, xmlLangCont, hashContext);
                             }
-
                             continue;
                         }
                         #endregion
@@ -1079,7 +1078,7 @@ namespace RDFSharp.Model
             //Iterate on the container items
             if (container.HasChildNodes)
             {
-                List<string> elemVals = new List<string>();
+                List<string> elemVals = new List<string>(4);
                 foreach (XmlNode elem in container.ChildNodes)
                 {
                     //Skip container item if it is not an element
@@ -1093,9 +1092,8 @@ namespace RDFSharp.Model
                     if (elemUri != null)
                     {
                         //Sanitize eventual blank node value detected by presence of "nodeID" attribute
-                        if (string.Equals(elemUri.LocalName, "nodeID", StringComparison.OrdinalIgnoreCase))
-                            if (!elemUri.Value.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
-                                elemUri.Value = $"bnode:{elemUri.Value}";
+                        if (string.Equals(elemUri.LocalName, "nodeID", StringComparison.OrdinalIgnoreCase) && !elemUri.Value.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
+                            elemUri.Value = $"bnode:{elemUri.Value}";
 
                         //obj -> rdf:_N -> VALUE
                         if (contType == RDFModelEnums.RDFContainerTypes.Alt)

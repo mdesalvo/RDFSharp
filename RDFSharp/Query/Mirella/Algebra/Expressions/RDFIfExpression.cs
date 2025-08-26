@@ -89,10 +89,9 @@ namespace RDFSharp.Query
 
                 #region Calculate Result
                 if (conditionArgumentPMember is RDFTypedLiteral conditionArgumentTypedLiteral
-                     && conditionArgumentTypedLiteral.HasBooleanDatatype())
-                    if (bool.TryParse(conditionArgumentTypedLiteral.Value, out bool conditionalArgumentBooleanValue))
-                        expressionResult = conditionalArgumentBooleanValue ? ((RDFExpression)LeftArgument).ApplyExpression(row) : ((RDFExpression)RightArgument).ApplyExpression(row);
-
+                     && conditionArgumentTypedLiteral.HasBooleanDatatype()
+                     && bool.TryParse(conditionArgumentTypedLiteral.Value, out bool conditionalArgumentBooleanValue))
+                    expressionResult = conditionalArgumentBooleanValue ? ((RDFExpression)LeftArgument).ApplyExpression(row) : ((RDFExpression)RightArgument).ApplyExpression(row);
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
