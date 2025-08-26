@@ -96,7 +96,7 @@ namespace RDFSharp.Store
         internal static RDFMemoryStore Deserialize(Stream inputStream)
         {
             RDFMemoryStore result = new RDFMemoryStore();
-            Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>(3);
+            Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>(4);
 
             try
             {

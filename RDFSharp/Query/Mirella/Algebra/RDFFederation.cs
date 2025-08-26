@@ -63,7 +63,7 @@ namespace RDFSharp.Query
         public RDFFederation()
         {
             FederationName = $"FEDERATION|ID={Guid.NewGuid():N}";
-            DataSources = new List<RDFDataSource>(8);
+            DataSources = new List<RDFDataSource>(4);
             EndpointDataSourcesQueryOptions = new Dictionary<string, RDFSPARQLEndpointQueryOptions>(0);
         }
         #endregion
@@ -126,10 +126,11 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFFederation AddSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
         {
-            if (sparqlEndpoint != null && !EndpointDataSourcesQueryOptions.ContainsKey(sparqlEndpoint.ToString()))
+            string sparqlEndpointString = sparqlEndpoint?.ToString();
+            if (sparqlEndpoint != null && !EndpointDataSourcesQueryOptions.ContainsKey(sparqlEndpointString))
             {
                 DataSources.Add(sparqlEndpoint);
-                EndpointDataSourcesQueryOptions.Add(sparqlEndpoint.ToString(), sparqlEndpointQueryOptions ?? new RDFSPARQLEndpointQueryOptions());
+                EndpointDataSourcesQueryOptions.Add(sparqlEndpointString, sparqlEndpointQueryOptions ?? new RDFSPARQLEndpointQueryOptions());
             }
             return this;
         }
