@@ -59,7 +59,7 @@ namespace RDFSharp.Model
             RDFPropertyShape pShape = shape as RDFPropertyShape;
 
             //Search for given xone shapes
-            List<RDFShape> xoneShapes = new List<RDFShape>();
+            List<RDFShape> xoneShapes = new List<RDFShape>(XoneShapes.Count);
             foreach (RDFResource xoneShapeUri in XoneShapes.Values)
             {
                 RDFShape xoneShape = shapesGraph.SelectShape(xoneShapeUri.ToString());
@@ -78,7 +78,7 @@ namespace RDFSharp.Model
                 int valueNodeConformsCounter = 0;
                 foreach (RDFShape xoneShape in xoneShapes)
                 {
-                    RDFValidationReport xoneShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, xoneShape, new List<RDFPatternMember> { valueNode });
+                    RDFValidationReport xoneShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, xoneShape, new List<RDFPatternMember>(1) { valueNode });
                     if (xoneShapeReport.Conforms)
                     {
                         valueNodeConformsCounter++;

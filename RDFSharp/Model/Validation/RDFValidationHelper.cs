@@ -30,7 +30,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static List<RDFPatternMember> GetFocusNodesOf(this RDFGraph dataGraph, RDFShape shape)
         {
-            List<RDFPatternMember> result = new List<RDFPatternMember>();
+            List<RDFPatternMember> result = new List<RDFPatternMember>(16);
             if (shape != null && dataGraph != null)
             {
                 foreach (RDFTarget target in shape.Targets)
@@ -70,7 +70,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static List<RDFPatternMember> GetValueNodesOf(this RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode)
         {
-            List<RDFPatternMember> result = new List<RDFPatternMember>();
+            List<RDFPatternMember> result = new List<RDFPatternMember>(8);
             if (shape != null && dataGraph != null && focusNode != null)
             {
                 switch (shape)
@@ -87,7 +87,7 @@ namespace RDFSharp.Model
                             #region inversePath
                             if (propertyShape.IsInversePath)
                                 result.AddRange(dataGraph[null, propertyShape.Path, focusNodeResource, null]
-                                    .Select(t => t.Object));
+                                      .Select(t => t.Object));
                             #endregion
 
                             #region [alternative|sequence]Path
@@ -106,7 +106,8 @@ namespace RDFSharp.Model
                                     isAlternativePath ? propertyShape.AlternativePath : propertyShape.SequencePath, dataGraph);
                                 result.AddRange(from DataRow pathResultRow
                                                 in pathResult.Rows
-                                                select pathResultRow["?END"]?.ToString() into prValue where !string.IsNullOrEmpty(prValue)
+                                                select pathResultRow["?END"]?.ToString()
+                                                into prValue where !string.IsNullOrEmpty(prValue)
                                                 select RDFQueryUtilities.ParseRDFPatternMember(prValue));
 
                                 //Recontextualize property path to the initial configuration
@@ -120,7 +121,7 @@ namespace RDFSharp.Model
                             #region path
                             else
                                 result.AddRange(dataGraph[focusNodeResource, propertyShape.Path, null, null]
-                                    .Select(t => t.Object));
+                                      .Select(t => t.Object));
                             #endregion
                         }
                         break;
@@ -134,7 +135,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static List<RDFPatternMember> GetInstancesOfClass(this RDFGraph dataGraph, RDFResource className, HashSet<long> visitContext=null)
         {
-            List<RDFPatternMember> result = new List<RDFPatternMember>();
+            List<RDFPatternMember> result = new List<RDFPatternMember>(16);
             if (className != null && dataGraph != null)
             {
                 #region visitContext
@@ -151,7 +152,7 @@ namespace RDFSharp.Model
 
                 //rdf:type
                 result.AddRange(dataGraph[null, RDFVocabulary.RDF.TYPE, className, null]
-                    .Select(triple => triple.Subject));
+                      .Select(triple => triple.Subject));
 
                 //rdfs:subClassOf
                 foreach (RDFTriple triple in dataGraph[null, RDFVocabulary.RDFS.SUB_CLASS_OF, className, null])

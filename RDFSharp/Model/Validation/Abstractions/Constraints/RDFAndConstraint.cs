@@ -80,7 +80,7 @@ namespace RDFSharp.Model
                 //Iterate required shapes, breaking at the first unsatisfied one
                 foreach (RDFShape andShape in andShapes)
                 {
-                    RDFValidationReport andShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, andShape, new List<RDFPatternMember> { valueNode });
+                    RDFValidationReport andShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, andShape, new List<RDFPatternMember>(1) { valueNode });
                     if (!andShapeReport.Conforms)
                     {
                         valueNodeConforms = false;

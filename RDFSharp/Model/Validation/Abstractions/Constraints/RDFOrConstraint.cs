@@ -78,7 +78,7 @@ namespace RDFSharp.Model
                 bool valueNodeConforms = false;
                 foreach (RDFShape orShape in orShapes)
                 {
-                    RDFValidationReport orShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, orShape, new List<RDFPatternMember> { valueNode });
+                    RDFValidationReport orShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, orShape, new List<RDFPatternMember>(1) { valueNode });
                     if (orShapeReport.Conforms)
                     {
                         valueNodeConforms = true;

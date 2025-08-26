@@ -88,7 +88,7 @@ namespace RDFSharp.Model
                 int conformingValues = 0;
                 foreach (RDFPatternMember valueNode in valueNodes)
                 {
-                    RDFValidationReport qualifiedValueShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, qualifiedValueShape, new List<RDFPatternMember> { valueNode });
+                    RDFValidationReport qualifiedValueShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, qualifiedValueShape, new List<RDFPatternMember>(1) { valueNode });
                     if (qualifiedValueShapeReport.Conforms)
                         conformingValues++;
                 }
