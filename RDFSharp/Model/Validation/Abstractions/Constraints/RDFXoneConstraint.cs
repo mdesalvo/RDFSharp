@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// Builds a xone constraint
         /// </summary>
         public RDFXoneConstraint()
-            => XoneShapes = new Dictionary<long, RDFResource>();
+            => XoneShapes = new Dictionary<long, RDFResource>(4);
         #endregion
 
         #region Methods

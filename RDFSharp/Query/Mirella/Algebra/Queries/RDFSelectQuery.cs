@@ -59,7 +59,7 @@ namespace RDFSharp.Query
         /// Builds an empty SELECT query
         /// </summary>
         public RDFSelectQuery()
-            => ProjectionVars = new Dictionary<RDFVariable, (int, RDFExpression)>();
+            => ProjectionVars = new Dictionary<RDFVariable, (int, RDFExpression)>(4);
         #endregion
 
         #region Interfaces

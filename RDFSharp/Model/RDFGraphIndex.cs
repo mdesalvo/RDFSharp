@@ -73,15 +73,15 @@ namespace RDFSharp.Model
         internal RDFGraphIndex()
         {
             //Hashes
-            Hashes = new Dictionary<long, RDFHashedTriple>();
+            Hashes = new Dictionary<long, RDFHashedTriple>(256);
             //Registers
-            Resources = new Dictionary<long, RDFResource>();
-            Literals = new Dictionary<long, RDFLiteral>();
+            Resources = new Dictionary<long, RDFResource>(256);
+            Literals = new Dictionary<long, RDFLiteral>(256);
             //Indexes
-            IDXSubjects = new Dictionary<long, HashSet<long>>();
-            IDXPredicates = new Dictionary<long, HashSet<long>>();
-            IDXObjects = new Dictionary<long, HashSet<long>>();
-            IDXLiterals = new Dictionary<long, HashSet<long>>();
+            IDXSubjects = new Dictionary<long, HashSet<long>>(256);
+            IDXPredicates = new Dictionary<long, HashSet<long>>(256);
+            IDXObjects = new Dictionary<long, HashSet<long>>(256);
+            IDXLiterals = new Dictionary<long, HashSet<long>>(256);
         }
 
         /// <summary>

@@ -225,8 +225,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFAggregatorContext()
         {
-            ExecutionRegistry = new Dictionary<string, Dictionary<string, object>>();
-            ExecutionCache = new Dictionary<string, HashSet<object>>();
+            ExecutionRegistry = new Dictionary<string, Dictionary<string, object>>(64);
+            ExecutionCache = new Dictionary<string, HashSet<object>>(64);
         }
         #endregion
 
@@ -237,7 +237,7 @@ namespace RDFSharp.Query
         internal void AddPartitionKey<T>(string partitionKey, T initValue)
         {
             if (!ExecutionRegistry.ContainsKey(partitionKey))
-                ExecutionRegistry.Add(partitionKey, new Dictionary<string, object>
+                ExecutionRegistry.Add(partitionKey, new Dictionary<string, object>(2)
                 {
                     { "ExecutionResult", initValue },
                     { "ExecutionCounter", 0d }

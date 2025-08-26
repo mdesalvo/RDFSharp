@@ -71,8 +71,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFQueryEngine()
         {
-            PatternGroupMemberResultTables = new Dictionary<long, List<DataTable>>();
-            QueryMemberResultTables = new Dictionary<long, DataTable>();
+            PatternGroupMemberResultTables = new Dictionary<long, List<DataTable>>(16);
+            QueryMemberResultTables = new Dictionary<long, DataTable>(16);
         }
         #endregion
 

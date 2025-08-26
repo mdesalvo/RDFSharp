@@ -84,17 +84,17 @@ namespace RDFSharp.Store
         internal RDFStoreIndex()
         {
             //Hashes
-            Hashes = new Dictionary<long, RDFHashedQuadruple>();
+            Hashes = new Dictionary<long, RDFHashedQuadruple>(256);
             //Registers
-            Contexts = new Dictionary<long, RDFContext>();
-            Resources = new Dictionary<long, RDFResource>();
-            Literals = new Dictionary<long, RDFLiteral>();
+            Contexts = new Dictionary<long, RDFContext>(16);
+            Resources = new Dictionary<long, RDFResource>(256);
+            Literals = new Dictionary<long, RDFLiteral>(256);
             //Indexes
-            IDXContexts = new Dictionary<long, HashSet<long>>();
-            IDXSubjects = new Dictionary<long, HashSet<long>>();
-            IDXPredicates = new Dictionary<long, HashSet<long>>();
-            IDXObjects = new Dictionary<long, HashSet<long>>();
-            IDXLiterals = new Dictionary<long, HashSet<long>>();
+            IDXContexts = new Dictionary<long, HashSet<long>>(16);
+            IDXSubjects = new Dictionary<long, HashSet<long>>(256);
+            IDXPredicates = new Dictionary<long, HashSet<long>>(256);
+            IDXObjects = new Dictionary<long, HashSet<long>>(256);
+            IDXLiterals = new Dictionary<long, HashSet<long>>(256);
         }
 
         /// <summary>

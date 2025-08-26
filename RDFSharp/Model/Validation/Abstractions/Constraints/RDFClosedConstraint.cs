@@ -44,7 +44,7 @@ namespace RDFSharp.Model
         public RDFClosedConstraint(bool closed)
         {
             Closed = closed;
-            IgnoredProperties = new Dictionary<long, RDFResource>();
+            IgnoredProperties = new Dictionary<long, RDFResource>(4);
         }
         #endregion
 

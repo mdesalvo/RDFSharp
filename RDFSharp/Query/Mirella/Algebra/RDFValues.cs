@@ -44,7 +44,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFValues()
         {
-            Bindings = new Dictionary<string, List<RDFPatternMember>>();
+            Bindings = new Dictionary<string, List<RDFPatternMember>>(4);
             IsEvaluable = false;
             IsInjected = false;
         }

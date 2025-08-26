@@ -437,7 +437,7 @@ namespace RDFSharp.Store
         /// </summary>
         public List<RDFGraph> ExtractGraphs()
         {
-            Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>();
+            Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>(4);
             foreach (RDFQuadruple q in this as RDFMemoryStore ?? SelectAllQuadruples())
             {
                 // Step 1: Cache-Update
@@ -466,7 +466,7 @@ namespace RDFSharp.Store
         /// </summary>
         public List<RDFContext> ExtractContexts()
         {
-            Dictionary<long, RDFPatternMember> contexts = new Dictionary<long, RDFPatternMember>();
+            Dictionary<long, RDFPatternMember> contexts = new Dictionary<long, RDFPatternMember>(4);
             foreach (RDFQuadruple q in this as RDFMemoryStore ?? SelectAllQuadruples())
             {
                 if (!contexts.ContainsKey(q.Context.PatternMemberID))

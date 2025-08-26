@@ -48,7 +48,7 @@ namespace RDFSharp.Model
         /// Builds a named shapes graph
         /// </summary>
         public RDFShapesGraph(RDFResource shapesGraphName) : base(shapesGraphName.ToString())
-            => Shapes = new Dictionary<long, RDFShape>();
+            => Shapes = new Dictionary<long, RDFShape>(8);
 
         /// <summary>
         /// Builds a blank shapes graph
