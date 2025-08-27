@@ -42,7 +42,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the boolean "OR" expression
         /// </summary>
         public override string ToString()
-            => ToString(new List<RDFNamespace>(0));
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
         internal override string ToString(List<RDFNamespace> prefixes)
         {
             StringBuilder sb = new StringBuilder(64);

@@ -43,7 +43,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFInConstraint(RDFModelEnums.RDFItemTypes itemType)
         {
-            InValues = new Dictionary<long, RDFPatternMember>(4);
+            InValues = new Dictionary<long, RDFPatternMember>();
             ItemType = itemType;
         }
         #endregion

@@ -53,7 +53,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the string coalesce function
         /// </summary>
         public override string ToString()
-            => ToString(new List<RDFNamespace>(0));
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
         internal override string ToString(List<RDFNamespace> prefixes)
         {
             StringBuilder sb = new StringBuilder(32);

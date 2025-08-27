@@ -44,7 +44,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFValues()
         {
-            Bindings = new Dictionary<string, List<RDFPatternMember>>(4);
+            Bindings = new Dictionary<string, List<RDFPatternMember>>();
             IsEvaluable = false;
             IsInjected = false;
         }
@@ -55,7 +55,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the SPARQL values
         /// </summary>
         public override string ToString()
-            => ToString(new List<RDFNamespace>(0), string.Empty);
+            => ToString(RDFModelUtilities.EmptyNamespaceList, string.Empty);
         internal string ToString(List<RDFNamespace> prefixes, string spaces)
             => RDFQueryPrinter.PrintValues(this, prefixes, spaces);
         #endregion
@@ -72,7 +72,7 @@ namespace RDFSharp.Query
 
                 //Initialize bindings of the given variable
                 if (!Bindings.ContainsKey(variableString))
-                    Bindings.Add(variableString, new List<RDFPatternMember>(8));
+                    Bindings.Add(variableString, new List<RDFPatternMember>());
 
                 //Populate bindings of the given variable
                 //(null indicates the special UNDEF binding)
@@ -106,7 +106,7 @@ namespace RDFSharp.Query
             result.BeginLoadData();
             for (int i = 0; i < MaxBindingsLength(); i++)
             {
-                Dictionary<string, string> bindings = new Dictionary<string, string>(Bindings.Count);
+                Dictionary<string, string> bindings = new Dictionary<string, string>();
                 foreach (KeyValuePair<string, List<RDFPatternMember>> binding in Bindings)
                 {
                     RDFPatternMember bindingValue = binding.Value.ElementAtOrDefault(i);

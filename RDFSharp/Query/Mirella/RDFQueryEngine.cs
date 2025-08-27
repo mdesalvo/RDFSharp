@@ -71,8 +71,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFQueryEngine()
         {
-            PatternGroupMemberResultTables = new Dictionary<long, List<DataTable>>(16);
-            QueryMemberResultTables = new Dictionary<long, DataTable>(16);
+            PatternGroupMemberResultTables = new Dictionary<long, List<DataTable>>();
+            QueryMemberResultTables = new Dictionary<long, DataTable>();
         }
         #endregion
 
@@ -436,7 +436,7 @@ namespace RDFSharp.Query
             AddColumn(result, "?OBJECT");
 
             //Initialize working variables
-            Dictionary<string, string> bindings = new Dictionary<string, string>(needsContext ? 4 : 3);
+            Dictionary<string, string> bindings = new Dictionary<string, string>();
             if (needsContext)
                 bindings.Add("?CONTEXT", null);
             bindings.Add("?SUBJECT", null);
@@ -1337,7 +1337,7 @@ namespace RDFSharp.Query
             string patternSubject = pattern.Subject.ToString();
             string patternPredicate = pattern.Predicate.ToString();
             string patternObject = pattern.Object.ToString();
-            Dictionary<string, string> bindings = new Dictionary<string, string>(3);
+            Dictionary<string, string> bindings = new Dictionary<string, string>();
 
             //Iterate result graph's triples
             foreach (RDFTriple triple in triples)
@@ -1403,7 +1403,7 @@ namespace RDFSharp.Query
             string patternSubject = pattern.Subject.ToString();
             string patternPredicate = pattern.Predicate.ToString();
             string patternObject = pattern.Object.ToString();
-            Dictionary<string, string> bindings = new Dictionary<string, string>(4);
+            Dictionary<string, string> bindings = new Dictionary<string, string>();
 
             //Iterate result store's quadruples
             foreach (RDFQuadruple quadruple in store)
@@ -1663,7 +1663,7 @@ namespace RDFSharp.Query
                                                   .ToArray());
 
             //Calculate outer-join column's attribution
-            Dictionary<string, (bool,string)> joinColumnsAttribution = new Dictionary<string, (bool,string)>(joinTable.Columns.Count);
+            Dictionary<string, (bool,string)> joinColumnsAttribution = new Dictionary<string, (bool,string)>();
             foreach (DataColumn joinColumn in joinTable.Columns)
             {
                 joinColumnsAttribution.Add(joinColumn.ColumnName,
@@ -2000,7 +2000,7 @@ namespace RDFSharp.Query
                     //(otherwise in this scenario we would always answer true for ASK queries due to this row)
                     RDFPatternMember bindResult = expression.ApplyExpression(table.NewRow());
                     if (bindResult != null)
-                        AddRow(table, new Dictionary<string, string>(1) { { bindVariable, bindResult.ToString() } });
+                        AddRow(table, new Dictionary<string, string> { { bindVariable, bindResult.ToString() } });
                 }
                 else
                 {

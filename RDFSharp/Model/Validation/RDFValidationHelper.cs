@@ -30,7 +30,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static List<RDFPatternMember> GetFocusNodesOf(this RDFGraph dataGraph, RDFShape shape)
         {
-            List<RDFPatternMember> result = new List<RDFPatternMember>(16);
+            List<RDFPatternMember> result = new List<RDFPatternMember>();
             if (shape != null && dataGraph != null)
             {
                 foreach (RDFTarget target in shape.Targets)
@@ -70,7 +70,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static List<RDFPatternMember> GetValueNodesOf(this RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode)
         {
-            List<RDFPatternMember> result = new List<RDFPatternMember>(8);
+            List<RDFPatternMember> result = new List<RDFPatternMember>();
             if (shape != null && dataGraph != null && focusNode != null)
             {
                 switch (shape)
@@ -135,7 +135,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static List<RDFPatternMember> GetInstancesOfClass(this RDFGraph dataGraph, RDFResource className, HashSet<long> visitContext=null)
         {
-            List<RDFPatternMember> result = new List<RDFPatternMember>(16);
+            List<RDFPatternMember> result = new List<RDFPatternMember>();
             if (className != null && dataGraph != null)
             {
                 #region visitContext

@@ -75,8 +75,8 @@ namespace RDFSharp.Model
         {
             Path = path ?? throw new RDFModelException("Cannot create RDFPropertyShape because given \"path\" parameter is null.");
             IsInversePath = isInversePath;
-            Descriptions = new List<RDFLiteral>(4);
-            Names = new List<RDFLiteral>(4);
+            Descriptions = new List<RDFLiteral>();
+            Names = new List<RDFLiteral>();
         }
 
         /// <summary>
@@ -107,8 +107,8 @@ namespace RDFSharp.Model
                                         .AddAlternativeSteps(pathSteps.ConvertAll(pathStep => new RDFPropertyPathStep(pathStep)));
                     break;
             }
-            Descriptions = new List<RDFLiteral>(4);
-            Names = new List<RDFLiteral>(4);
+            Descriptions = new List<RDFLiteral>();
+            Names = new List<RDFLiteral>();
         }
 
         /// <summary>

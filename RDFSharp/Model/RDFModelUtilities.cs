@@ -218,14 +218,9 @@ namespace RDFSharp.Model
         #endregion
 
         #region Graph
-        /// <summary>
-        /// Empty hashset to be returned in case of index miss
-        /// </summary>
         internal static readonly HashSet<long> EmptyHashSet = new HashSet<long>();
-        /// <summary>
-        /// Empty list of triples to be returned in case of no query results
-        /// </summary>
-        internal static readonly List<RDFTriple> EmptyTripleList = new List<RDFTriple>(0);
+        internal static readonly List<RDFTriple> EmptyTripleList = new List<RDFTriple>();
+        internal static readonly List<RDFNamespace> EmptyNamespaceList = new List<RDFNamespace>();
 
         /// <summary>
         /// Selects the triples corresponding to the given pattern from the given graph
@@ -326,9 +321,9 @@ namespace RDFSharp.Model
         public static List<RDFDatatype> ExtractDatatypeDefinitions(this RDFGraph graph)
         {
             if (graph == null)
-                return new List<RDFDatatype>(0);
+                return new List<RDFDatatype>();
 
-            List<RDFDatatype> datatypes = new List<RDFDatatype>(4);
+            List<RDFDatatype> datatypes = new List<RDFDatatype>();
             foreach (RDFTriple datatypeTriple in graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE, null])
             {
                 RDFResource datatypeIRI = (RDFResource)datatypeTriple.Subject;
@@ -542,7 +537,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static List<RDFNamespace> GetGraphNamespaces(RDFGraph graph)
         {
-            List<RDFNamespace> result = new List<RDFNamespace>(8);
+            List<RDFNamespace> result = new List<RDFNamespace>();
             foreach (RDFTriple triple in graph)
             {
                 string subj = triple.Subject.ToString();

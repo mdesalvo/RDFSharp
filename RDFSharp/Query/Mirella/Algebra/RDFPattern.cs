@@ -92,7 +92,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create RDFPattern because given \"objLit\" parameter (" + objLit + ") is neither a resource, or a literal or a variable");
             #endregion
 
-            Variables = new List<RDFVariable>(8);
+            Variables = new List<RDFVariable>();
             IsEvaluable = true;
             IsOptional = false;
             JoinAsUnion = false;
@@ -139,7 +139,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the pattern
         /// </summary>
         public override string ToString()
-            => ToString(new List<RDFNamespace>(0));
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
         internal string ToString(List<RDFNamespace> prefixes)
             => RDFQueryPrinter.PrintPattern(this, prefixes);
         #endregion

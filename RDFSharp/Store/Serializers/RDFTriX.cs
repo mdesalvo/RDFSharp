@@ -96,7 +96,7 @@ namespace RDFSharp.Store
         internal static RDFMemoryStore Deserialize(Stream inputStream)
         {
             RDFMemoryStore result = new RDFMemoryStore();
-            Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>(4);
+            Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>();
 
             try
             {
@@ -122,7 +122,7 @@ namespace RDFSharp.Store
 
                             #endregion Guards
 
-                            Dictionary<string, long> hashContext = new Dictionary<string, long>(128);
+                            Dictionary<string, long> hashContext = new Dictionary<string, long>();
                             foreach (XmlNode graph in trixDoc.DocumentElement.ChildNodes)
                             {
                                 if (!graph.Name.Equals("graph", StringComparison.Ordinal))

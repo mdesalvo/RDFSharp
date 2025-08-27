@@ -43,8 +43,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFQuery()
         {
-            QueryMembers = new List<RDFQueryMember>(4);
-            Prefixes = new List<RDFNamespace>(8);
+            QueryMembers = new List<RDFQueryMember>();
+            Prefixes = new List<RDFNamespace>();
             IsEvaluable = true;
         }
         #endregion

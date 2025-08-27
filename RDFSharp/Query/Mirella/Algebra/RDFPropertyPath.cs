@@ -67,7 +67,7 @@ namespace RDFSharp.Query
 
             Start = start;
             End = end;
-            Steps = new List<RDFPropertyPathStep>(4);
+            Steps = new List<RDFPropertyPathStep>();
             Depth = 0;
         }
         #endregion
@@ -77,7 +77,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the path
         /// </summary>
         public override string ToString()
-            => ToString(new List<RDFNamespace>(0));
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
         internal string ToString(List<RDFNamespace> prefixes)
             => RDFQueryPrinter.PrintPropertyPath(this, prefixes);
         #endregion

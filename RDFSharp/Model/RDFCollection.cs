@@ -75,7 +75,7 @@ namespace RDFSharp.Model
             ReificationSubject = RDFVocabulary.RDF.NIL;
             InternalReificationSubject = new RDFResource();
             AcceptDuplicates = acceptDuplicates;
-            Items = new List<RDFPatternMember>(4);
+            Items = new List<RDFPatternMember>();
         }
         #endregion
 

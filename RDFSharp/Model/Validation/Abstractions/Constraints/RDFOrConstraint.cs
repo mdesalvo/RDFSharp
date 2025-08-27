@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// Builds an or constraint
         /// </summary>
         public RDFOrConstraint()
-            => OrShapes = new Dictionary<long, RDFResource>(4);
+            => OrShapes = new Dictionary<long, RDFResource>();
         #endregion
 
         #region Methods

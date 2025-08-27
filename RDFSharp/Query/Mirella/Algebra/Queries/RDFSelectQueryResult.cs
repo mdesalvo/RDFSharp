@@ -282,7 +282,7 @@ namespace RDFSharp.Query
                                     #region RESULT
                                     if (string.Equals(resNode.Name, "RESULT", StringComparison.OrdinalIgnoreCase) && resNode.HasChildNodes)
                                     {
-                                        Dictionary<string, string> results = new Dictionary<string, string>(resNode.ChildNodes.Count);
+                                        Dictionary<string, string> results = new Dictionary<string, string>();
                                         foreach (XmlNode bindingNode in resNode.ChildNodes)
                                         {
                                             bool foundUri = false;

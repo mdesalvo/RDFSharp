@@ -91,7 +91,7 @@ namespace RDFSharp.Model
                     RDFGraph rdfRest = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST);
 
                     //Fetch data describing containers of the graph
-                    var containersXML = new Dictionary<long, XmlNode>(0);
+                    var containersXML = new Dictionary<long, XmlNode>();
                     var containers = rdfType.SelectTriplesByObject(RDFVocabulary.RDF.ALT)
                                             .UnionWith(rdfType.SelectTriplesByObject(RDFVocabulary.RDF.BAG))
                                             .UnionWith(rdfType.SelectTriplesByObject(RDFVocabulary.RDF.SEQ))
@@ -239,7 +239,7 @@ namespace RDFSharp.Model
                                         //Append "rdf:parseType=Collection" elements
                                         bool nilFound = false;
                                         RDFResource currentCollItem = (RDFResource)triple.Object;
-                                        List<XmlNode> collElements = new List<XmlNode>(4);
+                                        List<XmlNode> collElements = new List<XmlNode>();
                                         while (!nilFound)
                                         {
                                             var collElement = collections.Find(x => x.CollectionUri.Equals(currentCollItem));
@@ -424,7 +424,7 @@ namespace RDFSharp.Model
                         #region elements
                         //Parse children of root node
                         if (rdfRDF.HasChildNodes)
-                            ParseNodeList(rdfRDF.ChildNodes, result, xmlBase, GetXmlLangAttribute(rdfRDF), new Dictionary<string, long>(128));
+                            ParseNodeList(rdfRDF.ChildNodes, result, xmlBase, GetXmlLangAttribute(rdfRDF), new Dictionary<string, long>());
                         #endregion
                     }
                 }
@@ -446,7 +446,7 @@ namespace RDFSharp.Model
         private static List<RDFResource> ParseNodeList(XmlNodeList nodeList, RDFGraph result, Uri xmlBase, XmlAttribute xmlLangParent,
             Dictionary<string, long> hashContext, RDFResource subjectParent = null)
         {
-            List<RDFResource> subjects = new List<RDFResource>(nodeList.Count);
+            List<RDFResource> subjects = new List<RDFResource>();
             foreach (XmlNode subjNode in nodeList)
             {
                 #region subject
@@ -755,7 +755,7 @@ namespace RDFSharp.Model
         /// </summary>
         private static List<RDFNamespace> GetAutomaticNamespaces(RDFGraph graph)
         {
-            List<RDFNamespace> result = new List<RDFNamespace>(4);
+            List<RDFNamespace> result = new List<RDFNamespace>();
             foreach (string pred in graph.Index.Hashes.Select(x => graph.Index.Resources[x.Value.PredicateID].ToString()).Distinct())
             {
                 RDFNamespace nspace = GenerateNamespace(pred, false);
@@ -1078,7 +1078,7 @@ namespace RDFSharp.Model
             //Iterate on the container items
             if (container.HasChildNodes)
             {
-                List<string> elemVals = new List<string>(4);
+                List<string> elemVals = new List<string>();
                 foreach (XmlNode elem in container.ChildNodes)
                 {
                     //Skip container item if it is not an element

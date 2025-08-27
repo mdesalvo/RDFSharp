@@ -46,8 +46,8 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFConstructQuery()
         {
-            Templates = new List<RDFPattern>(8);
-            Variables = new List<RDFVariable>(8);
+            Templates = new List<RDFPattern>();
+            Variables = new List<RDFVariable>();
         }
         #endregion
 

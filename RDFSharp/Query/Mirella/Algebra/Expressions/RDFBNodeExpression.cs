@@ -37,7 +37,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the blank node generator function
         /// </summary>
         public override string ToString()
-            => ToString(new List<RDFNamespace>(0));
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
         internal override string ToString(List<RDFNamespace> prefixes)
             => "(BNODE())";
         #endregion

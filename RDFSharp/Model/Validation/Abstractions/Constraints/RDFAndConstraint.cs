@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// Builds an and constraint
         /// </summary>
         public RDFAndConstraint()
-            => AndShapes = new Dictionary<long, RDFResource>(4);
+            => AndShapes = new Dictionary<long, RDFResource>();
         #endregion
 
         #region Methods

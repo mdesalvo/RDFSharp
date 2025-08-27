@@ -200,7 +200,7 @@ namespace RDFSharp.Model
             long ntripleIndex = 0;
             string nTriple;
             string[] tokens = new string[3];
-            Dictionary<string, long> hashContext = new Dictionary<string, long>(128);
+            Dictionary<string, long> hashContext = new Dictionary<string, long>();
 
             try
             {

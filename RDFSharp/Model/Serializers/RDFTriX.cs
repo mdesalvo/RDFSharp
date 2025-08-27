@@ -226,7 +226,7 @@ namespace RDFSharp.Model
                                 throw new Exception(" given TriX file seems to encode more than one graph.");
                             #endregion Guards
 
-                            Dictionary<string, long> hashContext = new Dictionary<string, long>(128);
+                            Dictionary<string, long> hashContext = new Dictionary<string, long>();
                             foreach (XmlNode graph in trixDoc.DocumentElement.ChildNodes)
                             {
                                 if (!graph.Name.Equals("graph", StringComparison.Ordinal))

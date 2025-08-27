@@ -67,8 +67,8 @@ namespace RDFSharp.Query
             IsOptional = false;
             JoinAsUnion = false;
             JoinAsMinus = false;
-            GroupMembers = new List<RDFPatternGroupMember>(16);
-            Variables = new List<RDFVariable>(16);
+            GroupMembers = new List<RDFPatternGroupMember>();
+            Variables = new List<RDFVariable>();
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the pattern group
         /// </summary>
         public override string ToString()
-            => ToString(new List<RDFNamespace>(0));
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
         internal string ToString(List<RDFNamespace> prefixes)
             => RDFQueryPrinter.PrintPatternGroup(this, 0, false, prefixes);
         #endregion
