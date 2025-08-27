@@ -51,7 +51,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to detect S->P->L(PLAIN LANGUAGE) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> SPL_PLANG = new Lazy<Regex>(() => new Regex($@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""@{RDFPlainLiteral.LangTagMask}\s*\.$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> SPL_PLANG = new Lazy<Regex>(() => new Regex($@"^<[^<>\s]+>\s*<[^<>\s]+>\s*\""(.)*\""@{RDFShims.LangTagMask}\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect S->P->L(TYPED) form of N-Triple/N-Quad
@@ -76,7 +76,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to detect B->P->L(PLAIN LANGUAGE) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Lazy<Regex> BPL_PLANG = new Lazy<Regex>(() => new Regex($@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""@{RDFPlainLiteral.LangTagMask}\s*\.$", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> BPL_PLANG = new Lazy<Regex>(() => new Regex($@"^_:[^<>\s]+\s*<[^<>\s]+>\s*\""(.)*\""@{RDFShims.LangTagMask}\s*\.$", RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect B->P->L(TYPED) form of N-Triple/N-Quad
@@ -86,7 +86,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to detect presence of a plain literal with language tag within a given N-Triple
         /// </summary>
-        internal static readonly Lazy<Regex> regexLPL = new Lazy<Regex>(() => new Regex($"@{RDFPlainLiteral.LangTagMask}$", RegexOptions.Compiled | RegexOptions.IgnoreCase));
+        internal static readonly Lazy<Regex> regexLPL = new Lazy<Regex>(() => new Regex($"@{RDFShims.LangTagMask}$", RegexOptions.Compiled | RegexOptions.IgnoreCase));
 
         /// <summary>
         /// Regex to detect presence of starting " in the value of a given N-Triple literal

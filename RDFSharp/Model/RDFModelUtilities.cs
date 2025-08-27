@@ -679,7 +679,7 @@ namespace RDFSharp.Model
                     return (literalValue.IndexOfAny(NormalizedStringForbiddenChars) == -1, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_LANGUAGE:
-                    return (RDFPlainLiteral.LangTagRegex.Value.Match(literalValue).Success, literalValue);
+                    return (RDFShims.LangTagRegex.Value.Match(literalValue).Success, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY:
                     try

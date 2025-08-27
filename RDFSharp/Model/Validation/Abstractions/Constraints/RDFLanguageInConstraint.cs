@@ -44,7 +44,7 @@ namespace RDFSharp.Model
             languageTags?.ForEach(lt =>
             {
                 string languageTag = lt?.Trim() ?? string.Empty;
-                if (languageTag.Length == 0 || languageTag == "*" || RDFPlainLiteral.LangTagRegex.Value.Match(languageTag).Success)
+                if (languageTag.Length == 0 || languageTag == "*" || RDFShims.LangTagRegex.Value.Match(languageTag).Success)
                     LanguageTags.Add(languageTag.ToUpperInvariant());
             });
         }
@@ -77,15 +77,15 @@ namespace RDFSharp.Model
                             {
                                 //NO language is found in the variable
                                 case "":
-                                    langMatches = !Regex.IsMatch(valueNodePlainLiteral.ToString(), $"@{RDFPlainLiteral.LangTagMask}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                                    langMatches = !Regex.IsMatch(valueNodePlainLiteral.ToString(), $"@{RDFShims.LangTagMask}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                                     break;
                                 //ANY language is found in the variable
                                 case "*":
-                                    langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), $"@{RDFPlainLiteral.LangTagMask}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                                    langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), $"@{RDFShims.LangTagMask}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                                     break;
                                 //GIVEN language is found in the variable
                                 default:
-                                    langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), $"@{langTagsEnumerator.Current}{RDFPlainLiteral.LangTagSubMask}$", RegexOptions.IgnoreCase);
+                                    langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), $"@{langTagsEnumerator.Current}{RDFShims.LangTagSubMask}$", RegexOptions.IgnoreCase);
                                     break;
                             }
 

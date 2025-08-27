@@ -15,7 +15,6 @@
 */
 
 using System;
-using System.Text.RegularExpressions;
 
 namespace RDFSharp.Model
 {
@@ -36,22 +35,10 @@ namespace RDFSharp.Model
         #endregion
 
         #region Properties
-        internal const string LangTagDirection = "(--ltr|--rtl)?";
-        internal static readonly string LangTagSubMask = string.Concat("(-[a-zA-Z0-9]{1,8})*", LangTagDirection);
-        internal static readonly string LangTagMask = string.Concat("[a-zA-Z]{1,8}", LangTagSubMask);
-        /// <summary>
-        /// Regex for validation of language tags (with support for direction)
-        /// </summary>
-        internal static readonly Lazy<Regex> LangTagRegex = new Lazy<Regex>(() => new Regex($"^{LangTagMask}$", RegexOptions.Compiled | RegexOptions.IgnoreCase));
-        /// <summary>
-        /// Regex for validation of language tags (without support for direction)
-        /// </summary>
-        internal static readonly Lazy<Regex> LangTagNoDirRegex = new Lazy<Regex>(() => new Regex($"^{LangTagMask.Replace(LangTagDirection, string.Empty)}$", RegexOptions.Compiled | RegexOptions.IgnoreCase));
-
         /// <summary>
         /// Optional language of the literal
         /// </summary>
-        public string Language { get; internal set; }
+        public string Language { get; }
         #endregion
 
         #region Ctors
@@ -69,7 +56,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFPlainLiteral(string value, string language) : this(value)
         {
-            if (language != null && LangTagRegex.Value.Match(language).Success)
+            if (language != null && RDFShims.LangTagRegex.Value.Match(language).Success)
                 Language = language.ToUpperInvariant();
         }
         #endregion

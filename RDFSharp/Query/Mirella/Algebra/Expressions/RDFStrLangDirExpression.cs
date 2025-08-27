@@ -124,7 +124,7 @@ namespace RDFSharp.Query
                 #region Calculate Result
                 //We can only proceed if we have been given a well-formed language tag (without direction)
                 if (rightArgumentPMember is RDFPlainLiteral rightArgumentPMemberLiteral
-                     && RDFPlainLiteral.LangTagNoDirRegex.Value.IsMatch(rightArgumentPMemberLiteral.Value))
+                     && RDFShims.LangTagNoDirRegex.Value.IsMatch(rightArgumentPMemberLiteral.Value))
                 {
                     switch (leftArgumentPMember)
                     {
