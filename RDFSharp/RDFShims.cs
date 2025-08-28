@@ -22,10 +22,10 @@ namespace RDFSharp
     /// <summary>
     /// RDFShims maintains a backward-compatible interface for features having optimized implementation targeting .NET8+
     /// </summary>
-#if NETSTANDARD2_0
-    internal static class RDFShims
-#else
+#if NET8_0_OR_GREATER
     internal static partial class RDFShims
+#else
+    internal static class RDFShims
 #endif
     {
         /*LangTag*/
@@ -37,31 +37,31 @@ namespace RDFSharp
         internal const string LangTagSubMaskNoDir = "(-[a-zA-Z0-9]{1,8})*";
         internal const string LangTagMaskNoDir = "[a-zA-Z]{1,8}" + LangTagSubMaskNoDir;
         internal const string LangTagNoDirPattern = "^" + LangTagMaskNoDir + "$";
-        
-#if NETSTANDARD2_0
-        /// <summary>
-        /// Regex for validation of language tags (with support for direction)
-        /// </summary>
-        internal static readonly Lazy<Regex> LangTagRegex = new Lazy<Regex>(() => new Regex(LangTagPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
-        
-        /// <summary>
-        /// Regex for validation of language tags (without support for direction)
-        /// </summary>
-        internal static readonly Lazy<Regex> LangTagNoDirRegex = new Lazy<Regex>(() => new Regex(LangTagNoDirPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
-#else
+
+#if NET8_0_OR_GREATER
         /// <summary>
         /// Regex for validation of language tags (with support for direction)
         /// </summary>
         internal static readonly Lazy<Regex> LangTagRegex = new Lazy<Regex>(() => GeneratedLangTagRegex());
         [GeneratedRegex(LangTagPattern, RegexOptions.IgnoreCase)]
         private static partial Regex GeneratedLangTagRegex();
-        
+
         /// <summary>
         /// Regex for validation of language tags (without support for direction)
         /// </summary>
         internal static readonly Lazy<Regex> LangTagNoDirRegex = new Lazy<Regex>(() => GeneratedLangTagNoDirRegex());
         [GeneratedRegex(LangTagNoDirPattern, RegexOptions.IgnoreCase)]
         private static partial Regex GeneratedLangTagNoDirRegex();
+#else
+        /// <summary>
+        /// Regex for validation of language tags (with support for direction)
+        /// </summary>
+        internal static readonly Lazy<Regex> LangTagRegex = new Lazy<Regex>(() => new Regex(LangTagPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
+
+        /// <summary>
+        /// Regex for validation of language tags (without support for direction)
+        /// </summary>
+        internal static readonly Lazy<Regex> LangTagNoDirRegex = new Lazy<Regex>(() => new Regex(LangTagNoDirPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
 #endif
     }
 }
