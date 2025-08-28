@@ -67,7 +67,7 @@ namespace RDFSharp.Store
                  || RDFModelUtilities.GetUriFromString(literal.Substring(lastIndexOfDatatype + 2)) == null)
             {
                 RDFPlainLiteral pLit;
-                if (RDFNTriples.regexLPL.Value.Match(literal).Success)
+                if (RDFShims.EndingLangTagRegex.Value.Match(literal).Success)
                 {
                     int lastIndexOfLanguage = literal.LastIndexOf('@');
                     string pLitValue = literal.Substring(0, lastIndexOfLanguage);
