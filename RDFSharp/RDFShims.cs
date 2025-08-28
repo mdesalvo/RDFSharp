@@ -43,6 +43,9 @@ namespace RDFSharp
         /*Datatypes*/
         internal const string HexBinaryPattern = "^([0-9a-fA-F]{2})*$";
         internal const string OWLRationalPattern = "^(0|(-)?([1-9])+([0-9])*)(/([1-9])+([0-9])*)?$";
+        internal const string TimeGeneralDayPattern = "---(0[1-9]|[1-9][0-9])(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?";
+        internal const string TimeGeneralMonthPattern = "--(0[1-9]|1[0-9]|20)(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?";
+        internal const string TimeGeneralYearPattern = "-?([1-9][0-9]{3,}|0[0-9]{3})(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?";
 
 #if NET8_0_OR_GREATER
         /// <summary>
@@ -86,6 +89,27 @@ namespace RDFSharp
         internal static readonly Lazy<Regex> OWLRationalRegex = new Lazy<Regex>(GeneratedOWLRationalRegex);
         [GeneratedRegex(OWLRationalPattern)]
         private static partial Regex GeneratedOWLRationalRegex();
+
+        /// <summary>
+        /// Regex to catch time:generalDay typed literals
+        /// </summary>
+        internal static readonly Lazy<Regex> TimeGeneralDayRegex = new Lazy<Regex>(GeneratedTimeGeneralDayRegex);
+        [GeneratedRegex(TimeGeneralDayPattern)]
+        private static partial Regex GeneratedTimeGeneralDayRegex();
+
+        /// <summary>
+        /// Regex to catch time:generalMonth typed literals
+        /// </summary>
+        internal static readonly Lazy<Regex> TimeGeneralMonthRegex = new Lazy<Regex>(GeneratedTimeGeneralMonthRegex);
+        [GeneratedRegex(TimeGeneralMonthPattern)]
+        private static partial Regex GeneratedTimeGeneralMonthRegex();
+
+        /// <summary>
+        /// Regex to catch time:generalYear typed literals
+        /// </summary>
+        internal static readonly Lazy<Regex> TimeGeneralYearRegex = new Lazy<Regex>(GeneratedTimeGeneralYearRegex);
+        [GeneratedRegex(TimeGeneralYearPattern)]
+        private static partial Regex GeneratedTimeGeneralYearRegex();
 #else
         /// <summary>
         /// Regex for validation of language tags (with support for direction)
@@ -116,6 +140,21 @@ namespace RDFSharp
         /// Regex to catch owl:rational typed literals
         /// </summary>
         internal static readonly Lazy<Regex> OWLRationalRegex = new Lazy<Regex>(() => new Regex(OWLRationalPattern, RegexOptions.Compiled));
+
+        /// <summary>
+        /// Regex to catch time:generalDay typed literals
+        /// </summary>
+        internal static readonly Lazy<Regex> TimeGeneralDayRegex = new Lazy<Regex>(() => new Regex(TimeGeneralDayPattern, RegexOptions.Compiled));
+
+        /// <summary>
+        /// Regex to catch time:generalMonth typed literals
+        /// </summary>
+        internal static readonly Lazy<Regex> TimeGeneralMonthRegex = new Lazy<Regex>(() => new Regex(TimeGeneralMonthPattern, RegexOptions.Compiled));
+
+        /// <summary>
+        /// Regex to catch time:generalYear typed literals
+        /// </summary>
+        internal static readonly Lazy<Regex> TimeGeneralYearRegex = new Lazy<Regex>(() => new Regex(TimeGeneralYearPattern, RegexOptions.Compiled));
 #endif
     }
 }

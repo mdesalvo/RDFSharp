@@ -22,7 +22,6 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using RDFSharp.Query;
@@ -816,16 +815,13 @@ namespace RDFSharp.Model
                     return isValidGDay;
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALDAY:
-                    bool isValidGeneralDay = Regex.IsMatch(literalValue, "---(0[1-9]|[1-9][0-9])(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?", RegexOptions.Compiled);
-                    return (isValidGeneralDay, literalValue);
+                    return (RDFShims.TimeGeneralDayRegex.Value.Match(literalValue).Success, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH:
-                    bool isValidGeneralMonth = Regex.IsMatch(literalValue, "--(0[1-9]|1[0-9]|20)(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?", RegexOptions.Compiled);
-                    return (isValidGeneralMonth, literalValue);
+                    return (RDFShims.TimeGeneralMonthRegex.Value.Match(literalValue).Success, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR:
-                    bool isValidGeneralYear = Regex.IsMatch(literalValue, "-?([1-9][0-9]{3,}|0[0-9]{3})(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?", RegexOptions.Compiled);
-                    return (isValidGeneralYear, literalValue);
+                    return (RDFShims.TimeGeneralYearRegex.Value.Match(literalValue).Success, literalValue);
                 #endregion
 
                 #region TIMESPAN CATEGORY
