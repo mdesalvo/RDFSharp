@@ -39,17 +39,7 @@ namespace RDFSharp.Model
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
         public RDFPatternConstraint(Regex regex)
-        {
-            #region Guards
-            if (regex == null)
-                throw new RDFModelException("Cannot create RDFPatternConstraint because given \"regex\" parameter is null.");
-            #endregion
-
-            //Ensure to exploit a compiled Regex, in order to boost validation process
-            RegEx = regex.Options.HasFlag(RegexOptions.Compiled)
-                     ? regex
-                     : new Regex(regex.ToString(), regex.Options | RegexOptions.Compiled);
-        }
+            => RegEx = regex ?? throw new RDFModelException("Cannot create RDFPatternConstraint because given \"regex\" parameter is null.");
         #endregion
 
         #region Methods
