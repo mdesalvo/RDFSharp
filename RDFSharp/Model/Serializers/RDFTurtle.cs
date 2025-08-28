@@ -1527,7 +1527,7 @@ namespace RDFSharp.Model
                 bool subjectHasBeenPrinted = false;
 
                 //New subject found
-                if (!actualSubject.Equals(triplesGroup.Key.subj, StringComparison.Ordinal))
+                if (!string.Equals(actualSubject, triplesGroup.Key.subj, StringComparison.Ordinal))
                 {
                     //Write the subject's Turtle token
                     if (result.Length > 0)
@@ -1540,7 +1540,8 @@ namespace RDFSharp.Model
                     //Start collecting the new subject's one
                     actualSubject = triplesGroup.Key.subj;
                     actualPredicate = string.Empty;
-                    abbreviatedSubject = RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(actualSubject), prefixes);
+                    abbreviatedSubject = RDFQueryPrinter.PrintPatternMember(
+                        RDFQueryUtilities.ParseRDFPatternMember(actualSubject), prefixes);
                     result.Append(needsTrigIndentation ? string.Concat(spaceConst, spaceConst, abbreviatedSubject, spaceConst)
                                                        : string.Concat(abbreviatedSubject, spaceConst));
                     subjectHasBeenPrinted = true;
@@ -1553,7 +1554,7 @@ namespace RDFSharp.Model
                 {
                     #region pred
                     //New predicate found
-                    if (!actualPredicate.Equals(triple.Predicate.ToString(), StringComparison.Ordinal))
+                    if (!string.Equals(actualPredicate, triple.Predicate.ToString(), StringComparison.Ordinal))
                     {
                         //Write the predicate's Turtle token
                         if (!subjectHasBeenPrinted)
@@ -1563,7 +1564,7 @@ namespace RDFSharp.Model
                         abbreviatedPredicate = RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(actualPredicate), prefixes);
 
                         //Turtle goody for "rdf:type" shortcutting to "a"
-                        if (abbreviatedPredicate.Equals("rdf:type", StringComparison.Ordinal))
+                        if (string.Equals(abbreviatedPredicate, "rdf:type", StringComparison.Ordinal))
                             abbreviatedPredicate = "a";
 
                         result.Append(string.Concat(abbreviatedPredicate, spaceConst));
@@ -1575,8 +1576,8 @@ namespace RDFSharp.Model
                     if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                     {
                         //Write the object's Turtle token
-                        string currentObject = triple.Object.ToString();
-                        result.Append(RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(currentObject), prefixes));
+                        result.Append(RDFQueryPrinter.PrintPatternMember(
+                            RDFQueryUtilities.ParseRDFPatternMember(triple.Object.ToString()), prefixes));
                     }
                     #endregion
 
@@ -1590,19 +1591,21 @@ namespace RDFSharp.Model
                             litValDelim = "\"\"\"";
 
                         //Write the literal's Turtle token
-                        if (triple.Object is RDFTypedLiteral tlitObj)
+                        switch (triple.Object)
                         {
-                            string dtype = RDFQueryPrinter.PrintPatternMember(
-                                            RDFQueryUtilities.ParseRDFPatternMember(tlitObj.Datatype.URI.ToString()), prefixes);
-                            string tLit = $"{litValDelim}{tlitObj.Value.Replace("\\", @"\\")}{litValDelim}^^{dtype}";
-                            result.Append(tLit);
-                        }
-                        else
-                        {
-                            string pLit = string.Concat(litValDelim, ((RDFPlainLiteral)triple.Object).Value.Replace("\\", @"\\"), litValDelim);
-                            if (((RDFPlainLiteral)triple.Object).HasLanguage())
-                                pLit = $"{pLit}@{((RDFPlainLiteral)triple.Object).Language}";
-                            result.Append(pLit);
+                            case RDFTypedLiteral tLitObj:
+                                string dtype = RDFQueryPrinter.PrintPatternMember(
+                                    RDFQueryUtilities.ParseRDFPatternMember(tLitObj.Datatype.URI.ToString()), prefixes);
+                                string tLit = $"{litValDelim}{tLitObj.Value.Replace("\\", @"\\")}{litValDelim}^^{dtype}";
+                                result.Append(tLit);
+                                break;
+                            
+                            case RDFPlainLiteral pLitObj:
+                                string pLit = string.Concat(litValDelim, pLitObj.Value.Replace("\\", @"\\"), litValDelim);
+                                if (pLitObj.HasLanguage())
+                                    pLit = $"{pLit}@{pLitObj.Language}";
+                                result.Append(pLit);
+                                break;
                         }
                     }
                     #endregion
