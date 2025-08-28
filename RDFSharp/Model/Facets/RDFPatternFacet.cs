@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -29,6 +30,7 @@ namespace RDFSharp.Model
         /// Pattern required by the facet
         /// </summary>
         public string Pattern { get; internal set; }
+        private Lazy<Regex> RegEx { get;  }
         #endregion
 
         #region Ctors
@@ -36,7 +38,10 @@ namespace RDFSharp.Model
         /// Builds a facet requiring the given pattern
         /// </summary>
         public RDFPatternFacet(string pattern)
-            => Pattern = pattern ?? string.Empty;
+        {
+            Pattern = pattern ?? string.Empty;
+            RegEx = new Lazy<Regex>(() => new Regex(pattern ?? string.Empty, RegexOptions.Compiled));
+        }
         #endregion
 
         #region Methods
@@ -51,7 +56,7 @@ namespace RDFSharp.Model
         /// Validates the given literal value against the pattern facet
         /// </summary>
         public override bool Validate(string literalValue)
-            => Regex.IsMatch(literalValue ?? string.Empty, Pattern);
+            => RegEx.Value.IsMatch(literalValue ?? string.Empty);
         #endregion
     }
 }
