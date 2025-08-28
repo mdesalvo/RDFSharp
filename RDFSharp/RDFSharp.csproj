@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <AssemblyTitle>RDFSharp</AssemblyTitle>
         <AssemblyName>RDFSharp</AssemblyName>
@@ -23,6 +23,7 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <OutputType>Library</OutputType>
         <Title>RDFSharp</Title>
+        <EnableNETAnalyzers>True</EnableNETAnalyzers>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Debug'">
         <DefineConstants>DEBUG;TRACE</DefineConstants>
