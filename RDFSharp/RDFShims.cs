@@ -37,6 +37,9 @@ namespace RDFSharp
         internal const string LangTagSubMaskNoDir = "(-[a-zA-Z0-9]{1,8})*";
         internal const string LangTagMaskNoDir = "[a-zA-Z]{1,8}" + LangTagSubMaskNoDir;
         internal const string LangTagNoDirPattern = "^" + LangTagMaskNoDir + "$";
+        /*Unicode*/
+        internal const string EightBytesUnicodePattern = @"\\U([0-9A-Fa-f]{8})";
+        internal const string FourBytesUnicodePattern = @"\\u([0-9A-Fa-f]{4})";
 
 #if NET8_0_OR_GREATER
         /// <summary>
@@ -52,6 +55,20 @@ namespace RDFSharp
         internal static readonly Lazy<Regex> LangTagNoDirRegex = new Lazy<Regex>(GeneratedLangTagNoDirRegex);
         [GeneratedRegex(LangTagNoDirPattern, RegexOptions.IgnoreCase)]
         private static partial Regex GeneratedLangTagNoDirRegex();
+
+        /// <summary>
+        /// Regex to catch 8-byte Unicode strings
+        /// </summary>
+        internal static readonly Lazy<Regex> EightBytesUnicodeRegex = new Lazy<Regex>(GeneratedEightBytesUnicodeRegex);
+        [GeneratedRegex(EightBytesUnicodePattern)]
+        private static partial Regex GeneratedEightBytesUnicodeRegex();
+
+        /// <summary>
+        /// Regex to catch 4-byte Unicode strings
+        /// </summary>
+        internal static readonly Lazy<Regex> FourBytesUnicodeRegex = new Lazy<Regex>(GeneratedFourBytesUnicodeRegex);
+        [GeneratedRegex(FourBytesUnicodePattern)]
+        private static partial Regex GeneratedFourBytesUnicodeRegex();
 #else
         /// <summary>
         /// Regex for validation of language tags (with support for direction)
@@ -62,6 +79,16 @@ namespace RDFSharp
         /// Regex for validation of language tags (without support for direction)
         /// </summary>
         internal static readonly Lazy<Regex> LangTagNoDirRegex = new Lazy<Regex>(() => new Regex(LangTagNoDirPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
+
+        /// <summary>
+        /// Regex to catch 8-byte Unicode strings
+        /// </summary>
+        internal static readonly Lazy<Regex> EightBytesUnicodeRegex = new Lazy<Regex>(() => new Regex(EightBytesUnicodePattern, RegexOptions.Compiled));
+
+        /// <summary>
+        /// Regex to catch 4-byte Unicode strings
+        /// </summary>
+        internal static readonly Lazy<Regex> FourBytesUnicodeRegex = new Lazy<Regex>(() => new Regex(FourBytesUnicodePattern, RegexOptions.Compiled));
 #endif
     }
 }

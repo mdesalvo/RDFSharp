@@ -70,26 +70,26 @@ public class RDFModelUtilitiesTest
     [TestMethod]
     [DataRow("\\U09AFaf90")]
     public void ShouldMatchRegexU8(string input)
-        => Assert.IsTrue(RDFModelUtilities.regexU8.Value.IsMatch(input));
+        => Assert.IsTrue(RDFShims.EightBytesUnicodeRegex.Value.IsMatch(input));
 
     [TestMethod]
     [DataRow("\\u09AFaf90")]
     [DataRow("\\U09AFaf9")]
     [DataRow("\\U09AFaf9P")]
     public void ShouldNotMatchRegexU8(string input)
-        => Assert.IsFalse(RDFModelUtilities.regexU8.Value.IsMatch(input));
+        => Assert.IsFalse(RDFShims.EightBytesUnicodeRegex.Value.IsMatch(input));
 
     [TestMethod]
     [DataRow("\\u09Af")]
     public void ShouldMatchRegexU4(string input)
-        => Assert.IsTrue(RDFModelUtilities.regexU4.Value.IsMatch(input));
+        => Assert.IsTrue(RDFShims.FourBytesUnicodeRegex.Value.IsMatch(input));
 
     [TestMethod]
     [DataRow("\\U09Af")]
     [DataRow("\\u09A")]
     [DataRow("\\u09AP")]
     public void ShouldNotMatchRegexU4(string input)
-        => Assert.IsFalse(RDFModelUtilities.regexU4.Value.IsMatch(input));
+        => Assert.IsFalse(RDFShims.FourBytesUnicodeRegex.Value.IsMatch(input));
 
     [TestMethod]
     [DataRow("09AFaf09")]
