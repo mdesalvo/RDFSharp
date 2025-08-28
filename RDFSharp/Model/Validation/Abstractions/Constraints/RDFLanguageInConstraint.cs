@@ -77,11 +77,11 @@ namespace RDFSharp.Model
                             {
                                 //NO language is found in the variable
                                 case "":
-                                    langMatches = !Regex.IsMatch(valueNodePlainLiteral.ToString(), $"@{RDFShims.LangTagMask}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                                    langMatches = !RDFShims.EndingLangTagRegex.Value.IsMatch(valueNodePlainLiteral.ToString());
                                     break;
                                 //ANY language is found in the variable
                                 case "*":
-                                    langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), $"@{RDFShims.LangTagMask}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                                    langMatches = RDFShims.EndingLangTagRegex.Value.IsMatch(valueNodePlainLiteral.ToString());
                                     break;
                                 //GIVEN language is found in the variable
                                 default:
