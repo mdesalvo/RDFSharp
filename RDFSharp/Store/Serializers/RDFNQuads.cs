@@ -30,6 +30,10 @@ namespace RDFSharp.Store
     internal static class RDFNQuads
     {
         #region Properties
+        private const string TemplateCSPO  = "<{SUBJ}> <{PRED}> <{OBJ}> <{CTX}> .";
+        private const string TemplateCSPLL = "<{SUBJ}> <{PRED}> \"{VAL}\"@{LANG} <{CTX}> .";
+        private const string TemplateCSPLT = "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> <{CTX}> .";
+
         /// <summary>
         /// Regex to detect S->P->B->C form of N-Quad
         /// </summary>
@@ -105,16 +109,9 @@ namespace RDFSharp.Store
                     foreach (RDFQuadruple q in store.SelectAllQuadruples())
                     {
                         #region template
-                        string quadrupleTemplate;
-                        if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                        {
-                            quadrupleTemplate = "<{SUBJ}> <{PRED}> <{OBJ}> <{CTX}> .";
-                        }
-                        else
-                        {
-                            quadrupleTemplate = q.Object is RDFPlainLiteral ? "<{SUBJ}> <{PRED}> \"{VAL}\"@{LANG} <{CTX}> ."
-                                                        : "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> <{CTX}> .";
-                        }
+                        string quadrupleTemplate = q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
+                            ? TemplateCSPO
+                            : q.Object is RDFPlainLiteral ? TemplateCSPLL : TemplateCSPLT;
                         #endregion
 
                         #region subj
