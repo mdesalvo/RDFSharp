@@ -842,8 +842,7 @@ namespace RDFSharp.Model
                         : (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.OWL_RATIONAL:
-                    bool isValidOwlRational = RDFShims.OWLRationalRegex.Value.Match(literalValue).Success;
-                    return (isValidOwlRational, literalValue);
+                    return (RDFShims.OWLRationalRegex.Value.Match(literalValue).Success, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_DOUBLE:
                     return double.TryParse(literalValue, NumberStyles.Float, CultureInfo.InvariantCulture, out double outDouble)
