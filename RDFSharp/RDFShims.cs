@@ -37,6 +37,8 @@ namespace RDFSharp
         internal const string LangTagSubMaskNoDir = "(-[a-zA-Z0-9]{1,8})*";
         internal const string LangTagMaskNoDir = "[a-zA-Z]{1,8}" + LangTagSubMaskNoDir;
         internal const string LangTagNoDirPattern = "^" + LangTagMaskNoDir + "$";
+        /*Prefix*/
+        internal const string PrefixPattern = @"^[a-zA-Z0-9_\-]+$";
         /*Unicode*/
         internal const string EightBytesUnicodePattern = @"\\U([0-9A-Fa-f]{8})";
         internal const string FourBytesUnicodePattern = @"\\u([0-9A-Fa-f]{4})";
@@ -68,6 +70,13 @@ namespace RDFSharp
         internal static readonly Lazy<Regex> EightBytesUnicodeRegex = new Lazy<Regex>(GeneratedEightBytesUnicodeRegex);
         [GeneratedRegex(EightBytesUnicodePattern)]
         private static partial Regex GeneratedEightBytesUnicodeRegex();
+
+        /// <summary>
+        /// Regex for validation of prefixes
+        /// </summary>
+        internal static readonly Lazy<Regex> PrefixRegex = new Lazy<Regex>(GeneratedPrefixRegex);
+        [GeneratedRegex(PrefixPattern)]
+        private static partial Regex GeneratedPrefixRegex();
 
         /// <summary>
         /// Regex to catch 4-byte Unicode strings
@@ -120,6 +129,11 @@ namespace RDFSharp
         /// Regex for validation of language tags (without support for direction)
         /// </summary>
         internal static readonly Lazy<Regex> LangTagNoDirRegex = new Lazy<Regex>(() => new Regex(LangTagNoDirPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
+
+        /// <summary>
+        /// Regex for validation of prefixes
+        /// </summary>
+        internal static readonly Lazy<Regex> PrefixRegex = new Lazy<Regex>(() => new Regex(PrefixPattern, RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to catch 8-byte Unicode strings

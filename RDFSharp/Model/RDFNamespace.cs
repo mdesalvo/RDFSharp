@@ -15,7 +15,6 @@
 */
 
 using System;
-using System.Text.RegularExpressions;
 
 namespace RDFSharp.Model
 {
@@ -26,9 +25,19 @@ namespace RDFSharp.Model
     {
         #region Properties
         /// <summary>
-        /// Regex for validation of prefixes
+        /// Prefix representation of the namespace (e.g: rdfs)
         /// </summary>
-        internal static readonly Lazy<Regex> PrefixRegex = new Lazy<Regex>(() => new Regex(@"^[a-zA-Z0-9_\-]+$", RegexOptions.Compiled));
+        public string NamespacePrefix { get; internal set; }
+
+        /// <summary>
+        /// Uri representation of the namespace (e.g: http://www.w3.org/2000/01/rdf-schema#)
+        /// </summary>
+        public Uri NamespaceUri { get; internal set; }
+
+        /// <summary>
+        /// Uri dereference representation of the namespace (e.g: http://www.w3.org/2000/01/rdf-schema#)
+        /// </summary>
+        public Uri DereferenceUri { get; internal set; }
 
         /// <summary>
         /// Unique representation of the namespace
@@ -39,21 +48,6 @@ namespace RDFSharp.Model
         /// Flag indicating that the namespace is temporary
         /// </summary>
         internal bool IsTemporary { get; set; }
-
-        /// <summary>
-        /// Prefix representation of the namespace
-        /// </summary>
-        public string NamespacePrefix { get; internal set; }
-
-        /// <summary>
-        /// Uri representation of the namespace
-        /// </summary>
-        public Uri NamespaceUri { get; internal set; }
-
-        /// <summary>
-        /// Uri dereference representation of the namespace
-        /// </summary>
-        public Uri DereferenceUri { get; internal set; }
         #endregion
 
         #region Ctors
@@ -70,9 +64,9 @@ namespace RDFSharp.Model
 
             //Prefix must contain only letters/numbers and cannot be "bnode" or "xmlns"
             string finalPrefix = prefix.Trim();
-            if (!PrefixRegex.Value.Match(finalPrefix).Success)
+            if (!RDFShims.PrefixRegex.Value.Match(finalPrefix).Success)
                 throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter contains unallowed characters");
-            if (finalPrefix.Equals("bnode", StringComparison.OrdinalIgnoreCase) || finalPrefix.Equals("xmlns", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(finalPrefix, "bnode", StringComparison.OrdinalIgnoreCase) || string.Equals(finalPrefix, "xmlns", StringComparison.OrdinalIgnoreCase))
                 throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter cannot be \"bnode\" or \"xmlns\"");
 
             //Uri must be absolute and cannot start with "bnode:" or "xmlns:"
@@ -109,9 +103,11 @@ namespace RDFSharp.Model
         public RDFNamespace SetDereferenceUri(Uri dereferenceUri)
         {
             if (dereferenceUri?.IsAbsoluteUri == true
-                && !dereferenceUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
-                && !dereferenceUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
+                 && !dereferenceUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
+                 && !dereferenceUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
+            {
                 DereferenceUri = dereferenceUri;
+            }
             return this;
         }
 
