@@ -42,14 +42,14 @@ namespace RDFSharp
         /// <summary>
         /// Regex for validation of language tags (with support for direction)
         /// </summary>
-        internal static readonly Lazy<Regex> LangTagRegex = new Lazy<Regex>(() => GeneratedLangTagRegex());
+        internal static readonly Lazy<Regex> LangTagRegex = new Lazy<Regex>(GeneratedLangTagRegex);
         [GeneratedRegex(LangTagPattern, RegexOptions.IgnoreCase)]
         private static partial Regex GeneratedLangTagRegex();
 
         /// <summary>
         /// Regex for validation of language tags (without support for direction)
         /// </summary>
-        internal static readonly Lazy<Regex> LangTagNoDirRegex = new Lazy<Regex>(() => GeneratedLangTagNoDirRegex());
+        internal static readonly Lazy<Regex> LangTagNoDirRegex = new Lazy<Regex>(GeneratedLangTagNoDirRegex);
         [GeneratedRegex(LangTagNoDirPattern, RegexOptions.IgnoreCase)]
         private static partial Regex GeneratedLangTagNoDirRegex();
 #else
