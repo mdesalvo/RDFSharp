@@ -351,7 +351,7 @@ namespace RDFSharp
         /// <summary>
         /// Regex to catch literals which must be escaped as long literals in Turtle
         /// </summary>
-        internal static readonly Lazy<Regex> LongLiteralRegex = new Lazy<Regex>(() => new Regex("[\n\r\t\"]", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> LongLiteralRegex = new Lazy<Regex>(() => new Regex(LongLiteralPattern, RegexOptions.Compiled));
 
         /// <summary>
         /// Regex for validation of prefixes
