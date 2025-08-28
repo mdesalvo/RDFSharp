@@ -218,7 +218,7 @@ namespace RDFSharp.Store
                                  || lastIndexOfDatatype == tokens[2].Length - 2 //EndsWith "^^"
                                  || tokens[2][lastIndexOfDatatype + 2] != '<')
                             {
-                                if (RDFShims.EndingLangTagRegex.Value.Match(tokens[2]).Success)
+                                if (RDFShims.EndingLangTagRegex.Value.IsMatch(tokens[2]))
                                 {
                                     tokens[2] = tokens[2].Replace("\"@", "@");
                                     int lastIndexOfLanguage = tokens[2].LastIndexOf('@');
@@ -281,7 +281,7 @@ namespace RDFSharp.Store
             if (nquad[0] == '<')
             {
                 //S->P->O->C
-                if (RDFShims.CSPO.Value.Match(nquad).Success)
+                if (RDFShims.CSPO.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 
@@ -306,7 +306,7 @@ namespace RDFSharp.Store
                 }
 
                 //S->P->L(PLAIN)->C
-                if (RDFShims.CSPL.Value.Match(nquad).Success)
+                if (RDFShims.CSPL.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 
@@ -331,7 +331,7 @@ namespace RDFSharp.Store
                 }
 
                 //S->P->L(PLANG)->C
-                if (RDFShims.CSPLL.Value.Match(nquad).Success)
+                if (RDFShims.CSPLL.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 
@@ -356,7 +356,7 @@ namespace RDFSharp.Store
                 }
 
                 //S->P->L(TLIT)->C
-                if (RDFShims.CSPLT.Value.Match(nquad).Success)
+                if (RDFShims.CSPLT.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t', '>');
 
@@ -381,7 +381,7 @@ namespace RDFSharp.Store
                 }
 
                 //S->P->B->C
-                if (RDFShims.CSPB.Value.Match(nquad).Success)
+                if (RDFShims.CSPB.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 
@@ -406,7 +406,7 @@ namespace RDFSharp.Store
                 }
 
                 //S->P->O->
-                if (RDFShims.SPO.Value.Match(nquad).Success)
+                if (RDFShims.SPO.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 
@@ -426,7 +426,7 @@ namespace RDFSharp.Store
                 }
 
                 //S->P->L(PLAIN)->
-                if (RDFShims.SPL.Value.Match(nquad).Success)
+                if (RDFShims.SPL.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 
@@ -446,7 +446,7 @@ namespace RDFSharp.Store
                 }
 
                 //S->P->L(PLANG)->
-                if (RDFShims.SPLL.Value.Match(nquad).Success)
+                if (RDFShims.SPLL.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 
@@ -466,7 +466,7 @@ namespace RDFSharp.Store
                 }
 
                 //S->P->L(TLIT)->
-                if (RDFShims.SPLT.Value.Match(nquad).Success)
+                if (RDFShims.SPLT.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 
@@ -486,7 +486,7 @@ namespace RDFSharp.Store
                 }
 
                 //S->P->B->
-                if (RDFShims.SPB.Value.Match(nquad).Success)
+                if (RDFShims.SPB.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 
@@ -512,7 +512,7 @@ namespace RDFSharp.Store
             if (nquad.Length > 1 && nquad[0] == '_' && nquad[1] == ':')
             {
                 //B->P->O->C
-                if (RDFShims.CBPO.Value.Match(nquad).Success)
+                if (RDFShims.CBPO.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 
@@ -537,7 +537,7 @@ namespace RDFSharp.Store
                 }
 
                 //B->P->L(PLAIN)->C
-                if (RDFShims.CBPL.Value.Match(nquad).Success)
+                if (RDFShims.CBPL.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 
@@ -562,7 +562,7 @@ namespace RDFSharp.Store
                 }
 
                 //B->P->L(PLANG)->C
-                if (RDFShims.CBPLL.Value.Match(nquad).Success)
+                if (RDFShims.CBPLL.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 
@@ -587,7 +587,7 @@ namespace RDFSharp.Store
                 }
 
                 //B->P->L(TLIT)->C
-                if (RDFShims.CBPLT.Value.Match(nquad).Success)
+                if (RDFShims.CBPLT.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t', '>');
 
@@ -612,7 +612,7 @@ namespace RDFSharp.Store
                 }
 
                 //B->P->B->C
-                if (RDFShims.CBPB.Value.Match(nquad).Success)
+                if (RDFShims.CBPB.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 
@@ -637,7 +637,7 @@ namespace RDFSharp.Store
                 }
 
                 //B->P->O->
-                if (RDFShims.BPO.Value.Match(nquad).Success)
+                if (RDFShims.BPO.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 
@@ -657,7 +657,7 @@ namespace RDFSharp.Store
                 }
 
                 //B->P->L(PLAIN)->
-                if (RDFShims.BPL.Value.Match(nquad).Success)
+                if (RDFShims.BPL.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 
@@ -677,7 +677,7 @@ namespace RDFSharp.Store
                 }
 
                 //B->P->L(PLANG)->
-                if (RDFShims.BPLL.Value.Match(nquad).Success)
+                if (RDFShims.BPLL.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 
@@ -697,7 +697,7 @@ namespace RDFSharp.Store
                 }
 
                 //B->P->L(TLIT)->
-                if (RDFShims.BPLT.Value.Match(nquad).Success)
+                if (RDFShims.BPLT.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 
@@ -717,7 +717,7 @@ namespace RDFSharp.Store
                 }
 
                 //B->P->B->
-                if (RDFShims.BPB.Value.Match(nquad).Success)
+                if (RDFShims.BPB.Value.IsMatch(nquad))
                 {
                     nquad = nquad.Trim('.', ' ', '\t');
 

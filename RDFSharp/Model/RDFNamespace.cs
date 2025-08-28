@@ -64,7 +64,7 @@ namespace RDFSharp.Model
 
             //Prefix must contain only letters/numbers and cannot be "bnode" or "xmlns"
             string finalPrefix = prefix.Trim();
-            if (!RDFShims.PrefixRegex.Value.Match(finalPrefix).Success)
+            if (!RDFShims.PrefixRegex.Value.IsMatch(finalPrefix))
                 throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter contains unallowed characters");
             if (string.Equals(finalPrefix, "bnode", StringComparison.OrdinalIgnoreCase) || string.Equals(finalPrefix, "xmlns", StringComparison.OrdinalIgnoreCase))
                 throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter cannot be \"bnode\" or \"xmlns\"");

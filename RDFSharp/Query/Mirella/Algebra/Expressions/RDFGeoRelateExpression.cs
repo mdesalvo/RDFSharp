@@ -44,7 +44,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
             if (string.IsNullOrWhiteSpace(de9imRelation))
                 throw new RDFQueryException("Cannot create expression because given \"de9imRelation\" parameter is null or empty");
-            if (!Regex.IsMatch(de9imRelation, "^[012TF\\*]{9}$", RegexOptions.IgnoreCase))
+            if (!RDFShims.GeoRelatesRegex.Value.IsMatch(de9imRelation))
                 throw new RDFQueryException("Cannot create expression because given \"de9imRelation\" parameter is not a valid DE-9IM intersection mask");
 
             DE9IMRelation = de9imRelation.ToUpper();
@@ -59,7 +59,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
             if (string.IsNullOrWhiteSpace(de9imRelation))
                 throw new RDFQueryException("Cannot create expression because given \"de9imRelation\" parameter is null or empty");
-            if (!Regex.IsMatch(de9imRelation, "^[012TF\\*]{9}$", RegexOptions.IgnoreCase))
+            if (!RDFShims.GeoRelatesRegex.Value.IsMatch(de9imRelation))
                 throw new RDFQueryException("Cannot create expression because given \"de9imRelation\" parameter is not a valid DE-9IM intersection mask");
 
             DE9IMRelation = de9imRelation.ToUpper();
@@ -77,7 +77,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is not a geographic typed literal");
             if (string.IsNullOrWhiteSpace(de9imRelation))
                 throw new RDFQueryException("Cannot create expression because given \"de9imRelation\" parameter is null or empty");
-            if (!Regex.IsMatch(de9imRelation, "^[012TF\\*]{9}$", RegexOptions.IgnoreCase))
+            if (!RDFShims.GeoRelatesRegex.Value.IsMatch(de9imRelation))
                 throw new RDFQueryException("Cannot create expression because given \"de9imRelation\" parameter is not a valid DE-9IM intersection mask");
 
             DE9IMRelation = de9imRelation.ToUpper();
@@ -92,7 +92,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
             if (string.IsNullOrWhiteSpace(de9imRelation))
                 throw new RDFQueryException("Cannot create expression because given \"de9imRelation\" parameter is null or empty");
-            if (!Regex.IsMatch(de9imRelation, "^[012TF\\*]{9}$", RegexOptions.IgnoreCase))
+            if (!RDFShims.GeoRelatesRegex.Value.IsMatch(de9imRelation))
                 throw new RDFQueryException("Cannot create expression because given \"de9imRelation\" parameter is not a valid DE-9IM intersection mask");
 
             DE9IMRelation = de9imRelation.ToUpper();
@@ -107,7 +107,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
             if (string.IsNullOrWhiteSpace(de9imRelation))
                 throw new RDFQueryException("Cannot create expression because given \"de9imRelation\" parameter is null or empty");
-            if (!Regex.IsMatch(de9imRelation, "^[012TF\\*]{9}$", RegexOptions.IgnoreCase))
+            if (!RDFShims.GeoRelatesRegex.Value.IsMatch(de9imRelation))
                 throw new RDFQueryException("Cannot create expression because given \"de9imRelation\" parameter is not a valid DE-9IM intersection mask");
 
             DE9IMRelation = de9imRelation.ToUpper();
@@ -125,7 +125,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is not a geographic typed literal");
             if (string.IsNullOrWhiteSpace(de9imRelation))
                 throw new RDFQueryException("Cannot create expression because given \"de9imRelation\" parameter is null or empty");
-            if (!Regex.IsMatch(de9imRelation, "^[012TF\\*]{9}$", RegexOptions.IgnoreCase))
+            if (!RDFShims.GeoRelatesRegex.Value.IsMatch(de9imRelation))
                 throw new RDFQueryException("Cannot create expression because given \"de9imRelation\" parameter is not a valid DE-9IM intersection mask");
 
             DE9IMRelation = de9imRelation.ToUpper();

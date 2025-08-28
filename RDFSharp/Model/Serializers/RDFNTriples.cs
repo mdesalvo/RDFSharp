@@ -214,7 +214,7 @@ namespace RDFSharp.Model
                                  || lastIndexOfDatatype == tokens[2].Length - 2 //EndsWith "^^"
                                  || tokens[2][lastIndexOfDatatype + 2] != '<')
                             {
-                                if (RDFShims.EndingLangTagRegex.Value.Match(tokens[2]).Success)
+                                if (RDFShims.EndingLangTagRegex.Value.IsMatch(tokens[2]))
                                 {
                                     tokens[2] = tokens[2].Replace("\"@", "@");
                                     int lastIndexOfLanguage = tokens[2].LastIndexOf('@');
@@ -268,7 +268,7 @@ namespace RDFSharp.Model
             if (ntriple[0] == '<')
             {
                 //S->P->O
-                if (RDFShims.SPO.Value.Match(ntriple).Success)
+                if (RDFShims.SPO.Value.IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -288,7 +288,7 @@ namespace RDFSharp.Model
                 }
 
                 //S->P->L(PLAIN)
-                if (RDFShims.SPL.Value.Match(ntriple).Success)
+                if (RDFShims.SPL.Value.IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -308,7 +308,7 @@ namespace RDFSharp.Model
                 }
 
                 //S->P->L(PLANG)
-                if (RDFShims.SPLL.Value.Match(ntriple).Success)
+                if (RDFShims.SPLL.Value.IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -328,7 +328,7 @@ namespace RDFSharp.Model
                 }
 
                 //S->P->L(TLIT)
-                if (RDFShims.SPLT.Value.Match(ntriple).Success)
+                if (RDFShims.SPLT.Value.IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -348,7 +348,7 @@ namespace RDFSharp.Model
                 }
 
                 //S->P->B
-                if (RDFShims.SPB.Value.Match(ntriple).Success)
+                if (RDFShims.SPB.Value.IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -374,7 +374,7 @@ namespace RDFSharp.Model
             if (ntriple.Length > 1 && ntriple[0] == '_' && ntriple[1] == ':')
             {
                 //B->P->O
-                if (RDFShims.BPO.Value.Match(ntriple).Success)
+                if (RDFShims.BPO.Value.IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -394,7 +394,7 @@ namespace RDFSharp.Model
                 }
 
                 //B->P->L(PLAIN)
-                if (RDFShims.BPL.Value.Match(ntriple).Success)
+                if (RDFShims.BPL.Value.IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -414,7 +414,7 @@ namespace RDFSharp.Model
                 }
 
                 //B->P->L(PLANG)
-                if (RDFShims.BPLL.Value.Match(ntriple).Success)
+                if (RDFShims.BPLL.Value.IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -434,7 +434,7 @@ namespace RDFSharp.Model
                 }
 
                 //B->P->L(TLIT)
-                if (RDFShims.BPLT.Value.Match(ntriple).Success)
+                if (RDFShims.BPLT.Value.IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -454,7 +454,7 @@ namespace RDFSharp.Model
                 }
 
                 //B->P->B
-                if (RDFShims.BPB.Value.Match(ntriple).Success)
+                if (RDFShims.BPB.Value.IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 

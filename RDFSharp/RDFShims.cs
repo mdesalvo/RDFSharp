@@ -41,6 +41,7 @@ namespace RDFSharp
         /*Strings*/
         internal const string StartingQuotePattern = @"^""";
         internal const string EndingQuotePattern = @"""$";
+        internal const string LongLiteralPattern = "[\n\r\t\"]";
         /*Prefix*/
         internal const string PrefixPattern = @"^[a-zA-Z0-9_\-]+$";
         /*Unicode*/
@@ -52,6 +53,7 @@ namespace RDFSharp
         internal const string TimeGeneralDayPattern = "---(0[1-9]|[1-9][0-9])(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?";
         internal const string TimeGeneralMonthPattern = "--(0[1-9]|1[0-9]|20)(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?";
         internal const string TimeGeneralYearPattern = "-?([1-9][0-9]{3,}|0[0-9]{3})(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?";
+        internal const string GeoRelatesPattern = "^[012TF\\*]{9}$";
         /*NTriples*/
         internal const string SPBPattern  = @"^<[^<>\s]+>\s*<[^<>\s]+>\s*_:[^<>\s]+\s*\.$";
         internal const string SPOPattern  = @"^<[^<>\s]+>\s*<[^<>\s]+>\s*<[^<>\s]+>\s*\.$";
@@ -112,6 +114,13 @@ namespace RDFSharp
         private static partial Regex GeneratedEndingQuoteRegex();
 
         /// <summary>
+        /// Regex to catch literals which must be escaped as long literals in Turtle
+        /// </summary>
+        internal static readonly Lazy<Regex> LongLiteralRegex = new Lazy<Regex>(GeneratedLongLiteralRegex);
+        [GeneratedRegex(LongLiteralPattern)]
+        private static partial Regex GeneratedLongLiteralRegex();
+
+        /// <summary>
         /// Regex to catch 8-byte Unicode strings
         /// </summary>
         internal static readonly Lazy<Regex> EightBytesUnicodeRegex = new Lazy<Regex>(GeneratedEightBytesUnicodeRegex);
@@ -166,6 +175,13 @@ namespace RDFSharp
         internal static readonly Lazy<Regex> TimeGeneralYearRegex = new Lazy<Regex>(GeneratedTimeGeneralYearRegex);
         [GeneratedRegex(TimeGeneralYearPattern)]
         private static partial Regex GeneratedTimeGeneralYearRegex();
+
+        /// <summary>
+        /// Regex to validates geof:sfRelate arguments
+        /// </summary>
+        internal static readonly Lazy<Regex> GeoRelatesRegex = new Lazy<Regex>(GeneratedGeoRelatesRegex);
+        [GeneratedRegex(GeoRelatesPattern, RegexOptions.IgnoreCase)]
+        private static partial Regex GeneratedGeoRelatesRegex();
 
         /// <summary>
         /// Regex to detect S->P->B form of N-Triple/N-Quad
@@ -333,6 +349,11 @@ namespace RDFSharp
         internal static readonly Lazy<Regex> EndingQuoteRegex = new Lazy<Regex>(() => new Regex(EndingQuotePattern, RegexOptions.Compiled));
 
         /// <summary>
+        /// Regex to catch literals which must be escaped as long literals in Turtle
+        /// </summary>
+        internal static readonly Lazy<Regex> LongLiteralRegex = new Lazy<Regex>(() => new Regex("[\n\r\t\"]", RegexOptions.Compiled));
+
+        /// <summary>
         /// Regex for validation of prefixes
         /// </summary>
         internal static readonly Lazy<Regex> PrefixRegex = new Lazy<Regex>(() => new Regex(PrefixPattern, RegexOptions.Compiled));
@@ -371,6 +392,11 @@ namespace RDFSharp
         /// Regex to catch time:generalYear typed literals
         /// </summary>
         internal static readonly Lazy<Regex> TimeGeneralYearRegex = new Lazy<Regex>(() => new Regex(TimeGeneralYearPattern, RegexOptions.Compiled));
+
+        /// <summary>
+        /// Regex to validates geof:sfRelate arguments
+        /// </summary>
+        internal static readonly Lazy<Regex> GeoRelatesRegex = new Lazy<Regex>(() => new Regex(GeoRelatesPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
 
         /// <summary>
         /// Regex to detect S->P->B form of N-Triple/N-Quad
