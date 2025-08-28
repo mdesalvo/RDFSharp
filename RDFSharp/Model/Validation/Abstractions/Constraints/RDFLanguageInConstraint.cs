@@ -79,10 +79,12 @@ namespace RDFSharp.Model
                                 case "":
                                     langMatches = !RDFShims.EndingLangTagRegex.Value.IsMatch(valueNodePlainLiteral.ToString());
                                     break;
+
                                 //ANY language is found in the variable
                                 case "*":
                                     langMatches = RDFShims.EndingLangTagRegex.Value.IsMatch(valueNodePlainLiteral.ToString());
                                     break;
+
                                 //GIVEN language is found in the variable
                                 default:
                                     langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), $"@{langTagsEnumerator.Current}{RDFShims.LangTagSubMask}$", RegexOptions.IgnoreCase);
