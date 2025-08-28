@@ -58,15 +58,6 @@ namespace RDFSharp.Model
         internal static readonly UTF8Encoding UTF8_NoBOM = new UTF8Encoding(false);
 
         /// <summary>
-        /// Regex to catch xsd:hexBinary typed literals
-        /// </summary>
-        internal static readonly Lazy<Regex> hexBinary = new Lazy<Regex>(() => new Regex("^([0-9a-fA-F]{2})*$", RegexOptions.Compiled));
-        /// <summary>
-        /// Regex to catch owl:rational typed literals
-        /// </summary>
-        internal static readonly Lazy<Regex> owlRational = new Lazy<Regex>(() => new Regex("^(0|(-)?([1-9])+([0-9])*)(/([1-9])+([0-9])*)?$", RegexOptions.Compiled));
-
-        /// <summary>
         /// Alternative representations of boolean True
         /// </summary>
         internal static readonly string[] AlternativesBoolTrue  = { "1", "one", "yes", "y", "t", "on", "ok", "up" };
@@ -682,7 +673,7 @@ namespace RDFSharp.Model
                     catch { return (false, literalValue); }
 
                 case RDFModelEnums.RDFDatatypes.XSD_HEXBINARY:
-                    return (hexBinary.Value.Match(literalValue).Success, literalValue);
+                    return (RDFShims.HexBinaryRegex.Value.Match(literalValue).Success, literalValue);
                 #endregion
 
                 #region GEOGRAPHIC CATEGORY
@@ -855,7 +846,7 @@ namespace RDFSharp.Model
                         : (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.OWL_RATIONAL:
-                    bool isValidOwlRational = owlRational.Value.Match(literalValue).Success;
+                    bool isValidOwlRational = RDFShims.OWLRationalRegex.Value.Match(literalValue).Success;
                     return (isValidOwlRational, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_DOUBLE:

@@ -40,6 +40,9 @@ namespace RDFSharp
         /*Unicode*/
         internal const string EightBytesUnicodePattern = @"\\U([0-9A-Fa-f]{8})";
         internal const string FourBytesUnicodePattern = @"\\u([0-9A-Fa-f]{4})";
+        /*Datatypes*/
+        internal const string HexBinaryPattern = "^([0-9a-fA-F]{2})*$";
+        internal const string OWLRationalPattern = "^(0|(-)?([1-9])+([0-9])*)(/([1-9])+([0-9])*)?$";
 
 #if NET8_0_OR_GREATER
         /// <summary>
@@ -69,6 +72,20 @@ namespace RDFSharp
         internal static readonly Lazy<Regex> FourBytesUnicodeRegex = new Lazy<Regex>(GeneratedFourBytesUnicodeRegex);
         [GeneratedRegex(FourBytesUnicodePattern)]
         private static partial Regex GeneratedFourBytesUnicodeRegex();
+
+        /// <summary>
+        /// Regex to catch xsd:hexBinary typed literals
+        /// </summary>
+        internal static readonly Lazy<Regex> HexBinaryRegex = new Lazy<Regex>(GeneratedHexBinaryRegex);
+        [GeneratedRegex(HexBinaryPattern)]
+        private static partial Regex GeneratedHexBinaryRegex();
+
+        /// <summary>
+        /// Regex to catch owl:rational typed literals
+        /// </summary>
+        internal static readonly Lazy<Regex> OWLRationalRegex = new Lazy<Regex>(GeneratedOWLRationalRegex);
+        [GeneratedRegex(OWLRationalPattern)]
+        private static partial Regex GeneratedOWLRationalRegex();
 #else
         /// <summary>
         /// Regex for validation of language tags (with support for direction)
@@ -89,6 +106,16 @@ namespace RDFSharp
         /// Regex to catch 4-byte Unicode strings
         /// </summary>
         internal static readonly Lazy<Regex> FourBytesUnicodeRegex = new Lazy<Regex>(() => new Regex(FourBytesUnicodePattern, RegexOptions.Compiled));
+
+        /// <summary>
+        /// Regex to catch xsd:hexBinary typed literals
+        /// </summary>
+        internal static readonly Lazy<Regex> HexBinaryRegex = new Lazy<Regex>(() => new Regex(HexBinaryPattern, RegexOptions.Compiled));
+
+        /// <summary>
+        /// Regex to catch owl:rational typed literals
+        /// </summary>
+        internal static readonly Lazy<Regex> OWLRationalRegex = new Lazy<Regex>(() => new Regex(OWLRationalPattern, RegexOptions.Compiled));
 #endif
     }
 }
