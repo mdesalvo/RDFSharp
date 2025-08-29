@@ -755,6 +755,7 @@ namespace RDFSharp.Query
         internal void FetchDescribeVariablesFromQueryMembers(RDFDescribeQuery describeQuery, IEnumerable<RDFQueryMember> evaluableQueryMembers)
         {
             foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
+            {
                 switch (evaluableQueryMember)
                 {
                     //PATTERN GROUP
@@ -767,6 +768,7 @@ namespace RDFSharp.Query
                         FetchDescribeVariablesFromQueryMembers(describeQuery, sqEvaluableQueryMember.GetEvaluableQueryMembers());
                         break;
                 }
+            }
         }
 
         /// <summary>
