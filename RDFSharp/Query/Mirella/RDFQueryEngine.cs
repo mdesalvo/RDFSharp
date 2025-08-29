@@ -1989,7 +1989,7 @@ namespace RDFSharp.Query
             if (!table.Columns.Contains(bindVariable))
             {
                 table.BeginLoadData();
-                
+
                 //Project bind column
                 AddColumn(table, bindVariable);
 
@@ -2007,7 +2007,7 @@ namespace RDFSharp.Query
                     foreach (DataRow row in table.AsEnumerable())
                         row[bindVariable] = expression.ApplyExpression(row)?.ToString();
                 }
-                
+
                 table.EndLoadData();
                 table.AcceptChanges();
             }

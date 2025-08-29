@@ -1599,7 +1599,7 @@ namespace RDFSharp.Model
                                 string tLit = $"{litValDelim}{tLitObj.Value.Replace("\\", @"\\")}{litValDelim}^^{dtype}";
                                 result.Append(tLit);
                                 break;
-                            
+
                             case RDFPlainLiteral pLitObj:
                                 string pLit = string.Concat(litValDelim, pLitObj.Value.Replace("\\", @"\\"), litValDelim);
                                 if (pLitObj.HasLanguage())
