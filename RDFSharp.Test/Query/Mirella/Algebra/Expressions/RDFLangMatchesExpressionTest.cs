@@ -156,6 +156,25 @@ public class RDFLangMatchesExpressionTest
     }
 
     [TestMethod]
+    public void ShouldCreateExactLangMatchesExpressionAndCalculateResultTrueOnSuperLangTagRegional()
+    {
+        DataTable table = new DataTable();
+        table.Columns.Add("?A", typeof(string));
+        table.Columns.Add("?B", typeof(string));
+        DataRow row = table.NewRow();
+        row["?A"] = new RDFResource("http://example.org/").ToString();
+        row["?B"] = new RDFPlainLiteral("hello", "en-US--rtl").ToString();
+        table.Rows.Add(row);
+        table.AcceptChanges();
+
+        RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("EN-us")));
+        RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(result);
+        Assert.IsTrue(result.Equals(RDFTypedLiteral.True));
+    }
+
+    [TestMethod]
     public void ShouldCreateExactLangMatchesExpressionWithLeftExpressionAndCalculateResultTrueOnSuperLangTag()
     {
         DataTable table = new DataTable();
