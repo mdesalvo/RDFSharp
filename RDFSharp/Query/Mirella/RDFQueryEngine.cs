@@ -728,6 +728,7 @@ namespace RDFSharp.Query
                      from DataRow resultRow in resultTable.Rows
                      where !resultRow.IsNull(describeVariableName)
                      select ParseRDFPatternMember(resultRow[describeVariableName].ToString()))
+            {
                 //Execute most appropriate strategy, depending on the type of the variable value
                 switch (describeVariableValue)
                 {
@@ -743,6 +744,7 @@ namespace RDFSharp.Query
                         result.Merge(describeLiteralTable, true, MissingSchemaAction.Add);
                         break;
                 }
+            }
 
             return result;
         }
