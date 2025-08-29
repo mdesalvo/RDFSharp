@@ -1085,6 +1085,7 @@ namespace RDFSharp.Query
 
             //Iterate data sources of the federation
             foreach (RDFDataSource dataSource in federation)
+            {
                 switch (dataSource)
                 {
                     case RDFGraph dataSourceGraph:
@@ -1111,6 +1112,7 @@ namespace RDFSharp.Query
                         resultTable.Merge(sparqlEndpointTable.SelectResults, true, MissingSchemaAction.Add);
                         break;
                 }
+            }
 
             return resultTable;
         }
