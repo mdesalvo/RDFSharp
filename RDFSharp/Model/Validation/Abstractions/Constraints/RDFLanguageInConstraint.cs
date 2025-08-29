@@ -69,7 +69,8 @@ namespace RDFSharp.Model
                 switch (valueNode)
                 {
                     //PlainLiteral
-                    case RDFPlainLiteral valueNodePlainLiteral:
+                    case RDFPlainLiteral valueNodePLit:
+                        string valueNodePLitString = valueNodePLit.ToString();
                         bool langMatches = false;
                         HashSet<string>.Enumerator langTagsEnumerator = LanguageTags.GetEnumerator();
                         while (langTagsEnumerator.MoveNext() && !langMatches)
@@ -77,21 +78,22 @@ namespace RDFSharp.Model
                             {
                                 //NO language is found in the variable
                                 case "":
-                                    langMatches = !RDFShims.EndingLangTagRegex.Value.IsMatch(valueNodePlainLiteral.ToString());
+                                    langMatches = !RDFShims.EndingLangTagRegex.Value.IsMatch(valueNodePLitString);
                                     break;
 
                                 //ANY language is found in the variable
                                 case "*":
-                                    langMatches = RDFShims.EndingLangTagRegex.Value.IsMatch(valueNodePlainLiteral.ToString());
+                                    langMatches = RDFShims.EndingLangTagRegex.Value.IsMatch(valueNodePLitString);
                                     break;
 
                                 //GIVEN language is found in the variable
                                 default:
-                                    langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), $"@{langTagsEnumerator.Current}{RDFShims.LangTagSubMask}$", RegexOptions.IgnoreCase);
+                                    langMatches = Regex.IsMatch(valueNodePLitString, $"@{langTagsEnumerator.Current}{RDFShims.LangTagSubMask}$", RegexOptions.IgnoreCase);
                                     break;
                             }
 
                         if (!langMatches)
+                        {
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -99,6 +101,7 @@ namespace RDFSharp.Model
                                                                      valueNode,
                                                                      shapeMessages,
                                                                      shape.Severity));
+                        }
                         break;
 
                     //Resource/TypedLiteral

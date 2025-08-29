@@ -63,6 +63,7 @@ namespace RDFSharp.Model
                     //Resource
                     case RDFResource valueNodeResource:
                         if (valueNodeResource.IsBlank || !RegEx.IsMatch(valueNodeResource.ToString()))
+                        {
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -70,11 +71,13 @@ namespace RDFSharp.Model
                                                                      valueNode,
                                                                      shapeMessages,
                                                                      shape.Severity));
+                        }
                         break;
 
                     //Literal
                     case RDFLiteral valueNodeLiteral:
                         if (!RegEx.IsMatch(valueNodeLiteral.Value))
+                        {
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -82,6 +85,7 @@ namespace RDFSharp.Model
                                                                      valueNode,
                                                                      shapeMessages,
                                                                      shape.Severity));
+                        }
                         break;
                 }
             #endregion

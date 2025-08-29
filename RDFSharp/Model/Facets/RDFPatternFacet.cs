@@ -30,7 +30,7 @@ namespace RDFSharp.Model
         /// Pattern required by the facet
         /// </summary>
         public string Pattern { get; internal set; }
-        private Lazy<Regex> RegEx { get;  }
+        private Lazy<Regex> RegEx { get; }
         #endregion
 
         #region Ctors
