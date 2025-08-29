@@ -1663,7 +1663,7 @@ namespace RDFSharp.Query
                                                   .ToArray());
 
             //Calculate outer-join column's attribution
-            Dictionary<string, (bool,string)> joinColumnsAttribution = new Dictionary<string, (bool,string)>();
+            Dictionary<string, (bool,string)> joinColumnsAttribution = new Dictionary<string, (bool,string)>(joinTable.Columns.Count);
             foreach (DataColumn joinColumn in joinTable.Columns)
             {
                 joinColumnsAttribution.Add(joinColumn.ColumnName,
