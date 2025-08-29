@@ -60,9 +60,10 @@ namespace RDFSharp.Model
 
             if (hashContext != null)
             {
-                uriString = URI.ToString();
                 LazyPatternMemberID = new Lazy<long>(() =>
                 {
+                    uriString = URI.ToString();
+
                     //Cache-Hit
                     if (hashContext.TryGetValue(uriString, out long hashValue))
                         return hashValue;
