@@ -1124,9 +1124,9 @@ namespace RDFSharp.Query
         {
             //Translate property path into equivalent list of patterns
             List<RDFPattern> patternList = propertyPath.GetPatternList();
+            List<DataTable> patternTables = new List<DataTable>(patternList.Count);
 
             //Evaluate produced list of patterns
-            List<DataTable> patternTables = new List<DataTable>(patternList.Count);
             foreach (RDFPattern pattern in patternList)
             {
                 //Apply pattern to graph
@@ -1149,7 +1149,9 @@ namespace RDFSharp.Query
                                          in resultTable.Columns
                                          where dtCol.ColumnName.StartsWith("?__PP", StringComparison.Ordinal)
                                          select dtCol.ColumnName).ToArray())
+            {
                 resultTable.Columns.Remove(ppColumn);
+            }
 
             return resultTable;
         }
