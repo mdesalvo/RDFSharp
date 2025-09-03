@@ -196,8 +196,8 @@ namespace RDFSharp.Model
                         else
                         {
                             #region sanitize
-                            tokens[2] = RDFShims.StartingQuoteRegex.Value.Replace(tokens[2], string.Empty);
-                            tokens[2] = RDFShims.EndingQuoteRegex.Value.Replace(tokens[2], string.Empty);
+                            tokens[2] = RDFRegex.StartingQuoteRegex().Replace(tokens[2], string.Empty);
+                            tokens[2] = RDFRegex.EndingQuoteRegex().Replace(tokens[2], string.Empty);
                             tokens[2] = tokens[2].Replace(@"\\", "\\")
                                                  .Replace("\\\"", "\"")
                                                  .Replace("\\n", "\n")
@@ -214,7 +214,7 @@ namespace RDFSharp.Model
                                  || lastIndexOfDatatype == tokens[2].Length - 2 //EndsWith "^^"
                                  || tokens[2][lastIndexOfDatatype + 2] != '<')
                             {
-                                if (RDFShims.EndingLangTagRegex.Value.IsMatch(tokens[2]))
+                                if (RDFRegex.EndingLangTagRegex().IsMatch(tokens[2]))
                                 {
                                     tokens[2] = tokens[2].Replace("\"@", "@");
                                     int lastIndexOfLanguage = tokens[2].LastIndexOf('@');
@@ -268,7 +268,7 @@ namespace RDFSharp.Model
             if (ntriple[0] == '<')
             {
                 //S->P->O
-                if (RDFShims.SPO.Value.IsMatch(ntriple))
+                if (RDFRegex.SPO().IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -288,7 +288,7 @@ namespace RDFSharp.Model
                 }
 
                 //S->P->L(PLAIN)
-                if (RDFShims.SPL.Value.IsMatch(ntriple))
+                if (RDFRegex.SPL().IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -308,7 +308,7 @@ namespace RDFSharp.Model
                 }
 
                 //S->P->L(PLANG)
-                if (RDFShims.SPLL.Value.IsMatch(ntriple))
+                if (RDFRegex.SPLL().IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -328,7 +328,7 @@ namespace RDFSharp.Model
                 }
 
                 //S->P->L(TLIT)
-                if (RDFShims.SPLT.Value.IsMatch(ntriple))
+                if (RDFRegex.SPLT().IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -348,7 +348,7 @@ namespace RDFSharp.Model
                 }
 
                 //S->P->B
-                if (RDFShims.SPB.Value.IsMatch(ntriple))
+                if (RDFRegex.SPB().IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -374,7 +374,7 @@ namespace RDFSharp.Model
             if (ntriple.Length > 1 && ntriple[0] == '_' && ntriple[1] == ':')
             {
                 //B->P->O
-                if (RDFShims.BPO.Value.IsMatch(ntriple))
+                if (RDFRegex.BPO().IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -394,7 +394,7 @@ namespace RDFSharp.Model
                 }
 
                 //B->P->L(PLAIN)
-                if (RDFShims.BPL.Value.IsMatch(ntriple))
+                if (RDFRegex.BPL().IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -414,7 +414,7 @@ namespace RDFSharp.Model
                 }
 
                 //B->P->L(PLANG)
-                if (RDFShims.BPLL.Value.IsMatch(ntriple))
+                if (RDFRegex.BPLL().IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -434,7 +434,7 @@ namespace RDFSharp.Model
                 }
 
                 //B->P->L(TLIT)
-                if (RDFShims.BPLT.Value.IsMatch(ntriple))
+                if (RDFRegex.BPLT().IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -454,7 +454,7 @@ namespace RDFSharp.Model
                 }
 
                 //B->P->B
-                if (RDFShims.BPB.Value.IsMatch(ntriple))
+                if (RDFRegex.BPB().IsMatch(ntriple))
                 {
                     ntriple = ntriple.Trim('.', ' ', '\t');
 

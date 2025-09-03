@@ -44,7 +44,7 @@ namespace RDFSharp.Model
             languageTags?.ForEach(lt =>
             {
                 string languageTag = lt?.Trim() ?? string.Empty;
-                if (languageTag.Length == 0 || languageTag == "*" || RDFShims.LangTagRegex.Value.IsMatch(languageTag))
+                if (languageTag.Length == 0 || languageTag == "*" || RDFRegex.LangTagRegex().IsMatch(languageTag))
                     LanguageTags.Add(languageTag.ToUpperInvariant());
             });
         }
@@ -78,17 +78,17 @@ namespace RDFSharp.Model
                             {
                                 //NO language is found in the variable
                                 case "":
-                                    langMatches = !RDFShims.EndingLangTagRegex.Value.IsMatch(valueNodePLitString);
+                                    langMatches = !RDFRegex.EndingLangTagRegex().IsMatch(valueNodePLitString);
                                     break;
 
                                 //ANY language is found in the variable
                                 case "*":
-                                    langMatches = RDFShims.EndingLangTagRegex.Value.IsMatch(valueNodePLitString);
+                                    langMatches = RDFRegex.EndingLangTagRegex().IsMatch(valueNodePLitString);
                                     break;
 
                                 //GIVEN language is found in the variable
                                 default:
-                                    langMatches = Regex.IsMatch(valueNodePLitString, $"@{langTagsEnumerator.Current}{RDFShims.LangTagSubMask}$", RegexOptions.IgnoreCase);
+                                    langMatches = Regex.IsMatch(valueNodePLitString, $"@{langTagsEnumerator.Current}{RDFRegex.LangTagSubMask}$", RegexOptions.IgnoreCase);
                                     break;
                             }
 

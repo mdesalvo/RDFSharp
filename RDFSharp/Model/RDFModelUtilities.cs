@@ -106,11 +106,11 @@ namespace RDFSharp.Model
 
             //UNICODE (UTF-16)
             StringBuilder sbRegexU8 = new StringBuilder(asciiString.Length);
-            sbRegexU8.Append(RDFShims.EightBytesUnicodeRegex.Value.Replace(asciiString, match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber))));
+            sbRegexU8.Append(RDFRegex.EightBytesUnicodeRegex().Replace(asciiString, match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber))));
 
             //UNICODE (UTF-8)
             StringBuilder sbRegexU4 = new StringBuilder(sbRegexU8.Length);
-            sbRegexU4.Append(RDFShims.FourBytesUnicodeRegex.Value.Replace(sbRegexU8.ToString(), match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber))));
+            sbRegexU4.Append(RDFRegex.FourBytesUnicodeRegex().Replace(sbRegexU8.ToString(), match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber))));
 
             return sbRegexU4.ToString();
         }
@@ -661,7 +661,7 @@ namespace RDFSharp.Model
                     return (literalValue.IndexOfAny(NormalizedStringForbiddenChars) == -1, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_LANGUAGE:
-                    return (RDFShims.LangTagRegex.Value.IsMatch(literalValue), literalValue);
+                    return (RDFRegex.LangTagRegex().IsMatch(literalValue), literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY:
                     try
@@ -672,7 +672,7 @@ namespace RDFSharp.Model
                     catch { return (false, literalValue); }
 
                 case RDFModelEnums.RDFDatatypes.XSD_HEXBINARY:
-                    return (RDFShims.HexBinaryRegex.Value.IsMatch(literalValue), literalValue);
+                    return (RDFRegex.HexBinaryRegex().IsMatch(literalValue), literalValue);
                 #endregion
 
                 #region GEOGRAPHIC CATEGORY
@@ -815,13 +815,13 @@ namespace RDFSharp.Model
                     return isValidGDay;
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALDAY:
-                    return (RDFShims.TimeGeneralDayRegex.Value.IsMatch(literalValue), literalValue);
+                    return (RDFRegex.TimeGeneralDayRegex().IsMatch(literalValue), literalValue);
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH:
-                    return (RDFShims.TimeGeneralMonthRegex.Value.IsMatch(literalValue), literalValue);
+                    return (RDFRegex.TimeGeneralMonthRegex().IsMatch(literalValue), literalValue);
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR:
-                    return (RDFShims.TimeGeneralYearRegex.Value.IsMatch(literalValue), literalValue);
+                    return (RDFRegex.TimeGeneralYearRegex().IsMatch(literalValue), literalValue);
                 #endregion
 
                 #region TIMESPAN CATEGORY
@@ -842,7 +842,7 @@ namespace RDFSharp.Model
                         : (false, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.OWL_RATIONAL:
-                    return (RDFShims.OWLRationalRegex.Value.IsMatch(literalValue), literalValue);
+                    return (RDFRegex.OWLRationalRegex().IsMatch(literalValue), literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_DOUBLE:
                     return double.TryParse(literalValue, NumberStyles.Float, CultureInfo.InvariantCulture, out double outDouble)
