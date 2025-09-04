@@ -18,45 +18,44 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFPatternFacet represents a constraint requiring the values of a literal to match a pattern
+/// </summary>
+public sealed class RDFPatternFacet : RDFFacet
 {
+    #region Properties
     /// <summary>
-    /// RDFPatternFacet represents a constraint requiring the values of a literal to match a pattern
+    /// Pattern required by the facet
     /// </summary>
-    public sealed class RDFPatternFacet : RDFFacet
+    public string Pattern { get; internal set; }
+    private Lazy<Regex> RegEx { get; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a facet requiring the given pattern
+    /// </summary>
+    public RDFPatternFacet(string pattern)
     {
-        #region Properties
-        /// <summary>
-        /// Pattern required by the facet
-        /// </summary>
-        public string Pattern { get; internal set; }
-        private Lazy<Regex> RegEx { get; }
-        #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Builds a facet requiring the given pattern
-        /// </summary>
-        public RDFPatternFacet(string pattern)
-        {
-            Pattern = pattern ?? string.Empty;
-            RegEx = new Lazy<Regex>(() => new Regex(pattern ?? string.Empty, RegexOptions.Compiled));
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Gives a graph representation of the pattern facet
-        /// </summary>
-        public override RDFGraph ToRDFGraph()
-            => new RDFGraph([
-                new RDFTriple(URI, RDFVocabulary.XSD.PATTERN, new RDFTypedLiteral(Pattern, RDFModelEnums.RDFDatatypes.XSD_STRING)) ]);
-
-        /// <summary>
-        /// Validates the given literal value against the pattern facet
-        /// </summary>
-        public override bool Validate(string literalValue)
-            => RegEx.Value.IsMatch(literalValue ?? string.Empty);
-        #endregion
+        Pattern = pattern ?? string.Empty;
+        RegEx = new Lazy<Regex>(() => new Regex(pattern ?? string.Empty, RegexOptions.Compiled));
     }
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Gives a graph representation of the pattern facet
+    /// </summary>
+    public override RDFGraph ToRDFGraph()
+        => new RDFGraph([
+            new RDFTriple(URI, RDFVocabulary.XSD.PATTERN, new RDFTypedLiteral(Pattern, RDFModelEnums.RDFDatatypes.XSD_STRING)) ]);
+
+    /// <summary>
+    /// Validates the given literal value against the pattern facet
+    /// </summary>
+    public override bool Validate(string literalValue)
+        => RegEx.Value.IsMatch(literalValue ?? string.Empty);
+    #endregion
 }

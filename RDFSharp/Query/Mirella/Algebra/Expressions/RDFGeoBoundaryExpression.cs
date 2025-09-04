@@ -18,46 +18,45 @@ using System.Collections.Generic;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// GEOBoundaryExpression represents "geof:boundary" geographic function to be applied on a query results table.<br/>
+/// The result of this function is a WKT typed literal representing a sf:Geometry expressed in WGS84 Lon/Lat.
+/// </summary>
+public sealed class RDFGeoBoundaryExpression : RDFGeoExpression
 {
+    #region Ctors
     /// <summary>
-    /// GEOBoundaryExpression represents "geof:boundary" geographic function to be applied on a query results table.<br/>
-    /// The result of this function is a WKT typed literal representing a sf:Geometry expressed in WGS84 Lon/Lat.
+    /// Builds a geof:boundary function with given arguments
     /// </summary>
-    public sealed class RDFGeoBoundaryExpression : RDFGeoExpression
+    public RDFGeoBoundaryExpression(RDFExpression leftArgument) : base(leftArgument, null) { }
+
+    /// <summary>
+    /// Builds a geof:boundary function with given arguments
+    /// </summary>
+    public RDFGeoBoundaryExpression(RDFVariable leftArgument) : base(leftArgument, null) { }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the geof:boundary function
+    /// </summary>
+    public override string ToString()
+        => ToString(RDFModelUtilities.EmptyNamespaceList);
+    internal override string ToString(List<RDFNamespace> prefixes)
     {
-        #region Ctors
-        /// <summary>
-        /// Builds a geof:boundary function with given arguments
-        /// </summary>
-        public RDFGeoBoundaryExpression(RDFExpression leftArgument) : base(leftArgument, null) { }
+        StringBuilder sb = new StringBuilder(32);
 
-        /// <summary>
-        /// Builds a geof:boundary function with given arguments
-        /// </summary>
-        public RDFGeoBoundaryExpression(RDFVariable leftArgument) : base(leftArgument, null) { }
-        #endregion
+        //(geof:boundary(L))
+        sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.GEOF.BOUNDARY, prefixes)}(");
+        if (LeftArgument is RDFExpression expLeftArgument)
+            sb.Append(expLeftArgument.ToString(prefixes));
+        else
+            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+        sb.Append("))");
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the geof:boundary function
-        /// </summary>
-        public override string ToString()
-            => ToString(RDFModelUtilities.EmptyNamespaceList);
-        internal override string ToString(List<RDFNamespace> prefixes)
-        {
-            StringBuilder sb = new StringBuilder(32);
-
-            //(geof:boundary(L))
-            sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.GEOF.BOUNDARY, prefixes)}(");
-            if (LeftArgument is RDFExpression expLeftArgument)
-                sb.Append(expLeftArgument.ToString(prefixes));
-            else
-                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            sb.Append("))");
-
-            return sb.ToString();
-        }
-        #endregion
+        return sb.ToString();
     }
+    #endregion
 }

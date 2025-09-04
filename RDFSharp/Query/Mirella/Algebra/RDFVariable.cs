@@ -14,41 +14,40 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFVariable represents a named "hole" in a pattern, to be filled with values during queries.
+/// </summary>
+public sealed class RDFVariable : RDFPatternMember
 {
+    #region Properties
     /// <summary>
-    /// RDFVariable represents a named "hole" in a pattern, to be filled with values during queries.
+    /// Name of the variable
     /// </summary>
-    public sealed class RDFVariable : RDFPatternMember
+    public string VariableName { get; internal set; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a named SPARQL variable
+    /// </summary>
+    /// <exception cref="RDFQueryException"></exception>
+    public RDFVariable(string variableName)
     {
-        #region Properties
-        /// <summary>
-        /// Name of the variable
-        /// </summary>
-        public string VariableName { get; internal set; }
-        #endregion
+        string trimmedVariableName = variableName?.Trim(' ', '?', '$');
+        if (string.IsNullOrWhiteSpace(trimmedVariableName))
+            throw new RDFQueryException("Cannot create RDFVariable because given \"variableName\" parameter is null or empty or contains only whitespaces.");
 
-        #region Ctors
-        /// <summary>
-        /// Builds a named SPARQL variable
-        /// </summary>
-        /// <exception cref="RDFQueryException"></exception>
-        public RDFVariable(string variableName)
-        {
-            string trimmedVariableName = variableName?.Trim(' ', '?', '$');
-            if (string.IsNullOrWhiteSpace(trimmedVariableName))
-                throw new RDFQueryException("Cannot create RDFVariable because given \"variableName\" parameter is null or empty or contains only whitespaces.");
-
-            VariableName = $"?{trimmedVariableName.ToUpperInvariant()}";
-        }
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the variable
-        /// </summary>
-        public override string ToString()
-            => VariableName;
-        #endregion
+        VariableName = $"?{trimmedVariableName.ToUpperInvariant()}";
     }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the variable
+    /// </summary>
+    public override string ToString()
+        => VariableName;
+    #endregion
 }

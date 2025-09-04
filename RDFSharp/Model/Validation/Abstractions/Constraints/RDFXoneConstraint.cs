@@ -17,110 +17,109 @@
 using System.Collections.Generic;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFXoneConstraint represents a SHACL constraint requiring exactly one of the given shapes for a given RDF term
+/// </summary>
+public sealed class RDFXoneConstraint : RDFConstraint
 {
+    #region Properties
     /// <summary>
-    /// RDFXoneConstraint represents a SHACL constraint requiring exactly one of the given shapes for a given RDF term
+    /// Shapes required for the given RDF term
     /// </summary>
-    public sealed class RDFXoneConstraint : RDFConstraint
+    internal Dictionary<long, RDFResource> XoneShapes { get; set; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a xone constraint
+    /// </summary>
+    public RDFXoneConstraint()
+        => XoneShapes = [];
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Adds the given shape to the required shapes of this constraint
+    /// </summary>
+    public RDFXoneConstraint AddShape(RDFResource shapeUri)
     {
-        #region Properties
-        /// <summary>
-        /// Shapes required for the given RDF term
-        /// </summary>
-        internal Dictionary<long, RDFResource> XoneShapes { get; set; }
-        #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Builds a xone constraint
-        /// </summary>
-        public RDFXoneConstraint()
-            => XoneShapes = [];
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Adds the given shape to the required shapes of this constraint
-        /// </summary>
-        public RDFXoneConstraint AddShape(RDFResource shapeUri)
-        {
-            if (shapeUri != null && !XoneShapes.ContainsKey(shapeUri.PatternMemberID))
-                XoneShapes.Add(shapeUri.PatternMemberID, shapeUri);
-            return this;
-        }
-
-        /// <summary>
-        /// Evaluates this constraint against the given data graph
-        /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
-        {
-            RDFValidationReport report = new RDFValidationReport();
-            RDFPropertyShape pShape = shape as RDFPropertyShape;
-
-            //Search for given xone shapes
-            List<RDFShape> xoneShapes = [];
-            foreach (RDFResource xoneShapeUri in XoneShapes.Values)
-            {
-                RDFShape xoneShape = shapesGraph.SelectShape(xoneShapeUri.ToString());
-                if (xoneShape != null)
-                    xoneShapes.Add(xoneShape);
-            }
-
-            //In case no shape messages have been provided, this constraint emits a default one (for usability)
-            List<RDFLiteral> shapeMessages = [.. shape.Messages];
-            if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral("Value does not have exactly one of the shapes in sh:xone enumeration"));
-
-            #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes)
-            {
-                int valueNodeConformsCounter = 0;
-                foreach (RDFShape xoneShape in xoneShapes)
-                {
-                    RDFValidationReport xoneShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, xoneShape, [valueNode]);
-                    if (xoneShapeReport.Conforms)
-                    {
-                        valueNodeConformsCounter++;
-                        //No need to evaluate remaining shapes, since value has broken sh:xone enumeration
-                        if (valueNodeConformsCounter > 1)
-                            break;
-                    }
-                }
-
-                if (valueNodeConformsCounter != 1)
-                    report.AddResult(new RDFValidationResult(shape,
-                                                             RDFVocabulary.SHACL.XONE_CONSTRAINT_COMPONENT,
-                                                             focusNode,
-                                                             pShape?.Path,
-                                                             valueNode,
-                                                             shapeMessages,
-                                                             shape.Severity));
-            }
-            #endregion
-
-            return report;
-        }
-
-        /// <summary>
-        /// Gets a graph representation of this constraint
-        /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape)
-        {
-            RDFGraph result = new RDFGraph();
-            if (shape != null)
-            {
-                //Get collection from xoneShapes
-                RDFCollection xoneShapes = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource) { InternalReificationSubject = this };
-                foreach (RDFResource xoneShape in XoneShapes.Values)
-                    xoneShapes.AddItem(xoneShape);
-                result.AddCollection(xoneShapes);
-
-                //sh:xone
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.XONE, xoneShapes.ReificationSubject));
-            }
-            return result;
-        }
-        #endregion
+        if (shapeUri != null && !XoneShapes.ContainsKey(shapeUri.PatternMemberID))
+            XoneShapes.Add(shapeUri.PatternMemberID, shapeUri);
+        return this;
     }
+
+    /// <summary>
+    /// Evaluates this constraint against the given data graph
+    /// </summary>
+    internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+    {
+        RDFValidationReport report = new RDFValidationReport();
+        RDFPropertyShape pShape = shape as RDFPropertyShape;
+
+        //Search for given xone shapes
+        List<RDFShape> xoneShapes = [];
+        foreach (RDFResource xoneShapeUri in XoneShapes.Values)
+        {
+            RDFShape xoneShape = shapesGraph.SelectShape(xoneShapeUri.ToString());
+            if (xoneShape != null)
+                xoneShapes.Add(xoneShape);
+        }
+
+        //In case no shape messages have been provided, this constraint emits a default one (for usability)
+        List<RDFLiteral> shapeMessages = [.. shape.Messages];
+        if (shapeMessages.Count == 0)
+            shapeMessages.Add(new RDFPlainLiteral("Value does not have exactly one of the shapes in sh:xone enumeration"));
+
+        #region Evaluation
+        foreach (RDFPatternMember valueNode in valueNodes)
+        {
+            int valueNodeConformsCounter = 0;
+            foreach (RDFShape xoneShape in xoneShapes)
+            {
+                RDFValidationReport xoneShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, xoneShape, [valueNode]);
+                if (xoneShapeReport.Conforms)
+                {
+                    valueNodeConformsCounter++;
+                    //No need to evaluate remaining shapes, since value has broken sh:xone enumeration
+                    if (valueNodeConformsCounter > 1)
+                        break;
+                }
+            }
+
+            if (valueNodeConformsCounter != 1)
+                report.AddResult(new RDFValidationResult(shape,
+                    RDFVocabulary.SHACL.XONE_CONSTRAINT_COMPONENT,
+                    focusNode,
+                    pShape?.Path,
+                    valueNode,
+                    shapeMessages,
+                    shape.Severity));
+        }
+        #endregion
+
+        return report;
+    }
+
+    /// <summary>
+    /// Gets a graph representation of this constraint
+    /// </summary>
+    internal override RDFGraph ToRDFGraph(RDFShape shape)
+    {
+        RDFGraph result = new RDFGraph();
+        if (shape != null)
+        {
+            //Get collection from xoneShapes
+            RDFCollection xoneShapes = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource) { InternalReificationSubject = this };
+            foreach (RDFResource xoneShape in XoneShapes.Values)
+                xoneShapes.AddItem(xoneShape);
+            result.AddCollection(xoneShapes);
+
+            //sh:xone
+            result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.XONE, xoneShapes.ReificationSubject));
+        }
+        return result;
+    }
+    #endregion
 }

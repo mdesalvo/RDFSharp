@@ -16,73 +16,72 @@
 
 using System;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFPlainLiteral represents a literal which can be eventually decorated with a language tag and a base direction
+/// </summary>
+public sealed class RDFPlainLiteral : RDFLiteral
 {
+    #region Statics
     /// <summary>
-    /// RDFPlainLiteral represents a literal which can be eventually decorated with a language tag and a base direction
+    /// Represents an handy plain literal for empty strings
     /// </summary>
-    public sealed class RDFPlainLiteral : RDFLiteral
+    public static readonly RDFPlainLiteral Empty = new RDFPlainLiteral(string.Empty);
+    /// <summary>
+    /// Represents an handy plain literal for querying any language tags (*)
+    /// </summary>
+    public static readonly RDFPlainLiteral Star = new RDFPlainLiteral("*");
+    #endregion
+
+    #region Properties
+    /// <summary>
+    /// Optional language of the literal
+    /// </summary>
+    public string Language { get; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a plain literal without language
+    /// </summary>
+    public RDFPlainLiteral(string value)
     {
-        #region Statics
-        /// <summary>
-        /// Represents an handy plain literal for empty strings
-        /// </summary>
-        public static readonly RDFPlainLiteral Empty = new RDFPlainLiteral(string.Empty);
-        /// <summary>
-        /// Represents an handy plain literal for querying any language tags (*)
-        /// </summary>
-        public static readonly RDFPlainLiteral Star = new RDFPlainLiteral("*");
-        #endregion
-
-        #region Properties
-        /// <summary>
-        /// Optional language of the literal
-        /// </summary>
-        public string Language { get; }
-        #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Builds a plain literal without language
-        /// </summary>
-        public RDFPlainLiteral(string value)
-        {
-            Value = value ?? string.Empty;
-            Language = string.Empty;
-        }
-
-        /// <summary>
-        /// Builds a plain literal with language (if not well-formed, the language will be discarded)
-        /// </summary>
-        public RDFPlainLiteral(string value, string language) : this(value)
-        {
-            if (language != null && RDFRegex.LangTagRegex().IsMatch(language))
-                Language = language.ToUpperInvariant();
-        }
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the plain literal
-        /// </summary>
-        public override string ToString()
-            => HasLanguage() ? $"{base.ToString()}@{Language}" : base.ToString();
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Checks if the plain literal has a language tag
-        /// </summary>
-        public bool HasLanguage()
-            => !string.IsNullOrEmpty(Language);
-
-        /// <summary>
-        /// Checks if the plain literal has a language tag with base direction
-        /// </summary>
-        public bool HasDirection()
-            => HasLanguage()
-                && (Language.EndsWith("--ltr", StringComparison.OrdinalIgnoreCase)
-                    || Language.EndsWith("--rtl", StringComparison.OrdinalIgnoreCase));
-        #endregion
+        Value = value ?? string.Empty;
+        Language = string.Empty;
     }
+
+    /// <summary>
+    /// Builds a plain literal with language (if not well-formed, the language will be discarded)
+    /// </summary>
+    public RDFPlainLiteral(string value, string language) : this(value)
+    {
+        if (language != null && RDFRegex.LangTagRegex().IsMatch(language))
+            Language = language.ToUpperInvariant();
+    }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the plain literal
+    /// </summary>
+    public override string ToString()
+        => HasLanguage() ? $"{base.ToString()}@{Language}" : base.ToString();
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Checks if the plain literal has a language tag
+    /// </summary>
+    public bool HasLanguage()
+        => !string.IsNullOrEmpty(Language);
+
+    /// <summary>
+    /// Checks if the plain literal has a language tag with base direction
+    /// </summary>
+    public bool HasDirection()
+        => HasLanguage()
+           && (Language.EndsWith("--ltr", StringComparison.OrdinalIgnoreCase)
+               || Language.EndsWith("--rtl", StringComparison.OrdinalIgnoreCase));
+    #endregion
 }

@@ -18,70 +18,69 @@ using System;
 using System.Collections.Generic;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFResource represents a generic resource in the RDF model.
+/// </summary>
+public class RDFResource : RDFPatternMember
 {
+    #region Properties
     /// <summary>
-    /// RDFResource represents a generic resource in the RDF model.
+    /// Uri of the resource
     /// </summary>
-    public class RDFResource : RDFPatternMember
+    public Uri URI { get; internal set; }
+
+    /// <summary>
+    /// Flag indicating the resource is blank or not
+    /// </summary>
+    public bool IsBlank => string.Equals(URI.Scheme, "bnode", StringComparison.Ordinal);
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a blank resource
+    /// </summary>
+    public RDFResource() : this($"bnode:{Guid.NewGuid():N}", null) { }
+
+    /// <summary>
+    /// Builds a non-blank resource (if starting with "_:" or "bnode:", it builds a blank resource)
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public RDFResource(string uriString) : this(uriString, null) { }
+
+    /// <summary>
+    /// Builds a resource (for internal performance purposes)
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    internal RDFResource(string uriString, Dictionary<string, long> hashContext)
     {
-        #region Properties
-        /// <summary>
-        /// Uri of the resource
-        /// </summary>
-        public Uri URI { get; internal set; }
+        URI = RDFModelUtilities.GetUriFromString(uriString)
+              ?? throw new RDFModelException("Cannot create RDFResource because given \"uriString\" parameter is null or cannot be converted to a valid Uri");
 
-        /// <summary>
-        /// Flag indicating the resource is blank or not
-        /// </summary>
-        public bool IsBlank => string.Equals(URI.Scheme, "bnode", StringComparison.Ordinal);
-        #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Builds a blank resource
-        /// </summary>
-        public RDFResource() : this($"bnode:{Guid.NewGuid():N}", null) { }
-
-        /// <summary>
-        /// Builds a non-blank resource (if starting with "_:" or "bnode:", it builds a blank resource)
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public RDFResource(string uriString) : this(uriString, null) { }
-
-        /// <summary>
-        /// Builds a resource (for internal performance purposes)
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        internal RDFResource(string uriString, Dictionary<string, long> hashContext)
+        if (hashContext != null)
         {
-            URI = RDFModelUtilities.GetUriFromString(uriString)
-                   ?? throw new RDFModelException("Cannot create RDFResource because given \"uriString\" parameter is null or cannot be converted to a valid Uri");
-
-            if (hashContext != null)
+            LazyPatternMemberID = new Lazy<long>(() =>
             {
-                LazyPatternMemberID = new Lazy<long>(() =>
-                {
-                    uriString = URI.ToString();
+                uriString = URI.ToString();
 
-                    //Cache-Hit
-                    if (hashContext.TryGetValue(uriString, out long hashValue))
-                        return hashValue;
-
-                    //Cache-Miss
-                    hashValue = RDFModelUtilities.CreateHash(uriString);
-                    hashContext.Add(uriString, hashValue);
+                //Cache-Hit
+                if (hashContext.TryGetValue(uriString, out long hashValue))
                     return hashValue;
-                });
-            }
-        }
-        #endregion
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the resource
-        /// </summary>
-        public override string ToString() => URI.ToString();
-        #endregion
+                //Cache-Miss
+                hashValue = RDFModelUtilities.CreateHash(uriString);
+                hashContext.Add(uriString, hashValue);
+                return hashValue;
+            });
+        }
     }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the resource
+    /// </summary>
+    public override string ToString() => URI.ToString();
+    #endregion
 }

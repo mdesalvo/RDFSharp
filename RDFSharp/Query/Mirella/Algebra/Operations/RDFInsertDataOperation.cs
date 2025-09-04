@@ -16,33 +16,32 @@
 
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFInsertDataOperation is the SPARQL "INSERT DATA" operation implementation
+/// </summary>
+public sealed class RDFInsertDataOperation : RDFOperation
 {
+    #region Interfaces
     /// <summary>
-    /// RDFInsertDataOperation is the SPARQL "INSERT DATA" operation implementation
+    /// Gives the string representation of the INSERT DATA operation
     /// </summary>
-    public sealed class RDFInsertDataOperation : RDFOperation
-    {
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the INSERT DATA operation
-        /// </summary>
-        public override string ToString()
-            => RDFOperationPrinter.PrintInsertDataOperation(this);
-        #endregion
+    public override string ToString()
+        => RDFOperationPrinter.PrintInsertDataOperation(this);
+    #endregion
 
-        #region Methods
-        /// <summary>
-        /// Adds the given ground pattern to the templates of the operation
-        /// </summary>
-        public RDFInsertDataOperation AddInsertTemplate(RDFPattern template)
-            => AddInsertGroundTemplate<RDFInsertDataOperation>(template);
+    #region Methods
+    /// <summary>
+    /// Adds the given ground pattern to the templates of the operation
+    /// </summary>
+    public RDFInsertDataOperation AddInsertTemplate(RDFPattern template)
+        => AddInsertGroundTemplate<RDFInsertDataOperation>(template);
 
-        /// <summary>
-        /// Adds the given prefix declaration to the operation
-        /// </summary>
-        public RDFInsertDataOperation AddPrefix(RDFNamespace prefix)
-            => AddPrefix<RDFInsertDataOperation>(prefix);
-        #endregion
-    }
+    /// <summary>
+    /// Adds the given prefix declaration to the operation
+    /// </summary>
+    public RDFInsertDataOperation AddPrefix(RDFNamespace prefix)
+        => AddPrefix<RDFInsertDataOperation>(prefix);
+    #endregion
 }

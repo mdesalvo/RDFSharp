@@ -18,59 +18,58 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFValidationEngine analyzes a given data graph by applying the given SHACL shapes graph,
+/// in order to find error and inconsistency evidences affecting its structure.
+/// </summary>
+public static class RDFValidationEngine
 {
+    #region Methods
     /// <summary>
-    /// RDFValidationEngine analyzes a given data graph by applying the given SHACL shapes graph,
-    /// in order to find error and inconsistency evidences affecting its structure.
+    /// Validates the given data graph against the given SHACL shapes graph
     /// </summary>
-    public static class RDFValidationEngine
+    public static RDFValidationReport Validate(this RDFShapesGraph shapesGraph, RDFGraph dataGraph)
     {
-        #region Methods
-        /// <summary>
-        /// Validates the given data graph against the given SHACL shapes graph
-        /// </summary>
-        public static RDFValidationReport Validate(this RDFShapesGraph shapesGraph, RDFGraph dataGraph)
+        RDFValidationReport report = new RDFValidationReport(new RDFResource());
+        if (dataGraph != null)
         {
-            RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            if (dataGraph != null)
-            {
-                foreach (RDFShape shape in shapesGraph)
-                    report.MergeResults(ValidateShape(shapesGraph, dataGraph, shape));
-            }
-            return report;
+            foreach (RDFShape shape in shapesGraph)
+                report.MergeResults(ValidateShape(shapesGraph, dataGraph, shape));
         }
-
-        /// <summary>
-        /// Asynchronously validates the given data graph against the given SHACL shapes graph
-        /// </summary>
-        public static Task<RDFValidationReport> ValidateAsync(this RDFShapesGraph shapesGraph, RDFGraph dataGraph)
-            => Task.Run(() => Validate(shapesGraph, dataGraph));
-
-        /// <summary>
-        /// Validates the given data graph against the given SHACL shape
-        /// </summary>
-        internal static RDFValidationReport ValidateShape(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, List<RDFPatternMember> focusNodes = null)
-        {
-            RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            if (!shape.Deactivated)
-            {
-                //Resolve focus nodes
-                focusNodes ??= dataGraph.GetFocusNodesOf(shape);
-
-                //Evaluate focus nodes
-                foreach (RDFPatternMember focusNode in focusNodes)
-                {
-                    //Resolve value nodes
-                    List<RDFPatternMember> valueNodes = dataGraph.GetValueNodesOf(shape, focusNode);
-
-                    //Evaluate constraints
-                    foreach (RDFConstraint constraint in shape)
-                        report.MergeResults(constraint.ValidateConstraint(shapesGraph, dataGraph, shape, focusNode, valueNodes));
-                }
-            }
-            return report;
-        }
-        #endregion
+        return report;
     }
+
+    /// <summary>
+    /// Asynchronously validates the given data graph against the given SHACL shapes graph
+    /// </summary>
+    public static Task<RDFValidationReport> ValidateAsync(this RDFShapesGraph shapesGraph, RDFGraph dataGraph)
+        => Task.Run(() => Validate(shapesGraph, dataGraph));
+
+    /// <summary>
+    /// Validates the given data graph against the given SHACL shape
+    /// </summary>
+    internal static RDFValidationReport ValidateShape(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, List<RDFPatternMember> focusNodes = null)
+    {
+        RDFValidationReport report = new RDFValidationReport(new RDFResource());
+        if (!shape.Deactivated)
+        {
+            //Resolve focus nodes
+            focusNodes ??= dataGraph.GetFocusNodesOf(shape);
+
+            //Evaluate focus nodes
+            foreach (RDFPatternMember focusNode in focusNodes)
+            {
+                //Resolve value nodes
+                List<RDFPatternMember> valueNodes = dataGraph.GetValueNodesOf(shape, focusNode);
+
+                //Evaluate constraints
+                foreach (RDFConstraint constraint in shape)
+                    report.MergeResults(constraint.ValidateConstraint(shapesGraph, dataGraph, shape, focusNode, valueNodes));
+            }
+        }
+        return report;
+    }
+    #endregion
 }

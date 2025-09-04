@@ -14,23 +14,22 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Query
-{
-    /// <summary>
-    /// RDFMonthExpression represents a datetime month function to be applied on a query results table.
-    /// </summary>
-    public sealed class RDFMonthExpression : RDFDateTimeExpression
-    {
-        #region Ctors
-        /// <summary>
-        /// Builds a datetime month function with given arguments
-        /// </summary>
-        public RDFMonthExpression(RDFExpression leftArgument) : base(leftArgument) { }
+namespace RDFSharp.Query;
 
-        /// <summary>
-        /// Builds a datetime month function with given arguments
-        /// </summary>
-        public RDFMonthExpression(RDFVariable leftArgument) : base(leftArgument) { }
-        #endregion
-    }
+/// <summary>
+/// RDFMonthExpression represents a datetime month function to be applied on a query results table.
+/// </summary>
+public sealed class RDFMonthExpression : RDFDateTimeExpression
+{
+    #region Ctors
+    /// <summary>
+    /// Builds a datetime month function with given arguments
+    /// </summary>
+    public RDFMonthExpression(RDFExpression leftArgument) : base(leftArgument) { }
+
+    /// <summary>
+    /// Builds a datetime month function with given arguments
+    /// </summary>
+    public RDFMonthExpression(RDFVariable leftArgument) : base(leftArgument) { }
+    #endregion
 }

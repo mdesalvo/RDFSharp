@@ -18,46 +18,45 @@ using System.Collections.Generic;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// GEOIsSimpleExpression represents "geosparql:isSimple" geographic function to be applied on a query results table.<br/>
+/// The result of this function is a boolean typed literal indicating that the working geometry is simple.
+/// </summary>
+public sealed class RDFGeoIsSimpleExpression : RDFGeoExpression
 {
+    #region Ctors
     /// <summary>
-    /// GEOIsSimpleExpression represents "geosparql:isSimple" geographic function to be applied on a query results table.<br/>
-    /// The result of this function is a boolean typed literal indicating that the working geometry is simple.
+    /// Builds a geosparql:isSimple function with given arguments
     /// </summary>
-    public sealed class RDFGeoIsSimpleExpression : RDFGeoExpression
+    public RDFGeoIsSimpleExpression(RDFExpression leftArgument) : base(leftArgument, null) { }
+
+    /// <summary>
+    /// Builds a geosparql:isSimple function with given arguments
+    /// </summary>
+    public RDFGeoIsSimpleExpression(RDFVariable leftArgument) : base(leftArgument, null) { }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the geosparql:isSimple function
+    /// </summary>
+    public override string ToString()
+        => ToString(RDFModelUtilities.EmptyNamespaceList);
+    internal override string ToString(List<RDFNamespace> prefixes)
     {
-        #region Ctors
-        /// <summary>
-        /// Builds a geosparql:isSimple function with given arguments
-        /// </summary>
-        public RDFGeoIsSimpleExpression(RDFExpression leftArgument) : base(leftArgument, null) { }
+        StringBuilder sb = new StringBuilder(32);
 
-        /// <summary>
-        /// Builds a geosparql:isSimple function with given arguments
-        /// </summary>
-        public RDFGeoIsSimpleExpression(RDFVariable leftArgument) : base(leftArgument, null) { }
-        #endregion
+        //(geosparql:isSimple(L))
+        sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.IS_SIMPLE, prefixes)}(");
+        if (LeftArgument is RDFExpression expLeftArgument)
+            sb.Append(expLeftArgument.ToString(prefixes));
+        else
+            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+        sb.Append("))");
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the geosparql:isSimple function
-        /// </summary>
-        public override string ToString()
-            => ToString(RDFModelUtilities.EmptyNamespaceList);
-        internal override string ToString(List<RDFNamespace> prefixes)
-        {
-            StringBuilder sb = new StringBuilder(32);
-
-            //(geosparql:isSimple(L))
-            sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.IS_SIMPLE, prefixes)}(");
-            if (LeftArgument is RDFExpression expLeftArgument)
-                sb.Append(expLeftArgument.ToString(prefixes));
-            else
-                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            sb.Append("))");
-
-            return sb.ToString();
-        }
-        #endregion
+        return sb.ToString();
     }
+    #endregion
 }

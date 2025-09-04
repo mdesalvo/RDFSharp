@@ -16,18 +16,17 @@
 
 using System.Data;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFModifier represents a modifier to be applied on a query results table.
+/// </summary>
+public abstract class RDFModifier : RDFQueryMember
 {
+    #region Methods
     /// <summary>
-    /// RDFModifier represents a modifier to be applied on a query results table.
+    /// Applies the modifier on the given datatable
     /// </summary>
-    public abstract class RDFModifier : RDFQueryMember
-    {
-        #region Methods
-        /// <summary>
-        /// Applies the modifier on the given datatable
-        /// </summary>
-        internal abstract DataTable ApplyModifier(DataTable tableToFilter);
-        #endregion
-    }
+    internal abstract DataTable ApplyModifier(DataTable tableToFilter);
+    #endregion
 }

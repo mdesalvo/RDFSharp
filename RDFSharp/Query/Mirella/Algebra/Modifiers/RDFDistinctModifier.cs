@@ -17,34 +17,33 @@
 using System.Data;
 using System.Linq;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFDistinctModifier is a modifier which drops duplicate rows for the level of detail of a SELECT query.
+/// </summary>
+public sealed class RDFDistinctModifier : RDFModifier
 {
+    #region Ctors
     /// <summary>
-    /// RDFDistinctModifier is a modifier which drops duplicate rows for the level of detail of a SELECT query.
+    /// Builds a Distinct modifier on a query
     /// </summary>
-    public sealed class RDFDistinctModifier : RDFModifier
-    {
-        #region Ctors
-        /// <summary>
-        /// Builds a Distinct modifier on a query
-        /// </summary>
-        public RDFDistinctModifier() { }
-        #endregion
+    public RDFDistinctModifier() { }
+    #endregion
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the modifier
-        /// </summary>
-        public override string ToString()
-            => "DISTINCT";
-        #endregion
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the modifier
+    /// </summary>
+    public override string ToString()
+        => "DISTINCT";
+    #endregion
 
-        #region Methods
-        /// <summary>
-        /// Applies the modifier on the given datatable
-        /// </summary>
-        internal override DataTable ApplyModifier(DataTable table)
-            => table.DefaultView.ToTable(true, [.. table.Columns.OfType<DataColumn>().Select(c => c.ColumnName)]);
-        #endregion
-    }
+    #region Methods
+    /// <summary>
+    /// Applies the modifier on the given datatable
+    /// </summary>
+    internal override DataTable ApplyModifier(DataTable table)
+        => table.DefaultView.ToTable(true, [.. table.Columns.OfType<DataColumn>().Select(c => c.ColumnName)]);
+    #endregion
 }

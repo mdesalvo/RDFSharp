@@ -16,29 +16,28 @@
 
 using System;
 
-namespace RDFSharp.Store
+namespace RDFSharp.Store;
+
+/// <summary>
+/// RDFStoreException represents an exception thrown during manipulation of RDF stores
+/// </summary>
+[Serializable]
+public sealed class RDFStoreException : Exception
 {
+    #region Ctors
     /// <summary>
-    /// RDFStoreException represents an exception thrown during manipulation of RDF stores
+    /// Basic ctor to throw an empty RDFStoreException
     /// </summary>
-    [Serializable]
-    public sealed class RDFStoreException : Exception
-    {
-        #region Ctors
-        /// <summary>
-        /// Basic ctor to throw an empty RDFStoreException
-        /// </summary>
-        public RDFStoreException() { }
+    public RDFStoreException() { }
 
-        /// <summary>
-        /// Basic ctor to throw an RDFStoreException with message
-        /// </summary>
-        public RDFStoreException(string message) : base(message) { }
+    /// <summary>
+    /// Basic ctor to throw an RDFStoreException with message
+    /// </summary>
+    public RDFStoreException(string message) : base(message) { }
 
-        /// <summary>
-        /// Basic ctor to throw an RDFStoreException with message and inner exception
-        /// </summary>
-        public RDFStoreException(string message, Exception innerException) : base(message, innerException) { }
-        #endregion
-    }
+    /// <summary>
+    /// Basic ctor to throw an RDFStoreException with message and inner exception
+    /// </summary>
+    public RDFStoreException(string message, Exception innerException) : base(message, innerException) { }
+    #endregion
 }

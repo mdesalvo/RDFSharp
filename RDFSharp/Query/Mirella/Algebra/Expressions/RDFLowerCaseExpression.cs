@@ -19,87 +19,86 @@ using System.Data;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFLowerCaseExpression represents a string lowercase function to be applied on a query results table.
+/// </summary>
+public sealed class RDFLowerCaseExpression : RDFExpression
 {
+    #region Ctors
     /// <summary>
-    /// RDFLowerCaseExpression represents a string lowercase function to be applied on a query results table.
+    /// Builds a string lowercase function with given arguments
     /// </summary>
-    public sealed class RDFLowerCaseExpression : RDFExpression
+    public RDFLowerCaseExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+
+    /// <summary>
+    /// Builds a string lowercase function with given arguments
+    /// </summary>
+    public RDFLowerCaseExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the string lowercase function
+    /// </summary>
+    public override string ToString()
+        => ToString(RDFModelUtilities.EmptyNamespaceList);
+    internal override string ToString(List<RDFNamespace> prefixes)
     {
-        #region Ctors
-        /// <summary>
-        /// Builds a string lowercase function with given arguments
-        /// </summary>
-        public RDFLowerCaseExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+        StringBuilder sb = new StringBuilder(32);
 
-        /// <summary>
-        /// Builds a string lowercase function with given arguments
-        /// </summary>
-        public RDFLowerCaseExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        //(LCASE(L))
+        sb.Append("(LCASE(");
+        if (LeftArgument is RDFExpression expLeftArgument)
+            sb.Append(expLeftArgument.ToString(prefixes));
+        else
+            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+        sb.Append("))");
+
+        return sb.ToString();
+    }
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Applies the string lowercase function on the given datarow
+    /// </summary>
+    internal override RDFPatternMember ApplyExpression(DataRow row)
+    {
+        RDFLiteral expressionResult = null;
+
+        #region Guards
+        if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+            return null;
         #endregion
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the string lowercase function
-        /// </summary>
-        public override string ToString()
-            => ToString(RDFModelUtilities.EmptyNamespaceList);
-        internal override string ToString(List<RDFNamespace> prefixes)
+        try
         {
-            StringBuilder sb = new StringBuilder(32);
-
-            //(LCASE(L))
-            sb.Append("(LCASE(");
-            if (LeftArgument is RDFExpression expLeftArgument)
-                sb.Append(expLeftArgument.ToString(prefixes));
+            #region Evaluate Arguments
+            //Evaluate left argument (Expression VS Variable)
+            RDFPatternMember leftArgumentPMember;
+            if (LeftArgument is RDFExpression leftArgumentExpression)
+                leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
             else
-                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            sb.Append("))");
-
-            return sb.ToString();
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Applies the string lowercase function on the given datarow
-        /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
-        {
-            RDFLiteral expressionResult = null;
-
-            #region Guards
-            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return null;
+                leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
             #endregion
 
-            try
+            #region Calculate Result
+            switch (leftArgumentPMember)
             {
-                #region Evaluate Arguments
-                //Evaluate left argument (Expression VS Variable)
-                RDFPatternMember leftArgumentPMember;
-                if (LeftArgument is RDFExpression leftArgumentExpression)
-                    leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
-                else
-                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
-                #endregion
-
-                #region Calculate Result
-                switch (leftArgumentPMember)
-                {
-                    case RDFPlainLiteral leftArgumentPMemberPLiteral:
-                        expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLiteral.Value.ToLowerInvariant(), leftArgumentPMemberPLiteral.Language);
-                        break;
-                    case RDFTypedLiteral leftArgumentPMemberTLiteral when leftArgumentPMemberTLiteral.HasStringDatatype():
-                        expressionResult = new RDFTypedLiteral(leftArgumentPMemberTLiteral.Value.ToLowerInvariant(), leftArgumentPMemberTLiteral.Datatype);
-                        break;
-                }
-                #endregion
+                case RDFPlainLiteral leftArgumentPMemberPLiteral:
+                    expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLiteral.Value.ToLowerInvariant(), leftArgumentPMemberPLiteral.Language);
+                    break;
+                case RDFTypedLiteral leftArgumentPMemberTLiteral when leftArgumentPMemberTLiteral.HasStringDatatype():
+                    expressionResult = new RDFTypedLiteral(leftArgumentPMemberTLiteral.Value.ToLowerInvariant(), leftArgumentPMemberTLiteral.Datatype);
+                    break;
             }
-            catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
-
-            return expressionResult;
+            #endregion
         }
-        #endregion
+        catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
+        return expressionResult;
     }
+    #endregion
 }

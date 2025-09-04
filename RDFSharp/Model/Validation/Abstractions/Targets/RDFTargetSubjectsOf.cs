@@ -14,36 +14,35 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFTargetSubjectsOf represents a SHACL target of type "SubjectsOf" within a shape.
+/// </summary>
+public sealed class RDFTargetSubjectsOf : RDFTarget
 {
+    #region Ctors
     /// <summary>
-    /// RDFTargetSubjectsOf represents a SHACL target of type "SubjectsOf" within a shape.
+    /// Builds a subjectsOf target on the given property
     /// </summary>
-    public sealed class RDFTargetSubjectsOf : RDFTarget
+    /// <exception cref="RDFModelException"></exception>
+    public RDFTargetSubjectsOf(RDFResource targetProperty)
+        => TargetValue = targetProperty ?? throw new RDFModelException("Cannot create RDFTargetSubjectsOf because given \"targetProperty\" parameter is null.");
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Gets a graph representation of this target
+    /// </summary>
+    internal override RDFGraph ToRDFGraph(RDFShape shape)
     {
-        #region Ctors
-        /// <summary>
-        /// Builds a subjectsOf target on the given property
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public RDFTargetSubjectsOf(RDFResource targetProperty)
-            => TargetValue = targetProperty ?? throw new RDFModelException("Cannot create RDFTargetSubjectsOf because given \"targetProperty\" parameter is null.");
-        #endregion
+        RDFGraph result = new RDFGraph();
 
-        #region Methods
-        /// <summary>
-        /// Gets a graph representation of this target
-        /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape)
-        {
-            RDFGraph result = new RDFGraph();
+        //sh:targetSubjectsOf
+        if (shape != null)
+            result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.TARGET_SUBJECTS_OF, TargetValue));
 
-            //sh:targetSubjectsOf
-            if (shape != null)
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.TARGET_SUBJECTS_OF, TargetValue));
-
-            return result;
-        }
-        #endregion
+        return result;
     }
+    #endregion
 }

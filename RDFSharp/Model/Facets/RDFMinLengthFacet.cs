@@ -18,41 +18,40 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFMinLengthFacet represents a constraint requiring the values of a literal to have a minimum length
+/// </summary>
+public sealed class RDFMinLengthFacet : RDFFacet
 {
+    #region Properties
     /// <summary>
-    /// RDFMinLengthFacet represents a constraint requiring the values of a literal to have a minimum length
+    /// Minimum length required by the facet
     /// </summary>
-    public sealed class RDFMinLengthFacet : RDFFacet
-    {
-        #region Properties
-        /// <summary>
-        /// Minimum length required by the facet
-        /// </summary>
-        public uint Length { get; internal set; }
-        #endregion
+    public uint Length { get; internal set; }
+    #endregion
 
-        #region Ctors
-        /// <summary>
-        /// Builds a facet requiring the given minimum length
-        /// </summary>
-        public RDFMinLengthFacet(uint length)
-          => Length = length;
-        #endregion
+    #region Ctors
+    /// <summary>
+    /// Builds a facet requiring the given minimum length
+    /// </summary>
+    public RDFMinLengthFacet(uint length)
+        => Length = length;
+    #endregion
 
-        #region Methods
-        /// <summary>
-        /// Gives a graph representation of the minlength facet
-        /// </summary>
-        public override RDFGraph ToRDFGraph()
-          => new RDFGraph([
-              new RDFTriple(URI, RDFVocabulary.XSD.MIN_LENGTH, new RDFTypedLiteral(Convert.ToString(Length, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)) ]);
+    #region Methods
+    /// <summary>
+    /// Gives a graph representation of the minlength facet
+    /// </summary>
+    public override RDFGraph ToRDFGraph()
+        => new RDFGraph([
+            new RDFTriple(URI, RDFVocabulary.XSD.MIN_LENGTH, new RDFTypedLiteral(Convert.ToString(Length, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)) ]);
 
-        /// <summary>
-        /// Validates the given literal value against the minlength facet
-        /// </summary>
-        public override bool Validate(string literalValue)
-          => (string.IsNullOrEmpty(literalValue) && Length==0) || literalValue?.Length >= Length;
-        #endregion
-    }
+    /// <summary>
+    /// Validates the given literal value against the minlength facet
+    /// </summary>
+    public override bool Validate(string literalValue)
+        => (string.IsNullOrEmpty(literalValue) && Length==0) || literalValue?.Length >= Length;
+    #endregion
 }

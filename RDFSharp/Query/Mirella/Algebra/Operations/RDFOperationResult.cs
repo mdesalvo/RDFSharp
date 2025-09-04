@@ -16,49 +16,48 @@
 
 using System.Data;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFOperationResult is a container for SPARQL UPDATE operation results
+/// </summary>
+public sealed class RDFOperationResult
 {
+    #region Properties
     /// <summary>
-    /// RDFOperationResult is a container for SPARQL UPDATE operation results
+    /// Tabular response of the SPARQL DELETE operation
     /// </summary>
-    public sealed class RDFOperationResult
+    public DataTable DeleteResults { get; internal set; }
+
+    /// <summary>
+    /// Tabular response of the SPARQL INSERT operation
+    /// </summary>
+    public DataTable InsertResults { get; internal set; }
+
+    /// <summary>
+    /// Gets the number of results produced by the SPARQL DELETE operation
+    /// </summary>
+    public long DeleteResultsCount
+        => DeleteResults.Rows.Count;
+
+    /// <summary>
+    /// Gets the number of results produced by the SPARQL INSERT operation
+    /// </summary>
+    public long InsertResultsCount
+        => InsertResults.Rows.Count;
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds an empty operation result
+    /// </summary>
+    internal RDFOperationResult()
     {
-        #region Properties
-        /// <summary>
-        /// Tabular response of the SPARQL DELETE operation
-        /// </summary>
-        public DataTable DeleteResults { get; internal set; }
+        //Initialize DELETE templates
+        DeleteResults = new DataTable("DELETE_RESULTS");
 
-        /// <summary>
-        /// Tabular response of the SPARQL INSERT operation
-        /// </summary>
-        public DataTable InsertResults { get; internal set; }
-
-        /// <summary>
-        /// Gets the number of results produced by the SPARQL DELETE operation
-        /// </summary>
-        public long DeleteResultsCount
-            => DeleteResults.Rows.Count;
-
-        /// <summary>
-        /// Gets the number of results produced by the SPARQL INSERT operation
-        /// </summary>
-        public long InsertResultsCount
-            => InsertResults.Rows.Count;
-        #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Builds an empty operation result
-        /// </summary>
-        internal RDFOperationResult()
-        {
-            //Initialize DELETE templates
-            DeleteResults = new DataTable("DELETE_RESULTS");
-
-            //Initialize INSERT templates
-            InsertResults = new DataTable("INSERT_RESULTS");
-        }
-        #endregion
+        //Initialize INSERT templates
+        InsertResults = new DataTable("INSERT_RESULTS");
     }
+    #endregion
 }

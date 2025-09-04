@@ -14,25 +14,24 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Model
-{
-    /// <summary>
-    /// RDFTarget represents a generic SHACL target definition within a shape.
-    /// </summary>
-    public abstract class RDFTarget : RDFResource
-    {
-        #region Properties
-        /// <summary>
-        /// Indicates the value of this target
-        /// </summary>
-        public RDFResource TargetValue { get; internal set; }
-        #endregion
+namespace RDFSharp.Model;
 
-        #region Methods
-        /// <summary>
-        /// Gets a graph representation of this target
-        /// </summary>
-        internal abstract RDFGraph ToRDFGraph(RDFShape shape);
-        #endregion
-    }
+/// <summary>
+/// RDFTarget represents a generic SHACL target definition within a shape.
+/// </summary>
+public abstract class RDFTarget : RDFResource
+{
+    #region Properties
+    /// <summary>
+    /// Indicates the value of this target
+    /// </summary>
+    public RDFResource TargetValue { get; internal set; }
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Gets a graph representation of this target
+    /// </summary>
+    internal abstract RDFGraph ToRDFGraph(RDFShape shape);
+    #endregion
 }

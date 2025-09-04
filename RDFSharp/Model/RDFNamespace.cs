@@ -16,109 +16,108 @@
 
 using System;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFNamespace represents a generic namespace in the RDF model.
+/// </summary>
+public sealed class RDFNamespace : IEquatable<RDFNamespace>
 {
+    #region Properties
     /// <summary>
-    /// RDFNamespace represents a generic namespace in the RDF model.
+    /// Prefix representation of the namespace (e.g: rdfs)
     /// </summary>
-    public sealed class RDFNamespace : IEquatable<RDFNamespace>
+    public string NamespacePrefix { get; internal set; }
+
+    /// <summary>
+    /// Uri representation of the namespace (e.g: http://www.w3.org/2000/01/rdf-schema#)
+    /// </summary>
+    public Uri NamespaceUri { get; internal set; }
+
+    /// <summary>
+    /// Uri dereference representation of the namespace (e.g: http://www.w3.org/2000/01/rdf-schema#)
+    /// </summary>
+    public Uri DereferenceUri { get; internal set; }
+
+    /// <summary>
+    /// Unique representation of the namespace
+    /// </summary>
+    internal long NamespaceID { get; set; }
+
+    /// <summary>
+    /// Flag indicating that the namespace is temporary
+    /// </summary>
+    internal bool IsTemporary { get; set; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a namespace with given prefix and Uri
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public RDFNamespace(string prefix, string uri)
     {
-        #region Properties
-        /// <summary>
-        /// Prefix representation of the namespace (e.g: rdfs)
-        /// </summary>
-        public string NamespacePrefix { get; internal set; }
+        if (string.IsNullOrWhiteSpace(prefix))
+            throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter is null or empty");
+        if (string.IsNullOrWhiteSpace(uri))
+            throw new RDFModelException("Cannot create RDFNamespace because \"uri\" parameter is null or empty");
 
-        /// <summary>
-        /// Uri representation of the namespace (e.g: http://www.w3.org/2000/01/rdf-schema#)
-        /// </summary>
-        public Uri NamespaceUri { get; internal set; }
+        //Prefix must contain only letters/numbers and cannot be "bnode" or "xmlns"
+        string finalPrefix = prefix.Trim();
+        if (!RDFRegex.PrefixRegex().IsMatch(finalPrefix))
+            throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter contains unallowed characters");
+        if (string.Equals(finalPrefix, "bnode", StringComparison.OrdinalIgnoreCase) || string.Equals(finalPrefix, "xmlns", StringComparison.OrdinalIgnoreCase))
+            throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter cannot be \"bnode\" or \"xmlns\"");
 
-        /// <summary>
-        /// Uri dereference representation of the namespace (e.g: http://www.w3.org/2000/01/rdf-schema#)
-        /// </summary>
-        public Uri DereferenceUri { get; internal set; }
+        //Uri must be absolute and cannot start with "bnode:" or "xmlns:"
+        Uri finalUri = RDFModelUtilities.GetUriFromString(uri.Trim())
+                       ?? throw new RDFModelException("Cannot create RDFNamespace because \"uri\" parameter is not a valid Uri");
+        if (finalUri.ToString().StartsWith("bnode", StringComparison.OrdinalIgnoreCase) || finalUri.ToString().StartsWith("xmlns", StringComparison.OrdinalIgnoreCase))
+            throw new RDFModelException("Cannot create RDFNamespace because \"uri\" parameter cannot start with \"bnode:\" or \"xmlns:\"");
 
-        /// <summary>
-        /// Unique representation of the namespace
-        /// </summary>
-        internal long NamespaceID { get; set; }
-
-        /// <summary>
-        /// Flag indicating that the namespace is temporary
-        /// </summary>
-        internal bool IsTemporary { get; set; }
-        #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Builds a namespace with given prefix and Uri
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public RDFNamespace(string prefix, string uri)
-        {
-            if (string.IsNullOrWhiteSpace(prefix))
-                throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter is null or empty");
-            if (string.IsNullOrWhiteSpace(uri))
-                throw new RDFModelException("Cannot create RDFNamespace because \"uri\" parameter is null or empty");
-
-            //Prefix must contain only letters/numbers and cannot be "bnode" or "xmlns"
-            string finalPrefix = prefix.Trim();
-            if (!RDFRegex.PrefixRegex().IsMatch(finalPrefix))
-                throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter contains unallowed characters");
-            if (string.Equals(finalPrefix, "bnode", StringComparison.OrdinalIgnoreCase) || string.Equals(finalPrefix, "xmlns", StringComparison.OrdinalIgnoreCase))
-                throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter cannot be \"bnode\" or \"xmlns\"");
-
-            //Uri must be absolute and cannot start with "bnode:" or "xmlns:"
-            Uri finalUri = RDFModelUtilities.GetUriFromString(uri.Trim())
-                            ?? throw new RDFModelException("Cannot create RDFNamespace because \"uri\" parameter is not a valid Uri");
-            if (finalUri.ToString().StartsWith("bnode", StringComparison.OrdinalIgnoreCase) || finalUri.ToString().StartsWith("xmlns", StringComparison.OrdinalIgnoreCase))
-                throw new RDFModelException("Cannot create RDFNamespace because \"uri\" parameter cannot start with \"bnode:\" or \"xmlns:\"");
-
-            NamespacePrefix = finalPrefix;
-            NamespaceUri = finalUri;
-            DereferenceUri = finalUri;
-            NamespaceID = RDFModelUtilities.CreateHash(ToString());
-        }
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the namespace
-        /// </summary>
-        public override string ToString()
-            => NamespaceUri.ToString();
-
-        /// <summary>
-        /// Performs the equality comparison between two namespaces
-        /// </summary>
-        public bool Equals(RDFNamespace other)
-            => other != null && NamespaceID.Equals(other.NamespaceID);
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Sets the Uri for dereferencing the namespace when invoked as RDF representation
-        /// </summary>
-        public RDFNamespace SetDereferenceUri(Uri dereferenceUri)
-        {
-            if (dereferenceUri?.IsAbsoluteUri == true
-                 && !dereferenceUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
-                 && !dereferenceUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
-            {
-                DereferenceUri = dereferenceUri;
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Sets or unsets this namespace as temporary
-        /// </summary>
-        internal RDFNamespace SetTemporary(bool temporary)
-        {
-            IsTemporary = temporary;
-            return this;
-        }
-        #endregion
+        NamespacePrefix = finalPrefix;
+        NamespaceUri = finalUri;
+        DereferenceUri = finalUri;
+        NamespaceID = RDFModelUtilities.CreateHash(ToString());
     }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the namespace
+    /// </summary>
+    public override string ToString()
+        => NamespaceUri.ToString();
+
+    /// <summary>
+    /// Performs the equality comparison between two namespaces
+    /// </summary>
+    public bool Equals(RDFNamespace other)
+        => other != null && NamespaceID.Equals(other.NamespaceID);
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Sets the Uri for dereferencing the namespace when invoked as RDF representation
+    /// </summary>
+    public RDFNamespace SetDereferenceUri(Uri dereferenceUri)
+    {
+        if (dereferenceUri?.IsAbsoluteUri == true
+            && !dereferenceUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
+            && !dereferenceUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
+        {
+            DereferenceUri = dereferenceUri;
+        }
+        return this;
+    }
+
+    /// <summary>
+    /// Sets or unsets this namespace as temporary
+    /// </summary>
+    internal RDFNamespace SetTemporary(bool temporary)
+    {
+        IsTemporary = temporary;
+        return this;
+    }
+    #endregion
 }

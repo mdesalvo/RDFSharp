@@ -20,96 +20,95 @@ using System.Security.Cryptography;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFSHA1Expression represents a SHA1 hash function to be applied on a query results table.
+/// </summary>
+public sealed class RDFSHA1Expression : RDFExpression
 {
+    #region Ctors
     /// <summary>
-    /// RDFSHA1Expression represents a SHA1 hash function to be applied on a query results table.
+    /// Builds a SHA1 hash function with given arguments
     /// </summary>
-    public sealed class RDFSHA1Expression : RDFExpression
+    public RDFSHA1Expression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+
+    /// <summary>
+    /// Builds a SHA1 hash function with given arguments
+    /// </summary>
+    public RDFSHA1Expression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the SHA1 hash function
+    /// </summary>
+    public override string ToString()
+        => ToString(RDFModelUtilities.EmptyNamespaceList);
+    internal override string ToString(List<RDFNamespace> prefixes)
     {
-        #region Ctors
-        /// <summary>
-        /// Builds a SHA1 hash function with given arguments
-        /// </summary>
-        public RDFSHA1Expression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+        StringBuilder sb = new StringBuilder(32);
 
-        /// <summary>
-        /// Builds a SHA1 hash function with given arguments
-        /// </summary>
-        public RDFSHA1Expression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        //(SHA1(L))
+        sb.Append("(SHA1(");
+        if (LeftArgument is RDFExpression expLeftArgument)
+            sb.Append(expLeftArgument.ToString(prefixes));
+        else
+            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+        sb.Append("))");
+
+        return sb.ToString();
+    }
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Applies the string SHA1 function on the given datarow
+    /// </summary>
+    internal override RDFPatternMember ApplyExpression(DataRow row)
+    {
+        RDFPlainLiteral expressionResult = null;
+
+        #region Guards
+        if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+            return null;
         #endregion
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the SHA1 hash function
-        /// </summary>
-        public override string ToString()
-            => ToString(RDFModelUtilities.EmptyNamespaceList);
-        internal override string ToString(List<RDFNamespace> prefixes)
+        try
         {
-            StringBuilder sb = new StringBuilder(32);
-
-            //(SHA1(L))
-            sb.Append("(SHA1(");
-            if (LeftArgument is RDFExpression expLeftArgument)
-                sb.Append(expLeftArgument.ToString(prefixes));
+            #region Evaluate Arguments
+            //Evaluate left argument (Expression VS Variable)
+            RDFPatternMember leftArgumentPMember;
+            if (LeftArgument is RDFExpression leftArgumentExpression)
+                leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
             else
-                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            sb.Append("))");
-
-            return sb.ToString();
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Applies the string SHA1 function on the given datarow
-        /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
-        {
-            RDFPlainLiteral expressionResult = null;
-
-            #region Guards
-            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return null;
+                leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
             #endregion
 
-            try
+            #region Calculate Result
+            switch (leftArgumentPMember)
             {
-                #region Evaluate Arguments
-                //Evaluate left argument (Expression VS Variable)
-                RDFPatternMember leftArgumentPMember;
-                if (LeftArgument is RDFExpression leftArgumentExpression)
-                    leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
-                else
-                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
-                #endregion
-
-                #region Calculate Result
-                switch (leftArgumentPMember)
-                {
-                    case RDFLiteral leftArgumentPMemberLiteral:
-                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberLiteral.Value);
-                        break;
-                    case RDFResource leftArgumentPMemberResource:
-                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberResource.ToString());
-                        break;
-                }
-
-                if (leftArgumentPMember == null)
-                    return null;
-
-                string leftArgumentPMemberString = leftArgumentPMember.ToString();
-                StringBuilder sb = new StringBuilder(leftArgumentPMemberString.Length);
-                foreach (byte hashByte in SHA1.HashData(RDFModelUtilities.UTF8_NoBOM.GetBytes(leftArgumentPMemberString)))
-                    sb.Append(hashByte.ToString("x2"));
-                expressionResult = new RDFPlainLiteral(sb.ToString());
-                #endregion
+                case RDFLiteral leftArgumentPMemberLiteral:
+                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberLiteral.Value);
+                    break;
+                case RDFResource leftArgumentPMemberResource:
+                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberResource.ToString());
+                    break;
             }
-            catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
 
-            return expressionResult;
+            if (leftArgumentPMember == null)
+                return null;
+
+            string leftArgumentPMemberString = leftArgumentPMember.ToString();
+            StringBuilder sb = new StringBuilder(leftArgumentPMemberString.Length);
+            foreach (byte hashByte in SHA1.HashData(RDFModelUtilities.UTF8_NoBOM.GetBytes(leftArgumentPMemberString)))
+                sb.Append(hashByte.ToString("x2"));
+            expressionResult = new RDFPlainLiteral(sb.ToString());
+            #endregion
         }
-        #endregion
+        catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
+        return expressionResult;
     }
+    #endregion
 }

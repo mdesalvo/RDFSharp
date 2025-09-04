@@ -17,84 +17,83 @@
 using System.Collections.Generic;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFMinExclusiveConstraint represents a SHACL constraint on an exclusive lower-bound value for a given RDF term
+/// </summary>
+public sealed class RDFMinExclusiveConstraint : RDFConstraint
 {
+    #region Properties
     /// <summary>
-    /// RDFMinExclusiveConstraint represents a SHACL constraint on an exclusive lower-bound value for a given RDF term
+    /// Exclusive lower-bound value required on the given RDF term
     /// </summary>
-    public sealed class RDFMinExclusiveConstraint : RDFConstraint
+    public RDFPatternMember Value { get; internal set; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a minExclusive constraint with the given resource value
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public RDFMinExclusiveConstraint(RDFResource value)
+        => Value = value ?? throw new RDFModelException("Cannot create RDFMinExclusiveConstraint because given \"value\" parameter is null.");
+
+    /// <summary>
+    /// Builds a minExclusive constraint with the given literal value
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public RDFMinExclusiveConstraint(RDFLiteral value)
+        => Value = value ?? throw new RDFModelException("Cannot create RDFMinExclusiveConstraint because given \"value\" parameter is null.");
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Evaluates this constraint against the given data graph
+    /// </summary>
+    internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
     {
-        #region Properties
-        /// <summary>
-        /// Exclusive lower-bound value required on the given RDF term
-        /// </summary>
-        public RDFPatternMember Value { get; internal set; }
-        #endregion
+        RDFValidationReport report = new RDFValidationReport();
+        RDFPropertyShape pShape = shape as RDFPropertyShape;
 
-        #region Ctors
-        /// <summary>
-        /// Builds a minExclusive constraint with the given resource value
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public RDFMinExclusiveConstraint(RDFResource value)
-            => Value = value ?? throw new RDFModelException("Cannot create RDFMinExclusiveConstraint because given \"value\" parameter is null.");
+        //In case no shape messages have been provided, this constraint emits a default one (for usability)
+        List<RDFLiteral> shapeMessages = [.. shape.Messages];
+        if (shapeMessages.Count == 0)
+            shapeMessages.Add(new RDFPlainLiteral($"Must have values greater than <{Value}>"));
 
-        /// <summary>
-        /// Builds a minExclusive constraint with the given literal value
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public RDFMinExclusiveConstraint(RDFLiteral value)
-            => Value = value ?? throw new RDFModelException("Cannot create RDFMinExclusiveConstraint because given \"value\" parameter is null.");
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Evaluates this constraint against the given data graph
-        /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        #region Evaluation
+        foreach (RDFPatternMember valueNode in valueNodes)
         {
-            RDFValidationReport report = new RDFValidationReport();
-            RDFPropertyShape pShape = shape as RDFPropertyShape;
-
-            //In case no shape messages have been provided, this constraint emits a default one (for usability)
-            List<RDFLiteral> shapeMessages = [.. shape.Messages];
-            if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Must have values greater than <{Value}>"));
-
-            #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes)
-            {
-                int comparison = RDFQueryUtilities.CompareRDFPatternMembers(Value, valueNode);
-                if (comparison == -99 || comparison >= 0)
-                    report.AddResult(new RDFValidationResult(shape,
-                                                             RDFVocabulary.SHACL.MIN_EXCLUSIVE_CONSTRAINT_COMPONENT,
-                                                             focusNode,
-                                                             pShape?.Path,
-                                                             valueNode,
-                                                             shapeMessages,
-                                                             shape.Severity));
-            }
-            #endregion
-
-            return report;
-        }
-
-        /// <summary>
-        /// Gets a graph representation of this constraint
-        /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape)
-        {
-            RDFGraph result = new RDFGraph();
-            if (shape != null)
-            {
-                //sh:minExclusive
-                if (Value is RDFResource valRes)
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_EXCLUSIVE, valRes));
-                else
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_EXCLUSIVE, (RDFLiteral)Value));
-            }
-            return result;
+            int comparison = RDFQueryUtilities.CompareRDFPatternMembers(Value, valueNode);
+            if (comparison == -99 || comparison >= 0)
+                report.AddResult(new RDFValidationResult(shape,
+                    RDFVocabulary.SHACL.MIN_EXCLUSIVE_CONSTRAINT_COMPONENT,
+                    focusNode,
+                    pShape?.Path,
+                    valueNode,
+                    shapeMessages,
+                    shape.Severity));
         }
         #endregion
+
+        return report;
     }
+
+    /// <summary>
+    /// Gets a graph representation of this constraint
+    /// </summary>
+    internal override RDFGraph ToRDFGraph(RDFShape shape)
+    {
+        RDFGraph result = new RDFGraph();
+        if (shape != null)
+        {
+            //sh:minExclusive
+            if (Value is RDFResource valRes)
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_EXCLUSIVE, valRes));
+            else
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_EXCLUSIVE, (RDFLiteral)Value));
+        }
+        return result;
+    }
+    #endregion
 }

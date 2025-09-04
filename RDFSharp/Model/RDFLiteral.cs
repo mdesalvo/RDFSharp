@@ -16,25 +16,24 @@
 
 using RDFSharp.Query;
 
-namespace RDFSharp.Model
-{
-    /// <summary>
-    /// RDFLiteral represents a generic literal in the RDF model.
-    /// </summary>
-    public abstract class RDFLiteral : RDFPatternMember
-    {
-        #region Properties
-        /// <summary>
-        /// Value of the literal
-        /// </summary>
-        public string Value { get; internal set; }
-        #endregion
+namespace RDFSharp.Model;
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the literal
-        /// </summary>
-        public override string ToString() => Value;
-        #endregion
-    }
+/// <summary>
+/// RDFLiteral represents a generic literal in the RDF model.
+/// </summary>
+public abstract class RDFLiteral : RDFPatternMember
+{
+    #region Properties
+    /// <summary>
+    /// Value of the literal
+    /// </summary>
+    public string Value { get; internal set; }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the literal
+    /// </summary>
+    public override string ToString() => Value;
+    #endregion
 }

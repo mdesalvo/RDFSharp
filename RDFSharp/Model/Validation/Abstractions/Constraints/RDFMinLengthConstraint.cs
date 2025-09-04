@@ -17,87 +17,86 @@
 using System.Collections.Generic;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFMinLengthConstraint represents a SHACL constraint on the minimum allowed length for a given RDF term
+/// </summary>
+public sealed class RDFMinLengthConstraint : RDFConstraint
 {
+    #region Properties
     /// <summary>
-    /// RDFMinLengthConstraint represents a SHACL constraint on the minimum allowed length for a given RDF term
+    /// Indicates the minimum allowed length for a given RDF term
     /// </summary>
-    public sealed class RDFMinLengthConstraint : RDFConstraint
+    public int MinLength { get; internal set; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a minLength constraint with the given minLength
+    /// </summary>
+    public RDFMinLengthConstraint(int minLength)
+        => MinLength = minLength < 0 ? 0 : minLength;
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Evaluates this constraint against the given data graph
+    /// </summary>
+    internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
     {
-        #region Properties
-        /// <summary>
-        /// Indicates the minimum allowed length for a given RDF term
-        /// </summary>
-        public int MinLength { get; internal set; }
+        RDFValidationReport report = new RDFValidationReport();
+        RDFPropertyShape pShape = shape as RDFPropertyShape;
+
+        //In case no shape messages have been provided, this constraint emits a default one (for usability)
+        List<RDFLiteral> shapeMessages = [.. shape.Messages];
+        if (shapeMessages.Count == 0)
+            shapeMessages.Add(new RDFPlainLiteral($"Must have a minimum length of {MinLength} characters and can't be a blank node"));
+
+        #region Evaluation
+        foreach (RDFPatternMember valueNode in valueNodes)
+            switch (valueNode)
+            {
+                //Resource
+                case RDFResource valueNodeResource:
+                    if (valueNodeResource.IsBlank
+                        || (MinLength > 0 && valueNodeResource.ToString().Length < MinLength))
+                        report.AddResult(new RDFValidationResult(shape,
+                            RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT,
+                            focusNode,
+                            pShape?.Path,
+                            valueNode,
+                            shapeMessages,
+                            shape.Severity));
+                    break;
+
+                //Literal
+                case RDFLiteral valueNodeLiteral:
+                    if (MinLength > 0 && valueNodeLiteral.Value.Length < MinLength)
+                        report.AddResult(new RDFValidationResult(shape,
+                            RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT,
+                            focusNode,
+                            pShape?.Path,
+                            valueNode,
+                            shapeMessages,
+                            shape.Severity));
+                    break;
+            }
         #endregion
 
-        #region Ctors
-        /// <summary>
-        /// Builds a minLength constraint with the given minLength
-        /// </summary>
-        public RDFMinLengthConstraint(int minLength)
-            => MinLength = minLength < 0 ? 0 : minLength;
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Evaluates this constraint against the given data graph
-        /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
-        {
-            RDFValidationReport report = new RDFValidationReport();
-            RDFPropertyShape pShape = shape as RDFPropertyShape;
-
-            //In case no shape messages have been provided, this constraint emits a default one (for usability)
-            List<RDFLiteral> shapeMessages = [.. shape.Messages];
-            if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Must have a minimum length of {MinLength} characters and can't be a blank node"));
-
-            #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes)
-                switch (valueNode)
-                {
-                    //Resource
-                    case RDFResource valueNodeResource:
-                        if (valueNodeResource.IsBlank
-                             || (MinLength > 0 && valueNodeResource.ToString().Length < MinLength))
-                            report.AddResult(new RDFValidationResult(shape,
-                                                                     RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT,
-                                                                     focusNode,
-                                                                     pShape?.Path,
-                                                                     valueNode,
-                                                                     shapeMessages,
-                                                                     shape.Severity));
-                        break;
-
-                    //Literal
-                    case RDFLiteral valueNodeLiteral:
-                        if (MinLength > 0 && valueNodeLiteral.Value.Length < MinLength)
-                            report.AddResult(new RDFValidationResult(shape,
-                                                                     RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT,
-                                                                     focusNode,
-                                                                     pShape?.Path,
-                                                                     valueNode,
-                                                                     shapeMessages,
-                                                                     shape.Severity));
-                        break;
-                }
-            #endregion
-
-            return report;
-        }
-
-        /// <summary>
-        /// Gets a graph representation of this constraint
-        /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape)
-        {
-            RDFGraph result = new RDFGraph();
-            if (shape != null)
-                //sh:minLength
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_LENGTH, new RDFTypedLiteral(MinLength.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            return result;
-        }
-        #endregion
+        return report;
     }
+
+    /// <summary>
+    /// Gets a graph representation of this constraint
+    /// </summary>
+    internal override RDFGraph ToRDFGraph(RDFShape shape)
+    {
+        RDFGraph result = new RDFGraph();
+        if (shape != null)
+            //sh:minLength
+            result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_LENGTH, new RDFTypedLiteral(MinLength.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        return result;
+    }
+    #endregion
 }

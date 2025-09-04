@@ -18,82 +18,81 @@ using System.Data;
 using System.Threading.Tasks;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFConstructQueryResult is a container for SPARQL "CONSTRUCT" query results.
+/// </summary>
+public sealed class RDFConstructQueryResult : RDFQueryResult
 {
+    #region Properties
     /// <summary>
-    /// RDFConstructQueryResult is a container for SPARQL "CONSTRUCT" query results.
+    /// Tabular response of the query
     /// </summary>
-    public sealed class RDFConstructQueryResult : RDFQueryResult
+    public DataTable ConstructResults { get; internal set; }
+
+    /// <summary>
+    /// Gets the number of results produced by the query
+    /// </summary>
+    public long ConstructResultsCount
+        => ConstructResults.Rows.Count;
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds an empty CONSTRUCT result
+    /// </summary>
+    internal RDFConstructQueryResult()
+        => ConstructResults = new DataTable();
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Gets a graph corresponding to the query result
+    /// </summary>
+    public RDFGraph ToRDFGraph()
     {
-        #region Properties
-        /// <summary>
-        /// Tabular response of the query
-        /// </summary>
-        public DataTable ConstructResults { get; internal set; }
+        RDFGraph result = new RDFGraph();
 
-        /// <summary>
-        /// Gets the number of results produced by the query
-        /// </summary>
-        public long ConstructResultsCount
-            => ConstructResults.Rows.Count;
-        #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Builds an empty CONSTRUCT result
-        /// </summary>
-        internal RDFConstructQueryResult()
-            => ConstructResults = new DataTable();
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Gets a graph corresponding to the query result
-        /// </summary>
-        public RDFGraph ToRDFGraph()
+        //Iterate the datatable rows and generate the corresponding triples to be added to the result graph
+        foreach (DataRow resultRow in ConstructResults.Rows)
         {
-            RDFGraph result = new RDFGraph();
-
-            //Iterate the datatable rows and generate the corresponding triples to be added to the result graph
-            foreach (DataRow resultRow in ConstructResults.Rows)
-            {
-                RDFPatternMember subj = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?SUBJECT"].ToString());
-                RDFPatternMember pred = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?PREDICATE"].ToString());
-                RDFPatternMember obj = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?OBJECT"].ToString());
-                if (obj is RDFResource objRes)
-                    result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, objRes));
-                else
-                    result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, (RDFLiteral)obj));
-            }
-
-            return result;
+            RDFPatternMember subj = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?SUBJECT"].ToString());
+            RDFPatternMember pred = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?PREDICATE"].ToString());
+            RDFPatternMember obj = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?OBJECT"].ToString());
+            if (obj is RDFResource objRes)
+                result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, objRes));
+            else
+                result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, (RDFLiteral)obj));
         }
 
-        /// <summary>
-        /// Asynchronously gets a graph corresponding to the query result
-        /// </summary>
-        public Task<RDFGraph> ToRDFGraphAsync()
-            => Task.Run(ToRDFGraph);
-
-        /// <summary>
-        /// Gets a query result corresponding to the given graph
-        /// </summary>
-        public static RDFConstructQueryResult FromRDFGraph(RDFGraph graph)
-        {
-            RDFConstructQueryResult result = new RDFConstructQueryResult();
-            if (graph != null)
-            {
-                //Transform the graph into a datatable and assign it to the query result
-                result.ConstructResults = graph.ToDataTable();
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// Asynchronously gets a query result corresponding to the given graph
-        /// </summary>
-        public static Task<RDFConstructQueryResult> FromRDFGraphAsync(RDFGraph graph)
-            => Task.Run(() => FromRDFGraph(graph));
-        #endregion
+        return result;
     }
+
+    /// <summary>
+    /// Asynchronously gets a graph corresponding to the query result
+    /// </summary>
+    public Task<RDFGraph> ToRDFGraphAsync()
+        => Task.Run(ToRDFGraph);
+
+    /// <summary>
+    /// Gets a query result corresponding to the given graph
+    /// </summary>
+    public static RDFConstructQueryResult FromRDFGraph(RDFGraph graph)
+    {
+        RDFConstructQueryResult result = new RDFConstructQueryResult();
+        if (graph != null)
+        {
+            //Transform the graph into a datatable and assign it to the query result
+            result.ConstructResults = graph.ToDataTable();
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Asynchronously gets a query result corresponding to the given graph
+    /// </summary>
+    public static Task<RDFConstructQueryResult> FromRDFGraphAsync(RDFGraph graph)
+        => Task.Run(() => FromRDFGraph(graph));
+    #endregion
 }

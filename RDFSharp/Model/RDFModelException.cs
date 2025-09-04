@@ -16,29 +16,28 @@
 
 using System;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFModelException represents an exception thrown during manipulation of RDF models
+/// </summary>
+[Serializable]
+public sealed class RDFModelException : Exception
 {
+    #region Ctors
     /// <summary>
-    /// RDFModelException represents an exception thrown during manipulation of RDF models
+    /// Basic ctor to throw an empty RDFModelException
     /// </summary>
-    [Serializable]
-    public sealed class RDFModelException : Exception
-    {
-        #region Ctors
-        /// <summary>
-        /// Basic ctor to throw an empty RDFModelException
-        /// </summary>
-        public RDFModelException() { }
+    public RDFModelException() { }
 
-        /// <summary>
-        /// Basic ctor to throw an RDFModelException with message
-        /// </summary>
-        public RDFModelException(string message) : base(message) { }
+    /// <summary>
+    /// Basic ctor to throw an RDFModelException with message
+    /// </summary>
+    public RDFModelException(string message) : base(message) { }
 
-        /// <summary>
-        /// Basic ctor to throw an RDFModelException with message and inner exception
-        /// </summary>
-        public RDFModelException(string message, Exception innerException) : base(message, innerException) { }
-        #endregion
-    }
+    /// <summary>
+    /// Basic ctor to throw an RDFModelException with message and inner exception
+    /// </summary>
+    public RDFModelException(string message, Exception innerException) : base(message, innerException) { }
+    #endregion
 }
