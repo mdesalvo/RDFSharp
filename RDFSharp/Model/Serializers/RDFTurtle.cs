@@ -1335,7 +1335,7 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
 
             string supplied = char.ConvertFromUtf32(codePoint);
-            if (expected.IndexOf(supplied, StringComparison.Ordinal) == -1)
+            if (!expected.Contains(supplied, StringComparison.Ordinal))
             {
                 StringBuilder msg = new StringBuilder("Unexpected character found" + GetTurtleContextCoordinates(turtleContext) + ": expected ");
 
