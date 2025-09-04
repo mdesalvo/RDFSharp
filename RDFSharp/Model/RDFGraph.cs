@@ -20,7 +20,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using RDFSharp.Query;
 
@@ -895,50 +896,57 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
             //Grab eventual dereference Uri
             Uri remappedUri = RDFModelUtilities.RemapUriForDereference(uri);
 
-            HttpWebRequest webRequest = WebRequest.CreateHttp(remappedUri);
-            webRequest.MaximumAutomaticRedirections = 3;
-            webRequest.AllowAutoRedirect = true;
-            webRequest.Timeout = timeoutMilliseconds;
-            webRequest.Accept = "application/rdf+xml,text/turtle,application/turtle,application/x-turtle,application/n-triples,application/trix";
-
-            HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
-            if (webRequest.HaveResponse)
+            //Build an HTTP client to execute the request
+            using (HttpClient httpClient = new HttpClient(
+                new HttpClientHandler
+                {
+                   MaxAutomaticRedirections = 3,
+                   AllowAutoRedirect = true
+                }) { Timeout = TimeSpan.FromMilliseconds(timeoutMilliseconds) })
             {
-                //Cascade detection of ContentType from response
-                string responseContentType = webResponse.ContentType;
+                httpClient.DefaultRequestHeaders.Accept.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/rdf+xml"));
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/turtle"));
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/turtle"));
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-turtle"));
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/n-triples"));
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/trix"));
+                
+                // Execute the request and ensure it is successful
+                HttpResponseMessage response = httpClient.GetAsync(remappedUri).GetAwaiter().GetResult();
+                response.EnsureSuccessStatusCode();
+                
+                // Detect ContentType from response
+                string responseContentType = response.Content.Headers.ContentType?.MediaType;
                 if (string.IsNullOrWhiteSpace(responseContentType))
                 {
-                    responseContentType = webResponse.Headers["ContentType"];
+                    if (response.Headers.TryGetValues("ContentType", out var contentTypeValues))
+                        responseContentType = contentTypeValues.FirstOrDefault();
+
                     if (string.IsNullOrWhiteSpace(responseContentType))
-                    {
                         responseContentType = "application/rdf+xml"; //Fallback to RDF/XML
-                    }
                 }
-
-                //RDF/XML
-                if (responseContentType.Contains("application/rdf+xml"))
+                
+                // Read response data
+                using (Stream responseStream = response.Content.ReadAsStream())
                 {
-                    graph = FromStream(RDFModelEnums.RDFFormats.RdfXml, webResponse.GetResponseStream(), remappedUri);
-                }
+                    //RDF/XML
+                    if (responseContentType.Contains("application/rdf+xml"))
+                        graph = FromStream(RDFModelEnums.RDFFormats.RdfXml, responseStream, remappedUri);
 
-                //TURTLE
-                else if (responseContentType.Contains("text/turtle")
-                         || responseContentType.Contains("application/turtle")
-                         || responseContentType.Contains("application/x-turtle"))
-                {
-                    graph = FromStream(RDFModelEnums.RDFFormats.Turtle, webResponse.GetResponseStream(), remappedUri);
-                }
+                    //TURTLE
+                    else if (responseContentType.Contains("text/turtle")
+                             || responseContentType.Contains("application/turtle")
+                             || responseContentType.Contains("application/x-turtle"))
+                        graph = FromStream(RDFModelEnums.RDFFormats.Turtle, responseStream, remappedUri);
 
-                //N-TRIPLES
-                else if (responseContentType.Contains("application/n-triples"))
-                {
-                    graph = FromStream(RDFModelEnums.RDFFormats.NTriples, webResponse.GetResponseStream(), remappedUri);
-                }
+                    //N-TRIPLES
+                    else if (responseContentType.Contains("application/n-triples"))
+                        graph = FromStream(RDFModelEnums.RDFFormats.NTriples, responseStream, remappedUri);
 
-                //TRIX
-                else if (responseContentType.Contains("application/trix"))
-                {
-                    graph = FromStream(RDFModelEnums.RDFFormats.TriX, webResponse.GetResponseStream(), remappedUri);
+                    //TRIX
+                    else if (responseContentType.Contains("application/trix"))
+                        graph = FromStream(RDFModelEnums.RDFFormats.TriX, responseStream, remappedUri);
                 }
             }
         }
