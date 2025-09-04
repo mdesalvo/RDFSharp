@@ -21,6 +21,8 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using RDFSharp.Model;
 using RDFSharp.Query;
@@ -738,35 +740,49 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
             //Grab eventual dereference Uri
             Uri remappedUri = RDFModelUtilities.RemapUriForDereference(uri);
 
-            HttpWebRequest webRequest = WebRequest.CreateHttp(remappedUri);
-            webRequest.MaximumAutomaticRedirections = 3;
-            webRequest.AllowAutoRedirect = true;
-            webRequest.Timeout = timeoutMilliseconds;
-            webRequest.Accept = "application/n-quads,application/trix,application/trig";
-
-            HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
-            if (webRequest.HaveResponse)
+            //Build an HTTP client to execute the request
+            using (HttpClient httpClient = new HttpClient(
+                new HttpClientHandler
+                {
+                   MaxAutomaticRedirections = 3,
+                   AllowAutoRedirect = true
+                }) { Timeout = TimeSpan.FromMilliseconds(timeoutMilliseconds) })
             {
-                //Cascade detection of ContentType from response
-                string responseContentType = webResponse.ContentType;
+                httpClient.DefaultRequestHeaders.Accept.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/n-quads"));
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/trix"));
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/trig"));
+                
+                // Execute the request and ensure it is successful
+                HttpResponseMessage response = httpClient.GetAsync(remappedUri).GetAwaiter().GetResult();
+                response.EnsureSuccessStatusCode();
+                
+                // Detect ContentType from response
+                string responseContentType = response.Content.Headers.ContentType?.MediaType;
                 if (string.IsNullOrWhiteSpace(responseContentType))
                 {
-                    responseContentType = webResponse.Headers["ContentType"];
+                    if (response.Headers.TryGetValues("ContentType", out var contentTypeValues))
+                        responseContentType = contentTypeValues.FirstOrDefault();
+
                     if (string.IsNullOrWhiteSpace(responseContentType))
-                        responseContentType = "application/n-quads"; //Fallback to N-QUADS
+                        responseContentType = "application/n-quads"; // Fallback to N-QUADS
                 }
+                
+                // Read response data
+                using (Stream responseStream = response.Content.ReadAsStream())
+                {
+                    // N-QUADS
+                    if (responseContentType.Contains("application/n-quads", StringComparison.Ordinal))
+                        memStore = FromStream(RDFStoreEnums.RDFFormats.NQuads, responseStream);
 
-                //N-QUADS
-                if (responseContentType.Contains("application/n-quads"))
-                    memStore = FromStream(RDFStoreEnums.RDFFormats.NQuads, webResponse.GetResponseStream());
+                    // TRIX
+                    else if (responseContentType.Contains("application/trix", StringComparison.Ordinal))
+                        memStore = FromStream(RDFStoreEnums.RDFFormats.TriX, responseStream);
 
-                //TRIX
-                else if (responseContentType.Contains("application/trix"))
-                    memStore = FromStream(RDFStoreEnums.RDFFormats.TriX, webResponse.GetResponseStream());
-
-                //TRIG
-                else if (responseContentType.Contains("application/trig"))
-                    memStore = FromStream(RDFStoreEnums.RDFFormats.TriG, webResponse.GetResponseStream());
+                    // TRIG
+                    else if (responseContentType.Contains("application/trig", StringComparison.Ordinal))
+                        memStore = FromStream(RDFStoreEnums.RDFFormats.TriG, responseStream);
+                }
             }
         }
         catch (Exception ex)
