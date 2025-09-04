@@ -194,7 +194,7 @@ namespace RDFSharp.Model
             if (!string.IsNullOrEmpty(uri.Fragment))
                 return uri.Fragment.TrimStart('#');
 
-            return uri.Segments.Length > 1 ? uri.Segments.Last() : uri.ToString();
+            return uri.Segments.Length > 1 ? uri.Segments[^1] /*.Last()*/ : uri.ToString();
         }
         #endregion
 

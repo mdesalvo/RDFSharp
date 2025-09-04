@@ -74,7 +74,7 @@ namespace RDFSharp.Query
             else
                 sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
             sb.Append(" IN (");
-            sb.Append(string.Join(", ", InTerms.Select(t => RDFQueryPrinter.PrintPatternMember(t, prefixes))));
+            sb.AppendJoin(", ", InTerms.Select(t => RDFQueryPrinter.PrintPatternMember(t, prefixes)));
             sb.Append("))");
 
             return sb.ToString();

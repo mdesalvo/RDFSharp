@@ -34,7 +34,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Flag indicating the resource is blank or not
         /// </summary>
-        public bool IsBlank => string.Equals(URI.Scheme, "bnode");
+        public bool IsBlank => string.Equals(URI.Scheme, "bnode", StringComparison.Ordinal);
         #endregion
 
         #region Ctors

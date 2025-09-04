@@ -667,7 +667,7 @@ namespace RDFSharp.Store
                     else
                     {
                         rowContext = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?CONTEXT"].ToString());
-                        if (!(rowContext is RDFResource resource))
+                        if (rowContext is not RDFResource resource)
                             throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row not having a resource in the \"?CONTEXT\" column.");
                         if (resource.IsBlank)
                             throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having a blank resource in the \"?CONTEXT\" column.");
@@ -684,7 +684,7 @@ namespace RDFSharp.Store
                     throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having null or empty value in the \"?SUBJECT\" column.");
 
                 RDFPatternMember rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?SUBJECT"].ToString());
-                if (!(rowSubj is RDFResource subj))
+                if (rowSubj is not RDFResource subj)
                     throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row not having a resource in the \"?SUBJECT\" column.");
                 #endregion
 
@@ -693,7 +693,7 @@ namespace RDFSharp.Store
                     throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having null or empty value in the \"?PREDICATE\" column.");
 
                 RDFPatternMember rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?PREDICATE"].ToString());
-                if (!(rowPred is RDFResource pred))
+                if (rowPred is not RDFResource pred)
                     throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row not having a resource in the \"?PREDICATE\" column.");
                 if (pred.IsBlank)
                     throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having a blank resource in the \"?PREDICATE\" column.");

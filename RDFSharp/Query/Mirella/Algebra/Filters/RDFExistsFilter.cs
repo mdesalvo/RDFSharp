@@ -80,9 +80,9 @@ namespace RDFSharp.Query
 
             #region Disjoint Evaluation
             //In case of disjointess between the query and the filter's pattern, all solutions are compatible
-            bool disjointSubject = !(Pattern.Subject is RDFVariable) || !row.Table.Columns.Contains(subjectString);
-            bool disjointPredicate = !(Pattern.Predicate is RDFVariable) || !row.Table.Columns.Contains(predicateString);
-            bool disjointObject = !(Pattern.Object is RDFVariable) || !row.Table.Columns.Contains(objectString);
+            bool disjointSubject = Pattern.Subject is not RDFVariable || !row.Table.Columns.Contains(subjectString);
+            bool disjointPredicate = Pattern.Predicate is not RDFVariable || !row.Table.Columns.Contains(predicateString);
+            bool disjointObject = Pattern.Object is not RDFVariable || !row.Table.Columns.Contains(objectString);
             if (disjointSubject && disjointPredicate && disjointObject)
                 keepRow = true;
             #endregion

@@ -86,7 +86,7 @@ namespace RDFSharp.Query
             if (aggregator != null)
             {
                 //There cannot exist two aggregators projecting the same variable (exclude automatic partition aggregators from the check)
-                if (Aggregators.Any(ag => !(ag is RDFPartitionAggregator) && ag.ProjectionVariable.Equals(aggregator.ProjectionVariable)))
+                if (Aggregators.Any(ag => ag is not RDFPartitionAggregator && ag.ProjectionVariable.Equals(aggregator.ProjectionVariable)))
                     throw new RDFQueryException($"Cannot add aggregator to GroupBy modifier because the given projection variable '{aggregator.ProjectionVariable}' is already used by another aggregator.");
 
                 Aggregators.Add(aggregator);
@@ -130,7 +130,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException($"Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: {string.Join(",", unavailableAggregatorVariables.Distinct())}");
 
             //There should NOT be intersection between partition variables (GroupBy) and projection variables (Aggregators)
-            List<string> commonPartitionProjectionVariables = [.. PartitionVariables.Where(pv => Aggregators.Any(ag => !(ag is RDFPartitionAggregator) && pv.Equals(ag.ProjectionVariable))).Select(pav => pav.ToString())];
+            List<string> commonPartitionProjectionVariables = [.. PartitionVariables.Where(pv => Aggregators.Any(ag => ag is not RDFPartitionAggregator && pv.Equals(ag.ProjectionVariable))).Select(pav => pav.ToString())];
             if (commonPartitionProjectionVariables.Count > 0)
                 throw new RDFQueryException($"Cannot apply GroupBy modifier because the following variables have been specified both for partitioning (in GroupBy) and projection (in Aggregator): {string.Join(",", commonPartitionProjectionVariables.Distinct())}");
         }

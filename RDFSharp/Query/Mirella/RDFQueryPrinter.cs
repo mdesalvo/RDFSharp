@@ -78,9 +78,9 @@ namespace RDFSharp.Query
                 foreach (RDFGroupByModifier gm in modifiers.OfType<RDFGroupByModifier>())
                 {
                     sb.Append(' ');
-                    sb.Append(string.Join(" ", gm.PartitionVariables));
+                    sb.AppendJoin(' ', gm.PartitionVariables);
                     sb.Append(' ');
-                    sb.Append(string.Join(" ", gm.Aggregators.Where(ag => !(ag is RDFPartitionAggregator))));
+                    sb.AppendJoin(' ', gm.Aggregators.Where(ag => ag is not RDFPartitionAggregator));
                 }
             }
             //Query hasn't GroupBy modifier => respect given projections
@@ -517,7 +517,7 @@ namespace RDFSharp.Query
             PrintPatternGroupMembers(patternGroup, result, spaces, prefixes);
 
             //FILTERS
-            foreach (RDFFilter filter in patternGroup.GetFilters().Where(f => !(f is RDFValuesFilter)))
+            foreach (RDFFilter filter in patternGroup.GetFilters().Where(f => f is not RDFValuesFilter))
                 result.AppendLine($"{spaces}    {filter.ToString(prefixes)} ");
 
             //CLOSE-BRACKET

@@ -50,7 +50,7 @@ namespace RDFSharp.Model
             RDFPropertyShape pShape = shape as RDFPropertyShape;
 
             //Search for given node shape
-            if (!(shapesGraph.SelectShape(NodeShapeUri.ToString()) is RDFNodeShape nodeShape))
+            if (shapesGraph.SelectShape(NodeShapeUri.ToString()) is not RDFNodeShape nodeShape)
                 return report;
 
             //In case no shape messages have been provided, this constraint emits a default one (for usability)

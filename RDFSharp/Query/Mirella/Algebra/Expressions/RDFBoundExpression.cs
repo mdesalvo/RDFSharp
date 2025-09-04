@@ -85,17 +85,11 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                switch (leftArgumentPMember)
+                expressionResult = leftArgumentPMember switch
                 {
-                    case null:
-                        expressionResult = RDFTypedLiteral.False;
-                        break;
-                    default:
-                        //We cannot accept an empty plain literal as semantically valid bound result
-                        expressionResult = leftArgumentPMember.Equals(RDFPlainLiteral.Empty)
-                                            ? RDFTypedLiteral.False : RDFTypedLiteral.True;
-                        break;
-                }
+                    null => RDFTypedLiteral.False,
+                    _ => leftArgumentPMember.Equals(RDFPlainLiteral.Empty) ? RDFTypedLiteral.False : RDFTypedLiteral.True
+                };
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }

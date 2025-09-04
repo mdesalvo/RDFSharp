@@ -110,27 +110,17 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-
-                switch (leftArgumentPMember)
+                //Transform left argument result into a plain literal
+                leftArgumentPMember = leftArgumentPMember switch
                 {
-                    //Transform left argument result into a plain literal
-                    case RDFResource _:
-                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMember.ToString());
-                        break;
-                    case RDFPlainLiteral plitLeftArgumentPMember:
-                        leftArgumentPMember = new RDFPlainLiteral(plitLeftArgumentPMember.Value);
-                        break;
-                    case RDFTypedLiteral tlitLeftArgumentPMember when tlitLeftArgumentPMember.HasStringDatatype():
-                        leftArgumentPMember = new RDFPlainLiteral(tlitLeftArgumentPMember.Value);
-                        break;
-                    default:
-                        leftArgumentPMember = null; //binding error => cleanup
-                        break;
-                }
-
+                    RDFResource _ => new RDFPlainLiteral(leftArgumentPMember.ToString()),
+                    RDFPlainLiteral plLeftArgumentPMember => new RDFPlainLiteral(plLeftArgumentPMember.Value),
+                    RDFTypedLiteral tlLeftArgumentPMember when tlLeftArgumentPMember.HasStringDatatype() => new RDFPlainLiteral(tlLeftArgumentPMember.Value),
+                    _ => null,//binding error => cleanup
+                };
+                //Transform right argument result into a plain literal
                 rightArgumentPMember = rightArgumentPMember switch
                 {
-                    //Transform right argument result into a plain literal
                     RDFResource _ => new RDFPlainLiteral(rightArgumentPMember.ToString()),
                     RDFPlainLiteral plitRightArgumentPMember => new RDFPlainLiteral(plitRightArgumentPMember.Value),
                     RDFTypedLiteral tlitRightArgumentPMember when tlitRightArgumentPMember.HasStringDatatype() => new RDFPlainLiteral(tlitRightArgumentPMember.Value),

@@ -1002,7 +1002,7 @@ namespace RDFSharp.Model
             {
                 XmlAttribute xmlLangPred = GetXmlLangAttribute(predNode) ?? xmlLangSubj;
                 List<RDFResource> elems = ParseNodeList(predNode.ChildNodes, result, xmlBase, xmlLangPred, hashContext);
-                RDFResource lastElement = elems.Last();
+                RDFResource lastElement = elems[^1]; //.Last()
                 foreach (RDFResource elem in elems)
                 {
                     // obj -> rdf:type -> rdf:list
