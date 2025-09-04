@@ -67,8 +67,8 @@ namespace RDFSharp.Query
             IsOptional = false;
             JoinAsUnion = false;
             JoinAsMinus = false;
-            GroupMembers = new List<RDFPatternGroupMember>();
-            Variables = new List<RDFVariable>();
+            GroupMembers = [];
+            Variables = [];
         }
 
         /// <summary>

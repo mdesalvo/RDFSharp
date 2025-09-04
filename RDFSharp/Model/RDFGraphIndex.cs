@@ -73,15 +73,15 @@ namespace RDFSharp.Model
         internal RDFGraphIndex()
         {
             //Hashes
-            Hashes = new Dictionary<long, RDFHashedTriple>();
+            Hashes = [];
             //Registers
-            Resources = new Dictionary<long, RDFResource>();
-            Literals = new Dictionary<long, RDFLiteral>();
+            Resources = [];
+            Literals = [];
             //Indexes
-            IDXSubjects = new Dictionary<long, HashSet<long>>();
-            IDXPredicates = new Dictionary<long, HashSet<long>>();
-            IDXObjects = new Dictionary<long, HashSet<long>>();
-            IDXLiterals = new Dictionary<long, HashSet<long>>();
+            IDXSubjects = [];
+            IDXPredicates = [];
+            IDXObjects = [];
+            IDXLiterals = [];
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace RDFSharp.Model
                 Resources.Add(triple.Subject.PatternMemberID, (RDFResource)triple.Subject);
             //Subject (Index)
             if (!IDXSubjects.TryGetValue(triple.Subject.PatternMemberID, out HashSet<long> subjectsIndex))
-                IDXSubjects.Add(triple.Subject.PatternMemberID, new HashSet<long> { triple.TripleID });
+                IDXSubjects.Add(triple.Subject.PatternMemberID, [triple.TripleID]);
             else
                 subjectsIndex.Add(triple.TripleID);
 
@@ -156,7 +156,7 @@ namespace RDFSharp.Model
                 Resources.Add(triple.Predicate.PatternMemberID, (RDFResource)triple.Predicate);
             //Predicate (Index)
             if (!IDXPredicates.TryGetValue(triple.Predicate.PatternMemberID, out HashSet<long> predicatesIndex))
-                IDXPredicates.Add(triple.Predicate.PatternMemberID, new HashSet<long> { triple.TripleID });
+                IDXPredicates.Add(triple.Predicate.PatternMemberID, [triple.TripleID]);
             else
                 predicatesIndex.Add(triple.TripleID);
 
@@ -168,7 +168,7 @@ namespace RDFSharp.Model
                     Resources.Add(triple.Object.PatternMemberID, (RDFResource)triple.Object);
                 //Index
                 if (!IDXObjects.TryGetValue(triple.Object.PatternMemberID, out HashSet<long> objectsIndex))
-                    IDXObjects.Add(triple.Object.PatternMemberID, new HashSet<long> { triple.TripleID });
+                    IDXObjects.Add(triple.Object.PatternMemberID, [triple.TripleID]);
                 else
                     objectsIndex.Add(triple.TripleID);
             }
@@ -181,7 +181,7 @@ namespace RDFSharp.Model
                     Literals.Add(triple.Object.PatternMemberID, (RDFLiteral)triple.Object);
                 //Index
                 if (!IDXLiterals.TryGetValue(triple.Object.PatternMemberID, out HashSet<long> literalsIndex))
-                    IDXLiterals.Add(triple.Object.PatternMemberID, new HashSet<long> { triple.TripleID });
+                    IDXLiterals.Add(triple.Object.PatternMemberID, [triple.TripleID]);
                 else
                     literalsIndex.Add(triple.TripleID);
             }

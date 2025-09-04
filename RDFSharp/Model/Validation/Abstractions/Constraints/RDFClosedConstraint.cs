@@ -44,7 +44,7 @@ namespace RDFSharp.Model
         public RDFClosedConstraint(bool closed)
         {
             Closed = closed;
-            IgnoredProperties = new Dictionary<long, RDFResource>();
+            IgnoredProperties = [];
         }
         #endregion
 
@@ -70,13 +70,13 @@ namespace RDFSharp.Model
             if (Closed)
             {
                 //Extend ignored properties with paths of property constraints
-                List<RDFResource> allowedProperties = new List<RDFResource>(IgnoredProperties.Values);
+                List<RDFResource> allowedProperties = [.. IgnoredProperties.Values];
                 foreach (RDFPropertyConstraint propertyConstraint in shape.Constraints.OfType<RDFPropertyConstraint>())
                     if (shapesGraph.SelectShape(propertyConstraint.PropertyShapeUri.ToString()) is RDFPropertyShape propertyShape)
                         allowedProperties.Add(propertyShape.Path);
 
                 //In case no shape messages have been provided, this constraint emits a default one (for usability)
-                List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+                List<RDFLiteral> shapeMessages = [.. shape.Messages];
                 if (shapeMessages.Count == 0)
                     shapeMessages.Add(new RDFPlainLiteral("Predicate is not allowed (closed shape)"));
 

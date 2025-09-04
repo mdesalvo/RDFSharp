@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// Builds an and constraint
         /// </summary>
         public RDFAndConstraint()
-            => AndShapes = new Dictionary<long, RDFResource>();
+            => AndShapes = [];
         #endregion
 
         #region Methods
@@ -59,7 +59,7 @@ namespace RDFSharp.Model
             RDFPropertyShape pShape = shape as RDFPropertyShape;
 
             //Search for given and shapes
-            List<RDFShape> andShapes = new List<RDFShape>(AndShapes.Values.Count);
+            List<RDFShape> andShapes = [];
             foreach (RDFResource andShapeUri in AndShapes.Values)
             {
                 RDFShape andShape = shapesGraph.SelectShape(andShapeUri.ToString());
@@ -68,7 +68,7 @@ namespace RDFSharp.Model
             }
 
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
-            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+            List<RDFLiteral> shapeMessages = [.. shape.Messages];
             if (shapeMessages.Count == 0)
                 shapeMessages.Add(new RDFPlainLiteral("Value does not have all the shapes in sh:and enumeration"));
 
@@ -80,7 +80,7 @@ namespace RDFSharp.Model
                 //Iterate required shapes, breaking at the first unsatisfied one
                 foreach (RDFShape andShape in andShapes)
                 {
-                    RDFValidationReport andShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, andShape, new List<RDFPatternMember>(1) { valueNode });
+                    RDFValidationReport andShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, andShape, [valueNode]);
                     if (!andShapeReport.Conforms)
                     {
                         valueNodeConforms = false;

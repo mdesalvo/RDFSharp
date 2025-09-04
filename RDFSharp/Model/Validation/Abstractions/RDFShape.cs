@@ -89,9 +89,9 @@ namespace RDFSharp.Model
         {
             Deactivated = false;
             Severity = RDFValidationEnums.RDFShapeSeverity.Violation;
-            Messages = new List<RDFLiteral>();
-            Targets = new List<RDFTarget>();
-            Constraints = new List<RDFConstraint>();
+            Messages = [];
+            Targets = [];
+            Constraints = [];
         }
         #endregion
 

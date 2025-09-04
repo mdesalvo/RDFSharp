@@ -152,7 +152,7 @@ namespace RDFSharp.Model
 
             #region Ctors
             internal RDFTurtleContext()
-                => HashContext = new Dictionary<string, long>();
+                => HashContext = [];
             #endregion
         }
         #endregion

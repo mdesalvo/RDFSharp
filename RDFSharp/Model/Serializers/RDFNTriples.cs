@@ -33,9 +33,9 @@ namespace RDFSharp.Model
         private const string TemplateSPLT = "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> .";
 
         // Facilities for deserialization
-        internal static readonly char[] openingBrackets = { '<' };
-        internal static readonly char[] closingBrackets = { '>' };
-        internal static readonly char[] trimmableChars = { ' ', '\t', '\r', '\n' };
+        internal static readonly char[] openingBrackets = ['<'];
+        internal static readonly char[] closingBrackets = ['>'];
+        internal static readonly char[] trimmableChars = [' ', '\t', '\r', '\n'];
         #endregion
 
         #region Methods
@@ -134,7 +134,7 @@ namespace RDFSharp.Model
             long ntripleIndex = 0;
             string nTriple;
             string[] tokens = new string[3];
-            Dictionary<string, long> hashContext = new Dictionary<string, long>();
+            Dictionary<string, long> hashContext = [];
 
             try
             {

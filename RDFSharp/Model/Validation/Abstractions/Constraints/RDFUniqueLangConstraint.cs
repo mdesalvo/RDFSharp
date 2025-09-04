@@ -50,14 +50,14 @@ namespace RDFSharp.Model
             RDFPropertyShape pShape = shape as RDFPropertyShape;
 
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
-            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+            List<RDFLiteral> shapeMessages = [.. shape.Messages];
             if (shapeMessages.Count == 0)
                 shapeMessages.Add(new RDFPlainLiteral("Must not have the same language tag more than one time per value"));
 
             #region Evaluation
             if (UniqueLang)
             {
-                HashSet<string> reportedLangs = new HashSet<string>();
+                HashSet<string> reportedLangs = [];
                 List<RDFPlainLiteral> langlitValueNodes = valueNodes.OfType<RDFPlainLiteral>()
                                                                     .Where(vn => vn.HasLanguage())
                                                                     .ToList();

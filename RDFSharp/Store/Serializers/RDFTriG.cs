@@ -54,12 +54,12 @@ namespace RDFSharp.Store
                     List<RDFGraph> graphs = store.ExtractGraphs();
 
                     //Collect namespaces
-                    List<RDFNamespace> prefixes = new List<RDFNamespace>();
+                    List<RDFNamespace> prefixes = [];
                     foreach (RDFGraph graph in graphs)
                         prefixes.AddRange(RDFModelUtilities.GetGraphNamespaces(graph));
 
                     //Write namespaces (avoid duplicates)
-                    HashSet<string> printedNamespaces = new HashSet<string>();
+                    HashSet<string> printedNamespaces = [];
                     foreach (RDFNamespace ns in prefixes.OrderBy(n => n.NamespacePrefix))
                     {
                         if (printedNamespaces.Add(ns.NamespacePrefix))

@@ -50,9 +50,9 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFOperation()
         {
-            DeleteTemplates = new List<RDFPattern>();
-            InsertTemplates = new List<RDFPattern>();
-            Variables = new List<RDFVariable>();
+            DeleteTemplates = [];
+            InsertTemplates = [];
+            Variables = [];
         }
         #endregion
 

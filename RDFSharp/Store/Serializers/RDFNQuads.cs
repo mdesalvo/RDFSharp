@@ -135,7 +135,7 @@ namespace RDFSharp.Store
             long nquadIndex = 0;
             string nquad;
             string[] tokens = new string[4];
-            Dictionary<string, long> hashContext = new Dictionary<string, long>();
+            Dictionary<string, long> hashContext = [];
             RDFContext defaultContext = new RDFContext();
 
             try

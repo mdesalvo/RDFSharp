@@ -48,7 +48,7 @@ namespace RDFSharp.Model
         /// Builds a named shapes graph
         /// </summary>
         public RDFShapesGraph(RDFResource shapesGraphName) : base(shapesGraphName.ToString())
-            => Shapes = new Dictionary<long, RDFShape>();
+            => Shapes = [];
 
         /// <summary>
         /// Builds a blank shapes graph
@@ -87,11 +87,10 @@ namespace RDFSharp.Model
         public RDFShapesGraph MergeShapes(RDFShapesGraph shapesGraph)
         {
             if (shapesGraph != null)
+            {
                 foreach (RDFShape shape in shapesGraph)
-                {
-                    if (!Shapes.ContainsKey(shape.PatternMemberID))
-                        Shapes.Add(shape.PatternMemberID, shape);
-                }
+                    Shapes.TryAdd(shape.PatternMemberID, shape);
+            }
             return this;
         }
         #endregion

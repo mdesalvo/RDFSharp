@@ -67,7 +67,7 @@ namespace RDFSharp.Query
 
             Start = start;
             End = end;
-            Steps = new List<RDFPropertyPathStep>();
+            Steps = [];
             Depth = 0;
         }
         #endregion

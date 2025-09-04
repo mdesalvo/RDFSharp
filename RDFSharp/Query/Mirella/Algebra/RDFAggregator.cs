@@ -58,12 +58,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Placeholders indicating presence of an aggregator key
         /// </summary>
-        internal readonly string[] ProjectionKeyPlaceholder = { "§PK§" };
+        internal readonly string[] ProjectionKeyPlaceholder = ["§PK§"];
 
         /// <summary>
         /// Placeholders indicating presence of an aggregator value
         /// </summary>
-        internal readonly string[] ProjectionValuePlaceholder = { "§PV§" };
+        internal readonly string[] ProjectionValuePlaceholder = ["§PV§"];
         #endregion
 
         #region Ctors
@@ -225,8 +225,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFAggregatorContext()
         {
-            ExecutionRegistry = new Dictionary<string, Dictionary<string, object>>();
-            ExecutionCache = new Dictionary<string, HashSet<object>>();
+            ExecutionRegistry = [];
+            ExecutionCache = [];
         }
         #endregion
 
@@ -279,7 +279,7 @@ namespace RDFSharp.Query
         internal bool CheckPartitionKeyRowValueCache<T>(string partitionKey, T value)
         {
             if (!ExecutionCache.ContainsKey(partitionKey))
-                ExecutionCache.Add(partitionKey, new HashSet<object>());
+                ExecutionCache.Add(partitionKey, []);
             return ExecutionCache[partitionKey].Any(x => ((T)x).Equals(value));
         }
 

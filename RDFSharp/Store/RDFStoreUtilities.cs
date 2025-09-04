@@ -32,7 +32,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Empty list of quadruples to be returned in case of no query results
         /// </summary>
-        internal static readonly List<RDFQuadruple> EmptyQuadrupleList = new List<RDFQuadruple>();
+        internal static readonly List<RDFQuadruple> EmptyQuadrupleList = [];
 
         /// <summary>
         /// Parses the current quadruple of the data reader

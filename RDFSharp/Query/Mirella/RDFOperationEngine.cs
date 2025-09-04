@@ -79,7 +79,7 @@ namespace RDFSharp.Query
             RDFConstructQueryResult constructResult = ExecuteConstructQueryFromOperation(insertWhereOperation, datasource);
 
             //Use materialized templates for execution of the operation
-            List<RDFPattern> insertTemplates = new List<RDFPattern>();
+            List<RDFPattern> insertTemplates = [];
             if (datasource.IsGraph())
             {
                 RDFGraph insertGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
@@ -115,7 +115,7 @@ namespace RDFSharp.Query
             RDFConstructQueryResult constructResult = ExecuteConstructQueryFromOperation(deleteWhereOperation, datasource);
 
             //Use materialized templates for execution of the operation
-            List<RDFPattern> deleteTemplates = new List<RDFPattern>();
+            List<RDFPattern> deleteTemplates = [];
             if (datasource.IsGraph())
             {
                 RDFGraph deleteGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
@@ -143,8 +143,8 @@ namespace RDFSharp.Query
             RDFConstructQueryResult constructInsertResult = new RDFOperationEngine().ExecuteConstructQueryFromOperation(deleteInsertWhereOperation, datasource, "INSERT");
 
             //Use materialized templates for execution of the operation
-            List<RDFPattern> deleteTemplates = new List<RDFPattern>();
-            List<RDFPattern> insertTemplates = new List<RDFPattern>();
+            List<RDFPattern> deleteTemplates = [];
+            List<RDFPattern> insertTemplates = [];
             if (datasource.IsGraph())
             {
                 RDFGraph deleteGraph = RDFGraph.FromDataTable(constructDeleteResult.ConstructResults);
@@ -178,7 +178,7 @@ namespace RDFSharp.Query
 
             try
             {
-                List<RDFPattern> insertTemplates = new List<RDFPattern>();
+                List<RDFPattern> insertTemplates = [];
 
                 //GRAPH => Dereference triples
                 if (isGraph)
@@ -398,7 +398,7 @@ namespace RDFSharp.Query
             resultTable.Columns.Add("?PREDICATE", typeof(string));
             resultTable.Columns.Add("?OBJECT", typeof(string));
 
-            Dictionary<string, string> bindings = new Dictionary<string, string>();
+            Dictionary<string, string> bindings = [];
             insertDataTemplates.ForEach(insertTemplate =>
             {
                 //GRAPH
@@ -461,7 +461,7 @@ namespace RDFSharp.Query
             resultTable.Columns.Add("?PREDICATE", typeof(string));
             resultTable.Columns.Add("?OBJECT", typeof(string));
 
-            Dictionary<string, string> bindings = new Dictionary<string, string>();
+            Dictionary<string, string> bindings = [];
             deleteDataTemplates.ForEach(deleteTemplate =>
             {
                 //GRAPH

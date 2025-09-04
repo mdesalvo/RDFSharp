@@ -44,7 +44,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFValues()
         {
-            Bindings = new Dictionary<string, List<RDFPatternMember>>();
+            Bindings = [];
             IsEvaluable = false;
             IsInjected = false;
         }
@@ -72,7 +72,7 @@ namespace RDFSharp.Query
 
                 //Initialize bindings of the given variable
                 if (!Bindings.ContainsKey(variableString))
-                    Bindings.Add(variableString, new List<RDFPatternMember>());
+                    Bindings.Add(variableString, []);
 
                 //Populate bindings of the given variable
                 //(null indicates the special UNDEF binding)
@@ -106,7 +106,7 @@ namespace RDFSharp.Query
             result.BeginLoadData();
             for (int i = 0; i < MaxBindingsLength(); i++)
             {
-                Dictionary<string, string> bindings = new Dictionary<string, string>();
+                Dictionary<string, string> bindings = [];
                 foreach (KeyValuePair<string, List<RDFPatternMember>> binding in Bindings)
                 {
                     RDFPatternMember bindingValue = binding.Value.ElementAtOrDefault(i);

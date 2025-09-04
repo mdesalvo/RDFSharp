@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// Builds an or constraint
         /// </summary>
         public RDFOrConstraint()
-            => OrShapes = new Dictionary<long, RDFResource>();
+            => OrShapes = [];
         #endregion
 
         #region Methods
@@ -68,7 +68,7 @@ namespace RDFSharp.Model
             }
 
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
-            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+            List<RDFLiteral> shapeMessages = [.. shape.Messages];
             if (shapeMessages.Count == 0)
                 shapeMessages.Add(new RDFPlainLiteral("Value does not have at least one of the shapes in sh:or enumeration"));
 
@@ -78,7 +78,7 @@ namespace RDFSharp.Model
                 bool valueNodeConforms = false;
                 foreach (RDFShape orShape in orShapes)
                 {
-                    RDFValidationReport orShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, orShape, new List<RDFPatternMember>(1) { valueNode });
+                    RDFValidationReport orShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, orShape, [valueNode]);
                     if (orShapeReport.Conforms)
                     {
                         valueNodeConforms = true;

@@ -239,7 +239,7 @@ namespace RDFSharp.Model
                                         //Append "rdf:parseType=Collection" elements
                                         bool nilFound = false;
                                         RDFResource currentCollItem = (RDFResource)triple.Object;
-                                        List<XmlNode> collElements = new List<XmlNode>();
+                                        List<XmlNode> collElements = [];
                                         while (!nilFound)
                                         {
                                             var collElement = collections.Find(x => x.CollectionUri.Equals(currentCollItem));
@@ -424,7 +424,7 @@ namespace RDFSharp.Model
                         #region elements
                         //Parse children of root node
                         if (rdfRDF.HasChildNodes)
-                            ParseNodeList(rdfRDF.ChildNodes, result, xmlBase, GetXmlLangAttribute(rdfRDF), new Dictionary<string, long>());
+                            ParseNodeList(rdfRDF.ChildNodes, result, xmlBase, GetXmlLangAttribute(rdfRDF), []);
                         #endregion
                     }
                 }
@@ -446,7 +446,7 @@ namespace RDFSharp.Model
         private static List<RDFResource> ParseNodeList(XmlNodeList nodeList, RDFGraph result, Uri xmlBase, XmlAttribute xmlLangParent,
             Dictionary<string, long> hashContext, RDFResource subjectParent = null)
         {
-            List<RDFResource> subjects = new List<RDFResource>();
+            List<RDFResource> subjects = [];
             foreach (XmlNode subjNode in nodeList)
             {
                 #region subject
@@ -755,7 +755,7 @@ namespace RDFSharp.Model
         /// </summary>
         private static List<RDFNamespace> GetAutomaticNamespaces(RDFGraph graph)
         {
-            List<RDFNamespace> result = new List<RDFNamespace>();
+            List<RDFNamespace> result = [];
             foreach (string pred in graph.Index.Hashes.Select(x => graph.Index.Resources[x.Value.PredicateID].ToString()).Distinct())
             {
                 RDFNamespace nspace = GenerateNamespace(pred, false);
@@ -820,9 +820,9 @@ namespace RDFSharp.Model
                 string xmlBaseString = xmlBase.ToString();
 
                 //Adjust corner case for clashes on namespace ending characters ("#", "/")
-                if (xmlBaseString.EndsWith("#", StringComparison.Ordinal) && attrValue.StartsWith("#", StringComparison.Ordinal))
+                if (xmlBaseString.EndsWith('#') && attrValue.StartsWith('#'))
                     attrValue = attrValue.TrimStart('#');
-                if (xmlBaseString.EndsWith("/", StringComparison.Ordinal) && attrValue.StartsWith("/", StringComparison.Ordinal))
+                if (xmlBaseString.EndsWith('/') && attrValue.StartsWith('/'))
                     attrValue = attrValue.TrimStart('/');
 
                 //"rdf:ID" relative Uri: must be resolved against the xmlBase namespace
@@ -830,9 +830,9 @@ namespace RDFSharp.Model
                      || string.Equals(attr.LocalName, "ID", StringComparison.OrdinalIgnoreCase))
                 {
                     //This kind of syntax requires the attribute value to start with "#"
-                    if (!attrValue.StartsWith("#", StringComparison.Ordinal))
+                    if (!attrValue.StartsWith('#'))
                         attrValue = $"#{attrValue}";
-                    if (xmlBaseString.EndsWith("#", StringComparison.Ordinal))
+                    if (xmlBaseString.EndsWith('#'))
                         xmlBaseString = xmlBaseString.TrimEnd('#');
                     attrValue = RDFModelUtilities.GetUriFromString(string.Concat(xmlBaseString, attrValue)).ToString();
                 }
@@ -1078,7 +1078,7 @@ namespace RDFSharp.Model
             //Iterate on the container items
             if (container.HasChildNodes)
             {
-                List<string> elemVals = new List<string>();
+                List<string> elemVals = [];
                 foreach (XmlNode elem in container.ChildNodes)
                 {
                     //Skip container item if it is not an element

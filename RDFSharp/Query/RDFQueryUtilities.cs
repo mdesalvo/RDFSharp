@@ -269,7 +269,7 @@ namespace RDFSharp.Query
             if (elements?.Count > 0)
             {
                 List<T> results = new List<T>(elements.Count);
-                HashSet<long> lookup = new HashSet<long>();
+                HashSet<long> lookup = [];
                 elements.ForEach(element =>
                 {
                     if (lookup.Add(element.PatternMemberID))

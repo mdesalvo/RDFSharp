@@ -43,8 +43,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFQuery()
         {
-            QueryMembers = new List<RDFQueryMember>();
-            Prefixes = new List<RDFNamespace>();
+            QueryMembers = [];
+            Prefixes = [];
             IsEvaluable = true;
         }
         #endregion
@@ -133,7 +133,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal List<RDFNamespace> GetPrefixes()
         {
-            List<RDFNamespace> result = new List<RDFNamespace>(Prefixes);
+            List<RDFNamespace> result = [.. Prefixes];
             foreach (RDFQuery subQuery in GetSubQueries())
                 result.AddRange(subQuery.GetPrefixes());
             return result.Distinct().ToList();

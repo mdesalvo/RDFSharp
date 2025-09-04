@@ -59,16 +59,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Alternative representations of boolean True
         /// </summary>
-        internal static readonly string[] AlternativesBoolTrue  = { "1", "one", "yes", "y", "t", "on", "ok", "up" };
+        internal static readonly string[] AlternativesBoolTrue  = ["1", "one", "yes", "y", "t", "on", "ok", "up"];
         /// <summary>
         /// Alternative representations of boolean False
         /// </summary>
-        internal static readonly string[] AlternativesBoolFalse = { "0", "zero", "no", "n", "f", "off", "ko", "down" };
+        internal static readonly string[] AlternativesBoolFalse = ["0", "zero", "no", "n", "f", "off", "ko", "down"];
 
         /// <summary>
         /// Characters whose presence is forbidden inside xsd:normalizedString literals
         /// </summary>
-        internal static readonly char[] NormalizedStringForbiddenChars = { '\n', '\r', '\t' };
+        internal static readonly char[] NormalizedStringForbiddenChars = ['\n', '\r', '\t'];
 
         /// <summary>
         /// Gets the Uri corresponding to the given string
@@ -200,9 +200,9 @@ namespace RDFSharp.Model
         #endregion
 
         #region Graph
-        internal static readonly HashSet<long> EmptyHashSet = new HashSet<long>();
-        internal static readonly List<RDFTriple> EmptyTripleList = new List<RDFTriple>();
-        internal static readonly List<RDFNamespace> EmptyNamespaceList = new List<RDFNamespace>();
+        internal static readonly HashSet<long> EmptyHashSet = [];
+        internal static readonly List<RDFTriple> EmptyTripleList = [];
+        internal static readonly List<RDFNamespace> EmptyNamespaceList = [];
 
         /// <summary>
         /// Selects the triples corresponding to the given pattern from the given graph
@@ -303,9 +303,9 @@ namespace RDFSharp.Model
         public static List<RDFDatatype> ExtractDatatypeDefinitions(this RDFGraph graph)
         {
             if (graph == null)
-                return new List<RDFDatatype>();
+                return [];
 
-            List<RDFDatatype> datatypes = new List<RDFDatatype>();
+            List<RDFDatatype> datatypes = [];
             foreach (RDFTriple datatypeTriple in graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE, null])
             {
                 RDFResource datatypeIRI = (RDFResource)datatypeTriple.Subject;
@@ -451,7 +451,7 @@ namespace RDFSharp.Model
             #region Deserialization
             bool nilFound = false;
             RDFResource itemRest = collRepresentative;
-            HashSet<long> itemRestVisitCache = new HashSet<long> { itemRest.PatternMemberID };
+            HashSet<long> itemRestVisitCache = [itemRest.PatternMemberID];
             while (!nilFound)
             {
                 #region rdf:first
@@ -519,7 +519,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static List<RDFNamespace> GetGraphNamespaces(RDFGraph graph)
         {
-            List<RDFNamespace> result = new List<RDFNamespace>();
+            List<RDFNamespace> result = [];
             foreach (RDFTriple triple in graph)
             {
                 string subj = triple.Subject.ToString();
@@ -591,8 +591,8 @@ namespace RDFSharp.Model
                     catch { return (false, literalValue); }
 
                 case RDFModelEnums.RDFDatatypes.RDF_JSON:
-                    bool isValidJson = (literalValue.StartsWith("{", StringComparison.Ordinal) && literalValue.EndsWith("}", StringComparison.Ordinal))
-                                        || (literalValue.StartsWith("[", StringComparison.Ordinal) && literalValue.EndsWith("]", StringComparison.Ordinal));
+                    bool isValidJson = (literalValue.StartsWith('{') && literalValue.EndsWith('}'))
+                                        || (literalValue.StartsWith('[') && literalValue.EndsWith(']'));
                     return (isValidJson, literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_ANYURI:

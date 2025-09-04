@@ -55,14 +55,14 @@ namespace RDFSharp.Model
                 return report;
 
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
-            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+            List<RDFLiteral> shapeMessages = [.. shape.Messages];
             if (shapeMessages.Count == 0)
                 shapeMessages.Add(new RDFPlainLiteral($"Value does have shape <{NotShape}>"));
 
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
             {
-                RDFValidationReport notShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, notShape, new List<RDFPatternMember>(1) { valueNode });
+                RDFValidationReport notShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, notShape, [valueNode]);
                 if (notShapeReport.Conforms)
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.NOT_CONSTRAINT_COMPONENT,

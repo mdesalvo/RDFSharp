@@ -71,7 +71,7 @@ namespace RDFSharp.Model
                 return report;
 
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
-            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+            List<RDFLiteral> shapeMessages = [.. shape.Messages];
             if (shapeMessages.Count == 0)
             {
                 if (QualifiedValueMinCount.HasValue && QualifiedValueMaxCount.HasValue)
@@ -88,7 +88,7 @@ namespace RDFSharp.Model
                 int conformingValues = 0;
                 foreach (RDFPatternMember valueNode in valueNodes)
                 {
-                    RDFValidationReport qualifiedValueShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, qualifiedValueShape, new List<RDFPatternMember>(1) { valueNode });
+                    RDFValidationReport qualifiedValueShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, qualifiedValueShape, [valueNode]);
                     if (qualifiedValueShapeReport.Conforms)
                         conformingValues++;
                 }

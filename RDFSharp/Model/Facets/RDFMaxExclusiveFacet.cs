@@ -45,8 +45,8 @@ namespace RDFSharp.Model
         /// Gives a graph representation of the MaxExclusive facet
         /// </summary>
         public override RDFGraph ToRDFGraph()
-          => new RDFGraph(new List<RDFTriple>(1) {
-              new RDFTriple(URI, RDFVocabulary.XSD.MAX_EXCLUSIVE, new RDFTypedLiteral(Convert.ToString(ExclusiveUpperBound, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE)) });
+          => new RDFGraph([
+              new RDFTriple(URI, RDFVocabulary.XSD.MAX_EXCLUSIVE, new RDFTypedLiteral(Convert.ToString(ExclusiveUpperBound, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE)) ]);
 
         /// <summary>
         /// Validates the given literal value against the MaxExclusive facet

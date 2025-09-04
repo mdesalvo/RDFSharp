@@ -92,7 +92,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create RDFPattern because given \"objLit\" parameter (" + objLit + ") is neither a resource, or a literal or a variable");
             #endregion
 
-            Variables = new List<RDFVariable>();
+            Variables = [];
             IsEvaluable = true;
             IsOptional = false;
             JoinAsUnion = false;

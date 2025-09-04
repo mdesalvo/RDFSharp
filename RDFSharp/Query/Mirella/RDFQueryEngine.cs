@@ -71,8 +71,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFQueryEngine()
         {
-            PatternGroupMemberResultTables = new Dictionary<long, List<DataTable>>();
-            QueryMemberResultTables = new Dictionary<long, DataTable>();
+            PatternGroupMemberResultTables = [];
+            QueryMemberResultTables = [];
         }
         #endregion
 
@@ -436,7 +436,7 @@ namespace RDFSharp.Query
             AddColumn(result, "?OBJECT");
 
             //Initialize working variables
-            Dictionary<string, string> bindings = new Dictionary<string, string>();
+            Dictionary<string, string> bindings = [];
             if (needsContext)
                 bindings.Add("?CONTEXT", null);
             bindings.Add("?SUBJECT", null);
@@ -1169,7 +1169,7 @@ namespace RDFSharp.Query
                 int columnsCount = qrTable.Columns.Count;
                 for (int i = 0; i < columnsCount; i++)
                 {
-                    if (!qrTable.Columns[i].ColumnName.StartsWith("?", StringComparison.Ordinal))
+                    if (!qrTable.Columns[i].ColumnName.StartsWith('?'))
                         qrTable.Columns[i].ColumnName = $"?{qrTable.Columns[i].ColumnName}";
                 }
             }
@@ -1345,7 +1345,7 @@ namespace RDFSharp.Query
             string patternSubject = pattern.Subject.ToString();
             string patternPredicate = pattern.Predicate.ToString();
             string patternObject = pattern.Object.ToString();
-            Dictionary<string, string> bindings = new Dictionary<string, string>();
+            Dictionary<string, string> bindings = [];
 
             //Iterate result graph's triples
             foreach (RDFTriple triple in triples)
@@ -1411,7 +1411,7 @@ namespace RDFSharp.Query
             string patternSubject = pattern.Subject.ToString();
             string patternPredicate = pattern.Predicate.ToString();
             string patternObject = pattern.Object.ToString();
-            Dictionary<string, string> bindings = new Dictionary<string, string>();
+            Dictionary<string, string> bindings = [];
 
             //Iterate result store's quadruples
             foreach (RDFQuadruple quadruple in store)

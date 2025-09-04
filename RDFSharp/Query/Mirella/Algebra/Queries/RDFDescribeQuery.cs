@@ -45,8 +45,8 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFDescribeQuery()
         {
-            DescribeTerms = new List<RDFPatternMember>();
-            Variables = new List<RDFVariable>();
+            DescribeTerms = [];
+            Variables = [];
         }
         #endregion
 

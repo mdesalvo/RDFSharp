@@ -45,8 +45,8 @@ namespace RDFSharp.Model
         /// Gives a graph representation of the maxlength facet
         /// </summary>
         public override RDFGraph ToRDFGraph()
-          => new RDFGraph(new List<RDFTriple>(1) {
-              new RDFTriple(URI, RDFVocabulary.XSD.MAX_LENGTH, new RDFTypedLiteral(Convert.ToString(Length, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)) });
+          => new RDFGraph([
+              new RDFTriple(URI, RDFVocabulary.XSD.MAX_LENGTH, new RDFTypedLiteral(Convert.ToString(Length, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)) ]);
 
         /// <summary>
         /// Validates the given literal value against the maxlength facet

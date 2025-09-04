@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// Builds a xone constraint
         /// </summary>
         public RDFXoneConstraint()
-            => XoneShapes = new Dictionary<long, RDFResource>();
+            => XoneShapes = [];
         #endregion
 
         #region Methods
@@ -68,7 +68,7 @@ namespace RDFSharp.Model
             }
 
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
-            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+            List<RDFLiteral> shapeMessages = [.. shape.Messages];
             if (shapeMessages.Count == 0)
                 shapeMessages.Add(new RDFPlainLiteral("Value does not have exactly one of the shapes in sh:xone enumeration"));
 
@@ -78,7 +78,7 @@ namespace RDFSharp.Model
                 int valueNodeConformsCounter = 0;
                 foreach (RDFShape xoneShape in xoneShapes)
                 {
-                    RDFValidationReport xoneShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, xoneShape, new List<RDFPatternMember>(1) { valueNode });
+                    RDFValidationReport xoneShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, xoneShape, [valueNode]);
                     if (xoneShapeReport.Conforms)
                     {
                         valueNodeConformsCounter++;

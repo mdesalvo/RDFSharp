@@ -52,7 +52,7 @@ namespace RDFSharp.Model
         /// Builds a named validation report
         /// </summary>
         internal RDFValidationReport(RDFResource reportName) : base(reportName.ToString())
-            => Results = new List<RDFValidationResult>();
+            => Results = [];
 
         /// <summary>
         /// Builds a blank validation report

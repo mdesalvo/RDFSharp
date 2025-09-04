@@ -49,8 +49,8 @@ namespace RDFSharp.Model
         /// Gives a graph representation of the pattern facet
         /// </summary>
         public override RDFGraph ToRDFGraph()
-            => new RDFGraph(new List<RDFTriple>(1) {
-                new RDFTriple(URI, RDFVocabulary.XSD.PATTERN, new RDFTypedLiteral(Pattern, RDFModelEnums.RDFDatatypes.XSD_STRING)) });
+            => new RDFGraph([
+                new RDFTriple(URI, RDFVocabulary.XSD.PATTERN, new RDFTypedLiteral(Pattern, RDFModelEnums.RDFDatatypes.XSD_STRING)) ]);
 
         /// <summary>
         /// Validates the given literal value against the pattern facet
