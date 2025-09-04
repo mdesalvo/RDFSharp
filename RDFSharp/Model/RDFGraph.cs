@@ -902,8 +902,9 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
                 {
                    MaxAutomaticRedirections = 3,
                    AllowAutoRedirect = true
-                }) { Timeout = TimeSpan.FromMilliseconds(timeoutMilliseconds) })
+                }))
             {
+                httpClient.Timeout = TimeSpan.FromMilliseconds(timeoutMilliseconds);
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/rdf+xml"));
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/turtle"));

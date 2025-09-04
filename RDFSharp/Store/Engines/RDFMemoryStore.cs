@@ -745,8 +745,9 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
                 {
                    MaxAutomaticRedirections = 3,
                    AllowAutoRedirect = true
-                }) { Timeout = TimeSpan.FromMilliseconds(timeoutMilliseconds) })
+                }))
             {
+                httpClient.Timeout = TimeSpan.FromMilliseconds(timeoutMilliseconds);
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/n-quads"));
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/trix"));
