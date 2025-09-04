@@ -56,10 +56,9 @@ namespace RDFSharp.Model
                 shapeMessages.Add(new RDFPlainLiteral($"Must have same values as property <{EqualsPredicate}>"));
 
             #region Evaluation
-            List<RDFPatternMember> predicateNodes = dataGraph.Where(t => t.Subject.Equals(focusNode)
+            List<RDFPatternMember> predicateNodes = [.. dataGraph.Where(t => t.Subject.Equals(focusNode)
                                                                             && t.Predicate.Equals(EqualsPredicate))
-                                                             .Select(x => x.Object)
-                                                             .ToList();
+                                                             .Select(x => x.Object)];
 
             foreach (RDFPatternMember predicateNode in predicateNodes)
                 if (!valueNodes.Any(v => v.Equals(predicateNode)))

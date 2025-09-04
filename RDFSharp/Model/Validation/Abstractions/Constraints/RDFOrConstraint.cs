@@ -59,7 +59,7 @@ namespace RDFSharp.Model
             RDFPropertyShape pShape = shape as RDFPropertyShape;
 
             //Search for given or shapes
-            List<RDFShape> orShapes = new List<RDFShape>(OrShapes.Values.Count);
+            List<RDFShape> orShapes = [];
             foreach (RDFResource orShapeUri in OrShapes.Values)
             {
                 RDFShape orShape = shapesGraph.SelectShape(orShapeUri.ToString());

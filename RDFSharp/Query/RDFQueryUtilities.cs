@@ -267,7 +267,7 @@ namespace RDFSharp.Query
         {
             if (elements?.Count > 0)
             {
-                List<T> results = new List<T>(elements.Count);
+                List<T> results = [];
                 HashSet<long> lookup = [];
                 elements.ForEach(element =>
                 {

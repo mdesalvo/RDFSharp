@@ -211,7 +211,7 @@ namespace RDFSharp.Model
             #region Utilities
             void LookupIndex(HashSet<long> lookup, out List<RDFHashedTriple> result)
             {
-                result = new List<RDFHashedTriple>(lookup.Count);
+                result = [];
                 result.AddRange(lookup.Select(t => graph.Index.Hashes[t]));
             }
             #endregion
@@ -294,10 +294,9 @@ namespace RDFSharp.Model
                     RDFModelEnums.RDFDatatypes targetDatatypeEnum = targetDatatype.ToString().GetEnumFromDatatype();
 
                     //Detect the constraining facets
+                    List<RDFFacet> targetFacets = [];
                     RDFCollection facetsCollection = DeserializeCollectionFromGraph(graph, facetsRepresentative, RDFModelEnums.RDFTripleFlavors.SPO);
-                    RDFResource[] facets = facetsCollection.Items.Cast<RDFResource>().ToArray();
-                    List<RDFFacet> targetFacets = new List<RDFFacet>(facets.Length);
-                    foreach (RDFResource facet in facets)
+                    foreach (RDFResource facet in facetsCollection.Items.Cast<RDFResource>())
                     {
                         //xsd:length
                         if (graph[facet, RDFVocabulary.XSD.LENGTH, null, null].FirstOrDefault()?.Object is RDFTypedLiteral facetLength
@@ -513,7 +512,7 @@ namespace RDFSharp.Model
                 if (!string.IsNullOrEmpty(obj))
                     result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => obj.StartsWith(ns.ToString(), StringComparison.Ordinal)));
             }
-            return result.Distinct().ToList();
+            return [.. result.Distinct()];
         }
         #endregion
 

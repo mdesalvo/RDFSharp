@@ -343,14 +343,14 @@ namespace RDFSharp.Query
             DataTable resultTable = new DataTable();
 
             RDFConstructQueryResult constructResult = new RDFConstructQueryResult();
-            List<RDFQueryMember> evaluableQueryMembers = operation.GetEvaluableQueryMembers().ToList();
+            List<RDFQueryMember> evaluableQueryMembers = [.. operation.GetEvaluableQueryMembers()];
             if (evaluableQueryMembers.Count > 0)
             {
                 //Iterate the evaluable members of the operation
                 EvaluateQueryMembers(evaluableQueryMembers, datasource);
 
                 //Get the result table of the operation
-                resultTable = CombineTables(QueryMemberResultTables.Values.ToList());
+                resultTable = CombineTables([.. QueryMemberResultTables.Values]);
             }
 
             //Fill the templates from the result table

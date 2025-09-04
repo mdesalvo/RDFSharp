@@ -452,7 +452,7 @@ namespace RDFSharp.Store
                     ? new RDFTriple((RDFResource)q.Subject, (RDFResource)q.Predicate, (RDFResource)q.Object)
                     : new RDFTriple((RDFResource)q.Subject, (RDFResource)q.Predicate, (RDFLiteral)q.Object));
             }
-            return graphs.Values.ToList();
+            return [.. graphs.Values];
         }
 
         /// <summary>
@@ -472,7 +472,7 @@ namespace RDFSharp.Store
                 if (!contexts.ContainsKey(q.Context.PatternMemberID))
                     contexts.Add(q.Context.PatternMemberID, q.Context);
             }
-            return contexts.Values.OfType<RDFContext>().ToList();
+            return [.. contexts.Values.OfType<RDFContext>()];
         }
 
         /// <summary>

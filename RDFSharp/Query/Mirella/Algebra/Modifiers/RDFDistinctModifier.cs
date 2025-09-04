@@ -44,9 +44,7 @@ namespace RDFSharp.Query
         /// Applies the modifier on the given datatable
         /// </summary>
         internal override DataTable ApplyModifier(DataTable table)
-            => table.DefaultView.ToTable(true, table.Columns.OfType<DataColumn>()
-                                                            .Select(c => c.ColumnName)
-                                                            .ToArray());
+            => table.DefaultView.ToTable(true, [.. table.Columns.OfType<DataColumn>().Select(c => c.ColumnName)]);
         #endregion
     }
 }

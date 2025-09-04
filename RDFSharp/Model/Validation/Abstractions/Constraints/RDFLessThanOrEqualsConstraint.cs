@@ -56,10 +56,9 @@ namespace RDFSharp.Model
                 shapeMessages.Add(new RDFPlainLiteral($"Must have values less than or equals to values of property <{LessThanOrEqualsPredicate}>"));
 
             #region Evaluation
-            List<RDFPatternMember> predicateNodes = dataGraph.Where(t => t.Subject.Equals(focusNode)
+            List<RDFPatternMember> predicateNodes = [.. dataGraph.Where(t => t.Subject.Equals(focusNode)
                                                                           && t.Predicate.Equals(LessThanOrEqualsPredicate))
-                                                             .Select(x => x.Object)
-                                                             .ToList();
+                                                             .Select(x => x.Object)];
 
             foreach (RDFPatternMember valueNode in valueNodes)
                 foreach (RDFPatternMember predicateNode in predicateNodes)

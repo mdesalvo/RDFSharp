@@ -235,7 +235,7 @@ namespace RDFSharp.Model
                             RDFCollection alternativePathCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph,
                                 alternativePathObject, RDFModelEnums.RDFTripleFlavors.SPO);
                             propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject,
-                                alternativePathCollection.Items.OfType<RDFResource>().ToList(), RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative);
+                                [.. alternativePathCollection.Items.OfType<RDFResource>()], RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative);
 
                             DetectShapeTargets(graph, propertyShape);
                             DetectShapeAttributes(graph, propertyShape);
@@ -251,7 +251,7 @@ namespace RDFSharp.Model
                         RDFCollection sequencePathCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph,
                                 declaredPropertyShapePathObject, RDFModelEnums.RDFTripleFlavors.SPO);
                         propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject,
-                            sequencePathCollection.Items.OfType<RDFResource>().ToList(), RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence);
+                            [.. sequencePathCollection.Items.OfType<RDFResource>()], RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence);
 
                         DetectShapeTargets(graph, propertyShape);
                         DetectShapeAttributes(graph, propertyShape);
@@ -486,7 +486,7 @@ namespace RDFSharp.Model
             foreach (RDFTriple shapeLanguageInConstraint in shapeLanguageInConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
             {
                 RDFCollection shapeLanguageInConstraintCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)shapeLanguageInConstraint.Object, RDFModelEnums.RDFTripleFlavors.SPL);
-                shape.AddConstraint(new RDFLanguageInConstraint(shapeLanguageInConstraintCollection.Select(x => x.ToString()).ToList()));
+                shape.AddConstraint(new RDFLanguageInConstraint([.. shapeLanguageInConstraintCollection.Select(x => x.ToString())]));
             }
 
             //sh:lessThan (accepted occurrences: N)

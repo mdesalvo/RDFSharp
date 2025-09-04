@@ -66,7 +66,7 @@ namespace RDFSharp.Query
             #endregion
 
             #region DISTINCT
-            List<RDFModifier> modifiers = selectQuery.GetModifiers().ToList();
+            List<RDFModifier> modifiers = [.. selectQuery.GetModifiers()];
             foreach (RDFDistinctModifier dm in modifiers.OfType<RDFDistinctModifier>())
                 sb.Append($" {dm}");
             #endregion
@@ -182,7 +182,7 @@ namespace RDFSharp.Query
             #endregion
 
             #region MODIFIERS
-            List<RDFModifier> modifiers = describeQuery.GetModifiers().ToList();
+            List<RDFModifier> modifiers = [.. describeQuery.GetModifiers()];
             // LIMIT/OFFSET
             foreach (RDFLimitModifier lim in modifiers.OfType<RDFLimitModifier>())
             {
@@ -239,7 +239,7 @@ namespace RDFSharp.Query
             #endregion
 
             #region MODIFIERS
-            List<RDFModifier> modifiers = constructQuery.GetModifiers().ToList();
+            List<RDFModifier> modifiers = [.. constructQuery.GetModifiers()];
             // LIMIT/OFFSET
             foreach (RDFLimitModifier lim in modifiers.OfType<RDFLimitModifier>())
             {
@@ -317,7 +317,7 @@ namespace RDFSharp.Query
 
             bool printingUnion = false;
             bool printingMinus = false;
-            List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
+            List<RDFQueryMember> evaluableQueryMembers = [.. query.GetEvaluableQueryMembers()];
             for (int i=0; i<evaluableQueryMembers.Count; i++)
             {
                 RDFQueryMember queryMember = evaluableQueryMembers[i];
@@ -542,7 +542,7 @@ namespace RDFSharp.Query
             int openedBrackets = 0;
             bool printingUnion = false;
             bool printingMinus = false;
-            List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
+            List<RDFPatternGroupMember> evaluablePGMembers = [.. patternGroup.GetEvaluablePatternGroupMembers()];
             for (int i=0; i<evaluablePGMembers.Count; i++)
             {
                 RDFPatternGroupMember pgMember = evaluablePGMembers[i];

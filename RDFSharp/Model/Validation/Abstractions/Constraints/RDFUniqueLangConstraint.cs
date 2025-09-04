@@ -58,9 +58,7 @@ namespace RDFSharp.Model
             if (UniqueLang)
             {
                 HashSet<string> reportedLangs = [];
-                List<RDFPlainLiteral> langlitValueNodes = valueNodes.OfType<RDFPlainLiteral>()
-                                                                    .Where(vn => vn.HasLanguage())
-                                                                    .ToList();
+                List<RDFPlainLiteral> langlitValueNodes = [.. valueNodes.OfType<RDFPlainLiteral>().Where(vn => vn.HasLanguage())];
 
                 foreach (RDFPlainLiteral innerlanglitValueNode in langlitValueNodes)
                     foreach (RDFPlainLiteral outerlanglitValueNode in langlitValueNodes)

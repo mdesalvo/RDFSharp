@@ -86,14 +86,14 @@ namespace RDFSharp.Query
         {
             DataTable queryResultTable = new DataTable();
 
-            List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
+            List<RDFQueryMember> evaluableQueryMembers = [.. query.GetEvaluableQueryMembers()];
             if (evaluableQueryMembers.Count > 0)
             {
                 //Evaluate the active members of the query
                 EvaluateQueryMembers(evaluableQueryMembers, datasource);
 
                 //Combine intermediate results into final table
-                queryResultTable = CombineTables(QueryMemberResultTables.Values.ToList());
+                queryResultTable = CombineTables([.. QueryMemberResultTables.Values]);
             }
 
             return queryResultTable;
@@ -208,10 +208,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal void EvaluatePatternGroup(RDFPatternGroup patternGroup, RDFDataSource dataSource)
         {
-            List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers()
-                                                                         .Distinct()
-                                                                         .ToList();
-            PatternGroupMemberResultTables[patternGroup.QueryMemberID] = new List<DataTable>(evaluablePGMembers.Count);
+            List<RDFPatternGroupMember> evaluablePGMembers = [.. patternGroup.GetEvaluablePatternGroupMembers().Distinct()];
+            PatternGroupMemberResultTables[patternGroup.QueryMemberID] = [];
 
             //**Service** evaluation => send it querified to SPARQL endpoint
             if (patternGroup.EvaluateAsService.HasValue)
@@ -313,7 +311,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal void FinalizePatternGroup(RDFPatternGroup patternGroup)
         {
-            List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
+            List<RDFPatternGroupMember> evaluablePGMembers = [.. patternGroup.GetEvaluablePatternGroupMembers()];
             if (evaluablePGMembers.Count > 0)
             {
                 //Populate patternGroup result table
@@ -339,8 +337,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal void ApplyFilters(RDFPatternGroup patternGroup)
         {
-            List<RDFPatternGroupMember> evaluablePatternGroupMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
-            List<RDFFilter> filters = patternGroup.GetFilters().ToList();
+            List<RDFPatternGroupMember> evaluablePatternGroupMembers = [.. patternGroup.GetEvaluablePatternGroupMembers()];
+            List<RDFFilter> filters = [.. patternGroup.GetFilters()];
             if (evaluablePatternGroupMembers.Count > 0 && filters.Count > 0)
             {
                 DataTable filteredTable = QueryMemberResultTables[patternGroup.QueryMemberID].Clone();
@@ -378,7 +376,7 @@ namespace RDFSharp.Query
         internal DataTable ApplyModifiers(RDFQuery query, DataTable table)
         {
             #region GROUPBY/PROJECTION
-            List<RDFModifier> modifiers = query.GetModifiers().ToList();
+            List<RDFModifier> modifiers = [.. query.GetModifiers()];
             if (query is RDFSelectQuery selectQuery)
             {
                 #region GROUPBY
@@ -944,7 +942,7 @@ namespace RDFSharp.Query
                     matchingQuadruples = store.SelectQuadruples(null, null, (RDFResource)pattern.Predicate, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
                     //In case of same C and S variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Subject))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Subject)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Context.Equals(mq.Subject))]);
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CS, patternResultTable);
                     break;
 
@@ -952,7 +950,7 @@ namespace RDFSharp.Query
                     matchingQuadruples = store.SelectQuadruples(null, (RDFResource)pattern.Subject, null, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
                     //In case of same C and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Predicate))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Predicate)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Context.Equals(mq.Predicate))]);
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CP, patternResultTable);
                     break;
 
@@ -960,7 +958,7 @@ namespace RDFSharp.Query
                     matchingQuadruples = store.SelectQuadruples(null, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, null, null);
                     //In case of same C and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Context.Equals(mq.Object))]);
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CO, patternResultTable);
                     break;
 
@@ -968,7 +966,7 @@ namespace RDFSharp.Query
                     matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, null, null, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
                     //In case of same S and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Predicate))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Predicate)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Predicate))]);
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.SP, patternResultTable);
                     break;
 
@@ -976,7 +974,7 @@ namespace RDFSharp.Query
                     matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, null, (RDFResource)pattern.Predicate, null, null);
                     //In case of same S and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Object))]);
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.SO, patternResultTable);
                     break;
 
@@ -984,7 +982,7 @@ namespace RDFSharp.Query
                     matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, (RDFResource)pattern.Subject, null, null, null);
                     //In case of same P and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Predicate.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Predicate.Equals(mq.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Predicate.Equals(mq.Object))]);
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.PO, patternResultTable);
                     break;
 
@@ -992,13 +990,13 @@ namespace RDFSharp.Query
                     matchingQuadruples = store.SelectQuadruples(null, null, null, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
                     //In case of same C and S variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Subject))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Subject)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Context.Equals(mq.Subject))]);
                     //In case of same C and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Predicate))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Predicate)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Context.Equals(mq.Predicate))]);
                     //In case of same S and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Predicate))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Predicate)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Predicate))]);
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CSP, patternResultTable);
                     break;
 
@@ -1006,13 +1004,13 @@ namespace RDFSharp.Query
                     matchingQuadruples = store.SelectQuadruples(null, null, (RDFResource)pattern.Predicate, null, null);
                     //In case of same C and S variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Subject))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Subject)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Context.Equals(mq.Subject))]);
                     //In case of same C and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Context.Equals(mq.Object))]);
                     //In case of same S and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Object))]);
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CSO, patternResultTable);
                     break;
 
@@ -1020,13 +1018,13 @@ namespace RDFSharp.Query
                     matchingQuadruples = store.SelectQuadruples(null, (RDFResource)pattern.Subject, null, null, null);
                     //In case of same C and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Predicate))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Predicate)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Context.Equals(mq.Predicate))]);
                     //In case of same C and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Context.Equals(mq.Object))]);
                     //In case of same P and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Predicate.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Predicate.Equals(mq.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Predicate.Equals(mq.Object))]);
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CPO, patternResultTable);
                     break;
 
@@ -1034,13 +1032,13 @@ namespace RDFSharp.Query
                     matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, null, null, null, null);
                     //In case of same S and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Predicate))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Predicate)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Predicate))]);
                     //In case of same S and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Object))]);
                     //In case of same P and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Predicate.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Predicate.Equals(mq.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Predicate.Equals(mq.Object))]);
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.SPO, patternResultTable);
                     break;
 
@@ -1048,22 +1046,22 @@ namespace RDFSharp.Query
                     matchingQuadruples = store.SelectQuadruples(null, null, null, null, null);
                     //In case of same C and S variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Subject))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Subject)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Context.Equals(mq.Subject))]);
                     //In case of same C and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Predicate))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Predicate)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Context.Equals(mq.Predicate))]);
                     //In case of same C and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Context.Equals(mq.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Context.Equals(mq.Object))]);
                     //In case of same S and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Predicate))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Predicate)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Predicate))]);
                     //In case of same S and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Object))]);
                     //In case of same P and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Predicate.Equals(pattern.Object))
-                        matchingQuadruples = new RDFMemoryStore(matchingQuadruples.Where(mq => mq.Predicate.Equals(mq.Object)).ToList());
+                        matchingQuadruples = new RDFMemoryStore([.. matchingQuadruples.Where(mq => mq.Predicate.Equals(mq.Object))]);
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CSPO, patternResultTable);
                     break;
             }
@@ -1119,7 +1117,7 @@ namespace RDFSharp.Query
         {
             //Translate property path into equivalent list of patterns
             List<RDFPattern> patternList = propertyPath.GetPatternList();
-            List<DataTable> patternTables = new List<DataTable>(patternList.Count);
+            List<DataTable> patternTables = [];
 
             //Evaluate produced list of patterns
             foreach (RDFPattern pattern in patternList)
@@ -1158,7 +1156,7 @@ namespace RDFSharp.Query
         internal static RDFQueryResult ApplyRawToSPARQLEndpoint(string queryType, string query, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
         {
             #region Utilities
-            void AdjustVariableColumnNames(DataTable qrTable)
+            static void AdjustVariableColumnNames(DataTable qrTable)
             {
                 //Eventually adjust column names (should start with "?")
                 int columnsCount = qrTable.Columns.Count;
@@ -1526,19 +1524,17 @@ namespace RDFSharp.Query
             DataTable joinTable = new DataTable();
 
             //Determine common columns
-            DataColumn[] leftColumns = leftTable.Columns.OfType<DataColumn>().ToArray();
-            DataColumn[] rightColumns = rightTable.Columns.OfType<DataColumn>().ToArray();
-            DataColumn[] commonColumns = leftColumns.Intersect(rightColumns, dtComparer)
-                                                    .Select(c => new DataColumn(c.ColumnName, c.DataType))
-                                                    .ToArray();
+            DataColumn[] leftColumns = [.. leftTable.Columns.OfType<DataColumn>()];
+            DataColumn[] rightColumns = [.. rightTable.Columns.OfType<DataColumn>()];
+            DataColumn[] commonColumns = [.. leftColumns.Intersect(rightColumns, dtComparer)
+                                                        .Select(c => new DataColumn(c.ColumnName, c.DataType))];
 
             //PRODUCT-JOIN
             if (commonColumns.Length == 0)
             {
                 //Create the structure of the product table
-                joinTable.Columns.AddRange(leftColumns.Union(rightColumns, dtComparer)
-                                                      .Select(c => new DataColumn(c.ColumnName, c.DataType))
-                                                      .ToArray());
+                joinTable.Columns.AddRange([.. leftColumns.Union(rightColumns, dtComparer)
+                                                          .Select(c => new DataColumn(c.ColumnName, c.DataType))]);
 
                 //Loop left table
                 joinTable.BeginLoadData();
@@ -1579,8 +1575,7 @@ namespace RDFSharp.Query
                     dataSet.Relations.Add(dataRelation);
 
                     //Create the structure of the join table
-                    int columnsCount = dataSet.Tables[0].Columns.Count + dataSet.Tables[1].Columns.Count;
-                    List<string> duplicateColumns = new List<string>(columnsCount);
+                    List<string> duplicateColumns = [];
                     for (int i = 0; i < dataSet.Tables[0].Columns.Count; i++)
                     {
                         DataColumn column = dataSet.Tables[0].Columns[i];
@@ -1634,30 +1629,27 @@ namespace RDFSharp.Query
         internal static DataTable OuterJoinTables(DataTable leftTable, DataTable rightTable)
         {
             #region Utilities
-            bool CheckJoin(DataRow leftRow, DataRow rightRow, string commonColumn)
+            static bool CheckOuterJoin(DataRow leftRow, DataRow rightRow, string commonColumn)
                 => leftRow.IsNull(commonColumn)
                     || rightRow.IsNull(commonColumn)
                     || string.Equals(leftRow[commonColumn]?.ToString(), rightRow[commonColumn]?.ToString(), StringComparison.Ordinal);
             #endregion
 
-            DataTable joinTable = new DataTable();
-
             //Determine common columns
             bool rightIsOptionalTable = rightTable.ExtendedProperties.ContainsKey(IsOptional)
                                           && rightTable.ExtendedProperties[IsOptional].Equals(true);
-            DataColumn[] leftColumns = leftTable.Columns.OfType<DataColumn>().ToArray();
-            DataColumn[] rightColumns = rightTable.Columns.OfType<DataColumn>().ToArray();
-            DataColumn[] commonColumns = leftColumns.Intersect(rightColumns, dtComparer)
-                                                    .Select(c => new DataColumn(c.ColumnName, c.DataType))
-                                                    .ToArray();
+            DataColumn[] leftColumns = [.. leftTable.Columns.OfType<DataColumn>()];
+            DataColumn[] rightColumns = [.. rightTable.Columns.OfType<DataColumn>()];
+            DataColumn[] commonColumns = [.. leftColumns.Intersect(rightColumns, dtComparer)
+                                                        .Select(c => new DataColumn(c.ColumnName, c.DataType))];
 
             //Create structure of outer-join table
-            joinTable.Columns.AddRange(leftColumns.Union(rightColumns.Except(commonColumns), dtComparer)
-                                                  .Select(c => new DataColumn(c.ColumnName, c.DataType))
-                                                  .ToArray());
+            DataTable joinTable = new DataTable();
+            joinTable.Columns.AddRange([.. leftColumns.Union(rightColumns.Except(commonColumns), dtComparer)
+                                                      .Select(c => new DataColumn(c.ColumnName, c.DataType))]);
 
             //Calculate outer-join column's attribution
-            Dictionary<string, (bool,string)> joinColumnsAttribution = new Dictionary<string, (bool,string)>(joinTable.Columns.Count);
+            Dictionary<string, (bool,string)> joinColumnsAttribution = [];
             foreach (DataColumn joinColumn in joinTable.Columns)
             {
                 joinColumnsAttribution.Add(joinColumn.ColumnName,
@@ -1671,8 +1663,8 @@ namespace RDFSharp.Query
             {
                 //Leverage a relation between left row and right table based on common columns.
                 //This helps at slightly reducing O(N^2) complexity to O(N*K) where K << N
-                List<DataRow> relatedRows = commonColumns.Aggregate(rightTable.AsEnumerable(),
-                    (current, commonColumn) => current.Where(relatedRow => CheckJoin(leftRow, relatedRow, commonColumn.ColumnName))).ToList();
+                List<DataRow> relatedRows = [.. commonColumns.Aggregate(rightTable.AsEnumerable(),
+                    (current, commonColumn) => current.Where(relatedRow => CheckOuterJoin(leftRow, relatedRow, commonColumn.ColumnName)))];
 
                 //Relation HAS found data => proceed with outer-join
                 if (relatedRows.Count > 0)
@@ -1749,32 +1741,28 @@ namespace RDFSharp.Query
         internal static DataTable DiffJoinTables(DataTable leftTable, DataTable rightTable)
         {
             #region Utilities
-            bool CheckJoin(DataRow leftRow, DataRow rightRow, string commonColumn)
+            static bool CheckDiffJoin(DataRow leftRow, DataRow rightRow, string commonColumn)
                 => leftRow.IsNull(commonColumn)
                     || rightRow.IsNull(commonColumn)
                     || string.Equals(leftRow[commonColumn]?.ToString(), rightRow[commonColumn]?.ToString(), StringComparison.Ordinal);
             #endregion
 
-            DataTable diffTable = new DataTable();
-
             //Determine common columns
-            DataColumn[] leftColumns = leftTable.Columns.OfType<DataColumn>().ToArray();
-            DataColumn[] rightColumns = rightTable.Columns.OfType<DataColumn>().ToArray();
-            DataColumn[] commonColumns = leftColumns.Intersect(rightColumns, dtComparer)
-                                                    .Select(c => new DataColumn(c.ColumnName, c.DataType))
-                                                    .ToArray();
-            int commonColumnsCount = commonColumns.Length;
+            DataColumn[] leftColumns = [.. leftTable.Columns.OfType<DataColumn>()];
+            DataColumn[] rightColumns = [.. rightTable.Columns.OfType<DataColumn>()];
+            DataColumn[] commonColumns = [.. leftColumns.Intersect(rightColumns, dtComparer)
+                                                        .Select(c => new DataColumn(c.ColumnName, c.DataType))];
 
             //Create structure of diff table
-            diffTable.Columns.AddRange(leftColumns.Select(c => new DataColumn(c.ColumnName, c.DataType))
-                                                  .ToArray());
+            DataTable diffTable = new DataTable();
+            diffTable.Columns.AddRange([.. leftColumns.Select(c => new DataColumn(c.ColumnName, c.DataType))]);
 
             //Loop left table
             diffTable.BeginLoadData();
             foreach (DataRow leftRow in leftTable.Rows)
             {
                 //In case of no common columns, just take left row
-                if (commonColumnsCount == 0)
+                if (commonColumns.Length == 0)
                 {
                     DataRow diffRow = diffTable.NewRow();
                     diffRow.ItemArray = leftRow.ItemArray;
@@ -1784,8 +1772,8 @@ namespace RDFSharp.Query
 
                 //Leverage a relation between left row and right table based on common columns.
                 //This helps at slightly reducing O(N^2) complexity to O(N*K) where K << N
-                List<DataRow> relatedRows = commonColumns.Aggregate(rightTable.AsEnumerable(),
-                    (current, commonColumn) => current.Where(relatedRow => CheckJoin(leftRow, relatedRow, commonColumn.ColumnName))).ToList();
+                List<DataRow> relatedRows = [.. commonColumns.Aggregate(rightTable.AsEnumerable(),
+                    (current, commonColumn) => current.Where(relatedRow => CheckDiffJoin(leftRow, relatedRow, commonColumn.ColumnName)))];
 
                 //Take left row only if it HASN'T right matches
                 if (relatedRows.Count == 0)
@@ -1930,7 +1918,7 @@ namespace RDFSharp.Query
             ProjectExpressions(query, table);
 
             //Execute configured sort modifiers
-            RDFOrderByModifier[] orderByModifiers = query.GetModifiers().OfType<RDFOrderByModifier>().ToArray();
+            RDFOrderByModifier[] orderByModifiers = [.. query.GetModifiers().OfType<RDFOrderByModifier>()];
             if (orderByModifiers.Length > 0)
             {
                 table = orderByModifiers.Aggregate(table, (current, modifier) => modifier.ApplyModifier(current));

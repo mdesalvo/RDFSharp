@@ -136,7 +136,7 @@ namespace RDFSharp.Query
             List<RDFNamespace> result = [.. Prefixes];
             foreach (RDFQuery subQuery in GetSubQueries())
                 result.AddRange(subQuery.GetPrefixes());
-            return result.Distinct().ToList();
+            return [.. result.Distinct()];
         }
 
         /// <summary>

@@ -771,7 +771,7 @@ namespace RDFSharp.Model
                     throw new RDFModelException($"found '{pred}' predicate which cannot be abbreviated to a valid QName.");
                 }
             }
-            return result.ToList();
+            return [.. result];
         }
 
         /// <summary>

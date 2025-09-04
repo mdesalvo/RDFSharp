@@ -59,7 +59,7 @@ namespace RDFSharp.Model
             RDFPropertyShape pShape = shape as RDFPropertyShape;
 
             //Search for given xone shapes
-            List<RDFShape> xoneShapes = new List<RDFShape>(XoneShapes.Count);
+            List<RDFShape> xoneShapes = [];
             foreach (RDFResource xoneShapeUri in XoneShapes.Values)
             {
                 RDFShape xoneShape = shapesGraph.SelectShape(xoneShapeUri.ToString());

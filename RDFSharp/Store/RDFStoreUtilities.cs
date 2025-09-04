@@ -96,7 +96,7 @@ namespace RDFSharp.Store
             #region Utilities
             void LookupIndex(HashSet<long> lookup, out List<RDFHashedQuadruple> result)
             {
-                result = new List<RDFHashedQuadruple>(lookup.Count);
+                result = [];
                 result.AddRange(lookup.Select(q => store.Index.Hashes[q]));
             }
             #endregion

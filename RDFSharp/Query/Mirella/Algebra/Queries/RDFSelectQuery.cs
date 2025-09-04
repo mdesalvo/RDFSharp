@@ -94,7 +94,7 @@ namespace RDFSharp.Query
         {
             if (modifier != null)
             {
-                List<RDFModifier> modifiers = GetModifiers().ToList();
+                List<RDFModifier> modifiers = [.. GetModifiers()];
 
                 switch (modifier)
                 {
