@@ -330,23 +330,25 @@ namespace RDFSharp.Query
         /// Projected system used when coordinates of geometries span across multiple UTM zones
         /// </summary>
         internal static readonly CoordinateSystem LambertAzimutalWGS84 = new CoordinateSystemFactory().CreateFromWkt(
-@"PROJCS[""WGS84 / Lambert Azim Mozambique"",
-    GEOGCS[""WGS 84"",
-        DATUM[""WGS_1984"",
-            SPHEROID[""WGS_1984"",6378137.0,298.257223563]],
-        PRIMEM[""Greenwich"",0.0],
-        UNIT[""degree"",0.017453292519943295],
-        AXIS[""Longitude"",EAST],
-        AXIS[""Latitude"",NORTH]],
-    PROJECTION[""Lambert_Azimuthal_Equal_Area""],
-    PARAMETER[""latitude_of_center"",5.0],
-    PARAMETER[""longitude_of_center"",20.0],
-    PARAMETER[""false_easting"",0.0],
-    PARAMETER[""false_northing"",0.0],
-    UNIT[""m"",1.0],
-    AXIS[""x"",EAST],
-    AXIS[""y"",NORTH],
-    AUTHORITY[""EPSG"",""42106""]]");
+"""
+PROJCS["WGS84 / Lambert Azim Mozambique",
+    GEOGCS["WGS 84",
+        DATUM["WGS_1984",
+            SPHEROID["WGS_1984",6378137.0,298.257223563]],
+        PRIMEM["Greenwich",0.0],
+        UNIT["degree",0.017453292519943295],
+        AXIS["Longitude",EAST],
+        AXIS["Latitude",NORTH]],
+    PROJECTION["Lambert_Azimuthal_Equal_Area"],
+    PARAMETER["latitude_of_center",5.0],
+    PARAMETER["longitude_of_center",20.0],
+    PARAMETER["false_easting",0.0],
+    PARAMETER["false_northing",0.0],
+    UNIT["m",1.0],
+    AXIS["x",EAST],
+    AXIS["y",NORTH],
+    AUTHORITY["EPSG","42106"]]
+""");
         #endregion
 
         #region Methods

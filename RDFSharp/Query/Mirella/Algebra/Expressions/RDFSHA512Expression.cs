@@ -99,14 +99,11 @@ namespace RDFSharp.Query
                 if (leftArgumentPMember == null)
                     return null;
 
-                using (SHA512CryptoServiceProvider SHA512Encryptor = new SHA512CryptoServiceProvider())
-                {
-                    string leftArgumentPMemberString = leftArgumentPMember.ToString();
-                    StringBuilder sb = new StringBuilder(leftArgumentPMemberString.Length);
-                    foreach (byte hashByte in SHA512Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(leftArgumentPMemberString)))
-                        sb.Append(hashByte.ToString("x2"));
-                    expressionResult = new RDFPlainLiteral(sb.ToString());
-                }
+                string leftArgumentPMemberString = leftArgumentPMember.ToString();
+                StringBuilder sb = new StringBuilder(leftArgumentPMemberString.Length);
+                foreach (byte hashByte in SHA512.HashData(RDFModelUtilities.UTF8_NoBOM.GetBytes(leftArgumentPMemberString)))
+                    sb.Append(hashByte.ToString("x2"));
+                expressionResult = new RDFPlainLiteral(sb.ToString());
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }

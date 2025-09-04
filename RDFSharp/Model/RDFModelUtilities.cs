@@ -45,8 +45,7 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot create hash because given \"input\" string parameter is null.");
             #endregion
 
-            using (MD5CryptoServiceProvider md5Encryptor = new MD5CryptoServiceProvider())
-                return BitConverter.ToInt64(md5Encryptor.ComputeHash(UTF8_NoBOM.GetBytes(input)), 0);
+            return BitConverter.ToInt64(MD5.HashData(UTF8_NoBOM.GetBytes(input)), 0);
         }
         #endregion
 
