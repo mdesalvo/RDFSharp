@@ -112,5 +112,5 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFExpressionArgument represents an argument given to an expression
     /// </summary>
-    public class RDFExpressionArgument { }
+    public class RDFExpressionArgument;
 }

@@ -150,5 +150,5 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFQueryResult is the foundation class for modeling SPARQL query results
     /// </summary>
-    public class RDFQueryResult {}
+    public class RDFQueryResult;
 }
