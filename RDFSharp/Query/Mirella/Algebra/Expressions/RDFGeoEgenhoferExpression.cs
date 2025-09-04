@@ -156,7 +156,7 @@ public sealed class RDFGeoEgenhoferExpression : RDFGeoExpression
             RDFQueryEnums.RDFGeoEgenhoferRelations.Inside => RDFVocabulary.GEOSPARQL.GEOF.EH_INSIDE,
             RDFQueryEnums.RDFGeoEgenhoferRelations.Meet => RDFVocabulary.GEOSPARQL.GEOF.EH_MEET,
             RDFQueryEnums.RDFGeoEgenhoferRelations.Overlap => RDFVocabulary.GEOSPARQL.GEOF.EH_OVERLAP,
-            _ => null,
+            _ => null
         };
     }
     #endregion

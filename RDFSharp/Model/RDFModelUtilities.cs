@@ -39,14 +39,8 @@ public static class RDFModelUtilities
     /// </summary>
     /// <exception cref="RDFModelException"></exception>
     public static long CreateHash(string input)
-    {
-        #region Guards
-        if (input == null)
-            throw new RDFModelException("Cannot create hash because given \"input\" string parameter is null.");
-        #endregion
-
-        return BitConverter.ToInt64(MD5.HashData(UTF8_NoBOM.GetBytes(input)), 0);
-    }
+        => input == null ? throw new RDFModelException("Cannot create hash because given \"input\" string parameter is null.") 
+                         : BitConverter.ToInt64(MD5.HashData(UTF8_NoBOM.GetBytes(input)), 0);
     #endregion
 
     #region Strings
@@ -262,7 +256,7 @@ public static class RDFModelUtilities
                 "PL" => [.. P.Intersect(L)],
                 "SPO" => [.. S.Intersect(P).Intersect(O)],
                 "SPL" => [.. S.Intersect(P).Intersect(L)],
-                _ => [.. graph.Index.Hashes.Values],
+                _ => [.. graph.Index.Hashes.Values]
             };
 
             //Decompress hashed triples

@@ -64,7 +64,7 @@ public sealed class RDFDatatypeConstraint : RDFConstraint
             switch (valueNode)
             {
                 //Resource
-                case RDFResource _:
+                case RDFResource:
                     report.AddResult(new RDFValidationResult(shape,
                         RDFVocabulary.SHACL.DATATYPE_CONSTRAINT_COMPONENT,
                         focusNode,

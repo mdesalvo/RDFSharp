@@ -172,10 +172,13 @@ public sealed class RDFGroupByModifier : RDFModifier
                 .Select(ag => new RDFComparisonExpression(
                     ag.HavingClause.Item2,
                     ag.ProjectionVariable,
-                    ag.HavingClause.Item3 is RDFResource havingRes ? new RDFConstantExpression(havingRes)
-                    : ag.HavingClause.Item3 is RDFLiteral havingLit ?  new RDFConstantExpression(havingLit)
-                    : ag.HavingClause.Item3 is RDFVariable havingVar ? new RDFVariableExpression(havingVar)
-                    : null as RDFExpression))];
+                    ag.HavingClause.Item3 switch
+                    {
+                        RDFResource havingRes => new RDFConstantExpression(havingRes),
+                        RDFLiteral havingLit => new RDFConstantExpression(havingLit),
+                        RDFVariable havingVar => new RDFVariableExpression(havingVar),
+                        _ => null
+                    }))];
 
             #region ExecuteFilters
             foreach (DataRow resultRow in resultTable.Rows)

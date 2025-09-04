@@ -112,18 +112,18 @@ public sealed class RDFContainsExpression : RDFExpression
             //Transform left argument result into a plain literal
             leftArgumentPMember = leftArgumentPMember switch
             {
-                RDFResource _ => new RDFPlainLiteral(leftArgumentPMember.ToString()),
+                RDFResource => new RDFPlainLiteral(leftArgumentPMember.ToString()),
                 RDFPlainLiteral plLeftArgumentPMember => new RDFPlainLiteral(plLeftArgumentPMember.Value),
                 RDFTypedLiteral tlLeftArgumentPMember when tlLeftArgumentPMember.HasStringDatatype() => new RDFPlainLiteral(tlLeftArgumentPMember.Value),
-                _ => null,//binding error => cleanup
+                _ => null //binding error => cleanup
             };
             //Transform right argument result into a plain literal
             rightArgumentPMember = rightArgumentPMember switch
             {
-                RDFResource _ => new RDFPlainLiteral(rightArgumentPMember.ToString()),
+                RDFResource => new RDFPlainLiteral(rightArgumentPMember.ToString()),
                 RDFPlainLiteral plRightArgumentPMember => new RDFPlainLiteral(plRightArgumentPMember.Value),
                 RDFTypedLiteral tlRightArgumentPMember when tlRightArgumentPMember.HasStringDatatype() => new RDFPlainLiteral(tlRightArgumentPMember.Value),
-                _ => null,//binding error => cleanup
+                _ => null //binding error => cleanup
             };
             if (leftArgumentPMember != null && rightArgumentPMember != null)
                 expressionResult = leftArgumentPMember.ToString().Contains(rightArgumentPMember.ToString()) ? RDFTypedLiteral.True : RDFTypedLiteral.False;

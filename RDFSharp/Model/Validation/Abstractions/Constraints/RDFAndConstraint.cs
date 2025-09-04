@@ -45,8 +45,8 @@ public sealed class RDFAndConstraint : RDFConstraint
     /// </summary>
     public RDFAndConstraint AddShape(RDFResource shapeUri)
     {
-        if (shapeUri != null && !AndShapes.ContainsKey(shapeUri.PatternMemberID))
-            AndShapes.Add(shapeUri.PatternMemberID, shapeUri);
+        if (shapeUri != null)
+            AndShapes.TryAdd(shapeUri.PatternMemberID, shapeUri);
         return this;
     }
 

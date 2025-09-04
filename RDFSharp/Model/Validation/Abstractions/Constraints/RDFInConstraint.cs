@@ -54,10 +54,9 @@ public sealed class RDFInConstraint : RDFConstraint
     /// </summary>
     public RDFInConstraint AddValue(RDFResource resource)
     {
-        if (ItemType == RDFModelEnums.RDFItemTypes.Resource
-            && resource != null && !InValues.ContainsKey(resource.PatternMemberID))
+        if (ItemType == RDFModelEnums.RDFItemTypes.Resource && resource != null)
         {
-            InValues.Add(resource.PatternMemberID, resource);
+            InValues.TryAdd(resource.PatternMemberID, resource);
         }
         return this;
     }
@@ -67,10 +66,9 @@ public sealed class RDFInConstraint : RDFConstraint
     /// </summary>
     public RDFInConstraint AddValue(RDFLiteral literal)
     {
-        if (ItemType == RDFModelEnums.RDFItemTypes.Literal
-            && literal != null && !InValues.ContainsKey(literal.PatternMemberID))
+        if (ItemType == RDFModelEnums.RDFItemTypes.Literal && literal != null)
         {
-            InValues.Add(literal.PatternMemberID, literal);
+            InValues.TryAdd(literal.PatternMemberID, literal);
         }
         return this;
     }

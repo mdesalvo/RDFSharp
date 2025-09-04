@@ -133,7 +133,6 @@ internal static class RDFNQuads
     {
         RDFMemoryStore result = new RDFMemoryStore();
         long nquadIndex = 0;
-        string nquad;
         string[] tokens = new string[4];
         Dictionary<string, long> hashContext = [];
         RDFContext defaultContext = new RDFContext();
@@ -143,7 +142,7 @@ internal static class RDFNQuads
             #region deserialize
             using (StreamReader sr = new StreamReader(inputStream, Encoding.ASCII))
             {
-                while ((nquad = sr.ReadLine()) != null)
+                while (sr.ReadLine() is { } nquad)
                 {
                     nquadIndex++;
 

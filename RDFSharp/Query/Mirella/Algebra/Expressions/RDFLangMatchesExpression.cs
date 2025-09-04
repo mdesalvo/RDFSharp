@@ -148,7 +148,7 @@ public sealed class RDFLangMatchesExpression : RDFExpression
                         ? RDFTypedLiteral.True : RDFTypedLiteral.False,
                     //GIVEN language is acceptable in the evaluating left argument
                     _ => Regex.IsMatch(leftArgPLitString, $"@{rightArgPLit.Value}{RDFRegex.LangTagSubMask}$", RegexOptions.IgnoreCase)
-                        ? RDFTypedLiteral.True : RDFTypedLiteral.False,
+                        ? RDFTypedLiteral.True : RDFTypedLiteral.False
                 };
             }
             #endregion

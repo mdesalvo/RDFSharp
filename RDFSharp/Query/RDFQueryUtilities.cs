@@ -91,11 +91,11 @@ public static class RDFQueryUtilities
 
         switch (left)
         {
-            case RDFResource _:
-            case RDFContext _:
+            case RDFResource:
+            case RDFContext:
             {
                 //RESOURCE/CONTEXT VS RESOURCE/CONTEXT/PLAINLITERAL
-                if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
+                if (right is RDFResource or RDFContext or RDFPlainLiteral)
                     return string.CompareOrdinal(left.ToString(), right.ToString());
 
                 //RESOURCE/CONTEXT VS TYPEDLITERAL
@@ -105,17 +105,17 @@ public static class RDFQueryUtilities
                 return -99; //Type Error
             }
             //PLAINLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
-            case RDFPlainLiteral _ when right is RDFResource || right is RDFContext || right is RDFPlainLiteral:
+            case RDFPlainLiteral when right is RDFResource or RDFContext or RDFPlainLiteral:
                 return string.CompareOrdinal(left.ToString(), right.ToString());
             //PLAINLITERAL VS TYPEDLITERAL
-            case RDFPlainLiteral _ when ((RDFTypedLiteral)right).HasStringDatatype():
+            case RDFPlainLiteral when ((RDFTypedLiteral)right).HasStringDatatype():
                 return string.CompareOrdinal(left.ToString(), ((RDFTypedLiteral)right).Value);
-            case RDFPlainLiteral _:
+            case RDFPlainLiteral:
                 return -99; //Type Error
             default:
             {
                 //TYPEDLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
-                if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
+                if (right is RDFResource or RDFContext or RDFPlainLiteral)
                 {
                     if (((RDFTypedLiteral)left).HasStringDatatype())
                         return string.CompareOrdinal(((RDFTypedLiteral)left).Value, right.ToString());

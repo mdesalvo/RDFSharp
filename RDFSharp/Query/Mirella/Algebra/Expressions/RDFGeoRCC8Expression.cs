@@ -156,7 +156,7 @@ public sealed class RDFGeoRCC8Expression : RDFGeoExpression
             RDFQueryEnums.RDFGeoRCC8Relations.RCC8PO => RDFVocabulary.GEOSPARQL.GEOF.RCC8PO,
             RDFQueryEnums.RDFGeoRCC8Relations.RCC8TPP => RDFVocabulary.GEOSPARQL.GEOF.RCC8TPP,
             RDFQueryEnums.RDFGeoRCC8Relations.RCC8TPPI => RDFVocabulary.GEOSPARQL.GEOF.RCC8TPPI,
-            _ => null,
+            _ => null
         };
     }
     #endregion

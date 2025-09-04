@@ -109,16 +109,13 @@ public sealed class RDFStrDtExpression : RDFExpression
             #endregion
 
             #region Calculate Result
-            switch (leftArgumentPMember)
+            leftArgumentPMember = leftArgumentPMember switch
             {
                 //Transform left argument result into a plain literal
-                case RDFLiteral leftArgumentPMemberLiteral:
-                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberLiteral.Value);
-                    break;
-                case RDFResource leftArgumentPMemberResource:
-                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberResource.ToString());
-                    break;
-            }
+                RDFLiteral leftArgumentPMemberLiteral => new RDFPlainLiteral(leftArgumentPMemberLiteral.Value),
+                RDFResource leftArgumentPMemberResource => new RDFPlainLiteral(leftArgumentPMemberResource.ToString()),
+                _ => leftArgumentPMember
+            };
 
             //We can proceed only if the given datatype is an IRI and doesn't belong
             //to the ones explicitly involved in the creation of plain literals

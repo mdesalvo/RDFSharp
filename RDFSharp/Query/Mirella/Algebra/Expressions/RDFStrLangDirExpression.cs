@@ -126,17 +126,20 @@ public sealed class RDFStrLangDirExpression : RDFExpression
             if (rightArgumentPMember is RDFPlainLiteral rightArgumentPMemberLiteral
                 && RDFRegex.LangTagNoDirRegex().IsMatch(rightArgumentPMemberLiteral.Value))
             {
-                switch (leftArgumentPMember)
+                expressionResult = leftArgumentPMember switch
                 {
                     //And a plain literal without language
-                    case RDFPlainLiteral leftArgumentPMemberPLit when !leftArgumentPMemberPLit.HasLanguage():
-                        expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLit.Value, string.Concat(rightArgumentPMemberLiteral.Value, Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "--ltr" : "--rtl"));
-                        break;
+                    RDFPlainLiteral leftArgumentPMemberPLit when !leftArgumentPMemberPLit.HasLanguage() => new
+                        RDFPlainLiteral(leftArgumentPMemberPLit.Value,
+                            string.Concat(rightArgumentPMemberLiteral.Value,
+                                Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "--ltr" : "--rtl")),
                     //Or a string-based typed literal
-                    case RDFTypedLiteral leftArgumentPMemberTLit when leftArgumentPMemberTLit.HasStringDatatype():
-                        expressionResult = new RDFPlainLiteral(leftArgumentPMemberTLit.Value, string.Concat(rightArgumentPMemberLiteral.Value, Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "--ltr" : "--rtl"));
-                        break;
-                }
+                    RDFTypedLiteral leftArgumentPMemberTLit when leftArgumentPMemberTLit.HasStringDatatype() => new
+                        RDFPlainLiteral(leftArgumentPMemberTLit.Value,
+                            string.Concat(rightArgumentPMemberLiteral.Value,
+                                Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "--ltr" : "--rtl")),
+                    _ => null
+                };
             }
             #endregion
         }

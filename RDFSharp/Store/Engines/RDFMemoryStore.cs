@@ -561,19 +561,13 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
             throw new RDFStoreException("Cannot read RDF memory store from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
         #endregion
 
-        RDFMemoryStore memStore = null;
-        switch (rdfFormat)
+        RDFMemoryStore memStore = rdfFormat switch
         {
-            case RDFStoreEnums.RDFFormats.NQuads:
-                memStore = RDFNQuads.Deserialize(filepath);
-                break;
-            case RDFStoreEnums.RDFFormats.TriX:
-                memStore =  RDFTriX.Deserialize(filepath);
-                break;
-            case RDFStoreEnums.RDFFormats.TriG:
-                memStore =  RDFTriG.Deserialize(filepath);
-                break;
-        }
+            RDFStoreEnums.RDFFormats.NQuads => RDFNQuads.Deserialize(filepath),
+            RDFStoreEnums.RDFFormats.TriX => RDFTriX.Deserialize(filepath),
+            RDFStoreEnums.RDFFormats.TriG => RDFTriG.Deserialize(filepath),
+            _ => null
+        };
 
         #region Datatype Discovery
         if (enableDatatypeDiscovery)
@@ -604,19 +598,13 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
             throw new RDFStoreException("Cannot read RDF memory store from stream because given \"inputStream\" parameter is null.");
         #endregion
 
-        RDFMemoryStore memStore = null;
-        switch (rdfFormat)
+        RDFMemoryStore memStore = rdfFormat switch
         {
-            case RDFStoreEnums.RDFFormats.NQuads:
-                memStore = RDFNQuads.Deserialize(inputStream);
-                break;
-            case RDFStoreEnums.RDFFormats.TriX:
-                memStore =  RDFTriX.Deserialize(inputStream);
-                break;
-            case RDFStoreEnums.RDFFormats.TriG:
-                memStore =  RDFTriG.Deserialize(inputStream);
-                break;
-        }
+            RDFStoreEnums.RDFFormats.NQuads => RDFNQuads.Deserialize(inputStream),
+            RDFStoreEnums.RDFFormats.TriX => RDFTriX.Deserialize(inputStream),
+            RDFStoreEnums.RDFFormats.TriG => RDFTriG.Deserialize(inputStream),
+            _ => null
+        };
 
         #region Datatype Discovery
         if (enableDatatypeDiscovery)

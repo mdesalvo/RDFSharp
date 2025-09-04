@@ -73,7 +73,7 @@ public sealed class RDFClassConstraint : RDFConstraint
                     break;
 
                 //Literal
-                case RDFLiteral _:
+                case RDFLiteral:
                     report.AddResult(new RDFValidationResult(shape,
                         RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT,
                         focusNode,

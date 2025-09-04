@@ -20,7 +20,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using RDFSharp.Query;
 
 namespace RDFSharp.Model;
@@ -389,7 +388,7 @@ internal static class RDFTurtle
                 object value = ParseValue(turtleData, turtleContext, result);
                 switch (value)
                 {
-                    case Uri _:
+                    case Uri:
                         turtleContext.Subject = new RDFResource(value.ToString(), turtleContext.HashContext);
                         break;
                     case RDFResource valueResource:
@@ -431,9 +430,9 @@ internal static class RDFTurtle
         object predicate = ParseValue(turtleData, turtleContext, result);
         return predicate switch
         {
-            Uri _ => new RDFResource(predicate.ToString(), turtleContext.HashContext),
+            Uri => new RDFResource(predicate.ToString(), turtleContext.HashContext),
             RDFResource predRes => predRes,
-            _ => throw new RDFModelException("Illegal predicate value: " + predicate + GetTurtleContextCoordinates(turtleContext)),
+            _ => throw new RDFModelException("Illegal predicate value: " + predicate + GetTurtleContextCoordinates(turtleContext))
         };
     }
 
@@ -453,7 +452,7 @@ internal static class RDFTurtle
             ReadCodePoint(turtleData, turtleContext);
 
             int bufChar = SkipWhitespace(turtleData, turtleContext);
-            if (bufChar == '.' || bufChar == ']' || bufChar == '}') break;
+            if (bufChar is '.' or ']' or '}') break;
 
             if (bufChar == ';')
                 // empty predicateObjectList, skip to next
@@ -497,15 +496,12 @@ internal static class RDFTurtle
                 break;
             default:
                 object value = ParseValue(turtleData, turtleContext, result); //Uri or RDFPatternMember
-                switch (value)
+                turtleContext.Object = value switch
                 {
-                    case Uri _:
-                        turtleContext.Object = new RDFResource(value.ToString(), turtleContext.HashContext);
-                        break;
-                    case RDFPatternMember pmemberValue:
-                        turtleContext.Object = pmemberValue;
-                        break;
-                }
+                    Uri => new RDFResource(value.ToString(), turtleContext.HashContext),
+                    RDFPatternMember pmemberValue => pmemberValue,
+                    _ => turtleContext.Object
+                };
                 break;
         }
 
@@ -817,7 +813,7 @@ internal static class RDFTurtle
         int bufChar = ReadCodePoint(turtleData, turtleContext);
 
         // read optional sign character
-        if (bufChar == '+' || bufChar == '-')
+        if (bufChar is '+' or '-')
         {
             value.Append(char.ConvertFromUtf32(bufChar));
             bufChar = ReadCodePoint(turtleData, turtleContext);
@@ -829,7 +825,7 @@ internal static class RDFTurtle
             bufChar = ReadCodePoint(turtleData, turtleContext);
         }
 
-        if (bufChar == '.' || bufChar == 'e' || bufChar == 'E')
+        if (bufChar is '.' or 'e' or 'E')
         {
             // read optional fractional digits
             if (bufChar == '.')
@@ -866,13 +862,13 @@ internal static class RDFTurtle
             }
 
             // read optional exponent
-            if (bufChar == 'e' || bufChar == 'E')
+            if (bufChar is 'e' or 'E')
             {
                 dt = RDFModelEnums.RDFDatatypes.XSD_DOUBLE;
                 value.Append(char.ConvertFromUtf32(bufChar));
 
                 bufChar = ReadCodePoint(turtleData, turtleContext);
-                if (bufChar == '+' || bufChar == '-')
+                if (bufChar is '+' or '-')
                 {
                     value.Append(char.ConvertFromUtf32(bufChar));
                     bufChar = ReadCodePoint(turtleData, turtleContext);
@@ -1039,7 +1035,7 @@ internal static class RDFTurtle
                 bufChar = ReadCodePoint(turtleData, turtleContext);
                 while (!IsWhitespace(bufChar))
                 {
-                    if (bufChar == '.' || bufChar == ';' || bufChar == ',' || bufChar == ')' || bufChar == ']' || bufChar == -1)
+                    if (bufChar is '.' or ';' or ',' or ')' or ']' or -1)
                         break;
 
                     if (!IsLanguageChar(bufChar))
@@ -1370,7 +1366,7 @@ internal static class RDFTurtle
     /// Check if the supplied code point represents a whitespace character
     /// </summary>
     internal static bool IsWhitespace(int codePoint)
-        => codePoint == 0x20 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD; // Whitespace character are space, tab, newline and carriage return
+        => codePoint is 0x20 or 0x9 or 0xA or 0xD; // Whitespace character are space, tab, newline and carriage return
 
     /// <summary>
     /// Check if the supplied code point represents a numeric character
@@ -1459,8 +1455,8 @@ internal static class RDFTurtle
            || char.IsNumber((char)codePoint)
            || codePoint == '-'
            || codePoint == 0x00B7
-           || (codePoint >= 0x0300 && codePoint <= 0x036F)
-           || (codePoint >= 0x203F && codePoint <= 0x2040);
+           || codePoint is >= 0x0300 and <= 0x036F
+           || codePoint is >= 0x203F and <= 0x2040;
 
     /// <summary>
     /// Check if the supplied code point represents either a valid prefixed name base character or an underscore
@@ -1473,18 +1469,18 @@ internal static class RDFTurtle
     /// </summary>
     internal static bool IsPN_CHARS_BASE(int codePoint)
         => char.IsLetter((char)codePoint)
-           || (codePoint >= 0x00C0 && codePoint <= 0x00D6)
-           || (codePoint >= 0x00D8 && codePoint <= 0x00F6)
-           || (codePoint >= 0x00F8 && codePoint <= 0x02FF)
-           || (codePoint >= 0x0370 && codePoint <= 0x037D)
-           || (codePoint >= 0x037F && codePoint <= 0x1FFF)
-           || (codePoint >= 0x200C && codePoint <= 0x200D)
-           || (codePoint >= 0x2070 && codePoint <= 0x218F)
-           || (codePoint >= 0x2C00 && codePoint <= 0x2FEF)
-           || (codePoint >= 0x3001 && codePoint <= 0xD7FF)
-           || (codePoint >= 0xF900 && codePoint <= 0xFDCF)
-           || (codePoint >= 0xFDF0 && codePoint <= 0xFFFD)
-           || (codePoint >= 0x10000 && codePoint <= 0xEFFFF);
+           || codePoint is >= 0x00C0 and <= 0x00D6
+           || codePoint is >= 0x00D8 and <= 0x00F6
+           || codePoint is >= 0x00F8 and <= 0x02FF
+           || codePoint is >= 0x0370 and <= 0x037D
+           || codePoint is >= 0x037F and <= 0x1FFF
+           || codePoint is >= 0x200C and <= 0x200D
+           || codePoint is >= 0x2070 and <= 0x218F
+           || codePoint is >= 0x2C00 and <= 0x2FEF
+           || codePoint is >= 0x3001 and <= 0xD7FF
+           || codePoint is >= 0xF900 and <= 0xFDCF
+           || codePoint is >= 0xFDF0 and <= 0xFFFD
+           || codePoint is >= 0x10000 and <= 0xEFFFF;
     #endregion
 
     #region Write.Graph

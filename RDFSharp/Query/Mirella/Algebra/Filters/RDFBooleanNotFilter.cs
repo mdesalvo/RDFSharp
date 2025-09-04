@@ -42,8 +42,8 @@ public sealed class RDFBooleanNotFilter : RDFFilter
         Filter = filter switch
         {
             null => throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is null."),
-            RDFExistsFilter _ => throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is of type RDFExistsFilter: this is not supported."),
-            _ => filter,
+            RDFExistsFilter => throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is of type RDFExistsFilter: this is not supported."),
+            _ => filter
         };
     }
     #endregion

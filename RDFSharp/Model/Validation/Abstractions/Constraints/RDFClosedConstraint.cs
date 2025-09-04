@@ -54,8 +54,8 @@ public sealed class RDFClosedConstraint : RDFConstraint
     /// </summary>
     public RDFClosedConstraint AddIgnoredProperty(RDFResource ignoredProperty)
     {
-        if (ignoredProperty != null && !IgnoredProperties.ContainsKey(ignoredProperty.PatternMemberID))
-            IgnoredProperties.Add(ignoredProperty.PatternMemberID, ignoredProperty);
+        if (ignoredProperty != null)
+            IgnoredProperties.TryAdd(ignoredProperty.PatternMemberID, ignoredProperty);
         return this;
     }
 

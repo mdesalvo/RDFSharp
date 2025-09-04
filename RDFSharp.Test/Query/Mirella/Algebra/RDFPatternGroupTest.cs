@@ -349,7 +349,6 @@ public class RDFPatternGroupTest
         Assert.AreEqual(0, pGroup.GetFilters().Count());
         Assert.AreEqual(0, pGroup.GetPropertyPaths().Count());
         Assert.AreEqual(1, pGroup.GetValues().Count());
-        Assert.IsTrue(pGroup.GetValues().All(v => !v.IsInjected));
         Assert.AreEqual(0, pGroup.GetBinds().Count());
         Assert.AreEqual(1, pGroup.GetEvaluablePatternGroupMembers().Count());
     }

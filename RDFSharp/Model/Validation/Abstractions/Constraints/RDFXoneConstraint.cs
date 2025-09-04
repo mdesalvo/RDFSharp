@@ -45,8 +45,8 @@ public sealed class RDFXoneConstraint : RDFConstraint
     /// </summary>
     public RDFXoneConstraint AddShape(RDFResource shapeUri)
     {
-        if (shapeUri != null && !XoneShapes.ContainsKey(shapeUri.PatternMemberID))
-            XoneShapes.Add(shapeUri.PatternMemberID, shapeUri);
+        if (shapeUri != null)
+            XoneShapes.TryAdd(shapeUri.PatternMemberID, shapeUri);
         return this;
     }
 

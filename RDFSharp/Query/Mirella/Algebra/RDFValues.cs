@@ -31,11 +31,6 @@ public sealed class RDFValues : RDFPatternGroupMember
     /// Dictionary of bindings representing the SPARQL values
     /// </summary>
     internal Dictionary<string, List<RDFPatternMember>> Bindings { get; set; }
-
-    /// <summary>
-    /// Flag indicating that the SPARQL values has been injected by Mirella
-    /// </summary>
-    internal bool IsInjected { get; set; }
     #endregion
 
     #region Ctors
@@ -46,7 +41,6 @@ public sealed class RDFValues : RDFPatternGroupMember
     {
         Bindings = [];
         IsEvaluable = false;
-        IsInjected = false;
     }
     #endregion
 
@@ -77,7 +71,7 @@ public sealed class RDFValues : RDFPatternGroupMember
             //Populate bindings of the given variable
             //(null indicates the special UNDEF binding)
             if (bindings?.Count > 0)
-                bindings.ForEach(b => Bindings[variableString].Add(b is RDFResource || b is RDFLiteral ? b : null));
+                bindings.ForEach(b => Bindings[variableString].Add(b is RDFResource or RDFLiteral ? b : null));
             else
                 Bindings[variableString].Add(null);
 

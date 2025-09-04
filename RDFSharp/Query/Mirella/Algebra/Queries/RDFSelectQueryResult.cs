@@ -113,7 +113,7 @@ public sealed class RDFSelectQueryResult : RDFQueryResult
                             RDFPatternMember rdfTerm = RDFQueryUtilities.ParseRDFPatternMember(resultRow[resultColumnString].ToString());
                             switch (rdfTerm)
                             {
-                                case RDFResource _ when rdfTerm.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase):
+                                case RDFResource when rdfTerm.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase):
                                 {
                                     XmlNode bnodeElement = sparqlDoc.CreateNode(XmlNodeType.Element, "bnode", null);
                                     XmlText bnodeElText = sparqlDoc.CreateTextNode(rdfTerm.ToString());
@@ -121,7 +121,7 @@ public sealed class RDFSelectQueryResult : RDFQueryResult
                                     bindingElement.AppendChild(bnodeElement);
                                     break;
                                 }
-                                case RDFResource _:
+                                case RDFResource:
                                 {
                                     XmlNode uriElement = sparqlDoc.CreateNode(XmlNodeType.Element, "uri", null);
                                     XmlText uriElText = sparqlDoc.CreateTextNode(rdfTerm.ToString());

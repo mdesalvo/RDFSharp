@@ -736,22 +736,14 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
             throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
         #endregion
 
-        RDFGraph graph = null;
-        switch (rdfFormat)
+        RDFGraph graph = rdfFormat switch
         {
-            case RDFModelEnums.RDFFormats.RdfXml:
-                graph = RDFXml.Deserialize(filepath);
-                break;
-            case RDFModelEnums.RDFFormats.Turtle:
-                graph =  RDFTurtle.Deserialize(filepath);
-                break;
-            case RDFModelEnums.RDFFormats.NTriples:
-                graph =  RDFNTriples.Deserialize(filepath);
-                break;
-            case RDFModelEnums.RDFFormats.TriX:
-                graph =  RDFTriX.Deserialize(filepath);
-                break;
-        }
+            RDFModelEnums.RDFFormats.RdfXml => RDFXml.Deserialize(filepath),
+            RDFModelEnums.RDFFormats.Turtle => RDFTurtle.Deserialize(filepath),
+            RDFModelEnums.RDFFormats.NTriples => RDFNTriples.Deserialize(filepath),
+            RDFModelEnums.RDFFormats.TriX => RDFTriX.Deserialize(filepath),
+            _ => null
+        };
 
         #region Datatype Discovery
         if (enableDatatypeDiscovery)
@@ -783,22 +775,14 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
         }
         #endregion
 
-        RDFGraph graph = null;
-        switch (rdfFormat)
+        RDFGraph graph = rdfFormat switch
         {
-            case RDFModelEnums.RDFFormats.RdfXml:
-                graph = RDFXml.Deserialize(inputStream, graphContext);
-                break;
-            case RDFModelEnums.RDFFormats.Turtle:
-                graph =  RDFTurtle.Deserialize(inputStream, graphContext);
-                break;
-            case RDFModelEnums.RDFFormats.NTriples:
-                graph =  RDFNTriples.Deserialize(inputStream, graphContext);
-                break;
-            case RDFModelEnums.RDFFormats.TriX:
-                graph =  RDFTriX.Deserialize(inputStream, graphContext);
-                break;
-        }
+            RDFModelEnums.RDFFormats.RdfXml => RDFXml.Deserialize(inputStream, graphContext),
+            RDFModelEnums.RDFFormats.Turtle => RDFTurtle.Deserialize(inputStream, graphContext),
+            RDFModelEnums.RDFFormats.NTriples => RDFNTriples.Deserialize(inputStream, graphContext),
+            RDFModelEnums.RDFFormats.TriX => RDFTriX.Deserialize(inputStream, graphContext),
+            _ => null
+        };
 
         #region Datatype Discovery
         if (enableDatatypeDiscovery)
@@ -846,7 +830,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
                 throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"?SUBJECT\" column.");
 
             RDFPatternMember rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?SUBJECT"].ToString());
-            if (!(rowSubj is RDFResource subj))
+            if (rowSubj is not RDFResource subj)
                 throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row not having a resource in the \"?SUBJECT\" column.");
             #endregion
 
@@ -855,7 +839,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
                 throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"?PREDICATE\" column.");
 
             RDFPatternMember rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?PREDICATE"].ToString());
-            if (!(rowPred is RDFResource pred))
+            if (rowPred is not RDFResource pred)
                 throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row not having a resource in the \"?PREDICATE\" column.");
 
             if (pred.IsBlank)

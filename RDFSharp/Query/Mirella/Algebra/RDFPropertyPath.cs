@@ -57,11 +57,11 @@ public sealed class RDFPropertyPath : RDFPatternGroupMember
         #region Guards
         if (start == null)
             throw new RDFQueryException("Cannot create RDFPropertyPath because given \"start\" parameter is null.");
-        if (!(start is RDFResource || start is RDFVariable))
+        if (start is not (RDFResource or RDFVariable))
             throw new RDFQueryException("Cannot create RDFPropertyPath because given \"start\" parameter is neither a resource or a variable.");
         if (end == null)
             throw new RDFQueryException("Cannot create RDFPropertyPath because given \"end\" parameter is null.");
-        if (!(end is RDFResource || end is RDFVariable))
+        if (end is not (RDFResource or RDFVariable))
             throw new RDFQueryException("Cannot create RDFPropertyPath because given \"end\" parameter is neither a resource or a variable.");
         #endregion
 

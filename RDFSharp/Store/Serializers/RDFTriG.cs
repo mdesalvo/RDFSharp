@@ -262,7 +262,7 @@ internal static class RDFTriG
 
             object value = ParseValue(trigData, trigContext, trigContext.Graph);
 
-            if (value is Uri || (value is RDFResource resValue && !resValue.IsBlank)) //We don't accept blank contexts
+            if (value is Uri or RDFResource { IsBlank: false }) //We don't accept blank contexts
             {
                 contextOrSubject = new RDFResource(value.ToString(), trigContext.HashContext);
                 foundContextOrSubject = true;

@@ -86,16 +86,12 @@ public sealed class RDFSHA384Expression : RDFExpression
             #endregion
 
             #region Calculate Result
-            switch (leftArgumentPMember)
+            leftArgumentPMember = leftArgumentPMember switch
             {
-                case RDFLiteral leftArgumentPMemberLiteral:
-                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberLiteral.Value);
-                    break;
-                case RDFResource leftArgumentPMemberResource:
-                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberResource.ToString());
-                    break;
-            }
-
+                RDFLiteral leftArgumentPMemberLiteral => new RDFPlainLiteral(leftArgumentPMemberLiteral.Value),
+                RDFResource leftArgumentPMemberResource => new RDFPlainLiteral(leftArgumentPMemberResource.ToString()),
+                _ => leftArgumentPMember
+            };
             if (leftArgumentPMember == null)
                 return null;
 

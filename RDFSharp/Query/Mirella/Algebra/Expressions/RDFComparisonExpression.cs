@@ -177,27 +177,23 @@ public sealed class RDFComparisonExpression : RDFExpression
                 return null;
 
             //Type Correct
-            switch (ComparisonFlavor)
+            expressionResult = ComparisonFlavor switch
             {
-                case RDFQueryEnums.RDFComparisonFlavors.LessThan:
-                    expressionResult = comparison  < 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
-                    break;
-                case RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan:
-                    expressionResult = comparison <= 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
-                    break;
-                case RDFQueryEnums.RDFComparisonFlavors.EqualTo:
-                    expressionResult = comparison == 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
-                    break;
-                case RDFQueryEnums.RDFComparisonFlavors.NotEqualTo:
-                    expressionResult = comparison != 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
-                    break;
-                case RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan:
-                    expressionResult = comparison >= 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
-                    break;
-                case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
-                    expressionResult = comparison  > 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
-                    break;
-            }
+                RDFQueryEnums.RDFComparisonFlavors.LessThan => comparison < 0
+                    ? RDFTypedLiteral.True : RDFTypedLiteral.False,
+                RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan => comparison <= 0
+                    ? RDFTypedLiteral.True : RDFTypedLiteral.False,
+                RDFQueryEnums.RDFComparisonFlavors.EqualTo => comparison == 0
+                    ? RDFTypedLiteral.True : RDFTypedLiteral.False,
+                RDFQueryEnums.RDFComparisonFlavors.NotEqualTo => comparison != 0
+                    ? RDFTypedLiteral.True : RDFTypedLiteral.False,
+                RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan => comparison >= 0
+                    ? RDFTypedLiteral.True : RDFTypedLiteral.False,
+                RDFQueryEnums.RDFComparisonFlavors.GreaterThan => comparison > 0
+                    ? RDFTypedLiteral.True : RDFTypedLiteral.False,
+                _ => null
+            };
+
             #endregion
         }
         catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }

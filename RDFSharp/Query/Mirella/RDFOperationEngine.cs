@@ -48,7 +48,7 @@ internal sealed class RDFOperationEngine : RDFQueryEngine
             RDFDeleteInsertWhereOperation deleteInsertWhereOperation => EvaluateDeleteInsertWhereOperation(deleteInsertWhereOperation, datasource),
             RDFLoadOperation loadOperation => EvaluateLoadOperation(loadOperation, datasource),
             RDFClearOperation clearOperation => EvaluateClearOperation(clearOperation, datasource),
-            _ => new RDFOperationResult(),
+            _ => new RDFOperationResult()
         };
     }
 
@@ -325,8 +325,8 @@ internal sealed class RDFOperationEngine : RDFQueryEngine
             catch (Exception ex)
             {
                 //Silent operations can hide errors to the application
-                bool isLoadSilent = operation is RDFLoadOperation loadOperation && loadOperation.IsSilent;
-                bool isClearSilent = operation is RDFClearOperation clearOperation && clearOperation.IsSilent;
+                bool isLoadSilent = operation is RDFLoadOperation { IsSilent: true };
+                bool isClearSilent = operation is RDFClearOperation { IsSilent: true };
                 if (isLoadSilent || isClearSilent)
                     return false;
 
@@ -358,7 +358,7 @@ internal sealed class RDFOperationEngine : RDFQueryEngine
         {
             "DELETE" => FillTemplates(operation.DeleteTemplates, resultTable, datasource.IsStore()),
             "INSERT" => FillTemplates(operation.InsertTemplates, resultTable, datasource.IsStore()),
-            _ => FillTemplates(operation is RDFDeleteDataOperation || operation is RDFDeleteWhereOperation ? operation.DeleteTemplates : operation.InsertTemplates, resultTable, datasource.IsStore()),
+            _ => FillTemplates(operation is RDFDeleteDataOperation or RDFDeleteWhereOperation ? operation.DeleteTemplates : operation.InsertTemplates, resultTable, datasource.IsStore())
         };
 
         //Apply the modifiers of the query to the result table

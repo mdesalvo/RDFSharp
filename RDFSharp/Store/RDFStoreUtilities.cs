@@ -166,11 +166,11 @@ public static class RDFStoreUtilities
                 "SPL" => [.. S.Intersect(P).Intersect(L)],
                 "PO" => [.. P.Intersect(O)],
                 "PL" => [.. P.Intersect(L)],
-                _ => [.. store.Index.Hashes.Values],
+                _ => [.. store.Index.Hashes.Values]
             };
 
             //Decompress hashed quadruples
-            return hashedQuadruples.ConvertAll(hq => new RDFQuadruple(hq, store.Index));
+            return hashedQuadruples!.ConvertAll(hq => new RDFQuadruple(hq, store.Index));
         }
         return EmptyQuadrupleList;
     }

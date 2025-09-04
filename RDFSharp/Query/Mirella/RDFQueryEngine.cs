@@ -527,7 +527,7 @@ internal class RDFQueryEngine
 
                     RDFPatternMember pred = ParseRDFPatternMember(resultRow[templatePred].ToString());
                     //Row contains a blank resource or a literal in position of the variable corresponding to the template predicate
-                    if ((pred is RDFResource predRes && predRes.IsBlank) || pred is RDFLiteral)
+                    if (pred is RDFResource { IsBlank: true } or RDFLiteral)
                         continue;
                     //Row contains a non-blank resource in position of the variable corresponding to the template predicate
                     bindings["?PREDICATE"] = pred.ToString();
@@ -779,7 +779,7 @@ internal class RDFQueryEngine
             RDFGraph graph => ApplyPatternToGraph(pattern, graph),
             RDFStore store => ApplyPatternToStore(pattern, store),
             RDFFederation federation => ApplyPatternToFederation(pattern, federation),
-            _ => new DataTable(),
+            _ => new DataTable()
         };
     }
 
@@ -1267,7 +1267,7 @@ internal class RDFQueryEngine
             "SELECT" => queryResult ?? new RDFSelectQueryResult(),
             "CONSTRUCT" => queryResult ?? new RDFConstructQueryResult(),
             "DESCRIBE" => queryResult ?? new RDFDescribeQueryResult(),
-            _ => queryResult,
+            _ => queryResult
         };
     }
     #endregion

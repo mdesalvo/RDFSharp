@@ -64,7 +64,7 @@ public sealed class RDFLessThanOrEqualsConstraint : RDFConstraint
         foreach (RDFPatternMember predicateNode in predicateNodes)
         {
             int comparison = RDFQueryUtilities.CompareRDFPatternMembers(valueNode, predicateNode);
-            if (comparison == -99 || comparison > 0)
+            if (comparison is -99 or > 0)
                 report.AddResult(new RDFValidationResult(shape,
                     RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS_CONSTRAINT_COMPONENT,
                     focusNode,

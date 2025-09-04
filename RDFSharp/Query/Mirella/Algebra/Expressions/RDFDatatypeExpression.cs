@@ -85,19 +85,17 @@ public sealed class RDFDatatypeExpression : RDFExpression
             #endregion
 
             #region Calculate Result
-            switch (leftArgumentPMember)
+            expressionResult = leftArgumentPMember switch
             {
-                case RDFTypedLiteral leftArgumentPMemberTLiteral:
-                    expressionResult = new RDFResource(leftArgumentPMemberTLiteral.Datatype.ToString());
-                    break;
-                case RDFPlainLiteral leftArgumentPMemberPLiteral:
-                    expressionResult =
-                        leftArgumentPMemberPLiteral.HasLanguage() ?
-                            leftArgumentPMemberPLiteral.HasDirection() ? RDFVocabulary.RDF.DIR_LANG_STRING
-                                : RDFVocabulary.RDF.LANG_STRING
-                            : RDFVocabulary.XSD.STRING;
-                    break;
-            }
+                RDFTypedLiteral leftArgumentPMemberTLiteral => new RDFResource(leftArgumentPMemberTLiteral.Datatype
+                    .ToString()),
+                RDFPlainLiteral leftArgumentPMemberPLiteral => leftArgumentPMemberPLiteral.HasLanguage()
+                    ? leftArgumentPMemberPLiteral.HasDirection()
+                        ? RDFVocabulary.RDF.DIR_LANG_STRING
+                        : RDFVocabulary.RDF.LANG_STRING
+                    : RDFVocabulary.XSD.STRING,
+                _ => null
+            };
             #endregion
         }
         catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }

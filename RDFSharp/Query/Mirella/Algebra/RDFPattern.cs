@@ -78,17 +78,17 @@ public sealed class RDFPattern : RDFPatternGroupMember
         #region Guards
         if (subject == null)
             throw new RDFQueryException("Cannot create RDFPattern because given \"subject\" parameter is null");
-        if (!(subject is RDFResource || subject is RDFVariable))
+        if (subject is not (RDFResource or RDFVariable))
             throw new RDFQueryException("Cannot create RDFPattern because given \"subject\" parameter (" + subject + ") is neither a resource or a variable");
         if (predicate == null)
             throw new RDFQueryException("Cannot create RDFPattern because given \"predicate\" parameter is null");
-        if (!(predicate is RDFResource || predicate is RDFVariable))
+        if (predicate is not (RDFResource or RDFVariable))
             throw new RDFQueryException("Cannot create RDFPattern because given \"predicate\" parameter (" + predicate + ") is neither a resource or a variable");
-        if (predicate is RDFResource predRes && predRes.IsBlank)
+        if (predicate is RDFResource { IsBlank: true })
             throw new RDFQueryException("Cannot create RDFPattern because given \"predicate\" parameter is a blank resource");
         if (objLit == null)
             throw new RDFQueryException("Cannot create RDFPattern because given \"objLit\" parameter is null");
-        if (!(objLit is RDFResource || objLit is RDFLiteral || objLit is RDFVariable))
+        if (objLit is not (RDFResource or RDFLiteral or RDFVariable))
             throw new RDFQueryException("Cannot create RDFPattern because given \"objLit\" parameter (" + objLit + ") is neither a resource, or a literal or a variable");
         #endregion
 
@@ -123,7 +123,7 @@ public sealed class RDFPattern : RDFPatternGroupMember
         #region Guards
         if (context == null)
             throw new RDFQueryException("Cannot create RDFPattern because given \"context\" parameter is null");
-        if (!(context is RDFContext || context is RDFVariable))
+        if (context is not (RDFContext or RDFVariable))
             throw new RDFQueryException("Cannot create RDFPattern because given \"context\" parameter (" + context + ") is neither a context or a variable");
         #endregion
 

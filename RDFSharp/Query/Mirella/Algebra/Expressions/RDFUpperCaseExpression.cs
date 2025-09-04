@@ -85,15 +85,15 @@ public sealed class RDFUpperCaseExpression : RDFExpression
             #endregion
 
             #region Calculate Result
-            switch (leftArgumentPMember)
+            expressionResult = leftArgumentPMember switch
             {
-                case RDFPlainLiteral leftArgumentPMemberPLiteral:
-                    expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLiteral.Value.ToUpperInvariant(), leftArgumentPMemberPLiteral.Language);
-                    break;
-                case RDFTypedLiteral leftArgumentPMemberTLiteral when leftArgumentPMemberTLiteral.HasStringDatatype():
-                    expressionResult = new RDFTypedLiteral(leftArgumentPMemberTLiteral.Value.ToUpperInvariant(), leftArgumentPMemberTLiteral.Datatype);
-                    break;
-            }
+                RDFPlainLiteral leftArgumentPMemberPLiteral => new RDFPlainLiteral(
+                    leftArgumentPMemberPLiteral.Value.ToUpperInvariant(), leftArgumentPMemberPLiteral.Language),
+                RDFTypedLiteral leftArgumentPMemberTLiteral when leftArgumentPMemberTLiteral.HasStringDatatype() =>
+                    new RDFTypedLiteral(leftArgumentPMemberTLiteral.Value.ToUpperInvariant(),
+                        leftArgumentPMemberTLiteral.Datatype),
+                _ => null
+            };
             #endregion
         }
         catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }

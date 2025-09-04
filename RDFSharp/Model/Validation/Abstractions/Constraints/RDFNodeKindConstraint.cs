@@ -61,9 +61,7 @@ public sealed class RDFNodeKindConstraint : RDFConstraint
                 case RDFResource valueNodeResource:
                     if (valueNodeResource.IsBlank)
                     {
-                        if (NodeKind == RDFValidationEnums.RDFNodeKinds.IRI
-                            || NodeKind == RDFValidationEnums.RDFNodeKinds.IRIOrLiteral
-                            || NodeKind == RDFValidationEnums.RDFNodeKinds.Literal)
+                        if (NodeKind is RDFValidationEnums.RDFNodeKinds.IRI or RDFValidationEnums.RDFNodeKinds.IRIOrLiteral or RDFValidationEnums.RDFNodeKinds.Literal)
                             report.AddResult(new RDFValidationResult(shape,
                                 RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
                                 focusNode,
@@ -74,9 +72,7 @@ public sealed class RDFNodeKindConstraint : RDFConstraint
                     }
                     else
                     {
-                        if (NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNode
-                            || NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral
-                            || NodeKind == RDFValidationEnums.RDFNodeKinds.Literal)
+                        if (NodeKind is RDFValidationEnums.RDFNodeKinds.BlankNode or RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral or RDFValidationEnums.RDFNodeKinds.Literal)
                             report.AddResult(new RDFValidationResult(shape,
                                 RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
                                 focusNode,
@@ -88,10 +84,8 @@ public sealed class RDFNodeKindConstraint : RDFConstraint
                     break;
 
                 //Literal
-                case RDFLiteral _:
-                    if (NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNode
-                        || NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI
-                        || NodeKind == RDFValidationEnums.RDFNodeKinds.IRI)
+                case RDFLiteral:
+                    if (NodeKind is RDFValidationEnums.RDFNodeKinds.BlankNode or RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI or RDFValidationEnums.RDFNodeKinds.IRI)
                         report.AddResult(new RDFValidationResult(shape,
                             RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
                             focusNode,

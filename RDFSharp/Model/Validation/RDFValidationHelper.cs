@@ -37,25 +37,25 @@ internal static class RDFValidationHelper
                 switch (target)
                 {
                     //sh:targetClass
-                    case RDFTargetClass _:
+                    case RDFTargetClass:
                         result.AddRange(dataGraph.GetInstancesOfClass(target.TargetValue)
                             .OfType<RDFResource>());
                         break;
 
                     //sh:targetNode
-                    case RDFTargetNode _:
+                    case RDFTargetNode:
                         result.Add(target.TargetValue);
                         break;
 
                     //sh:targetSubjectsOf
-                    case RDFTargetSubjectsOf _:
+                    case RDFTargetSubjectsOf:
                         result.AddRange(dataGraph[null, target.TargetValue, null, null]
                             .Select(x => x.Subject)
                             .OfType<RDFResource>());
                         break;
 
                     //sh:targetObjectsOf
-                    case RDFTargetObjectsOf _:
+                    case RDFTargetObjectsOf:
                         result.AddRange(dataGraph[null, target.TargetValue, null, null]
                             .Select(x => x.Object)
                             .OfType<RDFResource>());
@@ -76,7 +76,7 @@ internal static class RDFValidationHelper
             switch (shape)
             {
                 //sh:NodeShape
-                case RDFNodeShape _:
+                case RDFNodeShape:
                     result.Add(focusNode);
                     break;
 
@@ -286,8 +286,7 @@ internal static class RDFValidationHelper
         foreach (RDFTriple inlinePropertyShape in graph[null, RDFVocabulary.SHACL.PROPERTY, null, null])
             //Inline property shapes are blank objects of "sh:property" constraints:
             //we wont find their explicit shape definition within the shapes graph.
-            if (inlinePropertyShape.Object is RDFResource inlinePropertyShapeResource
-                && inlinePropertyShapeResource.IsBlank
+            if (inlinePropertyShape.Object is RDFResource { IsBlank: true } inlinePropertyShapeResource
                 && shapesGraph.SelectShape(inlinePropertyShapeResource.ToString()) == null)
             {
                 RDFTriple inlinePropertyShapePath = graph[inlinePropertyShapeResource, RDFVocabulary.SHACL.PATH, null, null].FirstOrDefault();

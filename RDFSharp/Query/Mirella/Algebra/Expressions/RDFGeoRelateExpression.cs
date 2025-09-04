@@ -16,7 +16,6 @@
 
 using System.Collections.Generic;
 using System.Text;
-using System.Text.RegularExpressions;
 using RDFSharp.Model;
 
 namespace RDFSharp.Query;

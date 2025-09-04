@@ -48,14 +48,14 @@ public sealed class RDFBooleanOrFilter : RDFFilter
         {
             case null:
                 throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"leftFilter\" parameter is null.");
-            case RDFExistsFilter _:
+            case RDFExistsFilter:
                 throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"leftFilter\" parameter is of type RDFExistsFilter: this is not supported.");
         }
         switch (rightFilter)
         {
             case null:
                 throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"rightFilter\" parameter is null.");
-            case RDFExistsFilter _:
+            case RDFExistsFilter:
                 throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"rightFilter\" parameter is of type RDFExistsFilter: this is not supported.");
             default:
                 LeftFilter = leftFilter;

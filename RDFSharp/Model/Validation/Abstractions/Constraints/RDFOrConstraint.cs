@@ -45,8 +45,8 @@ public sealed class RDFOrConstraint : RDFConstraint
     /// </summary>
     public RDFOrConstraint AddShape(RDFResource shapeUri)
     {
-        if (shapeUri != null && !OrShapes.ContainsKey(shapeUri.PatternMemberID))
-            OrShapes.Add(shapeUri.PatternMemberID, shapeUri);
+        if (shapeUri != null)
+            OrShapes.TryAdd(shapeUri.PatternMemberID, shapeUri);
         return this;
     }
 

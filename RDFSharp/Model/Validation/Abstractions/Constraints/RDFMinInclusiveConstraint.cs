@@ -65,7 +65,7 @@ public sealed class RDFMinInclusiveConstraint : RDFConstraint
         foreach (RDFPatternMember valueNode in valueNodes)
         {
             int comparison = RDFQueryUtilities.CompareRDFPatternMembers(Value, valueNode);
-            if (comparison == -99 || comparison > 0)
+            if (comparison is -99 or > 0)
                 report.AddResult(new RDFValidationResult(shape,
                     RDFVocabulary.SHACL.MIN_INCLUSIVE_CONSTRAINT_COMPONENT,
                     focusNode,

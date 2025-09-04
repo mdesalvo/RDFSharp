@@ -64,16 +64,15 @@ public abstract class RDFBooleanExpression : RDFExpression
                 && bool.TryParse(leftArgumentTypedLiteral.Value, out bool leftArgumentBooleanValue)
                 && bool.TryParse(rightArgumentTypedLiteral.Value, out bool rightArgumentBooleanValue))
             {
-                switch (this)
+                expressionResult = this switch
                 {
                     //Execute the boolean expression's comparison logics
-                    case RDFBooleanAndExpression _:
-                        expressionResult = leftArgumentBooleanValue && rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False;
-                        break;
-                    case RDFBooleanOrExpression _:
-                        expressionResult = leftArgumentBooleanValue || rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False;
-                        break;
-                }
+                    RDFBooleanAndExpression => leftArgumentBooleanValue && rightArgumentBooleanValue
+                        ? RDFTypedLiteral.True : RDFTypedLiteral.False,
+                    RDFBooleanOrExpression => leftArgumentBooleanValue || rightArgumentBooleanValue
+                        ? RDFTypedLiteral.True : RDFTypedLiteral.False,
+                    _ => null
+                };
             }
             #endregion
         }

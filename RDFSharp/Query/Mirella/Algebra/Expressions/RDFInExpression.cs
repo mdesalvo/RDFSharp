@@ -100,29 +100,28 @@ public sealed class RDFInExpression : RDFExpression
             List<RDFPatternMember>.Enumerator inTermsEnumerator = InTerms.GetEnumerator();
             while (!keepRow && inTermsEnumerator.MoveNext())
             {
-                RDFComparisonExpression compExpression = null;
-                switch (LeftArgument)
+                RDFComparisonExpression compExpression = LeftArgument switch
                 {
-                    case RDFExpression leftArgExpr:
-                        compExpression = new RDFComparisonExpression(
-                            RDFQueryEnums.RDFComparisonFlavors.EqualTo,
-                            leftArgExpr,
-                            inTermsEnumerator.Current is RDFResource inTermResE ? new RDFConstantExpression(inTermResE)
-                            : inTermsEnumerator.Current is RDFLiteral inTermLitE ?  new RDFConstantExpression(inTermLitE)
-                            : inTermsEnumerator.Current is RDFVariable inTermVarE ? new RDFVariableExpression(inTermVarE)
-                            : null as RDFExpression);
-                        break;
-
-                    case RDFVariable leftArgVar:
-                        compExpression = new RDFComparisonExpression(
-                            RDFQueryEnums.RDFComparisonFlavors.EqualTo,
-                            leftArgVar,
-                            inTermsEnumerator.Current is RDFResource inTermResV ? new RDFConstantExpression(inTermResV)
-                            : inTermsEnumerator.Current is RDFLiteral inTermLitV ?  new RDFConstantExpression(inTermLitV)
-                            : inTermsEnumerator.Current is RDFVariable inTermVarV ? new RDFVariableExpression(inTermVarV)
-                            : null as RDFExpression);
-                        break;
-                }
+                    RDFExpression leftArgExpr => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
+                        leftArgExpr,
+                        inTermsEnumerator.Current switch
+                        {
+                            RDFResource inTermResE => new RDFConstantExpression(inTermResE),
+                            RDFLiteral inTermLitE => new RDFConstantExpression(inTermLitE),
+                            RDFVariable inTermVarE => new RDFVariableExpression(inTermVarE),
+                            _ => null
+                        }),
+                    RDFVariable leftArgVar => new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
+                        leftArgVar,
+                        inTermsEnumerator.Current switch
+                        {
+                            RDFResource inTermResV => new RDFConstantExpression(inTermResV),
+                            RDFLiteral inTermLitV => new RDFConstantExpression(inTermLitV),
+                            RDFVariable inTermVarV => new RDFVariableExpression(inTermVarV),
+                            _ => null
+                        }),
+                    _ => null
+                };
 
                 RDFPatternMember searchResult = compExpression?.ApplyExpression(row);
                 if (searchResult?.Equals(RDFTypedLiteral.True) ?? false)

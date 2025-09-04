@@ -81,7 +81,7 @@ public sealed class RDFLanguageInConstraint : RDFConstraint
                             //ANY language is found in the variable
                             "*" => RDFRegex.EndingLangTagRegex().IsMatch(valueNodePLitString),
                             //GIVEN language is found in the variable
-                            _ => Regex.IsMatch(valueNodePLitString, $"@{langTagsEnumerator.Current}{RDFRegex.LangTagSubMask}$", RegexOptions.IgnoreCase),
+                            _ => Regex.IsMatch(valueNodePLitString, $"@{langTagsEnumerator.Current}{RDFRegex.LangTagSubMask}$", RegexOptions.IgnoreCase)
                         };
                     if (!langMatches)
                     {

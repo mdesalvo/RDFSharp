@@ -132,7 +132,6 @@ internal static class RDFNTriples
     {
         RDFGraph result = new RDFGraph().SetContext(graphContext);
         long ntripleIndex = 0;
-        string nTriple;
         string[] tokens = new string[3];
         Dictionary<string, long> hashContext = [];
 
@@ -141,7 +140,7 @@ internal static class RDFNTriples
             #region deserialize
             using (StreamReader sr = new StreamReader(inputStream, Encoding.ASCII))
             {
-                while ((nTriple = sr.ReadLine()) != null)
+                while (sr.ReadLine() is { } nTriple)
                 {
                     ntripleIndex++;
 

@@ -85,18 +85,17 @@ public sealed class RDFStrLenExpression : RDFExpression
             #endregion
 
             #region Calculate Result
-            switch (leftArgumentPMember)
+            expressionResult = leftArgumentPMember switch
             {
-                case RDFResource _:
-                    expressionResult = new RDFTypedLiteral($"{leftArgumentPMember.ToString().Length}", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                    break;
-                case RDFPlainLiteral leftArgumentPMemberPLiteral:
-                    expressionResult = new RDFTypedLiteral($"{leftArgumentPMemberPLiteral.Value.Length}", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                    break;
-                case RDFTypedLiteral leftArgumentPMemberTLiteral when leftArgumentPMemberTLiteral.HasStringDatatype():
-                    expressionResult = new RDFTypedLiteral($"{leftArgumentPMemberTLiteral.Value.Length}", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                    break;
-            }
+                RDFResource => new RDFTypedLiteral($"{leftArgumentPMember.ToString().Length}",
+                    RDFModelEnums.RDFDatatypes.XSD_INTEGER),
+                RDFPlainLiteral leftArgumentPMemberPLiteral => new RDFTypedLiteral(
+                    $"{leftArgumentPMemberPLiteral.Value.Length}", RDFModelEnums.RDFDatatypes.XSD_INTEGER),
+                RDFTypedLiteral leftArgumentPMemberTLiteral when leftArgumentPMemberTLiteral.HasStringDatatype() =>
+                    new RDFTypedLiteral($"{leftArgumentPMemberTLiteral.Value.Length}",
+                        RDFModelEnums.RDFDatatypes.XSD_INTEGER),
+                _ => null
+            };
             #endregion
         }
         catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }

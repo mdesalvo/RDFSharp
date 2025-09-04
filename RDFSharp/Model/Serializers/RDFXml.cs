@@ -141,18 +141,16 @@ internal static class RDFXml
                     //It is a container subject and it is not floating => add it to the containersXML pool
                     if (subjContainer?.IsFloatingContainer == false)
                     {
-                        switch (subjContainer.ContainerType)
+                        subjNode = subjContainer.ContainerType switch
                         {
-                            case RDFModelEnums.RDFContainerTypes.Bag:
-                                subjNode = rdfDoc.CreateNode(XmlNodeType.Element, "rdf:Bag", RDFVocabulary.RDF.BASE_URI);
-                                break;
-                            case RDFModelEnums.RDFContainerTypes.Seq:
-                                subjNode = rdfDoc.CreateNode(XmlNodeType.Element, "rdf:Seq", RDFVocabulary.RDF.BASE_URI);
-                                break;
-                            case RDFModelEnums.RDFContainerTypes.Alt:
-                                subjNode = rdfDoc.CreateNode(XmlNodeType.Element, "rdf:Alt", RDFVocabulary.RDF.BASE_URI);
-                                break;
-                        }
+                            RDFModelEnums.RDFContainerTypes.Bag => rdfDoc.CreateNode(XmlNodeType.Element, "rdf:Bag",
+                                RDFVocabulary.RDF.BASE_URI),
+                            RDFModelEnums.RDFContainerTypes.Seq => rdfDoc.CreateNode(XmlNodeType.Element, "rdf:Seq",
+                                RDFVocabulary.RDF.BASE_URI),
+                            RDFModelEnums.RDFContainerTypes.Alt => rdfDoc.CreateNode(XmlNodeType.Element, "rdf:Alt",
+                                RDFVocabulary.RDF.BASE_URI),
+                            _ => subjNode
+                        };
                         containersXML.Add(subjHash, subjNode);
                     }
 
@@ -656,8 +654,7 @@ internal static class RDFXml
                     //Check if predicate has a unique textual child
                     bool hasOneChildNode = predNode.HasChildNodes && predNode.ChildNodes.Count == 1;
                     if (hasOneChildNode &&
-                        (predNode.ChildNodes[0].NodeType == XmlNodeType.Text
-                         || predNode.ChildNodes[0].NodeType == XmlNodeType.EntityReference))
+                        predNode.ChildNodes[0].NodeType is XmlNodeType.Text or XmlNodeType.EntityReference)
                     {
                         RDFPlainLiteral pLit = new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerText)), xmlLangPred?.Value);
                         result.AddTriple(new RDFTriple(subj, pred, pLit));
@@ -741,7 +738,7 @@ internal static class RDFXml
             {
                 // e.g.:  "http://example.org/integer"
                 if (uriNS.LocalPath != "/" && !isDatatypeNamespace)
-                    nspace = Regex.Replace(nspace, $"{uriNS.Segments[uriNS.Segments.Length - 1]}$", string.Empty);
+                    nspace = Regex.Replace(nspace, $"{uriNS.Segments[^1]}$", string.Empty); //Replace the last segment with empty
             }
 
             //Check if a namespace with the extracted Uri is in the register, or generate an automatic one
@@ -958,7 +955,7 @@ internal static class RDFXml
         //Try to resolve SPL triple (SPLL by "xml:lang")
         bool hasOneChildNode = predNode.HasChildNodes && predNode.ChildNodes.Count == 1;
         if (hasOneChildNode &&
-            (predNode.ChildNodes[0].NodeType == XmlNodeType.Text || predNode.ChildNodes[0].NodeType == XmlNodeType.EntityReference))
+            predNode.ChildNodes[0].NodeType is XmlNodeType.Text or XmlNodeType.EntityReference)
         {
             RDFPlainLiteral pLit = new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerText)), xmlLangPred?.Value);
             return new RDFTriple(subject, predicate, pLit);

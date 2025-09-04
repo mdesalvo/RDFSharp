@@ -113,17 +113,16 @@ public sealed class RDFStrLangExpression : RDFExpression
             if (rightArgumentPMember is RDFPlainLiteral rightArgumentPMemberLiteral
                 && RDFRegex.LangTagNoDirRegex().IsMatch(rightArgumentPMemberLiteral.Value))
             {
-                switch (leftArgumentPMember)
+                expressionResult = leftArgumentPMember switch
                 {
                     //And a plain literal without language
-                    case RDFPlainLiteral leftArgumentPMemberPLit when !leftArgumentPMemberPLit.HasLanguage():
-                        expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLit.Value, rightArgumentPMemberLiteral.Value);
-                        break;
+                    RDFPlainLiteral leftArgumentPMemberPLit when !leftArgumentPMemberPLit.HasLanguage() =>
+                        new RDFPlainLiteral(leftArgumentPMemberPLit.Value, rightArgumentPMemberLiteral.Value),
                     //Or a string-based typed literal
-                    case RDFTypedLiteral leftArgumentPMemberTLit when leftArgumentPMemberTLit.HasStringDatatype():
-                        expressionResult = new RDFPlainLiteral(leftArgumentPMemberTLit.Value, rightArgumentPMemberLiteral.Value);
-                        break;
-                }
+                    RDFTypedLiteral leftArgumentPMemberTLit when leftArgumentPMemberTLit.HasStringDatatype() =>
+                        new RDFPlainLiteral(leftArgumentPMemberTLit.Value, rightArgumentPMemberLiteral.Value),
+                    _ => null
+                };
             }
             #endregion
         }

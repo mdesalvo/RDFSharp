@@ -99,16 +99,16 @@ public sealed class RDFSelectQuery : RDFQuery
             switch (modifier)
             {
                 //Ensure to have only one groupby modifier in the query
-                case RDFGroupByModifier _ when modifiers.Any(m => m is RDFGroupByModifier):
+                case RDFGroupByModifier when modifiers.Any(m => m is RDFGroupByModifier):
                     return this;
                 //Ensure to have only one distinct modifier in the query
-                case RDFDistinctModifier _ when modifiers.Any(m => m is RDFDistinctModifier):
+                case RDFDistinctModifier when modifiers.Any(m => m is RDFDistinctModifier):
                     return this;
                 //Ensure to have only one limit modifier in the query
-                case RDFLimitModifier _ when modifiers.Any(m => m is RDFLimitModifier):
+                case RDFLimitModifier when modifiers.Any(m => m is RDFLimitModifier):
                     return this;
                 //Ensure to have only one offset modifier in the query
-                case RDFOffsetModifier _ when modifiers.Any(m => m is RDFOffsetModifier):
+                case RDFOffsetModifier when modifiers.Any(m => m is RDFOffsetModifier):
                     return this;
                 //Ensure to have only one orderby modifier per variable in the query
                 case RDFOrderByModifier obm when modifiers.Any(m => m is RDFOrderByModifier om && om.Variable.Equals(obm.Variable)):

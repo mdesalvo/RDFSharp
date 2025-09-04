@@ -76,8 +76,8 @@ public sealed class RDFShapesGraph : RDFResource, IEnumerable<RDFShape>
     /// </summary>
     public RDFShapesGraph AddShape(RDFShape shape)
     {
-        if (shape != null && !Shapes.ContainsKey(shape.PatternMemberID))
-            Shapes.Add(shape.PatternMemberID, shape);
+        if (shape != null)
+            Shapes.TryAdd(shape.PatternMemberID, shape);
         return this;
     }
 

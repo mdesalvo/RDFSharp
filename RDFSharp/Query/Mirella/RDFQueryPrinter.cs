@@ -547,7 +547,7 @@ internal static class RDFQueryPrinter
         {
             RDFPatternGroupMember pgMember = evaluablePGMembers[i];
             RDFPatternGroupMember nextPgMember = i < evaluablePGMembers.Count-1 ? evaluablePGMembers[i+1] : null;
-            bool isLastPgMemberOrNextPgMemberIsBind = nextPgMember == null || nextPgMember is RDFBind;
+            bool isLastPgMemberOrNextPgMemberIsBind = nextPgMember is null or RDFBind;
 
             #region PATTERN
             switch (pgMember)
@@ -617,7 +617,7 @@ internal static class RDFQueryPrinter
                     }
                     break;
                 }
-                case RDFPropertyPath ppPgMember when ppPgMember.IsEvaluable:
+                case RDFPropertyPath { IsEvaluable: true } ppPgMember:
                 {
                     //In case we are under MINUS or UNION semantic, we need to print all their closing brackets to complete the grammar
                     if (printingUnion || printingMinus)
@@ -645,7 +645,7 @@ internal static class RDFQueryPrinter
                     }
                     break;
                 }
-                case RDFValues vlPgMember when vlPgMember.IsEvaluable && !vlPgMember.IsInjected:
+                case RDFValues { IsEvaluable: true } vlPgMember:
                 {
                     //In case we are under MINUS or UNION semantic, we need to print all their closing brackets to complete the grammar
                     if (printingUnion || printingMinus)
@@ -867,11 +867,11 @@ internal static class RDFQueryPrinter
                 return null;
             case RDFVariable varPatternMember:
                 return varPatternMember.ToString();
-            case RDFResource _:
-            case RDFContext _:
+            case RDFResource:
+            case RDFContext:
             {
                 #region Blank
-                if (patternMember is RDFResource resPatternMember && resPatternMember.IsBlank)
+                if (patternMember is RDFResource { IsBlank: true } resPatternMember)
                     return resPatternMember.ToString().Replace("bnode:", "_:");
                 #endregion
 

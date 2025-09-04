@@ -109,29 +109,21 @@ public sealed class RDFConcatExpression : RDFExpression
             #endregion
 
             #region Calculate Result
-
-            switch (leftArgumentPMember)
+            //Transform left argument result into a plain literal
+            leftArgumentPMember = leftArgumentPMember switch
             {
-                //Transform left argument result into a plain literal
-                case RDFLiteral leftArgumentPMemberLiteral:
-                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberLiteral.Value);
-                    break;
-                case RDFResource leftArgumentPMemberResource:
-                    leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberResource.ToString());
-                    break;
-            }
-
-            switch (rightArgumentPMember)
+                RDFLiteral leftArgumentPMemberLiteral => new RDFPlainLiteral(leftArgumentPMemberLiteral.Value),
+                RDFResource leftArgumentPMemberResource => new RDFPlainLiteral(leftArgumentPMemberResource.ToString()),
+                _ => leftArgumentPMember
+            };
+            //Transform right argument result into a plain literal
+            rightArgumentPMember = rightArgumentPMember switch
             {
-                //Transform right argument result into a plain literal
-                case RDFLiteral rightArgumentPMemberLiteral:
-                    rightArgumentPMember = new RDFPlainLiteral(rightArgumentPMemberLiteral.Value);
-                    break;
-                case RDFResource rightArgumentPMemberResource:
-                    rightArgumentPMember = new RDFPlainLiteral(rightArgumentPMemberResource.ToString());
-                    break;
-            }
-
+                RDFLiteral rightArgumentPMemberLiteral => new RDFPlainLiteral(rightArgumentPMemberLiteral.Value),
+                RDFResource rightArgumentPMemberResource =>
+                    new RDFPlainLiteral(rightArgumentPMemberResource.ToString()),
+                _ => rightArgumentPMember
+            };
             expressionResult = new RDFPlainLiteral(string.Concat(leftArgumentPMember?.ToString(), rightArgumentPMember?.ToString()));
             #endregion
         }

@@ -89,10 +89,10 @@ public sealed class RDFEncodeForURIExpression : RDFExpression
             //Transform left argument result into a plain literal
             leftArgumentPMember = leftArgumentPMember switch
             {
-                RDFResource _ => new RDFPlainLiteral(leftArgumentPMember.ToString()),
+                RDFResource => new RDFPlainLiteral(leftArgumentPMember.ToString()),
                 RDFPlainLiteral plLeftArgumentPMember => new RDFPlainLiteral(plLeftArgumentPMember.Value),
                 RDFTypedLiteral tlLeftArgumentPMember when tlLeftArgumentPMember.HasStringDatatype() => new RDFPlainLiteral(tlLeftArgumentPMember.Value),
-                _ => null,//binding error => cleanup
+                _ => null //binding error => cleanup
             };
             if (leftArgumentPMember == null)
                 return null;

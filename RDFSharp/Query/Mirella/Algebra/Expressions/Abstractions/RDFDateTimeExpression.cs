@@ -53,22 +53,22 @@ public abstract class RDFDateTimeExpression : RDFExpression
         switch (this)
         {
             //(DATETIMEOP(L))
-            case RDFYearExpression _:
+            case RDFYearExpression:
                 sb.Append("(YEAR(");
                 break;
-            case RDFMonthExpression _:
+            case RDFMonthExpression:
                 sb.Append("(MONTH(");
                 break;
-            case RDFDayExpression _:
+            case RDFDayExpression:
                 sb.Append("(DAY(");
                 break;
-            case RDFHoursExpression _:
+            case RDFHoursExpression:
                 sb.Append("(HOURS(");
                 break;
-            case RDFMinutesExpression _:
+            case RDFMinutesExpression:
                 sb.Append("(MINUTES(");
                 break;
-            case RDFSecondsExpression _:
+            case RDFSecondsExpression:
                 sb.Append("(SECONDS(");
                 break;
         }
@@ -111,28 +111,24 @@ public abstract class RDFDateTimeExpression : RDFExpression
                 && leftArgumentTypedLiteral.HasDatetimeDatatype()
                 && DateTime.TryParse(leftArgumentTypedLiteral.Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out DateTime leftArgumentDateTimeValue))
             {
-                switch (this)
+                expressionResult = this switch
                 {
                     //Execute the datetime expression's comparison logics
-                    case RDFYearExpression _:
-                        expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Year.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                        break;
-                    case RDFMonthExpression _:
-                        expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Month.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                        break;
-                    case RDFDayExpression _:
-                        expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Day.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                        break;
-                    case RDFHoursExpression _:
-                        expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Hour.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                        break;
-                    case RDFMinutesExpression _:
-                        expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Minute.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                        break;
-                    case RDFSecondsExpression _:
-                        expressionResult = new RDFTypedLiteral($"{leftArgumentDateTimeValue.Second}.{leftArgumentDateTimeValue.Millisecond}", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
-                        break;
-                }
+                    RDFYearExpression => new RDFTypedLiteral(leftArgumentDateTimeValue.Year.ToString(),
+                        RDFModelEnums.RDFDatatypes.XSD_INTEGER),
+                    RDFMonthExpression => new RDFTypedLiteral(leftArgumentDateTimeValue.Month.ToString(),
+                        RDFModelEnums.RDFDatatypes.XSD_INTEGER),
+                    RDFDayExpression => new RDFTypedLiteral(leftArgumentDateTimeValue.Day.ToString(),
+                        RDFModelEnums.RDFDatatypes.XSD_INTEGER),
+                    RDFHoursExpression => new RDFTypedLiteral(leftArgumentDateTimeValue.Hour.ToString(),
+                        RDFModelEnums.RDFDatatypes.XSD_INTEGER),
+                    RDFMinutesExpression => new RDFTypedLiteral(leftArgumentDateTimeValue.Minute.ToString(),
+                        RDFModelEnums.RDFDatatypes.XSD_INTEGER),
+                    RDFSecondsExpression => new RDFTypedLiteral(
+                        $"{leftArgumentDateTimeValue.Second}.{leftArgumentDateTimeValue.Millisecond}",
+                        RDFModelEnums.RDFDatatypes.XSD_DECIMAL),
+                    _ => null
+                };
             }
             #endregion
         }
