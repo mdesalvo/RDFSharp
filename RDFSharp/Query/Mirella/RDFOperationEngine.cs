@@ -39,24 +39,17 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFOperationResult EvaluateOperationOnGraphOrStore(RDFOperation operation, RDFDataSource datasource)
         {
-            switch (operation)
+            return operation switch
             {
-                case RDFDeleteDataOperation deleteDataOperation:
-                    return EvaluateDeleteDataOperation(deleteDataOperation, datasource);
-                case RDFDeleteWhereOperation deleteWhereOperation:
-                    return EvaluateDeleteWhereOperation(deleteWhereOperation, datasource);
-                case RDFInsertDataOperation insertDataOperation:
-                    return EvaluateInsertDataOperation(insertDataOperation, datasource);
-                case RDFInsertWhereOperation insertWhereOperation:
-                    return EvaluateInsertWhereOperation(insertWhereOperation, datasource);
-                case RDFDeleteInsertWhereOperation deleteInsertWhereOperation:
-                    return EvaluateDeleteInsertWhereOperation(deleteInsertWhereOperation, datasource);
-                case RDFLoadOperation loadOperation:
-                    return EvaluateLoadOperation(loadOperation, datasource);
-                case RDFClearOperation clearOperation:
-                    return EvaluateClearOperation(clearOperation, datasource);
-            }
-            return new RDFOperationResult();
+                RDFDeleteDataOperation deleteDataOperation => EvaluateDeleteDataOperation(deleteDataOperation, datasource),
+                RDFDeleteWhereOperation deleteWhereOperation => EvaluateDeleteWhereOperation(deleteWhereOperation, datasource),
+                RDFInsertDataOperation insertDataOperation => EvaluateInsertDataOperation(insertDataOperation, datasource),
+                RDFInsertWhereOperation insertWhereOperation => EvaluateInsertWhereOperation(insertWhereOperation, datasource),
+                RDFDeleteInsertWhereOperation deleteInsertWhereOperation => EvaluateDeleteInsertWhereOperation(deleteInsertWhereOperation, datasource),
+                RDFLoadOperation loadOperation => EvaluateLoadOperation(loadOperation, datasource),
+                RDFClearOperation clearOperation => EvaluateClearOperation(clearOperation, datasource),
+                _ => new RDFOperationResult(),
+            };
         }
 
         /// <summary>
@@ -282,8 +275,7 @@ namespace RDFSharp.Query
         internal bool EvaluateOperationOnSPARQLUpdateEndpoint(RDFOperation operation, RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions)
         {
             //Initialize operation options if not provided
-            if (sparqlUpdateEndpointOperationOptions == null)
-                sparqlUpdateEndpointOperationOptions = new RDFSPARQLEndpointOperationOptions();
+            sparqlUpdateEndpointOperationOptions ??= new RDFSPARQLEndpointOperationOptions();
 
             //Establish a connection to the given SPARQL UPDATE endpoint
             using (RDFWebClient webClient = new RDFWebClient(sparqlUpdateEndpointOperationOptions.TimeoutMilliseconds))
@@ -362,21 +354,12 @@ namespace RDFSharp.Query
             }
 
             //Fill the templates from the result table
-            DataTable filledResultTable;
-            switch (deleteInsertCommand)
+            DataTable filledResultTable = deleteInsertCommand switch
             {
-                case "DELETE":
-                    filledResultTable = FillTemplates(operation.DeleteTemplates, resultTable, datasource.IsStore());
-                    break;
-
-                case "INSERT":
-                    filledResultTable = FillTemplates(operation.InsertTemplates, resultTable, datasource.IsStore());
-                    break;
-
-                default:
-                    filledResultTable = FillTemplates(operation is RDFDeleteDataOperation || operation is RDFDeleteWhereOperation ? operation.DeleteTemplates : operation.InsertTemplates, resultTable, datasource.IsStore());
-                    break;
-            }
+                "DELETE" => FillTemplates(operation.DeleteTemplates, resultTable, datasource.IsStore()),
+                "INSERT" => FillTemplates(operation.InsertTemplates, resultTable, datasource.IsStore()),
+                _ => FillTemplates(operation is RDFDeleteDataOperation || operation is RDFDeleteWhereOperation ? operation.DeleteTemplates : operation.InsertTemplates, resultTable, datasource.IsStore()),
+            };
 
             //Apply the modifiers of the query to the result table
             constructResult.ConstructResults = ApplyModifiers(operation, filledResultTable);

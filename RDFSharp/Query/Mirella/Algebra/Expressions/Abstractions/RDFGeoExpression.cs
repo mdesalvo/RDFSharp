@@ -92,19 +92,12 @@ namespace RDFSharp.Query
                     leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
 
                 //Evaluate right argument (Expression VS Variable VS TypedLiteral)
-                RDFPatternMember rightArgumentPMember;
-                switch (RightArgument)
+                RDFPatternMember rightArgumentPMember = RightArgument switch
                 {
-                    case RDFExpression rightArgumentExpression:
-                        rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
-                        break;
-                    case RDFVariable _:
-                        rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
-                        break;
-                    default:
-                        rightArgumentPMember = (RDFTypedLiteral)RightArgument;
-                        break;
-                }
+                    RDFExpression rightArgumentExpression => rightArgumentExpression.ApplyExpression(row),
+                    RDFVariable _ => RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString()),
+                    _ => (RDFTypedLiteral)RightArgument,
+                };
                 #endregion
 
                 #region Calculate Result

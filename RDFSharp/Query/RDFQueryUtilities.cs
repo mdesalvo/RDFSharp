@@ -220,8 +220,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static (bool, string) AbbreviateRDFPatternMember(RDFPatternMember patternMember, List<RDFNamespace> prefixes)
         {
-            if (prefixes == null)
-                prefixes = Enumerable.Empty<RDFNamespace>().ToList();
+            prefixes ??= Enumerable.Empty<RDFNamespace>().ToList();
             string pmemberString = patternMember.ToString();
             string pmemberStringOriginal = patternMember.ToString();
 

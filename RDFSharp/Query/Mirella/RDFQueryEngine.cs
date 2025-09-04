@@ -776,18 +776,13 @@ namespace RDFSharp.Query
         /// </summary>
         internal DataTable ApplyPattern(RDFPattern pattern, RDFDataSource dataSource)
         {
-            switch (dataSource)
+            return dataSource switch
             {
-                case RDFGraph graph:
-                    return ApplyPatternToGraph(pattern, graph);
-
-                case RDFStore store:
-                    return ApplyPatternToStore(pattern, store);
-
-                case RDFFederation federation:
-                    return ApplyPatternToFederation(pattern, federation);
-            }
-            return new DataTable();
+                RDFGraph graph => ApplyPatternToGraph(pattern, graph),
+                RDFStore store => ApplyPatternToStore(pattern, store),
+                RDFFederation federation => ApplyPatternToFederation(pattern, federation),
+                _ => new DataTable(),
+            };
         }
 
         /// <summary>
@@ -1178,8 +1173,7 @@ namespace RDFSharp.Query
             RDFQueryResult queryResult = null;
             if (!string.IsNullOrWhiteSpace(query) && sparqlEndpoint != null)
             {
-                if (sparqlEndpointQueryOptions == null)
-                    sparqlEndpointQueryOptions = new RDFSPARQLEndpointQueryOptions();
+                sparqlEndpointQueryOptions ??= new RDFSPARQLEndpointQueryOptions();
 
                 //Establish a connection to the given SPARQL endpoint
                 using (RDFWebClient webClient = new RDFWebClient(sparqlEndpointQueryOptions.TimeoutMilliseconds))
@@ -1269,22 +1263,14 @@ namespace RDFSharp.Query
             }
 
             //Adjust to give eventual empty result
-            switch (queryType)
+            return queryType switch
             {
-                case "ASK":
-                    return queryResult ?? new RDFAskQueryResult();
-
-                case "SELECT":
-                    return queryResult ?? new RDFSelectQueryResult();
-
-                case "CONSTRUCT":
-                    return queryResult ?? new RDFConstructQueryResult();
-
-                case "DESCRIBE":
-                    return queryResult ?? new RDFDescribeQueryResult();
-            }
-
-            return queryResult;
+                "ASK" => queryResult ?? new RDFAskQueryResult(),
+                "SELECT" => queryResult ?? new RDFSelectQueryResult(),
+                "CONSTRUCT" => queryResult ?? new RDFConstructQueryResult(),
+                "DESCRIBE" => queryResult ?? new RDFDescribeQueryResult(),
+                _ => queryResult,
+            };
         }
         #endregion
 

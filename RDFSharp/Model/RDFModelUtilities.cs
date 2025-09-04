@@ -220,7 +220,7 @@ namespace RDFSharp.Model
             if (graph != null)
             {
                 StringBuilder queryFilters = new StringBuilder(4);
-                List<RDFHashedTriple> S=null, P=null, O=null, L=null, hashedTriples;
+                List<RDFHashedTriple> S=null, P=null, O=null, L=null;
 
                 //Filter by Subject
                 if (subj != null)
@@ -250,46 +250,21 @@ namespace RDFSharp.Model
                     LookupIndex(graph.Index.LookupIndexByLiteral(lit), out L);
                 }
 
-                //Intersect the filters
-                switch (queryFilters.ToString())
+                List<RDFHashedTriple> hashedTriples = queryFilters.ToString() switch
                 {
-                    case "S":
-                        hashedTriples = S;
-                        break;
-                    case "P":
-                        hashedTriples = P;
-                        break;
-                    case "O":
-                        hashedTriples = O;
-                        break;
-                    case "L":
-                        hashedTriples = L;
-                        break;
-                    case "SP":
-                        hashedTriples = S.Intersect(P).ToList();
-                        break;
-                    case "SO":
-                        hashedTriples = S.Intersect(O).ToList();
-                        break;
-                    case "SL":
-                        hashedTriples = S.Intersect(L).ToList();
-                        break;
-                    case "PO":
-                        hashedTriples = P.Intersect(O).ToList();
-                        break;
-                    case "PL":
-                        hashedTriples = P.Intersect(L).ToList();
-                        break;
-                    case "SPO":
-                        hashedTriples = S.Intersect(P).Intersect(O).ToList();
-                        break;
-                    case "SPL":
-                        hashedTriples = S.Intersect(P).Intersect(L).ToList();
-                        break;
-                    default:
-                        hashedTriples = graph.Index.Hashes.Values.ToList();
-                        break;
-                }
+                    "S" => S,
+                    "P" => P,
+                    "O" => O,
+                    "L" => L,
+                    "SP" => [.. S.Intersect(P)],
+                    "SO" => [.. S.Intersect(O)],
+                    "SL" => [.. S.Intersect(L)],
+                    "PO" => [.. P.Intersect(O)],
+                    "PL" => [.. P.Intersect(L)],
+                    "SPO" => [.. S.Intersect(P).Intersect(O)],
+                    "SPL" => [.. S.Intersect(P).Intersect(L)],
+                    _ => [.. graph.Index.Hashes.Values],
+                };
 
                 //Decompress hashed triples
                 return hashedTriples.ConvertAll(ht => new RDFTriple(ht, graph.Index));

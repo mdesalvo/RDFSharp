@@ -146,26 +146,18 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFResource GetEgenhoferFunction()
         {
-            switch (EgenhoferRelation)
+            return EgenhoferRelation switch
             {
-                case RDFQueryEnums.RDFGeoEgenhoferRelations.Contains:
-                    return RDFVocabulary.GEOSPARQL.GEOF.EH_CONTAINS;
-                case RDFQueryEnums.RDFGeoEgenhoferRelations.CoveredBy:
-                    return RDFVocabulary.GEOSPARQL.GEOF.EH_COVERED_BY;
-                case RDFQueryEnums.RDFGeoEgenhoferRelations.Covers:
-                    return RDFVocabulary.GEOSPARQL.GEOF.EH_COVERS;
-                case RDFQueryEnums.RDFGeoEgenhoferRelations.Disjoint:
-                    return RDFVocabulary.GEOSPARQL.GEOF.EH_DISJOINT;
-                case RDFQueryEnums.RDFGeoEgenhoferRelations.Equals:
-                    return RDFVocabulary.GEOSPARQL.GEOF.EH_EQUALS;
-                case RDFQueryEnums.RDFGeoEgenhoferRelations.Inside:
-                    return RDFVocabulary.GEOSPARQL.GEOF.EH_INSIDE;
-                case RDFQueryEnums.RDFGeoEgenhoferRelations.Meet:
-                    return RDFVocabulary.GEOSPARQL.GEOF.EH_MEET;
-                case RDFQueryEnums.RDFGeoEgenhoferRelations.Overlap:
-                    return RDFVocabulary.GEOSPARQL.GEOF.EH_OVERLAP;
-                default: return null;
-            }
+                RDFQueryEnums.RDFGeoEgenhoferRelations.Contains => RDFVocabulary.GEOSPARQL.GEOF.EH_CONTAINS,
+                RDFQueryEnums.RDFGeoEgenhoferRelations.CoveredBy => RDFVocabulary.GEOSPARQL.GEOF.EH_COVERED_BY,
+                RDFQueryEnums.RDFGeoEgenhoferRelations.Covers => RDFVocabulary.GEOSPARQL.GEOF.EH_COVERS,
+                RDFQueryEnums.RDFGeoEgenhoferRelations.Disjoint => RDFVocabulary.GEOSPARQL.GEOF.EH_DISJOINT,
+                RDFQueryEnums.RDFGeoEgenhoferRelations.Equals => RDFVocabulary.GEOSPARQL.GEOF.EH_EQUALS,
+                RDFQueryEnums.RDFGeoEgenhoferRelations.Inside => RDFVocabulary.GEOSPARQL.GEOF.EH_INSIDE,
+                RDFQueryEnums.RDFGeoEgenhoferRelations.Meet => RDFVocabulary.GEOSPARQL.GEOF.EH_MEET,
+                RDFQueryEnums.RDFGeoEgenhoferRelations.Overlap => RDFVocabulary.GEOSPARQL.GEOF.EH_OVERLAP,
+                _ => null,
+            };
         }
         #endregion
     }

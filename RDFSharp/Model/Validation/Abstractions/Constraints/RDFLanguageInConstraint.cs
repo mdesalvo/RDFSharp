@@ -74,24 +74,15 @@ namespace RDFSharp.Model
                         bool langMatches = false;
                         HashSet<string>.Enumerator langTagsEnumerator = LanguageTags.GetEnumerator();
                         while (langTagsEnumerator.MoveNext() && !langMatches)
-                            switch (langTagsEnumerator.Current)
+                            langMatches = langTagsEnumerator.Current switch
                             {
                                 //NO language is found in the variable
-                                case "":
-                                    langMatches = !RDFRegex.EndingLangTagRegex().IsMatch(valueNodePLitString);
-                                    break;
-
+                                "" => !RDFRegex.EndingLangTagRegex().IsMatch(valueNodePLitString),
                                 //ANY language is found in the variable
-                                case "*":
-                                    langMatches = RDFRegex.EndingLangTagRegex().IsMatch(valueNodePLitString);
-                                    break;
-
+                                "*" => RDFRegex.EndingLangTagRegex().IsMatch(valueNodePLitString),
                                 //GIVEN language is found in the variable
-                                default:
-                                    langMatches = Regex.IsMatch(valueNodePLitString, $"@{langTagsEnumerator.Current}{RDFRegex.LangTagSubMask}$", RegexOptions.IgnoreCase);
-                                    break;
-                            }
-
+                                _ => Regex.IsMatch(valueNodePLitString, $"@{langTagsEnumerator.Current}{RDFRegex.LangTagSubMask}$", RegexOptions.IgnoreCase),
+                            };
                         if (!langMatches)
                         {
                             report.AddResult(new RDFValidationResult(shape,

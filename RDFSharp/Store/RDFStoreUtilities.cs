@@ -104,7 +104,7 @@ namespace RDFSharp.Store
             if (store != null)
             {
                 StringBuilder queryFilters = new StringBuilder(4);
-                List<RDFHashedQuadruple> C=null, S=null, P=null, O=null, L=null, hashedQuadruples;
+                List<RDFHashedQuadruple> C=null, S=null, P=null, O=null, L=null;
 
                 //Filter by Context
                 if (ctx != null)
@@ -141,82 +141,33 @@ namespace RDFSharp.Store
                     LookupIndex(store.Index.LookupIndexByLiteral(lit), out L);
                 }
 
-                //Intersect the filters
-                switch (queryFilters.ToString())
+                List<RDFHashedQuadruple> hashedQuadruples = queryFilters.ToString() switch
                 {
-                    case "C":
-                        hashedQuadruples = C;
-                        break;
-                    case "S":
-                        hashedQuadruples = S;
-                        break;
-                    case "P":
-                        hashedQuadruples = P;
-                        break;
-                    case "O":
-                        hashedQuadruples = O;
-                        break;
-                    case "L":
-                        hashedQuadruples = L;
-                        break;
-                    case "CS":
-                        hashedQuadruples = C.Intersect(S).ToList();
-                        break;
-                    case "CP":
-                        hashedQuadruples = C.Intersect(P).ToList();
-                        break;
-                    case "CO":
-                        hashedQuadruples = C.Intersect(O).ToList();
-                        break;
-                    case "CL":
-                        hashedQuadruples = C.Intersect(L).ToList();
-                        break;
-                    case "CSP":
-                        hashedQuadruples = C.Intersect(S).Intersect(P).ToList();
-                        break;
-                    case "CSO":
-                        hashedQuadruples = C.Intersect(S).Intersect(O).ToList();
-                        break;
-                    case "CSL":
-                        hashedQuadruples = C.Intersect(S).Intersect(L).ToList();
-                        break;
-                    case "CPO":
-                        hashedQuadruples = C.Intersect(P).Intersect(O).ToList();
-                        break;
-                    case "CPL":
-                        hashedQuadruples = C.Intersect(P).Intersect(L).ToList();
-                        break;
-                    case "CSPO":
-                        hashedQuadruples = C.Intersect(S).Intersect(P).Intersect(O).ToList();
-                        break;
-                    case "CSPL":
-                        hashedQuadruples = C.Intersect(S).Intersect(P).Intersect(L).ToList();
-                        break;
-                    case "SP":
-                        hashedQuadruples = S.Intersect(P).ToList();
-                        break;
-                    case "SO":
-                        hashedQuadruples = S.Intersect(O).ToList();
-                        break;
-                    case "SL":
-                        hashedQuadruples = S.Intersect(L).ToList();
-                        break;
-                    case "SPO":
-                        hashedQuadruples = S.Intersect(P).Intersect(O).ToList();
-                        break;
-                    case "SPL":
-                        hashedQuadruples = S.Intersect(P).Intersect(L).ToList();
-                        break;
-                    case "PO":
-                        hashedQuadruples = P.Intersect(O).ToList();
-                        break;
-                    case "PL":
-                        hashedQuadruples = P.Intersect(L).ToList();
-                        break;
-                    default:
-                        hashedQuadruples = store.Index.Hashes.Values.ToList();
-                        break;
-                }
+                    "C" => C,
+                    "S" => S,
+                    "P" => P,
+                    "O" => O,
+                    "L" => L,
+                    "CS" => [.. C.Intersect(S)],
+                    "CP" => [.. C.Intersect(P)],
+                    "CO" => [.. C.Intersect(O)],
+                    "CL" => [.. C.Intersect(L)],
+                    "CSP" => [.. C.Intersect(S).Intersect(P)],
+                    "CSO" => [.. C.Intersect(S).Intersect(O)],
+                    "CSL" => [.. C.Intersect(S).Intersect(L)],
+                    "CPO" => [.. C.Intersect(P).Intersect(O)],
+                    "CPL" => [.. C.Intersect(P).Intersect(L)],
+                    "CSPO" => [.. C.Intersect(S).Intersect(P).Intersect(O)],
+                    "CSPL" => [.. C.Intersect(S).Intersect(P).Intersect(L)],
+                    "SP" => [.. S.Intersect(P)],
+                    "SO" => [.. S.Intersect(O)],
+                    "SL" => [.. S.Intersect(L)],
+                    "SPO" => [.. S.Intersect(P).Intersect(O)],
+                    "SPL" => [.. S.Intersect(P).Intersect(L)],
+                    "PO" => [.. P.Intersect(O)],
+                    "PL" => [.. P.Intersect(L)],
+                    _ => [.. store.Index.Hashes.Values],
+                };
 
                 //Decompress hashed quadruples
                 return hashedQuadruples.ConvertAll(hq => new RDFQuadruple(hq, store.Index));

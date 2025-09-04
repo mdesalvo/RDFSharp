@@ -138,26 +138,18 @@ namespace RDFSharp.Query
                      && rightArgumentPMember is RDFPlainLiteral rightArgPLit)
                 {
                     string leftArgPLitString = leftArgPLit.ToString();
-                    switch (rightArgPLit.Value)
+                    expressionResult = rightArgPLit.Value switch
                     {
                         //NO language is acceptable in the evaluating left argument
-                        case "":
-                            expressionResult = RDFRegex.EndingLangTagRegex().IsMatch(leftArgPLitString)
-                                                 ? RDFTypedLiteral.False : RDFTypedLiteral.True;
-                            break;
-
+                        "" => RDFRegex.EndingLangTagRegex().IsMatch(leftArgPLitString)
+                                                                         ? RDFTypedLiteral.False : RDFTypedLiteral.True,
                         //ANY language is acceptable in the evaluating left argument
-                        case "*":
-                            expressionResult = RDFRegex.EndingLangTagRegex().IsMatch(leftArgPLitString)
-                                                 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
-                            break;
-
+                        "*" => RDFRegex.EndingLangTagRegex().IsMatch(leftArgPLitString)
+                                                                         ? RDFTypedLiteral.True : RDFTypedLiteral.False,
                         //GIVEN language is acceptable in the evaluating left argument
-                        default:
-                            expressionResult = Regex.IsMatch(leftArgPLitString, $"@{rightArgPLit.Value}{RDFRegex.LangTagSubMask}$", RegexOptions.IgnoreCase)
-                                                 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
-                            break;
-                    }
+                        _ => Regex.IsMatch(leftArgPLitString, $"@{rightArgPLit.Value}{RDFRegex.LangTagSubMask}$", RegexOptions.IgnoreCase)
+                                                                         ? RDFTypedLiteral.True : RDFTypedLiteral.False,
+                    };
                 }
                 #endregion
             }

@@ -794,8 +794,7 @@ namespace RDFSharp.Model
                     subj = new RDFResource(rdfAboutValue, hashContext);
                 }
             }
-            if (subj == null)
-                subj = new RDFResource();
+            subj ??= new RDFResource();
 
             //We must check if the node is not a standard "rdf:Description": this is
             //the case we can directly build a triple with "rdf:type" pred

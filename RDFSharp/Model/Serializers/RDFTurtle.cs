@@ -429,15 +429,12 @@ namespace RDFSharp.Model
 
             // Predicate is a normal resource
             object predicate = ParseValue(turtleData, turtleContext, result);
-            switch (predicate)
+            return predicate switch
             {
-                case Uri _:
-                    return new RDFResource(predicate.ToString(), turtleContext.HashContext);
-                case RDFResource predRes:
-                    return predRes;
-                default:
-                    throw new RDFModelException("Illegal predicate value: " + predicate + GetTurtleContextCoordinates(turtleContext));
-            }
+                Uri _ => new RDFResource(predicate.ToString(), turtleContext.HashContext),
+                RDFResource predRes => predRes,
+                _ => throw new RDFModelException("Illegal predicate value: " + predicate + GetTurtleContextCoordinates(turtleContext)),
+            };
         }
 
         /// <summary>

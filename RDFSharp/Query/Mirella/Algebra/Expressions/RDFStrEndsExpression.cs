@@ -128,23 +128,14 @@ namespace RDFSharp.Query
                         break;
                 }
 
-                switch (rightArgumentPMember)
+                rightArgumentPMember = rightArgumentPMember switch
                 {
                     //Transform right argument result into a plain literal
-                    case RDFResource _:
-                        rightArgumentPMember = new RDFPlainLiteral(rightArgumentPMember.ToString());
-                        break;
-                    case RDFPlainLiteral plitRightArgumentPMember:
-                        rightArgumentPMember = new RDFPlainLiteral(plitRightArgumentPMember.Value);
-                        break;
-                    case RDFTypedLiteral tlitRightArgumentPMember when tlitRightArgumentPMember.HasStringDatatype():
-                        rightArgumentPMember = new RDFPlainLiteral(tlitRightArgumentPMember.Value);
-                        break;
-                    default:
-                        rightArgumentPMember = null; //binding error => cleanup
-                        break;
-                }
-
+                    RDFResource _ => new RDFPlainLiteral(rightArgumentPMember.ToString()),
+                    RDFPlainLiteral plitRightArgumentPMember => new RDFPlainLiteral(plitRightArgumentPMember.Value),
+                    RDFTypedLiteral tlitRightArgumentPMember when tlitRightArgumentPMember.HasStringDatatype() => new RDFPlainLiteral(tlitRightArgumentPMember.Value),
+                    _ => null,//binding error => cleanup
+                };
                 if (leftArgumentPMember != null && rightArgumentPMember != null)
                     expressionResult = leftArgumentPMember.ToString().EndsWith(rightArgumentPMember.ToString(), StringComparison.Ordinal) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                 #endregion

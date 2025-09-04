@@ -146,26 +146,18 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFResource GetRCC8Function()
         {
-            switch (RCC8Relation)
+            return RCC8Relation switch
             {
-                case RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC:
-                    return RDFVocabulary.GEOSPARQL.GEOF.RCC8DC;
-                case RDFQueryEnums.RDFGeoRCC8Relations.RCC8EC:
-                    return RDFVocabulary.GEOSPARQL.GEOF.RCC8EC;
-                case RDFQueryEnums.RDFGeoRCC8Relations.RCC8EQ:
-                    return RDFVocabulary.GEOSPARQL.GEOF.RCC8EQ;
-                case RDFQueryEnums.RDFGeoRCC8Relations.RCC8NTPP:
-                    return RDFVocabulary.GEOSPARQL.GEOF.RCC8NTPP;
-                case RDFQueryEnums.RDFGeoRCC8Relations.RCC8NTPPI:
-                    return RDFVocabulary.GEOSPARQL.GEOF.RCC8NTPPI;
-                case RDFQueryEnums.RDFGeoRCC8Relations.RCC8PO:
-                    return RDFVocabulary.GEOSPARQL.GEOF.RCC8PO;
-                case RDFQueryEnums.RDFGeoRCC8Relations.RCC8TPP:
-                    return RDFVocabulary.GEOSPARQL.GEOF.RCC8TPP;
-                case RDFQueryEnums.RDFGeoRCC8Relations.RCC8TPPI:
-                    return RDFVocabulary.GEOSPARQL.GEOF.RCC8TPPI;
-                default: return null;
-            }
+                RDFQueryEnums.RDFGeoRCC8Relations.RCC8DC => RDFVocabulary.GEOSPARQL.GEOF.RCC8DC,
+                RDFQueryEnums.RDFGeoRCC8Relations.RCC8EC => RDFVocabulary.GEOSPARQL.GEOF.RCC8EC,
+                RDFQueryEnums.RDFGeoRCC8Relations.RCC8EQ => RDFVocabulary.GEOSPARQL.GEOF.RCC8EQ,
+                RDFQueryEnums.RDFGeoRCC8Relations.RCC8NTPP => RDFVocabulary.GEOSPARQL.GEOF.RCC8NTPP,
+                RDFQueryEnums.RDFGeoRCC8Relations.RCC8NTPPI => RDFVocabulary.GEOSPARQL.GEOF.RCC8NTPPI,
+                RDFQueryEnums.RDFGeoRCC8Relations.RCC8PO => RDFVocabulary.GEOSPARQL.GEOF.RCC8PO,
+                RDFQueryEnums.RDFGeoRCC8Relations.RCC8TPP => RDFVocabulary.GEOSPARQL.GEOF.RCC8TPP,
+                RDFQueryEnums.RDFGeoRCC8Relations.RCC8TPPI => RDFVocabulary.GEOSPARQL.GEOF.RCC8TPPI,
+                _ => null,
+            };
         }
         #endregion
     }

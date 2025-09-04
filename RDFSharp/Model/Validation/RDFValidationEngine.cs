@@ -56,8 +56,7 @@ namespace RDFSharp.Model
             if (!shape.Deactivated)
             {
                 //Resolve focus nodes
-                if (focusNodes == null)
-                    focusNodes = dataGraph.GetFocusNodesOf(shape);
+                focusNodes ??= dataGraph.GetFocusNodesOf(shape);
 
                 //Evaluate focus nodes
                 foreach (RDFPatternMember focusNode in focusNodes)
