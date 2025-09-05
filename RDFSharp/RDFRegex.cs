@@ -37,6 +37,7 @@ internal static partial class RDFRegex
     internal const string StartingQuotePattern = @"^""";
     internal const string EndingQuotePattern = @"""$";
     internal const string LongLiteralPattern = "[\n\r\t\"]";
+    internal const string QueryStringStartPattern = @"^\?"; 
     /*Prefix*/
     internal const string PrefixPattern = @"^[a-zA-Z0-9_\-]+$";
     /*Unicode*/
@@ -107,6 +108,12 @@ internal static partial class RDFRegex
     /// </summary>
     [GeneratedRegex(LongLiteralPattern)]
     internal static partial Regex LongLiteralRegex();
+
+    /// <summary>
+    /// Regex to catch beginning characetr of a querystring
+    /// </summary>
+    [GeneratedRegex(QueryStringStartPattern)]
+    internal static partial Regex QueryStringStartRegex();
 
     /// <summary>
     /// Regex to catch 8-byte Unicode strings
