@@ -2006,42 +2006,6 @@ public class RDFGraphTest
 
     #region Tests (Async)
     [TestMethod]
-    [DataRow("http://example.org/")]
-    public async Task ShouldSetContextAsync(string input)
-    {
-        RDFGraph graph = await new RDFGraph().SetContextAsync(new Uri(input));
-        Assert.IsTrue(graph.Context.Equals(new Uri(input)));
-    }
-
-    [TestMethod]
-    public async Task ShouldNotSetContextBecauseNullUriAsync()
-    {
-        RDFGraph graph = await new RDFGraph().SetContextAsync(null);
-        Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-    }
-
-    [TestMethod]
-    public async Task ShouldNotSetContextBecauseRelativeUriAsync()
-    {
-        RDFGraph graph = await new RDFGraph().SetContextAsync(new Uri("file/system", UriKind.Relative));
-        Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-    }
-
-    [TestMethod]
-    public async Task ShouldNotSetContextBecauseBlankNodeUriAsync()
-    {
-        RDFGraph graph = await new RDFGraph().SetContextAsync(new Uri("bnode:12345"));
-        Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-    }
-
-    [TestMethod]
-    public async Task ShouldGetCustomStringRepresentationAsync()
-    {
-        RDFGraph graph = await new RDFGraph().SetContextAsync(new Uri("http://example.org/"));
-        Assert.IsTrue(graph.ToString().Equals("http://example.org/", StringComparison.Ordinal));
-    }
-
-    [TestMethod]
     public async Task ShouldAddTripleAsync()
     {
         RDFGraph graph = new RDFGraph();
@@ -3476,9 +3440,9 @@ public class RDFGraphTest
     }
 
     [TestMethod]
-    public async Task ShouldImportEmptyFromDataTableButGivingNameTographAsync()
+    public async Task ShouldImportEmptyFromDataTableButGivingNameToGraphAsync()
     {
-        RDFGraph graph1 = await new RDFGraph().SetContextAsync(new Uri("http://context/"));
+        RDFGraph graph1 = new RDFGraph().SetContext(new Uri("http://context/"));
         DataTable table = await graph1.ToDataTableAsync();
         RDFGraph graph2 = await RDFGraph.FromDataTableAsync(table);
 

@@ -54,7 +54,7 @@ public class RDFValidationEngineTest
     public async Task ShouldConformNodeShapeAsync()
     {
         //DataGraph
-        RDFGraph dataGraph = await new RDFGraph().SetContextAsync(new Uri("ex:DataGraph"));
+        RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
         await dataGraph.AddTripleAsync(new RDFTriple(new RDFResource("ex:Person"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Human")));
         await dataGraph.AddTripleAsync(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Human")));
         await dataGraph.AddTripleAsync(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Person")));
@@ -134,7 +134,7 @@ public class RDFValidationEngineTest
     public async Task ShouldConformPropertyShapeAsync()
     {
         //DataGraph
-        RDFGraph dataGraph = await new RDFGraph().SetContextAsync(new Uri("ex:DataGraph"));
+        RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
         await dataGraph.AddTripleAsync(new RDFTriple(new RDFResource("ex:Person"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Human")));
         await dataGraph.AddTripleAsync(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Human")));
         await dataGraph.AddTripleAsync(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));

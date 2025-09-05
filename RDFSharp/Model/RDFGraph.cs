@@ -168,12 +168,6 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
     }
 
     /// <summary>
-    /// Asynchronously sets the context of the graph to the given absolute Uri
-    /// </summary>
-    public Task<RDFGraph> SetContextAsync(Uri contextUri)
-        => Task.Run(() => SetContext(contextUri));
-
-    /// <summary>
     /// Adds the given triple to the graph, avoiding duplicate insertions
     /// </summary>
     public RDFGraph AddTriple(RDFTriple triple)

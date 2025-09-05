@@ -1959,10 +1959,10 @@ public class RDFMemoryStoreTest
     [TestMethod]
     public async Task ShouldMergeGraphAsync()
     {
-        RDFGraph graph = await new RDFGraph([
+        RDFGraph graph = new RDFGraph([
             new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")),
             new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit"))
-        ]).SetContextAsync(new Uri("ex:ctx"));
+        ]).SetContext(new Uri("ex:ctx"));
         RDFMemoryStore store = new RDFMemoryStore();
         await store.MergeGraphAsync(graph);
 
