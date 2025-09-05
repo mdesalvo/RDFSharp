@@ -2033,7 +2033,7 @@ public class RDFSelectQueryTest
     public async Task ShouldApplySelectQueryToGraphAsyncAndHaveResults()
     {
         RDFGraph graph = new RDFGraph();
-        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
@@ -2053,7 +2053,7 @@ public class RDFSelectQueryTest
     public async Task ShouldApplySelectQueryToGraphAsyncAndNotHaveResults()
     {
         RDFGraph graph = new RDFGraph();
-        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
@@ -2146,7 +2146,7 @@ public class RDFSelectQueryTest
     public async Task ShouldApplySelectQueryToFederationAsyncAndHaveResults()
     {
         RDFGraph graph = new RDFGraph();
-        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFFederation federation = new RDFFederation().AddGraph(graph);
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -2167,7 +2167,7 @@ public class RDFSelectQueryTest
     public async Task ShouldApplySelectQueryToFederationAsyncAndNotHaveResults()
     {
         RDFGraph graph = new RDFGraph();
-        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFFederation federation = new RDFFederation().AddGraph(graph);
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -2354,7 +2354,7 @@ public class RDFSelectQueryTest
             case "Graph":
             {
                 RDFGraph graph = new RDFGraph();
-                await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+                graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
                 RDFSelectQuery query = new RDFSelectQuery()
                     .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                     .AddPatternGroup(new RDFPatternGroup()
@@ -2395,7 +2395,7 @@ public class RDFSelectQueryTest
             case "Federation":
             {
                 RDFGraph graph = new RDFGraph();
-                await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+                graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
                 RDFFederation federation = new RDFFederation().AddGraph(graph);
                 RDFSelectQuery query = new RDFSelectQuery()
                     .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
