@@ -121,17 +121,15 @@ public sealed class RDFSPARQLEndpoint : RDFDataSource
     /// </summary>
     internal void FillClientAuthorization(HttpClient httpClient)
     {
-        switch (AuthorizationType)
+        httpClient.DefaultRequestHeaders.Authorization = AuthorizationType switch
         {
             //Basic
-            case RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Basic:
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", AuthorizationValue);
-                break;
+            RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Basic => new AuthenticationHeaderValue("Basic", AuthorizationValue),
             //Bearer
-            case RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Bearer:
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthorizationValue);
-                break;
-        }
+            RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Bearer => new AuthenticationHeaderValue("Bearer", AuthorizationValue),
+            //For future support (any kind of authorization)
+            _ => httpClient.DefaultRequestHeaders.Authorization
+        };
     }
     #endregion
 }

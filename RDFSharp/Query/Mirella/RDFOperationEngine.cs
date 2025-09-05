@@ -14,7 +14,6 @@
   limitations under the License.
 */
 
-using NetTopologySuite.Triangulate.Tri;
 using RDFSharp.Model;
 using RDFSharp.Store;
 using System;
@@ -298,9 +297,9 @@ internal sealed class RDFOperationEngine : RDFQueryEngine
             UriBuilder uriBuilder = new UriBuilder(sparqlUpdateEndpoint.BaseAddress);
 
             //Prepare request (POST)
-            HttpResponseMessage sparqlResponse = null;
             try
             {
+                HttpResponseMessage sparqlResponse;
                 switch (sparqlUpdateEndpointOperationOptions.RequestContentType)
                 {
                     //update via POST with URL-encoded body
