@@ -51,7 +51,7 @@ public sealed class RDFNamespaceRegister : IEnumerable<RDFNamespace>
     /// <summary>
     /// Client used for namespace lookup to prefix.cc services
     /// </summary>
-    internal static HttpClient PrefixCCHttpClient { get; set; }
+    private static HttpClient PrefixCCHttpClient { get; set; }
 
     /// <summary>
     /// Count of the register's namespaces
