@@ -16,10 +16,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Xml;
 using NetTopologySuite.Geometries;
 using RDFSharp.Model;
@@ -277,31 +275,6 @@ public static class RDFQueryUtilities
             return results;
         }
         return Enumerable.Empty<T>().ToList();
-    }
-
-    /// <summary>
-    /// RDFWebClient extends WebClient with support for customization of timeout
-    /// </summary>
-    [ExcludeFromCodeCoverage]
-    internal sealed class RDFWebClient : WebClient
-    {
-        #region Properties
-        private int TimeOut { get; }
-        #endregion
-
-        #region Ctors
-        internal RDFWebClient(int timeoutMilliseconds)
-            => TimeOut = timeoutMilliseconds < -1 ? -1 : timeoutMilliseconds;
-        #endregion
-
-        #region Methods
-        protected override WebRequest GetWebRequest(Uri address)
-        {
-            WebRequest webRequest = base.GetWebRequest(address);
-            webRequest.Timeout = TimeOut;
-            return webRequest;
-        }
-        #endregion
     }
     #endregion
 }

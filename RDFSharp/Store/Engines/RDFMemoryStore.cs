@@ -743,7 +743,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
             using (HttpClient httpClient = new HttpClient(
                 new HttpClientHandler
                 {
-                   MaxAutomaticRedirections = 3,
+                   MaxAutomaticRedirections = 2,
                    AllowAutoRedirect = true
                 }))
             {
@@ -754,7 +754,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/trig"));
 
                 // Execute the request and ensure it is successful
-                HttpResponseMessage response = httpClient.GetAsync(remappedUri, HttpCompletionOption.ResponseHeadersRead).GetAwaiter().GetResult();
+                HttpResponseMessage response = httpClient.GetAsync(remappedUri).GetAwaiter().GetResult();
                 response.EnsureSuccessStatusCode();
 
                 // Detect ContentType from response
@@ -782,6 +782,14 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
                     // TRIG
                     else if (responseContentType.Contains("application/trig", StringComparison.Ordinal))
                         memStore = FromStream(RDFStoreEnums.RDFFormats.TriG, responseStream);
+
+                    #region Datatype Discovery
+                    if (enableDatatypeDiscovery)
+                    {
+                        foreach (RDFGraph graph in memStore.ExtractGraphs())
+                            RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
+                    }
+                    #endregion
                 }
             }
         }
@@ -789,14 +797,6 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
         {
             throw new RDFStoreException("Cannot read RDF memory store from Uri because: " + ex.Message);
         }
-
-        #region Datatype Discovery
-        if (enableDatatypeDiscovery)
-        {
-            foreach (RDFGraph graph in memStore.ExtractGraphs())
-                RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
-        }
-        #endregion
 
         return memStore;
     }

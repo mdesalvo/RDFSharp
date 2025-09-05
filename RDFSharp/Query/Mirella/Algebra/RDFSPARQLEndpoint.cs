@@ -14,11 +14,11 @@
    limitations under the License.
 */
 
-using System;
-using System.Collections.Specialized;
-using System.Net;
 using RDFSharp.Model;
-using static RDFSharp.Query.RDFQueryUtilities;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace RDFSharp.Query;
 
@@ -44,9 +44,9 @@ public sealed class RDFSPARQLEndpoint : RDFDataSource
     internal string AuthorizationValue { get; set; }
 
     /// <summary>
-    /// Collection of query params sent to the SPARQL endpoint
+    /// Dictionary of query params sent to the SPARQL endpoint
     /// </summary>
-    internal NameValueCollection QueryParams { get; set; }
+    internal Dictionary<string,string> QueryParams { get; set; }
     #endregion
 
     #region Ctors
@@ -117,20 +117,19 @@ public sealed class RDFSPARQLEndpoint : RDFDataSource
     }
 
     /// <summary>
-    /// Adds the proper authorization header to the given RDF WebClient
+    /// Adds the proper authorization header to the given HTTP client
     /// </summary>
-    internal void FillWebClientAuthorization(RDFWebClient webClient)
+    internal void FillClientAuthorization(HttpClient httpClient)
     {
         switch (AuthorizationType)
         {
             //Basic
             case RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Basic:
-                webClient.Headers.Add(HttpRequestHeader.Authorization, $"Basic {AuthorizationValue}");
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", AuthorizationValue);
                 break;
-
             //Bearer
             case RDFQueryEnums.RDFSPARQLEndpointAuthorizationTypes.Bearer:
-                webClient.Headers.Add(HttpRequestHeader.Authorization, $"Bearer {AuthorizationValue}");
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthorizationValue);
                 break;
         }
     }

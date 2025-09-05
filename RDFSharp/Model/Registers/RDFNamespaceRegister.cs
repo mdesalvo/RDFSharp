@@ -51,7 +51,7 @@ public sealed class RDFNamespaceRegister : IEnumerable<RDFNamespace>
     /// <summary>
     /// Client used for namespace lookup to prefix.cc services
     /// </summary>
-    private static HttpClient PrefixCCHttpClient { get; set; }
+    private static HttpClient HttpClient { get; set; }
 
     /// <summary>
     /// Count of the register's namespaces
@@ -107,10 +107,10 @@ public sealed class RDFNamespaceRegister : IEnumerable<RDFNamespace>
             }
         };
 
-        PrefixCCHttpClient = new HttpClient(new HttpClientHandler()) { Timeout=TimeSpan.FromMilliseconds(2000) };
-        PrefixCCHttpClient.DefaultRequestHeaders.Accept.Clear();
-        PrefixCCHttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/tab-separated-values"));
-        PrefixCCHttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
+        HttpClient = new HttpClient(new HttpClientHandler()) { Timeout=TimeSpan.FromMilliseconds(2000) };
+        HttpClient.DefaultRequestHeaders.Accept.Clear();
+        HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/tab-separated-values"));
+        HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
     }
     #endregion
 
@@ -197,7 +197,11 @@ public sealed class RDFNamespaceRegister : IEnumerable<RDFNamespace>
             string uriToSearch = uri.Trim();
             result = Instance.Register.Find(ns => string.Equals(ns.NamespaceUri.ToString(), uriToSearch, StringComparison.OrdinalIgnoreCase));
             if (result == null && enablePrefixCCService)
+            {
                 result = LookupPrefixCC(uriToSearch.TrimEnd('#'), 2);
+                if (result != null && GetByPrefix(result.NamespacePrefix) == null)
+                    Instance.Register.Add(result);
+            }
         }
         return result;
     }
@@ -213,7 +217,11 @@ public sealed class RDFNamespaceRegister : IEnumerable<RDFNamespace>
             string prefixToSearch = prefix.Trim();
             result = Instance.Register.Find(ns => string.Equals(ns.NamespacePrefix, prefixToSearch, StringComparison.OrdinalIgnoreCase));
             if (result == null && enablePrefixCCService)
+            {
                 result = LookupPrefixCC(prefixToSearch, 1);
+                if (result != null && GetByUri(result.NamespaceUri.ToString()) == null)
+                    Instance.Register.Add(result);
+            }
         }
         return result;
     }
@@ -234,19 +242,18 @@ public sealed class RDFNamespaceRegister : IEnumerable<RDFNamespace>
             };
 
             // Execute the request and ensure it is successful
-            using (HttpResponseMessage responseMessage = PrefixCCHttpClient.GetAsync(serviceUri, HttpCompletionOption.ResponseHeadersRead).GetAwaiter().GetResult())
+            using (HttpResponseMessage response = HttpClient.GetAsync(serviceUri).GetAwaiter().GetResult())
             {
-                responseMessage.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode();
 
                 // Read response data
-                string responseData = responseMessage.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                string responseData = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                 string[] responseDataParts = responseData.Split('\t');
-                RDFNamespace lookupNamespace = new RDFNamespace(responseDataParts[0], responseDataParts[1].TrimEnd(Environment.NewLine));
-                AddNamespace(lookupNamespace);
-                return lookupNamespace;
+                return new RDFNamespace(responseDataParts[0], responseDataParts[1].TrimEnd(Environment.NewLine));
             }
         }
-        catch { return null; }
+        catch { /* NO-OP */ }
+        return null;
     }
 
     /// <summary>

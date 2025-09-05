@@ -14,15 +14,16 @@
   limitations under the License.
 */
 
+using NetTopologySuite.Triangulate.Tri;
+using RDFSharp.Model;
+using RDFSharp.Store;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
+using System.Net.Mime;
 using System.Web;
-using RDFSharp.Model;
-using RDFSharp.Store;
-using static RDFSharp.Query.RDFQueryUtilities;
 
 namespace RDFSharp.Query;
 
@@ -277,49 +278,66 @@ internal sealed class RDFOperationEngine : RDFQueryEngine
         //Initialize operation options if not provided
         sparqlUpdateEndpointOperationOptions ??= new RDFSPARQLEndpointOperationOptions();
 
-        //Establish a connection to the given SPARQL UPDATE endpoint
-        using (RDFWebClient webClient = new RDFWebClient(sparqlUpdateEndpointOperationOptions.TimeoutMilliseconds))
+        //Establish a connection to the given SPARQL endpoint
+        using (HttpClient httpClient = new HttpClient(
+            new HttpClientHandler
+            {
+                MaxAutomaticRedirections = 2,
+                AllowAutoRedirect = true
+            }))
         {
-            //Parse user-provided parameters
-            string defaultGraphUri = sparqlUpdateEndpoint.QueryParams.Get("default-graph-uri");
-            string namedGraphUri = sparqlUpdateEndpoint.QueryParams.Get("named-graph-uri");
+            httpClient.Timeout = TimeSpan.FromMilliseconds(sparqlUpdateEndpointOperationOptions.TimeoutMilliseconds);
+            httpClient.DefaultRequestHeaders.Accept.Clear();
 
             //Insert request headers
-            string operationString = operation.ToString();
-            switch (sparqlUpdateEndpointOperationOptions.RequestContentType)
-            {
-                //update via POST with URL-encoded body
-                case RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded:
-                    webClient.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");
-                    operationString = $"update={HttpUtility.UrlEncode(operationString)}";
-                    //Handle user-provided parameters
-                    if (!string.IsNullOrEmpty(defaultGraphUri))
-                        operationString = $"using-graph-uri={HttpUtility.UrlEncode(defaultGraphUri)}&{operationString}";
-                    if (!string.IsNullOrEmpty(namedGraphUri))
-                        operationString = $"using-named-graph-uri={HttpUtility.UrlEncode(namedGraphUri)}&{operationString}";
-                    break;
+            sparqlUpdateEndpoint.FillClientAuthorization(httpClient);
 
-                //update via POST directly
-                case RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update:
-                    webClient.Headers.Add(HttpRequestHeader.ContentType, "application/sparql-update");
-                    //Handle user-provided parameters
-                    if (!string.IsNullOrEmpty(defaultGraphUri))
-                        webClient.QueryString.Add("using-graph-uri", defaultGraphUri);
-                    if (!string.IsNullOrEmpty(namedGraphUri))
-                        webClient.QueryString.Add("using-named-graph-uri", namedGraphUri);
-                    break;
-            }
+            //Parse user-provided parameters
+            sparqlUpdateEndpoint.QueryParams.TryGetValue("default-graph-uri", out string defaultGraphUri);
+            sparqlUpdateEndpoint.QueryParams.TryGetValue("named-graph-uri", out string namedGraphUri);
+            UriBuilder uriBuilder = new UriBuilder(sparqlUpdateEndpoint.BaseAddress);
 
-            //Insert eventual authorization headers
-            sparqlUpdateEndpoint.FillWebClientAuthorization(webClient);
-
-            //Send operation to SPARQL UPDATE endpoint
-            string sparqlUpdateResponse = null;
+            //Prepare request (POST)
+            HttpResponseMessage sparqlResponse = null;
             try
             {
-                sparqlUpdateResponse = webClient.UploadString(sparqlUpdateEndpoint.BaseAddress, operationString);
+                switch (sparqlUpdateEndpointOperationOptions.RequestContentType)
+                {
+                    //update via POST with URL-encoded body
+                    case RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded:
+                        //Handle user-provided parameters
+                        string bodyString = $"update={HttpUtility.UrlEncode(operation.ToString())}";
+                        if (!string.IsNullOrEmpty(defaultGraphUri))
+                            bodyString = $"using-graph-uri={HttpUtility.UrlEncode(defaultGraphUri)}&{bodyString}";
+                        if (!string.IsNullOrEmpty(namedGraphUri))
+                            bodyString = $"using-named-graph-uri={HttpUtility.UrlEncode(namedGraphUri)}&{bodyString}";
+                        //Send query to SPARQL UPDATE endpoint
+                        sparqlResponse = httpClient.PostAsync(uriBuilder.Uri, new StringContent(bodyString, RDFModelUtilities.UTF8_NoBOM, MediaTypeNames.Application.FormUrlEncoded)).GetAwaiter().GetResult();
+                        sparqlResponse.EnsureSuccessStatusCode();
+                        break;
 
-                //We assume that (by design) the SPARQL UPDATE endpoint should raise an exception in case of operation failure
+                    //update via POST directly
+                    case RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update:
+                        //Handle user-provided parameters
+                        if (!string.IsNullOrEmpty(defaultGraphUri))
+                        {
+                            string ubQueryBackup = uriBuilder.Query;
+                            uriBuilder.Query = $"using-graph-uri={HttpUtility.UrlEncode(defaultGraphUri)}";
+                            if (ubQueryBackup?.Length > 0)
+                                uriBuilder.Query += $"&{ubQueryBackup}";
+                        }
+                        if (!string.IsNullOrEmpty(namedGraphUri))
+                        {
+                            string ubQueryBackup = uriBuilder.Query;
+                            uriBuilder.Query = $"using-named-graph-uri={HttpUtility.UrlEncode(namedGraphUri)}";
+                            if (ubQueryBackup?.Length > 0)
+                                uriBuilder.Query += $"&{ubQueryBackup.Replace("?using-graph-uri=","using-graph-uri=")}";
+                        }
+                        //Send query to SPARQL UPDATE endpoint
+                        sparqlResponse = httpClient.PostAsync(uriBuilder.Uri, new StringContent(operation.ToString(), RDFModelUtilities.UTF8_NoBOM, "application/sparql-update")).GetAwaiter().GetResult();
+                        sparqlResponse.EnsureSuccessStatusCode();
+                        break;
+                }
                 return true;
             }
             catch (Exception ex)
@@ -330,7 +348,7 @@ internal sealed class RDFOperationEngine : RDFQueryEngine
                 if (isLoadSilent || isClearSilent)
                     return false;
 
-                throw new RDFQueryException($"Operation on SPARQL UPDATE endpoint {sparqlUpdateEndpoint.BaseAddress} failed because: {ex.Message}; Endpoint's response was: {sparqlUpdateResponse}", ex);
+                throw new RDFQueryException($"Operation on SPARQL UPDATE endpoint {sparqlUpdateEndpoint.BaseAddress} failed because: {ex.Message}", ex);
             }
         }
     }

@@ -900,7 +900,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
             using (HttpClient httpClient = new HttpClient(
                 new HttpClientHandler
                 {
-                   MaxAutomaticRedirections = 3,
+                   MaxAutomaticRedirections = 2,
                    AllowAutoRedirect = true
                 }))
             {
@@ -914,7 +914,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/trix"));
 
                 // Execute the request and ensure it is successful
-                HttpResponseMessage response = httpClient.GetAsync(remappedUri, HttpCompletionOption.ResponseHeadersRead).GetAwaiter().GetResult();
+                HttpResponseMessage response = httpClient.GetAsync(remappedUri).GetAwaiter().GetResult();
                 response.EnsureSuccessStatusCode();
 
                 // Detect ContentType from response
@@ -937,8 +937,8 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
 
                     //TURTLE
                     else if (responseContentType.Contains("text/turtle")
-                             || responseContentType.Contains("application/turtle")
-                             || responseContentType.Contains("application/x-turtle"))
+                                || responseContentType.Contains("application/turtle")
+                                || responseContentType.Contains("application/x-turtle"))
                         graph = FromStream(RDFModelEnums.RDFFormats.Turtle, responseStream, remappedUri);
 
                     //N-TRIPLES
@@ -948,6 +948,11 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
                     //TRIX
                     else if (responseContentType.Contains("application/trix"))
                         graph = FromStream(RDFModelEnums.RDFFormats.TriX, responseStream, remappedUri);
+
+                    #region Datatype Discovery
+                    if (enableDatatypeDiscovery)
+                        RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
+                    #endregion
                 }
             }
         }
@@ -955,11 +960,6 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
         {
             throw new RDFModelException($"Cannot read RDF graph from Uri {uri} because: " + ex.Message);
         }
-
-        #region Datatype Discovery
-        if (enableDatatypeDiscovery)
-            RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
-        #endregion
 
         return graph;
     }

@@ -722,7 +722,7 @@ public class RDFSelectQueryTest
         }
         catch (RDFQueryException qex)
         {
-            Assert.IsTrue(string.Equals(qex.Message, "SELECT query on SPARQL endpoint failed because: The operation has timed out.", StringComparison.Ordinal));
+            Assert.IsTrue(qex.Message.StartsWith("SELECT query on SPARQL endpoint failed because: The request was canceled due to the configured HttpClient.Timeout", StringComparison.Ordinal));
         }
     }
 
@@ -781,7 +781,7 @@ public class RDFSelectQueryTest
         }
         catch (RDFQueryException qex)
         {
-            Assert.IsTrue(string.Equals(qex.Message, "SELECT query on SPARQL endpoint failed because: The operation has timed out.", StringComparison.Ordinal));
+            Assert.IsTrue(qex.Message.StartsWith("SELECT query on SPARQL endpoint failed because: The request was canceled due to the configured HttpClient.Timeout", StringComparison.Ordinal));
         }
     }
 

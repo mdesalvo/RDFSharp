@@ -14,16 +14,18 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
+using RDFSharp.Store;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Text;
 using System.Web;
-using RDFSharp.Model;
-using RDFSharp.Store;
 using static RDFSharp.Query.RDFQueryUtilities;
 
 namespace RDFSharp.Query;
@@ -1174,30 +1176,40 @@ internal class RDFQueryEngine
             sparqlEndpointQueryOptions ??= new RDFSPARQLEndpointQueryOptions();
 
             //Establish a connection to the given SPARQL endpoint
-            using (RDFWebClient webClient = new RDFWebClient(sparqlEndpointQueryOptions.TimeoutMilliseconds))
+            using (HttpClient httpClient = new HttpClient(
+                new HttpClientHandler
+                {
+                    MaxAutomaticRedirections = 2,
+                    AllowAutoRedirect = true
+                }))
             {
-                //Parse user-provided parameters
-                string defaultGraphUri = sparqlEndpoint.QueryParams.Get("default-graph-uri");
-                string namedGraphUri = sparqlEndpoint.QueryParams.Get("named-graph-uri");
+                httpClient.Timeout = TimeSpan.FromMilliseconds(sparqlEndpointQueryOptions.TimeoutMilliseconds);
+                httpClient.DefaultRequestHeaders.Accept.Clear();
 
                 //Insert request headers
-                sparqlEndpoint.FillWebClientAuthorization(webClient);
+                sparqlEndpoint.FillClientAuthorization(httpClient);
                 switch (queryType)
                 {
                     case "ASK":
                     case "SELECT":
-                        webClient.Headers.Add(HttpRequestHeader.Accept, "application/sparql-results+xml");
+                        httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/sparql-results+xml"));
                         break;
 
                     case "CONSTRUCT":
                     case "DESCRIBE":
-                        webClient.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
-                        webClient.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
+                        httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/turtle"));
+                        httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/turtle"));
+                        httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-turtle"));
                         break;
                 }
 
+                //Parse user-provided parameters
+                sparqlEndpoint.QueryParams.TryGetValue("default-graph-uri", out string defaultGraphUri);
+                sparqlEndpoint.QueryParams.TryGetValue("named-graph-uri", out string namedGraphUri);
+                UriBuilder uriBuilder = new UriBuilder(sparqlEndpoint.BaseAddress);
+
                 //Prepare request (GET vs POST)
-                byte[] sparqlResponse = null;
+                HttpResponseMessage sparqlResponse = null;
                 try
                 {
                     switch (sparqlEndpointQueryOptions.QueryMethod)
@@ -1205,23 +1217,28 @@ internal class RDFQueryEngine
                         //query via GET with URL-encoded querystring
                         case RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Get:
                             //Handle user-provided parameters
-                            webClient.QueryString.Add("query", HttpUtility.UrlEncode(query));
-                            webClient.QueryString.Add(sparqlEndpoint.QueryParams);
+                            string queryString = $"query={HttpUtility.UrlEncode(query)}";
+                            if (!string.IsNullOrEmpty(defaultGraphUri))
+                                queryString = $"default-graph-uri={HttpUtility.UrlEncode(defaultGraphUri)}&{queryString}";
+                            if (!string.IsNullOrEmpty(namedGraphUri))
+                                queryString = $"named-graph-uri={HttpUtility.UrlEncode(namedGraphUri)}&{queryString}";
+                            uriBuilder.Query = queryString;
                             //Send query to SPARQL endpoint
-                            sparqlResponse = webClient.DownloadData(sparqlEndpoint.BaseAddress);
+                            sparqlResponse = httpClient.GetAsync(uriBuilder.Uri).GetAwaiter().GetResult();
+                            sparqlResponse.EnsureSuccessStatusCode();
                             break;
 
                         //query via POST with URL-encoded body
                         case RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post:
-                            webClient.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");
                             //Handle user-provided parameters
-                            string queryString = $"query={HttpUtility.UrlEncode(query)}";
+                            string bodyString = $"query={HttpUtility.UrlEncode(query)}";
                             if (!string.IsNullOrEmpty(defaultGraphUri))
-                                queryString = $"using-graph-uri={HttpUtility.UrlEncode(defaultGraphUri)}&{queryString}";
+                                bodyString = $"using-graph-uri={HttpUtility.UrlEncode(defaultGraphUri)}&{bodyString}";
                             if (!string.IsNullOrEmpty(namedGraphUri))
-                                queryString = $"using-named-graph-uri={HttpUtility.UrlEncode(namedGraphUri)}&{queryString}";
+                                bodyString = $"using-named-graph-uri={HttpUtility.UrlEncode(namedGraphUri)}&{bodyString}";
                             //Send query to SPARQL endpoint
-                            sparqlResponse = Encoding.UTF8.GetBytes(webClient.UploadString(sparqlEndpoint.BaseAddress, queryString));
+                            sparqlResponse = httpClient.PostAsync(uriBuilder.Uri, new StringContent(bodyString, RDFModelUtilities.UTF8_NoBOM, MediaTypeNames.Application.FormUrlEncoded)).GetAwaiter().GetResult();
+                            sparqlResponse.EnsureSuccessStatusCode();
                             break;
                     }
                 }
@@ -1232,27 +1249,27 @@ internal class RDFQueryEngine
                 }
 
                 //Parse response from SPARQL endpoint
-                if (sparqlResponse != null)
-                    using (MemoryStream sStream = new MemoryStream(sparqlResponse))
+                if (sparqlResponse?.IsSuccessStatusCode ?? false)
+                    using (Stream responseStream = sparqlResponse.Content.ReadAsStream())
                     {
                         switch (queryType)
                         {
                             case "ASK":
-                                queryResult = RDFAskQueryResult.FromSparqlXmlResult(sStream);
+                                queryResult = RDFAskQueryResult.FromSparqlXmlResult(responseStream);
                                 break;
 
                             case "SELECT":
-                                queryResult = RDFSelectQueryResult.FromSparqlXmlResult(sStream);
+                                queryResult = RDFSelectQueryResult.FromSparqlXmlResult(responseStream);
                                 AdjustVariableColumnNames(((RDFSelectQueryResult)queryResult).SelectResults);
                                 break;
 
                             case "CONSTRUCT":
-                                queryResult = RDFConstructQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
+                                queryResult = RDFConstructQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, responseStream));
                                 AdjustVariableColumnNames(((RDFConstructQueryResult)queryResult).ConstructResults);
                                 break;
 
                             case "DESCRIBE":
-                                queryResult = RDFDescribeQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
+                                queryResult = RDFDescribeQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, responseStream));
                                 AdjustVariableColumnNames(((RDFDescribeQueryResult)queryResult).DescribeResults);
                                 break;
                         }
