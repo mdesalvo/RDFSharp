@@ -912,11 +912,11 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-turtle"));
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/n-triples"));
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/trix"));
-                
+
                 // Execute the request and ensure it is successful
-                HttpResponseMessage response = httpClient.GetAsync(remappedUri).GetAwaiter().GetResult();
+                HttpResponseMessage response = httpClient.GetAsync(remappedUri, HttpCompletionOption.ResponseHeadersRead).GetAwaiter().GetResult();
                 response.EnsureSuccessStatusCode();
-                
+
                 // Detect ContentType from response
                 string responseContentType = response.Content.Headers.ContentType?.MediaType;
                 if (string.IsNullOrWhiteSpace(responseContentType))
@@ -927,7 +927,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
                     if (string.IsNullOrWhiteSpace(responseContentType))
                         responseContentType = "application/rdf+xml"; //Fallback to RDF/XML
                 }
-                
+
                 // Read response data
                 using (Stream responseStream = response.Content.ReadAsStream())
                 {

@@ -17,7 +17,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using static RDFSharp.Query.RDFQueryUtilities;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace RDFSharp.Model;
 
@@ -50,7 +51,7 @@ public sealed class RDFNamespaceRegister : IEnumerable<RDFNamespace>
     /// <summary>
     /// Client used for namespace lookup to prefix.cc services
     /// </summary>
-    internal static RDFWebClient WebClient { get; set; }
+    internal static HttpClient PrefixCCHttpClient { get; set; }
 
     /// <summary>
     /// Count of the register's namespaces
@@ -71,6 +72,7 @@ public sealed class RDFNamespaceRegister : IEnumerable<RDFNamespace>
     /// </summary>
     static RDFNamespaceRegister()
     {
+        DefaultNamespace = RDFSharpNS;
         Instance = new RDFNamespaceRegister
         {
             Register = new List<RDFNamespace>(32)
@@ -105,8 +107,10 @@ public sealed class RDFNamespaceRegister : IEnumerable<RDFNamespace>
             }
         };
 
-        DefaultNamespace = RDFSharpNS;
-        WebClient = new RDFWebClient(2000);
+        PrefixCCHttpClient = new HttpClient(new HttpClientHandler()) { Timeout=TimeSpan.FromMilliseconds(2000) };
+        PrefixCCHttpClient.DefaultRequestHeaders.Accept.Clear();
+        PrefixCCHttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/tab-separated-values"));
+        PrefixCCHttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
     }
     #endregion
 
@@ -221,13 +225,26 @@ public sealed class RDFNamespaceRegister : IEnumerable<RDFNamespace>
     {
         try
         {
-            string serviceResponse = WebClient.DownloadString(
-                lookupMode == 1 ? $"http://prefix.cc/{data}.file.txt"
-                    : $"http://prefix.cc/reverse?uri={data}&format=txt");
-            string[] namespaceParts = serviceResponse.Split('\t');
-            RDFNamespace ns = new RDFNamespace(namespaceParts[0], namespaceParts[1].TrimEnd(Environment.NewLine));
-            AddNamespace(ns);
-            return ns;
+            // Generate service Uri
+            string serviceUri = lookupMode switch
+            {
+                1 => $"http://prefix.cc/{data}.file.txt",
+                2 => $"http://prefix.cc/reverse?uri={data}&format=txt",
+                _ => throw new RDFModelException($"Unsupported prefix.cc lookup mode: {lookupMode}")
+            };
+
+            // Execute the request and ensure it is successful
+            using (HttpResponseMessage responseMessage = PrefixCCHttpClient.GetAsync(serviceUri, HttpCompletionOption.ResponseHeadersRead).GetAwaiter().GetResult())
+            {
+                responseMessage.EnsureSuccessStatusCode();
+
+                // Read response data
+                string responseData = responseMessage.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                string[] responseDataParts = responseData.Split('\t');
+                RDFNamespace lookupNamespace = new RDFNamespace(responseDataParts[0], responseDataParts[1].TrimEnd(Environment.NewLine));
+                AddNamespace(lookupNamespace);
+                return lookupNamespace;
+            }
         }
         catch { return null; }
     }

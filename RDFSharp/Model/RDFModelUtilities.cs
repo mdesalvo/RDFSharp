@@ -39,7 +39,7 @@ public static class RDFModelUtilities
     /// </summary>
     /// <exception cref="RDFModelException"></exception>
     public static long CreateHash(string input)
-        => input == null ? throw new RDFModelException("Cannot create hash because given \"input\" string parameter is null.") 
+        => input == null ? throw new RDFModelException("Cannot create hash because given \"input\" string parameter is null.")
                          : BitConverter.ToInt64(MD5.HashData(UTF8_NoBOM.GetBytes(input)), 0);
     #endregion
 

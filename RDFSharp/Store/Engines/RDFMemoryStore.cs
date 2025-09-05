@@ -752,11 +752,11 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/n-quads"));
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/trix"));
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/trig"));
-                
+
                 // Execute the request and ensure it is successful
-                HttpResponseMessage response = httpClient.GetAsync(remappedUri).GetAwaiter().GetResult();
+                HttpResponseMessage response = httpClient.GetAsync(remappedUri, HttpCompletionOption.ResponseHeadersRead).GetAwaiter().GetResult();
                 response.EnsureSuccessStatusCode();
-                
+
                 // Detect ContentType from response
                 string responseContentType = response.Content.Headers.ContentType?.MediaType;
                 if (string.IsNullOrWhiteSpace(responseContentType))
@@ -767,7 +767,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
                     if (string.IsNullOrWhiteSpace(responseContentType))
                         responseContentType = "application/n-quads"; // Fallback to N-QUADS
                 }
-                
+
                 // Read response data
                 using (Stream responseStream = response.Content.ReadAsStream())
                 {
