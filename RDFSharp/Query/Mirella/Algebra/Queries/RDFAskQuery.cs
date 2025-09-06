@@ -98,49 +98,26 @@ public sealed class RDFAskQuery : RDFQuery
     /// <summary>
     /// Applies the query to the given SPARQL endpoint
     /// </summary>
-    public RDFAskQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
-        => ApplyRawToSPARQLEndpoint(ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
-
-    /// <summary>
-    /// Applies the query to the given SPARQL endpoint
-    /// </summary>
-    public RDFAskQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
+    public RDFAskQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
         => ApplyRawToSPARQLEndpoint(ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
 
     /// <summary>
-    /// Applies the given raw string ASK query to the given SPARQL endpoint
-    /// </summary>
-    public static RDFAskQueryResult ApplyRawToSPARQLEndpoint(string askQuery, RDFSPARQLEndpoint sparqlEndpoint)
-        => ApplyRawToSPARQLEndpoint(askQuery, sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
-
-    /// <summary>
-    /// Applies the given raw string ASK query to the given SPARQL endpoint
-    /// </summary>
-    public static RDFAskQueryResult ApplyRawToSPARQLEndpoint(string askQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-        => sparqlEndpoint != null ? (RDFAskQueryResult)RDFQueryEngine.ApplyRawToSPARQLEndpoint("ASK", askQuery, sparqlEndpoint, sparqlEndpointQueryOptions) : new RDFAskQueryResult();
-
-    /// <summary>
     /// Asynchronously applies the query to the given SPARQL endpoint
     /// </summary>
-    public Task<RDFAskQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
-        => ApplyRawToSPARQLEndpointAsync(ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
-
+    public Task<RDFAskQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions = null)
+        => Task.Run(() => ApplyToSPARQLEndpoint(sparqlEndpoint, sparqlEndpointQueryOptions));
+    
     /// <summary>
-    /// Asynchronously applies the query to the given SPARQL endpoint
+    /// Applies the given raw string ASK query to the given SPARQL endpoint
     /// </summary>
-    public Task<RDFAskQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-        => ApplyRawToSPARQLEndpointAsync(ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
+    public static RDFAskQueryResult ApplyRawToSPARQLEndpoint(string askQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
+        => sparqlEndpoint != null ? (RDFAskQueryResult)RDFQueryEngine.ApplyRawToSPARQLEndpoint("ASK", askQuery, sparqlEndpoint, sparqlEndpointQueryOptions)
+                                  : new RDFAskQueryResult();
 
     /// <summary>
     /// Asynchronously applies the given raw string ASK query to the given SPARQL endpoint
     /// </summary>
-    public static Task<RDFAskQueryResult> ApplyRawToSPARQLEndpointAsync(string askQuery, RDFSPARQLEndpoint sparqlEndpoint)
-        => ApplyRawToSPARQLEndpointAsync(askQuery, sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
-
-    /// <summary>
-    /// Asynchronously applies the given raw string ASK query to the given SPARQL endpoint
-    /// </summary>
-    public static Task<RDFAskQueryResult> ApplyRawToSPARQLEndpointAsync(string askQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
+    public static Task<RDFAskQueryResult> ApplyRawToSPARQLEndpointAsync(string askQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
         => Task.Run(() => ApplyRawToSPARQLEndpoint(askQuery, sparqlEndpoint, sparqlEndpointQueryOptions));
     #endregion
 }

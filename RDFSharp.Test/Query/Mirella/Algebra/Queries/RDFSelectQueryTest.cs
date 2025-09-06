@@ -95,7 +95,7 @@ public class RDFSelectQueryTest
     [TestMethod]
     public void ShouldCreateUnionSelectQuery()
     {
-        RDFSelectQuery query = new RDFSelectQuery().UnionWithNext();
+        RDFSelectQuery query = new RDFSelectQuery().Union();
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
@@ -121,7 +121,7 @@ public class RDFSelectQueryTest
     [TestMethod]
     public void ShouldCreateMinusSelectQuery()
     {
-        RDFSelectQuery query = new RDFSelectQuery().MinusWithNext();
+        RDFSelectQuery query = new RDFSelectQuery().Minus();
 
         Assert.IsNotNull(query);
         Assert.IsNotNull(query.QueryMembers);
@@ -261,7 +261,7 @@ public class RDFSelectQueryTest
                         .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
                         .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
                 .AddProjectionVariable(new RDFVariable("?S"))
-                .UnionWithNext());
+                .Union());
         query.AddSubQuery(
             new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))
@@ -532,12 +532,12 @@ public class RDFSelectQueryTest
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDFS.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS))
-                .MinusWithNext())
+                .Minus())
             .AddSubQuery(new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:fruit"), new RDFResource("ex:tree")]))
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS).Optional()))
-                .UnionWithNext())
+                .Union())
             .AddSubQuery(new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:grass"), new RDFResource("ex:lemon")]))));
@@ -593,7 +593,7 @@ public class RDFSelectQueryTest
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS))
-                .MinusWithNext())
+                .Minus())
             .AddSubQuery(new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:flower")]))))
@@ -711,7 +711,7 @@ public class RDFSelectQueryTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")))
-                .UnionWithNext())
+                .Union())
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                 .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(250, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)));
@@ -769,7 +769,7 @@ public class RDFSelectQueryTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")))
-                .UnionWithNext())
+                .Union())
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                 .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(250,
@@ -829,7 +829,7 @@ public class RDFSelectQueryTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")))
-                .UnionWithNext())
+                .Union())
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                 .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(250, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult)));
@@ -886,7 +886,7 @@ public class RDFSelectQueryTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")))
-                .UnionWithNext())
+                .Union())
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                 .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(250,
@@ -2340,123 +2340,6 @@ public class RDFSelectQueryTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(0, result.SelectResultsCount);
         Assert.AreEqual(0, result.SelectResults.Columns.Count);
-    }
-
-    [TestMethod]
-    [DataRow("Graph")]
-    [DataRow("Store")]
-    [DataRow("Federation")]
-    [DataRow("SPARQLEndpoint")]
-    public async Task ShouldApplySelectQueryToDataSourceAsyncAndHaveResults(string dsType)
-    {
-        switch (dsType)
-        {
-            case "Graph":
-            {
-                RDFGraph graph = new RDFGraph();
-                graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
-                RDFSelectQuery query = new RDFSelectQuery()
-                    .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                    .AddPatternGroup(new RDFPatternGroup()
-                        .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
-                    .AddProjectionVariable(new RDFVariable("?S"));
-                RDFSelectQueryResult result = await query.ApplyToDataSourceAsync(graph);
-
-                Assert.IsNotNull(result);
-                Assert.IsNotNull(result.SelectResults);
-                Assert.AreEqual(1, result.SelectResultsCount);
-                Assert.AreEqual(1, result.SelectResults.Columns.Count);
-                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
-                Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
-                break;
-            }
-            case "Store":
-            {
-                RDFMemoryStore store = new RDFMemoryStore();
-                store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
-                RDFSelectQuery query = new RDFSelectQuery()
-                    .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                    .AddPatternGroup(new RDFPatternGroup()
-                        .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
-                    .AddProjectionVariable(new RDFVariable("?C"))
-                    .AddProjectionVariable(new RDFVariable("?S"));
-                RDFSelectQueryResult result = await query.ApplyToDataSourceAsync(store);
-
-                Assert.IsNotNull(result);
-                Assert.IsNotNull(result.SelectResults);
-                Assert.AreEqual(1, result.SelectResultsCount);
-                Assert.AreEqual(2, result.SelectResults.Columns.Count);
-                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?C", StringComparison.Ordinal));
-                Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?S", StringComparison.Ordinal));
-                Assert.IsTrue(result.SelectResults.Rows[0]["?C"].Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
-                Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
-                break;
-            }
-            case "Federation":
-            {
-                RDFGraph graph = new RDFGraph();
-                graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
-                RDFFederation federation = new RDFFederation().AddGraph(graph);
-                RDFSelectQuery query = new RDFSelectQuery()
-                    .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                    .AddPatternGroup(new RDFPatternGroup()
-                        .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
-                    .AddProjectionVariable(new RDFVariable("?S"));
-                RDFSelectQueryResult result = await query.ApplyToDataSourceAsync(federation);
-
-                Assert.IsNotNull(result);
-                Assert.IsNotNull(result.SelectResults);
-                Assert.AreEqual(1, result.SelectResultsCount);
-                Assert.AreEqual(1, result.SelectResults.Columns.Count);
-                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
-                Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
-                break;
-            }
-            case "SPARQLEndpoint":
-            {
-                server
-                    .Given(
-                        Request.Create()
-                            .WithPath("/RDFSelectQueryTest/ShouldApplySelectQueryToDataSourceAsyncAndHaveResults/sparql")
-                            .UsingGet()
-                            .WithParam(queryParams => queryParams.ContainsKey("query")))
-                    .RespondWith(
-                        Response.Create()
-                            .WithBody(
-                                """
-                                <?xml version="1.0" encoding="utf-8"?>
-                                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
-                                  <head>
-                                    <variable name="?S" />
-                                  </head>
-                                  <results>
-                                    <result>
-                                      <binding name="?S">
-                                        <uri>ex:flower</uri>
-                                      </binding>
-                                    </result>
-                                  </results>
-                                </sparql>
-                                """, encoding: Encoding.UTF8)
-                            .WithHeader("Content-Type", "application/sparql-results+xml")
-                            .WithStatusCode(HttpStatusCode.OK));
-
-                RDFSelectQuery query = new RDFSelectQuery()
-                    .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                    .AddPatternGroup(new RDFPatternGroup()
-                        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-                RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToDataSourceAsyncAndHaveResults/sparql"));
-                RDFSelectQueryResult result = await query.ApplyToDataSourceAsync(endpoint);
-
-                Assert.IsNotNull(result);
-                Assert.IsNotNull(result.SelectResults);
-                Assert.AreEqual(1, result.SelectResultsCount);
-                Assert.AreEqual(1, result.SelectResults.Columns.Count);
-                Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S", StringComparison.Ordinal));
-                Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
-                break;
-            }
-        }
     }
     #endregion
 }

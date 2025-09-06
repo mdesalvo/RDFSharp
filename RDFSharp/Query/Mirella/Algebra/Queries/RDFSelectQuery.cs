@@ -172,56 +172,26 @@ public sealed class RDFSelectQuery : RDFQuery
     /// <summary>
     /// Applies the query to the given SPARQL endpoint
     /// </summary>
-    public RDFSelectQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
-        => ApplyRawToSPARQLEndpoint(ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
-
-    /// <summary>
-    /// Applies the query to the given SPARQL endpoint
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public RDFSelectQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
+    public RDFSelectQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
         => ApplyRawToSPARQLEndpoint(ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
 
     /// <summary>
-    /// Applies the given raw string SELECT query to the given SPARQL endpoint
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public static RDFSelectQueryResult ApplyRawToSPARQLEndpoint(string selectQuery, RDFSPARQLEndpoint sparqlEndpoint)
-        => ApplyRawToSPARQLEndpoint(selectQuery, sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
-
-    /// <summary>
-    /// Applies the given raw string SELECT query to the given SPARQL endpoint
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public static RDFSelectQueryResult ApplyRawToSPARQLEndpoint(string selectQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-        => sparqlEndpoint != null ? (RDFSelectQueryResult)RDFQueryEngine.ApplyRawToSPARQLEndpoint("SELECT", selectQuery, sparqlEndpoint, sparqlEndpointQueryOptions) : new RDFSelectQueryResult();
-
-    /// <summary>
     /// Asynchronously applies the query to the given SPARQL endpoint
     /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public Task<RDFSelectQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
-        => ApplyRawToSPARQLEndpointAsync(ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
-
+    public Task<RDFSelectQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
+        => Task.Run(() => ApplyToSPARQLEndpoint(sparqlEndpoint, sparqlEndpointQueryOptions));
+    
     /// <summary>
-    /// Asynchronously applies the query to the given SPARQL endpoint
+    /// Applies the given raw string SELECT query to the given SPARQL endpoint
     /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public Task<RDFSelectQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
-        => ApplyRawToSPARQLEndpointAsync(ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
+    public static RDFSelectQueryResult ApplyRawToSPARQLEndpoint(string selectQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
+        => sparqlEndpoint != null ? (RDFSelectQueryResult)RDFQueryEngine.ApplyRawToSPARQLEndpoint("SELECT", selectQuery, sparqlEndpoint, sparqlEndpointQueryOptions)
+                                  : new RDFSelectQueryResult();
 
     /// <summary>
     /// Asynchronously applies the given raw string SELECT query to the given SPARQL endpoint
     /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public static Task<RDFSelectQueryResult> ApplyRawToSPARQLEndpointAsync(string selectQuery, RDFSPARQLEndpoint sparqlEndpoint)
-        => ApplyRawToSPARQLEndpointAsync(selectQuery, sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
-
-    /// <summary>
-    /// Asynchronously applies the given raw string SELECT query to the given SPARQL endpoint
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public static Task<RDFSelectQueryResult> ApplyRawToSPARQLEndpointAsync(string selectQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
+    public static Task<RDFSelectQueryResult> ApplyRawToSPARQLEndpointAsync(string selectQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
         => Task.Run(() => ApplyRawToSPARQLEndpoint(selectQuery, sparqlEndpoint, sparqlEndpointQueryOptions));
 
     /// <summary>
@@ -248,13 +218,6 @@ public sealed class RDFSelectQuery : RDFQuery
     }
 
     /// <summary>
-    /// Asynchronously applies the query to the given data source
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    internal Task<RDFSelectQueryResult> ApplyToDataSourceAsync(RDFDataSource dataSource)
-        => Task.Run(() => ApplyToDataSource(dataSource));
-
-    /// <summary>
     /// Sets the query to be joined as Optional with the previous query member
     /// </summary>
     public RDFSelectQuery Optional()
@@ -268,7 +231,7 @@ public sealed class RDFSelectQuery : RDFQuery
     /// <summary>
     /// Sets the query to be joined as Union with the next query member
     /// </summary>
-    public RDFSelectQuery UnionWithNext()
+    public RDFSelectQuery Union()
     {
         IsOptional = false;
         JoinAsUnion = true;
@@ -279,7 +242,7 @@ public sealed class RDFSelectQuery : RDFQuery
     /// <summary>
     /// Sets the query to be joined as Minus with the next query member
     /// </summary>
-    public RDFSelectQuery MinusWithNext()
+    public RDFSelectQuery Minus()
     {
         IsOptional = false;
         JoinAsUnion = false;
