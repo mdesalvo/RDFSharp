@@ -19,9 +19,9 @@ using System.Text.RegularExpressions;
 namespace RDFSharp;
 
 /// <summary>
-/// RDFShims compiles and exposes all the regular expressions used across the library
+/// RDFUtilities is a collector of reusable utility methods for RDF management
 /// </summary>
-internal static partial class RDFShims
+internal static partial class RDFUtilities
 {
     /*LangTag*/
     internal const string LangTagDirection = "(--ltr|--rtl)?";

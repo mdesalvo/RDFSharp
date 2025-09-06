@@ -1580,7 +1580,7 @@ internal static class RDFTurtle
                 {
                     //Detect presence of long-literals in order to write proper delimiter
                     string litValDelim = "\"";
-                    if (RDFShims.LongLiteralRegex().IsMatch(triple.Object.ToString()))
+                    if (RDFUtilities.LongLiteralRegex().IsMatch(triple.Object.ToString()))
                         litValDelim = "\"\"\"";
 
                     //Write the literal's Turtle token

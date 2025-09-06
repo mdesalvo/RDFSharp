@@ -70,38 +70,38 @@ public class RDFModelUtilitiesTest
     [TestMethod]
     [DataRow("\\U09AFaf90")]
     public void ShouldMatchRegexU8(string input)
-        => Assert.IsTrue(RDFShims.EightBytesUnicodeRegex().IsMatch(input));
+        => Assert.IsTrue(RDFUtilities.EightBytesUnicodeRegex().IsMatch(input));
 
     [TestMethod]
     [DataRow("\\u09AFaf90")]
     [DataRow("\\U09AFaf9")]
     [DataRow("\\U09AFaf9P")]
     public void ShouldNotMatchRegexU8(string input)
-        => Assert.IsFalse(RDFShims.EightBytesUnicodeRegex().IsMatch(input));
+        => Assert.IsFalse(RDFUtilities.EightBytesUnicodeRegex().IsMatch(input));
 
     [TestMethod]
     [DataRow("\\u09Af")]
     public void ShouldMatchRegexU4(string input)
-        => Assert.IsTrue(RDFShims.FourBytesUnicodeRegex().IsMatch(input));
+        => Assert.IsTrue(RDFUtilities.FourBytesUnicodeRegex().IsMatch(input));
 
     [TestMethod]
     [DataRow("\\U09Af")]
     [DataRow("\\u09A")]
     [DataRow("\\u09AP")]
     public void ShouldNotMatchRegexU4(string input)
-        => Assert.IsFalse(RDFShims.FourBytesUnicodeRegex().IsMatch(input));
+        => Assert.IsFalse(RDFUtilities.FourBytesUnicodeRegex().IsMatch(input));
 
     [TestMethod]
     [DataRow("09AFaf09")]
     public void ShouldMatchHexBinary(string input)
-        => Assert.IsTrue(RDFShims.HexBinaryRegex().IsMatch(input));
+        => Assert.IsTrue(RDFUtilities.HexBinaryRegex().IsMatch(input));
 
     [TestMethod]
     [DataRow("0")]
     [DataRow("09A")]
     [DataRow("000P")]
     public void ShouldNotMatchHexBinary(string input)
-        => Assert.IsFalse(RDFShims.HexBinaryRegex().IsMatch(input));
+        => Assert.IsFalse(RDFUtilities.HexBinaryRegex().IsMatch(input));
 
     [TestMethod]
     [DataRow("http://xmlns.com/foaf/0.1/")]

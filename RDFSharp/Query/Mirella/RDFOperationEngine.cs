@@ -323,14 +323,14 @@ internal sealed class RDFOperationEngine : RDFQueryEngine
                             string ubQueryBackup = uriBuilder.Query;
                             uriBuilder.Query = $"using-graph-uri={HttpUtility.UrlEncode(defaultGraphUri)}";
                             if (ubQueryBackup?.Length > 0)
-                                uriBuilder.Query += $"&{RDFShims.QueryStringStartRegex().Replace(ubQueryBackup, string.Empty)}";
+                                uriBuilder.Query += $"&{RDFUtilities.QueryStringStartRegex().Replace(ubQueryBackup, string.Empty)}";
                         }
                         if (!string.IsNullOrEmpty(namedGraphUri))
                         {
                             string ubQueryBackup = uriBuilder.Query;
                             uriBuilder.Query = $"using-named-graph-uri={HttpUtility.UrlEncode(namedGraphUri)}";
                             if (ubQueryBackup?.Length > 0)
-                                uriBuilder.Query += $"&{RDFShims.QueryStringStartRegex().Replace(ubQueryBackup, string.Empty)}";
+                                uriBuilder.Query += $"&{RDFUtilities.QueryStringStartRegex().Replace(ubQueryBackup, string.Empty)}";
                         }
                         //Send query to SPARQL UPDATE endpoint
                         sparqlResponse = httpClient.PostAsync(uriBuilder.Uri, new StringContent(operation.ToString(), RDFModelUtilities.UTF8_NoBOM, "application/sparql-update")).GetAwaiter().GetResult();

@@ -56,7 +56,7 @@ public sealed class RDFPlainLiteral : RDFLiteral
     /// </summary>
     public RDFPlainLiteral(string value, string language) : this(value)
     {
-        if (language != null && RDFShims.LangTagRegex().IsMatch(language))
+        if (language != null && RDFUtilities.LangTagRegex().IsMatch(language))
             Language = language.ToUpperInvariant();
     }
     #endregion

@@ -62,7 +62,7 @@ public class RDFOperation : RDFQuery
     /// </summary>
     public RDFOperationResult ApplyToGraph(RDFGraph graph)
         => graph != null ? new RDFOperationEngine().EvaluateOperationOnGraphOrStore(this, graph)
-            : new RDFOperationResult();
+                         : new RDFOperationResult();
 
     /// <summary>
     /// Asynchronously applies the operation to the given graph
@@ -75,10 +75,10 @@ public class RDFOperation : RDFQuery
     /// </summary>
     public RDFOperationResult ApplyToStore(RDFStore store)
         => store != null ? new RDFOperationEngine().EvaluateOperationOnGraphOrStore(this, store)
-            : new RDFOperationResult();
+                         : new RDFOperationResult();
 
     /// <summary>
-    /// Applies the operation to the given asynchronous store
+    /// Asynchronously applies the operation to the given store
     /// </summary>
     public Task<RDFOperationResult> ApplyToStoreAsync(RDFStore store)
         => Task.Run(() => ApplyToStore(store));
@@ -86,25 +86,13 @@ public class RDFOperation : RDFQuery
     /// <summary>
     /// Applies the operation to the given SPARQL UPDATE endpoint
     /// </summary>
-    public bool ApplyToSPARQLUpdateEndpoint(RDFSPARQLEndpoint sparqlUpdateEndpoint)
-        => ApplyToSPARQLUpdateEndpoint(sparqlUpdateEndpoint, new RDFSPARQLEndpointOperationOptions());
-
-    /// <summary>
-    /// Applies the operation to the given SPARQL UPDATE endpoint
-    /// </summary>
-    public bool ApplyToSPARQLUpdateEndpoint(RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions)
+    public bool ApplyToSPARQLUpdateEndpoint(RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions=null)
         => sparqlUpdateEndpoint != null && new RDFOperationEngine().EvaluateOperationOnSPARQLUpdateEndpoint(this, sparqlUpdateEndpoint, sparqlUpdateEndpointOperationOptions);
 
     /// <summary>
     /// Asynchronously applies the operation to the given SPARQL UPDATE endpoint
     /// </summary>
-    public Task<bool> ApplyToSPARQLUpdateEndpointAsync(RDFSPARQLEndpoint sparqlUpdateEndpoint)
-        => ApplyToSPARQLUpdateEndpointAsync(sparqlUpdateEndpoint, new RDFSPARQLEndpointOperationOptions());
-
-    /// <summary>
-    /// Asynchronously applies the operation to the given SPARQL UPDATE endpoint
-    /// </summary>
-    public Task<bool> ApplyToSPARQLUpdateEndpointAsync(RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions)
+    public Task<bool> ApplyToSPARQLUpdateEndpointAsync(RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions=null)
         => Task.Run(() => ApplyToSPARQLUpdateEndpoint(sparqlUpdateEndpoint, sparqlUpdateEndpointOperationOptions));
     #endregion
 

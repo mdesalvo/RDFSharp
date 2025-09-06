@@ -199,8 +199,8 @@ internal static class RDFNQuads
                     else
                     {
                         #region sanitize
-                        tokens[2] = RDFShims.StartingQuoteRegex().Replace(tokens[2], string.Empty);
-                        tokens[2] = RDFShims.EndingQuoteRegex().Replace(tokens[2], string.Empty);
+                        tokens[2] = RDFUtilities.StartingQuoteRegex().Replace(tokens[2], string.Empty);
+                        tokens[2] = RDFUtilities.EndingQuoteRegex().Replace(tokens[2], string.Empty);
                         tokens[2] = tokens[2].Replace(@"\\", "\\")
                             .Replace("\\\"", "\"")
                             .Replace("\\n", "\n")
@@ -217,7 +217,7 @@ internal static class RDFNQuads
                             || lastIndexOfDatatype == tokens[2].Length - 2 //EndsWith "^^"
                             || tokens[2][lastIndexOfDatatype + 2] != '<')
                         {
-                            if (RDFShims.EndingLangTagRegex().IsMatch(tokens[2]))
+                            if (RDFUtilities.EndingLangTagRegex().IsMatch(tokens[2]))
                             {
                                 tokens[2] = tokens[2].Replace("\"@", "@");
                                 int lastIndexOfLanguage = tokens[2].LastIndexOf('@');
@@ -280,7 +280,7 @@ internal static class RDFNQuads
         if (nquad[0] == '<')
         {
             //S->P->O->C
-            if (RDFShims.CSPO().IsMatch(nquad))
+            if (RDFUtilities.CSPO().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
@@ -305,7 +305,7 @@ internal static class RDFNQuads
             }
 
             //S->P->L(PLAIN)->C
-            if (RDFShims.CSPL().IsMatch(nquad))
+            if (RDFUtilities.CSPL().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
@@ -330,7 +330,7 @@ internal static class RDFNQuads
             }
 
             //S->P->L(PLANG)->C
-            if (RDFShims.CSPLL().IsMatch(nquad))
+            if (RDFUtilities.CSPLL().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
@@ -355,7 +355,7 @@ internal static class RDFNQuads
             }
 
             //S->P->L(TLIT)->C
-            if (RDFShims.CSPLT().IsMatch(nquad))
+            if (RDFUtilities.CSPLT().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t', '>');
 
@@ -380,7 +380,7 @@ internal static class RDFNQuads
             }
 
             //S->P->B->C
-            if (RDFShims.CSPB().IsMatch(nquad))
+            if (RDFUtilities.CSPB().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
@@ -405,7 +405,7 @@ internal static class RDFNQuads
             }
 
             //S->P->O->
-            if (RDFShims.SPO().IsMatch(nquad))
+            if (RDFUtilities.SPO().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
@@ -425,7 +425,7 @@ internal static class RDFNQuads
             }
 
             //S->P->L(PLAIN)->
-            if (RDFShims.SPL().IsMatch(nquad))
+            if (RDFUtilities.SPL().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
@@ -445,7 +445,7 @@ internal static class RDFNQuads
             }
 
             //S->P->L(PLANG)->
-            if (RDFShims.SPLL().IsMatch(nquad))
+            if (RDFUtilities.SPLL().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
@@ -465,7 +465,7 @@ internal static class RDFNQuads
             }
 
             //S->P->L(TLIT)->
-            if (RDFShims.SPLT().IsMatch(nquad))
+            if (RDFUtilities.SPLT().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
@@ -485,7 +485,7 @@ internal static class RDFNQuads
             }
 
             //S->P->B->
-            if (RDFShims.SPB().IsMatch(nquad))
+            if (RDFUtilities.SPB().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
@@ -511,7 +511,7 @@ internal static class RDFNQuads
         if (nquad.Length > 1 && nquad[0] == '_' && nquad[1] == ':')
         {
             //B->P->O->C
-            if (RDFShims.CBPO().IsMatch(nquad))
+            if (RDFUtilities.CBPO().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
@@ -536,7 +536,7 @@ internal static class RDFNQuads
             }
 
             //B->P->L(PLAIN)->C
-            if (RDFShims.CBPL().IsMatch(nquad))
+            if (RDFUtilities.CBPL().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
@@ -561,7 +561,7 @@ internal static class RDFNQuads
             }
 
             //B->P->L(PLANG)->C
-            if (RDFShims.CBPLL().IsMatch(nquad))
+            if (RDFUtilities.CBPLL().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
@@ -586,7 +586,7 @@ internal static class RDFNQuads
             }
 
             //B->P->L(TLIT)->C
-            if (RDFShims.CBPLT().IsMatch(nquad))
+            if (RDFUtilities.CBPLT().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t', '>');
 
@@ -611,7 +611,7 @@ internal static class RDFNQuads
             }
 
             //B->P->B->C
-            if (RDFShims.CBPB().IsMatch(nquad))
+            if (RDFUtilities.CBPB().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
@@ -636,7 +636,7 @@ internal static class RDFNQuads
             }
 
             //B->P->O->
-            if (RDFShims.BPO().IsMatch(nquad))
+            if (RDFUtilities.BPO().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
@@ -656,7 +656,7 @@ internal static class RDFNQuads
             }
 
             //B->P->L(PLAIN)->
-            if (RDFShims.BPL().IsMatch(nquad))
+            if (RDFUtilities.BPL().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
@@ -676,7 +676,7 @@ internal static class RDFNQuads
             }
 
             //B->P->L(PLANG)->
-            if (RDFShims.BPLL().IsMatch(nquad))
+            if (RDFUtilities.BPLL().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
@@ -696,7 +696,7 @@ internal static class RDFNQuads
             }
 
             //B->P->L(TLIT)->
-            if (RDFShims.BPLT().IsMatch(nquad))
+            if (RDFUtilities.BPLT().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
@@ -716,7 +716,7 @@ internal static class RDFNQuads
             }
 
             //B->P->B->
-            if (RDFShims.BPB().IsMatch(nquad))
+            if (RDFUtilities.BPB().IsMatch(nquad))
             {
                 nquad = nquad.Trim('.', ' ', '\t');
 
