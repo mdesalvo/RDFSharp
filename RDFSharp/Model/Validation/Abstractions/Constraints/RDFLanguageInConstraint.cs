@@ -44,7 +44,7 @@ public sealed class RDFLanguageInConstraint : RDFConstraint
         languageTags?.ForEach(lt =>
         {
             string languageTag = lt?.Trim() ?? string.Empty;
-            if (languageTag.Length == 0 || languageTag == "*" || RDFRegex.LangTagRegex().IsMatch(languageTag))
+            if (languageTag.Length == 0 || languageTag == "*" || RDFShims.LangTagRegex().IsMatch(languageTag))
                 LanguageTags.Add(languageTag.ToUpperInvariant());
         });
     }
@@ -77,11 +77,11 @@ public sealed class RDFLanguageInConstraint : RDFConstraint
                         langMatches = langTagsEnumerator.Current switch
                         {
                             //NO language is found in the variable
-                            "" => !RDFRegex.EndingLangTagRegex().IsMatch(valueNodePLitString),
+                            "" => !RDFShims.EndingLangTagRegex().IsMatch(valueNodePLitString),
                             //ANY language is found in the variable
-                            "*" => RDFRegex.EndingLangTagRegex().IsMatch(valueNodePLitString),
+                            "*" => RDFShims.EndingLangTagRegex().IsMatch(valueNodePLitString),
                             //GIVEN language is found in the variable
-                            _ => Regex.IsMatch(valueNodePLitString, $"@{langTagsEnumerator.Current}{RDFRegex.LangTagSubMask}$", RegexOptions.IgnoreCase)
+                            _ => Regex.IsMatch(valueNodePLitString, $"@{langTagsEnumerator.Current}{RDFShims.LangTagSubMask}$", RegexOptions.IgnoreCase)
                         };
                     if (!langMatches)
                     {

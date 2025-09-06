@@ -369,22 +369,10 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
         => new RDFGraph(RDFModelUtilities.SelectTriples(this, subj, null, null, null));
 
     /// <summary>
-    /// Asynchronously gets the subgraph containing triples with the specified subject
-    /// </summary>
-    public Task<RDFGraph> SelectTriplesBySubjectAsync(RDFResource subj)
-        => Task.Run(() => SelectTriplesBySubject(subj));
-
-    /// <summary>
     /// Gets the subgraph containing triples with the specified predicate
     /// </summary>
     public RDFGraph SelectTriplesByPredicate(RDFResource pred)
         => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, pred, null, null));
-
-    /// <summary>
-    /// Asynchronously gets the subgraph containing triples with the specified predicate
-    /// </summary>
-    public Task<RDFGraph> SelectTriplesByPredicateAsync(RDFResource pred)
-        => Task.Run(() => SelectTriplesByPredicate(pred));
 
     /// <summary>
     /// Gets the subgraph containing triples with the specified object
@@ -393,22 +381,10 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
         => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, null, obj, null));
 
     /// <summary>
-    /// Asynchronously gets the subgraph containing triples with the specified object
-    /// </summary>
-    public Task<RDFGraph> SelectTriplesByObjectAsync(RDFResource obj)
-        => Task.Run(() => SelectTriplesByObject(obj));
-
-    /// <summary>
     /// Gets the subgraph containing triples with the specified literal
     /// </summary>
     public RDFGraph SelectTriplesByLiteral(RDFLiteral lit)
         => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, null, null, lit));
-
-    /// <summary>
-    /// Asynchronously gets the subgraph containing triples with the specified literal
-    /// </summary>
-    public Task<RDFGraph> SelectTriplesByLiteralAsync(RDFLiteral lit)
-        => Task.Run(() => SelectTriplesByLiteral(lit));
 
     /// <summary>
     /// Gets the subgraph containing triples with the specified combination of SPOL accessors<br/>
@@ -449,12 +425,6 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
     }
 
     /// <summary>
-    /// Asynchronously builds an intersection graph from this graph and a given one
-    /// </summary>
-    public Task<RDFGraph> IntersectWithAsync(RDFGraph graph)
-        => Task.Run(() => IntersectWith(graph));
-
-    /// <summary>
     /// Builds a union graph from this graph and a given one
     /// </summary>
     public RDFGraph UnionWith(RDFGraph graph)
@@ -475,12 +445,6 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
 
         return result;
     }
-
-    /// <summary>
-    /// Asynchronously builds a union graph from this graph and a given one
-    /// </summary>
-    public Task<RDFGraph> UnionWithAsync(RDFGraph graph)
-        => Task.Run(() => UnionWith(graph));
 
     /// <summary>
     /// Builds a difference graph from this graph and a given one
@@ -507,12 +471,6 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
 
         return result;
     }
-
-    /// <summary>
-    /// Asynchronously builds a difference graph from this graph and a given one
-    /// </summary>
-    public Task<RDFGraph> DifferenceWithAsync(RDFGraph graph)
-        => Task.Run(() => DifferenceWith(graph));
     #endregion
 
     #region Convert
@@ -645,7 +603,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
         };
 
         #region Datatype Discovery
-        if (enableDatatypeDiscovery)
+        if (enableDatatypeDiscovery && graph != null)
             RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
         #endregion
 
@@ -684,7 +642,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
         };
 
         #region Datatype Discovery
-        if (enableDatatypeDiscovery)
+        if (enableDatatypeDiscovery && graph != null)
             RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
         #endregion
 

@@ -195,8 +195,8 @@ internal static class RDFNTriples
                     else
                     {
                         #region sanitize
-                        tokens[2] = RDFRegex.StartingQuoteRegex().Replace(tokens[2], string.Empty);
-                        tokens[2] = RDFRegex.EndingQuoteRegex().Replace(tokens[2], string.Empty);
+                        tokens[2] = RDFShims.StartingQuoteRegex().Replace(tokens[2], string.Empty);
+                        tokens[2] = RDFShims.EndingQuoteRegex().Replace(tokens[2], string.Empty);
                         tokens[2] = tokens[2].Replace(@"\\", "\\")
                             .Replace("\\\"", "\"")
                             .Replace("\\n", "\n")
@@ -213,7 +213,7 @@ internal static class RDFNTriples
                             || lastIndexOfDatatype == tokens[2].Length - 2 //EndsWith "^^"
                             || tokens[2][lastIndexOfDatatype + 2] != '<')
                         {
-                            if (RDFRegex.EndingLangTagRegex().IsMatch(tokens[2]))
+                            if (RDFShims.EndingLangTagRegex().IsMatch(tokens[2]))
                             {
                                 tokens[2] = tokens[2].Replace("\"@", "@");
                                 int lastIndexOfLanguage = tokens[2].LastIndexOf('@');
@@ -267,7 +267,7 @@ internal static class RDFNTriples
         if (ntriple[0] == '<')
         {
             //S->P->O
-            if (RDFRegex.SPO().IsMatch(ntriple))
+            if (RDFShims.SPO().IsMatch(ntriple))
             {
                 ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -287,7 +287,7 @@ internal static class RDFNTriples
             }
 
             //S->P->L(PLAIN)
-            if (RDFRegex.SPL().IsMatch(ntriple))
+            if (RDFShims.SPL().IsMatch(ntriple))
             {
                 ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -307,7 +307,7 @@ internal static class RDFNTriples
             }
 
             //S->P->L(PLANG)
-            if (RDFRegex.SPLL().IsMatch(ntriple))
+            if (RDFShims.SPLL().IsMatch(ntriple))
             {
                 ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -327,7 +327,7 @@ internal static class RDFNTriples
             }
 
             //S->P->L(TLIT)
-            if (RDFRegex.SPLT().IsMatch(ntriple))
+            if (RDFShims.SPLT().IsMatch(ntriple))
             {
                 ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -347,7 +347,7 @@ internal static class RDFNTriples
             }
 
             //S->P->B
-            if (RDFRegex.SPB().IsMatch(ntriple))
+            if (RDFShims.SPB().IsMatch(ntriple))
             {
                 ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -373,7 +373,7 @@ internal static class RDFNTriples
         if (ntriple.Length > 1 && ntriple[0] == '_' && ntriple[1] == ':')
         {
             //B->P->O
-            if (RDFRegex.BPO().IsMatch(ntriple))
+            if (RDFShims.BPO().IsMatch(ntriple))
             {
                 ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -393,7 +393,7 @@ internal static class RDFNTriples
             }
 
             //B->P->L(PLAIN)
-            if (RDFRegex.BPL().IsMatch(ntriple))
+            if (RDFShims.BPL().IsMatch(ntriple))
             {
                 ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -413,7 +413,7 @@ internal static class RDFNTriples
             }
 
             //B->P->L(PLANG)
-            if (RDFRegex.BPLL().IsMatch(ntriple))
+            if (RDFShims.BPLL().IsMatch(ntriple))
             {
                 ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -433,7 +433,7 @@ internal static class RDFNTriples
             }
 
             //B->P->L(TLIT)
-            if (RDFRegex.BPLT().IsMatch(ntriple))
+            if (RDFShims.BPLT().IsMatch(ntriple))
             {
                 ntriple = ntriple.Trim('.', ' ', '\t');
 
@@ -453,7 +453,7 @@ internal static class RDFNTriples
             }
 
             //B->P->B
-            if (RDFRegex.BPB().IsMatch(ntriple))
+            if (RDFShims.BPB().IsMatch(ntriple))
             {
                 ntriple = ntriple.Trim('.', ' ', '\t');
 

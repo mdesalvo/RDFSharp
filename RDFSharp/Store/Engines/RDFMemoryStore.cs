@@ -480,12 +480,6 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
     }
 
     /// <summary>
-    /// Asynchronously builds a new intersection store from this store and a given one
-    /// </summary>
-    public Task<RDFMemoryStore> IntersectWithAsync(RDFStore store)
-        => Task.Run(() => IntersectWith(store));
-
-    /// <summary>
     /// Builds a new union store from this store and a given one
     /// </summary>
     public RDFMemoryStore UnionWith(RDFStore store)
@@ -506,12 +500,6 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
 
         return result;
     }
-
-    /// <summary>
-    /// Asynchronously builds a new union store from this store and a given one
-    /// </summary>
-    public Task<RDFMemoryStore> UnionWithAsync(RDFStore store)
-        => Task.Run(() => UnionWith(store));
 
     /// <summary>
     /// Builds a new difference store from this store and a given one
@@ -538,12 +526,6 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
 
         return result;
     }
-
-    /// <summary>
-    /// Asynchronously builds a new difference store from this store and a given one
-    /// </summary>
-    public Task<RDFMemoryStore> DifferenceWithAsync(RDFStore store)
-        => Task.Run(() => DifferenceWith(store));
     #endregion
 
     #region Convert
@@ -571,7 +553,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
         };
 
         #region Datatype Discovery
-        if (enableDatatypeDiscovery)
+        if (enableDatatypeDiscovery && memStore != null)
         {
             foreach (RDFGraph graph in memStore.ExtractGraphs())
                 RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
@@ -608,7 +590,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
         };
 
         #region Datatype Discovery
-        if (enableDatatypeDiscovery)
+        if (enableDatatypeDiscovery && memStore != null)
         {
             foreach (RDFGraph graph in memStore.ExtractGraphs())
                 RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
@@ -724,6 +706,13 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
     /// </summary>
     /// <exception cref="RDFStoreException"></exception>
     public static RDFMemoryStore FromUri(Uri uri, int timeoutMilliseconds=20000, bool enableDatatypeDiscovery=false)
+        => FromUriAsync(uri, timeoutMilliseconds, enableDatatypeDiscovery).GetAwaiter().GetResult();
+
+    /// <summary>
+    /// Asynchronously reads a memory store by trying to dereference the given Uri
+    /// </summary>
+    /// <exception cref="RDFStoreException"></exception>
+    public static async Task<RDFMemoryStore> FromUriAsync(Uri uri, int timeoutMilliseconds=20000, bool enableDatatypeDiscovery = false)
     {
         #region Guards
         if (uri == null)
@@ -733,7 +722,6 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
         #endregion
 
         RDFMemoryStore memStore = new RDFMemoryStore();
-
         try
         {
             //Grab eventual dereference Uri
@@ -754,7 +742,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/trig"));
 
                 // Execute the request and ensure it is successful
-                HttpResponseMessage response = httpClient.GetAsync(remappedUri).GetAwaiter().GetResult();
+                HttpResponseMessage response = await httpClient.GetAsync(remappedUri);
                 response.EnsureSuccessStatusCode();
 
                 // Detect ContentType from response
@@ -769,7 +757,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
                 }
 
                 // Read response data
-                using (Stream responseStream = response.Content.ReadAsStream())
+                using (Stream responseStream = await response.Content.ReadAsStreamAsync())
                 {
                     // N-QUADS
                     if (responseContentType.Contains("application/n-quads", StringComparison.Ordinal))
@@ -800,13 +788,6 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
 
         return memStore;
     }
-
-    /// <summary>
-    /// Asynchronously reads a memory store by trying to dereference the given Uri
-    /// </summary>
-    /// <exception cref="RDFStoreException"></exception>
-    public static Task<RDFMemoryStore> FromUriAsync(Uri uri, int timeoutMilliseconds=20000, bool enableDatatypeDiscovery=false)
-        => Task.Run(() => FromUri(uri, timeoutMilliseconds, enableDatatypeDiscovery));
     #endregion
 
     #endregion

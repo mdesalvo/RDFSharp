@@ -141,13 +141,13 @@ public sealed class RDFLangMatchesExpression : RDFExpression
                 expressionResult = rightArgPLit.Value switch
                 {
                     //NO language is acceptable in the evaluating left argument
-                    "" => RDFRegex.EndingLangTagRegex().IsMatch(leftArgPLitString)
+                    "" => RDFShims.EndingLangTagRegex().IsMatch(leftArgPLitString)
                         ? RDFTypedLiteral.False : RDFTypedLiteral.True,
                     //ANY language is acceptable in the evaluating left argument
-                    "*" => RDFRegex.EndingLangTagRegex().IsMatch(leftArgPLitString)
+                    "*" => RDFShims.EndingLangTagRegex().IsMatch(leftArgPLitString)
                         ? RDFTypedLiteral.True : RDFTypedLiteral.False,
                     //GIVEN language is acceptable in the evaluating left argument
-                    _ => Regex.IsMatch(leftArgPLitString, $"@{rightArgPLit.Value}{RDFRegex.LangTagSubMask}$", RegexOptions.IgnoreCase)
+                    _ => Regex.IsMatch(leftArgPLitString, $"@{rightArgPLit.Value}{RDFShims.LangTagSubMask}$", RegexOptions.IgnoreCase)
                         ? RDFTypedLiteral.True : RDFTypedLiteral.False
                 };
             }

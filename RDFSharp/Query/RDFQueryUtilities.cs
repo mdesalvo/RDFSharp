@@ -52,7 +52,7 @@ public static class RDFQueryUtilities
             || lastIndexOfDatatype == pMember.Length - 2 //EndsWith "^^"
             || RDFModelUtilities.GetUriFromString(pMember.Substring(lastIndexOfDatatype + 2)) == null)
         {
-            if (RDFRegex.EndingLangTagRegex().IsMatch(pMember))
+            if (RDFShims.EndingLangTagRegex().IsMatch(pMember))
             {
                 int lastIndexOfLanguage = pMember.LastIndexOf('@');
                 string pLitVal = pMember.Substring(0, lastIndexOfLanguage);

@@ -111,7 +111,7 @@ public sealed class RDFStrLangExpression : RDFExpression
             #region Calculate Result
             //We can only proceed if we have been given a well-formed language tag (without direction)
             if (rightArgumentPMember is RDFPlainLiteral rightArgumentPMemberLiteral
-                && RDFRegex.LangTagNoDirRegex().IsMatch(rightArgumentPMemberLiteral.Value))
+                && RDFShims.LangTagNoDirRegex().IsMatch(rightArgumentPMemberLiteral.Value))
             {
                 expressionResult = leftArgumentPMember switch
                 {

@@ -19,9 +19,9 @@ using System.Text.RegularExpressions;
 namespace RDFSharp;
 
 /// <summary>
-/// RDFRegex compiles and exposes all the regular expressions used across the library
+/// RDFShims compiles and exposes all the regular expressions used across the library
 /// </summary>
-internal static partial class RDFRegex
+internal static partial class RDFShims
 {
     /*LangTag*/
     internal const string LangTagDirection = "(--ltr|--rtl)?";
