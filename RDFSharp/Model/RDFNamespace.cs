@@ -57,6 +57,7 @@ public sealed class RDFNamespace : IEquatable<RDFNamespace>
     /// <exception cref="RDFModelException"></exception>
     public RDFNamespace(string prefix, string uri)
     {
+        #region Guards
         if (string.IsNullOrWhiteSpace(prefix))
             throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter is null or empty");
         if (string.IsNullOrWhiteSpace(uri))
@@ -74,6 +75,7 @@ public sealed class RDFNamespace : IEquatable<RDFNamespace>
                        ?? throw new RDFModelException("Cannot create RDFNamespace because \"uri\" parameter is not a valid Uri");
         if (finalUri.ToString().StartsWith("bnode", StringComparison.OrdinalIgnoreCase) || finalUri.ToString().StartsWith("xmlns", StringComparison.OrdinalIgnoreCase))
             throw new RDFModelException("Cannot create RDFNamespace because \"uri\" parameter cannot start with \"bnode:\" or \"xmlns:\"");
+        #endregion
 
         NamespacePrefix = finalPrefix;
         NamespaceUri = finalUri;
