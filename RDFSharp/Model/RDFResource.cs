@@ -29,12 +29,13 @@ public class RDFResource : RDFPatternMember
     /// <summary>
     /// Uri of the resource
     /// </summary>
-    public Uri URI { get; internal set; }
+    public Uri URI { get; }
 
     /// <summary>
     /// Flag indicating the resource is blank or not
     /// </summary>
-    public bool IsBlank => string.Equals(URI.Scheme, "bnode", StringComparison.Ordinal);
+    public bool IsBlank
+        => string.Equals(URI.Scheme, "bnode", StringComparison.Ordinal);
     #endregion
 
     #region Ctors
