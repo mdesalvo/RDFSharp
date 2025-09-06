@@ -105,10 +105,10 @@ internal static class RDFValidationHelper
                             DataTable pathResult = new RDFQueryEngine().ApplyPropertyPath(
                                 isAlternativePath ? propertyShape.AlternativePath : propertyShape.SequencePath, dataGraph);
                             result.AddRange(from DataRow pathResultRow
-                                    in pathResult.Rows
-                                select pathResultRow["?END"]?.ToString()
-                                into prValue where !string.IsNullOrEmpty(prValue)
-                                select RDFQueryUtilities.ParseRDFPatternMember(prValue));
+                                            in pathResult.Rows
+                                            select pathResultRow["?END"].ToString()
+                                            into prValue where !string.IsNullOrEmpty(prValue)
+                                            select RDFQueryUtilities.ParseRDFPatternMember(prValue));
 
                             //Recontextualize property path to the initial configuration
                             if (isAlternativePath)
@@ -139,20 +139,14 @@ internal static class RDFValidationHelper
         if (className != null && dataGraph != null)
         {
             #region visitContext
-            if (visitContext == null)
-            {
-                visitContext = [className.PatternMemberID];
-            }
-            else
-            {
-                if (!visitContext.Add(className.PatternMemberID))
-                    return result;
-            }
+            visitContext ??= [];
+            if (!visitContext.Add(className.PatternMemberID))
+                return result;
             #endregion
 
             //rdf:type
             result.AddRange(dataGraph[null, RDFVocabulary.RDF.TYPE, className, null]
-                .Select(triple => triple.Subject));
+                  .Select(triple => triple.Subject));
 
             //rdfs:subClassOf
             foreach (RDFTriple triple in dataGraph[null, RDFVocabulary.RDFS.SUB_CLASS_OF, className, null])
