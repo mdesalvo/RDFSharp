@@ -33,9 +33,10 @@ internal static class RDFNTriples
     private const string TemplateSPLT = "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> .";
 
     // Facilities for deserialization
-    internal static readonly char[] openingBrackets = ['<'];
-    internal static readonly char[] closingBrackets = ['>'];
-    internal static readonly char[] trimmableChars = [' ', '\t', '\r', '\n'];
+    internal static readonly char[] OpeningBrackets = ['<'];
+    internal static readonly char[] ClosingBrackets = ['>'];
+    internal static readonly char[] TrimmableChars = [' ', '\t', '\r', '\n'];
+    internal static readonly char[] SpaceAndTabChars = [' ', '\t'];
     #endregion
 
     #region Methods
@@ -155,7 +156,7 @@ internal static class RDFNTriples
                     tokens[2] = string.Empty;
 
                     //Preliminary sanitizations: clean trailing space-like chars
-                    nTriple = nTriple.Trim(trimmableChars);
+                    nTriple = nTriple.Trim(TrimmableChars);
 
                     //Skip empty or comment lines
                     if (nTriple.Length == 0 || nTriple[0] == '#')
@@ -166,15 +167,15 @@ internal static class RDFNTriples
                     #endregion
 
                     #region subj
-                    string subj = tokens[0].TrimStart(openingBrackets)
-                        .TrimEnd(closingBrackets)
+                    string subj = tokens[0].TrimStart(OpeningBrackets)
+                        .TrimEnd(ClosingBrackets)
                         .Replace("_:", "bnode:");
                     S = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(subj), hashContext);
                     #endregion
 
                     #region pred
-                    string pred = tokens[1].TrimStart(openingBrackets)
-                        .TrimEnd(closingBrackets);
+                    string pred = tokens[1].TrimStart(OpeningBrackets)
+                        .TrimEnd(ClosingBrackets);
                     P = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(pred), hashContext);
                     #endregion
 
@@ -183,10 +184,10 @@ internal static class RDFNTriples
                         || tokens[2].StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
                         || tokens[2].StartsWith("_:", StringComparison.Ordinal))
                     {
-                        string obj = tokens[2].TrimStart(openingBrackets)
-                            .TrimEnd(closingBrackets)
+                        string obj = tokens[2].TrimStart(OpeningBrackets)
+                            .TrimEnd(ClosingBrackets)
                             .Replace("_:", "bnode:")
-                            .Trim(trimmableChars);
+                            .Trim(TrimmableChars);
                         O = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(obj), hashContext);
                     }
                     #endregion
@@ -273,16 +274,16 @@ internal static class RDFNTriples
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                tokens[0] = tokens[0].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                 //predicate
                 tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                tokens[1] = tokens[1].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                 //object
-                tokens[2] = ntriple.Trim(' ', '\t');
+                tokens[2] = ntriple.Trim(SpaceAndTabChars);
                 return;
             }
 
@@ -293,16 +294,16 @@ internal static class RDFNTriples
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                tokens[0] = tokens[0].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                 //predicate
                 tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                tokens[1] = tokens[1].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                 //plain literal
-                tokens[2] = ntriple.Trim(' ', '\t');
+                tokens[2] = ntriple.Trim(SpaceAndTabChars);
                 return;
             }
 
@@ -313,16 +314,16 @@ internal static class RDFNTriples
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                tokens[0] = tokens[0].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                 //predicate
                 tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                tokens[1] = tokens[1].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                 //plain literal with language
-                tokens[2] = ntriple.Trim(' ', '\t');
+                tokens[2] = ntriple.Trim(SpaceAndTabChars);
                 return;
             }
 
@@ -333,16 +334,16 @@ internal static class RDFNTriples
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                tokens[0] = tokens[0].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                 //predicate
                 tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                tokens[1] = tokens[1].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                 //typed literal
-                tokens[2] = ntriple.Trim(' ', '\t');
+                tokens[2] = ntriple.Trim(SpaceAndTabChars);
                 return;
             }
 
@@ -353,16 +354,16 @@ internal static class RDFNTriples
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                tokens[0] = tokens[0].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                 //predicate
                 tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                tokens[1] = tokens[1].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                 //object
-                tokens[2] = ntriple.Trim(' ', '\t');
+                tokens[2] = ntriple.Trim(SpaceAndTabChars);
                 return;
             }
 
@@ -379,16 +380,16 @@ internal static class RDFNTriples
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
-                ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                tokens[0] = tokens[0].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                 //predicate
                 tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                tokens[1] = tokens[1].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                 //object
-                tokens[2] = ntriple.Trim(' ', '\t');
+                tokens[2] = ntriple.Trim(SpaceAndTabChars);
                 return;
             }
 
@@ -399,16 +400,16 @@ internal static class RDFNTriples
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
-                ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                tokens[0] = tokens[0].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                 //predicate
                 tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                tokens[1] = tokens[1].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                 //plain literal
-                tokens[2] = ntriple.Trim(' ', '\t');
+                tokens[2] = ntriple.Trim(SpaceAndTabChars);
                 return;
             }
 
@@ -419,16 +420,16 @@ internal static class RDFNTriples
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
-                ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                tokens[0] = tokens[0].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                 //predicate
                 tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                tokens[1] = tokens[1].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                 //plain literal with language
-                tokens[2] = ntriple.Trim(' ', '\t');
+                tokens[2] = ntriple.Trim(SpaceAndTabChars);
                 return;
             }
 
@@ -439,16 +440,16 @@ internal static class RDFNTriples
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
-                ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                tokens[0] = tokens[0].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                 //predicate
                 tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                tokens[1] = tokens[1].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                 //typed literal
-                tokens[2] = ntriple.Trim(' ', '\t');
+                tokens[2] = ntriple.Trim(SpaceAndTabChars);
                 return;
             }
 
@@ -459,16 +460,16 @@ internal static class RDFNTriples
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
-                ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                tokens[0] = tokens[0].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                 //predicate
                 tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                tokens[1] = tokens[1].Trim(' ', '\t');
+                ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                 //object
-                tokens[2] = ntriple.Trim(' ', '\t');
+                tokens[2] = ntriple.Trim(SpaceAndTabChars);
                 return;
             }
 
