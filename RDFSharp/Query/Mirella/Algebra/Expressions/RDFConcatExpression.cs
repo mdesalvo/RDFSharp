@@ -19,126 +19,117 @@ using System.Data;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFConcatExpression represents a string concat function to be applied on a query results table.
+/// </summary>
+public sealed class RDFConcatExpression : RDFExpression
 {
+    #region Ctors
     /// <summary>
-    /// RDFConcatExpression represents a string concat function to be applied on a query results table.
+    /// Builds a string concat function with given arguments
     /// </summary>
-    public sealed class RDFConcatExpression : RDFExpression
+    public RDFConcatExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+
+    /// <summary>
+    /// Builds a string concat function with given arguments
+    /// </summary>
+    public RDFConcatExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+
+    /// <summary>
+    /// Builds a string concat function with given arguments
+    /// </summary>
+    public RDFConcatExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+
+    /// <summary>
+    /// Builds a string concat function with given arguments
+    /// </summary>
+    public RDFConcatExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the string concat function
+    /// </summary>
+    public override string ToString()
+        => ToString(RDFModelUtilities.EmptyNamespaceList);
+    internal override string ToString(List<RDFNamespace> prefixes)
     {
-        #region Ctors
-        /// <summary>
-        /// Builds a string concat function with given arguments
-        /// </summary>
-        public RDFConcatExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        StringBuilder sb = new StringBuilder(32);
 
-        /// <summary>
-        /// Builds a string concat function with given arguments
-        /// </summary>
-        public RDFConcatExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        //(CONCAT(L,R))
+        sb.Append("(CONCAT(");
+        if (LeftArgument is RDFExpression expLeftArgument)
+            sb.Append(expLeftArgument.ToString(prefixes));
+        else
+            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+        sb.Append(", ");
+        if (RightArgument is RDFExpression expRightArgument)
+            sb.Append(expRightArgument.ToString(prefixes));
+        else
+            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
+        sb.Append("))");
 
-        /// <summary>
-        /// Builds a string concat function with given arguments
-        /// </summary>
-        public RDFConcatExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        return sb.ToString();
+    }
+    #endregion
 
-        /// <summary>
-        /// Builds a string concat function with given arguments
-        /// </summary>
-        public RDFConcatExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+    #region Methods
+    /// <summary>
+    /// Applies the string concat function on the given datarow
+    /// </summary>
+    internal override RDFPatternMember ApplyExpression(DataRow row)
+    {
+        RDFPlainLiteral expressionResult = null;
+
+        #region Guards
+        if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+            return null;
+        if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
+            return null;
         #endregion
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the string concat function
-        /// </summary>
-        public override string ToString()
-            => ToString(RDFModelUtilities.EmptyNamespaceList);
-        internal override string ToString(List<RDFNamespace> prefixes)
+        try
         {
-            StringBuilder sb = new StringBuilder(32);
-
-            //(CONCAT(L,R))
-            sb.Append("(CONCAT(");
-            if (LeftArgument is RDFExpression expLeftArgument)
-                sb.Append(expLeftArgument.ToString(prefixes));
+            #region Evaluate Arguments
+            //Evaluate left argument (Expression VS Variable)
+            RDFPatternMember leftArgumentPMember;
+            if (LeftArgument is RDFExpression leftArgumentExpression)
+                leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
             else
-                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            sb.Append(", ");
-            if (RightArgument is RDFExpression expRightArgument)
-                sb.Append(expRightArgument.ToString(prefixes));
+                leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
+
+            //Evaluate right argument (Expression VS Variable)
+            RDFPatternMember rightArgumentPMember;
+            if (RightArgument is RDFExpression rightArgumentExpression)
+                rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
             else
-                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
-            sb.Append("))");
-
-            return sb.ToString();
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Applies the string concat function on the given datarow
-        /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
-        {
-            RDFPlainLiteral expressionResult = null;
-
-            #region Guards
-            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return null;
-            if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
-                return null;
+                rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
             #endregion
 
-            try
+            #region Calculate Result
+            //Transform left argument result into a plain literal
+            leftArgumentPMember = leftArgumentPMember switch
             {
-                #region Evaluate Arguments
-                //Evaluate left argument (Expression VS Variable)
-                RDFPatternMember leftArgumentPMember;
-                if (LeftArgument is RDFExpression leftArgumentExpression)
-                    leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
-                else
-                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
-
-                //Evaluate right argument (Expression VS Variable)
-                RDFPatternMember rightArgumentPMember;
-                if (RightArgument is RDFExpression rightArgumentExpression)
-                    rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
-                else
-                    rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
-                #endregion
-
-                #region Calculate Result
-
-                switch (leftArgumentPMember)
-                {
-                    //Transform left argument result into a plain literal
-                    case RDFLiteral leftArgumentPMemberLiteral:
-                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberLiteral.Value);
-                        break;
-                    case RDFResource leftArgumentPMemberResource:
-                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberResource.ToString());
-                        break;
-                }
-
-                switch (rightArgumentPMember)
-                {
-                    //Transform right argument result into a plain literal
-                    case RDFLiteral rightArgumentPMemberLiteral:
-                        rightArgumentPMember = new RDFPlainLiteral(rightArgumentPMemberLiteral.Value);
-                        break;
-                    case RDFResource rightArgumentPMemberResource:
-                        rightArgumentPMember = new RDFPlainLiteral(rightArgumentPMemberResource.ToString());
-                        break;
-                }
-
-                expressionResult = new RDFPlainLiteral(string.Concat(leftArgumentPMember?.ToString(), rightArgumentPMember?.ToString()));
-                #endregion
-            }
-            catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
-
-            return expressionResult;
+                RDFLiteral leftArgumentPMemberLiteral => new RDFPlainLiteral(leftArgumentPMemberLiteral.Value),
+                RDFResource leftArgumentPMemberResource => new RDFPlainLiteral(leftArgumentPMemberResource.ToString()),
+                _ => leftArgumentPMember
+            };
+            //Transform right argument result into a plain literal
+            rightArgumentPMember = rightArgumentPMember switch
+            {
+                RDFLiteral rightArgumentPMemberLiteral => new RDFPlainLiteral(rightArgumentPMemberLiteral.Value),
+                RDFResource rightArgumentPMemberResource =>
+                    new RDFPlainLiteral(rightArgumentPMemberResource.ToString()),
+                _ => rightArgumentPMember
+            };
+            expressionResult = new RDFPlainLiteral(string.Concat(leftArgumentPMember?.ToString(), rightArgumentPMember?.ToString()));
+            #endregion
         }
-        #endregion
+        catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
+        return expressionResult;
     }
+    #endregion
 }

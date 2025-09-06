@@ -18,82 +18,79 @@ using System.Collections.Generic;
 using System.Linq;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFUniqueLangConstraint represents a SHACL constraint on the uniqueness of language tags for a given RDF term
+/// </summary>
+public sealed class RDFUniqueLangConstraint : RDFConstraint
 {
+    #region Properties
     /// <summary>
-    /// RDFUniqueLangConstraint represents a SHACL constraint on the uniqueness of language tags for a given RDF term
+    /// Flag indicating that uniqueness of language tags is required or not
     /// </summary>
-    public sealed class RDFUniqueLangConstraint : RDFConstraint
+    public bool UniqueLang { get; internal set; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a uniqueLang constraint with the given behavior
+    /// </summary>
+    public RDFUniqueLangConstraint(bool uniqueLang)
+        => UniqueLang = uniqueLang;
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Evaluates this constraint against the given data graph
+    /// </summary>
+    internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
     {
-        #region Properties
-        /// <summary>
-        /// Flag indicating that uniqueness of language tags is required or not
-        /// </summary>
-        public bool UniqueLang { get; internal set; }
-        #endregion
+        RDFValidationReport report = new RDFValidationReport();
+        RDFPropertyShape pShape = shape as RDFPropertyShape;
 
-        #region Ctors
-        /// <summary>
-        /// Builds a uniqueLang constraint with the given behavior
-        /// </summary>
-        public RDFUniqueLangConstraint(bool uniqueLang)
-            => UniqueLang = uniqueLang;
-        #endregion
+        //In case no shape messages have been provided, this constraint emits a default one (for usability)
+        List<RDFLiteral> shapeMessages = [.. shape.Messages];
+        if (shapeMessages.Count == 0)
+            shapeMessages.Add(new RDFPlainLiteral("Must not have the same language tag more than one time per value"));
 
-        #region Methods
-        /// <summary>
-        /// Evaluates this constraint against the given data graph
-        /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        #region Evaluation
+        if (UniqueLang)
         {
-            RDFValidationReport report = new RDFValidationReport();
-            RDFPropertyShape pShape = shape as RDFPropertyShape;
+            HashSet<string> reportedLangs = [];
+            List<RDFPlainLiteral> langlitValueNodes = [.. valueNodes.OfType<RDFPlainLiteral>().Where(vn => vn.HasLanguage())];
 
-            //In case no shape messages have been provided, this constraint emits a default one (for usability)
-            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
-            if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral("Must not have the same language tag more than one time per value"));
-
-            #region Evaluation
-            if (UniqueLang)
-            {
-                HashSet<string> reportedLangs = new HashSet<string>();
-                List<RDFPlainLiteral> langlitValueNodes = valueNodes.OfType<RDFPlainLiteral>()
-                                                                    .Where(vn => vn.HasLanguage())
-                                                                    .ToList();
-
-                foreach (RDFPlainLiteral innerlanglitValueNode in langlitValueNodes)
-                    foreach (RDFPlainLiteral outerlanglitValueNode in langlitValueNodes)
-                        if (!innerlanglitValueNode.Equals(outerlanglitValueNode)
-                              && innerlanglitValueNode.Language.Equals(outerlanglitValueNode.Language))
-                        {
-                            //Ensure to not report twice the same language tag
-                            if (reportedLangs.Add(innerlanglitValueNode.Language))
-                                report.AddResult(new RDFValidationResult(shape,
-                                    RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
-                                    focusNode,
-                                    pShape?.Path,
-                                    null,
-                                    shapeMessages,
-                                    shape.Severity));
-                        }
-            }
-            #endregion
-
-            return report;
-        }
-
-        /// <summary>
-        /// Gets a graph representation of this constraint
-        /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape)
-        {
-            RDFGraph result = new RDFGraph();
-            if (shape != null)
-                //sh:uniqueLang
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.UNIQUE_LANG, UniqueLang ? RDFTypedLiteral.True : RDFTypedLiteral.False));
-            return result;
+            foreach (RDFPlainLiteral innerlanglitValueNode in langlitValueNodes)
+            foreach (RDFPlainLiteral outerlanglitValueNode in langlitValueNodes)
+                if (!innerlanglitValueNode.Equals(outerlanglitValueNode)
+                    && innerlanglitValueNode.Language.Equals(outerlanglitValueNode.Language))
+                {
+                    //Ensure to not report twice the same language tag
+                    if (reportedLangs.Add(innerlanglitValueNode.Language))
+                        report.AddResult(new RDFValidationResult(shape,
+                            RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
+                            focusNode,
+                            pShape?.Path,
+                            null,
+                            shapeMessages,
+                            shape.Severity));
+                }
         }
         #endregion
+
+        return report;
     }
+
+    /// <summary>
+    /// Gets a graph representation of this constraint
+    /// </summary>
+    internal override RDFGraph ToRDFGraph(RDFShape shape)
+    {
+        RDFGraph result = new RDFGraph();
+        if (shape != null)
+            //sh:uniqueLang
+            result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.UNIQUE_LANG, UniqueLang ? RDFTypedLiteral.True : RDFTypedLiteral.False));
+        return result;
+    }
+    #endregion
 }

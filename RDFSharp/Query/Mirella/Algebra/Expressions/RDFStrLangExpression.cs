@@ -19,118 +19,116 @@ using System.Data;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFStrLangExpression represents a language plainliteral creator function to be applied on a query results table.
+/// </summary>
+public sealed class RDFStrLangExpression : RDFExpression
 {
+    #region Ctors
     /// <summary>
-    /// RDFStrLangExpression represents a language plainliteral creator function to be applied on a query results table.
+    /// Builds a language plainliteral creator function with given arguments
     /// </summary>
-    public sealed class RDFStrLangExpression : RDFExpression
+    public RDFStrLangExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+
+    /// <summary>
+    /// Builds a language plainliteral creator function with given arguments
+    /// </summary>
+    public RDFStrLangExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+
+    /// <summary>
+    /// Builds a language plainliteral creator function with given arguments
+    /// </summary>
+    public RDFStrLangExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+
+    /// <summary>
+    /// Builds a language plainliteral creator function with given arguments
+    /// </summary>
+    public RDFStrLangExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the language plainliteral creator function
+    /// </summary>
+    public override string ToString()
+        => ToString(RDFModelUtilities.EmptyNamespaceList);
+    internal override string ToString(List<RDFNamespace> prefixes)
     {
-        #region Ctors
-        /// <summary>
-        /// Builds a language plainliteral creator function with given arguments
-        /// </summary>
-        public RDFStrLangExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        StringBuilder sb = new StringBuilder(32);
 
-        /// <summary>
-        /// Builds a language plainliteral creator function with given arguments
-        /// </summary>
-        public RDFStrLangExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        //(STRLANG(L,R))
+        sb.Append("(STRLANG(");
+        if (LeftArgument is RDFExpression expLeftArgument)
+            sb.Append(expLeftArgument.ToString(prefixes));
+        else
+            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+        sb.Append(", ");
+        if (RightArgument is RDFExpression expRightArgument)
+            sb.Append(expRightArgument.ToString(prefixes));
+        else
+            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
+        sb.Append("))");
 
-        /// <summary>
-        /// Builds a language plainliteral creator function with given arguments
-        /// </summary>
-        public RDFStrLangExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        return sb.ToString();
+    }
+    #endregion
 
-        /// <summary>
-        /// Builds a language plainliteral creator function with given arguments
-        /// </summary>
-        public RDFStrLangExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+    #region Methods
+    /// <summary>
+    /// Applies the language plainliteral creator function on the given datarow
+    /// </summary>
+    internal override RDFPatternMember ApplyExpression(DataRow row)
+    {
+        RDFPlainLiteral expressionResult = null;
+
+        #region Guards
+        if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+            return null;
+        if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
+            return null;
         #endregion
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the language plainliteral creator function
-        /// </summary>
-        public override string ToString()
-            => ToString(RDFModelUtilities.EmptyNamespaceList);
-        internal override string ToString(List<RDFNamespace> prefixes)
+        try
         {
-            StringBuilder sb = new StringBuilder(32);
-
-            //(STRLANG(L,R))
-            sb.Append("(STRLANG(");
-            if (LeftArgument is RDFExpression expLeftArgument)
-                sb.Append(expLeftArgument.ToString(prefixes));
+            #region Evaluate Arguments
+            //Evaluate left argument (Expression VS Variable)
+            RDFPatternMember leftArgumentPMember;
+            if (LeftArgument is RDFExpression leftArgumentExpression)
+                leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
             else
-                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            sb.Append(", ");
-            if (RightArgument is RDFExpression expRightArgument)
-                sb.Append(expRightArgument.ToString(prefixes));
+                leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
+
+            //Evaluate right argument (Expression VS Variable)
+            RDFPatternMember rightArgumentPMember;
+            if (RightArgument is RDFExpression rightArgumentExpression)
+                rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
             else
-                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
-            sb.Append("))");
-
-            return sb.ToString();
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Applies the language plainliteral creator function on the given datarow
-        /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
-        {
-            RDFPlainLiteral expressionResult = null;
-
-            #region Guards
-            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return null;
-            if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
-                return null;
+                rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
             #endregion
 
-            try
+            #region Calculate Result
+            //We can only proceed if we have been given a well-formed language tag (without direction)
+            if (rightArgumentPMember is RDFPlainLiteral rightArgumentPMemberLiteral
+                && RDFUtilities.LangTagNoDirRegex().IsMatch(rightArgumentPMemberLiteral.Value))
             {
-                #region Evaluate Arguments
-                //Evaluate left argument (Expression VS Variable)
-                RDFPatternMember leftArgumentPMember;
-                if (LeftArgument is RDFExpression leftArgumentExpression)
-                    leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
-                else
-                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
-
-                //Evaluate right argument (Expression VS Variable)
-                RDFPatternMember rightArgumentPMember;
-                if (RightArgument is RDFExpression rightArgumentExpression)
-                    rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
-                else
-                    rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
-                #endregion
-
-                #region Calculate Result
-                //We can only proceed if we have been given a well-formed language tag (without direction)
-                if (rightArgumentPMember is RDFPlainLiteral rightArgumentPMemberLiteral
-                     && RDFShims.LangTagNoDirRegex.Value.IsMatch(rightArgumentPMemberLiteral.Value))
+                expressionResult = leftArgumentPMember switch
                 {
-                    switch (leftArgumentPMember)
-                    {
-                        //And a plain literal without language
-                        case RDFPlainLiteral leftArgumentPMemberPLit when !leftArgumentPMemberPLit.HasLanguage():
-                            expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLit.Value, rightArgumentPMemberLiteral.Value);
-                            break;
-                        //Or a string-based typed literal
-                        case RDFTypedLiteral leftArgumentPMemberTLit when leftArgumentPMemberTLit.HasStringDatatype():
-                            expressionResult = new RDFPlainLiteral(leftArgumentPMemberTLit.Value, rightArgumentPMemberLiteral.Value);
-                            break;
-                    }
-                }
-                #endregion
+                    //And a plain literal without language
+                    RDFPlainLiteral leftArgumentPMemberPLit when !leftArgumentPMemberPLit.HasLanguage() =>
+                        new RDFPlainLiteral(leftArgumentPMemberPLit.Value, rightArgumentPMemberLiteral.Value),
+                    //Or a string-based typed literal
+                    RDFTypedLiteral leftArgumentPMemberTLit when leftArgumentPMemberTLit.HasStringDatatype() =>
+                        new RDFPlainLiteral(leftArgumentPMemberTLit.Value, rightArgumentPMemberLiteral.Value),
+                    _ => null
+                };
             }
-            catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
-
-            return expressionResult;
+            #endregion
         }
-        #endregion
+        catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
+        return expressionResult;
     }
+    #endregion
 }

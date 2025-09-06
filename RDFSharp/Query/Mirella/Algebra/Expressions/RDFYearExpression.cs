@@ -14,23 +14,22 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Query
-{
-    /// <summary>
-    /// RDFYearExpression represents a datetime year function to be applied on a query results table.
-    /// </summary>
-    public sealed class RDFYearExpression : RDFDateTimeExpression
-    {
-        #region Ctors
-        /// <summary>
-        /// Builds a datetime year function with given arguments
-        /// </summary>
-        public RDFYearExpression(RDFExpression leftArgument) : base(leftArgument) { }
+namespace RDFSharp.Query;
 
-        /// <summary>
-        /// Builds a datetime year function with given arguments
-        /// </summary>
-        public RDFYearExpression(RDFVariable leftArgument) : base(leftArgument) { }
-        #endregion
-    }
+/// <summary>
+/// RDFYearExpression represents a datetime year function to be applied on a query results table.
+/// </summary>
+public sealed class RDFYearExpression : RDFDateTimeExpression
+{
+    #region Ctors
+    /// <summary>
+    /// Builds a datetime year function with given arguments
+    /// </summary>
+    public RDFYearExpression(RDFExpression leftArgument) : base(leftArgument) { }
+
+    /// <summary>
+    /// Builds a datetime year function with given arguments
+    /// </summary>
+    public RDFYearExpression(RDFVariable leftArgument) : base(leftArgument) { }
+    #endregion
 }

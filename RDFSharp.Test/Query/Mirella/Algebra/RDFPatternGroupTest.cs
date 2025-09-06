@@ -77,7 +77,7 @@ public class RDFPatternGroupTest
     [TestMethod]
     public void ShouldCreateUnionWithNextPatternGroup()
     {
-        RDFPatternGroup pGroup = new RDFPatternGroup().UnionWithNext();
+        RDFPatternGroup pGroup = new RDFPatternGroup().Union();
 
         Assert.IsNotNull(pGroup);
         Assert.IsTrue(pGroup.IsEvaluable);
@@ -102,7 +102,7 @@ public class RDFPatternGroupTest
     [TestMethod]
     public void ShouldCreateMinusWithNextPatternGroup()
     {
-        RDFPatternGroup pGroup = new RDFPatternGroup().MinusWithNext();
+        RDFPatternGroup pGroup = new RDFPatternGroup().Minus();
 
         Assert.IsNotNull(pGroup);
         Assert.IsTrue(pGroup.IsEvaluable);
@@ -349,7 +349,6 @@ public class RDFPatternGroupTest
         Assert.AreEqual(0, pGroup.GetFilters().Count());
         Assert.AreEqual(0, pGroup.GetPropertyPaths().Count());
         Assert.AreEqual(1, pGroup.GetValues().Count());
-        Assert.IsTrue(pGroup.GetValues().All(v => !v.IsInjected));
         Assert.AreEqual(0, pGroup.GetBinds().Count());
         Assert.AreEqual(1, pGroup.GetEvaluablePatternGroupMembers().Count());
     }

@@ -20,967 +20,815 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFGraph represents an Uri-named collection of triples
+/// </summary>
+public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple>, IDisposable
 {
+    #region Properties
     /// <summary>
-    /// RDFGraph represents an Uri-named collection of triples
+    /// Uri of the graph
     /// </summary>
-    public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple>, IDisposable
+    public Uri Context { get; internal set; }
+
+    /// <summary>
+    /// Count of the graph's triples
+    /// </summary>
+    public long TriplesCount
+        => Index.Hashes.Count;
+
+    /// <summary>
+    /// Gets the enumerator on the graph's triples for iteration
+    /// </summary>
+    public IEnumerator<RDFTriple> TriplesEnumerator
     {
-        #region Properties
-        /// <summary>
-        /// Uri of the graph
-        /// </summary>
-        public Uri Context { get; internal set; }
-
-        /// <summary>
-        /// Count of the graph's triples
-        /// </summary>
-        public long TriplesCount
-            => Index.Hashes.Count;
-
-        /// <summary>
-        /// Gets the enumerator on the graph's triples for iteration
-        /// </summary>
-        public IEnumerator<RDFTriple> TriplesEnumerator
+        get
         {
-            get
+            foreach (RDFHashedTriple hashedTriple in Index.Hashes.Values)
             {
-                foreach (RDFHashedTriple hashedTriple in Index.Hashes.Values)
-                {
-                    yield return hashedTriple.TripleFlavor == 1 //SPO
-                        ? new RDFTriple(Index.Resources[hashedTriple.SubjectID], Index.Resources[hashedTriple.PredicateID], Index.Resources[hashedTriple.ObjectID])
-                        : new RDFTriple(Index.Resources[hashedTriple.SubjectID], Index.Resources[hashedTriple.PredicateID], Index.Literals[hashedTriple.ObjectID]);
-                }
+                yield return hashedTriple.TripleFlavor == 1 //SPO
+                    ? new RDFTriple(Index.Resources[hashedTriple.SubjectID], Index.Resources[hashedTriple.PredicateID], Index.Resources[hashedTriple.ObjectID])
+                    : new RDFTriple(Index.Resources[hashedTriple.SubjectID], Index.Resources[hashedTriple.PredicateID], Index.Literals[hashedTriple.ObjectID]);
             }
         }
+    }
 
-        /// <summary>
-        /// Index on the triples of the graph
-        /// </summary>
-        internal RDFGraphIndex Index { get; set; }
+    /// <summary>
+    /// Index on the triples of the graph
+    /// </summary>
+    internal RDFGraphIndex Index { get; set; }
 
-        /// <summary>
-        /// Flag indicating that the graph has already been disposed
-        /// </summary>
-        internal bool Disposed { get; set; }
-        #endregion
+    /// <summary>
+    /// Flag indicating that the graph has already been disposed
+    /// </summary>
+    internal bool Disposed { get; set; }
+    #endregion
 
-        #region Ctors
-        /// <summary>
-        /// Builds an empty graph
-        /// </summary>
-        public RDFGraph()
+    #region Ctors
+    /// <summary>
+    /// Builds an empty graph
+    /// </summary>
+    public RDFGraph()
+    {
+        Context = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
+        Index = new RDFGraphIndex();
+    }
+
+    /// <summary>
+    /// Builds a graph with the given list of triples
+    /// </summary>
+    public RDFGraph(List<RDFTriple> triples) : this()
+        => triples?.ForEach(t => AddTriple(t));
+
+    /// <summary>
+    /// Destroys the graph instance
+    /// </summary>
+    ~RDFGraph()
+        => Dispose(false);
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the graph
+    /// </summary>
+    public override string ToString()
+        => Context.ToString();
+
+    /// <summary>
+    /// Performs the equality comparison between two graphs
+    /// </summary>
+    public bool Equals(RDFGraph other)
+    {
+        if (other == null || TriplesCount != other.TriplesCount)
+            return false;
+        return this.All(other.ContainsTriple);
+    }
+
+    /// <summary>
+    /// Exposes a typed enumerator on the graph's triples
+    /// </summary>
+    IEnumerator<RDFTriple> IEnumerable<RDFTriple>.GetEnumerator()
+        => TriplesEnumerator;
+
+    /// <summary>
+    /// Exposes an untyped enumerator on the graph's triples
+    /// </summary>
+    IEnumerator IEnumerable.GetEnumerator()
+        => TriplesEnumerator;
+
+    /// <summary>
+    /// Disposes the graph (IDisposable)
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Disposes the graph
+    /// </summary>
+    private void Dispose(bool disposing)
+    {
+        if (Disposed)
+            return;
+
+        if (disposing)
         {
-            Context = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
-            Index = new RDFGraphIndex();
+            Index?.Dispose();
+            Index = null;
         }
 
-        /// <summary>
-        /// Builds a graph with the given list of triples
-        /// </summary>
-        public RDFGraph(List<RDFTriple> triples) : this()
-            => triples?.ForEach(t => AddTriple(t));
+        Disposed = true;
+    }
+    #endregion
 
-        /// <summary>
-        /// Destroys the graph instance
-        /// </summary>
-        ~RDFGraph()
-            => Dispose(false);
-        #endregion
+    #region Methods
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the graph
-        /// </summary>
-        public override string ToString()
-            => Context.ToString();
-
-        /// <summary>
-        /// Performs the equality comparison between two graphs
-        /// </summary>
-        public bool Equals(RDFGraph other)
+    #region Add
+    /// <summary>
+    /// Sets the context of the graph to the given absolute Uri
+    /// </summary>
+    public RDFGraph SetContext(Uri contextUri)
+    {
+        if (contextUri?.IsAbsoluteUri == true
+            && !contextUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
+            && !contextUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
         {
-            if (other == null || TriplesCount != other.TriplesCount)
-                return false;
-            return this.All(other.ContainsTriple);
+            Context = contextUri;
         }
+        return this;
+    }
 
-        /// <summary>
-        /// Exposes a typed enumerator on the graph's triples
-        /// </summary>
-        IEnumerator<RDFTriple> IEnumerable<RDFTriple>.GetEnumerator()
-            => TriplesEnumerator;
+    /// <summary>
+    /// Adds the given triple to the graph, avoiding duplicate insertions
+    /// </summary>
+    public RDFGraph AddTriple(RDFTriple triple)
+    {
+        if (triple != null)
+            Index.Add(triple);
+        return this;
+    }
 
-        /// <summary>
-        /// Exposes an untyped enumerator on the graph's triples
-        /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-            => TriplesEnumerator;
-
-        /// <summary>
-        /// Disposes the graph (IDisposable)
-        /// </summary>
-        public void Dispose()
+    /// <summary>
+    /// Adds the given container to the graph
+    /// </summary>
+    public RDFGraph AddContainer(RDFContainer container)
+    {
+        if (container != null)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            //Reify the container to get its graph representation
+            foreach (RDFTriple t in container.ReifyContainer())
+                Index.Add(t);
         }
+        return this;
+    }
 
-        /// <summary>
-        /// Disposes the graph
-        /// </summary>
-        private void Dispose(bool disposing)
+    /// <summary>
+    /// Adds the given collection to the graph
+    /// </summary>
+    public RDFGraph AddCollection(RDFCollection collection)
+    {
+        if (collection != null)
         {
-            if (Disposed)
-                return;
-
-            if (disposing)
-            {
-                Index?.Dispose();
-                Index = null;
-            }
-
-            Disposed = true;
+            //Reify the collection to get its graph representation
+            foreach (RDFTriple t in collection.ReifyCollection())
+                Index.Add(t);
         }
-        #endregion
+        return this;
+    }
 
-        #region Methods
-
-        #region Add
-        /// <summary>
-        /// Sets the context of the graph to the given absolute Uri
-        /// </summary>
-        public RDFGraph SetContext(Uri contextUri)
+    /// <summary>
+    /// Adds the given datatype to the graph
+    /// </summary>
+    public RDFGraph AddDatatype(RDFDatatype datatype)
+    {
+        if (datatype != null)
         {
-            if (contextUri?.IsAbsoluteUri == true
-                && !contextUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
-                && !contextUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
-            {
-                Context = contextUri;
-            }
-            return this;
+            //Reify the datatype to get its graph representation
+            foreach (RDFTriple t in datatype.ToRDFGraph())
+                Index.Add(t);
         }
+        return this;
+    }
+    #endregion
 
-        /// <summary>
-        /// Asynchronously sets the context of the graph to the given absolute Uri
-        /// </summary>
-        public Task<RDFGraph> SetContextAsync(Uri contextUri)
-            => Task.Run(() => SetContext(contextUri));
+    #region Remove
+    /// <summary>
+    /// Removes the given triple from the graph
+    /// </summary>
+    public RDFGraph RemoveTriple(RDFTriple triple)
+    {
+        if (triple != null)
+            Index.Remove(triple);
+        return this;
+    }
 
-        /// <summary>
-        /// Adds the given triple to the graph, avoiding duplicate insertions
-        /// </summary>
-        public RDFGraph AddTriple(RDFTriple triple)
+    /// <summary>
+    /// Removes the triples with the given subject
+    /// </summary>
+    public RDFGraph RemoveTriplesBySubject(RDFResource subj)
+    {
+        if (subj != null)
         {
-            if (triple != null)
-                Index.Add(triple);
-            return this;
-        }
-
-        /// <summary>
-        /// Asynchronously adds the given triple to the graph, avoiding duplicate insertions
-        /// </summary>
-        public Task<RDFGraph> AddTripleAsync(RDFTriple triple)
-            => Task.Run(() => AddTriple(triple));
-
-        /// <summary>
-        /// Adds the given container to the graph
-        /// </summary>
-        public RDFGraph AddContainer(RDFContainer container)
-        {
-            if (container != null)
-            {
-                //Reify the container to get its graph representation
-                foreach (RDFTriple t in container.ReifyContainer())
-                    Index.Add(t);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Asynchronously adds the given container to the graph
-        /// </summary>
-        public Task<RDFGraph> AddContainerAsync(RDFContainer container)
-            => Task.Run(() => AddContainer(container));
-
-        /// <summary>
-        /// Adds the given collection to the graph
-        /// </summary>
-        public RDFGraph AddCollection(RDFCollection collection)
-        {
-            if (collection != null)
-            {
-                //Reify the collection to get its graph representation
-                foreach (RDFTriple t in collection.ReifyCollection())
-                    Index.Add(t);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Asynchronously adds the given collection to the graph
-        /// </summary>
-        public Task<RDFGraph> AddCollectionAsync(RDFCollection collection)
-            => Task.Run(() => AddCollection(collection));
-
-        /// <summary>
-        /// Adds the given datatype to the graph
-        /// </summary>
-        public RDFGraph AddDatatype(RDFDatatype datatype)
-        {
-            if (datatype != null)
-            {
-                //Reify the datatype to get its graph representation
-                foreach (RDFTriple t in datatype.ToRDFGraph())
-                    Index.Add(t);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Asynchronously adds the given datatype to the graph
-        /// </summary>
-        public Task<RDFGraph> AddDatatypeAsync(RDFDatatype datatype)
-            => Task.Run(() => AddDatatype(datatype));
-        #endregion
-
-        #region Remove
-        /// <summary>
-        /// Removes the given triple from the graph
-        /// </summary>
-        public RDFGraph RemoveTriple(RDFTriple triple)
-        {
-            if (triple != null)
+            foreach (RDFTriple triple in SelectTriplesBySubject(subj))
                 Index.Remove(triple);
-            return this;
         }
+        return this;
+    }
 
-        /// <summary>
-        /// Asynchronously removes the given triple from the graph
-        /// </summary>
-        public Task<RDFGraph> RemoveTripleAsync(RDFTriple triple)
-            => Task.Run(() => RemoveTriple(triple));
-
-        /// <summary>
-        /// Removes the triples with the given subject
-        /// </summary>
-        public RDFGraph RemoveTriplesBySubject(RDFResource subj)
+    /// <summary>
+    /// Removes the triples with the given predicate
+    /// </summary>
+    public RDFGraph RemoveTriplesByPredicate(RDFResource pred)
+    {
+        if (pred != null)
         {
-            if (subj != null)
-            {
-                foreach (RDFTriple triple in SelectTriplesBySubject(subj))
-                    Index.Remove(triple);
-            }
-            return this;
+            foreach (RDFTriple triple in SelectTriplesByPredicate(pred))
+                Index.Remove(triple);
         }
+        return this;
+    }
 
-        /// <summary>
-        /// Asynchronously removes the triples with the given subject from the graph
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesBySubjectAsync(RDFResource subj)
-            => Task.Run(() => RemoveTriplesBySubject(subj));
-
-        /// <summary>
-        /// Removes the triples with the given predicate
-        /// </summary>
-        public RDFGraph RemoveTriplesByPredicate(RDFResource pred)
+    /// <summary>
+    /// Removes the triples with the given object
+    /// </summary>
+    public RDFGraph RemoveTriplesByObject(RDFResource obj)
+    {
+        if (obj != null)
         {
-            if (pred != null)
-            {
-                foreach (RDFTriple triple in SelectTriplesByPredicate(pred))
-                    Index.Remove(triple);
-            }
-            return this;
+            foreach (RDFTriple triple in SelectTriplesByObject(obj))
+                Index.Remove(triple);
         }
+        return this;
+    }
 
-        /// <summary>
-        /// Asynchronously removes the triples with the given predicate from the graph
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesByPredicateAsync(RDFResource pred)
-            => Task.Run(() => RemoveTriplesByPredicate(pred));
-
-        /// <summary>
-        /// Removes the triples with the given object
-        /// </summary>
-        public RDFGraph RemoveTriplesByObject(RDFResource obj)
+    /// <summary>
+    /// Removes the triples with the given literal
+    /// </summary>
+    public RDFGraph RemoveTriplesByLiteral(RDFLiteral lit)
+    {
+        if (lit != null)
         {
-            if (obj != null)
-            {
-                foreach (RDFTriple triple in SelectTriplesByObject(obj))
-                    Index.Remove(triple);
-            }
-            return this;
+            foreach (RDFTriple triple in SelectTriplesByLiteral(lit))
+                Index.Remove(triple);
         }
+        return this;
+    }
 
-        /// <summary>
-        /// Asynchronously removes the triples with the given object from the graph
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesByObjectAsync(RDFResource obj)
-            => Task.Run(() => RemoveTriplesByObject(obj));
-
-        /// <summary>
-        /// Removes the triples with the given literal
-        /// </summary>
-        public RDFGraph RemoveTriplesByLiteral(RDFLiteral lit)
+    /// <summary>
+    /// Removes the triples with the given subject and predicate
+    /// </summary>
+    public RDFGraph RemoveTriplesBySubjectPredicate(RDFResource subj, RDFResource pred)
+    {
+        if (subj != null && pred != null)
         {
-            if (lit != null)
-            {
-                foreach (RDFTriple triple in SelectTriplesByLiteral(lit))
-                    Index.Remove(triple);
-            }
-            return this;
+            foreach (RDFTriple triple in SelectTriplesBySubject(subj).SelectTriplesByPredicate(pred))
+                Index.Remove(triple);
         }
+        return this;
+    }
 
-        /// <summary>
-        /// Asynchronously removes the triples with the given literal from the graph
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesByLiteralAsync(RDFLiteral lit)
-            => Task.Run(() => RemoveTriplesByLiteral(lit));
-
-        /// <summary>
-        /// Removes the triples with the given subject and predicate
-        /// </summary>
-        public RDFGraph RemoveTriplesBySubjectPredicate(RDFResource subj, RDFResource pred)
+    /// <summary>
+    /// Removes the triples with the given subject and object
+    /// </summary>
+    public RDFGraph RemoveTriplesBySubjectObject(RDFResource subj, RDFResource obj)
+    {
+        if (subj != null && obj != null)
         {
-            if (subj != null && pred != null)
-            {
-                foreach (RDFTriple triple in SelectTriplesBySubject(subj).SelectTriplesByPredicate(pred))
-                    Index.Remove(triple);
-            }
-            return this;
+            foreach (RDFTriple triple in SelectTriplesBySubject(subj).SelectTriplesByObject(obj))
+                Index.Remove(triple);
         }
+        return this;
+    }
 
-        /// <summary>
-        /// Asynchronously removes the triples with the given subject and predicate from the graph
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesBySubjectPredicateAsync(RDFResource subj, RDFResource pred)
-            => Task.Run(() => RemoveTriplesBySubjectPredicate(subj, pred));
-
-        /// <summary>
-        /// Removes the triples with the given subject and object
-        /// </summary>
-        public RDFGraph RemoveTriplesBySubjectObject(RDFResource subj, RDFResource obj)
+    /// <summary>
+    /// Removes the triples with the given subject and literal
+    /// </summary>
+    public RDFGraph RemoveTriplesBySubjectLiteral(RDFResource subj, RDFLiteral lit)
+    {
+        if (subj != null && lit != null)
         {
-            if (subj != null && obj != null)
-            {
-                foreach (RDFTriple triple in SelectTriplesBySubject(subj).SelectTriplesByObject(obj))
-                    Index.Remove(triple);
-            }
-            return this;
+            foreach (RDFTriple triple in SelectTriplesBySubject(subj).SelectTriplesByLiteral(lit))
+                Index.Remove(triple);
         }
+        return this;
+    }
 
-        /// <summary>
-        /// Asynchronously removes the triples with the given subject and object from the graph
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesBySubjectObjectAsync(RDFResource subj, RDFResource obj)
-            => Task.Run(() => RemoveTriplesBySubjectObject(subj, obj));
-
-        /// <summary>
-        /// Removes the triples with the given subject and literal
-        /// </summary>
-        public RDFGraph RemoveTriplesBySubjectLiteral(RDFResource subj, RDFLiteral lit)
+    /// <summary>
+    /// Removes the triples with the given predicate and object
+    /// </summary>
+    public RDFGraph RemoveTriplesByPredicateObject(RDFResource pred, RDFResource obj)
+    {
+        if (pred != null && obj != null)
         {
-            if (subj != null && lit != null)
-            {
-                foreach (RDFTriple triple in SelectTriplesBySubject(subj).SelectTriplesByLiteral(lit))
-                    Index.Remove(triple);
-            }
-            return this;
+            foreach (RDFTriple triple in SelectTriplesByPredicate(pred).SelectTriplesByObject(obj))
+                Index.Remove(triple);
         }
+        return this;
+    }
 
-        /// <summary>
-        /// Asynchronously removes the triples with the given subject and literal from the graph
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesBySubjectLiteralAsync(RDFResource subj, RDFLiteral lit)
-            => Task.Run(() => RemoveTriplesBySubjectLiteral(subj, lit));
-
-        /// <summary>
-        /// Removes the triples with the given predicate and object
-        /// </summary>
-        public RDFGraph RemoveTriplesByPredicateObject(RDFResource pred, RDFResource obj)
+    /// <summary>
+    /// Removes the triples with the given predicate and literal
+    /// </summary>
+    public RDFGraph RemoveTriplesByPredicateLiteral(RDFResource pred, RDFLiteral lit)
+    {
+        if (pred != null && lit != null)
         {
-            if (pred != null && obj != null)
-            {
-                foreach (RDFTriple triple in SelectTriplesByPredicate(pred).SelectTriplesByObject(obj))
-                    Index.Remove(triple);
-            }
-            return this;
+            foreach (RDFTriple triple in SelectTriplesByPredicate(pred).SelectTriplesByLiteral(lit))
+                Index.Remove(triple);
         }
+        return this;
+    }
 
-        /// <summary>
-        /// Asynchronously removes the triples with the given predicate and object from the graph
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesByPredicateObjectAsync(RDFResource pred, RDFResource obj)
-            => Task.Run(() => RemoveTriplesByPredicateObject(pred, obj));
+    /// <summary>
+    /// Clears the triples and metadata of the graph
+    /// </summary>
+    public void ClearTriples()
+        => Index.Clear();
+    #endregion
 
-        /// <summary>
-        /// Removes the triples with the given predicate and literal
-        /// </summary>
-        public RDFGraph RemoveTriplesByPredicateLiteral(RDFResource pred, RDFLiteral lit)
+    #region Select
+    /// <summary>
+    /// Checks if the graph contains the given triple
+    /// </summary>
+    public bool ContainsTriple(RDFTriple triple)
+        => triple != null && Index.Hashes.ContainsKey(triple.TripleID);
+
+    /// <summary>
+    /// Gets the subgraph containing triples with the specified subject
+    /// </summary>
+    public RDFGraph SelectTriplesBySubject(RDFResource subj)
+        => new RDFGraph(RDFModelUtilities.SelectTriples(this, subj, null, null, null));
+
+    /// <summary>
+    /// Gets the subgraph containing triples with the specified predicate
+    /// </summary>
+    public RDFGraph SelectTriplesByPredicate(RDFResource pred)
+        => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, pred, null, null));
+
+    /// <summary>
+    /// Gets the subgraph containing triples with the specified object
+    /// </summary>
+    public RDFGraph SelectTriplesByObject(RDFResource obj)
+        => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, null, obj, null));
+
+    /// <summary>
+    /// Gets the subgraph containing triples with the specified literal
+    /// </summary>
+    public RDFGraph SelectTriplesByLiteral(RDFLiteral lit)
+        => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, null, null, lit));
+
+    /// <summary>
+    /// Gets the subgraph containing triples with the specified combination of SPOL accessors<br/>
+    /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public RDFGraph this[RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
+    {
+        get
         {
-            if (pred != null && lit != null)
-            {
-                foreach (RDFTriple triple in SelectTriplesByPredicate(pred).SelectTriplesByLiteral(lit))
-                    Index.Remove(triple);
-            }
-            return this;
+            #region Guards
+            if (obj != null && lit != null)
+                throw new RDFModelException("Cannot access a graph when both object and literals are given: they must be mutually exclusive!");
+            #endregion
+
+            return new RDFGraph(RDFModelUtilities.SelectTriples(this, subj, pred, obj, lit));
         }
+    }
+    #endregion
 
-        /// <summary>
-        /// Asynchronously removes the triples with the given predicate and literal from the graph
-        /// </summary>
-        public Task<RDFGraph> RemoveTriplesByPredicateLiteralAsync(RDFResource pred, RDFLiteral lit)
-            => Task.Run(() => RemoveTriplesByPredicateLiteral(pred, lit));
-
-        /// <summary>
-        /// Clears the triples and metadata of the graph
-        /// </summary>
-        public void ClearTriples()
-            => Index.Clear();
-
-        /// <summary>
-        /// Asynchronously clears the triples and metadata of the graph
-        /// </summary>
-        public Task ClearTriplesAsync()
-            => Task.Run(ClearTriples);
-        #endregion
-
-        #region Select
-        /// <summary>
-        /// Checks if the graph contains the given triple
-        /// </summary>
-        public bool ContainsTriple(RDFTriple triple)
-            => triple != null && Index.Hashes.ContainsKey(triple.TripleID);
-
-        /// <summary>
-        /// Asynchronously checks if the graph contains the given triple
-        /// </summary>
-        public Task<bool> ContainsTripleAsync(RDFTriple triple)
-            => Task.Run(() => ContainsTriple(triple));
-
-        /// <summary>
-        /// Gets the subgraph containing triples with the specified subject
-        /// </summary>
-        public RDFGraph SelectTriplesBySubject(RDFResource subjectResource)
-            => new RDFGraph(RDFModelUtilities.SelectTriples(this, subjectResource, null, null, null));
-
-        /// <summary>
-        /// Asynchronously gets the subgraph containing triples with the specified subject
-        /// </summary>
-        public Task<RDFGraph> SelectTriplesBySubjectAsync(RDFResource subjectResource)
-            => Task.Run(() => SelectTriplesBySubject(subjectResource));
-
-        /// <summary>
-        /// Gets the subgraph containing triples with the specified predicate
-        /// </summary>
-        public RDFGraph SelectTriplesByPredicate(RDFResource predicateResource)
-            => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, predicateResource, null, null));
-
-        /// <summary>
-        /// Asynchronously gets the subgraph containing triples with the specified predicate
-        /// </summary>
-        public Task<RDFGraph> SelectTriplesByPredicateAsync(RDFResource predicateResource)
-            => Task.Run(() => SelectTriplesByPredicate(predicateResource));
-
-        /// <summary>
-        /// Gets the subgraph containing triples with the specified object
-        /// </summary>
-        public RDFGraph SelectTriplesByObject(RDFResource objectResource)
-            => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, null, objectResource, null));
-
-        /// <summary>
-        /// Asynchronously gets the subgraph containing triples with the specified object
-        /// </summary>
-        public Task<RDFGraph> SelectTriplesByObjectAsync(RDFResource objectResource)
-            => Task.Run(() => SelectTriplesByObject(objectResource));
-
-        /// <summary>
-        /// Gets the subgraph containing triples with the specified literal
-        /// </summary>
-        public RDFGraph SelectTriplesByLiteral(RDFLiteral objectLiteral)
-            => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, null, null, objectLiteral));
-
-        /// <summary>
-        /// Asynchronously gets the subgraph containing triples with the specified literal
-        /// </summary>
-        public Task<RDFGraph> SelectTriplesByLiteralAsync(RDFLiteral literal)
-            => Task.Run(() => SelectTriplesByLiteral(literal));
-
-        /// <summary>
-        /// Gets the subgraph containing triples with the specified combination of SPOL accessors<br/>
-        /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public RDFGraph this[RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
+    #region Set
+    /// <summary>
+    /// Builds an intersection graph from this graph and a given one
+    /// </summary>
+    public RDFGraph IntersectWith(RDFGraph graph)
+    {
+        RDFGraph result = new RDFGraph();
+        if (graph != null)
         {
-            get
+            //Add intersection triples
+            foreach (RDFTriple t in this)
             {
-                #region Guards
-                if (obj != null && lit != null)
-                    throw new RDFModelException("Cannot access a graph when both object and literals are given: they must be mutually exclusive!");
-                #endregion
-
-                return new RDFGraph(RDFModelUtilities.SelectTriples(this, subj, pred, obj, lit));
+                if (graph.Index.Hashes.ContainsKey(t.TripleID))
+                    result.Index.Add(t);
             }
         }
-        #endregion
+        return result;
+    }
 
-        #region Set
-        /// <summary>
-        /// Builds an intersection graph from this graph and a given one
-        /// </summary>
-        public RDFGraph IntersectWith(RDFGraph graph)
+    /// <summary>
+    /// Builds a union graph from this graph and a given one
+    /// </summary>
+    public RDFGraph UnionWith(RDFGraph graph)
+    {
+        RDFGraph result = new RDFGraph();
+
+        //Add triples from this graph
+        foreach (RDFTriple t in this)
+            result.Index.Add(t);
+
+        //Manage the given graph
+        if (graph != null)
         {
-            RDFGraph result = new RDFGraph();
-            if (graph != null)
-            {
-                //Add intersection triples
-                foreach (RDFTriple t in this)
-                {
-                    if (graph.Index.Hashes.ContainsKey(t.TripleID))
-                        result.Index.Add(t);
-                }
-            }
-            return result;
+            //Add triples from the given graph
+            foreach (RDFTriple t in graph)
+                result.Index.Add(t);
         }
 
-        /// <summary>
-        /// Asynchronously builds an intersection graph from this graph and a given one
-        /// </summary>
-        public Task<RDFGraph> IntersectWithAsync(RDFGraph graph)
-            => Task.Run(() => IntersectWith(graph));
+        return result;
+    }
 
-        /// <summary>
-        /// Builds a union graph from this graph and a given one
-        /// </summary>
-        public RDFGraph UnionWith(RDFGraph graph)
+    /// <summary>
+    /// Builds a difference graph from this graph and a given one
+    /// </summary>
+    public RDFGraph DifferenceWith(RDFGraph graph)
+    {
+        RDFGraph result = new RDFGraph();
+
+        if (graph != null)
         {
-            RDFGraph result = new RDFGraph();
-
+            //Add difference triples
+            foreach (RDFTriple t in this)
+            {
+                if (!graph.Index.Hashes.ContainsKey(t.TripleID))
+                    result.Index.Add(t);
+            }
+        }
+        else
+        {
             //Add triples from this graph
             foreach (RDFTriple t in this)
                 result.Index.Add(t);
-
-            //Manage the given graph
-            if (graph != null)
-            {
-                //Add triples from the given graph
-                foreach (RDFTriple t in graph)
-                    result.Index.Add(t);
-            }
-
-            return result;
         }
 
-        /// <summary>
-        /// Asynchronously builds a union graph from this graph and a given one
-        /// </summary>
-        public Task<RDFGraph> UnionWithAsync(RDFGraph graph)
-            => Task.Run(() => UnionWith(graph));
+        return result;
+    }
+    #endregion
 
-        /// <summary>
-        /// Builds a difference graph from this graph and a given one
-        /// </summary>
-        public RDFGraph DifferenceWith(RDFGraph graph)
+    #region Convert
+
+    #region Export
+    /// <summary>
+    /// Writes the graph into a file in the given RDF format.
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public void ToFile(RDFModelEnums.RDFFormats rdfFormat, string filepath)
+    {
+        #region Guards
+        if (string.IsNullOrEmpty(filepath))
+            throw new RDFModelException("Cannot write RDF graph to file because given \"filepath\" parameter is null or empty.");
+        #endregion
+
+        switch (rdfFormat)
         {
-            RDFGraph result = new RDFGraph();
+            case RDFModelEnums.RDFFormats.NTriples:
+                RDFNTriples.Serialize(this, filepath);
+                break;
+            case RDFModelEnums.RDFFormats.RdfXml:
+                RDFXml.Serialize(this, filepath);
+                break;
+            case RDFModelEnums.RDFFormats.TriX:
+                RDFTriX.Serialize(this, filepath);
+                break;
+            case RDFModelEnums.RDFFormats.Turtle:
+                RDFTurtle.Serialize(this, filepath);
+                break;
+        }
+    }
 
-            if (graph != null)
-            {
-                //Add difference triples
-                foreach (RDFTriple t in this)
-                {
-                    if (!graph.Index.Hashes.ContainsKey(t.TripleID))
-                        result.Index.Add(t);
-                }
-            }
+    /// <summary>
+    /// Asynchronously writes the graph into a file in the given RDF format
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public Task ToFileAsync(RDFModelEnums.RDFFormats rdfFormat, string filepath)
+        => Task.Run(() => ToFile(rdfFormat, filepath));
+
+    /// <summary>
+    /// Writes the graph into a stream in the given RDF format (at the end the stream is closed)
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public void ToStream(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream)
+    {
+        #region Guards
+        if (outputStream == null)
+            throw new RDFModelException("Cannot write RDF graph to stream because given \"outputStream\" parameter is null.");
+        #endregion
+
+        switch (rdfFormat)
+        {
+            case RDFModelEnums.RDFFormats.NTriples:
+                RDFNTriples.Serialize(this, outputStream);
+                break;
+            case RDFModelEnums.RDFFormats.RdfXml:
+                RDFXml.Serialize(this, outputStream);
+                break;
+            case RDFModelEnums.RDFFormats.TriX:
+                RDFTriX.Serialize(this, outputStream);
+                break;
+            case RDFModelEnums.RDFFormats.Turtle:
+                RDFTurtle.Serialize(this, outputStream);
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously writes the graph into a stream in the given RDF format (at the end the stream is closed)
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public Task ToStreamAsync(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream)
+        => Task.Run(() => ToStream(rdfFormat, outputStream));
+
+    /// <summary>
+    /// Writes the graph into a datatable with "Subject-Predicate-Object" columns
+    /// </summary>
+    public DataTable ToDataTable()
+    {
+        //Create the structure of the result datatable
+        DataTable result = new DataTable(ToString());
+        result.Columns.Add("?SUBJECT", typeof(string));
+        result.Columns.Add("?PREDICATE", typeof(string));
+        result.Columns.Add("?OBJECT", typeof(string));
+
+        //Iterate the triples of the graph to populate the result datatable
+        result.BeginLoadData();
+        foreach (RDFTriple t in this)
+        {
+            DataRow newRow = result.NewRow();
+            newRow["?SUBJECT"] = t.Subject.ToString();
+            newRow["?PREDICATE"] = t.Predicate.ToString();
+            newRow["?OBJECT"] = t.Object.ToString();
+            result.Rows.Add(newRow);
+        }
+        result.EndLoadData();
+
+        return result;
+    }
+
+    /// <summary>
+    /// Asynchronously writes the graph into a datatable with "Subject-Predicate-Object" columns
+    /// </summary>
+    public Task<DataTable> ToDataTableAsync()
+        => Task.Run(ToDataTable);
+    #endregion
+
+    #region Import
+    /// <summary>
+    /// Reads a graph from a file of the given RDF format.
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public static RDFGraph FromFile(RDFModelEnums.RDFFormats rdfFormat, string filepath, bool enableDatatypeDiscovery=false)
+    {
+        #region Guards
+        if (string.IsNullOrEmpty(filepath))
+            throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter is null or empty.");
+        if (!File.Exists(filepath))
+            throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
+        #endregion
+
+        RDFGraph graph = rdfFormat switch
+        {
+            RDFModelEnums.RDFFormats.RdfXml => RDFXml.Deserialize(filepath),
+            RDFModelEnums.RDFFormats.Turtle => RDFTurtle.Deserialize(filepath),
+            RDFModelEnums.RDFFormats.NTriples => RDFNTriples.Deserialize(filepath),
+            RDFModelEnums.RDFFormats.TriX => RDFTriX.Deserialize(filepath),
+            _ => null
+        };
+
+        #region Datatype Discovery
+        if (enableDatatypeDiscovery && graph != null)
+            RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
+        #endregion
+
+        return graph;
+    }
+
+    /// <summary>
+    /// Asynchronously reads a graph from a file of the given RDF format
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public static Task<RDFGraph> FromFileAsync(RDFModelEnums.RDFFormats rdfFormat, string filepath, bool enableDatatypeDiscovery = false)
+        => Task.Run(() => FromFile(rdfFormat, filepath, enableDatatypeDiscovery));
+
+    /// <summary>
+    /// Reads a graph from a stream of the given RDF format.
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, bool enableDatatypeDiscovery=false)
+        => FromStream(rdfFormat, inputStream, null, enableDatatypeDiscovery);
+    internal static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, Uri graphContext, bool enableDatatypeDiscovery=false)
+    {
+        #region Guards
+        if (inputStream == null)
+        {
+            throw new RDFModelException("Cannot read RDF graph from stream because given \"inputStream\" parameter is null.");
+        }
+        #endregion
+
+        RDFGraph graph = rdfFormat switch
+        {
+            RDFModelEnums.RDFFormats.RdfXml => RDFXml.Deserialize(inputStream, graphContext),
+            RDFModelEnums.RDFFormats.Turtle => RDFTurtle.Deserialize(inputStream, graphContext),
+            RDFModelEnums.RDFFormats.NTriples => RDFNTriples.Deserialize(inputStream, graphContext),
+            RDFModelEnums.RDFFormats.TriX => RDFTriX.Deserialize(inputStream, graphContext),
+            _ => null
+        };
+
+        #region Datatype Discovery
+        if (enableDatatypeDiscovery && graph != null)
+            RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
+        #endregion
+
+        return graph;
+    }
+
+    /// <summary>
+    /// Asynchronously reads a graph from a stream of the given RDF format
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public static Task<RDFGraph> FromStreamAsync(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, bool enableDatatypeDiscovery = false)
+        => Task.Run(() => FromStream(rdfFormat, inputStream, enableDatatypeDiscovery));
+
+    /// <summary>
+    /// Reads a graph from a datatable with "Subject-Predicate-Object" columns.
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public static RDFGraph FromDataTable(DataTable table, bool enableDatatypeDiscovery=false)
+    {
+        #region Guards
+        if (table == null)
+            throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter is null.");
+        if (!(table.Columns.Contains("?SUBJECT") && table.Columns.Contains("?PREDICATE") && table.Columns.Contains("?OBJECT")))
+            throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter does not have the required columns \"?SUBJECT\", \"?PREDICATE\", \"?OBJECT\".");
+        #endregion
+
+        RDFGraph graph = new RDFGraph();
+
+        #region Parse Table
+
+        #region CONTEXT
+        //Parse the name of the datatable for Uri, in order to assign the graph name
+        if (Uri.TryCreate(table.TableName, UriKind.Absolute, out Uri graphUri))
+            graph.SetContext(graphUri);
+        #endregion
+
+        #region SUBJECT-PREDICATE-OBJECT
+        foreach (DataRow tableRow in table.Rows)
+        {
+            #region SUBJECT
+            if (tableRow.IsNull("?SUBJECT") || string.IsNullOrEmpty(tableRow["?SUBJECT"].ToString()))
+                throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"?SUBJECT\" column.");
+
+            RDFPatternMember rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?SUBJECT"].ToString());
+            if (rowSubj is not RDFResource subj)
+                throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row not having a resource in the \"?SUBJECT\" column.");
+            #endregion
+
+            #region PREDICATE
+            if (tableRow.IsNull("?PREDICATE") || string.IsNullOrEmpty(tableRow["?PREDICATE"].ToString()))
+                throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"?PREDICATE\" column.");
+
+            RDFPatternMember rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?PREDICATE"].ToString());
+            if (rowPred is not RDFResource pred)
+                throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row not having a resource in the \"?PREDICATE\" column.");
+
+            if (pred.IsBlank)
+                throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having a blank resource in the \"?PREDICATE\" column.");
+            #endregion
+
+            #region OBJECT
+            if (tableRow.IsNull("?OBJECT"))
+                throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null value in the \"?OBJECT\" column.");
+
+            RDFPatternMember rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?OBJECT"].ToString());
+            if (rowObj is RDFResource rowObjRes)
+                graph.AddTriple(new RDFTriple(subj, pred, rowObjRes));
             else
-            {
-                //Add triples from this graph
-                foreach (RDFTriple t in this)
-                    result.Index.Add(t);
-            }
-
-            return result;
+                graph.AddTriple(new RDFTriple(subj, pred, (RDFLiteral)rowObj));
+            #endregion
         }
-
-        /// <summary>
-        /// Asynchronously builds a difference graph from this graph and a given one
-        /// </summary>
-        public Task<RDFGraph> DifferenceWithAsync(RDFGraph graph)
-            => Task.Run(() => DifferenceWith(graph));
         #endregion
 
-        #region Convert
-
-        #region Export
-        /// <summary>
-        /// Writes the graph into a file in the given RDF format.
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public void ToFile(RDFModelEnums.RDFFormats rdfFormat, string filepath)
-        {
-            #region Guards
-            if (string.IsNullOrEmpty(filepath))
-                throw new RDFModelException("Cannot write RDF graph to file because given \"filepath\" parameter is null or empty.");
-            #endregion
-
-            switch (rdfFormat)
-            {
-                case RDFModelEnums.RDFFormats.NTriples:
-                    RDFNTriples.Serialize(this, filepath);
-                    break;
-                case RDFModelEnums.RDFFormats.RdfXml:
-                    RDFXml.Serialize(this, filepath);
-                    break;
-                case RDFModelEnums.RDFFormats.TriX:
-                    RDFTriX.Serialize(this, filepath);
-                    break;
-                case RDFModelEnums.RDFFormats.Turtle:
-                    RDFTurtle.Serialize(this, filepath);
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Asynchronously writes the graph into a file in the given RDF format
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public Task ToFileAsync(RDFModelEnums.RDFFormats rdfFormat, string filepath)
-            => Task.Run(() => ToFile(rdfFormat, filepath));
-
-        /// <summary>
-        /// Writes the graph into a stream in the given RDF format (at the end the stream is closed)
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public void ToStream(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream)
-        {
-            #region Guards
-            if (outputStream == null)
-                throw new RDFModelException("Cannot write RDF graph to stream because given \"outputStream\" parameter is null.");
-            #endregion
-
-            switch (rdfFormat)
-            {
-                case RDFModelEnums.RDFFormats.NTriples:
-                    RDFNTriples.Serialize(this, outputStream);
-                    break;
-                case RDFModelEnums.RDFFormats.RdfXml:
-                    RDFXml.Serialize(this, outputStream);
-                    break;
-                case RDFModelEnums.RDFFormats.TriX:
-                    RDFTriX.Serialize(this, outputStream);
-                    break;
-                case RDFModelEnums.RDFFormats.Turtle:
-                    RDFTurtle.Serialize(this, outputStream);
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Asynchronously writes the graph into a stream in the given RDF format (at the end the stream is closed)
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public Task ToStreamAsync(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream)
-            => Task.Run(() => ToStream(rdfFormat, outputStream));
-
-        /// <summary>
-        /// Writes the graph into a datatable with "Subject-Predicate-Object" columns
-        /// </summary>
-        public DataTable ToDataTable()
-        {
-            //Create the structure of the result datatable
-            DataTable result = new DataTable(ToString());
-            result.Columns.Add("?SUBJECT", typeof(string));
-            result.Columns.Add("?PREDICATE", typeof(string));
-            result.Columns.Add("?OBJECT", typeof(string));
-
-            //Iterate the triples of the graph to populate the result datatable
-            result.BeginLoadData();
-            foreach (RDFTriple t in this)
-            {
-                DataRow newRow = result.NewRow();
-                newRow["?SUBJECT"] = t.Subject.ToString();
-                newRow["?PREDICATE"] = t.Predicate.ToString();
-                newRow["?OBJECT"] = t.Object.ToString();
-                result.Rows.Add(newRow);
-            }
-            result.EndLoadData();
-
-            return result;
-        }
-
-        /// <summary>
-        /// Asynchronously writes the graph into a datatable with "Subject-Predicate-Object" columns
-        /// </summary>
-        public Task<DataTable> ToDataTableAsync()
-            => Task.Run(ToDataTable);
         #endregion
 
-        #region Import
-        /// <summary>
-        /// Reads a graph from a file of the given RDF format.
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public static RDFGraph FromFile(RDFModelEnums.RDFFormats rdfFormat, string filepath, bool enableDatatypeDiscovery=false)
+        #region Datatype Discovery
+        if (enableDatatypeDiscovery)
+            RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
+        #endregion
+
+        return graph;
+    }
+
+    /// <summary>
+    /// Asynchronously reads a graph from a datatable with "Subject-Predicate-Object" columns
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public static Task<RDFGraph> FromDataTableAsync(DataTable table, bool enableDatatypeDiscovery=false)
+        => Task.Run(() => FromDataTable(table, enableDatatypeDiscovery));
+
+    /// <summary>
+    /// Reads a graph by trying to dereference the given Uri
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public static RDFGraph FromUri(Uri uri, int timeoutMilliseconds=20000, bool enableDatatypeDiscovery=false)
+        => FromUriAsync(uri, timeoutMilliseconds, enableDatatypeDiscovery).GetAwaiter().GetResult();
+
+    /// <summary>
+    /// Asynchronously reads a graph by trying to dereference the given Uri
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public static async Task<RDFGraph> FromUriAsync(Uri uri, int timeoutMilliseconds=20000, bool enableDatatypeDiscovery=false)
+    {
+        #region Guards
+        if (uri == null)
+            throw new RDFModelException("Cannot read RDF graph from Uri because given \"uri\" parameter is null.");
+        if (!uri.IsAbsoluteUri)
+            throw new RDFModelException("Cannot read RDF graph from Uri because given \"uri\" parameter does not represent an absolute Uri.");
+        #endregion
+
+        RDFGraph graph = new RDFGraph();
+        try
         {
-            #region Guards
-            if (string.IsNullOrEmpty(filepath))
-                throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter is null or empty.");
-            if (!File.Exists(filepath))
-                throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
-            #endregion
+            //Grab eventual dereference Uri
+            Uri remappedUri = RDFModelUtilities.RemapUriForDereference(uri);
 
-            RDFGraph graph = null;
-            switch (rdfFormat)
-            {
-                case RDFModelEnums.RDFFormats.RdfXml:
-                    graph = RDFXml.Deserialize(filepath);
-                    break;
-                case RDFModelEnums.RDFFormats.Turtle:
-                    graph =  RDFTurtle.Deserialize(filepath);
-                    break;
-                case RDFModelEnums.RDFFormats.NTriples:
-                    graph =  RDFNTriples.Deserialize(filepath);
-                    break;
-                case RDFModelEnums.RDFFormats.TriX:
-                    graph =  RDFTriX.Deserialize(filepath);
-                    break;
-            }
-
-            #region Datatype Discovery
-            if (enableDatatypeDiscovery)
-                RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
-            #endregion
-
-            return graph;
-        }
-
-        /// <summary>
-        /// Asynchronously reads a graph from a file of the given RDF format
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public static Task<RDFGraph> FromFileAsync(RDFModelEnums.RDFFormats rdfFormat, string filepath, bool enableDatatypeDiscovery = false)
-            => Task.Run(() => FromFile(rdfFormat, filepath, enableDatatypeDiscovery));
-
-        /// <summary>
-        /// Reads a graph from a stream of the given RDF format.
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, bool enableDatatypeDiscovery=false)
-            => FromStream(rdfFormat, inputStream, null, enableDatatypeDiscovery);
-        internal static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, Uri graphContext, bool enableDatatypeDiscovery=false)
-        {
-            #region Guards
-            if (inputStream == null)
-            {
-                throw new RDFModelException("Cannot read RDF graph from stream because given \"inputStream\" parameter is null.");
-            }
-            #endregion
-
-            RDFGraph graph = null;
-            switch (rdfFormat)
-            {
-                case RDFModelEnums.RDFFormats.RdfXml:
-                    graph = RDFXml.Deserialize(inputStream, graphContext);
-                    break;
-                case RDFModelEnums.RDFFormats.Turtle:
-                    graph =  RDFTurtle.Deserialize(inputStream, graphContext);
-                    break;
-                case RDFModelEnums.RDFFormats.NTriples:
-                    graph =  RDFNTriples.Deserialize(inputStream, graphContext);
-                    break;
-                case RDFModelEnums.RDFFormats.TriX:
-                    graph =  RDFTriX.Deserialize(inputStream, graphContext);
-                    break;
-            }
-
-            #region Datatype Discovery
-            if (enableDatatypeDiscovery)
-                RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
-            #endregion
-
-            return graph;
-        }
-
-        /// <summary>
-        /// Asynchronously reads a graph from a stream of the given RDF format
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public static Task<RDFGraph> FromStreamAsync(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, bool enableDatatypeDiscovery = false)
-            => Task.Run(() => FromStream(rdfFormat, inputStream, enableDatatypeDiscovery));
-
-        /// <summary>
-        /// Reads a graph from a datatable with "Subject-Predicate-Object" columns.
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public static RDFGraph FromDataTable(DataTable table, bool enableDatatypeDiscovery=false)
-        {
-            #region Guards
-            if (table == null)
-                throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter is null.");
-            if (!(table.Columns.Contains("?SUBJECT") && table.Columns.Contains("?PREDICATE") && table.Columns.Contains("?OBJECT")))
-                throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter does not have the required columns \"?SUBJECT\", \"?PREDICATE\", \"?OBJECT\".");
-            #endregion
-
-            RDFGraph graph = new RDFGraph();
-
-            #region Parse Table
-
-            #region CONTEXT
-            //Parse the name of the datatable for Uri, in order to assign the graph name
-            if (Uri.TryCreate(table.TableName, UriKind.Absolute, out Uri graphUri))
-                graph.SetContext(graphUri);
-            #endregion
-
-            #region SUBJECT-PREDICATE-OBJECT
-            foreach (DataRow tableRow in table.Rows)
-            {
-                #region SUBJECT
-                if (tableRow.IsNull("?SUBJECT") || string.IsNullOrEmpty(tableRow["?SUBJECT"].ToString()))
-                    throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"?SUBJECT\" column.");
-
-                RDFPatternMember rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?SUBJECT"].ToString());
-                if (!(rowSubj is RDFResource subj))
-                    throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row not having a resource in the \"?SUBJECT\" column.");
-                #endregion
-
-                #region PREDICATE
-                if (tableRow.IsNull("?PREDICATE") || string.IsNullOrEmpty(tableRow["?PREDICATE"].ToString()))
-                    throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"?PREDICATE\" column.");
-
-                RDFPatternMember rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?PREDICATE"].ToString());
-                if (!(rowPred is RDFResource pred))
-                    throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row not having a resource in the \"?PREDICATE\" column.");
-
-                if (pred.IsBlank)
-                    throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having a blank resource in the \"?PREDICATE\" column.");
-                #endregion
-
-                #region OBJECT
-                if (tableRow.IsNull("?OBJECT"))
-                    throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null value in the \"?OBJECT\" column.");
-
-                RDFPatternMember rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?OBJECT"].ToString());
-                if (rowObj is RDFResource rowObjRes)
-                    graph.AddTriple(new RDFTriple(subj, pred, rowObjRes));
-                else
-                    graph.AddTriple(new RDFTriple(subj, pred, (RDFLiteral)rowObj));
-                #endregion
-            }
-            #endregion
-
-            #endregion
-
-            #region Datatype Discovery
-            if (enableDatatypeDiscovery)
-                RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
-            #endregion
-
-            return graph;
-        }
-
-        /// <summary>
-        /// Asynchronously reads a graph from a datatable with "Subject-Predicate-Object" columns
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public static Task<RDFGraph> FromDataTableAsync(DataTable table, bool enableDatatypeDiscovery=false)
-            => Task.Run(() => FromDataTable(table, enableDatatypeDiscovery));
-
-        /// <summary>
-        /// Reads a graph by trying to dereference the given Uri
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public static RDFGraph FromUri(Uri uri, int timeoutMilliseconds=20000, bool enableDatatypeDiscovery=false)
-        {
-            #region Guards
-            if (uri == null)
-                throw new RDFModelException("Cannot read RDF graph from Uri because given \"uri\" parameter is null.");
-            if (!uri.IsAbsoluteUri)
-                throw new RDFModelException("Cannot read RDF graph from Uri because given \"uri\" parameter does not represent an absolute Uri.");
-            #endregion
-
-            RDFGraph graph = new RDFGraph();
-            try
-            {
-                //Grab eventual dereference Uri
-                Uri remappedUri = RDFModelUtilities.RemapUriForDereference(uri);
-
-                HttpWebRequest webRequest = WebRequest.CreateHttp(remappedUri);
-                webRequest.MaximumAutomaticRedirections = 3;
-                webRequest.AllowAutoRedirect = true;
-                webRequest.Timeout = timeoutMilliseconds;
-                webRequest.Accept = "application/rdf+xml,text/turtle,application/turtle,application/x-turtle,application/n-triples,application/trix";
-
-                HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
-                if (webRequest.HaveResponse)
+            //Build an HTTP client to execute the request
+            using (HttpClient httpClient = new HttpClient(
+                new HttpClientHandler
                 {
-                    //Cascade detection of ContentType from response
-                    string responseContentType = webResponse.ContentType;
-                    if (string.IsNullOrWhiteSpace(responseContentType))
-                    {
-                        responseContentType = webResponse.Headers["ContentType"];
-                        if (string.IsNullOrWhiteSpace(responseContentType))
-                        {
-                            responseContentType = "application/rdf+xml"; //Fallback to RDF/XML
-                        }
-                    }
+                   MaxAutomaticRedirections = 2,
+                   AllowAutoRedirect = true
+                }))
+            {
+                httpClient.Timeout = TimeSpan.FromMilliseconds(timeoutMilliseconds);
+                httpClient.DefaultRequestHeaders.Accept.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/rdf+xml"));
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/turtle"));
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/turtle"));
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-turtle"));
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/n-triples"));
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/trix"));
 
+                // Execute the request and ensure it is successful
+                HttpResponseMessage response = await httpClient.GetAsync(remappedUri);
+                response.EnsureSuccessStatusCode();
+
+                // Detect ContentType from response
+                string responseContentType = response.Content.Headers.ContentType?.MediaType;
+                if (string.IsNullOrWhiteSpace(responseContentType))
+                {
+                    if (response.Headers.TryGetValues("ContentType", out var contentTypeValues))
+                        responseContentType = contentTypeValues.FirstOrDefault();
+
+                    if (string.IsNullOrWhiteSpace(responseContentType))
+                        responseContentType = "application/rdf+xml"; //Fallback to RDF/XML
+                }
+
+                // Read response data
+                using (Stream responseStream = await response.Content.ReadAsStreamAsync())
+                {
                     //RDF/XML
                     if (responseContentType.Contains("application/rdf+xml"))
-                    {
-                        graph = FromStream(RDFModelEnums.RDFFormats.RdfXml, webResponse.GetResponseStream(), remappedUri);
-                    }
+                        graph = FromStream(RDFModelEnums.RDFFormats.RdfXml, responseStream, remappedUri);
 
                     //TURTLE
                     else if (responseContentType.Contains("text/turtle")
-                             || responseContentType.Contains("application/turtle")
-                             || responseContentType.Contains("application/x-turtle"))
-                    {
-                        graph = FromStream(RDFModelEnums.RDFFormats.Turtle, webResponse.GetResponseStream(), remappedUri);
-                    }
+                              || responseContentType.Contains("application/turtle")
+                              || responseContentType.Contains("application/x-turtle"))
+                        graph = FromStream(RDFModelEnums.RDFFormats.Turtle, responseStream, remappedUri);
 
                     //N-TRIPLES
                     else if (responseContentType.Contains("application/n-triples"))
-                    {
-                        graph = FromStream(RDFModelEnums.RDFFormats.NTriples, webResponse.GetResponseStream(), remappedUri);
-                    }
+                        graph = FromStream(RDFModelEnums.RDFFormats.NTriples, responseStream, remappedUri);
 
                     //TRIX
                     else if (responseContentType.Contains("application/trix"))
-                    {
-                        graph = FromStream(RDFModelEnums.RDFFormats.TriX, webResponse.GetResponseStream(), remappedUri);
-                    }
+                        graph = FromStream(RDFModelEnums.RDFFormats.TriX, responseStream, remappedUri);
+
+                    #region Datatype Discovery
+                    if (enableDatatypeDiscovery)
+                        RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
+                    #endregion
                 }
             }
-            catch (Exception ex)
-            {
-                throw new RDFModelException($"Cannot read RDF graph from Uri {uri} because: " + ex.Message);
-            }
-
-            #region Datatype Discovery
-            if (enableDatatypeDiscovery)
-                RDFModelUtilities.ExtractAndRegisterDatatypes(graph);
-            #endregion
-
-            return graph;
+        }
+        catch (Exception ex)
+        {
+            throw new RDFModelException($"Cannot read RDF graph from Uri {uri} because: " + ex.Message);
         }
 
-        /// <summary>
-        /// Asynchronously reads a graph by trying to dereference the given Uri
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public static Task<RDFGraph> FromUriAsync(Uri uri, int timeoutMilliseconds=20000, bool enableDatatypeDiscovery=false)
-            => Task.Run(() => FromUri(uri, timeoutMilliseconds, enableDatatypeDiscovery));
-        #endregion
-
-        #endregion
-
-        #endregion
+        return graph;
     }
+    #endregion
+
+    #endregion
+
+    #endregion
 }

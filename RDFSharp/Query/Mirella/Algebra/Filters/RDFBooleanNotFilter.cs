@@ -18,65 +18,60 @@ using System.Collections.Generic;
 using System.Data;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFBooleanNotFilter represents a filter applying a negation on the logics of the given filter.
+/// </summary>
+public sealed class RDFBooleanNotFilter : RDFFilter
 {
+    #region Properties
     /// <summary>
-    /// RDFBooleanNotFilter represents a filter applying a negation on the logics of the given filter.
+    /// Filter to be negated
     /// </summary>
-    public sealed class RDFBooleanNotFilter : RDFFilter
+    public RDFFilter Filter { get; internal set; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a negation filter on the given filter
+    /// </summary>
+    /// <exception cref="RDFQueryException"></exception>
+    public RDFBooleanNotFilter(RDFFilter filter)
     {
-        #region Properties
-        /// <summary>
-        /// Filter to be negated
-        /// </summary>
-        public RDFFilter Filter { get; internal set; }
-        #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Builds a negation filter on the given filter
-        /// </summary>
-        /// <exception cref="RDFQueryException"></exception>
-        public RDFBooleanNotFilter(RDFFilter filter)
+        Filter = filter switch
         {
-            switch (filter)
-            {
-                case null:
-                    throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is null.");
-                case RDFExistsFilter _:
-                    throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is of type RDFExistsFilter: this is not supported.");
-                default:
-                    Filter = filter;
-                    break;
-            }
-        }
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the filter
-        /// </summary>
-        public override string ToString()
-            => ToString(RDFModelUtilities.EmptyNamespaceList);
-        internal override string ToString(List<RDFNamespace> prefixes)
-            => $"FILTER ( !{Filter.ToString(prefixes).Replace("FILTER ", string.Empty).Trim()} )";
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Applies the filter on the given datarow
-        /// </summary>
-        internal override bool ApplyFilter(DataRow row, bool applyNegation)
-        {
-            //Negation logic is applied on the given filter result
-            bool keepRow = Filter.ApplyFilter(row, true);
-
-            //Apply the eventual negation
-            if (applyNegation)
-                keepRow = !keepRow;
-
-            return keepRow;
-        }
-        #endregion
+            null => throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is null."),
+            RDFExistsFilter => throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is of type RDFExistsFilter: this is not supported."),
+            _ => filter
+        };
     }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the filter
+    /// </summary>
+    public override string ToString()
+        => ToString(RDFModelUtilities.EmptyNamespaceList);
+    internal override string ToString(List<RDFNamespace> prefixes)
+        => $"FILTER ( !{Filter.ToString(prefixes).Replace("FILTER ", string.Empty).Trim()} )";
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Applies the filter on the given datarow
+    /// </summary>
+    internal override bool ApplyFilter(DataRow row, bool applyNegation)
+    {
+        //Negation logic is applied on the given filter result
+        bool keepRow = Filter.ApplyFilter(row, true);
+
+        //Apply the eventual negation
+        if (applyNegation)
+            keepRow = !keepRow;
+
+        return keepRow;
+    }
+    #endregion
 }

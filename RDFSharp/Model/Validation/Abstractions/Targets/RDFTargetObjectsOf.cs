@@ -14,36 +14,35 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFTargetObjectsOf represents a SHACL target of type "ObjectsOf" within a shape.
+/// </summary>
+public sealed class RDFTargetObjectsOf : RDFTarget
 {
+    #region Ctors
     /// <summary>
-    /// RDFTargetObjectsOf represents a SHACL target of type "ObjectsOf" within a shape.
+    /// Builds an objectsOf target on the given property
     /// </summary>
-    public sealed class RDFTargetObjectsOf : RDFTarget
+    /// <exception cref="RDFModelException"></exception>
+    public RDFTargetObjectsOf(RDFResource targetProperty)
+        => TargetValue = targetProperty ?? throw new RDFModelException("Cannot create RDFTargetObjectsOf because given \"targetProperty\" parameter is null.");
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Gets a graph representation of this target
+    /// </summary>
+    internal override RDFGraph ToRDFGraph(RDFShape shape)
     {
-        #region Ctors
-        /// <summary>
-        /// Builds an objectsOf target on the given property
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public RDFTargetObjectsOf(RDFResource targetProperty)
-            => TargetValue = targetProperty ?? throw new RDFModelException("Cannot create RDFTargetObjectsOf because given \"targetProperty\" parameter is null.");
-        #endregion
+        RDFGraph result = new RDFGraph();
 
-        #region Methods
-        /// <summary>
-        /// Gets a graph representation of this target
-        /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape)
-        {
-            RDFGraph result = new RDFGraph();
+        //sh:targetObjectsOf
+        if (shape != null)
+            result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.TARGET_OBJECTS_OF, TargetValue));
 
-            //sh:targetObjectsOf
-            if (shape != null)
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.TARGET_OBJECTS_OF, TargetValue));
-
-            return result;
-        }
-        #endregion
+        return result;
     }
+    #endregion
 }

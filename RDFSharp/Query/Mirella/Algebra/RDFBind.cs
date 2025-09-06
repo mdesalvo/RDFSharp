@@ -17,46 +17,45 @@
 using System.Collections.Generic;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFBind represents an operator which binds a new variable to results of an expression.
+/// </summary>
+public sealed class RDFBind : RDFPatternGroupMember
 {
+    #region Properties
     /// <summary>
-    /// RDFBind represents an operator which binds a new variable to results of an expression.
+    /// Expression evaluated by the bind operator
     /// </summary>
-    public sealed class RDFBind : RDFPatternGroupMember
+    public RDFExpression Expression { get; internal set; }
+
+    /// <summary>
+    /// Variable emitted by the bind operator
+    /// </summary>
+    public RDFVariable Variable { get; internal set; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a bind operator with given expression and variable
+    /// </summary>
+    /// <exception cref="RDFQueryException"></exception>
+    public RDFBind(RDFExpression expression, RDFVariable variable)
     {
-        #region Properties
-        /// <summary>
-        /// Expression evaluated by the bind operator
-        /// </summary>
-        public RDFExpression Expression { get; internal set; }
-
-        /// <summary>
-        /// Variable emitted by the bind operator
-        /// </summary>
-        public RDFVariable Variable { get; internal set; }
-        #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Builds a bind operator with given expression and variable
-        /// </summary>
-        /// <exception cref="RDFQueryException"></exception>
-        public RDFBind(RDFExpression expression, RDFVariable variable)
-        {
-            Expression = expression ?? throw new RDFQueryException("Cannot create RDFBind because given \"expression\" parameter is null");
-            Variable = variable ?? throw new RDFQueryException("Cannot create RDFBind because given \"variable\" parameter is null");
-            IsEvaluable = true;
-        }
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the bind operator
-        /// </summary>
-        public override string ToString()
-            => ToString(RDFModelUtilities.EmptyNamespaceList);
-        internal string ToString(List<RDFNamespace> prefixes)
-            => RDFQueryPrinter.PrintBind(this, prefixes);
-        #endregion
+        Expression = expression ?? throw new RDFQueryException("Cannot create RDFBind because given \"expression\" parameter is null");
+        Variable = variable ?? throw new RDFQueryException("Cannot create RDFBind because given \"variable\" parameter is null");
+        IsEvaluable = true;
     }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the bind operator
+    /// </summary>
+    public override string ToString()
+        => ToString(RDFModelUtilities.EmptyNamespaceList);
+    internal string ToString(List<RDFNamespace> prefixes)
+        => RDFQueryPrinter.PrintBind(this, prefixes);
+    #endregion
 }

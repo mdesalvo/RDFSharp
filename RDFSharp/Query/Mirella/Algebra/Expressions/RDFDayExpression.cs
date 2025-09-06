@@ -14,23 +14,22 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Query
-{
-    /// <summary>
-    /// RDFDayExpression represents a datetime day function to be applied on a query results table.
-    /// </summary>
-    public sealed class RDFDayExpression : RDFDateTimeExpression
-    {
-        #region Ctors
-        /// <summary>
-        /// Builds a datetime day function with given arguments
-        /// </summary>
-        public RDFDayExpression(RDFExpression leftArgument) : base(leftArgument) { }
+namespace RDFSharp.Query;
 
-        /// <summary>
-        /// Builds a datetime day function with given arguments
-        /// </summary>
-        public RDFDayExpression(RDFVariable leftArgument) : base(leftArgument) { }
-        #endregion
-    }
+/// <summary>
+/// RDFDayExpression represents a datetime day function to be applied on a query results table.
+/// </summary>
+public sealed class RDFDayExpression : RDFDateTimeExpression
+{
+    #region Ctors
+    /// <summary>
+    /// Builds a datetime day function with given arguments
+    /// </summary>
+    public RDFDayExpression(RDFExpression leftArgument) : base(leftArgument) { }
+
+    /// <summary>
+    /// Builds a datetime day function with given arguments
+    /// </summary>
+    public RDFDayExpression(RDFVariable leftArgument) : base(leftArgument) { }
+    #endregion
 }

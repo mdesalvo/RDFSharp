@@ -20,98 +20,88 @@ using System.Data;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFEncodeForURIExpression represents a string encoding function to be applied on a query results table.
+/// </summary>
+public sealed class RDFEncodeForURIExpression : RDFExpression
 {
+    #region Ctors
     /// <summary>
-    /// RDFEncodeForURIExpression represents a string encoding function to be applied on a query results table.
+    /// Builds a string encoding function with given arguments
     /// </summary>
-    public sealed class RDFEncodeForURIExpression : RDFExpression
+    public RDFEncodeForURIExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+
+    /// <summary>
+    /// Builds a string encoding function with given arguments
+    /// </summary>
+    public RDFEncodeForURIExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the string encoding function
+    /// </summary>
+    public override string ToString()
+        => ToString(RDFModelUtilities.EmptyNamespaceList);
+    internal override string ToString(List<RDFNamespace> prefixes)
     {
-        #region Ctors
-        /// <summary>
-        /// Builds a string encoding function with given arguments
-        /// </summary>
-        public RDFEncodeForURIExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+        StringBuilder sb = new StringBuilder(64);
 
-        /// <summary>
-        /// Builds a string encoding function with given arguments
-        /// </summary>
-        public RDFEncodeForURIExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        //(ENCODE_FOR_URI(L))
+        sb.Append("(ENCODE_FOR_URI(");
+        if (LeftArgument is RDFExpression expLeftArgument)
+            sb.Append(expLeftArgument.ToString(prefixes));
+        else
+            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+        sb.Append("))");
+
+        return sb.ToString();
+    }
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Applies the string encoding function on the given datarow
+    /// </summary>
+    internal override RDFPatternMember ApplyExpression(DataRow row)
+    {
+        RDFPlainLiteral expressionResult = null;
+
+        #region Guards
+        if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+            return null;
         #endregion
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the string encoding function
-        /// </summary>
-        public override string ToString()
-            => ToString(RDFModelUtilities.EmptyNamespaceList);
-        internal override string ToString(List<RDFNamespace> prefixes)
+        try
         {
-            StringBuilder sb = new StringBuilder(64);
-
-            //(ENCODE_FOR_URI(L))
-            sb.Append("(ENCODE_FOR_URI(");
-            if (LeftArgument is RDFExpression expLeftArgument)
-                sb.Append(expLeftArgument.ToString(prefixes));
+            #region Evaluate Arguments
+            //Evaluate left argument (Expression VS Variable)
+            RDFPatternMember leftArgumentPMember;
+            if (LeftArgument is RDFExpression leftArgumentExpression)
+                leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
             else
-                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            sb.Append("))");
-
-            return sb.ToString();
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Applies the string encoding function on the given datarow
-        /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
-        {
-            RDFPlainLiteral expressionResult = null;
-
-            #region Guards
-            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return null;
+                leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
             #endregion
 
-            try
+            #region Calculate Result
+            //Transform left argument result into a plain literal
+            leftArgumentPMember = leftArgumentPMember switch
             {
-                #region Evaluate Arguments
-                //Evaluate left argument (Expression VS Variable)
-                RDFPatternMember leftArgumentPMember;
-                if (LeftArgument is RDFExpression leftArgumentExpression)
-                    leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
-                else
-                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
-                #endregion
-
-                #region Calculate Result
-                switch (leftArgumentPMember)
-                {
-                    case RDFResource leftArgumentPMemberResource:
-                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberResource.ToString());
-                        break;
-                    case RDFPlainLiteral leftArgumentPMemberPLiteral:
-                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberPLiteral.Value);
-                        break;
-                    case RDFTypedLiteral leftArgumentPMemberTLiteral when leftArgumentPMemberTLiteral.HasStringDatatype():
-                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberTLiteral.Value);
-                        break;
-                    default:
-                        leftArgumentPMember = null; //binding error => cleanup
-                        break;
-                }
-
-                if (leftArgumentPMember == null)
-                    return null;
-
-                expressionResult = new RDFPlainLiteral(Uri.EscapeDataString(leftArgumentPMember.ToString()));
-                #endregion
-            }
-            catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
-
-            return expressionResult;
+                RDFResource => new RDFPlainLiteral(leftArgumentPMember.ToString()),
+                RDFPlainLiteral plLeftArgumentPMember => new RDFPlainLiteral(plLeftArgumentPMember.Value),
+                RDFTypedLiteral tlLeftArgumentPMember when tlLeftArgumentPMember.HasStringDatatype() => new RDFPlainLiteral(tlLeftArgumentPMember.Value),
+                _ => null //binding error => cleanup
+            };
+            if (leftArgumentPMember == null)
+                return null;
+            expressionResult = new RDFPlainLiteral(Uri.EscapeDataString(leftArgumentPMember.ToString()));
+            #endregion
         }
-        #endregion
+        catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
+        return expressionResult;
     }
+    #endregion
 }

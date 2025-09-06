@@ -18,71 +18,70 @@ using System.Collections.Generic;
 using System.Linq;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFDisjointConstraint represents a SHACL constraint on absence of a given RDF term for the specified predicate
+/// </summary>
+public sealed class RDFDisjointConstraint : RDFConstraint
 {
+    #region Properties
     /// <summary>
-    /// RDFDisjointConstraint represents a SHACL constraint on absence of a given RDF term for the specified predicate
+    /// Predicate for which value nodes of a given RDF term are checked for absence
     /// </summary>
-    public sealed class RDFDisjointConstraint : RDFConstraint
+    public RDFResource DisjointPredicate { get; internal set; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a disjoint constraint with the given predicate
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public RDFDisjointConstraint(RDFResource disjointPredicate)
+        => DisjointPredicate = disjointPredicate ?? throw new RDFModelException("Cannot create RDFDisjointConstraint because given \"disjointPredicate\" parameter is null.");
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Evaluates this constraint against the given data graph
+    /// </summary>
+    internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
     {
-        #region Properties
-        /// <summary>
-        /// Predicate for which value nodes of a given RDF term are checked for absence
-        /// </summary>
-        public RDFResource DisjointPredicate { get; internal set; }
+        RDFValidationReport report = new RDFValidationReport();
+        RDFPropertyShape pShape = shape as RDFPropertyShape;
+
+        //In case no shape messages have been provided, this constraint emits a default one (for usability)
+        List<RDFLiteral> shapeMessages = [.. shape.Messages];
+        if (shapeMessages.Count == 0)
+            shapeMessages.Add(new RDFPlainLiteral($"Must not have common values with property <{DisjointPredicate}>"));
+
+        #region Evaluation
+        foreach (RDFPatternMember valueNode in valueNodes)
+            if (dataGraph.Any(t => t.Subject.Equals(focusNode)
+                                   && t.Predicate.Equals(DisjointPredicate)
+                                   && t.Object.Equals(valueNode)))
+                report.AddResult(new RDFValidationResult(shape,
+                    RDFVocabulary.SHACL.DISJOINT_CONSTRAINT_COMPONENT,
+                    focusNode,
+                    pShape?.Path,
+                    valueNode,
+                    shapeMessages,
+                    shape.Severity));
         #endregion
 
-        #region Ctors
-        /// <summary>
-        /// Builds a disjoint constraint with the given predicate
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public RDFDisjointConstraint(RDFResource disjointPredicate)
-            => DisjointPredicate = disjointPredicate ?? throw new RDFModelException("Cannot create RDFDisjointConstraint because given \"disjointPredicate\" parameter is null.");
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Evaluates this constraint against the given data graph
-        /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
-        {
-            RDFValidationReport report = new RDFValidationReport();
-            RDFPropertyShape pShape = shape as RDFPropertyShape;
-
-            //In case no shape messages have been provided, this constraint emits a default one (for usability)
-            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
-            if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Must not have common values with property <{DisjointPredicate}>"));
-
-            #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes)
-                if (dataGraph.Any(t => t.Subject.Equals(focusNode)
-                                        && t.Predicate.Equals(DisjointPredicate)
-                                        && t.Object.Equals(valueNode)))
-                    report.AddResult(new RDFValidationResult(shape,
-                                                             RDFVocabulary.SHACL.DISJOINT_CONSTRAINT_COMPONENT,
-                                                             focusNode,
-                                                             pShape?.Path,
-                                                             valueNode,
-                                                             shapeMessages,
-                                                             shape.Severity));
-            #endregion
-
-            return report;
-        }
-
-        /// <summary>
-        /// Gets a graph representation of this constraint
-        /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape)
-        {
-            RDFGraph result = new RDFGraph();
-            if (shape != null)
-                //sh:disjoint
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.DISJOINT, DisjointPredicate));
-            return result;
-        }
-        #endregion
+        return report;
     }
+
+    /// <summary>
+    /// Gets a graph representation of this constraint
+    /// </summary>
+    internal override RDFGraph ToRDFGraph(RDFShape shape)
+    {
+        RDFGraph result = new RDFGraph();
+        if (shape != null)
+            //sh:disjoint
+            result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.DISJOINT, DisjointPredicate));
+        return result;
+    }
+    #endregion
 }

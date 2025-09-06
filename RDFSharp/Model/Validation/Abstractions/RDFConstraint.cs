@@ -17,27 +17,26 @@
 using System.Collections.Generic;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model
-{
-    /// <summary>
-    /// RDFConstraint represents a generic SHACL constraint definition within a shape.
-    /// </summary>
-    public abstract class RDFConstraint : RDFResource
-    {
-        #region Methods
-        /// <summary>
-        /// Evaluates this constraint against the given data graph
-        /// </summary>
-        internal abstract RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph,
-                                                                 RDFGraph dataGraph,
-                                                                 RDFShape shape,
-                                                                 RDFPatternMember focusNode,
-                                                                 List<RDFPatternMember> valueNodes);
+namespace RDFSharp.Model;
 
-        /// <summary>
-        /// Gets a graph representation of this constraint
-        /// </summary>
-        internal abstract RDFGraph ToRDFGraph(RDFShape shape);
-        #endregion
-    }
+/// <summary>
+/// RDFConstraint represents a generic SHACL constraint definition within a shape.
+/// </summary>
+public abstract class RDFConstraint : RDFResource
+{
+    #region Methods
+    /// <summary>
+    /// Evaluates this constraint against the given data graph
+    /// </summary>
+    internal abstract RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph,
+        RDFGraph dataGraph,
+        RDFShape shape,
+        RDFPatternMember focusNode,
+        List<RDFPatternMember> valueNodes);
+
+    /// <summary>
+    /// Gets a graph representation of this constraint
+    /// </summary>
+    internal abstract RDFGraph ToRDFGraph(RDFShape shape);
+    #endregion
 }

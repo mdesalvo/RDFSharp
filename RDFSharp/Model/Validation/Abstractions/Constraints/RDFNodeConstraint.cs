@@ -17,82 +17,81 @@
 using System.Collections.Generic;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFNodeConstraint represents a SHACL constraint requiring the specified node shape for a given RDF term
+/// </summary>
+public sealed class RDFNodeConstraint : RDFConstraint
 {
+    #region Properties
     /// <summary>
-    /// RDFNodeConstraint represents a SHACL constraint requiring the specified node shape for a given RDF term
+    /// Identifier of the node shape against which the given RDF term must be validated
     /// </summary>
-    public sealed class RDFNodeConstraint : RDFConstraint
+    public RDFResource NodeShapeUri { get; internal set; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a node constraint with the given node shape identifier
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public RDFNodeConstraint(RDFResource nodeShapeUri)
+        => NodeShapeUri = nodeShapeUri ?? throw new RDFModelException("Cannot create RDFNodeConstraint because given \"nodeShapeUri\" parameter is null.");
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Evaluates this constraint against the given data graph
+    /// </summary>
+    internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
     {
-        #region Properties
-        /// <summary>
-        /// Identifier of the node shape against which the given RDF term must be validated
-        /// </summary>
-        public RDFResource NodeShapeUri { get; internal set; }
-        #endregion
+        RDFValidationReport report = new RDFValidationReport();
+        RDFPropertyShape pShape = shape as RDFPropertyShape;
 
-        #region Ctors
-        /// <summary>
-        /// Builds a node constraint with the given node shape identifier
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public RDFNodeConstraint(RDFResource nodeShapeUri)
-            => NodeShapeUri = nodeShapeUri ?? throw new RDFModelException("Cannot create RDFNodeConstraint because given \"nodeShapeUri\" parameter is null.");
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Evaluates this constraint against the given data graph
-        /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
-        {
-            RDFValidationReport report = new RDFValidationReport();
-            RDFPropertyShape pShape = shape as RDFPropertyShape;
-
-            //Search for given node shape
-            if (!(shapesGraph.SelectShape(NodeShapeUri.ToString()) is RDFNodeShape nodeShape))
-                return report;
-
-            //In case no shape messages have been provided, this constraint emits a default one (for usability)
-            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
-            if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Value does not have shape <{NodeShapeUri}>"));
-
-            #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes)
-            {
-                RDFValidationReport nodeShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, nodeShape, new List<RDFPatternMember>(1) { valueNode });
-                if (!nodeShapeReport.Conforms)
-                {
-                    //Report evidences from linked node shape
-                    report.MergeResults(nodeShapeReport);
-
-                    //Report evidence from working shape
-                    report.AddResult(new RDFValidationResult(shape,
-                                                             RDFVocabulary.SHACL.NODE_CONSTRAINT_COMPONENT,
-                                                             focusNode,
-                                                             pShape?.Path,
-                                                             valueNode,
-                                                             shapeMessages,
-                                                             shape.Severity));
-                }
-            }
-            #endregion
-
+        //Search for given node shape
+        if (shapesGraph.SelectShape(NodeShapeUri.ToString()) is not RDFNodeShape nodeShape)
             return report;
-        }
 
-        /// <summary>
-        /// Gets a graph representation of this constraint
-        /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        //In case no shape messages have been provided, this constraint emits a default one (for usability)
+        List<RDFLiteral> shapeMessages = [.. shape.Messages];
+        if (shapeMessages.Count == 0)
+            shapeMessages.Add(new RDFPlainLiteral($"Value does not have shape <{NodeShapeUri}>"));
+
+        #region Evaluation
+        foreach (RDFPatternMember valueNode in valueNodes)
         {
-            RDFGraph result = new RDFGraph();
-            if (shape != null)
-                //sh:node
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NODE, NodeShapeUri));
-            return result;
+            RDFValidationReport nodeShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, nodeShape, [valueNode]);
+            if (!nodeShapeReport.Conforms)
+            {
+                //Report evidences from linked node shape
+                report.MergeResults(nodeShapeReport);
+
+                //Report evidence from working shape
+                report.AddResult(new RDFValidationResult(shape,
+                    RDFVocabulary.SHACL.NODE_CONSTRAINT_COMPONENT,
+                    focusNode,
+                    pShape?.Path,
+                    valueNode,
+                    shapeMessages,
+                    shape.Severity));
+            }
         }
         #endregion
+
+        return report;
     }
+
+    /// <summary>
+    /// Gets a graph representation of this constraint
+    /// </summary>
+    internal override RDFGraph ToRDFGraph(RDFShape shape)
+    {
+        RDFGraph result = new RDFGraph();
+        if (shape != null)
+            //sh:node
+            result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NODE, NodeShapeUri));
+        return result;
+    }
+    #endregion
 }

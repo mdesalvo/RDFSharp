@@ -16,51 +16,50 @@
 
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFInsertWhereOperation is the SPARQL "INSERT WHERE" operation implementation
+/// </summary>
+public sealed class RDFInsertWhereOperation : RDFOperation
 {
+    #region Interfaces
     /// <summary>
-    /// RDFInsertWhereOperation is the SPARQL "INSERT WHERE" operation implementation
+    /// Gives the string representation of the INSERT WHERE operation
     /// </summary>
-    public sealed class RDFInsertWhereOperation : RDFOperation
-    {
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the INSERT WHERE operation
-        /// </summary>
-        public override string ToString()
-            => RDFOperationPrinter.PrintInsertWhereOperation(this);
-        #endregion
+    public override string ToString()
+        => RDFOperationPrinter.PrintInsertWhereOperation(this);
+    #endregion
 
-        #region Methods
-        /// <summary>
-        /// Adds the given pattern to the templates of the operation
-        /// </summary>
-        public RDFInsertWhereOperation AddInsertTemplate(RDFPattern template)
-            => AddInsertNonGroundTemplate<RDFInsertWhereOperation>(template);
+    #region Methods
+    /// <summary>
+    /// Adds the given pattern to the templates of the operation
+    /// </summary>
+    public RDFInsertWhereOperation AddInsertTemplate(RDFPattern template)
+        => AddInsertNonGroundTemplate<RDFInsertWhereOperation>(template);
 
-        /// <summary>
-        /// Adds the given prefix declaration to the operation
-        /// </summary>
-        public RDFInsertWhereOperation AddPrefix(RDFNamespace prefix)
-            => AddPrefix<RDFInsertWhereOperation>(prefix);
+    /// <summary>
+    /// Adds the given prefix declaration to the operation
+    /// </summary>
+    public RDFInsertWhereOperation AddPrefix(RDFNamespace prefix)
+        => AddPrefix<RDFInsertWhereOperation>(prefix);
 
-        /// <summary>
-        /// Adds the given pattern group to the body of the operation
-        /// </summary>
-        public RDFInsertWhereOperation AddPatternGroup(RDFPatternGroup patternGroup)
-            => AddPatternGroup<RDFInsertWhereOperation>(patternGroup);
+    /// <summary>
+    /// Adds the given pattern group to the body of the operation
+    /// </summary>
+    public RDFInsertWhereOperation AddPatternGroup(RDFPatternGroup patternGroup)
+        => AddPatternGroup<RDFInsertWhereOperation>(patternGroup);
 
-        /// <summary>
-        /// Adds the given modifier to the operation
-        /// </summary>
-        public RDFInsertWhereOperation AddModifier(RDFDistinctModifier modifier)
-            => AddModifier<RDFInsertWhereOperation>(modifier);
+    /// <summary>
+    /// Adds the given modifier to the operation
+    /// </summary>
+    public RDFInsertWhereOperation AddModifier(RDFDistinctModifier modifier)
+        => AddModifier<RDFInsertWhereOperation>(modifier);
 
-        /// <summary>
-        /// Adds the given subquery to the operation
-        /// </summary>
-        public RDFInsertWhereOperation AddSubQuery(RDFSelectQuery subQuery)
-            => AddSubQuery<RDFInsertWhereOperation>(subQuery);
-        #endregion
-    }
+    /// <summary>
+    /// Adds the given subquery to the operation
+    /// </summary>
+    public RDFInsertWhereOperation AddSubQuery(RDFSelectQuery subQuery)
+        => AddSubQuery<RDFInsertWhereOperation>(subQuery);
+    #endregion
 }

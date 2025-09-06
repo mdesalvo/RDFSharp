@@ -14,181 +14,131 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFTypedLiteral represents a literal decorated with an XML Schema datatype.
+/// </summary>
+public sealed class RDFTypedLiteral : RDFLiteral
 {
+    #region Statics
     /// <summary>
-    /// RDFTypedLiteral represents a literal decorated with an XML Schema datatype.
+    /// Represents an handy typed literal for boolean True
     /// </summary>
-    public sealed class RDFTypedLiteral : RDFLiteral
+    public static readonly RDFTypedLiteral True = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
+    /// <summary>
+    /// Represents an handy typed literal for boolean False
+    /// </summary>
+    public static readonly RDFTypedLiteral False = new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
+    /// <summary>
+    /// Represents an handy typed literal for integer Zero
+    /// </summary>
+    public static readonly RDFTypedLiteral Zero = new RDFTypedLiteral("0", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+    /// <summary>
+    /// Represents an handy typed literal for integer One
+    /// </summary>
+    public static readonly RDFTypedLiteral One = new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+    #endregion
+
+    #region Properties
+    /// <summary>
+    /// Datatype of the literal's value
+    /// </summary>
+    public RDFDatatype Datatype { get; internal set; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a typed literal with given value and given standard datatype
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public RDFTypedLiteral(string value, RDFModelEnums.RDFDatatypes datatype)
+        : this(value, RDFDatatypeRegister.GetDatatype(datatype)) { }
+
+    /// <summary>
+    /// Builds a typed literal with given value and given custom datatype (rdfs:Literal in case null)
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public RDFTypedLiteral(string value, RDFDatatype datatype)
     {
-        #region Statics
-        /// <summary>
-        /// Represents an handy typed literal for boolean True
-        /// </summary>
-        public static readonly RDFTypedLiteral True = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
-        /// <summary>
-        /// Represents an handy typed literal for boolean False
-        /// </summary>
-        public static readonly RDFTypedLiteral False = new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
-        /// <summary>
-        /// Represents an handy typed literal for integer Zero
-        /// </summary>
-        public static readonly RDFTypedLiteral Zero = new RDFTypedLiteral("0", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-        /// <summary>
-        /// Represents an handy typed literal for integer One
-        /// </summary>
-        public static readonly RDFTypedLiteral One = new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-        #endregion
+        Datatype = datatype ?? RDFDatatypeRegister.RDFSLiteral;
 
-        #region Properties
-        /// <summary>
-        /// Datatype of the literal's value
-        /// </summary>
-        public RDFDatatype Datatype { get; internal set; }
-        #endregion
+        //Validation against semantic of given datatype
+        (bool,string) validationResult = Datatype.Validate(value ?? string.Empty);
+        if (!validationResult.Item1)
+            throw new RDFModelException($"Cannot create RDFTypedLiteral because given \"value\" parameter ({value}) is not well-formed against given \"datatype\" parameter ({Datatype}) which is based on \"{Datatype.TargetDatatype}\" standard datatype");
 
-        #region Ctors
-        /// <summary>
-        /// Builds a typed literal with given value and given standard datatype
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public RDFTypedLiteral(string value, RDFModelEnums.RDFDatatypes datatype)
-            : this(value, RDFDatatypeRegister.GetDatatype(datatype)) { }
-
-        /// <summary>
-        /// Builds a typed literal with given value and given custom datatype (rdfs:Literal in case null)
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public RDFTypedLiteral(string value, RDFDatatype datatype)
-        {
-            Datatype = datatype ?? RDFDatatypeRegister.RDFSLiteral;
-
-            //Validation against semantic of given datatype
-            (bool,string) validationResult = Datatype.Validate(value ?? string.Empty);
-            if (!validationResult.Item1)
-                throw new RDFModelException($"Cannot create RDFTypedLiteral because given \"value\" parameter ({value}) is not well-formed against given \"datatype\" parameter ({Datatype}) which is based on \"{Datatype.TargetDatatype}\" standard datatype");
-
-            Value = validationResult.Item2;
-        }
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the typed literal
-        /// </summary>
-        public override string ToString()
-            => $"{base.ToString()}^^{Datatype}";
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Checks if the datatype of this typed literal is compatible with boolean
-        /// </summary>
-        public bool HasBooleanDatatype()
-            => Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_BOOLEAN;
-
-        /// <summary>
-        /// Checks if the datatype of this typed literal is compatible with datetime
-        /// </summary>
-        public bool HasDatetimeDatatype()
-        {
-            switch (Datatype.TargetDatatype)
-            {
-                case RDFModelEnums.RDFDatatypes.XSD_DATE:
-                case RDFModelEnums.RDFDatatypes.XSD_DATETIME:
-                case RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP:
-                case RDFModelEnums.RDFDatatypes.XSD_GDAY:
-                case RDFModelEnums.RDFDatatypes.XSD_GMONTH:
-                case RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY:
-                case RDFModelEnums.RDFDatatypes.XSD_GYEAR:
-                case RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH:
-                case RDFModelEnums.RDFDatatypes.XSD_TIME:
-                case RDFModelEnums.RDFDatatypes.TIME_GENERALDAY:
-                case RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH:
-                case RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR:
-                    return true;
-                default: return false;
-            }
-        }
-
-        /// <summary>
-        /// Checks if the datatype of this typed literal is compatible with timespan
-        /// </summary>
-        public bool HasTimespanDatatype()
-            => Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DURATION;
-
-        /// <summary>
-        /// Checks if the datatype of this typed literal is compatible with string
-        /// </summary>
-        public bool HasStringDatatype()
-        {
-            switch (Datatype.TargetDatatype)
-            {
-                case RDFModelEnums.RDFDatatypes.RDFS_LITERAL:
-                case RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL:
-                case RDFModelEnums.RDFDatatypes.RDF_HTML:
-                case RDFModelEnums.RDFDatatypes.RDF_JSON:
-                case RDFModelEnums.RDFDatatypes.XSD_ANYURI:
-                case RDFModelEnums.RDFDatatypes.XSD_ID:
-                case RDFModelEnums.RDFDatatypes.XSD_LANGUAGE:
-                case RDFModelEnums.RDFDatatypes.XSD_NAME:
-                case RDFModelEnums.RDFDatatypes.XSD_NCNAME:
-                case RDFModelEnums.RDFDatatypes.XSD_NMTOKEN:
-                case RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING:
-                case RDFModelEnums.RDFDatatypes.XSD_NOTATION:
-                case RDFModelEnums.RDFDatatypes.XSD_QNAME:
-                case RDFModelEnums.RDFDatatypes.XSD_STRING:
-                case RDFModelEnums.RDFDatatypes.XSD_TOKEN:
-                case RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY:
-                case RDFModelEnums.RDFDatatypes.XSD_HEXBINARY:
-                    return true;
-                default: return false;
-            }
-        }
-
-        /// <summary>
-        /// Checks if the datatype of this typed literal is compatible with geosparql
-        /// </summary>
-        public bool HasGeographicDatatype()
-        {
-            switch (Datatype.TargetDatatype)
-            {
-                case RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT:
-                case RDFModelEnums.RDFDatatypes.GEOSPARQL_GML:
-                    return true;
-                default: return false;
-            }
-        }
-
-        /// <summary>
-        /// Checks if the datatype of this typed literal is compatible with decimal
-        /// </summary>
-        public bool HasDecimalDatatype()
-        {
-            switch (Datatype.TargetDatatype)
-            {
-                case RDFModelEnums.RDFDatatypes.XSD_DECIMAL:
-                case RDFModelEnums.RDFDatatypes.XSD_DOUBLE:
-                case RDFModelEnums.RDFDatatypes.XSD_FLOAT:
-                case RDFModelEnums.RDFDatatypes.XSD_INTEGER:
-                case RDFModelEnums.RDFDatatypes.XSD_LONG:
-                case RDFModelEnums.RDFDatatypes.XSD_INT:
-                case RDFModelEnums.RDFDatatypes.XSD_SHORT:
-                case RDFModelEnums.RDFDatatypes.XSD_BYTE:
-                case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG:
-                case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT:
-                case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT:
-                case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE:
-                case RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER:
-                case RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER:
-                case RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER:
-                case RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER:
-                case RDFModelEnums.RDFDatatypes.OWL_REAL:
-                case RDFModelEnums.RDFDatatypes.OWL_RATIONAL:
-                    return true;
-                default: return false;
-            }
-        }
-        #endregion
+        Value = validationResult.Item2;
     }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the typed literal
+    /// </summary>
+    public override string ToString()
+        => $"{base.ToString()}^^{Datatype}";
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Checks if the datatype of this typed literal is compatible with boolean
+    /// </summary>
+    public bool HasBooleanDatatype()
+        => Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_BOOLEAN;
+
+    /// <summary>
+    /// Checks if the datatype of this typed literal is compatible with datetime
+    /// </summary>
+    public bool HasDatetimeDatatype()
+    {
+        return Datatype.TargetDatatype switch
+        {
+            RDFModelEnums.RDFDatatypes.XSD_DATE or RDFModelEnums.RDFDatatypes.XSD_DATETIME or RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP or RDFModelEnums.RDFDatatypes.XSD_GDAY or RDFModelEnums.RDFDatatypes.XSD_GMONTH or RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY or RDFModelEnums.RDFDatatypes.XSD_GYEAR or RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH or RDFModelEnums.RDFDatatypes.XSD_TIME or RDFModelEnums.RDFDatatypes.TIME_GENERALDAY or RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH or RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR => true,
+            _ => false
+        };
+    }
+
+    /// <summary>
+    /// Checks if the datatype of this typed literal is compatible with timespan
+    /// </summary>
+    public bool HasTimespanDatatype()
+        => Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DURATION;
+
+    /// <summary>
+    /// Checks if the datatype of this typed literal is compatible with string
+    /// </summary>
+    public bool HasStringDatatype()
+    {
+        return Datatype.TargetDatatype switch
+        {
+            RDFModelEnums.RDFDatatypes.RDFS_LITERAL or RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL or RDFModelEnums.RDFDatatypes.RDF_HTML or RDFModelEnums.RDFDatatypes.RDF_JSON or RDFModelEnums.RDFDatatypes.XSD_ANYURI or RDFModelEnums.RDFDatatypes.XSD_ID or RDFModelEnums.RDFDatatypes.XSD_LANGUAGE or RDFModelEnums.RDFDatatypes.XSD_NAME or RDFModelEnums.RDFDatatypes.XSD_NCNAME or RDFModelEnums.RDFDatatypes.XSD_NMTOKEN or RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING or RDFModelEnums.RDFDatatypes.XSD_NOTATION or RDFModelEnums.RDFDatatypes.XSD_QNAME or RDFModelEnums.RDFDatatypes.XSD_STRING or RDFModelEnums.RDFDatatypes.XSD_TOKEN or RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY or RDFModelEnums.RDFDatatypes.XSD_HEXBINARY => true,
+            _ => false
+        };
+    }
+
+    /// <summary>
+    /// Checks if the datatype of this typed literal is compatible with geosparql
+    /// </summary>
+    public bool HasGeographicDatatype()
+    {
+        return Datatype.TargetDatatype switch
+        {
+            RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT or RDFModelEnums.RDFDatatypes.GEOSPARQL_GML => true,
+            _ => false
+        };
+    }
+
+    /// <summary>
+    /// Checks if the datatype of this typed literal is compatible with decimal
+    /// </summary>
+    public bool HasDecimalDatatype()
+    {
+        return Datatype.TargetDatatype switch
+        {
+            RDFModelEnums.RDFDatatypes.XSD_DECIMAL or RDFModelEnums.RDFDatatypes.XSD_DOUBLE or RDFModelEnums.RDFDatatypes.XSD_FLOAT or RDFModelEnums.RDFDatatypes.XSD_INTEGER or RDFModelEnums.RDFDatatypes.XSD_LONG or RDFModelEnums.RDFDatatypes.XSD_INT or RDFModelEnums.RDFDatatypes.XSD_SHORT or RDFModelEnums.RDFDatatypes.XSD_BYTE or RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG or RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT or RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT or RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE or RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER or RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER or RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER or RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER or RDFModelEnums.RDFDatatypes.OWL_REAL or RDFModelEnums.RDFDatatypes.OWL_RATIONAL => true,
+            _ => false
+        };
+    }
+    #endregion
 }

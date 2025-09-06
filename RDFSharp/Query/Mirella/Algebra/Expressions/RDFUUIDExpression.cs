@@ -19,36 +19,35 @@ using System.Collections.Generic;
 using System.Data;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFUUIDExpression represents a UUID generator function to be applied on a query results table.
+/// </summary>
+public sealed class RDFUUIDExpression : RDFExpression
 {
+    #region Ctors
     /// <summary>
-    /// RDFUUIDExpression represents a UUID generator function to be applied on a query results table.
+    /// Builds a UUID generator function
     /// </summary>
-    public sealed class RDFUUIDExpression : RDFExpression
-    {
-        #region Ctors
-        /// <summary>
-        /// Builds a UUID generator function
-        /// </summary>
-        public RDFUUIDExpression() { }
-        #endregion
+    public RDFUUIDExpression() { }
+    #endregion
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the UUID generator function
-        /// </summary>
-        public override string ToString()
-            => ToString(RDFModelUtilities.EmptyNamespaceList);
-        internal override string ToString(List<RDFNamespace> prefixes)
-            => "(UUID())";
-        #endregion
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the UUID generator function
+    /// </summary>
+    public override string ToString()
+        => ToString(RDFModelUtilities.EmptyNamespaceList);
+    internal override string ToString(List<RDFNamespace> prefixes)
+        => "(UUID())";
+    #endregion
 
-        #region Methods
-        /// <summary>
-        /// Applies the UUID generator expression on the given datarow
-        /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
-            => new RDFResource($"urn:uuid:{Guid.NewGuid()}");
-        #endregion
-    }
+    #region Methods
+    /// <summary>
+    /// Applies the UUID generator expression on the given datarow
+    /// </summary>
+    internal override RDFPatternMember ApplyExpression(DataRow row)
+        => new RDFResource($"urn:uuid:{Guid.NewGuid()}");
+    #endregion
 }

@@ -18,87 +18,86 @@ using System.Collections.Generic;
 using System.Linq;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFClassConstraint represents a SHACL constraint on the specified class for a given RDF term
+/// </summary>
+public sealed class RDFClassConstraint : RDFConstraint
 {
+    #region Properties
     /// <summary>
-    /// RDFClassConstraint represents a SHACL constraint on the specified class for a given RDF term
+    /// ClassType of the given RDF term
     /// </summary>
-    public sealed class RDFClassConstraint : RDFConstraint
+    public RDFResource ClassType { get; internal set; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a class constraint with the given class
+    /// </summary>
+    /// <exception cref="RDFModelException"></exception>
+    public RDFClassConstraint(RDFResource classType)
+        => ClassType = classType ?? throw new RDFModelException("Cannot create RDFClassConstraint because given \"classType\" parameter is null.");
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Evaluates this constraint against the given data graph
+    /// </summary>
+    internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
     {
-        #region Properties
-        /// <summary>
-        /// ClassType of the given RDF term
-        /// </summary>
-        public RDFResource ClassType { get; internal set; }
-        #endregion
+        RDFValidationReport report = new RDFValidationReport();
+        List<RDFPatternMember> classInstances = dataGraph.GetInstancesOfClass(ClassType);
+        RDFPropertyShape pShape = shape as RDFPropertyShape;
 
-        #region Ctors
-        /// <summary>
-        /// Builds a class constraint with the given class
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public RDFClassConstraint(RDFResource classType)
-            => ClassType = classType ?? throw new RDFModelException("Cannot create RDFClassConstraint because given \"classType\" parameter is null.");
-        #endregion
+        //In case no shape messages have been provided, this constraint emits a default one (for usability)
+        List<RDFLiteral> shapeMessages = [.. shape.Messages];
+        if (shapeMessages.Count == 0)
+            shapeMessages.Add(new RDFPlainLiteral($"Value does not have class <{ClassType}>"));
 
-        #region Methods
-        /// <summary>
-        /// Evaluates this constraint against the given data graph
-        /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
-        {
-            RDFValidationReport report = new RDFValidationReport();
-            List<RDFPatternMember> classInstances = dataGraph.GetInstancesOfClass(ClassType);
-            RDFPropertyShape pShape = shape as RDFPropertyShape;
-
-            //In case no shape messages have been provided, this constraint emits a default one (for usability)
-            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
-            if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Value does not have class <{ClassType}>"));
-
-            #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes)
-                switch (valueNode)
-                {
-                    //Resource
-                    case RDFResource valueNodeResource:
-                        if (!classInstances.Any(x => x.Equals(valueNodeResource)))
-                            report.AddResult(new RDFValidationResult(shape,
-                                                                     RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT,
-                                                                     focusNode,
-                                                                     pShape?.Path,
-                                                                     valueNode,
-                                                                     shapeMessages,
-                                                                     shape.Severity));
-                        break;
-
-                    //Literal
-                    case RDFLiteral _:
+        #region Evaluation
+        foreach (RDFPatternMember valueNode in valueNodes)
+            switch (valueNode)
+            {
+                //Resource
+                case RDFResource valueNodeResource:
+                    if (!classInstances.Any(x => x.Equals(valueNodeResource)))
                         report.AddResult(new RDFValidationResult(shape,
-                                                                 RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT,
-                                                                 focusNode,
-                                                                 pShape?.Path,
-                                                                 valueNode,
-                                                                 shapeMessages,
-                                                                 shape.Severity));
-                        break;
-                }
-            #endregion
+                            RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT,
+                            focusNode,
+                            pShape?.Path,
+                            valueNode,
+                            shapeMessages,
+                            shape.Severity));
+                    break;
 
-            return report;
-        }
-
-        /// <summary>
-        /// Gets a graph representation of this constraint
-        /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape)
-        {
-            RDFGraph result = new RDFGraph();
-            if (shape != null)
-                //sh:class
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLASS, ClassType));
-            return result;
-        }
+                //Literal
+                case RDFLiteral:
+                    report.AddResult(new RDFValidationResult(shape,
+                        RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT,
+                        focusNode,
+                        pShape?.Path,
+                        valueNode,
+                        shapeMessages,
+                        shape.Severity));
+                    break;
+            }
         #endregion
+
+        return report;
     }
+
+    /// <summary>
+    /// Gets a graph representation of this constraint
+    /// </summary>
+    internal override RDFGraph ToRDFGraph(RDFShape shape)
+    {
+        RDFGraph result = new RDFGraph();
+        if (shape != null)
+            //sh:class
+            result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLASS, ClassType));
+        return result;
+    }
+    #endregion
 }

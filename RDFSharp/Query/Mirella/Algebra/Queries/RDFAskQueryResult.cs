@@ -20,188 +20,187 @@ using System.Threading.Tasks;
 using System.Xml;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFAskResult is a container for SPARQL "ASK" query results.
+/// </summary>
+public sealed class RDFAskQueryResult : RDFQueryResult
 {
+    #region Properties
     /// <summary>
-    /// RDFAskResult is a container for SPARQL "ASK" query results.
+    /// Boolean response of the ASK query
     /// </summary>
-    public sealed class RDFAskQueryResult : RDFQueryResult
+    public bool AskResult { get; internal set; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds an empty ASK result
+    /// </summary>
+    internal RDFAskQueryResult()
+        => AskResult = false;
+    #endregion
+
+    #region Methods
+
+    #region Write
+    /// <summary>
+    /// Writes the "SPARQL Query Results XML Format" stream corresponding to the ASK query result
+    /// </summary>
+    /// <exception cref="RDFQueryException"></exception>
+    public void ToSparqlXmlResult(Stream outputStream)
     {
-        #region Properties
-        /// <summary>
-        /// Boolean response of the ASK query
-        /// </summary>
-        public bool AskResult { get; internal set; }
-        #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Builds an empty ASK result
-        /// </summary>
-        internal RDFAskQueryResult()
-            => AskResult = false;
-        #endregion
-
-        #region Methods
-
-        #region Write
-        /// <summary>
-        /// Writes the "SPARQL Query Results XML Format" stream corresponding to the ASK query result
-        /// </summary>
-        /// <exception cref="RDFQueryException"></exception>
-        public void ToSparqlXmlResult(Stream outputStream)
+        try
         {
-            try
+            #region serialize
+            using (XmlTextWriter sparqlWriter = new XmlTextWriter(outputStream, RDFModelUtilities.UTF8_NoBOM))
             {
-                #region serialize
-                using (XmlTextWriter sparqlWriter = new XmlTextWriter(outputStream, RDFModelUtilities.UTF8_NoBOM))
-                {
-                    sparqlWriter.Formatting = Formatting.Indented;
+                sparqlWriter.Formatting = Formatting.Indented;
 
-                    #region xmlDecl
-                    XmlDocument sparqlDoc = new XmlDocument();
-                    sparqlDoc.AppendChild(sparqlDoc.CreateXmlDeclaration("1.0", "UTF-8", null));
-                    #endregion
-
-                    #region sparqlRoot
-                    XmlNode sparqlRoot = sparqlDoc.CreateNode(XmlNodeType.Element, "sparql", null);
-                    XmlAttribute sparqlRootNS = sparqlDoc.CreateAttribute("xmlns");
-                    XmlText sparqlRootNSText = sparqlDoc.CreateTextNode("http://www.w3.org/2005/sparql-results#");
-                    sparqlRootNS.AppendChild(sparqlRootNSText);
-                    sparqlRoot.Attributes.Append(sparqlRootNS);
-
-                    #region sparqlHead
-                    XmlNode sparqlHeadElement = sparqlDoc.CreateNode(XmlNodeType.Element, "head", null);
-                    sparqlRoot.AppendChild(sparqlHeadElement);
-                    #endregion
-
-                    #region sparqlResults
-                    XmlNode sparqlResultsElement = sparqlDoc.CreateNode(XmlNodeType.Element, "boolean", null);
-                    XmlText askResultText = sparqlDoc.CreateTextNode(AskResult.ToString().ToUpperInvariant());
-                    sparqlResultsElement.AppendChild(askResultText);
-                    sparqlRoot.AppendChild(sparqlResultsElement);
-                    #endregion
-
-                    sparqlDoc.AppendChild(sparqlRoot);
-                    #endregion
-
-                    sparqlDoc.Save(sparqlWriter);
-                }
+                #region xmlDecl
+                XmlDocument sparqlDoc = new XmlDocument();
+                sparqlDoc.AppendChild(sparqlDoc.CreateXmlDeclaration("1.0", "UTF-8", null));
                 #endregion
+
+                #region sparqlRoot
+                XmlNode sparqlRoot = sparqlDoc.CreateNode(XmlNodeType.Element, "sparql", null);
+                XmlAttribute sparqlRootNS = sparqlDoc.CreateAttribute("xmlns");
+                XmlText sparqlRootNSText = sparqlDoc.CreateTextNode("http://www.w3.org/2005/sparql-results#");
+                sparqlRootNS.AppendChild(sparqlRootNSText);
+                sparqlRoot.Attributes.Append(sparqlRootNS);
+
+                #region sparqlHead
+                XmlNode sparqlHeadElement = sparqlDoc.CreateNode(XmlNodeType.Element, "head", null);
+                sparqlRoot.AppendChild(sparqlHeadElement);
+                #endregion
+
+                #region sparqlResults
+                XmlNode sparqlResultsElement = sparqlDoc.CreateNode(XmlNodeType.Element, "boolean", null);
+                XmlText askResultText = sparqlDoc.CreateTextNode(AskResult.ToString().ToUpperInvariant());
+                sparqlResultsElement.AppendChild(askResultText);
+                sparqlRoot.AppendChild(sparqlResultsElement);
+                #endregion
+
+                sparqlDoc.AppendChild(sparqlRoot);
+                #endregion
+
+                sparqlDoc.Save(sparqlWriter);
             }
-            catch (Exception ex) { throw new RDFQueryException("Cannot serialize SPARQL XML RESULT because: " + ex.Message, ex); }
+            #endregion
         }
+        catch (Exception ex) { throw new RDFQueryException("Cannot serialize SPARQL XML RESULT because: " + ex.Message, ex); }
+    }
 
-        /// <summary>
-        /// Asynchronously writes the "SPARQL Query Results XML Format" stream corresponding to the ASK query result
-        /// </summary>
-        /// <exception cref="RDFQueryException"></exception>
-        public Task ToSparqlXmlResultAsync(Stream outputStream)
-            => Task.Run(() => ToSparqlXmlResult(outputStream));
+    /// <summary>
+    /// Asynchronously writes the "SPARQL Query Results XML Format" stream corresponding to the ASK query result
+    /// </summary>
+    /// <exception cref="RDFQueryException"></exception>
+    public Task ToSparqlXmlResultAsync(Stream outputStream)
+        => Task.Run(() => ToSparqlXmlResult(outputStream));
 
-        /// <summary>
-        /// Writes the "SPARQL Query Results XML Format" file corresponding to the ASK query result
-        /// </summary>
-        /// <exception cref="RDFQueryException"></exception>
-        public void ToSparqlXmlResult(string filepath)
-            => ToSparqlXmlResult(new FileStream(filepath, FileMode.Create));
+    /// <summary>
+    /// Writes the "SPARQL Query Results XML Format" file corresponding to the ASK query result
+    /// </summary>
+    /// <exception cref="RDFQueryException"></exception>
+    public void ToSparqlXmlResult(string filepath)
+        => ToSparqlXmlResult(new FileStream(filepath, FileMode.Create));
 
-        /// <summary>
-        /// Asynchronously writes the "SPARQL Query Results XML Format" file corresponding to the ASK query result
-        /// </summary>
-        /// <exception cref="RDFQueryException"></exception>
-        public Task ToSparqlXmlResultAsync(string filepath)
-            => Task.Run(() => ToSparqlXmlResult(filepath));
-        #endregion
+    /// <summary>
+    /// Asynchronously writes the "SPARQL Query Results XML Format" file corresponding to the ASK query result
+    /// </summary>
+    /// <exception cref="RDFQueryException"></exception>
+    public Task ToSparqlXmlResultAsync(string filepath)
+        => Task.Run(() => ToSparqlXmlResult(filepath));
+    #endregion
 
-        #region Read
-        /// <summary>
-        /// Reads the given "SPARQL Query Results XML Format" stream into an ASK query result
-        /// </summary>
-        /// <exception cref="RDFQueryException"></exception>
-        public static RDFAskQueryResult FromSparqlXmlResult(Stream inputStream)
+    #region Read
+    /// <summary>
+    /// Reads the given "SPARQL Query Results XML Format" stream into an ASK query result
+    /// </summary>
+    /// <exception cref="RDFQueryException"></exception>
+    public static RDFAskQueryResult FromSparqlXmlResult(Stream inputStream)
+    {
+        RDFAskQueryResult result = new RDFAskQueryResult();
+
+        try
         {
-            RDFAskQueryResult result = new RDFAskQueryResult();
-
-            try
+            #region deserialize
+            using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
             {
-                #region deserialize
-                using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
+                using (XmlTextReader xmlReader = new XmlTextReader(streamReader))
                 {
-                    using (XmlTextReader xmlReader = new XmlTextReader(streamReader))
-                    {
-                        xmlReader.DtdProcessing = DtdProcessing.Parse;
-                        xmlReader.XmlResolver = null;
-                        xmlReader.Normalization = false;
+                    xmlReader.DtdProcessing = DtdProcessing.Parse;
+                    xmlReader.XmlResolver = null;
+                    xmlReader.Normalization = false;
 
-                        #region load
-                        XmlDocument srxDoc = new XmlDocument { XmlResolver = null };
-                        srxDoc.Load(xmlReader);
+                    #region load
+                    XmlDocument srxDoc = new XmlDocument { XmlResolver = null };
+                    srxDoc.Load(xmlReader);
+                    #endregion
+
+                    #region parse
+                    bool foundHead = false;
+                    bool foundBoolean = false;
+                    foreach (XmlNode node in srxDoc.DocumentElement.ChildNodes)
+                    {
+                        #region HEAD
+                        if (string.Equals(node.Name, "HEAD", StringComparison.OrdinalIgnoreCase))
+                            foundHead = true;
                         #endregion
 
-                        #region parse
-                        bool foundHead = false;
-                        bool foundBoolean = false;
-                        foreach (XmlNode node in srxDoc.DocumentElement.ChildNodes)
+                        #region BOOLEAN
+                        else if (string.Equals(node.Name, "BOOLEAN", StringComparison.OrdinalIgnoreCase))
                         {
-                            #region HEAD
-                            if (string.Equals(node.Name, "HEAD", StringComparison.OrdinalIgnoreCase))
-                                foundHead = true;
-                            #endregion
+                            if (!foundHead)
+                                throw new Exception("\"head\" node was not found, or was after \"boolean\" node.");
+                            if (!bool.TryParse(node.InnerText, out bool bRes))
+                                throw new Exception("\"boolean\" node contained data not corresponding to a valid Boolean.");
 
-                            #region BOOLEAN
-                            else if (string.Equals(node.Name, "BOOLEAN", StringComparison.OrdinalIgnoreCase))
-                            {
-                                if (!foundHead)
-                                    throw new Exception("\"head\" node was not found, or was after \"boolean\" node.");
-                                if (!bool.TryParse(node.InnerText, out bool bRes))
-                                    throw new Exception("\"boolean\" node contained data not corresponding to a valid Boolean.");
-
-                                foundBoolean = true;
-                                result.AskResult = bRes;
-                            }
-                            #endregion
+                            foundBoolean = true;
+                            result.AskResult = bRes;
                         }
-
-                        if (!foundHead)
-                            throw new Exception("mandatory \"head\" node was not found");
-                        if (!foundBoolean)
-                            throw new Exception("mandatory \"boolean\" node was not found");
                         #endregion
                     }
-                }
-                #endregion
-            }
-            catch (Exception ex)
-            {
-                throw new RDFQueryException("Cannot read given \"SPARQL Query Results XML Format\" source because: " + ex.Message, ex);
-            }
 
-            return result;
+                    if (!foundHead)
+                        throw new Exception("mandatory \"head\" node was not found");
+                    if (!foundBoolean)
+                        throw new Exception("mandatory \"boolean\" node was not found");
+                    #endregion
+                }
+            }
+            #endregion
+        }
+        catch (Exception ex)
+        {
+            throw new RDFQueryException("Cannot read given \"SPARQL Query Results XML Format\" source because: " + ex.Message, ex);
         }
 
-        /// <summary>
-        /// Asynchronously reads the given "SPARQL Query Results XML Format" stream into an ASK query result
-        /// </summary>
-        /// <exception cref="RDFQueryException"></exception>
-        public static Task<RDFAskQueryResult> FromSparqlXmlResultAsync(Stream inputStream)
-            => Task.Run(() => FromSparqlXmlResult(inputStream));
-
-        /// <summary>
-        /// Reads the given "SPARQL Query Results XML Format" file into an ASK query result
-        /// </summary>
-        /// <exception cref="RDFQueryException"></exception>
-        public static RDFAskQueryResult FromSparqlXmlResult(string filepath)
-            => FromSparqlXmlResult(new FileStream(filepath, FileMode.Open));
-
-        /// <summary>
-        /// Asynchronously reads the given "SPARQL Query Results XML Format" file into an ASK query result
-        /// </summary>
-        /// <exception cref="RDFQueryException"></exception>
-        public static Task<RDFAskQueryResult> FromSparqlXmlResultAsync(string filepath)
-            => Task.Run(() => FromSparqlXmlResult(filepath));
-        #endregion
-
-        #endregion
+        return result;
     }
+
+    /// <summary>
+    /// Asynchronously reads the given "SPARQL Query Results XML Format" stream into an ASK query result
+    /// </summary>
+    /// <exception cref="RDFQueryException"></exception>
+    public static Task<RDFAskQueryResult> FromSparqlXmlResultAsync(Stream inputStream)
+        => Task.Run(() => FromSparqlXmlResult(inputStream));
+
+    /// <summary>
+    /// Reads the given "SPARQL Query Results XML Format" file into an ASK query result
+    /// </summary>
+    /// <exception cref="RDFQueryException"></exception>
+    public static RDFAskQueryResult FromSparqlXmlResult(string filepath)
+        => FromSparqlXmlResult(new FileStream(filepath, FileMode.Open));
+
+    /// <summary>
+    /// Asynchronously reads the given "SPARQL Query Results XML Format" file into an ASK query result
+    /// </summary>
+    /// <exception cref="RDFQueryException"></exception>
+    public static Task<RDFAskQueryResult> FromSparqlXmlResultAsync(string filepath)
+        => Task.Run(() => FromSparqlXmlResult(filepath));
+    #endregion
+
+    #endregion
 }

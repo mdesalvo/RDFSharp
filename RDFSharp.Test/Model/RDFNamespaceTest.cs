@@ -136,5 +136,14 @@ public class RDFNamespaceTest
         ns.SetTemporary(true);
         Assert.IsTrue(ns.IsTemporary);
     }
+    
+    [TestMethod]
+    [DataRow("ex", "http://example.org/")]
+    public void ShouldSetReservedNamespace(string prefix, string uri)
+    {
+        RDFNamespace ns = new RDFNamespace(prefix, uri);
+        ns.SetReserved(true);
+        Assert.IsTrue(ns.IsReserved);
+    }
     #endregion
 }

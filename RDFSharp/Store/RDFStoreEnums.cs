@@ -14,49 +14,48 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Store
+namespace RDFSharp.Store;
+
+/// <summary>
+/// RDFStoreEnums represents a collector for all the enumerations used by the "RDFSharp.Store" namespace
+/// </summary>
+public static class RDFStoreEnums
 {
     /// <summary>
-    /// RDFStoreEnums represents a collector for all the enumerations used by the "RDFSharp.Store" namespace
+    /// RDFStoreSQLErrors represents an enumeration for situations which can be found on a SQL-backing store
     /// </summary>
-    public static class RDFStoreEnums
+    public enum RDFStoreSQLErrors
     {
         /// <summary>
-        /// RDFStoreSQLErrors represents an enumeration for situations which can be found on a SQL-backing store
+        /// Indicates that diagnostics on the selected database has passed
         /// </summary>
-        public enum RDFStoreSQLErrors
-        {
-            /// <summary>
-            /// Indicates that diagnostics on the selected database has passed
-            /// </summary>
-            NoErrors = 0,
-            /// <summary>
-            /// Indicates that diagnostics on the selected database has not passed because of a connection error
-            /// </summary>
-            InvalidDataSource = 1,
-            /// <summary>
-            /// Indicates that diagnostics on the selected database has not passed because it's not ready for use with RDFSharp
-            /// </summary>
-            QuadruplesTableNotFound = 2
-        }
-
+        NoErrors = 0,
         /// <summary>
-        /// RDFFormats represents an enumeration for supported RDF store serialization data formats.
+        /// Indicates that diagnostics on the selected database has not passed because of a connection error
         /// </summary>
-        public enum RDFFormats
-        {
-            /// <summary>
-            /// N-Quads serialization (https://www.w3.org/TR/n-quads/)
-            /// </summary>
-            NQuads = 1,
-            /// <summary>
-            /// TriX serialization (http://www.w3.org/2004/03/trix/trix-1/)
-            /// </summary>
-            TriX = 2,
-            /// <summary>
-            /// TriG serialization (https://www.w3.org/TR/trig/)
-            /// </summary>
-            TriG = 3
-        }
+        InvalidDataSource = 1,
+        /// <summary>
+        /// Indicates that diagnostics on the selected database has not passed because it's not ready for use with RDFSharp
+        /// </summary>
+        QuadruplesTableNotFound = 2
+    }
+
+    /// <summary>
+    /// RDFFormats represents an enumeration for supported RDF store serialization data formats.
+    /// </summary>
+    public enum RDFFormats
+    {
+        /// <summary>
+        /// N-Quads serialization (https://www.w3.org/TR/n-quads/)
+        /// </summary>
+        NQuads = 1,
+        /// <summary>
+        /// TriX serialization (http://www.w3.org/2004/03/trix/trix-1/)
+        /// </summary>
+        TriX = 2,
+        /// <summary>
+        /// TriG serialization (https://www.w3.org/TR/trig/)
+        /// </summary>
+        TriG = 3
     }
 }

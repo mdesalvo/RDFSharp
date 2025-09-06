@@ -19,90 +19,88 @@ using System.Data;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFStrLenExpression represents a string length function to be applied on a query results table.
+/// </summary>
+public sealed class RDFStrLenExpression : RDFExpression
 {
+    #region Ctors
     /// <summary>
-    /// RDFStrLenExpression represents a string length function to be applied on a query results table.
+    /// Builds a string length function with given arguments
     /// </summary>
-    public sealed class RDFStrLenExpression : RDFExpression
+    public RDFStrLenExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+
+    /// <summary>
+    /// Builds a string length function with given arguments
+    /// </summary>
+    public RDFStrLenExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the string length function
+    /// </summary>
+    public override string ToString()
+        => ToString(RDFModelUtilities.EmptyNamespaceList);
+    internal override string ToString(List<RDFNamespace> prefixes)
     {
-        #region Ctors
-        /// <summary>
-        /// Builds a string length function with given arguments
-        /// </summary>
-        public RDFStrLenExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+        StringBuilder sb = new StringBuilder(32);
 
-        /// <summary>
-        /// Builds a string length function with given arguments
-        /// </summary>
-        public RDFStrLenExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        //(STRLEN(L))
+        sb.Append("(STRLEN(");
+        if (LeftArgument is RDFExpression expLeftArgument)
+            sb.Append(expLeftArgument.ToString(prefixes));
+        else
+            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+        sb.Append("))");
+
+        return sb.ToString();
+    }
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Applies the string length function on the given datarow
+    /// </summary>
+    internal override RDFPatternMember ApplyExpression(DataRow row)
+    {
+        RDFTypedLiteral expressionResult = null;
+
+        #region Guards
+        if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+            return null;
         #endregion
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the string length function
-        /// </summary>
-        public override string ToString()
-            => ToString(RDFModelUtilities.EmptyNamespaceList);
-        internal override string ToString(List<RDFNamespace> prefixes)
+        try
         {
-            StringBuilder sb = new StringBuilder(32);
-
-            //(STRLEN(L))
-            sb.Append("(STRLEN(");
-            if (LeftArgument is RDFExpression expLeftArgument)
-                sb.Append(expLeftArgument.ToString(prefixes));
+            #region Evaluate Arguments
+            //Evaluate left argument (Expression VS Variable)
+            RDFPatternMember leftArgumentPMember;
+            if (LeftArgument is RDFExpression leftArgumentExpression)
+                leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
             else
-                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            sb.Append("))");
-
-            return sb.ToString();
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Applies the string length function on the given datarow
-        /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
-        {
-            RDFTypedLiteral expressionResult = null;
-
-            #region Guards
-            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return null;
+                leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
             #endregion
 
-            try
+            #region Calculate Result
+            expressionResult = leftArgumentPMember switch
             {
-                #region Evaluate Arguments
-                //Evaluate left argument (Expression VS Variable)
-                RDFPatternMember leftArgumentPMember;
-                if (LeftArgument is RDFExpression leftArgumentExpression)
-                    leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
-                else
-                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
-                #endregion
-
-                #region Calculate Result
-                switch (leftArgumentPMember)
-                {
-                    case RDFResource _:
-                        expressionResult = new RDFTypedLiteral($"{leftArgumentPMember.ToString().Length}", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                        break;
-                    case RDFPlainLiteral leftArgumentPMemberPLiteral:
-                        expressionResult = new RDFTypedLiteral($"{leftArgumentPMemberPLiteral.Value.Length}", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                        break;
-                    case RDFTypedLiteral leftArgumentPMemberTLiteral when leftArgumentPMemberTLiteral.HasStringDatatype():
-                        expressionResult = new RDFTypedLiteral($"{leftArgumentPMemberTLiteral.Value.Length}", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                        break;
-                }
-                #endregion
-            }
-            catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
-
-            return expressionResult;
+                RDFResource => new RDFTypedLiteral($"{leftArgumentPMember.ToString().Length}",
+                    RDFModelEnums.RDFDatatypes.XSD_INTEGER),
+                RDFPlainLiteral leftArgumentPMemberPLiteral => new RDFTypedLiteral(
+                    $"{leftArgumentPMemberPLiteral.Value.Length}", RDFModelEnums.RDFDatatypes.XSD_INTEGER),
+                RDFTypedLiteral leftArgumentPMemberTLiteral when leftArgumentPMemberTLiteral.HasStringDatatype() =>
+                    new RDFTypedLiteral($"{leftArgumentPMemberTLiteral.Value.Length}",
+                        RDFModelEnums.RDFDatatypes.XSD_INTEGER),
+                _ => null
+            };
+            #endregion
         }
-        #endregion
+        catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
+        return expressionResult;
     }
+    #endregion
 }

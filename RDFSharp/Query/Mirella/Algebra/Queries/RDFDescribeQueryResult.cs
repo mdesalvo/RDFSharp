@@ -19,140 +19,139 @@ using System.Threading.Tasks;
 using RDFSharp.Model;
 using RDFSharp.Store;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFDescribeQueryResult is a container for SPARQL "DESCRIBE" query results.
+/// </summary>
+public sealed class RDFDescribeQueryResult : RDFQueryResult
 {
+    #region Properties
     /// <summary>
-    /// RDFDescribeQueryResult is a container for SPARQL "DESCRIBE" query results.
+    /// Tabular response of the query
     /// </summary>
-    public sealed class RDFDescribeQueryResult : RDFQueryResult
+    public DataTable DescribeResults { get; internal set; }
+
+    /// <summary>
+    /// Gets the number of results produced by the query
+    /// </summary>
+    public long DescribeResultsCount
+        => DescribeResults.Rows.Count;
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds an empty DESCRIBE result
+    /// </summary>
+    internal RDFDescribeQueryResult()
+        => DescribeResults = new DataTable();
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Gets a graph corresponding to the query result
+    /// </summary>
+    public RDFGraph ToRDFGraph()
     {
-        #region Properties
-        /// <summary>
-        /// Tabular response of the query
-        /// </summary>
-        public DataTable DescribeResults { get; internal set; }
+        RDFGraph result = new RDFGraph();
 
-        /// <summary>
-        /// Gets the number of results produced by the query
-        /// </summary>
-        public long DescribeResultsCount
-            => DescribeResults.Rows.Count;
-        #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Builds an empty DESCRIBE result
-        /// </summary>
-        internal RDFDescribeQueryResult()
-            => DescribeResults = new DataTable();
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Gets a graph corresponding to the query result
-        /// </summary>
-        public RDFGraph ToRDFGraph()
+        //Iterate the datatable rows and generate the corresponding triples to be added to the result graph
+        foreach (DataRow resultRow in DescribeResults.Rows)
         {
-            RDFGraph result = new RDFGraph();
-
-            //Iterate the datatable rows and generate the corresponding triples to be added to the result graph
-            foreach (DataRow resultRow in DescribeResults.Rows)
-            {
-                RDFPatternMember subj = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?SUBJECT"].ToString());
-                RDFPatternMember pred = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?PREDICATE"].ToString());
-                RDFPatternMember obj = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?OBJECT"].ToString());
-                if (obj is RDFResource objRes)
-                    result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, objRes));
-                else
-                    result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, (RDFLiteral)obj));
-            }
-
-            return result;
+            RDFPatternMember subj = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?SUBJECT"].ToString());
+            RDFPatternMember pred = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?PREDICATE"].ToString());
+            RDFPatternMember obj = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?OBJECT"].ToString());
+            if (obj is RDFResource objRes)
+                result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, objRes));
+            else
+                result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, (RDFLiteral)obj));
         }
 
-        /// <summary>
-        /// Asynchronously gets a graph corresponding to the query result
-        /// </summary>
-        public Task<RDFGraph> ToRDFGraphAsync()
-            => Task.Run(ToRDFGraph);
-
-        /// <summary>
-        /// Gets a memory store corresponding to the query result
-        /// </summary>
-        public RDFMemoryStore ToRDFMemoryStore()
-        {
-            RDFMemoryStore result = new RDFMemoryStore();
-
-            //Prepare context data
-            bool hasCtx = DescribeResults.Columns.Contains("?CONTEXT");
-            RDFContext defCtx = new RDFContext();
-
-            //Iterate the datatable rows and generate the corresponding triples to be added to the result memory store
-            foreach (DataRow resultRow in DescribeResults.Rows)
-            {
-                //In case the context column is unbound, we can safely apply default context
-                RDFContext ctx;
-                if (!hasCtx || string.IsNullOrEmpty(resultRow["?CONTEXT"].ToString()))
-                    ctx = defCtx;
-                else
-                    ctx = new RDFContext(RDFQueryUtilities.ParseRDFPatternMember(resultRow["?CONTEXT"].ToString()).ToString());
-                RDFPatternMember subj = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?SUBJECT"].ToString());
-                RDFPatternMember pred = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?PREDICATE"].ToString());
-                RDFPatternMember obj = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?OBJECT"].ToString());
-                if (obj is RDFResource objRes)
-                    result.AddQuadruple(new RDFQuadruple(ctx, (RDFResource)subj, (RDFResource)pred, objRes));
-                else
-                    result.AddQuadruple(new RDFQuadruple(ctx, (RDFResource)subj, (RDFResource)pred, (RDFLiteral)obj));
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Asynchronously gets a memory store corresponding to the query result
-        /// </summary>
-        public Task<RDFMemoryStore> ToRDFMemoryStoreAsync()
-            => Task.Run(ToRDFMemoryStore);
-
-        /// <summary>
-        /// Gets a query result corresponding to the given graph
-        /// </summary>
-        public static RDFDescribeQueryResult FromRDFGraph(RDFGraph graph)
-        {
-            RDFDescribeQueryResult result = new RDFDescribeQueryResult();
-            if (graph != null)
-            {
-                //Transform the graph into a datatable and assign it to the query result
-                result.DescribeResults = graph.ToDataTable();
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// Asynchronously gets a query result corresponding to the given graph
-        /// </summary>
-        public static Task<RDFDescribeQueryResult> FromRDFGraphAsync(RDFGraph graph)
-            => Task.Run(() => FromRDFGraph(graph));
-
-        /// <summary>
-        /// Gets a query result corresponding to the given memory store
-        /// </summary>
-        public static RDFDescribeQueryResult FromRDFMemoryStore(RDFMemoryStore store)
-        {
-            RDFDescribeQueryResult result = new RDFDescribeQueryResult();
-            if (store != null)
-            {
-                //Transform the memory store into a datatable and assign it to the query result
-                result.DescribeResults = store.ToDataTable();
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// Asynchronously gets a query result corresponding to the given memory store
-        /// </summary>
-        public static Task<RDFDescribeQueryResult> FromRDFMemoryStoreAsync(RDFMemoryStore store)
-            => Task.Run(() => FromRDFMemoryStore(store));
-        #endregion
+        return result;
     }
+
+    /// <summary>
+    /// Asynchronously gets a graph corresponding to the query result
+    /// </summary>
+    public Task<RDFGraph> ToRDFGraphAsync()
+        => Task.Run(ToRDFGraph);
+
+    /// <summary>
+    /// Gets a memory store corresponding to the query result
+    /// </summary>
+    public RDFMemoryStore ToRDFMemoryStore()
+    {
+        RDFMemoryStore result = new RDFMemoryStore();
+
+        //Prepare context data
+        bool hasCtx = DescribeResults.Columns.Contains("?CONTEXT");
+        RDFContext defCtx = new RDFContext();
+
+        //Iterate the datatable rows and generate the corresponding triples to be added to the result memory store
+        foreach (DataRow resultRow in DescribeResults.Rows)
+        {
+            //In case the context column is unbound, we can safely apply default context
+            RDFContext ctx;
+            if (!hasCtx || string.IsNullOrEmpty(resultRow["?CONTEXT"].ToString()))
+                ctx = defCtx;
+            else
+                ctx = new RDFContext(RDFQueryUtilities.ParseRDFPatternMember(resultRow["?CONTEXT"].ToString()).ToString());
+            RDFPatternMember subj = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?SUBJECT"].ToString());
+            RDFPatternMember pred = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?PREDICATE"].ToString());
+            RDFPatternMember obj = RDFQueryUtilities.ParseRDFPatternMember(resultRow["?OBJECT"].ToString());
+            if (obj is RDFResource objRes)
+                result.AddQuadruple(new RDFQuadruple(ctx, (RDFResource)subj, (RDFResource)pred, objRes));
+            else
+                result.AddQuadruple(new RDFQuadruple(ctx, (RDFResource)subj, (RDFResource)pred, (RDFLiteral)obj));
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Asynchronously gets a memory store corresponding to the query result
+    /// </summary>
+    public Task<RDFMemoryStore> ToRDFMemoryStoreAsync()
+        => Task.Run(ToRDFMemoryStore);
+
+    /// <summary>
+    /// Gets a query result corresponding to the given graph
+    /// </summary>
+    public static RDFDescribeQueryResult FromRDFGraph(RDFGraph graph)
+    {
+        RDFDescribeQueryResult result = new RDFDescribeQueryResult();
+        if (graph != null)
+        {
+            //Transform the graph into a datatable and assign it to the query result
+            result.DescribeResults = graph.ToDataTable();
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Asynchronously gets a query result corresponding to the given graph
+    /// </summary>
+    public static Task<RDFDescribeQueryResult> FromRDFGraphAsync(RDFGraph graph)
+        => Task.Run(() => FromRDFGraph(graph));
+
+    /// <summary>
+    /// Gets a query result corresponding to the given memory store
+    /// </summary>
+    public static RDFDescribeQueryResult FromRDFMemoryStore(RDFMemoryStore store)
+    {
+        RDFDescribeQueryResult result = new RDFDescribeQueryResult();
+        if (store != null)
+        {
+            //Transform the memory store into a datatable and assign it to the query result
+            result.DescribeResults = store.ToDataTable();
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Asynchronously gets a query result corresponding to the given memory store
+    /// </summary>
+    public static Task<RDFDescribeQueryResult> FromRDFMemoryStoreAsync(RDFMemoryStore store)
+        => Task.Run(() => FromRDFMemoryStore(store));
+    #endregion
 }

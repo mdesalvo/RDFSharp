@@ -19,144 +19,142 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFShapesGraph represents a SHACL shapes graph definition
+/// </summary>
+public sealed class RDFShapesGraph : RDFResource, IEnumerable<RDFShape>
 {
+    #region Properties
     /// <summary>
-    /// RDFShapesGraph represents a SHACL shapes graph definition
+    /// Count of the shapes composing this shapes graph
     /// </summary>
-    public sealed class RDFShapesGraph : RDFResource, IEnumerable<RDFShape>
+    public long ShapesCount => Shapes.Count;
+
+    /// <summary>
+    /// Gets the enumerator on the shapes of this shapes graph for iteration
+    /// </summary>
+    public IEnumerator<RDFShape> ShapesEnumerator => Shapes.Values.GetEnumerator();
+
+    /// <summary>
+    /// SHACL shapes contained in this shapes graph
+    /// </summary>
+    internal Dictionary<long, RDFShape> Shapes { get; set; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a named shapes graph
+    /// </summary>
+    public RDFShapesGraph(RDFResource shapesGraphName) : base(shapesGraphName.ToString())
+        => Shapes = [];
+
+    /// <summary>
+    /// Builds a blank shapes graph
+    /// </summary>
+    public RDFShapesGraph() : this(new RDFResource()) { }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Exposes a typed enumerator on the shapes of this shapes graph
+    /// </summary>
+    IEnumerator<RDFShape> IEnumerable<RDFShape>.GetEnumerator() => ShapesEnumerator;
+
+    /// <summary>
+    /// Exposes an untyped enumerator on the shapes of this shapes graph
+    /// </summary>
+    IEnumerator IEnumerable.GetEnumerator() => ShapesEnumerator;
+    #endregion
+
+    #region Methods
+
+    #region Add
+    /// <summary>
+    /// Adds the given shape to this shapes graph
+    /// </summary>
+    public RDFShapesGraph AddShape(RDFShape shape)
     {
-        #region Properties
-        /// <summary>
-        /// Count of the shapes composing this shapes graph
-        /// </summary>
-        public long ShapesCount => Shapes.Count;
-
-        /// <summary>
-        /// Gets the enumerator on the shapes of this shapes graph for iteration
-        /// </summary>
-        public IEnumerator<RDFShape> ShapesEnumerator => Shapes.Values.GetEnumerator();
-
-        /// <summary>
-        /// SHACL shapes contained in this shapes graph
-        /// </summary>
-        internal Dictionary<long, RDFShape> Shapes { get; set; }
-        #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Builds a named shapes graph
-        /// </summary>
-        public RDFShapesGraph(RDFResource shapesGraphName) : base(shapesGraphName.ToString())
-            => Shapes = new Dictionary<long, RDFShape>();
-
-        /// <summary>
-        /// Builds a blank shapes graph
-        /// </summary>
-        public RDFShapesGraph() : this(new RDFResource()) { }
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Exposes a typed enumerator on the shapes of this shapes graph
-        /// </summary>
-        IEnumerator<RDFShape> IEnumerable<RDFShape>.GetEnumerator() => ShapesEnumerator;
-
-        /// <summary>
-        /// Exposes an untyped enumerator on the shapes of this shapes graph
-        /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() => ShapesEnumerator;
-        #endregion
-
-        #region Methods
-
-        #region Add
-        /// <summary>
-        /// Adds the given shape to this shapes graph
-        /// </summary>
-        public RDFShapesGraph AddShape(RDFShape shape)
-        {
-            if (shape != null && !Shapes.ContainsKey(shape.PatternMemberID))
-                Shapes.Add(shape.PatternMemberID, shape);
-            return this;
-        }
-
-        /// <summary>
-        /// Merges the shapes of the given shapes graph to this shapes graph
-        /// </summary>
-        public RDFShapesGraph MergeShapes(RDFShapesGraph shapesGraph)
-        {
-            if (shapesGraph != null)
-                foreach (RDFShape shape in shapesGraph)
-                {
-                    if (!Shapes.ContainsKey(shape.PatternMemberID))
-                        Shapes.Add(shape.PatternMemberID, shape);
-                }
-            return this;
-        }
-        #endregion
-
-        #region Remove
-        /// <summary>
-        /// Removes the given shape from this shapes graph
-        /// </summary>
-        public RDFShapesGraph RemoveShape(RDFShape shape)
-        {
-            if (shape != null)
-                Shapes.Remove(shape.PatternMemberID);
-            return this;
-        }
-        #endregion
-
-        #region Select
-        /// <summary>
-        /// Selects the shape represented by the given string from this shapes graph
-        /// </summary>
-        public RDFShape SelectShape(string shapeName)
-        {
-            if (shapeName != null)
-            {
-                long shapeID = RDFModelUtilities.CreateHash(shapeName);
-                if (Shapes.TryGetValue(shapeID, out RDFShape shape))
-                    return shape;
-            }
-            return null;
-        }
-        #endregion
-
-        #region Convert
-        /// <summary>
-        /// Gets a graph representation of this shapes graph
-        /// </summary>
-        public RDFGraph ToRDFGraph()
-        {
-            RDFGraph result = new RDFGraph();
-
-            result = this.Aggregate(result, (current, shape) => current.UnionWith(shape.ToRDFGraph()));
-
-            result.SetContext(URI);
-            return result;
-        }
-
-        /// <summary>
-        /// Asynchronously gets a graph representation of this shapes graph
-        /// </summary>
-        public Task<RDFGraph> ToRDFGraphAsync()
-            => Task.Run(ToRDFGraph);
-
-        /// <summary>
-        /// Gets a shapes graph representation of the given graph
-        /// </summary>
-        public static RDFShapesGraph FromRDFGraph(RDFGraph graph)
-            => RDFValidationHelper.FromRDFGraph(graph);
-
-        /// <summary>
-        /// Asynchronously gets a shapes graph representation of the given graph
-        /// </summary>
-        public static Task<RDFShapesGraph> FromRDFGraphAsync(RDFGraph graph)
-            => Task.Run(() => FromRDFGraph(graph));
-        #endregion
-
-        #endregion
+        if (shape != null)
+            Shapes.TryAdd(shape.PatternMemberID, shape);
+        return this;
     }
+
+    /// <summary>
+    /// Merges the shapes of the given shapes graph to this shapes graph
+    /// </summary>
+    public RDFShapesGraph MergeShapes(RDFShapesGraph shapesGraph)
+    {
+        if (shapesGraph != null)
+        {
+            foreach (RDFShape shape in shapesGraph)
+                Shapes.TryAdd(shape.PatternMemberID, shape);
+        }
+        return this;
+    }
+    #endregion
+
+    #region Remove
+    /// <summary>
+    /// Removes the given shape from this shapes graph
+    /// </summary>
+    public RDFShapesGraph RemoveShape(RDFShape shape)
+    {
+        if (shape != null)
+            Shapes.Remove(shape.PatternMemberID);
+        return this;
+    }
+    #endregion
+
+    #region Select
+    /// <summary>
+    /// Selects the shape represented by the given string from this shapes graph
+    /// </summary>
+    public RDFShape SelectShape(string shapeName)
+    {
+        if (shapeName != null)
+        {
+            long shapeID = RDFModelUtilities.CreateHash(shapeName);
+            if (Shapes.TryGetValue(shapeID, out RDFShape shape))
+                return shape;
+        }
+        return null;
+    }
+    #endregion
+
+    #region Convert
+    /// <summary>
+    /// Gets a graph representation of this shapes graph
+    /// </summary>
+    public RDFGraph ToRDFGraph()
+    {
+        RDFGraph result = new RDFGraph();
+
+        result = this.Aggregate(result, (current, shape) => current.UnionWith(shape.ToRDFGraph()));
+
+        result.SetContext(URI);
+        return result;
+    }
+
+    /// <summary>
+    /// Asynchronously gets a graph representation of this shapes graph
+    /// </summary>
+    public Task<RDFGraph> ToRDFGraphAsync()
+        => Task.Run(ToRDFGraph);
+
+    /// <summary>
+    /// Gets a shapes graph representation of the given graph
+    /// </summary>
+    public static RDFShapesGraph FromRDFGraph(RDFGraph graph)
+        => RDFValidationHelper.FromRDFGraph(graph);
+
+    /// <summary>
+    /// Asynchronously gets a shapes graph representation of the given graph
+    /// </summary>
+    public static Task<RDFShapesGraph> FromRDFGraphAsync(RDFGraph graph)
+        => Task.Run(() => FromRDFGraph(graph));
+    #endregion
+
+    #endregion
 }

@@ -14,36 +14,35 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFTargetClass represents a SHACL target of type "Class" within a shape.
+/// </summary>
+public sealed class RDFTargetClass : RDFTarget
 {
+    #region Ctors
     /// <summary>
-    /// RDFTargetClass represents a SHACL target of type "Class" within a shape.
+    /// Builds a class target on the given resource
     /// </summary>
-    public sealed class RDFTargetClass : RDFTarget
+    /// <exception cref="RDFModelException"></exception>
+    public RDFTargetClass(RDFResource targetClass)
+        => TargetValue = targetClass ?? throw new RDFModelException("Cannot create RDFTargetClass because given \"targetClass\" parameter is null.");
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Gets a graph representation of this target
+    /// </summary>
+    internal override RDFGraph ToRDFGraph(RDFShape shape)
     {
-        #region Ctors
-        /// <summary>
-        /// Builds a class target on the given resource
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public RDFTargetClass(RDFResource targetClass)
-            => TargetValue = targetClass ?? throw new RDFModelException("Cannot create RDFTargetClass because given \"targetClass\" parameter is null.");
-        #endregion
+        RDFGraph result = new RDFGraph();
 
-        #region Methods
-        /// <summary>
-        /// Gets a graph representation of this target
-        /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape)
-        {
-            RDFGraph result = new RDFGraph();
+        //sh:targetClass
+        if (shape != null)
+            result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.TARGET_CLASS, TargetValue));
 
-            //sh:targetClass
-            if (shape != null)
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.TARGET_CLASS, TargetValue));
-
-            return result;
-        }
-        #endregion
+        return result;
     }
+    #endregion
 }

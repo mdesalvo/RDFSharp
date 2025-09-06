@@ -19,82 +19,81 @@ using System.Data;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFHasLangExpression represents a language-detector function to be applied on a query results table.
+/// </summary>
+public sealed class RDFHasLangExpression : RDFExpression
 {
+    #region Ctors
     /// <summary>
-    /// RDFHasLangExpression represents a language-detector function to be applied on a query results table.
+    /// Builds a hasLang function with given arguments
     /// </summary>
-    public sealed class RDFHasLangExpression : RDFExpression
+    public RDFHasLangExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+
+    /// <summary>
+    /// Builds a hasLang function with given arguments
+    /// </summary>
+    public RDFHasLangExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the hasLang function
+    /// </summary>
+    public override string ToString()
+        => ToString(RDFModelUtilities.EmptyNamespaceList);
+    internal override string ToString(List<RDFNamespace> prefixes)
     {
-        #region Ctors
-        /// <summary>
-        /// Builds a hasLang function with given arguments
-        /// </summary>
-        public RDFHasLangExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+        StringBuilder sb = new StringBuilder(32);
 
-        /// <summary>
-        /// Builds a hasLang function with given arguments
-        /// </summary>
-        public RDFHasLangExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        //(HASLANG(L))
+        sb.Append("(HASLANG(");
+        if (LeftArgument is RDFExpression expLeftArgument)
+            sb.Append(expLeftArgument.ToString(prefixes));
+        else
+            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+        sb.Append("))");
+
+        return sb.ToString();
+    }
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Applies the hasLang function on the given datarow
+    /// </summary>
+    internal override RDFPatternMember ApplyExpression(DataRow row)
+    {
+        RDFTypedLiteral expressionResult = null;
+
+        #region Guards
+        if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+            return null;
         #endregion
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the hasLang function
-        /// </summary>
-        public override string ToString()
-            => ToString(RDFModelUtilities.EmptyNamespaceList);
-        internal override string ToString(List<RDFNamespace> prefixes)
+        try
         {
-            StringBuilder sb = new StringBuilder(32);
-
-            //(HASLANG(L))
-            sb.Append("(HASLANG(");
-            if (LeftArgument is RDFExpression expLeftArgument)
-                sb.Append(expLeftArgument.ToString(prefixes));
+            #region Evaluate Arguments
+            //Evaluate left argument (Expression VS Variable)
+            RDFPatternMember leftArgumentPMember;
+            if (LeftArgument is RDFExpression leftArgumentExpression)
+                leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
             else
-                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            sb.Append("))");
-
-            return sb.ToString();
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Applies the hasLang function on the given datarow
-        /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
-        {
-            RDFTypedLiteral expressionResult = null;
-
-            #region Guards
-            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return null;
+                leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
             #endregion
 
-            try
-            {
-                #region Evaluate Arguments
-                //Evaluate left argument (Expression VS Variable)
-                RDFPatternMember leftArgumentPMember;
-                if (LeftArgument is RDFExpression leftArgumentExpression)
-                    leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
-                else
-                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
-                #endregion
-
-                #region Calculate Result
-                if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLiteral && leftArgumentPMemberPLiteral.HasLanguage())
-                    expressionResult = RDFTypedLiteral.True;
-                else
-                    expressionResult = RDFTypedLiteral.False;
-                #endregion
-            }
-            catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
-
-            return expressionResult;
+            #region Calculate Result
+            if (leftArgumentPMember is RDFPlainLiteral leftArgumentPMemberPLiteral && leftArgumentPMemberPLiteral.HasLanguage())
+                expressionResult = RDFTypedLiteral.True;
+            else
+                expressionResult = RDFTypedLiteral.False;
+            #endregion
         }
-        #endregion
+        catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
+        return expressionResult;
     }
+    #endregion
 }

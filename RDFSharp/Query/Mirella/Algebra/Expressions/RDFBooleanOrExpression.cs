@@ -18,44 +18,43 @@ using System.Collections.Generic;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFBooleanOrExpression represents a boolean "OR" expression to be applied on a query results table.
+/// </summary>
+public sealed class RDFBooleanOrExpression : RDFBooleanExpression
 {
+    #region Ctors
     /// <summary>
-    /// RDFBooleanOrExpression represents a boolean "OR" expression to be applied on a query results table.
+    /// Builds a boolean "OR" expression with given arguments
     /// </summary>
-    public sealed class RDFBooleanOrExpression : RDFBooleanExpression
+    public RDFBooleanOrExpression(RDFExpression leftArgument, RDFExpression rightArgument)
+        : base(leftArgument, rightArgument)
     {
-        #region Ctors
-        /// <summary>
-        /// Builds a boolean "OR" expression with given arguments
-        /// </summary>
-        public RDFBooleanOrExpression(RDFExpression leftArgument, RDFExpression rightArgument)
-            : base(leftArgument, rightArgument)
-        {
-            if (rightArgument == null)
-                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-        }
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the boolean "OR" expression
-        /// </summary>
-        public override string ToString()
-            => ToString(RDFModelUtilities.EmptyNamespaceList);
-        internal override string ToString(List<RDFNamespace> prefixes)
-        {
-            StringBuilder sb = new StringBuilder(64);
-
-            //(L || R)
-            sb.Append('(');
-            sb.Append(((RDFExpression)LeftArgument).ToString(prefixes));
-            sb.Append(" || ");
-            sb.Append(((RDFExpression)RightArgument).ToString(prefixes));
-            sb.Append(')');
-
-            return sb.ToString();
-        }
-        #endregion
+        if (rightArgument == null)
+            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
     }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the boolean "OR" expression
+    /// </summary>
+    public override string ToString()
+        => ToString(RDFModelUtilities.EmptyNamespaceList);
+    internal override string ToString(List<RDFNamespace> prefixes)
+    {
+        StringBuilder sb = new StringBuilder(64);
+
+        //(L || R)
+        sb.Append('(');
+        sb.Append(((RDFExpression)LeftArgument).ToString(prefixes));
+        sb.Append(" || ");
+        sb.Append(((RDFExpression)RightArgument).ToString(prefixes));
+        sb.Append(')');
+
+        return sb.ToString();
+    }
+    #endregion
 }

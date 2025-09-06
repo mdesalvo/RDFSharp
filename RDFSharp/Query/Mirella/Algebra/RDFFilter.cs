@@ -18,27 +18,26 @@ using System.Collections.Generic;
 using System.Data;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
-{
-    /// <summary>
-    /// RDFFilter represents a filter to be applied on a query results table.
-    /// </summary>
-    public abstract class RDFFilter : RDFPatternGroupMember
-    {
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the filter
-        /// </summary>
-        public override string ToString()
-            => ToString(RDFModelUtilities.EmptyNamespaceList);
-        internal abstract string ToString(List<RDFNamespace> prefixes);
-        #endregion
+namespace RDFSharp.Query;
 
-        #region Methods
-        /// <summary>
-        /// Applies the filter on the given datarow
-        /// </summary>
-        internal abstract bool ApplyFilter(DataRow row, bool applyNegation);
-        #endregion
-    }
+/// <summary>
+/// RDFFilter represents a filter to be applied on a query results table.
+/// </summary>
+public abstract class RDFFilter : RDFPatternGroupMember
+{
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the filter
+    /// </summary>
+    public override string ToString()
+        => ToString(RDFModelUtilities.EmptyNamespaceList);
+    internal abstract string ToString(List<RDFNamespace> prefixes);
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Applies the filter on the given datarow
+    /// </summary>
+    internal abstract bool ApplyFilter(DataRow row, bool applyNegation);
+    #endregion
 }

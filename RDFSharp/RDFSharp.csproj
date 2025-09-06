@@ -3,11 +3,11 @@
         <AssemblyTitle>RDFSharp</AssemblyTitle>
         <AssemblyName>RDFSharp</AssemblyName>
         <AssemblyVersion>$(Version)</AssemblyVersion>
-        <Version>3.22.0</Version>
+        <Version>4.0.0</Version>
         <Authors>Marco De Salvo</Authors>
         <Copyright>Marco De Salvo</Copyright>
         <Description>Lightweight and friendly .NET library for realizing Semantic Web applications (RDF, SPARQL, SHACL)</Description>
-        <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+        <TargetFramework>net8.0</TargetFramework>
         <SignAssembly>false</SignAssembly>
         <Product>RDFSharp</Product>
         <PackageId>RDFSharp</PackageId>
@@ -50,8 +50,5 @@
         </PackageReference>
         <PackageReference Include="NetTopologySuite" Version="2.6.0" />
         <PackageReference Include="ProjNet" Version="2.1.0" />
-    </ItemGroup>
-    <ItemGroup  Condition="'$(TargetFramework)'=='netstandard2.0'">
-        <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     </ItemGroup>
 </Project>

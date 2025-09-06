@@ -21,88 +21,87 @@ using System.Globalization;
 using System.Linq;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFCountAggregator represents a COUNT aggregation function applied by a GroupBy modifier
+/// </summary>
+public sealed class RDFCountAggregator : RDFAggregator
 {
+    #region Ctors
     /// <summary>
-    /// RDFCountAggregator represents a COUNT aggregation function applied by a GroupBy modifier
+    /// Builds a COUNT aggregator on the given variable and with the given projection name
     /// </summary>
-    public sealed class RDFCountAggregator : RDFAggregator
+    public RDFCountAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gets the string representation of the COUNT aggregator
+    /// </summary>
+    public override string ToString()
+        => IsDistinct ? $"(COUNT(DISTINCT {AggregatorVariable}) AS {ProjectionVariable})"
+            : $"(COUNT({AggregatorVariable}) AS {ProjectionVariable})";
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Executes the partition on the given tablerow
+    /// </summary>
+    internal override void ExecutePartition(string partitionKey, DataRow tableRow)
     {
-        #region Ctors
-        /// <summary>
-        /// Builds a COUNT aggregator on the given variable and with the given projection name
-        /// </summary>
-        public RDFCountAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Gets the string representation of the COUNT aggregator
-        /// </summary>
-        public override string ToString()
-            => IsDistinct ? $"(COUNT(DISTINCT {AggregatorVariable}) AS {ProjectionVariable})"
-                          : $"(COUNT({AggregatorVariable}) AS {ProjectionVariable})";
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Executes the partition on the given tablerow
-        /// </summary>
-        internal override void ExecutePartition(string partitionKey, DataRow tableRow)
+        //Get row value
+        string rowValue = GetRowValueAsString(tableRow);
+        if (IsDistinct)
         {
-            //Get row value
-            string rowValue = GetRowValueAsString(tableRow);
-            if (IsDistinct)
-            {
-                //Cache-Hit: distinctness failed
-                if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
-                    return;
-                //Cache-Miss: distinctness passed
-                AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
-            }
-            //Update aggregator context (count)
-            if (!string.IsNullOrEmpty(rowValue))
-                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d) + 1d);
+            //Cache-Hit: distinctness failed
+            if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
+                return;
+            //Cache-Miss: distinctness passed
+            AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
         }
-
-        /// <summary>
-        /// Executes the projection producing result's table
-        /// </summary>
-        internal override DataTable ExecuteProjection(List<RDFVariable> partitionVariables)
-        {
-            DataTable projFuncTable = new DataTable();
-
-            //Initialization
-            partitionVariables.ForEach(pv =>
-                RDFQueryEngine.AddColumn(projFuncTable, pv.VariableName));
-            RDFQueryEngine.AddColumn(projFuncTable, ProjectionVariable.VariableName);
-
-            //Finalization
-            foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
-            {
-                //Update result's table
-                UpdateProjectionTable(partitionKey, projFuncTable);
-            }
-
-            return projFuncTable;
-        }
-
-        /// <summary>
-        /// Helps in finalization step by updating the projection's result table
-        /// </summary>
-        internal override void UpdateProjectionTable(string partitionKey, DataTable projFuncTable)
-        {
-            //Get bindings from context
-            Dictionary<string, string> bindings = partitionKey.Split(ProjectionKeyPlaceholder, StringSplitOptions.RemoveEmptyEntries)
-                                                              .Select(pkValue => pkValue.Split(ProjectionValuePlaceholder, StringSplitOptions.None)).ToDictionary(pValues => pValues[0], pValues => pValues[1]);
-
-            //Add aggregator value to bindings
-            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d);
-            bindings.Add(ProjectionVariable.VariableName, new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString());
-
-            //Add bindings to result's table
-            RDFQueryEngine.AddRow(projFuncTable, bindings);
-        }
-        #endregion
+        //Update aggregator context (count)
+        if (!string.IsNullOrEmpty(rowValue))
+            AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d) + 1d);
     }
+
+    /// <summary>
+    /// Executes the projection producing result's table
+    /// </summary>
+    internal override DataTable ExecuteProjection(List<RDFVariable> partitionVariables)
+    {
+        DataTable projFuncTable = new DataTable();
+
+        //Initialization
+        partitionVariables.ForEach(pv =>
+            RDFQueryEngine.AddColumn(projFuncTable, pv.VariableName));
+        RDFQueryEngine.AddColumn(projFuncTable, ProjectionVariable.VariableName);
+
+        //Finalization
+        foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
+        {
+            //Update result's table
+            UpdateProjectionTable(partitionKey, projFuncTable);
+        }
+
+        return projFuncTable;
+    }
+
+    /// <summary>
+    /// Helps in finalization step by updating the projection's result table
+    /// </summary>
+    internal override void UpdateProjectionTable(string partitionKey, DataTable projFuncTable)
+    {
+        //Get bindings from context
+        Dictionary<string, string> bindings = partitionKey.Split(ProjectionKeyPlaceholder, StringSplitOptions.RemoveEmptyEntries)
+            .Select(pkValue => pkValue.Split(ProjectionValuePlaceholder, StringSplitOptions.None)).ToDictionary(pValues => pValues[0], pValues => pValues[1]);
+
+        //Add aggregator value to bindings
+        double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d);
+        bindings.Add(ProjectionVariable.VariableName, new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString());
+
+        //Add bindings to result's table
+        RDFQueryEngine.AddRow(projFuncTable, bindings);
+    }
+    #endregion
 }

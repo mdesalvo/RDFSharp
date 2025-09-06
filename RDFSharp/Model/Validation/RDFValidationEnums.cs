@@ -14,61 +14,60 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFValidationEnums represents a collector for all the enumerations used for SHACL modeling and validation
+/// </summary>
+public static class RDFValidationEnums
 {
     /// <summary>
-    /// RDFValidationEnums represents a collector for all the enumerations used for SHACL modeling and validation
+    /// RDFShapeSeverity represents an enumeration for possible severity levels of shape validation evidence
     /// </summary>
-    public static class RDFValidationEnums
+    public enum RDFShapeSeverity
     {
         /// <summary>
-        /// RDFShapeSeverity represents an enumeration for possible severity levels of shape validation evidence
+        /// Shape has not been violated: data graph may contain trivial structural inconsistencies
         /// </summary>
-        public enum RDFShapeSeverity
-        {
-            /// <summary>
-            /// Shape has not been violated: data graph may contain trivial structural inconsistencies
-            /// </summary>
-            Info = 0,
-            /// <summary>
-            /// Shape has not been violated: data graph may contain structural inconsistencies
-            /// </summary>
-            Warning = 1,
-            /// <summary>
-            /// Shape has been violated: data graph contains structural inconsistencies
-            /// </summary>
-            Violation = 2
-        }
-
+        Info = 0,
         /// <summary>
-        /// RDFNodeKinds represents an enumeration for supported values of sh:nodeKind constraint
+        /// Shape has not been violated: data graph may contain structural inconsistencies
         /// </summary>
-        public enum RDFNodeKinds
-        {
-            /// <summary>
-            /// sh:BlankNode
-            /// </summary>
-            BlankNode = 0,
-            /// <summary>
-            ///  sh:BlankNodeOrIRI
-            /// </summary>
-            BlankNodeOrIRI = 1,
-            /// <summary>
-            /// sh:BlankNodeOrLiteral
-            /// </summary>
-            BlankNodeOrLiteral = 2,
-            /// <summary>
-            ///  sh:IRI
-            /// </summary>
-            IRI = 3,
-            /// <summary>
-            /// sh:IRIOrLiteral
-            /// </summary>
-            IRIOrLiteral = 4,
-            /// <summary>
-            /// sh:Literal
-            /// </summary>
-            Literal = 5
-        }
+        Warning = 1,
+        /// <summary>
+        /// Shape has been violated: data graph contains structural inconsistencies
+        /// </summary>
+        Violation = 2
+    }
+
+    /// <summary>
+    /// RDFNodeKinds represents an enumeration for supported values of sh:nodeKind constraint
+    /// </summary>
+    public enum RDFNodeKinds
+    {
+        /// <summary>
+        /// sh:BlankNode
+        /// </summary>
+        BlankNode = 0,
+        /// <summary>
+        ///  sh:BlankNodeOrIRI
+        /// </summary>
+        BlankNodeOrIRI = 1,
+        /// <summary>
+        /// sh:BlankNodeOrLiteral
+        /// </summary>
+        BlankNodeOrLiteral = 2,
+        /// <summary>
+        ///  sh:IRI
+        /// </summary>
+        IRI = 3,
+        /// <summary>
+        /// sh:IRIOrLiteral
+        /// </summary>
+        IRIOrLiteral = 4,
+        /// <summary>
+        /// sh:Literal
+        /// </summary>
+        Literal = 5
     }
 }

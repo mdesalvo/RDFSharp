@@ -21,93 +21,92 @@ using System.Globalization;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query;
+
+/// <summary>
+/// RDFRoundExpression represents an arithmetical round function to be applied on a query results table.
+/// </summary>
+public sealed class RDFRoundExpression : RDFExpression
 {
+    #region Ctors
     /// <summary>
-    /// RDFRoundExpression represents an arithmetical round function to be applied on a query results table.
+    /// Builds an arithmetical round function with given arguments
     /// </summary>
-    public sealed class RDFRoundExpression : RDFExpression
+    public RDFRoundExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+
+    /// <summary>
+    /// Builds an arithmetical round function with given arguments
+    /// </summary>
+    public RDFRoundExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Gives the string representation of the arithmetical round function
+    /// </summary>
+    public override string ToString()
+        => ToString(RDFModelUtilities.EmptyNamespaceList);
+    internal override string ToString(List<RDFNamespace> prefixes)
     {
-        #region Ctors
-        /// <summary>
-        /// Builds an arithmetical round function with given arguments
-        /// </summary>
-        public RDFRoundExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
+        StringBuilder sb = new StringBuilder(32);
 
-        /// <summary>
-        /// Builds an arithmetical round function with given arguments
-        /// </summary>
-        public RDFRoundExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        //(ROUND(L))
+        sb.Append("(ROUND(");
+        if (LeftArgument is RDFExpression expLeftArgument)
+            sb.Append(expLeftArgument.ToString(prefixes));
+        else
+            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+        sb.Append("))");
+
+        return sb.ToString();
+    }
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Applies the arithmetical abs function on the given datarow
+    /// </summary>
+    internal override RDFPatternMember ApplyExpression(DataRow row)
+    {
+        RDFTypedLiteral expressionResult = null;
+
+        #region Guards
+        if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+            return null;
         #endregion
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the arithmetical round function
-        /// </summary>
-        public override string ToString()
-            => ToString(RDFModelUtilities.EmptyNamespaceList);
-        internal override string ToString(List<RDFNamespace> prefixes)
+        try
         {
-            StringBuilder sb = new StringBuilder(32);
-
-            //(ROUND(L))
-            sb.Append("(ROUND(");
-            if (LeftArgument is RDFExpression expLeftArgument)
-                sb.Append(expLeftArgument.ToString(prefixes));
+            #region Evaluate Arguments
+            //Evaluate left argument (Expression VS Variable)
+            RDFPatternMember leftArgumentPMember;
+            if (LeftArgument is RDFExpression leftArgumentExpression)
+                leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
             else
-                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            sb.Append("))");
-
-            return sb.ToString();
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Applies the arithmetical abs function on the given datarow
-        /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
-        {
-            RDFTypedLiteral expressionResult = null;
-
-            #region Guards
-            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-                return null;
+                leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
             #endregion
 
-            try
+            #region Calculate Result
+            if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
+                && leftArgumentTypedLiteral.HasDecimalDatatype())
             {
-                #region Evaluate Arguments
-                //Evaluate left argument (Expression VS Variable)
-                RDFPatternMember leftArgumentPMember;
-                if (LeftArgument is RDFExpression leftArgumentExpression)
-                    leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
-                else
-                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
-                #endregion
-
-                #region Calculate Result
-                if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
-                     && leftArgumentTypedLiteral.HasDecimalDatatype())
+                //owl:rational needs parsing and evaluation before being compared
+                if (leftArgumentTypedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
                 {
-                    //owl:rational needs parsing and evaluation before being compared
-                    if (leftArgumentTypedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                    {
-                        expressionResult = new RDFTypedLiteral(
-                                                                Convert.ToString(Math.Round(RDFModelUtilities.ComputeOWLRationalValue(leftArgumentTypedLiteral)), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                    }
-                    else if (double.TryParse(leftArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double leftArgumentNumericValue))
-                    {
-                        expressionResult = new RDFTypedLiteral(
-                                                                Convert.ToString(Math.Round(leftArgumentNumericValue), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                    }
+                    expressionResult = new RDFTypedLiteral(
+                        Convert.ToString(Math.Round(RDFModelUtilities.ComputeOWLRationalValue(leftArgumentTypedLiteral)), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
                 }
-                #endregion
+                else if (double.TryParse(leftArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double leftArgumentNumericValue))
+                {
+                    expressionResult = new RDFTypedLiteral(
+                        Convert.ToString(Math.Round(leftArgumentNumericValue), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                }
             }
-            catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
-
-            return expressionResult;
+            #endregion
         }
-        #endregion
+        catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
+        return expressionResult;
     }
+    #endregion
 }

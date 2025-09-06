@@ -18,110 +18,109 @@ using System.Collections.Generic;
 using System.Linq;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFClosedConstraint represents a SHACL constraint on the predicates allowed for a given RDF term
+/// </summary>
+public sealed class RDFClosedConstraint : RDFConstraint
 {
+    #region Properties
     /// <summary>
-    /// RDFClosedConstraint represents a SHACL constraint on the predicates allowed for a given RDF term
+    /// Flag indicating that closure of predicates is required or not
     /// </summary>
-    public sealed class RDFClosedConstraint : RDFConstraint
+    public bool Closed { get; internal set; }
+
+    /// <summary>
+    /// Properties allowed on the given RDF term
+    /// </summary>
+    internal Dictionary<long, RDFResource> IgnoredProperties { get; set; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a closed constraint with the given behavior
+    /// </summary>
+    public RDFClosedConstraint(bool closed)
     {
-        #region Properties
-        /// <summary>
-        /// Flag indicating that closure of predicates is required or not
-        /// </summary>
-        public bool Closed { get; internal set; }
-
-        /// <summary>
-        /// Properties allowed on the given RDF term
-        /// </summary>
-        internal Dictionary<long, RDFResource> IgnoredProperties { get; set; }
-        #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Builds a closed constraint with the given behavior
-        /// </summary>
-        public RDFClosedConstraint(bool closed)
-        {
-            Closed = closed;
-            IgnoredProperties = new Dictionary<long, RDFResource>();
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Adds the given property to the allowed properties of this constraint
-        /// </summary>
-        public RDFClosedConstraint AddIgnoredProperty(RDFResource ignoredProperty)
-        {
-            if (ignoredProperty != null && !IgnoredProperties.ContainsKey(ignoredProperty.PatternMemberID))
-                IgnoredProperties.Add(ignoredProperty.PatternMemberID, ignoredProperty);
-            return this;
-        }
-
-        /// <summary>
-        /// Evaluates this constraint against the given data graph
-        /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
-        {
-            RDFValidationReport report = new RDFValidationReport();
-
-            #region Evaluation
-            if (Closed)
-            {
-                //Extend ignored properties with paths of property constraints
-                List<RDFResource> allowedProperties = new List<RDFResource>(IgnoredProperties.Values);
-                foreach (RDFPropertyConstraint propertyConstraint in shape.Constraints.OfType<RDFPropertyConstraint>())
-                    if (shapesGraph.SelectShape(propertyConstraint.PropertyShapeUri.ToString()) is RDFPropertyShape propertyShape)
-                        allowedProperties.Add(propertyShape.Path);
-
-                //In case no shape messages have been provided, this constraint emits a default one (for usability)
-                List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
-                if (shapeMessages.Count == 0)
-                    shapeMessages.Add(new RDFPlainLiteral("Predicate is not allowed (closed shape)"));
-
-                //Detect unallowed predicates
-                foreach (RDFPatternMember valueNode in valueNodes)
-                    if (valueNode is RDFResource valueNodeResource)
-                    {
-                        RDFGraph valuenodeResourceGraph = dataGraph.SelectTriplesBySubject(valueNodeResource);
-                        foreach (RDFTriple unallowedTriple in valuenodeResourceGraph.Where(t => !allowedProperties.Any(p => p.Equals(t.Predicate))))
-                            report.AddResult(new RDFValidationResult(shape,
-                                                                     RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT,
-                                                                     valueNodeResource,
-                                                                     unallowedTriple.Predicate as RDFResource,
-                                                                     unallowedTriple.Object,
-                                                                     shapeMessages,
-                                                                     shape.Severity));
-                    }
-            }
-            #endregion
-
-            return report;
-        }
-
-        /// <summary>
-        /// Gets a graph representation of this constraint
-        /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape)
-        {
-            RDFGraph result = new RDFGraph();
-            if (shape != null)
-            {
-                //sh:closed
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLOSED, Closed ? RDFTypedLiteral.True : RDFTypedLiteral.False));
-
-                //Get collection from ignored properties
-                RDFCollection ignoredProperties = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource) { InternalReificationSubject = this };
-                foreach (RDFResource ignoredProperty in IgnoredProperties.Values)
-                    ignoredProperties.AddItem(ignoredProperty);
-                result.AddCollection(ignoredProperties);
-
-                //sh:ignoredProperties
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.IGNORED_PROPERTIES, ignoredProperties.ReificationSubject));
-            }
-            return result;
-        }
-        #endregion
+        Closed = closed;
+        IgnoredProperties = [];
     }
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Adds the given property to the allowed properties of this constraint
+    /// </summary>
+    public RDFClosedConstraint AddIgnoredProperty(RDFResource ignoredProperty)
+    {
+        if (ignoredProperty != null)
+            IgnoredProperties.TryAdd(ignoredProperty.PatternMemberID, ignoredProperty);
+        return this;
+    }
+
+    /// <summary>
+    /// Evaluates this constraint against the given data graph
+    /// </summary>
+    internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+    {
+        RDFValidationReport report = new RDFValidationReport();
+
+        #region Evaluation
+        if (Closed)
+        {
+            //Extend ignored properties with paths of property constraints
+            List<RDFResource> allowedProperties = [.. IgnoredProperties.Values];
+            foreach (RDFPropertyConstraint propertyConstraint in shape.Constraints.OfType<RDFPropertyConstraint>())
+                if (shapesGraph.SelectShape(propertyConstraint.PropertyShapeUri.ToString()) is RDFPropertyShape propertyShape)
+                    allowedProperties.Add(propertyShape.Path);
+
+            //In case no shape messages have been provided, this constraint emits a default one (for usability)
+            List<RDFLiteral> shapeMessages = [.. shape.Messages];
+            if (shapeMessages.Count == 0)
+                shapeMessages.Add(new RDFPlainLiteral("Predicate is not allowed (closed shape)"));
+
+            //Detect unallowed predicates
+            foreach (RDFPatternMember valueNode in valueNodes)
+                if (valueNode is RDFResource valueNodeResource)
+                {
+                    RDFGraph valuenodeResourceGraph = dataGraph.SelectTriplesBySubject(valueNodeResource);
+                    foreach (RDFTriple unallowedTriple in valuenodeResourceGraph.Where(t => !allowedProperties.Any(p => p.Equals(t.Predicate))))
+                        report.AddResult(new RDFValidationResult(shape,
+                            RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT,
+                            valueNodeResource,
+                            unallowedTriple.Predicate as RDFResource,
+                            unallowedTriple.Object,
+                            shapeMessages,
+                            shape.Severity));
+                }
+        }
+        #endregion
+
+        return report;
+    }
+
+    /// <summary>
+    /// Gets a graph representation of this constraint
+    /// </summary>
+    internal override RDFGraph ToRDFGraph(RDFShape shape)
+    {
+        RDFGraph result = new RDFGraph();
+        if (shape != null)
+        {
+            //sh:closed
+            result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLOSED, Closed ? RDFTypedLiteral.True : RDFTypedLiteral.False));
+
+            //Get collection from ignored properties
+            RDFCollection ignoredProperties = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource) { InternalReificationSubject = this };
+            foreach (RDFResource ignoredProperty in IgnoredProperties.Values)
+                ignoredProperties.AddItem(ignoredProperty);
+            result.AddCollection(ignoredProperties);
+
+            //sh:ignoredProperties
+            result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.IGNORED_PROPERTIES, ignoredProperties.ReificationSubject));
+        }
+        return result;
+    }
+    #endregion
 }

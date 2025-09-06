@@ -18,127 +18,117 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFLanguageInConstraint represents a SHACL constraint on the allowed language tags for a given RDF term
+/// </summary>
+public sealed class RDFLanguageInConstraint : RDFConstraint
 {
+    #region Properties
     /// <summary>
-    /// RDFLanguageInConstraint represents a SHACL constraint on the allowed language tags for a given RDF term
+    /// Language Tags allowed on the given RDF term
     /// </summary>
-    public sealed class RDFLanguageInConstraint : RDFConstraint
+    internal HashSet<string> LanguageTags { get; set; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a languageIn constraint with the given list of language tags
+    /// </summary>
+    public RDFLanguageInConstraint(List<string> languageTags)
     {
-        #region Properties
-        /// <summary>
-        /// Language Tags allowed on the given RDF term
-        /// </summary>
-        internal HashSet<string> LanguageTags { get; set; }
-        #endregion
+        LanguageTags = [];
 
-        #region Ctors
-        /// <summary>
-        /// Builds a languageIn constraint with the given list of language tags
-        /// </summary>
-        public RDFLanguageInConstraint(List<string> languageTags)
+        //Accept only language tags compatible with langMatches filter
+        languageTags?.ForEach(lt =>
         {
-            LanguageTags = new HashSet<string>();
-
-            //Accept only language tags compatible with langMatches filter
-            languageTags?.ForEach(lt =>
-            {
-                string languageTag = lt?.Trim() ?? string.Empty;
-                if (languageTag.Length == 0 || languageTag == "*" || RDFShims.LangTagRegex.Value.IsMatch(languageTag))
-                    LanguageTags.Add(languageTag.ToUpperInvariant());
-            });
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Evaluates this constraint against the given data graph
-        /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
-        {
-            RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            RDFPropertyShape pShape = shape as RDFPropertyShape;
-
-            //In case no shape messages have been provided, this constraint emits a default one (for usability)
-            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
-            if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral("Not a language from the sh:languageIn enumeration"));
-
-            #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes)
-                switch (valueNode)
-                {
-                    //PlainLiteral
-                    case RDFPlainLiteral valueNodePLit:
-                        string valueNodePLitString = valueNodePLit.ToString();
-                        bool langMatches = false;
-                        HashSet<string>.Enumerator langTagsEnumerator = LanguageTags.GetEnumerator();
-                        while (langTagsEnumerator.MoveNext() && !langMatches)
-                            switch (langTagsEnumerator.Current)
-                            {
-                                //NO language is found in the variable
-                                case "":
-                                    langMatches = !RDFShims.EndingLangTagRegex.Value.IsMatch(valueNodePLitString);
-                                    break;
-
-                                //ANY language is found in the variable
-                                case "*":
-                                    langMatches = RDFShims.EndingLangTagRegex.Value.IsMatch(valueNodePLitString);
-                                    break;
-
-                                //GIVEN language is found in the variable
-                                default:
-                                    langMatches = Regex.IsMatch(valueNodePLitString, $"@{langTagsEnumerator.Current}{RDFShims.LangTagSubMask}$", RegexOptions.IgnoreCase);
-                                    break;
-                            }
-
-                        if (!langMatches)
-                        {
-                            report.AddResult(new RDFValidationResult(shape,
-                                                                     RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
-                                                                     focusNode,
-                                                                     pShape?.Path,
-                                                                     valueNode,
-                                                                     shapeMessages,
-                                                                     shape.Severity));
-                        }
-                        break;
-
-                    //Resource/TypedLiteral
-                    default:
-                        report.AddResult(new RDFValidationResult(shape,
-                                                                 RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
-                                                                 focusNode,
-                                                                 pShape?.Path,
-                                                                 valueNode,
-                                                                 shapeMessages,
-                                                                 shape.Severity));
-                        break;
-                }
-            #endregion
-
-            return report;
-        }
-
-        /// <summary>
-        /// Gets a graph representation of this constraint
-        /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape)
-        {
-            RDFGraph result = new RDFGraph();
-            if (shape != null)
-            {
-                //Get collection from language tags
-                RDFCollection languageTags = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal) { InternalReificationSubject = this };
-                foreach (string languageTag in LanguageTags)
-                    languageTags.AddItem(new RDFPlainLiteral(languageTag));
-                result.AddCollection(languageTags);
-
-                //sh:languageIn
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.LANGUAGE_IN, languageTags.ReificationSubject));
-            }
-            return result;
-        }
-        #endregion
+            string languageTag = lt?.Trim() ?? string.Empty;
+            if (languageTag.Length == 0 || languageTag == "*" || RDFUtilities.LangTagRegex().IsMatch(languageTag))
+                LanguageTags.Add(languageTag.ToUpperInvariant());
+        });
     }
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Evaluates this constraint against the given data graph
+    /// </summary>
+    internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+    {
+        RDFValidationReport report = new RDFValidationReport(new RDFResource());
+        RDFPropertyShape pShape = shape as RDFPropertyShape;
+
+        //In case no shape messages have been provided, this constraint emits a default one (for usability)
+        List<RDFLiteral> shapeMessages = [.. shape.Messages];
+        if (shapeMessages.Count == 0)
+            shapeMessages.Add(new RDFPlainLiteral("Not a language from the sh:languageIn enumeration"));
+
+        #region Evaluation
+        foreach (RDFPatternMember valueNode in valueNodes)
+            switch (valueNode)
+            {
+                //PlainLiteral
+                case RDFPlainLiteral valueNodePLit:
+                    string valueNodePLitString = valueNodePLit.ToString();
+                    bool langMatches = false;
+                    HashSet<string>.Enumerator langTagsEnumerator = LanguageTags.GetEnumerator();
+                    while (langTagsEnumerator.MoveNext() && !langMatches)
+                        langMatches = langTagsEnumerator.Current switch
+                        {
+                            //NO language is found in the variable
+                            "" => !RDFUtilities.EndingLangTagRegex().IsMatch(valueNodePLitString),
+                            //ANY language is found in the variable
+                            "*" => RDFUtilities.EndingLangTagRegex().IsMatch(valueNodePLitString),
+                            //GIVEN language is found in the variable
+                            _ => Regex.IsMatch(valueNodePLitString, $"@{langTagsEnumerator.Current}{RDFUtilities.LangTagSubMask}$", RegexOptions.IgnoreCase)
+                        };
+                    if (!langMatches)
+                    {
+                        report.AddResult(new RDFValidationResult(shape,
+                            RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
+                            focusNode,
+                            pShape?.Path,
+                            valueNode,
+                            shapeMessages,
+                            shape.Severity));
+                    }
+                    break;
+
+                //Resource/TypedLiteral
+                default:
+                    report.AddResult(new RDFValidationResult(shape,
+                        RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
+                        focusNode,
+                        pShape?.Path,
+                        valueNode,
+                        shapeMessages,
+                        shape.Severity));
+                    break;
+            }
+        #endregion
+
+        return report;
+    }
+
+    /// <summary>
+    /// Gets a graph representation of this constraint
+    /// </summary>
+    internal override RDFGraph ToRDFGraph(RDFShape shape)
+    {
+        RDFGraph result = new RDFGraph();
+        if (shape != null)
+        {
+            //Get collection from language tags
+            RDFCollection languageTags = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal) { InternalReificationSubject = this };
+            foreach (string languageTag in LanguageTags)
+                languageTags.AddItem(new RDFPlainLiteral(languageTag));
+            result.AddCollection(languageTags);
+
+            //sh:languageIn
+            result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.LANGUAGE_IN, languageTags.ReificationSubject));
+        }
+        return result;
+    }
+    #endregion
 }

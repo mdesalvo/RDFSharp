@@ -15,44 +15,42 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+/// RDFMaxLengthFacet represents a constraint requiring the values of a literal to have a maximum length
+/// </summary>
+public sealed class RDFMaxLengthFacet : RDFFacet
 {
+    #region Properties
     /// <summary>
-    /// RDFMaxLengthFacet represents a constraint requiring the values of a literal to have a maximum length
+    /// Maximum length required by the facet
     /// </summary>
-    public sealed class RDFMaxLengthFacet : RDFFacet
-    {
-        #region Properties
-        /// <summary>
-        /// Maximum length required by the facet
-        /// </summary>
-        public uint Length { get; internal set; }
-        #endregion
+    public uint Length { get; internal set; }
+    #endregion
 
-        #region Ctors
-        /// <summary>
-        /// Builds a facet requiring the given maximum length
-        /// </summary>
-        public RDFMaxLengthFacet(uint length)
-          => Length = length;
-        #endregion
+    #region Ctors
+    /// <summary>
+    /// Builds a facet requiring the given maximum length
+    /// </summary>
+    public RDFMaxLengthFacet(uint length)
+        => Length = length;
+    #endregion
 
-        #region Methods
-        /// <summary>
-        /// Gives a graph representation of the maxlength facet
-        /// </summary>
-        public override RDFGraph ToRDFGraph()
-          => new RDFGraph(new List<RDFTriple>(1) {
-              new RDFTriple(URI, RDFVocabulary.XSD.MAX_LENGTH, new RDFTypedLiteral(Convert.ToString(Length, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)) });
+    #region Methods
+    /// <summary>
+    /// Gives a graph representation of the maxlength facet
+    /// </summary>
+    public override RDFGraph ToRDFGraph()
+        => new RDFGraph([
+            new RDFTriple(URI, RDFVocabulary.XSD.MAX_LENGTH, new RDFTypedLiteral(Convert.ToString(Length, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)) ]);
 
-        /// <summary>
-        /// Validates the given literal value against the maxlength facet
-        /// </summary>
-        public override bool Validate(string literalValue)
-          => string.IsNullOrEmpty(literalValue) || literalValue.Length <= Length;
-        #endregion
-    }
+    /// <summary>
+    /// Validates the given literal value against the maxlength facet
+    /// </summary>
+    public override bool Validate(string literalValue)
+        => string.IsNullOrEmpty(literalValue) || literalValue.Length <= Length;
+    #endregion
 }

@@ -18,114 +18,113 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model;
+
+/// <summary>
+///  RDFValidationReport represents a detailed report of a shapes graph's validation.
+/// </summary>
+public sealed class RDFValidationReport : RDFResource, IEnumerable<RDFValidationResult>
 {
+    #region Properties
     /// <summary>
-    ///  RDFValidationReport represents a detailed report of a shapes graph's validation.
+    /// Indicates that the validation was successful (sh:conforms)
     /// </summary>
-    public sealed class RDFValidationReport : RDFResource, IEnumerable<RDFValidationResult>
+    public bool Conforms => ResultsCount == 0;
+
+    /// <summary>
+    /// Counter of the validator results
+    /// </summary>
+    public int ResultsCount => Results.Count;
+
+    /// <summary>
+    /// Gets an enumerator on the validator results for iteration
+    /// </summary>
+    public IEnumerator<RDFValidationResult> ResultsEnumerator => Results.GetEnumerator();
+
+    /// <summary>
+    /// List of validator results (sh:result)
+    /// </summary>
+    internal List<RDFValidationResult> Results { get; set; }
+    #endregion
+
+    #region Ctors
+    /// <summary>
+    /// Builds a named validation report
+    /// </summary>
+    internal RDFValidationReport(RDFResource reportName) : base(reportName.ToString())
+        => Results = [];
+
+    /// <summary>
+    /// Builds a blank validation report
+    /// </summary>
+    internal RDFValidationReport() : this(new RDFResource()) { }
+    #endregion
+
+    #region Interfaces
+    /// <summary>
+    /// Exposes a typed enumerator on the validation report's results
+    /// </summary>
+    IEnumerator<RDFValidationResult> IEnumerable<RDFValidationResult>.GetEnumerator() => ResultsEnumerator;
+
+    /// <summary>
+    /// Exposes an untyped enumerator on the validation report's results
+    /// </summary>
+    IEnumerator IEnumerable.GetEnumerator() => ResultsEnumerator;
+    #endregion
+
+    #region Methods
+
+    #region Add
+    /// <summary>
+    /// Adds the given result to this validation report
+    /// </summary>
+    internal void AddResult(RDFValidationResult result)
     {
-        #region Properties
-        /// <summary>
-        /// Indicates that the validation was successful (sh:conforms)
-        /// </summary>
-        public bool Conforms => ResultsCount == 0;
-
-        /// <summary>
-        /// Counter of the validator results
-        /// </summary>
-        public int ResultsCount => Results.Count;
-
-        /// <summary>
-        /// Gets an enumerator on the validator results for iteration
-        /// </summary>
-        public IEnumerator<RDFValidationResult> ResultsEnumerator => Results.GetEnumerator();
-
-        /// <summary>
-        /// List of validator results (sh:result)
-        /// </summary>
-        internal List<RDFValidationResult> Results { get; set; }
-        #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Builds a named validation report
-        /// </summary>
-        internal RDFValidationReport(RDFResource reportName) : base(reportName.ToString())
-            => Results = new List<RDFValidationResult>();
-
-        /// <summary>
-        /// Builds a blank validation report
-        /// </summary>
-        internal RDFValidationReport() : this(new RDFResource()) { }
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Exposes a typed enumerator on the validation report's results
-        /// </summary>
-        IEnumerator<RDFValidationResult> IEnumerable<RDFValidationResult>.GetEnumerator() => ResultsEnumerator;
-
-        /// <summary>
-        /// Exposes an untyped enumerator on the validation report's results
-        /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() => ResultsEnumerator;
-        #endregion
-
-        #region Methods
-
-        #region Add
-        /// <summary>
-        /// Adds the given result to this validation report
-        /// </summary>
-        internal void AddResult(RDFValidationResult result)
-        {
-            if (result != null)
-                Results.Add(result);
-        }
-
-        /// <summary>
-        /// Merges the results of the given validation report to this validation report
-        /// </summary>
-        internal void MergeResults(RDFValidationReport report)
-        {
-            if (report?.Results != null)
-                Results.AddRange(report.Results);
-        }
-        #endregion
-
-        #region Convert
-        /// <summary>
-        /// Gets a graph representation of this validation report
-        /// </summary>
-        public RDFGraph ToRDFGraph()
-        {
-            RDFGraph result = new RDFGraph();
-
-            //ValidationReport
-            result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.VALIDATION_REPORT));
-
-            //Conforms
-            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.CONFORMS, Conforms ? RDFTypedLiteral.True : RDFTypedLiteral.False));
-
-            //Results
-            Results.ForEach(res =>
-            {
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT, res));
-                result = result.UnionWith(res.ToRDFGraph());
-            });
-
-            result.SetContext(URI);
-            return result;
-        }
-
-        /// <summary>
-        /// Asynchronously gets a graph representation of this validation report
-        /// </summary>
-        public Task<RDFGraph> ToRDFGraphAsync()
-            => Task.Run(ToRDFGraph);
-        #endregion
-
-        #endregion
+        if (result != null)
+            Results.Add(result);
     }
+
+    /// <summary>
+    /// Merges the results of the given validation report to this validation report
+    /// </summary>
+    internal void MergeResults(RDFValidationReport report)
+    {
+        if (report?.Results != null)
+            Results.AddRange(report.Results);
+    }
+    #endregion
+
+    #region Convert
+    /// <summary>
+    /// Gets a graph representation of this validation report
+    /// </summary>
+    public RDFGraph ToRDFGraph()
+    {
+        RDFGraph result = new RDFGraph();
+
+        //ValidationReport
+        result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.VALIDATION_REPORT));
+
+        //Conforms
+        result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.CONFORMS, Conforms ? RDFTypedLiteral.True : RDFTypedLiteral.False));
+
+        //Results
+        Results.ForEach(res =>
+        {
+            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT, res));
+            result = result.UnionWith(res.ToRDFGraph());
+        });
+
+        result.SetContext(URI);
+        return result;
+    }
+
+    /// <summary>
+    /// Asynchronously gets a graph representation of this validation report
+    /// </summary>
+    public Task<RDFGraph> ToRDFGraphAsync()
+        => Task.Run(ToRDFGraph);
+    #endregion
+
+    #endregion
 }
