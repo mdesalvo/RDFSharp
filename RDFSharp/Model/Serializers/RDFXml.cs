@@ -86,33 +86,31 @@ internal static class RDFXml
                 #endregion
 
                 #region containers/collections
-                RDFGraph rdfType = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE);
-                RDFGraph rdfFirst = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST);
-                RDFGraph rdfRest = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST);
+                RDFGraph rdfType = graph[null, RDFVocabulary.RDF.TYPE, null, null];
+                RDFGraph rdfFirst = graph[null, RDFVocabulary.RDF.FIRST, null, null];
+                RDFGraph rdfRest = graph[null, RDFVocabulary.RDF.REST, null, null];
 
                 //Fetch data describing containers of the graph
                 var containersXML = new Dictionary<long, XmlNode>();
-                var containers = rdfType.SelectTriplesByObject(RDFVocabulary.RDF.ALT)
-                    .UnionWith(rdfType.SelectTriplesByObject(RDFVocabulary.RDF.BAG))
-                    .UnionWith(rdfType.SelectTriplesByObject(RDFVocabulary.RDF.SEQ))
+                var containers = rdfType[null, null, RDFVocabulary.RDF.ALT, null]
+                    .UnionWith(rdfType[null, null, RDFVocabulary.RDF.BAG, null])
+                    .UnionWith(rdfType[null, null, RDFVocabulary.RDF.SEQ, null])
                     .Select(t => new
                     {
                         ContainerUri = (RDFResource)t.Subject,
-                        ContainerType = t.Object.Equals(RDFVocabulary.RDF.ALT) ? RDFModelEnums.RDFContainerTypes.Alt :
-                            t.Object.Equals(RDFVocabulary.RDF.BAG) ? RDFModelEnums.RDFContainerTypes.Bag :
-                            RDFModelEnums.RDFContainerTypes.Seq,
+                        ContainerType = 
+                            t.Object.Equals(RDFVocabulary.RDF.ALT) ? RDFModelEnums.RDFContainerTypes.Alt :
+                            t.Object.Equals(RDFVocabulary.RDF.BAG) ? RDFModelEnums.RDFContainerTypes.Bag : RDFModelEnums.RDFContainerTypes.Seq,
                         IsFloatingContainer = !graph.Index.Hashes.Any(v => v.Value.ObjectID.Equals(t.Subject.PatternMemberID))
                     }).ToList();
 
                 //Fetch data describing collections of the graph
-                var collections = rdfType.SelectTriplesByObject(RDFVocabulary.RDF.LIST)
+                var collections = rdfType[null, null, RDFVocabulary.RDF.LIST, null]
                     .Select(t => new
                     {
                         CollectionUri = (RDFResource)t.Subject,
-                        CollectionValue = rdfFirst.SelectTriplesBySubject((RDFResource)t.Subject)
-                            .FirstOrDefault()?.Object,
-                        CollectionNext = rdfRest.SelectTriplesBySubject((RDFResource)t.Subject)
-                            .FirstOrDefault()?.Object,
+                        CollectionValue = rdfFirst[(RDFResource)t.Subject, null, null, null].FirstOrDefault()?.Object,
+                        CollectionNext = rdfRest[(RDFResource)t.Subject, null, null, null].FirstOrDefault()?.Object,
                         IsFloatingCollection = !graph.Index.Hashes.Any(v => v.Value.ObjectID.Equals(t.Subject.PatternMemberID)),
                         HasAllResourceItems = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)t.Subject, RDFModelEnums.RDFTripleFlavors.SPO, true)
                             .Items.TrueForAll(collItem => collItem is RDFResource)

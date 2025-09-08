@@ -177,12 +177,9 @@ internal static class RDFValidationHelper
     /// </summary>
     private static void DetectTypedNodeShapes(RDFGraph graph, RDFShapesGraph shapesGraph)
     {
-        RDFGraph declaredNodeShapes = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
-            .SelectTriplesByObject(RDFVocabulary.SHACL.NODE_SHAPE);
-
-        foreach (RDFTriple declaredNodeShape in declaredNodeShapes)
+        foreach (RDFTriple nodeShapeDeclaration in graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE, null])
         {
-            RDFNodeShape nodeShape = new RDFNodeShape((RDFResource)declaredNodeShape.Subject);
+            RDFNodeShape nodeShape = new RDFNodeShape((RDFResource)nodeShapeDeclaration.Subject);
 
             DetectShapeTargets(graph, nodeShape);
             DetectShapeAttributes(graph, nodeShape);
