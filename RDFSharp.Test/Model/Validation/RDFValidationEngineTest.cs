@@ -280,7 +280,6 @@ public class RDFValidationEngineTest
         //ShapesGraph
         const string shapesData =
             """
-
             @prefix exns:   <http://ex.com/ns#> .
             @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
             @prefix sh:     <http://www.w3.org/ns/shacl#> .
@@ -357,7 +356,6 @@ public class RDFValidationEngineTest
         //ShapesGraph
         const string shapesData =
             """
-
             @prefix exns:   <http://ex.com/ns#> .
             @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
             @prefix sh:     <http://www.w3.org/ns/shacl#> .
@@ -440,7 +438,6 @@ public class RDFValidationEngineTest
         //ShapesGraph
         const string shapesData =
             """
-
             @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
             @prefix sh:      <http://www.w3.org/ns/shacl#> .
             @prefix exns:    <http://ex.com/ns#> .
@@ -524,7 +521,6 @@ public class RDFValidationEngineTest
         //ShapesGraph
         const string shapesData =
             """
-
             @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
             @prefix sh:      <http://www.w3.org/ns/shacl#> .
             @prefix exns:    <http://ex.com/ns#> .
