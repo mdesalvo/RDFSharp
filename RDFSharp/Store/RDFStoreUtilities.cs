@@ -15,10 +15,7 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
 using RDFSharp.Model;
 
 namespace RDFSharp.Store;
@@ -29,11 +26,6 @@ namespace RDFSharp.Store;
 public static class RDFStoreUtilities
 {
     #region Select
-    /// <summary>
-    /// Empty list of quadruples to be returned in case of no query results
-    /// </summary>
-    internal static readonly List<RDFQuadruple> EmptyQuadrupleList = [];
-
     /// <summary>
     /// Parses the current quadruple of the data reader
     /// </summary>
@@ -86,90 +78,6 @@ public static class RDFStoreUtilities
         string tLitDatatype = literal.Substring(lastIndexOfDatatype + 2);
         RDFTypedLiteral tLit = new RDFTypedLiteral(tLitValue, RDFDatatypeRegister.GetDatatype(tLitDatatype));
         return new RDFQuadruple(qContext, qSubject, qPredicate, tLit);
-    }
-
-    /// <summary>
-    /// Selects the quadruples corresponding to the given pattern from the given store
-    /// </summary>
-    internal static List<RDFQuadruple> SelectQuadruples(RDFMemoryStore store, RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
-    {
-        #region Utilities
-        void LookupIndex(HashSet<long> lookup, out List<RDFHashedQuadruple> result)
-            => result = [.. lookup.Select(q => store.Index.Hashes[q])];
-        #endregion
-
-        if (store != null)
-        {
-            StringBuilder queryFilters = new StringBuilder(4);
-            List<RDFHashedQuadruple> C=null, S=null, P=null, O=null, L=null;
-
-            //Filter by Context
-            if (ctx != null)
-            {
-                queryFilters.Append('C');
-                LookupIndex(store.Index.LookupIndexByContext(ctx), out C);
-            }
-
-            //Filter by Subject
-            if (subj != null)
-            {
-                queryFilters.Append('S');
-                LookupIndex(store.Index.LookupIndexBySubject(subj), out S);
-            }
-
-            //Filter by Predicate
-            if (pred != null)
-            {
-                queryFilters.Append('P');
-                LookupIndex(store.Index.LookupIndexByPredicate(pred), out P);
-            }
-
-            //Filter by Object
-            if (obj != null)
-            {
-                queryFilters.Append('O');
-                LookupIndex(store.Index.LookupIndexByObject(obj), out O);
-            }
-
-            //Filter by Literal
-            if (lit != null)
-            {
-                queryFilters.Append('L');
-                LookupIndex(store.Index.LookupIndexByLiteral(lit), out L);
-            }
-
-            List<RDFHashedQuadruple> hashedQuadruples = queryFilters.ToString() switch
-            {
-                "C" => C,
-                "S" => S,
-                "P" => P,
-                "O" => O,
-                "L" => L,
-                "CS" => [.. C.Intersect(S)],
-                "CP" => [.. C.Intersect(P)],
-                "CO" => [.. C.Intersect(O)],
-                "CL" => [.. C.Intersect(L)],
-                "CSP" => [.. C.Intersect(S).Intersect(P)],
-                "CSO" => [.. C.Intersect(S).Intersect(O)],
-                "CSL" => [.. C.Intersect(S).Intersect(L)],
-                "CPO" => [.. C.Intersect(P).Intersect(O)],
-                "CPL" => [.. C.Intersect(P).Intersect(L)],
-                "CSPO" => [.. C.Intersect(S).Intersect(P).Intersect(O)],
-                "CSPL" => [.. C.Intersect(S).Intersect(P).Intersect(L)],
-                "SP" => [.. S.Intersect(P)],
-                "SO" => [.. S.Intersect(O)],
-                "SL" => [.. S.Intersect(L)],
-                "SPO" => [.. S.Intersect(P).Intersect(O)],
-                "SPL" => [.. S.Intersect(P).Intersect(L)],
-                "PO" => [.. P.Intersect(O)],
-                "PL" => [.. P.Intersect(L)],
-                _ => [.. store.Index.Hashes.Values]
-            };
-
-            //Decompress hashed quadruples
-            return hashedQuadruples!.ConvertAll(hq => new RDFQuadruple(hq, store.Index));
-        }
-        return EmptyQuadrupleList;
     }
     #endregion
 }

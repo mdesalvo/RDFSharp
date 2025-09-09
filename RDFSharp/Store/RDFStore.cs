@@ -82,99 +82,10 @@ public abstract class RDFStore : RDFDataSource, IEquatable<RDFStore>
     public abstract RDFStore RemoveQuadruple(RDFQuadruple quadruple);
 
     /// <summary>
-    /// Removes the quadruples with the given context
+    /// Removes the quadruples which satisfy the given combination of CSPOL accessors<br/>
+    /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
     /// </summary>
-    public abstract RDFStore RemoveQuadruplesByContext(RDFContext ctx);
-
-    /// <summary>
-    /// Removes the quadruples with the given subject
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesBySubject(RDFResource subj);
-
-    /// <summary>
-    /// Removes the quadruples with the given (non-blank) predicate
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesByPredicate(RDFResource pred);
-
-    /// <summary>
-    /// Removes the quadruples with the given resource as object
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesByObject(RDFResource obj);
-
-    /// <summary>
-    /// Removes the quadruples with the given literal as object
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesByLiteral(RDFLiteral lit);
-
-    /// <summary>
-    /// Removes the quadruples with the given context and subject
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesByContextSubject(RDFContext ctx, RDFResource subj);
-
-    /// <summary>
-    /// Removes the quadruples with the given context and predicate
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesByContextPredicate(RDFContext ctx, RDFResource pred);
-
-    /// <summary>
-    /// Removes the quadruples with the given context and object
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesByContextObject(RDFContext ctx, RDFResource obj);
-
-    /// <summary>
-    /// Removes the quadruples with the given context and literal
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesByContextLiteral(RDFContext ctx, RDFLiteral lit);
-
-    /// <summary>
-    /// Removes the quadruples with the given context, subject and predicate
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesByContextSubjectPredicate(RDFContext ctx, RDFResource subj, RDFResource pred);
-
-    /// <summary>
-    /// Removes the quadruples with the given context, subject and object
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesByContextSubjectObject(RDFContext ctx, RDFResource subj, RDFResource obj);
-
-    /// <summary>
-    /// Removes the quadruples with the given context, subject and literal
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesByContextSubjectLiteral(RDFContext ctx, RDFResource subj, RDFLiteral lit);
-
-    /// <summary>
-    /// Removes the quadruples with the given context, predicate and object
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesByContextPredicateObject(RDFContext ctx, RDFResource pred, RDFResource obj);
-
-    /// <summary>
-    /// Removes the quadruples with the given context, predicate and literal
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesByContextPredicateLiteral(RDFContext ctx, RDFResource pred, RDFLiteral lit);
-
-    /// <summary>
-    /// Removes the quadruples with the given subject and predicate
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesBySubjectPredicate(RDFResource subj, RDFResource pred);
-
-    /// <summary>
-    /// Removes the quadruples with the given subject and object
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesBySubjectObject(RDFResource subj, RDFResource obj);
-
-    /// <summary>
-    /// Removes the quadruples with the given subject and literal
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesBySubjectLiteral(RDFResource subj, RDFLiteral lit);
-
-    /// <summary>
-    /// Removes the quadruples with the given predicate and object
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesByPredicateObject(RDFResource pred, RDFResource obj);
-
-    /// <summary>
-    /// Removes the quadruples with the given predicate and literal
-    /// </summary>
-    public abstract RDFStore RemoveQuadruplesByPredicateLiteral(RDFResource pred, RDFLiteral lit);
+    public abstract RDFStore RemoveQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit);
 
     /// <summary>
     /// Clears the quadruples of the store
@@ -184,68 +95,24 @@ public abstract class RDFStore : RDFDataSource, IEquatable<RDFStore>
 
     #region Select
     /// <summary>
-    /// Gets a memory store containing quadruples with the specified combination of CSPOL accessors<br/>
-    /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
-    /// </summary>
-    /// <exception cref="RDFStoreException"></exception>
-    public RDFMemoryStore this[RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
-    {
-        get
-        {
-            #region Guards
-            if (obj != null && lit != null)
-                throw new RDFStoreException("Cannot access a store when both object and literals are given: they must be mutually exclusive!");
-            #endregion
-
-            return SelectQuadruples(ctx, subj, pred, obj, lit);
-        }
-    }
-
-    /// <summary>
     /// Checks if the store contains the given quadruple
     /// </summary>
     public abstract bool ContainsQuadruple(RDFQuadruple quadruple);
 
     /// <summary>
-    /// Gets a memory store containing quadruples satisfying the given pattern
+    /// Selects the quadruples which satisfy the given combination of CSPOL accessors<br/>
+    /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
     /// </summary>
-    public abstract RDFMemoryStore SelectQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit);
+    /// <exception cref="RDFStoreException"></exception>
+    public abstract List<RDFQuadruple> SelectQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit);
 
     /// <summary>
-    /// Gets a store containing all quadruples
+    /// Gets a memory store containing quadruples which satisfy the given combination of CSPOL accessors<br/>
+    /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
     /// </summary>
-    public RDFMemoryStore SelectAllQuadruples()
-        => SelectQuadruples(null, null, null, null, null);
-
-    /// <summary>
-    /// Gets a memory store containing quadruples with the specified context
-    /// </summary>
-    public RDFMemoryStore SelectQuadruplesByContext(RDFContext ctx)
-        => SelectQuadruples(ctx, null, null, null, null);
-
-    /// <summary>
-    /// Gets a memory store containing quadruples with the specified subject
-    /// </summary>
-    public RDFMemoryStore SelectQuadruplesBySubject(RDFResource subj)
-        => SelectQuadruples(null, subj, null, null, null);
-
-    /// <summary>
-    /// Gets a memory store containing quadruples with the specified predicate
-    /// </summary>
-    public RDFMemoryStore SelectQuadruplesByPredicate(RDFResource pred)
-        => SelectQuadruples(null, null, pred, null, null);
-
-    /// <summary>
-    /// Gets a memory store containing quadruples with the specified object
-    /// </summary>
-    public RDFMemoryStore SelectQuadruplesByObject(RDFResource obj)
-        => SelectQuadruples(null, null, null, obj, null);
-
-    /// <summary>
-    /// Gets a memory store containing quadruples with the specified literal
-    /// </summary>
-    public RDFMemoryStore SelectQuadruplesByLiteral(RDFLiteral lit)
-        => SelectQuadruples(null, null, null, null, lit);
+    /// <exception cref="RDFStoreException"></exception>
+    public RDFMemoryStore this[RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
+        => new RDFMemoryStore(SelectQuadruples(ctx, subj, pred, obj, lit));
 
     /// <summary>
     /// Gets a list containing the graphs saved in the store
@@ -253,7 +120,7 @@ public abstract class RDFStore : RDFDataSource, IEquatable<RDFStore>
     public List<RDFGraph> ExtractGraphs()
     {
         Dictionary<long, RDFGraph> graphs = [];
-        foreach (RDFQuadruple q in this as RDFMemoryStore ?? SelectAllQuadruples())
+        foreach (RDFQuadruple q in this as RDFMemoryStore ?? this[null, null, null, null, null])
         {
             // Step 1: Cache-Update
             if (!graphs.TryGetValue(q.Context.PatternMemberID, out RDFGraph graph))
@@ -276,11 +143,8 @@ public abstract class RDFStore : RDFDataSource, IEquatable<RDFStore>
     public List<RDFContext> ExtractContexts()
     {
         Dictionary<long, RDFPatternMember> contexts = [];
-        foreach (RDFQuadruple q in this as RDFMemoryStore ?? SelectAllQuadruples())
-        {
-            if (!contexts.ContainsKey(q.Context.PatternMemberID))
-                contexts.Add(q.Context.PatternMemberID, q.Context);
-        }
+        foreach (RDFQuadruple q in this as RDFMemoryStore ?? this[null, null, null, null, null])
+            contexts.TryAdd(q.Context.PatternMemberID, q.Context);
         return [.. contexts.Values.OfType<RDFContext>()];
     }
     #endregion
@@ -366,7 +230,7 @@ public abstract class RDFStore : RDFDataSource, IEquatable<RDFStore>
 
         //Iterate the quadruples of the store to populate the result datatable
         result.BeginLoadData();
-        foreach (RDFQuadruple q in SelectAllQuadruples())
+        foreach (RDFQuadruple q in this as RDFMemoryStore ?? this[null, null, null, null, null])
         {
             DataRow newRow = result.NewRow();
             newRow["?CONTEXT"] = q.Context.ToString();

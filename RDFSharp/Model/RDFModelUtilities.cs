@@ -194,7 +194,6 @@ public static class RDFModelUtilities
 
     #region Graph
     internal static readonly HashSet<long> EmptyHashSet = [];
-    internal static readonly List<RDFTriple> EmptyTripleList = [];
     internal static readonly List<RDFNamespace> EmptyNamespaceList = [];
 
     /// <summary>

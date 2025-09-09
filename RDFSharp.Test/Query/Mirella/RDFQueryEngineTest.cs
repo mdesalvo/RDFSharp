@@ -5455,8 +5455,7 @@ public class RDFQueryEngineTest
         [
             new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
         ];
-        RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
-        RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.C, table);
+        RDFQueryEngine.PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.C, table);
 
         Assert.AreEqual(1, table.Rows.Count);
         Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
@@ -5472,8 +5471,7 @@ public class RDFQueryEngineTest
         [
             new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
         ];
-        RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
-        RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.S, table);
+        RDFQueryEngine.PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.S, table);
 
         Assert.AreEqual(1, table.Rows.Count);
         Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -5489,8 +5487,7 @@ public class RDFQueryEngineTest
         [
             new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
         ];
-        RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
-        RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.P, table);
+        RDFQueryEngine.PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.P, table);
 
         Assert.AreEqual(1, table.Rows.Count);
         Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
@@ -5506,8 +5503,7 @@ public class RDFQueryEngineTest
         [
             new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
         ];
-        RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
-        RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.O, table);
+        RDFQueryEngine.PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.O, table);
 
         Assert.AreEqual(1, table.Rows.Count);
         Assert.IsTrue(string.Equals(table.Rows[0]["?O"].ToString(), "ex:topolino", StringComparison.Ordinal));
@@ -5524,8 +5520,7 @@ public class RDFQueryEngineTest
         [
             new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
         ];
-        RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
-        RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CS, table);
+        RDFQueryEngine.PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CS, table);
 
         Assert.AreEqual(1, table.Rows.Count);
         Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
@@ -5543,8 +5538,7 @@ public class RDFQueryEngineTest
         [
             new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
         ];
-        RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
-        RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CP, table);
+        RDFQueryEngine.PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CP, table);
 
         Assert.AreEqual(1, table.Rows.Count);
         Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
@@ -5562,8 +5556,7 @@ public class RDFQueryEngineTest
         [
             new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
         ];
-        RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
-        RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CO, table);
+        RDFQueryEngine.PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CO, table);
 
         Assert.AreEqual(1, table.Rows.Count);
         Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
@@ -5581,8 +5574,7 @@ public class RDFQueryEngineTest
         [
             new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
         ];
-        RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
-        RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.SP, table);
+        RDFQueryEngine.PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.SP, table);
 
         Assert.AreEqual(1, table.Rows.Count);
         Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -5600,8 +5592,7 @@ public class RDFQueryEngineTest
         [
             new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
         ];
-        RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
-        RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.SO, table);
+        RDFQueryEngine.PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.SO, table);
 
         Assert.AreEqual(1, table.Rows.Count);
         Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -5619,8 +5610,7 @@ public class RDFQueryEngineTest
         [
             new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
         ];
-        RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
-        RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.PO, table);
+        RDFQueryEngine.PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.PO, table);
 
         Assert.AreEqual(1, table.Rows.Count);
         Assert.IsTrue(string.Equals(table.Rows[0]["?P"].ToString(), "ex:dogOf", StringComparison.Ordinal));
@@ -5639,8 +5629,7 @@ public class RDFQueryEngineTest
         [
             new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
         ];
-        RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
-        RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CSP, table);
+        RDFQueryEngine.PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CSP, table);
 
         Assert.AreEqual(1, table.Rows.Count);
         Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
@@ -5660,8 +5649,7 @@ public class RDFQueryEngineTest
         [
             new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
         ];
-        RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
-        RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CSO, table);
+        RDFQueryEngine.PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CSO, table);
 
         Assert.AreEqual(1, table.Rows.Count);
         Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
@@ -5681,8 +5669,7 @@ public class RDFQueryEngineTest
         [
             new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
         ];
-        RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
-        RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CPO, table);
+        RDFQueryEngine.PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CPO, table);
 
         Assert.AreEqual(1, table.Rows.Count);
         Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
@@ -5702,8 +5689,7 @@ public class RDFQueryEngineTest
         [
             new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
         ];
-        RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
-        RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.SPO, table);
+        RDFQueryEngine.PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.SPO, table);
 
         Assert.AreEqual(1, table.Rows.Count);
         Assert.IsTrue(string.Equals(table.Rows[0]["?S"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -5724,8 +5710,7 @@ public class RDFQueryEngineTest
         [
             new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino"))
         ];
-        RDFMemoryStore store = new RDFMemoryStore(matchingQuadruples);
-        RDFQueryEngine.PopulateTable(pattern, store, RDFQueryEnums.RDFPatternHoles.CSPO, table);
+        RDFQueryEngine.PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CSPO, table);
 
         Assert.AreEqual(1, table.Rows.Count);
         Assert.IsTrue(string.Equals(table.Rows[0]["?C"].ToString(), "ex:ctx", StringComparison.Ordinal));
