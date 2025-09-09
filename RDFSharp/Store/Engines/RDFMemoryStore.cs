@@ -570,15 +570,15 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
                 {
                     // N-QUADS
                     if (responseContentType.Contains("application/n-quads", StringComparison.Ordinal))
-                        memStore = FromStream(RDFStoreEnums.RDFFormats.NQuads, responseStream);
+                        memStore = await FromStreamAsync(RDFStoreEnums.RDFFormats.NQuads, responseStream);
 
                     // TRIX
                     else if (responseContentType.Contains("application/trix", StringComparison.Ordinal))
-                        memStore = FromStream(RDFStoreEnums.RDFFormats.TriX, responseStream);
+                        memStore = await FromStreamAsync(RDFStoreEnums.RDFFormats.TriX, responseStream);
 
                     // TRIG
                     else if (responseContentType.Contains("application/trig", StringComparison.Ordinal))
-                        memStore = FromStream(RDFStoreEnums.RDFFormats.TriG, responseStream);
+                        memStore = await FromStreamAsync(RDFStoreEnums.RDFFormats.TriG, responseStream);
 
                     #region Datatype Discovery
                     if (enableDatatypeDiscovery)

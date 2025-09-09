@@ -610,18 +610,18 @@ internal class RDFQueryEngine
     {
         #region Utilities
         RDFGraph QueryGraph(RDFGraph dsGraph)
-            => dsGraph[describeResource, null, null, null]
-                .UnionWith(dsGraph[null, describeResource, null, null])
-                .UnionWith(dsGraph[null, null, describeResource, null]);
+            => dsGraph[s: describeResource]
+                .UnionWith(dsGraph[p: describeResource])
+                .UnionWith(dsGraph[o: describeResource]);
 
         RDFMemoryStore QueryStore(RDFStore dsStore)
             => describeResource.IsBlank
-                ? dsStore[null, describeResource, null, null, null]
-                    .UnionWith(dsStore[null, null, null, describeResource, null])
-                : dsStore[new RDFContext(describeResource.URI), null, null, null, null]
-                    .UnionWith(dsStore[null, describeResource, null, null, null])
-                    .UnionWith(dsStore[null, null, describeResource, null, null])
-                    .UnionWith(dsStore[null, null, null, describeResource, null]);
+                ? dsStore[s: describeResource]
+                    .UnionWith(dsStore[o: describeResource])
+                : dsStore[c: new RDFContext(describeResource.URI)]
+                    .UnionWith(dsStore[s: describeResource])
+                    .UnionWith(dsStore[p: describeResource])
+                    .UnionWith(dsStore[o: describeResource]);
 
         RDFSelectQuery BuildFederationOrSPARQLEndpointQuery()
             => describeResource.IsBlank
@@ -831,7 +831,7 @@ internal class RDFQueryEngine
                 break;
 
             case "O":
-                matchingTriples = graph.SelectTriples((RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, null, null);
+                matchingTriples = graph.SelectTriples((RDFResource)pattern.Subject, (RDFResource)pattern.Predicate);
                 PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.O, patternResultTable);
                 break;
 
@@ -844,7 +844,7 @@ internal class RDFQueryEngine
                 break;
 
             case "SO":
-                matchingTriples = graph.SelectTriples(null, (RDFResource)pattern.Predicate, null, null);
+                matchingTriples = graph.SelectTriples(null, (RDFResource)pattern.Predicate);
                 //In case of same S and O variable, must refine matching triples with a further value comparison
                 if (pattern.Subject.Equals(pattern.Object))
                     matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Object));
@@ -852,7 +852,7 @@ internal class RDFQueryEngine
                 break;
 
             case "PO":
-                matchingTriples = graph.SelectTriples((RDFResource)pattern.Subject, null, null, null);
+                matchingTriples = graph.SelectTriples((RDFResource)pattern.Subject);
                 //In case of same P and O variable, must refine matching triples with a further value comparison
                 if (pattern.Predicate.Equals(pattern.Object))
                     matchingTriples = matchingTriples.FindAll(mt => mt.Predicate.Equals(mt.Object));
@@ -860,7 +860,7 @@ internal class RDFQueryEngine
                 break;
 
             case "SPO":
-                matchingTriples = graph.SelectTriples(null, null, null, null);
+                matchingTriples = graph.SelectTriples();
                 //In case of same S and P variable, must refine matching triples with a further value comparison
                 if (pattern.Subject.Equals(pattern.Predicate))
                     matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Predicate));
@@ -936,7 +936,7 @@ internal class RDFQueryEngine
                 break;
 
             case "O":
-                matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, null, null);
+                matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate);
                 PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.O, patternResultTable);
                 break;
 
@@ -957,7 +957,7 @@ internal class RDFQueryEngine
                 break;
 
             case "CO":
-                matchingQuadruples = store.SelectQuadruples(null, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, null, null);
+                matchingQuadruples = store.SelectQuadruples(null, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate);
                 //In case of same C and O variable, must refine matching quadruples with a further value comparison
                 if (pattern.Context.Equals(pattern.Object))
                     matchingQuadruples = [.. matchingQuadruples.Where(mq => mq.Context.Equals(mq.Object))];
@@ -973,7 +973,7 @@ internal class RDFQueryEngine
                 break;
 
             case "SO":
-                matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, null, (RDFResource)pattern.Predicate, null, null);
+                matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, null, (RDFResource)pattern.Predicate);
                 //In case of same S and O variable, must refine matching quadruples with a further value comparison
                 if (pattern.Subject.Equals(pattern.Object))
                     matchingQuadruples = [.. matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Object))];
@@ -981,7 +981,7 @@ internal class RDFQueryEngine
                 break;
 
             case "PO":
-                matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, (RDFResource)pattern.Subject, null, null, null);
+                matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, (RDFResource)pattern.Subject);
                 //In case of same P and O variable, must refine matching quadruples with a further value comparison
                 if (pattern.Predicate.Equals(pattern.Object))
                     matchingQuadruples = [.. matchingQuadruples.Where(mq => mq.Predicate.Equals(mq.Object))];
@@ -1003,7 +1003,7 @@ internal class RDFQueryEngine
                 break;
 
             case "CSO":
-                matchingQuadruples = store.SelectQuadruples(null, null, (RDFResource)pattern.Predicate, null, null);
+                matchingQuadruples = store.SelectQuadruples(null, null, (RDFResource)pattern.Predicate);
                 //In case of same C and S variable, must refine matching quadruples with a further value comparison
                 if (pattern.Context.Equals(pattern.Subject))
                     matchingQuadruples = [.. matchingQuadruples.Where(mq => mq.Context.Equals(mq.Subject))];
@@ -1017,7 +1017,7 @@ internal class RDFQueryEngine
                 break;
 
             case "CPO":
-                matchingQuadruples = store.SelectQuadruples(null, (RDFResource)pattern.Subject, null, null, null);
+                matchingQuadruples = store.SelectQuadruples(null, (RDFResource)pattern.Subject);
                 //In case of same C and P variable, must refine matching quadruples with a further value comparison
                 if (pattern.Context.Equals(pattern.Predicate))
                     matchingQuadruples = [.. matchingQuadruples.Where(mq => mq.Context.Equals(mq.Predicate))];
@@ -1031,7 +1031,7 @@ internal class RDFQueryEngine
                 break;
 
             case "SPO":
-                matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, null, null, null, null);
+                matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null);
                 //In case of same S and P variable, must refine matching quadruples with a further value comparison
                 if (pattern.Subject.Equals(pattern.Predicate))
                     matchingQuadruples = [.. matchingQuadruples.Where(mq => mq.Subject.Equals(mq.Predicate))];
@@ -1045,7 +1045,7 @@ internal class RDFQueryEngine
                 break;
 
             case "CSPO":
-                matchingQuadruples = store.SelectQuadruples(null, null, null, null, null);
+                matchingQuadruples = store.SelectQuadruples();
                 //In case of same C and S variable, must refine matching quadruples with a further value comparison
                 if (pattern.Context.Equals(pattern.Subject))
                     matchingQuadruples = [.. matchingQuadruples.Where(mq => mq.Context.Equals(mq.Subject))];

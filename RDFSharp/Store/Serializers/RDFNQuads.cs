@@ -55,7 +55,7 @@ internal static class RDFNQuads
             #region serialize
             using (StreamWriter sw = new StreamWriter(outputStream, Encoding.ASCII))
             {
-                foreach (RDFQuadruple q in store.SelectQuadruples(null, null, null, null, null))
+                foreach (RDFQuadruple q in store.SelectQuadruples())
                 {
                     #region template
                     string quadrupleTemplate = q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO

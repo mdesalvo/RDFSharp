@@ -1477,7 +1477,7 @@ public class RDFSelectQueryTest
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAndHaveResultsAdjustingVariableNames/sparql"));
-        RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, null);
+        RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint);
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.SelectResults);

@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using RDFSharp.Query;
 
 namespace RDFSharp.Model;

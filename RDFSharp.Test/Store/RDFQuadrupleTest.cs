@@ -356,11 +356,11 @@ public class RDFQuadrupleTest
         RDFMemoryStore store = quadruple.ReifyQuadrupleTerm();
         Assert.IsNotNull(store);
         Assert.AreEqual(5, store.QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.REIFIES, null, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)quadruple.Subject, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)quadruple.Predicate, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)quadruple.Object, null].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.REIFIES].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)quadruple.Subject].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)quadruple.Predicate].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)quadruple.Object].QuadruplesCount);
     }
 
     [TestMethod]
@@ -372,11 +372,11 @@ public class RDFQuadrupleTest
         RDFMemoryStore store = await quadruple.ReifyQuadrupleTermAsync();
         Assert.IsNotNull(store);
         Assert.AreEqual(5, store.QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.REIFIES, null, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)quadruple.Subject, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)quadruple.Predicate, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)quadruple.Object, null].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.REIFIES].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)quadruple.Subject].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)quadruple.Predicate].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)quadruple.Object].QuadruplesCount);
     }
 
     [TestMethod]
@@ -388,12 +388,12 @@ public class RDFQuadrupleTest
         RDFMemoryStore store = quadruple.ReifyQuadrupleTerm([(new RDFResource(p2), new RDFResource(o2))]);
         Assert.IsNotNull(store);
         Assert.AreEqual(6, store.QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.REIFIES, null, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)quadruple.Subject, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)quadruple.Predicate, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)quadruple.Object, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, new RDFResource(p2), new RDFResource(o2), null].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.REIFIES].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)quadruple.Subject].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)quadruple.Predicate].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)quadruple.Object].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, new RDFResource(p2), new RDFResource(o2)].QuadruplesCount);
     }
 
     [TestMethod]
@@ -405,12 +405,12 @@ public class RDFQuadrupleTest
         RDFMemoryStore store = await quadruple.ReifyQuadrupleTermAsync([(new RDFResource(p2), new RDFResource(o2))]);
         Assert.IsNotNull(store);
         Assert.AreEqual(6, store.QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.REIFIES, null, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)quadruple.Subject, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)quadruple.Predicate, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)quadruple.Object, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, new RDFResource(p2), new RDFResource(o2), null].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.REIFIES].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)quadruple.Subject].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)quadruple.Predicate].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)quadruple.Object].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, new RDFResource(p2), new RDFResource(o2)].QuadruplesCount);
     }
 
     [TestMethod]
@@ -422,10 +422,10 @@ public class RDFQuadrupleTest
         RDFMemoryStore store = quadruple.ReifyQuadrupleTerm();
         Assert.IsNotNull(store);
         Assert.AreEqual(5, store.QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.REIFIES, null, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)quadruple.Subject, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)quadruple.Predicate, null].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.REIFIES].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)quadruple.Subject].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)quadruple.Predicate].QuadruplesCount);
         Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_OBJECT, null, (RDFLiteral)quadruple.Object].QuadruplesCount);
     }
 
@@ -438,10 +438,10 @@ public class RDFQuadrupleTest
         RDFMemoryStore store = await quadruple.ReifyQuadrupleTermAsync();
         Assert.IsNotNull(store);
         Assert.AreEqual(5, store.QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.REIFIES, null, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)quadruple.Subject, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)quadruple.Predicate, null].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.REIFIES].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)quadruple.Subject].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)quadruple.Predicate].QuadruplesCount);
         Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_OBJECT, null, (RDFLiteral)quadruple.Object].QuadruplesCount);
     }
 
@@ -454,10 +454,10 @@ public class RDFQuadrupleTest
         RDFMemoryStore store = quadruple.ReifyQuadrupleTerm([(new RDFResource(p2), new RDFPlainLiteral(l2))]);
         Assert.IsNotNull(store);
         Assert.AreEqual(6, store.QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.REIFIES, null, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)quadruple.Subject, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)quadruple.Predicate, null].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.REIFIES].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)quadruple.Subject].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)quadruple.Predicate].QuadruplesCount);
         Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_OBJECT, null, (RDFLiteral)quadruple.Object].QuadruplesCount);
         Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, new RDFResource(p2), null, new RDFPlainLiteral(l2)].QuadruplesCount);
     }
@@ -471,10 +471,10 @@ public class RDFQuadrupleTest
         RDFMemoryStore store = await quadruple.ReifyQuadrupleTermAsync([(new RDFResource(p2), new RDFPlainLiteral(l2))]);
         Assert.IsNotNull(store);
         Assert.AreEqual(6, store.QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.REIFIES, null, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)quadruple.Subject, null].QuadruplesCount);
-        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)quadruple.Predicate, null].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, RDFVocabulary.RDF.REIFIES].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.TRIPLE_TERM].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_SUBJECT, (RDFResource)quadruple.Subject].QuadruplesCount);
+        Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_PREDICATE, (RDFResource)quadruple.Predicate].QuadruplesCount);
         Assert.AreEqual(1, store[ctx, null, RDFVocabulary.RDF.TT_OBJECT, null, (RDFLiteral)quadruple.Object].QuadruplesCount);
         Assert.AreEqual(1, store[ctx, quadruple.ReificationSubject, new RDFResource(p2), null, new RDFPlainLiteral(l2)].QuadruplesCount);
     }
