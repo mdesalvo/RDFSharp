@@ -269,59 +269,38 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
             throw new RDFModelException("Cannot access a graph when both object and literals are given: they must be mutually exclusive!");
         #endregion
 
-        #region Utilities
-        void LookupIndex(HashSet<long> lookup, out List<RDFHashedTriple> result)
-        {
-            result = [];
-            result.AddRange(lookup.Select(t => Index.Hashes[t]));
-        }
-        #endregion
-
         StringBuilder queryFilters = new StringBuilder(4);
-        List<RDFHashedTriple> S=null, P=null, O=null, L=null;
 
         //Filter by Subject
         if (subj != null)
-        {
             queryFilters.Append('S');
-            LookupIndex(Index.LookupIndexBySubject(subj), out S);
-        }
 
         //Filter by Predicate
         if (pred != null)
-        {
             queryFilters.Append('P');
-            LookupIndex(Index.LookupIndexByPredicate(pred), out P);
-        }
 
         //Filter by Object
         if (obj != null)
-        {
             queryFilters.Append('O');
-            LookupIndex(Index.LookupIndexByObject(obj), out O);
-        }
 
         //Filter by Literal
         if (lit != null)
-        {
             queryFilters.Append('L');
-            LookupIndex(Index.LookupIndexByLiteral(lit), out L);
-        }
 
         List<RDFHashedTriple> hashedTriples = queryFilters.ToString() switch
         {
-            "S" => S,
-            "P" => P,
-            "O" => O,
-            "L" => L,
-            "SP" => [.. S!.Intersect(P!)],
-            "SO" => [.. S!.Intersect(O!)],
-            "SL" => [.. S!.Intersect(L!)],
-            "PO" => [.. P!.Intersect(O!)],
-            "PL" => [.. P!.Intersect(L!)],
-            "SPO" => [.. S!.Intersect(P!).Intersect(O!)],
-            "SPL" => [.. S!.Intersect(P!).Intersect(L!)],
-            _ => [.. Index.Hashes.Values]
+            "S"   => [.. Index.LookupIndexBySubject(subj).Select(t => Index.Hashes[t])],
+            "P"   => [.. Index.LookupIndexByPredicate(pred).Select(t => Index.Hashes[t])],
+            "O"   => [.. Index.LookupIndexByObject(obj).Select(t => Index.Hashes[t])],
+            "L"   => [.. Index.LookupIndexByLiteral(lit).Select(t => Index.Hashes[t])],
+            "SP"  => [.. (Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByPredicate(pred))).Select(t => Index.Hashes[t])],
+            "SO"  => [.. (Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByObject(obj))).Select(t => Index.Hashes[t])],
+            "SL"  => [.. (Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByLiteral(lit))).Select(t => Index.Hashes[t])],
+            "PO"  => [.. (Index.LookupIndexByPredicate(pred).Intersect(Index.LookupIndexByObject(obj))).Select(t => Index.Hashes[t])],
+            "PL"  => [.. (Index.LookupIndexByPredicate(pred).Intersect(Index.LookupIndexByLiteral(lit))).Select(t => Index.Hashes[t])],
+            "SPO" => [.. (Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByPredicate(pred).Intersect(Index.LookupIndexByObject(obj)))).Select(t => Index.Hashes[t])],
+            "SPL" => [.. (Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByPredicate(pred).Intersect(Index.LookupIndexByLiteral(lit)))).Select(t => Index.Hashes[t])],
+            _     => [.. Index.Hashes.Values]
         };
 
         //Decompress hashed triples
