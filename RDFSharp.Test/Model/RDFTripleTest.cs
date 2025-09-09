@@ -224,7 +224,7 @@ public class RDFTripleTest
         Assert.AreEqual(1, graph[null, RDFVocabulary.RDF.TT_OBJECT, (RDFResource)triple.Object, null].TriplesCount);
         Assert.AreEqual(1, graph[triple.ReificationSubject, new RDFResource(p2), new RDFResource(o2), null].TriplesCount);
     }
-    
+
     [TestMethod]
     [DataRow("http://example.org/subj", "http://example.org/pred", "test")]
     public void ShouldReifySPLTripleTerm(string s, string p, string l)

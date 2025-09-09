@@ -168,7 +168,7 @@ public sealed class RDFDescribeQuery : RDFQuery
     /// </summary>
     public Task<RDFDescribeQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
         => Task.Run(() => ApplyToSPARQLEndpoint(sparqlEndpoint, sparqlEndpointQueryOptions));
-    
+
     /// <summary>
     /// Applies the given raw string DESCRIBE query to the given SPARQL endpoint
     /// </summary>

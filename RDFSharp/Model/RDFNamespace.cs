@@ -48,7 +48,7 @@ public sealed class RDFNamespace : IEquatable<RDFNamespace>
     /// Flag indicating that the namespace is temporary
     /// </summary>
     internal bool IsTemporary { get; set; }
-    
+
     /// <summary>
     /// Flag indicating that the namespace is reserved (cannot be removed)
     /// </summary>
@@ -126,7 +126,7 @@ public sealed class RDFNamespace : IEquatable<RDFNamespace>
         IsTemporary = temporary;
         return this;
     }
-    
+
     /// <summary>
     /// Sets or unsets this namespace as reserved
     /// </summary>

@@ -690,7 +690,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
                 }
 
                 // Read response data
-                using (Stream responseStream = await response.Content.ReadAsStreamAsync())
+                await using (Stream responseStream = await response.Content.ReadAsStreamAsync())
                 {
                     //RDF/XML
                     if (responseContentType.Contains("application/rdf+xml"))
