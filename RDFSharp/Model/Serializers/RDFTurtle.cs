@@ -90,7 +90,7 @@ internal static class RDFTurtle
         {
             #region deserialize
             //Fetch Turtle data
-            string turtleData;
+            ReadOnlySpan<char> turtleData;
             using (StreamReader sReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 turtleData = sReader.ReadToEnd();
 
@@ -160,7 +160,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Peeks at the next Unicode code point without advancing the reader
     /// </summary>
-    internal static int PeekCodePoint(string turtleData, RDFTurtleContext turtleContext)
+    internal static int PeekCodePoint(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext)
     {
         int codePoint = ReadCodePoint(turtleData, turtleContext);
         UnreadCodePoint(turtleContext, codePoint);
@@ -170,7 +170,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Reads the next Unicode code point from the reader
     /// </summary>
-    internal static int ReadCodePoint(string turtleData, RDFTurtleContext turtleContext)
+    internal static int ReadCodePoint(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext)
     {
         if (turtleContext.Position >= turtleData.Length)
             return -1; //EOF
@@ -247,7 +247,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses the Turtle data in order to detect a valid directive or statement
     /// </summary>
-    internal static void ParseStatement(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
+    internal static void ParseStatement(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, RDFGraph result)
     {
         StringBuilder sb = new StringBuilder(8);
         do
@@ -293,7 +293,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses the Turtle data in order to detect a valid directive
     /// </summary>
-    internal static void ParseDirective(string turtleData, RDFTurtleContext turtleContext, RDFGraph result, string directive)
+    internal static void ParseDirective(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, RDFGraph result, string directive)
     {
         switch (directive.ToLowerInvariant())
         {
@@ -320,7 +320,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses the Turtle data in order to detect a valid statement
     /// </summary>
-    internal static void ParseTriples(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
+    internal static void ParseTriples(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, RDFGraph result)
     {
         int bufChar = PeekCodePoint(turtleData, turtleContext);
 
@@ -373,7 +373,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses the Turtle data in order to detect a valid statement subject
     /// </summary>
-    internal static void ParseSubject(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
+    internal static void ParseSubject(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, RDFGraph result)
     {
         switch (PeekCodePoint(turtleData, turtleContext))
         {
@@ -409,7 +409,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses the Turtle data in order to detect a valid statement predicate
     /// </summary>
-    internal static RDFResource ParsePredicate(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
+    internal static RDFResource ParsePredicate(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, RDFGraph result)
     {
         // Check if the short-cut 'a' is used
         int bufChar1 = ReadCodePoint(turtleData, turtleContext);
@@ -439,7 +439,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses the Turtle data in order to detect a valid statement predicate-object list
     /// </summary>
-    internal static void ParsePredicateObjectList(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
+    internal static void ParsePredicateObjectList(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, RDFGraph result)
     {
         turtleContext.Predicate = ParsePredicate(turtleData, turtleContext, result);
 
@@ -469,7 +469,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses the Turtle data in order to detect a valid statement object list
     /// </summary>
-    internal static void ParseObjectList(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
+    internal static void ParseObjectList(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, RDFGraph result)
     {
         ParseObject(turtleData, turtleContext, result);
 
@@ -484,7 +484,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses the Turtle data in order to detect a valid statement object
     /// </summary>
-    internal static void ParseObject(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
+    internal static void ParseObject(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, RDFGraph result)
     {
         switch (PeekCodePoint(turtleData, turtleContext))
         {
@@ -515,7 +515,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses a collection, e.g. ( item1 item2 item3 )
     /// </summary>
-    internal static RDFResource ParseCollection(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
+    internal static RDFResource ParseCollection(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, RDFGraph result)
     {
         VerifyCharacterOrFail(turtleContext, ReadCodePoint(turtleData, turtleContext), "(");
 
@@ -575,7 +575,7 @@ internal static class RDFTurtle
     /// Parses an implicit blank node. This method parses the token []
     /// and predicateObjectLists that are surrounded by square brackets.
     /// </summary>
-    internal static RDFResource ParseImplicitBlank(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
+    internal static RDFResource ParseImplicitBlank(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, RDFGraph result)
     {
         VerifyCharacterOrFail(turtleContext, ReadCodePoint(turtleData, turtleContext), "[");
         RDFResource bNode = new RDFResource(); // createBNode()
@@ -612,7 +612,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses the Turtle data in order to detect a valid namespace prefix
     /// </summary>
-    internal static void ParsePrefixID(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
+    internal static void ParsePrefixID(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, RDFGraph result)
     {
         SkipWhitespace(turtleData, turtleContext);
 
@@ -667,7 +667,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses the Turtle data in order to detect a valid base directive
     /// </summary>
-    internal static void ParseBase(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
+    internal static void ParseBase(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, RDFGraph result)
     {
         SkipWhitespace(turtleData, turtleContext);
         Uri baseURI = ParseURI(turtleData, turtleContext, result);
@@ -677,7 +677,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses the Turtle data in order to detect a valid Uri
     /// </summary>
-    internal static Uri ParseURI(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
+    internal static Uri ParseURI(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, RDFGraph result)
     {
         StringBuilder uriBuf = new StringBuilder(32);
 
@@ -733,7 +733,7 @@ internal static class RDFTurtle
     /// Parses an RDF value. This method parses uriref, qname, node ID, quoted
     /// literal, integer, double and boolean.
     /// </summary>
-    internal static object ParseValue(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
+    internal static object ParseValue(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, RDFGraph result)
     {
         int bufChar = PeekCodePoint(turtleData, turtleContext);
         if (bufChar == '<')
@@ -761,7 +761,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses a blank node ID, e.g. _:node1
     /// </summary>
-    internal static RDFResource ParseNodeID(string turtleData, RDFTurtleContext turtleContext)
+    internal static RDFResource ParseNodeID(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext)
     {
         // Node ID should start with "_:"
         VerifyCharacterOrFail(turtleContext, ReadCodePoint(turtleData, turtleContext), "_");
@@ -805,7 +805,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses a number
     /// </summary>
-    internal static RDFTypedLiteral ParseNumber(string turtleData, RDFTurtleContext turtleContext)
+    internal static RDFTypedLiteral ParseNumber(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext)
     {
         StringBuilder value = new StringBuilder(32);
         RDFModelEnums.RDFDatatypes dt = RDFModelEnums.RDFDatatypes.XSD_INTEGER;
@@ -898,7 +898,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses qnames and boolean values, which have equivalent starting characters
     /// </summary>
-    internal static object ParseQNameOrBoolean(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
+    internal static object ParseQNameOrBoolean(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, RDFGraph result)
     {
         // First character should be a ':' or a letter
         int bufChar = ReadCodePoint(turtleData, turtleContext);
@@ -1010,7 +1010,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses a quoted string, optionally followed by a language tag or datatype.
     /// </summary>
-    internal static RDFLiteral ParseQuotedLiteral(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
+    internal static RDFLiteral ParseQuotedLiteral(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, RDFGraph result)
     {
         string label = ParseQuotedString(turtleData, turtleContext);
 
@@ -1073,7 +1073,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses a quoted string, which is either a "normal string" or a """long string"""
     /// </summary>
-    internal static string ParseQuotedString(string turtleData, RDFTurtleContext turtleContext)
+    internal static string ParseQuotedString(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext)
     {
         string result;
 
@@ -1107,7 +1107,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses a "normal string". This method requires that the opening character has already been parsed.
     /// </summary>
-    internal static string ParseString(string turtleData, RDFTurtleContext turtleContext, int closingCharacter)
+    internal static string ParseString(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, int closingCharacter)
     {
         StringBuilder sb = new StringBuilder(32);
 
@@ -1145,7 +1145,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Parses a """long string""". This method requires that the first three characters have already been parsed.
     /// </summary>
-    internal static string ParseLongString(string turtleData, RDFTurtleContext turtleContext, int closingCharacter)
+    internal static string ParseLongString(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext, int closingCharacter)
     {
         StringBuilder sb = new StringBuilder(64);
 
@@ -1289,7 +1289,7 @@ internal static class RDFTurtle
     /// Consumes any whitespace characters (space, tab, line feed, newline) and comments(#-style) from the Turtle data.
     /// After this method has been called, the first character that is returned is either a non-ignorable character or EOF.
     /// </summary>
-    internal static int SkipWhitespace(string turtleData, RDFTurtleContext turtleContext)
+    internal static int SkipWhitespace(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext)
     {
         int bufChar = ReadCodePoint(turtleData, turtleContext);
         while (IsWhitespace(bufChar) || bufChar == '#')
@@ -1305,7 +1305,7 @@ internal static class RDFTurtle
     /// <summary>
     /// Consumes characters from reader until the first EOL has been read.
     /// </summary>
-    internal static void SkipComment(string turtleData, RDFTurtleContext turtleContext)
+    internal static void SkipComment(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext)
     {
         int bufChar = ReadCodePoint(turtleData, turtleContext);
         while (bufChar != -1 && bufChar != 0xD && bufChar != 0xA)
@@ -1351,7 +1351,7 @@ internal static class RDFTurtle
         }
     }
 
-    internal static char ReadLocalEscapedChar(string turtleData, RDFTurtleContext turtleContext)
+    internal static char ReadLocalEscapedChar(ReadOnlySpan<char> turtleData, RDFTurtleContext turtleContext)
     {
         int bufChar = ReadCodePoint(turtleData, turtleContext);
         if (IsLocalEscapedChar(bufChar))

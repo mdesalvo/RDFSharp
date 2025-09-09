@@ -118,7 +118,7 @@ internal static class RDFTriG
             RDFTriGContext trigContext = new RDFTriGContext();
 
             //Fetch TriG data
-            string trigData;
+            ReadOnlySpan<char> trigData;
             using (StreamReader sReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 trigData = sReader.ReadToEnd();
 
@@ -170,7 +170,7 @@ internal static class RDFTriG
     /// Parses the TriG data in order to detect a valid directive or statement
     /// </summary>
     /// <exception cref="RDFStoreException"></exception>
-    internal static void ParseStatement(string trigData, RDFTriGContext trigContext)
+    internal static void ParseStatement(ReadOnlySpan<char> trigData, RDFTriGContext trigContext)
     {
         StringBuilder sb = new StringBuilder(8);
         do
@@ -232,7 +232,7 @@ internal static class RDFTriG
     /// Parses the TriG data in order to detect a valid graph
     /// </summary>
     /// <exception cref="RDFStoreException"></exception>
-    internal static void ParseGraph(string trigData, RDFTriGContext trigContext)
+    internal static void ParseGraph(ReadOnlySpan<char> trigData, RDFTriGContext trigContext)
     {
         RDFResource contextOrSubject = null;
         bool foundContextOrSubject = false;
@@ -339,7 +339,7 @@ internal static class RDFTriG
     /// <summary>
     /// Parses the TriG data in order to detect a valid statement
     /// </summary>
-    internal static void ParseTriples(string trigData, RDFTriGContext trigContext)
+    internal static void ParseTriples(ReadOnlySpan<char> trigData, RDFTriGContext trigContext)
     {
         int bufChar = PeekCodePoint(trigData, trigContext);
 
