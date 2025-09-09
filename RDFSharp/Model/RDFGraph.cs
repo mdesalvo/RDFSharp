@@ -232,8 +232,10 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
         return this;
     }
 
+    /// <summary>
     /// Removes the triples which satisfy the given combination of SPOL accessors<br/>
     /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
+    /// </summary>
     public RDFGraph RemoveTriples(RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
     {
         foreach (RDFTriple triple in SelectTriples(subj, pred, obj, lit))
@@ -255,8 +257,10 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
     public bool ContainsTriple(RDFTriple triple)
         => triple != null && Index.Hashes.ContainsKey(triple.TripleID);
 
+    /// <summary>
     /// Selects the triples which satisfy the given combination of SPOL accessors<br/>
     /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
+    /// </summary>
     public List<RDFTriple> SelectTriples(RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
     {
         #region Guards
